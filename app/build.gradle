@@ -39,8 +39,8 @@ android {
         targetSdkVersion 28
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 129
-        versionName "8.0.2"
+        versionCode 130
+        versionName "8.0.3"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -253,7 +253,6 @@ dependencies {
     })
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
-    implementation "com.google.firebase:firebase-messaging:20.1.0"
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {

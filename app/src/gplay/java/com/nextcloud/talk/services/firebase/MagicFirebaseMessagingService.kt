@@ -20,6 +20,7 @@
 package com.nextcloud.talk.services.firebase
 
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.media.AudioAttributes
@@ -40,14 +41,19 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.events.CallNotificationClick
 import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.SignatureVerification
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
-import com.nextcloud.talk.utils.NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
 import com.nextcloud.talk.utils.NotificationUtils.createNotificationChannel
@@ -56,7 +62,17 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import okhttp3.JavaNetCookieJar
+import okhttp3.OkHttpClient
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
+import retrofit2.Retrofit
 import java.io.IOException
+import java.net.CookieManager
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
@@ -70,8 +86,41 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     var appPreferences: AppPreferences? = null
 
+    var isServiceInForeground: Boolean = false
     private var decryptedPushMessage: DecryptedPushMessage? = null
     private var signatureVerification: SignatureVerification? = null
+
+    @JvmField
+    @Inject
+    var retrofit: Retrofit? = null
+
+    @JvmField
+    @Inject
+    var okHttpClient: OkHttpClient? = null
+
+    @JvmField
+    @Inject
+    var eventBus: EventBus? = null
+
+
+    override fun onCreate() {
+        super.onCreate()
+        sharedApplication!!.componentApplication.inject(this)
+        eventBus?.register(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun onMessageEvent(event: CallNotificationClick) {
+        isServiceInForeground = false
+        stopForeground(true)
+    }
+
+    override fun onDestroy() {
+        isServiceInForeground = false
+        eventBus?.unregister(this)
+        stopForeground(true)
+        super.onDestroy()
+    }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -137,17 +186,22 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                 }
                             }
 
-                            createNotificationChannel(applicationContext!!,
-                                    NOTIFICATION_CHANNEL_CALLS_V3, applicationContext.resources
+                            val notificationChannelId = NotificationUtils.getNotificationChannelId(applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls), applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls_description), true,
-                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!, audioAttributesBuilder.build())
+                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!, audioAttributesBuilder.build(), NotificationUtils.getVibrationEffectForCalls(), false)
+
+                            createNotificationChannel(applicationContext!!,
+                                    notificationChannelId, applicationContext.resources
+                                    .getString(R.string.nc_notification_channel_calls), applicationContext.resources
+                                    .getString(R.string.nc_notification_channel_calls_description), true,
+                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build(), NotificationUtils.getVibrationEffectForCalls(), false)
 
                             val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
                             val baseUrl = uri.host
 
-                            val notificationBuilder = NotificationCompat.Builder(this@MagicFirebaseMessagingService, NOTIFICATION_CHANNEL_CALLS_V3)
-                                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                            val notification = NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
+                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                                     .setCategory(NotificationCompat.CATEGORY_CALL)
                                     .setSmallIcon(R.drawable.ic_call_black_24dp)
                                     .setSubText(baseUrl)
@@ -156,10 +210,16 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                     .setContentTitle(EmojiCompat.get().process(decryptedPushMessage!!.subject))
                                     .setAutoCancel(true)
                                     .setOngoing(true)
-                                    .setTimeoutAfter(45000L)
+                                    //.setTimeoutAfter(45000L)
+                                    .setContentIntent(fullScreenPendingIntent)
                                     .setFullScreenIntent(fullScreenPendingIntent, true)
                                     .setSound(soundUri)
-                            startForeground(System.currentTimeMillis().toInt(), notificationBuilder.build())
+                                    .setVibrate(NotificationUtils.getVibrationEffectForCalls())
+                                    .build()
+                            notification.flags = notification.flags or Notification.FLAG_INSISTENT
+                            isServiceInForeground = true
+                            checkIfCallIsActive(signatureVerification!!, decryptedPushMessage!!)
+                            startForeground(decryptedPushMessage!!.timestamp.toInt(), notification)
                         } else {
                             val messageData = Data.Builder()
                                     .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
@@ -180,6 +240,45 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         } catch (exception: Exception) {
             Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage)
         }
+    }
+
+    private fun checkIfCallIsActive(signatureVerification: SignatureVerification, decryptedPushMessage: DecryptedPushMessage) {
+        val ncApi = retrofit!!.newBuilder().client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
+        var hasParticipantsInCall = false
+        var inCallOnDifferentDevice = false
+
+        ncApi.getPeersForCall(ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
+                ApiUtils.getUrlForParticipants(signatureVerification.userEntity.baseUrl,
+                        decryptedPushMessage.id))
+                .subscribeOn(Schedulers.io())
+                .subscribe(object : Observer<ParticipantsOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(participantsOverall: ParticipantsOverall) {
+                        val participantList: List<Participant> = participantsOverall.ocs.data
+                        for (participant in participantList) {
+                            if (participant.participantFlags != Participant.ParticipantFlags.NOT_IN_CALL) {
+                                hasParticipantsInCall = true
+                                if (participant.userId == signatureVerification.userEntity.userId) {
+                                    inCallOnDifferentDevice = true
+                                    break
+                                }
+                            }
+                        }
+
+                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
+                            stopForeground(true)
+                        } else if (isServiceInForeground) {
+                            checkIfCallIsActive(signatureVerification, decryptedPushMessage)
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {}
+                    override fun onComplete() {
+                    }
+                })
 
     }
+
 }

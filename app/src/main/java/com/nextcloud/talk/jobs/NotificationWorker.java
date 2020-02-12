@@ -369,7 +369,7 @@ public class NotificationWorker extends Worker {
                         NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3(), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), true,
-                        NotificationManager.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build());
+                        NotificationManager.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build(), null, false);
 
                 notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3());
             } else {

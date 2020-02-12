@@ -61,6 +61,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.events.CallNotificationClick;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -145,6 +146,7 @@ public class CallNotificationController extends BaseController {
         super(args);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
+        eventBus.post(new CallNotificationClick());
         this.roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
         this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
         this.userBeingCalled = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());

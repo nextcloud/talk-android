@@ -33,6 +33,7 @@ import android.service.notification.StatusBarNotification
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import java.util.*
 
 object NotificationUtils {
     val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
@@ -42,15 +43,26 @@ object NotificationUtils {
     val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
     val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
 
+    fun getVibrationEffectForCalls(): LongArray? {
+        return longArrayOf(0L, 400L, 800L, 600L, 800L, 800L, 800L, 1000L)
+    }
+
+    fun getNotificationChannelId(channelName: String,
+                                 channelDescription: String, enableLights: Boolean,
+                                 importance: Int, sound: Uri, audioAttributes: AudioAttributes, vibrationPattern: LongArray?, bypassDnd: Boolean): String {
+        return Objects.hash(channelName, channelDescription, enableLights, importance, sound, audioAttributes, vibrationPattern, bypassDnd).toString()
+    }
+
     @TargetApi(Build.VERSION_CODES.O)
     fun createNotificationChannel(context: Context,
                                   channelId: String, channelName: String,
                                   channelDescription: String, enableLights: Boolean,
-                                  importance: Int, sound: Uri, audioAttributes: AudioAttributes) {
+                                  importance: Int, sound: Uri, audioAttributes: AudioAttributes,
+                                  vibrationPattern: LongArray?, bypassDnd: Boolean = false) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O && notificationManager.getNotificationChannel(channelId) == null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(channelId) == null) {
 
             val channel = NotificationChannel(channelId, channelName,
                     importance)
@@ -59,7 +71,13 @@ object NotificationUtils {
             channel.enableLights(enableLights)
             channel.lightColor = R.color.colorPrimary
             channel.setSound(sound, audioAttributes)
-            channel.shouldVibrate()
+            if (vibrationPattern != null) {
+                channel.enableVibration(true)
+                channel.vibrationPattern = vibrationPattern
+            } else {
+                channel.enableVibration(false)
+            }
+            channel.setBypassDnd(bypassDnd)
 
             notificationManager.createNotificationChannel(channel)
         }
@@ -68,7 +86,7 @@ object NotificationUtils {
     @TargetApi(Build.VERSION_CODES.O)
     fun createNotificationChannelGroup(context: Context,
                                        groupId: String, groupName: CharSequence) {
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val notificationChannelGroup = NotificationChannelGroup(groupId, groupName)
