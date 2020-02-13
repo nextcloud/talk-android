@@ -91,7 +91,7 @@ object NotificationUtils {
 
     fun getNotificationChannelId(context: Context, channelName: String,
                                  channelDescription: String, enableLights: Boolean,
-                                 importance: Int, sound: Uri, audioAttributes: AudioAttributes, vibrationPattern: LongArray?, bypassDnd: Boolean, lockScreenVisibility: Integer?): String {
+                                 importance: Int, sound: Uri, audioAttributes: AudioAttributes, vibrationPattern: LongArray?, bypassDnd: Boolean, lockScreenVisibility: Int?): String {
         val channelId = Objects.hash(channelName, channelDescription, enableLights, importance, sound, audioAttributes, vibrationPattern, bypassDnd, lockScreenVisibility).toString()
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
@@ -106,7 +106,7 @@ object NotificationUtils {
                                   channelId: String, channelName: String,
                                   channelDescription: String, enableLights: Boolean,
                                   importance: Int, sound: Uri, audioAttributes: AudioAttributes,
-                                  vibrationPattern: LongArray?, bypassDnd: Boolean = false, lockScreenVisibility: Integer?) {
+                                  vibrationPattern: LongArray?, bypassDnd: Boolean = false, lockScreenVisibility: Int?) {
 
         val notificationManagerCompat = NotificationManagerCompat.from(context)
         if (notificationManagerCompat.getNotificationChannel(channelId) == null) {

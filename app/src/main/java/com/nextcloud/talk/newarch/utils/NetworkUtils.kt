@@ -33,6 +33,7 @@ import java.net.Proxy.Type
 import java.net.Proxy.Type.SOCKS
 
 class NetworkUtils {
+
     class HeadersInterceptor : Interceptor {
 
         @Throws(IOException::class)

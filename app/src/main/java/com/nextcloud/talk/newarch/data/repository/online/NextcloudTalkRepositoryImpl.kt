@@ -26,8 +26,10 @@ import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
@@ -59,16 +61,16 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         )
     }
 
-    override suspend fun getConversationForUser(userEntity: UserNgEntity, conversationToken: String): ConversationOverall {
-        return apiService.getConversation(userEntity.getCredentials(), conversationToken)
+    override suspend fun getConversationForUser(user: UserNgEntity, conversationToken: String): ConversationOverall {
+        return apiService.getConversation(user.getCredentials(), conversationToken)
     }
 
-    override suspend fun joinConversationForUser(userNgEntity: UserNgEntity, conversationToken: String, conversationPassword: String?): ConversationOverall {
-        return apiService.joinConversation(userNgEntity.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(userNgEntity.baseUrl, conversationToken), conversationPassword)
+    override suspend fun joinConversationForUser(user: UserNgEntity, conversationToken: String, conversationPassword: String?): ConversationOverall {
+        return apiService.joinConversation(user.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(user.baseUrl, conversationToken), conversationPassword)
     }
 
-    override suspend fun exitConversationForUser(userNgEntity: UserNgEntity, conversationToken: String): GenericOverall {
-        return apiService.exitConversation(userNgEntity.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(userNgEntity.baseUrl, conversationToken))
+    override suspend fun exitConversationForUser(user: UserNgEntity, conversationToken: String): GenericOverall {
+        return apiService.exitConversation(user.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(user.baseUrl, conversationToken))
     }
 
     override suspend fun getCapabilitiesForServer(server: String): CapabilitiesOverall {
@@ -91,6 +93,14 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )
         }
+    }
+
+    override suspend fun getNotificationForUser(user: UserNgEntity, notificationId: String): NotificationOverall {
+        return apiService.getNotification(user.getCredentials(), ApiUtils.getUrlForNotificationWithId(user.baseUrl, notificationId))
+    }
+
+    override suspend fun getPeersForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall {
+        return apiService.getPeersForCall(user.getCredentials(), ApiUtils.getUrlForCall(user.baseUrl, conversationToken))
     }
 
     override suspend fun setPasswordForConversation(user: UserNgEntity, conversationToken: String, password: String): GenericOverall {
