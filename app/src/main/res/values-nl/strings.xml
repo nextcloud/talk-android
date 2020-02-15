@@ -116,6 +116,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
+    <string name="nc_password_optional">Wachtwoord (optioneel)</string>
     <string name="nc_password_redacted">Verwijderd voor privacy-redenen</string>
     <string name="nc_conversation_link">Gesprekslink</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
@@ -158,7 +159,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_favorites_explanation">Gesprek zal vastgemaakt worden aan de bovenkant van de lijst met gesprekken</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Zoek deelnemer</string>
     <string name="nc_select_contacts">Zoek deelnemers</string>
+    <string name="nc_select_new_contacts">Zoek nieuwe deelnemers</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
@@ -313,4 +317,6 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_reply">Antwoord</string>
 
     <string name="nc_search_for_more">Zoek meer deelnemers</string>
-    </resources>
+    <string name="nc_new_group">Nieuwe groep</string>
+    <string name="nc_search_empty_contacts">Waar zijn ze allemaal naar toe?</string>
+</resources>
