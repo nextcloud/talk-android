@@ -193,6 +193,7 @@
     <string name="nc_conversation_menu_voice_call">Raddsímtal</string>
     <string name="nc_conversation_menu_video_call">Myndsímtal</string>
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
+    <string name="nc_new_messages">Ólesin skilaboð</string>
     <string name="nc_no_messages_yet">Engin skilaboð ennþá</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sendi tengil.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendi GIF-mynd.</string>
