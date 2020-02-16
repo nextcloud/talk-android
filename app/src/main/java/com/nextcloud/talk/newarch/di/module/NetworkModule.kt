@@ -88,7 +88,7 @@ val NetworkModule = module {
     single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
     factory { createApiErrorHandler() }
     single { createNextcloudTalkRepository(get()) }
-    single { createNexcloudRepositoryWithNoCookies(get(), get())}
+    single { createNexcloudRepositoryWithNoCookies(get(), get()) }
     single { createImageLoader(androidApplication(), get()) }
 
 }

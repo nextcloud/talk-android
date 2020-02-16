@@ -23,7 +23,10 @@
 package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
@@ -167,7 +170,8 @@ class ContactsViewModel constructor(
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
-                // handle errors here
+                _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.LOADING_FAILED, errorModel?.getErrorMessage(), conversationToken))
+
             }
         })
     }

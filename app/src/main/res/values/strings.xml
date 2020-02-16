@@ -325,7 +325,7 @@
     <string name="nc_not_defined_error">Unknown error</string>
     <string name="nc_unauthorized_error">Unauthorized</string>
 
-    <string name="nc_oops">Ooops, something went wrong.</string>
+    <string name="nc_oops">Ooops, something went wrong!</string>
 
     <string name="nc_general_settings">General</string>
     <string name="nc_allow_guests">Allow guests</string>

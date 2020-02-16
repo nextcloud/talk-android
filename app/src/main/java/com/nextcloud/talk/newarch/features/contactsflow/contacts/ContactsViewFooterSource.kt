@@ -24,7 +24,6 @@ package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.content.Context
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source

@@ -88,7 +88,7 @@ class Images {
     }
 
     // returns null if it's one-to-one that you need to fetch yourself
-    fun getImageForConversation(context: Context, conversation: Conversation): Drawable? {
+    fun getImageForConversation(context: Context, conversation: Conversation, fallback: Boolean = false): Drawable? {
         conversation.objectType?.let { objectType ->
             when (objectType) {
                 "share:password" -> {
@@ -104,6 +104,10 @@ class Images {
 
         when (conversation.type) {
             Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> {
+                if (fallback) {
+                    return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_baseline_person_24))
+                }
+
                 return null
             }
             Conversation.ConversationType.GROUP_CONVERSATION -> {

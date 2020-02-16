@@ -116,7 +116,8 @@ class MessageNotificationWorker(
             }
         }
 
-        val adjustedConversationType = conversationType ?: Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
+        val adjustedConversationType = conversationType
+                ?: Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
 
         val pendingIntent: PendingIntent? = PendingIntent.getActivity(applicationContext,
                 0, intent, 0)
@@ -222,6 +223,7 @@ class MessageNotificationWorker(
             NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
         }
     }
+
     private fun getStyle(
             decryptedPushMessage: DecryptedPushMessage,
             conversationType: Conversation.ConversationType,

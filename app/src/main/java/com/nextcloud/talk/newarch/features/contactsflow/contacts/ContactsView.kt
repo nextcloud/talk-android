@@ -47,7 +47,6 @@ import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
-import com.nextcloud.talk.newarch.utils.dp
 import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.Adapter
@@ -61,6 +60,7 @@ import kotlinx.android.synthetic.main.message_state.view.*
 import kotlinx.android.synthetic.main.search_layout.*
 import kotlinx.android.synthetic.main.search_layout.view.*
 import org.koin.android.ext.android.inject
+
 class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
 
@@ -86,8 +86,9 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
         viewModel = viewModelProvider(factory).get(ContactsViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
+        val contactsViewSource = ContactsViewSource(data = viewModel.contactsLiveData)
         val participantsAdapterBuilder = Adapter.builder(this)
-                .addSource(ContactsViewSource(data = viewModel.contactsLiveData))
+                .addSource(contactsViewSource)
                 .addSource(ContactsHeaderSource(activity as Context, ParticipantElementType.PARTICIPANT_HEADER.ordinal))
                 .addSource(ContactsViewFooterSource(activity as Context, ParticipantElementType.PARTICIPANT_FOOTER.ordinal))
                 .addPresenter(ContactPresenter(activity as Context, ::onElementClick))
@@ -102,9 +103,13 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                     view.messageStateImageView.imageTintList = null
                 })
                 .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
+                    val layoutParams = view.messageStateImageView.layoutParams as RelativeLayout.LayoutParams
+                    layoutParams.height = 128.px
+                    layoutParams.width = 128.px
+                    view.messageStateImageView.layoutParams = layoutParams
                     view.messageStateTextView.setText(R.string.nc_oops)
-                    view.messageStateImageView.load((activity as Context).getDrawable(R.drawable.ic_announcement_white_24dp))
-                    view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
+                    view.messageStateImageView.load((activity as Context).getDrawable(R.drawable.ic_undraw_server_down_s4lk))
+                    view.messageStateImageView.imageTintList = null
                 })
                 .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
 
@@ -190,6 +195,10 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                     ContactsViewOperationState.CONVERSATION_CREATION_FAILED -> {
                         // dunno what to do yet, an error message somewhere
                         searchLayout?.searchProgressBar?.isVisible = false
+                    }
+                    ContactsViewOperationState.LOADING_FAILED -> {
+                        searchLayout?.searchProgressBar?.isVisible = false
+                        contactsViewSource.postError(Exception(operationState.errorMessage))
                     }
                     else -> {
                         // do nothing, we're waiting

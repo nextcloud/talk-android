@@ -57,12 +57,12 @@ val UseCasesModule = module {
 }
 
 fun getNotificationUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                   apiErrorHandler: ApiErrorHandler): GetNotificationUseCase {
+                           apiErrorHandler: ApiErrorHandler): GetNotificationUseCase {
     return GetNotificationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun getPeersForCallUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                                   apiErrorHandler: ApiErrorHandler): GetPeersForCallUseCase {
+                           apiErrorHandler: ApiErrorHandler): GetPeersForCallUseCase {
     return GetPeersForCallUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 

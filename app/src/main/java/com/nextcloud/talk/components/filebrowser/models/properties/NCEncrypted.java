@@ -34,8 +34,6 @@ import java.io.IOException;
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.XmlUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class NCEncrypted implements Property {
     public static final Name NAME =
@@ -43,12 +41,12 @@ public class NCEncrypted implements Property {
 
     private boolean ncEncrypted;
 
-    public boolean isNcEncrypted() {
-        return ncEncrypted;
-    }
-
     private NCEncrypted(boolean isEncrypted) {
         ncEncrypted = isEncrypted;
+    }
+
+    public boolean isNcEncrypted() {
+        return ncEncrypted;
     }
 
     public static class Factory implements PropertyFactory {

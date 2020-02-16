@@ -42,31 +42,31 @@ class ContactsHeaderSource(private val context: Context, private val elementType
         headersAlreadyAdded = mutableListOf()
         for (participantElement in list) {
             if (participantElement.data is Participant) {
-                    val participant = participantElement.data
-                    val header = when (participant.source) {
-                        "users" -> {
-                            context.getString(R.string.nc_contacts)
-                        }
-                        "groups" -> {
-                            context.getString(R.string.nc_groups)
-                        }
-                        "emails" -> {
-                            context.getString(R.string.nc_emails)
-                        }
-                        "circles" -> {
-                            context.getString(R.string.nc_circles)
-                        }
-                        else -> {
-                            context.getString(R.string.nc_others)
-
-                        }
+                val participant = participantElement.data
+                val header = when (participant.source) {
+                    "users" -> {
+                        context.getString(R.string.nc_contacts)
                     }
+                    "groups" -> {
+                        context.getString(R.string.nc_groups)
+                    }
+                    "emails" -> {
+                        context.getString(R.string.nc_emails)
+                    }
+                    "circles" -> {
+                        context.getString(R.string.nc_circles)
+                    }
+                    else -> {
+                        context.getString(R.string.nc_others)
 
-                    if (!headersAlreadyAdded.contains(header)) {
-                        results.add(Data(participantElement, header))
-                        headersAlreadyAdded.add(header)
                     }
                 }
+
+                if (!headersAlreadyAdded.contains(header)) {
+                    results.add(Data(participantElement, header))
+                    headersAlreadyAdded.add(header)
+                }
+            }
         }
 
         return results

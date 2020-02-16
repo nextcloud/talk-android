@@ -211,15 +211,15 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                                 if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication
                                 !!.getString(R.string.nc_guest))
                     }
-                /*} else if (messageType == MessageType.SINGLE_LINK_MESSAGE) {
-                    return if (actorId.equals(activeUser!!.userId)) {
-                        sharedApplication!!.resources.getString(R.string.nc_sent_a_link_you)
-                    } else {
-                        String.format(sharedApplication
-                        !!.resources
-                                .getString(R.string.nc_sent_a_link),
-                                if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(R.string.nc_guest))
-                    }*/
+                    /*} else if (messageType == MessageType.SINGLE_LINK_MESSAGE) {
+                        return if (actorId.equals(activeUser!!.userId)) {
+                            sharedApplication!!.resources.getString(R.string.nc_sent_a_link_you)
+                        } else {
+                            String.format(sharedApplication
+                            !!.resources
+                                    .getString(R.string.nc_sent_a_link),
+                                    if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(R.string.nc_guest))
+                        }*/
                 } else if (messageType == MessageType.SINGLE_LINK_AUDIO_MESSAGE) {
                     return if (actorId.equals(activeUser!!.userId)) {
                         sharedApplication!!.resources.getString(R.string.nc_sent_an_audio_you)

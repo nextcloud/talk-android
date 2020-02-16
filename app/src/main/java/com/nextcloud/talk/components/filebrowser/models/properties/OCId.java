@@ -34,8 +34,6 @@ import java.io.IOException;
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.XmlUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class OCId implements Property {
     public static final Name NAME =
@@ -43,12 +41,12 @@ public class OCId implements Property {
 
     private String ocId;
 
-    public String getOcId() {
-        return ocId;
-    }
-
     private OCId(String id) {
         ocId = id;
+    }
+
+    public String getOcId() {
+        return ocId;
     }
 
     public static class Factory implements PropertyFactory {

@@ -23,12 +23,10 @@ package com.nextcloud.talk.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.webkit.SslErrorHandler
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import com.nextcloud.talk.R
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.utils.SecurityUtils

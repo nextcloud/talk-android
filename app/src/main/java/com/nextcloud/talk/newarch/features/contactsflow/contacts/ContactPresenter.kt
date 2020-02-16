@@ -27,6 +27,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import coil.api.load
 import com.nextcloud.talk.R
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.local.models.getCredentials
@@ -101,15 +102,20 @@ open class ContactPresenter<T : Any>(context: Context, onElementClick: ((Page, H
 
                 when (participant.source) {
                     "users" -> {
+                        val conversation = Conversation()
+                        conversation.type = Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
+
                         when (participant.type) {
                             Participant.ParticipantType.GUEST, Participant.ParticipantType.GUEST_AS_MODERATOR, Participant.ParticipantType.USER_FOLLOWING_LINK -> {
                                 holder.itemView.avatarImageView.load(ApiUtils.getUrlForAvatarWithNameForGuests(user?.baseUrl, participant.userId, R.dimen.avatar_size)) {
                                     user?.getCredentials()?.let { addHeader("Authorization", it) }
+                                    fallback(Images().getImageForConversation(context, conversation, true))
                                 }
                             }
                             else -> {
                                 holder.itemView.avatarImageView.load(ApiUtils.getUrlForAvatarWithName(user?.baseUrl, participant.userId, R.dimen.avatar_size)) {
                                     user?.getCredentials()?.let { addHeader("Authorization", it) }
+                                    fallback(Images().getImageForConversation(context, conversation, true))
                                 }
                             }
                         }

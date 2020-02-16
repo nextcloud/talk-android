@@ -34,8 +34,6 @@ import java.io.IOException;
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.XmlUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class NCPreview implements Property {
     public static final Property.Name NAME =
@@ -43,12 +41,12 @@ public class NCPreview implements Property {
 
     private boolean ncPreview;
 
-    public boolean isNcPreview() {
-        return ncPreview;
-    }
-
     private NCPreview(boolean hasPreview) {
         ncPreview = hasPreview;
+    }
+
+    public boolean isNcPreview() {
+        return ncPreview;
     }
 
     public static class Factory implements PropertyFactory {

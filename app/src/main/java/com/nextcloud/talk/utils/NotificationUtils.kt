@@ -31,7 +31,6 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
-import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
@@ -58,7 +57,7 @@ object NotificationUtils {
         }
     }
 
-    fun getCallSoundUri(context: Context, appPreferences: AppPreferences) : Uri? {
+    fun getCallSoundUri(context: Context, appPreferences: AppPreferences): Uri? {
         val ringtonePreferencesString: String? = appPreferences.callRingtoneUri
 
         return if (TextUtils.isEmpty(ringtonePreferencesString)) {
@@ -74,7 +73,7 @@ object NotificationUtils {
         }
     }
 
-    fun getMessageSoundUri(context: Context, appPreferences: AppPreferences) : Uri? {
+    fun getMessageSoundUri(context: Context, appPreferences: AppPreferences): Uri? {
         val ringtonePreferencesString: String? = appPreferences.messageRingtoneUri
 
         return if (TextUtils.isEmpty(ringtonePreferencesString)) {
@@ -131,6 +130,7 @@ object NotificationUtils {
             notificationManagerCompat.createNotificationChannel(channel)
         }
     }
+
     @TargetApi(Build.VERSION_CODES.O)
     fun createNotificationChannelGroup(
             context: Context,

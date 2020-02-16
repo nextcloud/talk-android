@@ -33,7 +33,6 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
-import io.reactivex.Observable
 import retrofit2.http.*
 
 interface ApiService {
@@ -43,7 +42,7 @@ interface ApiService {
 
     @GET
     suspend fun getNotification(@Header("Authorization") authorization: String,
-                        @Url url: String): NotificationOverall
+                                @Url url: String): NotificationOverall
 
     @FormUrlEncoded
     @PUT

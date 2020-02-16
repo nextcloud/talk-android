@@ -34,8 +34,6 @@ import java.io.IOException;
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.XmlUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class OCSize implements Property {
     public static final Property.Name NAME =
@@ -43,12 +41,12 @@ public class OCSize implements Property {
 
     private long ocSize;
 
-    public long getOcSize() {
-        return ocSize;
-    }
-
     private OCSize(long size) {
         ocSize = size;
+    }
+
+    public long getOcSize() {
+        return ocSize;
     }
 
     public static class Factory implements PropertyFactory {

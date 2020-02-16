@@ -29,13 +29,21 @@ import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.MainSource
+import java.lang.Exception
 
 class ContactsViewSource<T : ParticipantElement>(private val data: LiveData<List<T>>, loadingIndicatorsEnabled: Boolean = true, errorIndicatorEnabled: Boolean = true, emptyIndicatorEnabled: Boolean = true) : MainSource<T>(loadingIndicatorsEnabled, errorIndicatorEnabled, emptyIndicatorEnabled) {
-
+    private var currentPage: Page? = null
     override fun onPageOpened(page: Page, dependencies: List<Element<*>>) {
         super.onPageOpened(page, dependencies)
         if (page.previous() == null) {
+            currentPage = page
             postResult(page, data)
+        }
+    }
+
+    fun postError(exception: Exception){
+        currentPage?.let { page ->
+            postResult(page, exception)
         }
     }
 

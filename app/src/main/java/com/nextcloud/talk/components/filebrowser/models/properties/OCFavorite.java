@@ -34,8 +34,6 @@ import java.io.IOException;
 import at.bitfire.dav4jvm.Property;
 import at.bitfire.dav4jvm.PropertyFactory;
 import at.bitfire.dav4jvm.XmlUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class OCFavorite implements Property {
     public static final Property.Name NAME =
@@ -43,12 +41,12 @@ public class OCFavorite implements Property {
 
     private boolean ocFavorite;
 
-    public boolean isOcFavorite() {
-        return ocFavorite;
-    }
-
     OCFavorite(boolean isFavorite) {
         ocFavorite = isFavorite;
+    }
+
+    public boolean isOcFavorite() {
+        return ocFavorite;
     }
 
     public static class Factory implements PropertyFactory {

@@ -154,6 +154,7 @@ open class ConversationPresenter(context: Context, onElementClick: ((Page, Holde
                     {
                         addHeader("Authorization", user.getCredentials())
                         transformations(CircleCropTransformation())
+                        fallback(Images().getImageForConversation(context, conversation, true))
                     }
                 }
             }

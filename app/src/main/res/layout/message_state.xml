@@ -42,7 +42,7 @@
         android:layout_margin="8dp"
         android:textAlignment="center"
         android:text="@string/nc_conversations_empty"
-        android:textSize="20sp"
+        android:textSize="16sp"
         />
 
 </RelativeLayout>

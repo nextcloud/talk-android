@@ -22,8 +22,6 @@
 
 package com.nextcloud.talk.newarch.features.contactsflow
 
-import com.nextcloud.talk.models.json.participants.Participant
-
 data class ParticipantElement(
         val data: Any,
         val elementType: Int
