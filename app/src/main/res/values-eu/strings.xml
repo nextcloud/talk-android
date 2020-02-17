@@ -306,8 +306,6 @@
     <string name="nc_not_defined_error">Errore ezezaguna</string>
     <string name="nc_unauthorized_error">Baimenik gabe</string>
 
-    <string name="nc_oops">Ooops, zerbait oker joan da.</string>
-
     <string name="nc_general_settings">Orokorra</string>
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>

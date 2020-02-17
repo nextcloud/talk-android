@@ -291,8 +291,6 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_not_defined_error">不明なエラー</string>
     <string name="nc_unauthorized_error">権限がありません</string>
 
-    <string name="nc_oops">おっと、何かがおかしいようです。</string>
-
     <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">ゲストを許可する</string>
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>

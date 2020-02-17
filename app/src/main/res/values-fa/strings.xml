@@ -301,8 +301,6 @@
     <string name="nc_not_defined_error">خطای نامشخص</string>
     <string name="nc_unauthorized_error">غیرمجاز</string>
 
-    <string name="nc_oops">اوه ، چیزی پیش آمد.</string>
-
     <string name="nc_general_settings">عمومی</string>
     <string name="nc_allow_guests">اجازه میهمانان</string>
     <string name="nc_last_moderator_title">نمی توان مکالمه را ترک کرد</string>

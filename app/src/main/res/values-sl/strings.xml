@@ -305,8 +305,6 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_unauthorized_error">Neoverjeno</string>
 
-    <string name="nc_oops">Prišlo je do napake ...</string>
-
     <string name="nc_general_settings">Splošno</string>
     <string name="nc_allow_guests">Dovoli povezave z gosti</string>
     <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>

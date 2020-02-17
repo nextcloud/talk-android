@@ -297,8 +297,6 @@ popisa razgovora</string>
     <string name="nc_not_defined_error">Nepoznata pogreška</string>
     <string name="nc_unauthorized_error">Neovlašteno</string>
 
-    <string name="nc_oops">Ups, nešto je pošlo po krivu.</string>
-
     <string name="nc_general_settings">Općenito</string>
     <string name="nc_allow_guests">Dopusti pristup gostima</string>
     <string name="nc_last_moderator_title">Nije moguće napustiti razgovor</string>

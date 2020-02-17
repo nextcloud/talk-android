@@ -216,8 +216,6 @@
     <string name="nc_bad_response_error">Blogas atsakas</string>
     <string name="nc_empty_response_error">Tuščias atsakas</string>
     <string name="nc_not_defined_error">Nežinoma klaida</string>
-    <string name="nc_oops">Oi, kažkas nutiko.</string>
-
     <string name="nc_general_settings">Bendra</string>
     <string name="nc_allow_guests">Leisti svečius</string>
     <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>

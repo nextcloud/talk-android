@@ -289,8 +289,6 @@ møde er planlagt til %1$s.</string>
     <string name="nc_not_defined_error">Ukendt fejl</string>
     <string name="nc_unauthorized_error">Uautoriseret</string>
 
-    <string name="nc_oops">Der skete en fejl.</string>
-
     <string name="nc_general_settings">Generelt</string>
     <string name="nc_allow_guests">Tillad gæster</string>
     <string name="nc_last_moderator_title">Kunne ikke forlade samtalen</string>

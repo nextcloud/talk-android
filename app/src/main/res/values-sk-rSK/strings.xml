@@ -305,8 +305,6 @@ v zozname rozhovorov</string>
     <string name="nc_not_defined_error">Neznáma chyba</string>
     <string name="nc_unauthorized_error">Nepovolené</string>
 
-    <string name="nc_oops">Ooops, niečo sa pokazilo.</string>
-
     <string name="nc_general_settings">Všeobecné</string>
     <string name="nc_allow_guests">Povoliť hostí</string>
     <string name="nc_last_moderator_title">Nie je možné opustiť rozhovor</string>
