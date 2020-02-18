@@ -24,6 +24,7 @@ package com.nextcloud.talk.newarch.features.account.loginentry
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.LoginData
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.push.PushConfiguration
@@ -42,6 +43,7 @@ import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.parameter.parametersOf
 import java.net.URLDecoder
@@ -62,9 +64,9 @@ class LoginEntryViewModel constructor(
     private var updatingUser = false
 
     fun parseData(prefix: String, separator: String, data: String?) {
-        ioScope.launch {
+        state.postValue(LoginEntryStateWrapper(LoginEntryState.CHECKING, null))
+        viewModelScope.launch {
             if (data?.startsWith(prefix) == false) {
-                state.postValue(LoginEntryStateWrapper(LoginEntryState.FAILED, LoginEntryStateClarification.INVALID_PARSED_DATA))
                 return@launch
             }
 
@@ -75,7 +77,6 @@ class LoginEntryViewModel constructor(
             val dataWithoutPrefix = data.substring(prefix.length)
             val values = dataWithoutPrefix.split("&").toTypedArray()
             if (values.size != 3) {
-                state.postValue(LoginEntryStateWrapper(LoginEntryState.FAILED, LoginEntryStateClarification.INVALID_PARSED_DATA))
                 return@launch
             }
 
@@ -98,7 +99,6 @@ class LoginEntryViewModel constructor(
                     }
                     else -> {
                         // fail
-                        state.postValue(LoginEntryStateWrapper(LoginEntryState.FAILED, LoginEntryStateClarification.INVALID_PARSED_DATA))
                         return@launch
                     }
                 }
@@ -108,14 +108,11 @@ class LoginEntryViewModel constructor(
                 storeCredentialsOrVerify(loginData)
             } else {
                 state.postValue(LoginEntryStateWrapper(LoginEntryState.FAILED, LoginEntryStateClarification.INVALID_PARSED_DATA))
-                return@launch
             }
-
-
         }
     }
 
-    private suspend fun storeCredentialsOrVerify(loginData: LoginData) {
+    private suspend fun storeCredentialsOrVerify(loginData: LoginData) = withContext(Dispatchers.IO) {
         // username and server url will be null here for sure because we do a check earlier in the process
         val userIfExists = usersRepository.getUserWithUsernameAndServer(loginData.username!!, loginData.serverUrl!!)
         if (userIfExists != null) {
@@ -130,11 +127,11 @@ class LoginEntryViewModel constructor(
         }
     }
 
-    private suspend fun getProfile(loginData: LoginData) {
+    private fun getProfile(loginData: LoginData) {
         user.username = loginData.username!!
         user.baseUrl = loginData.serverUrl!!
         user.token = loginData.token
-        getProfileUseCase.invoke(ioScope, parametersOf(user), object : UseCaseResponse<UserProfileOverall> {
+        getProfileUseCase.invoke(viewModelScope, parametersOf(user), object : UseCaseResponse<UserProfileOverall> {
             override suspend fun onSuccess(result: UserProfileOverall) {
                 result.ocs.data.userId?.let { userId ->
                     user.displayName = result.ocs.data.displayName
@@ -151,8 +148,8 @@ class LoginEntryViewModel constructor(
         })
     }
 
-    private suspend fun getCapabilities() {
-        getCapabilitiesUseCase.invoke(ioScope, parametersOf(user.baseUrl), object : UseCaseResponse<CapabilitiesOverall> {
+    private fun getCapabilities() {
+        getCapabilitiesUseCase.invoke(viewModelScope, parametersOf(user.baseUrl), object : UseCaseResponse<CapabilitiesOverall> {
             override suspend fun onSuccess(result: CapabilitiesOverall) {
                 user.capabilities = result.ocs.data.capabilities
                 getSignalingSettings()
@@ -164,15 +161,15 @@ class LoginEntryViewModel constructor(
         })
     }
 
-    private suspend fun getSignalingSettings() {
-        getSignalingSettingsUseCase.invoke(ioScope, parametersOf(user), object : UseCaseResponse<SignalingSettingsOverall> {
+    private fun getSignalingSettings() {
+        getSignalingSettingsUseCase.invoke(viewModelScope, parametersOf(user), object : UseCaseResponse<SignalingSettingsOverall> {
             override suspend fun onSuccess(result: SignalingSettingsOverall) {
+                user.signalingSettings = result.ocs.signalingSettings
+                val pushConfiguration = PushConfiguration()
+                val pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PENDING, 0)
+                pushConfiguration.pushConfigurationStateWrapper = pushConfigurationStateWrapper
+                user.pushConfiguration = pushConfiguration
                 withContext(Dispatchers.IO) {
-                    user.signalingSettings = result.ocs.signalingSettings
-                    val pushConfiguration = PushConfiguration()
-                    val pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PENDING, 0)
-                    pushConfiguration.pushConfigurationStateWrapper = pushConfigurationStateWrapper
-                    user.pushConfiguration = pushConfiguration
                     usersRepository.insertUser(user)
                     setAdjustedUserAsActive()
                     registerForPush()
@@ -186,7 +183,7 @@ class LoginEntryViewModel constructor(
         })
     }
 
-    private suspend fun registerForPush() {
+    private suspend fun registerForPush() = withContext(Dispatchers.IO) {
         val token = appPreferences.pushToken
         if (!token.isNullOrBlank()) {
             user.pushConfiguration?.pushToken = token
@@ -197,27 +194,23 @@ class LoginEntryViewModel constructor(
         }
     }
 
-    private suspend fun registerForPushWithServer(token: String) {
+    private fun registerForPushWithServer(token: String) {
         val options = PushUtils(usersRepository).getMapForPushRegistrationWithServer(context, token)
-        registerPushWithServerUseCase.invoke(ioScope, parametersOf(user, options), object : UseCaseResponse<PushRegistrationOverall> {
+        registerPushWithServerUseCase.invoke(viewModelScope, parametersOf(user, options), object : UseCaseResponse<PushRegistrationOverall> {
             override suspend fun onSuccess(result: PushRegistrationOverall) {
-                withContext(Dispatchers.IO) {
-                    user.pushConfiguration?.deviceIdentifier = result.ocs.data.deviceIdentifier
-                    user.pushConfiguration?.deviceIdentifierSignature = result.ocs.data.signature
-                    user.pushConfiguration?.userPublicKey = result.ocs.data.publicKey
-                    user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.SERVER_REGISTRATION_DONE, null)
-                    usersRepository.updateUser(user)
-                    registerForPushWithProxy()
-                }
+                user.pushConfiguration?.deviceIdentifier = result.ocs.data.deviceIdentifier
+                user.pushConfiguration?.deviceIdentifierSignature = result.ocs.data.signature
+                user.pushConfiguration?.userPublicKey = result.ocs.data.publicKey
+                user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.SERVER_REGISTRATION_DONE, null)
+                usersRepository.updateUser(user)
+                registerForPushWithProxy()
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
-                withContext(Dispatchers.IO) {
-                    user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_SERVER_REGISTRATION
-                    user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
-                    usersRepository.updateUser(user)
-                    state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_SERVER_FAILED))
-                }
+                user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_SERVER_REGISTRATION
+                user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
+                usersRepository.updateUser(user)
+                state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_SERVER_FAILED))
             }
         })
     }
@@ -226,19 +219,19 @@ class LoginEntryViewModel constructor(
         val options = PushUtils(usersRepository).getMapForPushRegistrationWithServer(user)
 
         if (options != null) {
-            registerPushWithProxyUseCase.invoke(ioScope, parametersOf(user, options), object : UseCaseResponse<Any> {
+            registerPushWithProxyUseCase.invoke(viewModelScope, parametersOf(user, options), object : UseCaseResponse<Any> {
                 override suspend fun onSuccess(result: Any) {
+                    user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PROXY_REGISTRATION_DONE, null)
                     withContext(Dispatchers.IO) {
-                        user.pushConfiguration?.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PROXY_REGISTRATION_DONE, null)
                         usersRepository.updateUser(user)
                         state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, if (!updatingUser) LoginEntryStateClarification.ACCOUNT_CREATED else LoginEntryStateClarification.ACCOUNT_UPDATED))
                     }
                 }
 
                 override suspend fun onError(errorModel: ErrorModel?) {
+                    user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
+                    user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
                     withContext(Dispatchers.IO) {
-                        user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
-                        user.pushConfiguration?.pushConfigurationStateWrapper?.reason = errorModel?.code
                         usersRepository.updateUser(user)
                         setAdjustedUserAsActive()
                         state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED))
@@ -246,15 +239,15 @@ class LoginEntryViewModel constructor(
                 }
             })
         } else {
+            user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
             withContext(Dispatchers.IO) {
-                user.pushConfiguration?.pushConfigurationStateWrapper?.pushConfigurationState = PushConfigurationState.FAILED_WITH_PROXY_REGISTRATION
                 usersRepository.updateUser(user)
                 state.postValue(LoginEntryStateWrapper(LoginEntryState.OK, LoginEntryStateClarification.PUSH_REGISTRATION_WITH_PUSH_PROXY_FAILED))
             }
         }
     }
 
-    private suspend fun setAdjustedUserAsActive() {
+    private suspend fun setAdjustedUserAsActive() = withContext(Dispatchers.IO) {
         if (user.id == -1L) {
             val adjustedUser = usersRepository.getUserWithUsernameAndServer(user.username, user.baseUrl)
             adjustedUser?.id?.let {

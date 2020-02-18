@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.models;
 
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 
 import org.parceler.Parcel;
@@ -28,6 +29,7 @@ import lombok.Data;
 
 @Data
 @Parcel
+@JsonObject
 public class SignatureVerification {
     public boolean signatureValid;
     public UserNgEntity userEntity;
