@@ -172,6 +172,7 @@ class LoginEntryViewModel constructor(
                     val pushConfiguration = PushConfiguration()
                     val pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PENDING, 0)
                     pushConfiguration.pushConfigurationStateWrapper = pushConfigurationStateWrapper
+                    user.pushConfiguration = pushConfiguration
                     usersRepository.insertUser(user)
                     setAdjustedUserAsActive()
                     registerForPush()
