@@ -74,12 +74,12 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
 
     override fun onCreate() {
         super.onCreate()
-        eventBus.register(this)
+        //eventBus.register(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        eventBus.unregister(this)
+        //eventBus.unregister(this)
         isServiceInForeground = false
     }
 
@@ -95,6 +95,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
         }
     }
 
+    @SuppressLint("LongLogTag")
     private fun decryptMessage(subject: String, signature: String) {
         val signatureVerification: SignatureVerification
         val decryptedPushMessage: DecryptedPushMessage
