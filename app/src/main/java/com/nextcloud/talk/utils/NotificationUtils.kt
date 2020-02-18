@@ -116,12 +116,8 @@ object NotificationUtils {
             channel.enableLights(enableLights)
             channel.lightColor = R.color.colorPrimary
             channel.setSound(sound, audioAttributes)
-            if (vibrationPattern != null) {
-                channel.enableVibration(true)
-                channel.vibrationPattern = vibrationPattern
-            } else {
-                channel.enableVibration(false)
-            }
+            channel.vibrationPattern = vibrationPattern
+
             channel.setBypassDnd(bypassDnd)
             if (lockScreenVisibility != null) {
                 channel.lockscreenVisibility = lockScreenVisibility

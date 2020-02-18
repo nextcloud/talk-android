@@ -24,6 +24,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Base64
@@ -152,13 +153,14 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                                         .setSmallIcon(R.drawable.ic_call_black_24dp)
                                         .setSubText(userBaseUrl)
                                         .setShowWhen(true)
-                                        .setWhen(decryptedPushMessage.timestamp)
+                                        .setWhen(timestamp)
                                         .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
                                         .setAutoCancel(true)
                                         .setOngoing(true)
                                         //.setTimeoutAfter(45000L)
+                                        .setContentIntent(fullScreenPendingIntent)
                                         .setFullScreenIntent(fullScreenPendingIntent, true)
-                                        .setSound(NotificationUtils.getCallSoundUri(applicationContext, appPreferences))
+                                        .setSound(NotificationUtils.getCallSoundUri(applicationContext, appPreferences), AudioManager.STREAM_RING)
 
                                 if (vibrationEffect != null) {
                                     notificationBuilder.setVibrate(vibrationEffect)
@@ -168,7 +170,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                                 notification.flags = notification.flags or Notification.FLAG_INSISTENT
                                 isServiceInForeground = true
                                 checkIfCallIsActive(signatureVerification, decryptedPushMessage)
-                                startForeground(decryptedPushMessage.timestamp.toInt(), notification)
+                                startForeground(timestamp.toInt(), notification)
                             }
                             else -> {
                                 val messageData = Data.Builder()
