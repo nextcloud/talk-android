@@ -303,6 +303,8 @@
     <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
     <string name="nc_unauthorized_error">Μη εξουσιοδοτημένο</string>
 
+    <string name="nc_oops">Ουπς, κάτι πήγς στραβά!</string>
+
     <string name="nc_general_settings">Γενικά</string>
     <string name="nc_allow_guests">Επιτρέπονται οι επισκέπτες</string>
     <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>

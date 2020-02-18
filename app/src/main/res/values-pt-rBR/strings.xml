@@ -305,6 +305,8 @@
     <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_unauthorized_error">Não autorizado</string>
 
+    <string name="nc_oops">Ops! Algo deu errado!</string>
+
     <string name="nc_general_settings">Geral</string>
     <string name="nc_allow_guests">Permitir convidados</string>
     <string name="nc_last_moderator_title">Não foi possível sair da conversa</string>
