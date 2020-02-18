@@ -1,0 +1,29 @@
+<!--
+  ~ /*
+  ~  * Nextcloud Talk application
+  ~  *
+  ~  * @author Mario Danic
+  ~  * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
+  ~  *
+  ~  * This program is free software: you can redistribute it and/or modify
+  ~  * it under the terms of the GNU General Public License as published by
+  ~  * the Free Software Foundation, either version 3 of the License, or
+  ~  * at your option) any later version.
+  ~  *
+  ~  * This program is distributed in the hope that it will be useful,
+  ~  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  * GNU General Public License for more details.
+  ~  *
+  ~  * You should have received a copy of the GNU General Public License
+  ~  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<vector android:autoMirrored="true" android:height="24dp"
+    android:viewportHeight="24.0" android:viewportWidth="22.0"
+    android:width="22dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#FFFFFF" android:fillType="nonZero"
+        android:pathData="M6.0769,4.8C6.0769,7.2 6.2538,8.9143 7.4923,10.8C7.8462,11.2903 8.3769,11.4 8.7308,11.8286C8.9696,12.6857 9.1554,13.5086 8.9077,14.4C6.6519,15.1714 4.5023,16.1143 2.5385,17.1429C1.0346,18.1714 1.1496,17.6743 0.7692,21.0857C0.4862,23.8114 6.9615,24 11.3846,24C15.8077,24 22.2884,23.8286 22,21.0857C21.6196,17.6571 21.5931,18.1543 20.2308,17.1429C18.2846,16.0217 15.8962,15.1423 13.8615,14.4C13.5962,13.44 13.7908,12.732 14.0385,11.8286C14.4542,11.4 14.9231,11.2063 15.2769,10.8C16.4977,9.2829 16.6923,6.6429 16.6923,4.8C16.6923,2.0743 14.1623,0 11.3846,0C8.2885,0 6.0769,2.4514 6.0769,4.8Z"
+        android:strokeColor="#00000000" android:strokeWidth="1"/>
+</vector>

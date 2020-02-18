@@ -76,7 +76,10 @@ class Images {
         var scale = 0.25f
         if (drawableId == R.drawable.ic_baseline_email_24 || drawableId == R.drawable.ic_link_white_24px) {
             scale = 0.5f
+        } else if (drawableId == R.drawable.ic_user) {
+            scale = 0.625f
         }
+
         layers[1] = ScaleDrawable(context.getDrawable(drawableId), Gravity.CENTER, scale, scale)
         if (foregroundColorTint != null) {
             layers[1]?.setTint(context.resources.getColor(foregroundColorTint))
@@ -105,7 +108,7 @@ class Images {
         when (conversation.type) {
             Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> {
                 if (fallback) {
-                    return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_baseline_person_24))
+                    return DisplayUtils.getRoundedDrawableFromBitmap(getImageWithBackground(context, R.drawable.ic_user))
                 }
 
                 return null
