@@ -51,17 +51,14 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import retrofit2.Retrofit
-import java.net.CookieManager
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
-import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 
