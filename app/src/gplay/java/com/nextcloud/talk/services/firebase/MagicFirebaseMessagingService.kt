@@ -40,7 +40,6 @@ import com.google.firebase.messaging.RemoteMessage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.jobs.MessageNotificationWorker
-import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
@@ -67,6 +66,7 @@ import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 
 class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
+    val tag: String = "MagicFirebaseMessagingService"
     val appPreferences: AppPreferences by inject()
     val retrofit: Retrofit by inject()
     val okHttpClient: OkHttpClient by inject()
@@ -184,14 +184,14 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                     }
                 }
             } catch (e1: NoSuchAlgorithmException) {
-                Log.d(NotificationWorker.TAG, "No proper algorithm to decrypt the message " + e1.localizedMessage)
+                Log.d(tag, "No proper algorithm to decrypt the message " + e1.localizedMessage)
             } catch (e1: NoSuchPaddingException) {
-                Log.d(NotificationWorker.TAG, "No proper padding to decrypt the message " + e1.localizedMessage)
+                Log.d(tag, "No proper padding to decrypt the message " + e1.localizedMessage)
             } catch (e1: InvalidKeyException) {
-                Log.d(NotificationWorker.TAG, "Invalid private key " + e1.localizedMessage)
+                Log.d(tag, "Invalid private key " + e1.localizedMessage)
             }
         } catch (exception: Exception) {
-            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage)
+            Log.d(tag, "Something went very wrong " + exception.localizedMessage)
         }
     }
 
