@@ -305,7 +305,7 @@
     <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_unauthorized_error">Não autorizado</string>
 
-    <string name="nc_oops">Ops! Algo deu errado!</string>
+    <string name="nc_oops">Ops, algo deu errado!</string>
 
     <string name="nc_general_settings">Geral</string>
     <string name="nc_allow_guests">Permitir convidados</string>
