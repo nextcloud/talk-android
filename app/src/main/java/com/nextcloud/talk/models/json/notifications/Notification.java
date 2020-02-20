@@ -30,6 +30,8 @@ import org.parceler.Parcel;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import lombok.Data;
 
 @Data
@@ -54,12 +56,14 @@ public class Notification {
     public String subject;
     @JsonField(name = "subjectRich")
     public String subjectRich;
+    @Nullable
     @JsonField(name = "subjectRichParameters")
     public HashMap<String, HashMap<String, String>> subjectRichParameters;
     @JsonField(name = "message")
     public String message;
     @JsonField(name = "messageRich")
     public String messageRich;
+    @Nullable
     @JsonField(name = "messageRichParameters")
     public HashMap<String, HashMap<String, String>> messageRichParameters;
     @JsonField(name = "link")

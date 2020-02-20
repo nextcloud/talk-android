@@ -17,20 +17,24 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.models
 
-package com.nextcloud.talk.models;
-
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.newarch.local.models.UserNgEntity;
-
-import org.parceler.Parcel;
-
-import lombok.Data;
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
+import lombok.Data
+import org.parceler.Parcel
 
 @Data
 @Parcel
 @JsonObject
-public class SignatureVerification {
-    public boolean signatureValid;
-    public UserNgEntity userEntity;
-}
+@Serializable
+@Parcelize
+data class SignatureVerification (
+    @JvmField
+    var signatureValid: Boolean = false,
+    @JvmField
+    var userEntity: UserNgEntity? = null
+): Parcelable

@@ -44,6 +44,7 @@ import com.nextcloud.talk.jobs.MessageNotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.utils.MagicJson
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
@@ -52,6 +53,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
@@ -114,13 +116,12 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                     val decryptedSubject = cipher.doFinal(base64DecodedSubject)
                     decryptedPushMessage = LoganSquare.parse(String(decryptedSubject), DecryptedPushMessage::class.java)
                     decryptedPushMessage.apply {
-                        val timestamp = decryptedPushMessage.timestamp
                         when {
                             delete -> {
-                                cancelExistingNotificationWithId(applicationContext, signatureVerification.userEntity, notificationId!!)
+                                cancelExistingNotificationWithId(applicationContext, signatureVerification.userEntity!!, notificationId!!)
                             }
                             deleteAll -> {
-                                cancelAllNotificationsForAccount(applicationContext, signatureVerification.userEntity)
+                                cancelAllNotificationsForAccount(applicationContext, signatureVerification.userEntity!!)
                             }
                             type == "call" -> {
                                 val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
@@ -145,7 +146,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                                         NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!,
                                         audioAttributesBuilder.build(), vibrationEffect, false, null)
 
-                                val userBaseUrl = Uri.parse(signatureVerification.userEntity.baseUrl).toString()
+                                val userBaseUrl = Uri.parse(signatureVerification.userEntity!!.baseUrl).toString()
 
                                 val notificationBuilder = NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
                                         .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -153,7 +154,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                                         .setSmallIcon(R.drawable.ic_call_black_24dp)
                                         .setSubText(userBaseUrl)
                                         .setShowWhen(true)
-                                        .setWhen(timestamp)
+                                        .setWhen(System.currentTimeMillis())
                                         .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
                                         .setAutoCancel(true)
                                         .setOngoing(true)
@@ -173,9 +174,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                                 startForeground(timestamp.toInt(), notification)
                             }
                             else -> {
+                                val json = Json(MagicJson.customJsonConfiguration)
+
                                 val messageData = Data.Builder()
                                         .putString(BundleKeys.KEY_DECRYPTED_PUSH_MESSAGE, LoganSquare.serialize(decryptedPushMessage))
-                                        .putString(BundleKeys.KEY_SIGNATURE_VERIFICATION, LoganSquare.serialize(signatureVerification))
+                                        .putString(BundleKeys.KEY_SIGNATURE_VERIFICATION, json.stringify(SignatureVerification.serializer(), signatureVerification))
                                         .build()
                                 val pushNotificationWork = OneTimeWorkRequest.Builder(MessageNotificationWorker::class.java).setInputData(messageData).build()
                                 WorkManager.getInstance().enqueue(pushNotificationWork)

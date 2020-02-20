@@ -34,6 +34,6 @@ class GetNotificationUseCase constructor(
 ) : UseCase<NotificationOverall, Any?>(apiErrorHandler) {
     override suspend fun run(params: Any?): NotificationOverall {
         val definitionParameters = params as DefinitionParameters
-        return nextcloudTalkRepository.getNotificationForUser(definitionParameters[0], definitionParameters[0])
+        return nextcloudTalkRepository.getNotificationForUser(definitionParameters[0], definitionParameters[1])
     }
 }
