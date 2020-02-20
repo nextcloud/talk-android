@@ -86,7 +86,7 @@ data class UserNgEntity(
     }
 }
 
-fun UserNgEntity.getCredentials() = ApiUtils.getCredentials(username, token)
+fun UserNgEntity.getCredentials(): String = ApiUtils.getCredentials(username, token)
 
 fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
     return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
