@@ -154,8 +154,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     }
                 }
             }
-        } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            router!!.pushController(
+        } else if (intent.action == BundleKeys.KEY_OPEN_INCOMING_CALL) {
+            router?.pushController(
                     RouterTransaction.with(CallNotificationController(intent.extras!!))
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler())

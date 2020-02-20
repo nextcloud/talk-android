@@ -195,8 +195,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             credentials = ApiUtils.getCredentials(conversationUser?.username, conversationUser?.token)
         }
 
-        if (args.containsKey(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)
+        if (args.containsKey(BundleKeys.KEY_OPEN_INCOMING_CALL)) {
+            this.startCallFromNotification = args.getBoolean(BundleKeys.KEY_OPEN_INCOMING_CALL)
         }
 
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)

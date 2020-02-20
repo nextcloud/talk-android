@@ -50,7 +50,7 @@ import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccou
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPEN_INCOMING_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.serialization.json.Json
@@ -125,10 +125,10 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
                             }
                             type == "call" -> {
                                 val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
+                                fullScreenIntent.action = KEY_OPEN_INCOMING_CALL
                                 val bundle = Bundle()
                                 bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.id)
                                 bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.userEntity)
-                                bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
                                 fullScreenIntent.putExtras(bundle)
 
                                 fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK

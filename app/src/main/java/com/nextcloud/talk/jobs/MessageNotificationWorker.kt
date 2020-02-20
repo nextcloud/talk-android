@@ -203,7 +203,6 @@ class MessageNotificationWorker(
         val pendingIntent: PendingIntent? = PendingIntent.getActivity(applicationContext,
                 0, intent, 0)
 
-        val userBaseUrl = Uri.parse(signatureVerification.userEntity!!.baseUrl).toString()
         val soundUri = NotificationUtils.getMessageSoundUri(applicationContext, appPreferences)
 
         val audioAttributesBuilder: AudioAttributes.Builder =
