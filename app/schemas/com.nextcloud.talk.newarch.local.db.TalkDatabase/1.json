@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "40ddfb9547f62f10e95450e4a5495115",
+    "identityHash": "4976b952409bfae25e1f9bc8df18c11c",
     "entities": [
       {
         "tableName": "conversations",
@@ -307,13 +307,13 @@
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `user_id` TEXT NOT NULL, `username` TEXT NOT NULL, `base_url` TEXT NOT NULL, `token` TEXT, `display_name` TEXT, `push_configuration` TEXT, `capabilities` TEXT, `client_auth_cert` TEXT, `signaling_settings` TEXT, `status` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `user_id` TEXT NOT NULL, `username` TEXT NOT NULL, `base_url` TEXT NOT NULL, `token` TEXT, `display_name` TEXT, `push_configuration` TEXT, `capabilities` TEXT, `client_auth_cert` TEXT, `signaling_settings` TEXT, `status` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
             "affinity": "INTEGER",
-            "notNull": false
+            "notNull": true
           },
           {
             "fieldPath": "userId",
@@ -389,7 +389,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '40ddfb9547f62f10e95450e4a5495115')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4976b952409bfae25e1f9bc8df18c11c')"
     ]
   }
 }

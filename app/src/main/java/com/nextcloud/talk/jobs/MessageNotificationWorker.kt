@@ -87,10 +87,9 @@ class MessageNotificationWorker(
 
         // we support Nextcloud Talk 4.0 and up so assuming "no-ping" capability here
         val intent = Intent(applicationContext, MainActivity::class.java)
-        val bundle = Bundle()
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.userEntity)
-        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, decryptedPushMessage.id)
-        intent.putExtras(bundle)
+        intent.action = BundleKeys.KEY_OPEN_CONVERSATION
+        intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.userEntity!!.id)
+        intent.putExtra(BundleKeys.KEY_CONVERSATION_TOKEN, decryptedPushMessage.id)
 
         when (decryptedPushMessage.type) {
             "room" -> {
