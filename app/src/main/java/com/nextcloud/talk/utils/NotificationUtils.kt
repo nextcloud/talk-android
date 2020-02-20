@@ -197,14 +197,12 @@ object NotificationUtils {
         }
     }
 
-    fun findNotificationForRoom(
+    fun findNotificationForConversation(
             context: Context?,
             conversationUser: UserNgEntity,
-            roomTokenOrId: String
+            conversationToken: String
     ): StatusBarNotification? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
-                context != null
-        ) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null) {
 
             val notificationManager =
                     context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -217,7 +215,7 @@ object NotificationUtils {
                 if (notification != null && !notification.extras.isEmpty) {
                     if (conversationUser.id == notification.extras.getLong(
                                     BundleKeys.KEY_INTERNAL_USER_ID
-                            ) && roomTokenOrId == statusBarNotification.notification.extras.getString(
+                            ) && conversationToken == statusBarNotification.notification.extras.getString(
                                     BundleKeys.KEY_CONVERSATION_TOKEN
                             )
                     ) {

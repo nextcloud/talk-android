@@ -235,6 +235,7 @@ class MessageNotificationWorker(
                 .setLargeIcon(largeIcon)
                 .setSubText(baseUrl)
                 .setShowWhen(true)
+                .setGroup(signatureVerification.userEntity?.id.toString() + "@" + decryptedPushMessage.id)
                 .setWhen(decryptedPushMessage.timestamp)
                 .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
                 .setAutoCancel(true)
@@ -252,12 +253,19 @@ class MessageNotificationWorker(
         }
 
         var notificationId = decryptedPushMessage.timestamp.toInt()
+
+        val notificationInfoBundle = Bundle()
+        notificationInfoBundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.userEntity!!.id!!)
+        notificationInfoBundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, decryptedPushMessage.id)
+        notificationInfoBundle.putLong(BundleKeys.KEY_NOTIFICATION_ID, decryptedPushMessage.notificationId!!)
+        notificationBuilder.extras = notificationInfoBundle
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && decryptedPushMessage.notificationUser != null && decryptedPushMessage.type == "chat") {
             var style: NotificationCompat.MessagingStyle? = null
 
             decryptedPushMessage.id?.let { decryptedMessageId ->
                 val activeStatusBarNotification =
-                        NotificationUtils.findNotificationForRoom(
+                        NotificationUtils.findNotificationForConversation(
                                 applicationContext,
                                 signatureVerification.userEntity!!, decryptedMessageId)
                 activeStatusBarNotification?.let { activeStatusBarNotification ->
