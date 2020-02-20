@@ -155,18 +155,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 }
             }
         } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                router!!.pushController(
-                        RouterTransaction.with(CallNotificationController(intent.extras!!))
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                )
-            } else {
-                ConductorRemapping.remapChatController(
-                        router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                        intent.getStringExtra(BundleKeys.KEY_CONVERSATION_TOKEN)!!, intent.extras!!, false
-                )
-            }
+            router!!.pushController(
+                    RouterTransaction.with(CallNotificationController(intent.extras!!))
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler())
+            )
         }
     }
 

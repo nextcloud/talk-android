@@ -173,8 +173,7 @@ class MessageNotificationWorker(
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
-                decryptedPushMessage.timestamp = System.currentTimeMillis()
-                showNotification(decryptedPushMessage, signatureVerification, intent = intent)
+                // tough love, no notification for you
             }
 
         })
