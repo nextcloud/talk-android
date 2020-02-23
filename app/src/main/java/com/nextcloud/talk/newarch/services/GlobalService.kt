@@ -71,7 +71,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
                 object : UseCaseResponse<ConversationOverall> {
                     override suspend fun onSuccess(result: ConversationOverall) {
                         currentUser?.let {
-                            conversationsRepository.saveConversationsForUser(it.id, listOf(result.ocs.data))
+                            conversationsRepository.saveConversationsForUser(it.id, listOf(result.ocs.data), false)
                             globalServiceInterface.gotConversationInfoForUser(it, result.ocs.data, GlobalServiceInterface.OperationStatus.STATUS_OK)
                         }
                     }
@@ -94,7 +94,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
                 object : UseCaseResponse<ConversationOverall> {
                     override suspend fun onSuccess(result: ConversationOverall) {
                         currentUser?.let {
-                            conversationsRepository.saveConversationsForUser(it.id, listOf(result.ocs.data))
+                            conversationsRepository.saveConversationsForUser(it.id, listOf(result.ocs.data), false)
                             currentConversation = conversationsRepository.getConversationForUserWithToken(it.id, result.ocs!!.data!!.token!!)
                             globalServiceInterface.joinedConversationForUser(it, currentConversation, GlobalServiceInterface.OperationStatus.STATUS_OK)
                         }

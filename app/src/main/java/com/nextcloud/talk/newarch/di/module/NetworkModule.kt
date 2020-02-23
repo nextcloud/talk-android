@@ -46,7 +46,7 @@ import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkReposito
 import com.nextcloud.talk.newarch.utils.NetworkUtils
 import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
 import com.nextcloud.talk.newarch.utils.NetworkUtils.MagicAuthenticator
-import com.nextcloud.talk.newarch.utils.NextcloudRepositoryWithNoCookies
+import com.nextcloud.talk.newarch.utils.ComponentsWithEmptyCookieJar
 import com.nextcloud.talk.utils.LoggingUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
@@ -88,13 +88,13 @@ val NetworkModule = module {
     single { createOkHttpClient(androidContext(), get(), get(), get(), get(), get(), get(), get()) }
     factory { createApiErrorHandler() }
     single { createNextcloudTalkRepository(get()) }
-    single { createNexcloudRepositoryWithNoCookies(get(), get()) }
+    single { createComponentsWithEmptyCookieJar(get(), get(), androidApplication()) }
     single { createImageLoader(androidApplication(), get()) }
 
 }
 
-fun createNexcloudRepositoryWithNoCookies(okHttpClient: OkHttpClient, retrofit: Retrofit): NextcloudRepositoryWithNoCookies {
-    return NextcloudRepositoryWithNoCookies(okHttpClient, retrofit)
+fun createComponentsWithEmptyCookieJar(okHttpClient: OkHttpClient, retrofit: Retrofit, androidApplication: Application): ComponentsWithEmptyCookieJar {
+    return ComponentsWithEmptyCookieJar(okHttpClient, retrofit, androidApplication)
 }
 
 fun createCookieManager(): CookieManager {

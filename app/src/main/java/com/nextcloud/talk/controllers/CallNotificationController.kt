@@ -21,18 +21,14 @@
 package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
-import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.Uri
-import android.os.*
-import android.text.TextUtils
-import android.util.Log
+import android.os.Bundle
+import android.os.Handler
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,7 +36,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -51,28 +46,21 @@ import coil.transform.BlurTransformation
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
-import com.nextcloud.talk.models.RingtoneSettings
-import com.nextcloud.talk.models.database.ArbitraryStorageEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
-import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DoNotDisturbUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
 import com.uber.autodispose.AutoDispose
 import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +71,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
 import org.michaelevans.colorart.library.ColorArt
-import java.io.IOException
 
 class CallNotificationController(private val originalBundle: Bundle) : BaseController() {
 
@@ -116,6 +103,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     private val conversationToken: String
     private val userBeingCalled: UserNgEntity?
     private val credentials: String?
+    private val notificationId: Long?
     private var currentConversation: Conversation? = null
     private var mediaPlayer: MediaPlayer? = null
     private var leavingScreen = false
@@ -125,6 +113,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     init {
         this.conversationToken = originalBundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!
         this.userBeingCalled = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
+        this.notificationId = originalBundle.getLong(BundleKeys.KEY_NOTIFICATION_ID)
         credentials = userBeingCalled.getCredentials()
     }
 
@@ -233,43 +222,14 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                 })
     }
 
-    private fun handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForRoomEndpoint(userBeingCalled!!.baseUrl))
-                .subscribeOn(Schedulers.io())
-                .retry(3)
-                .observeOn(AndroidSchedulers.mainThread())
-                .`as`(AutoDispose.autoDisposable(scopeProvider))
-                .subscribe(object : Observer<RoomsOverall> {
-                    override fun onSubscribe(d: Disposable) {}
-
-                    override fun onNext(roomsOverall: RoomsOverall) {
-                        for (conversation in roomsOverall.ocs.data) {
-                            if (roomId == conversation.conversationId) {
-                                currentConversation = conversation
-                                runAllThings()
-                                break
-                            }
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-
-                    }
-
-                    override fun onComplete() {
-
-                    }
-                })
-    }
-
     private fun runAllThings() {
-        if (conversationNameTextView != null) {
+        /*if (conversationNameTextView != null) {
             conversationNameTextView!!.text = currentConversation!!.displayName
         }
 
         loadAvatar()
         checkIfAnyParticipantsRemainInRoom()
-        showAnswerControls()
+        showAnswerControls()*/
     }
 
     @SuppressLint("LongLogTag")

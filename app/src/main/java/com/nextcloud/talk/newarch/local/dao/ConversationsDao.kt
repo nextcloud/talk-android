@@ -86,7 +86,8 @@ abstract class ConversationsDao {
     @Transaction
     open suspend fun updateConversationsForUser(
             userId: Long,
-            newConversations: Array<ConversationEntity>
+            newConversations: Array<ConversationEntity>,
+            deleteOutdated: Boolean
     ): List<Long> {
         val timestamp = System.currentTimeMillis()
 
@@ -96,7 +97,9 @@ abstract class ConversationsDao {
         }
 
         val list = saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
-        deleteConversationsForUserWithTimestamp(userId, timestamp)
+        if (deleteOutdated) {
+            deleteConversationsForUserWithTimestamp(userId, timestamp)
+        }
         return list
     }
 }

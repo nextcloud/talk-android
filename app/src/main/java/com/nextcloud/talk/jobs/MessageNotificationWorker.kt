@@ -55,7 +55,7 @@ import com.nextcloud.talk.newarch.domain.usecases.GetNotificationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.MagicJson
-import com.nextcloud.talk.newarch.utils.NextcloudRepositoryWithNoCookies
+import com.nextcloud.talk.newarch.utils.ComponentsWithEmptyCookieJar
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -73,7 +73,7 @@ class MessageNotificationWorker(
         workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
     val appPreferences: AppPreferences by inject()
-    private val nextcloudRepositoryWithNoCookies: NextcloudRepositoryWithNoCookies by inject()
+    private val componentsWithEmptyCookieJar: ComponentsWithEmptyCookieJar by inject()
     private val apiErrorHandler: ApiErrorHandler by inject()
 
     override suspend fun doWork(): Result = coroutineScope {
@@ -107,7 +107,7 @@ class MessageNotificationWorker(
     }
 
     private fun showNotificationWithObjectData(coroutineScope: CoroutineScope, decryptedPushMessage: DecryptedPushMessage, signatureVerification: SignatureVerification, intent: Intent) {
-        val nextcloudTalkRepository = nextcloudRepositoryWithNoCookies.getRepository()
+        val nextcloudTalkRepository = componentsWithEmptyCookieJar.getRepository()
         val getNotificationUseCase = GetNotificationUseCase(nextcloudTalkRepository, apiErrorHandler)
         getNotificationUseCase.invoke(coroutineScope, parametersOf(signatureVerification.userEntity, decryptedPushMessage.notificationId.toString()), object : UseCaseResponse<NotificationOverall> {
             override suspend fun onSuccess(result: NotificationOverall) {
@@ -193,7 +193,6 @@ class MessageNotificationWorker(
             else -> {
                 // one to one and unknown
                 BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_chat_black_24dp)
-
             }
         }
 

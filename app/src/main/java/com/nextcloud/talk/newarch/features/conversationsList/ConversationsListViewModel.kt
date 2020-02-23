@@ -203,7 +203,7 @@ class ConversationsListViewModel constructor(
 
                     conversationsRepository.saveConversationsForUser(
                             internalUserId,
-                            mutableList)
+                            mutableList, true)
                     messageData = ""
                     conversationsLoadingLock.unlock()
                 }

@@ -187,8 +187,7 @@ object NotificationUtils {
 
                 if (notification != null && !notification.extras.isEmpty) {
                     if (conversationUser.id == notification.extras.getLong(
-                                    BundleKeys.KEY_INTERNAL_USER_ID
-                            ) && notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
+                                    BundleKeys.KEY_INTERNAL_USER_ID) && notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
                     ) {
                         notificationManager.cancel(statusBarNotification.id)
                     }

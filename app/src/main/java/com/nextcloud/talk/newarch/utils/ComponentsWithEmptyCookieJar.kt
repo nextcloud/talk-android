@@ -22,6 +22,12 @@
 
 package com.nextcloud.talk.newarch.utils
 
+import android.app.Application
+import android.os.Build
+import coil.ImageLoader
+import coil.decode.GifDecoder
+import coil.decode.ImageDecoderDecoder
+import coil.decode.SvgDecoder
 import com.nextcloud.talk.newarch.data.repository.online.NextcloudTalkRepositoryImpl
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
@@ -31,14 +37,35 @@ import org.koin.core.KoinComponent
 import retrofit2.Retrofit
 import java.net.CookieManager
 
-class NextcloudRepositoryWithNoCookies(
+class ComponentsWithEmptyCookieJar(
         private val okHttpClient: OkHttpClient,
-        private val retrofit: Retrofit
+        private val retrofit: Retrofit,
+        private val androidApplication: Application
 ) : KoinComponent {
     fun getRepository(): NextcloudTalkRepository {
-        return NextcloudTalkRepositoryImpl(retrofit.newBuilder().client(
-                okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build())
+        return NextcloudTalkRepositoryImpl(retrofit.newBuilder().client(getOkHttpClient())
                 .build().create(ApiService::class.java))
     }
 
+    fun getOkHttpClient(): OkHttpClient {
+        return okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()
+    }
+
+    fun getImageLoader(): ImageLoader {
+        return ImageLoader(androidApplication) {
+            availableMemoryPercentage(0.5)
+            bitmapPoolPercentage(0.5)
+            crossfade(false)
+            okHttpClient(getOkHttpClient())
+            componentRegistry {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    add(ImageDecoderDecoder())
+                } else {
+                    add(GifDecoder())
+                }
+                add(SvgDecoder(androidApplication))
+            }
+        }
+
+    }
 }

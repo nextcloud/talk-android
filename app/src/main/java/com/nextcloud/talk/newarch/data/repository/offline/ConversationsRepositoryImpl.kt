@@ -99,7 +99,8 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
 
     override suspend fun saveConversationsForUser(
             userId: Long,
-            conversations: List<Conversation>
+            conversations: List<Conversation>,
+            deleteOutdated: Boolean
     ): List<Long> {
         val map = conversations.map {
             it.toConversationEntity()
@@ -108,7 +109,8 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
         return conversationsDao
                 .updateConversationsForUser(
                         userId,
-                        map.toTypedArray()
+                        map.toTypedArray(),
+                        deleteOutdated
                 )
     }
 

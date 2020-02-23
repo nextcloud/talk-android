@@ -71,7 +71,7 @@ class MagicCallActivity : BaseActivity() {
                 val hideIncomingCallNotificationIntent = Intent(applicationContext, CallService::class.java)
                 hideIncomingCallNotificationIntent.action = BundleKeys.KEY_SHOW_INCOMING_CALL
                 hideIncomingCallNotificationIntent.putExtra(BundleKeys.KEY_NOTIFICATION_ID, intent.getLongExtra(BundleKeys.KEY_NOTIFICATION_ID, -1))
-                applicationContext?.startService(hideIncomingCallNotificationIntent)
+                //applicationContext?.startService(hideIncomingCallNotificationIntent)
 
                 router!!.setRoot(
                         RouterTransaction.with(CallNotificationController(intent.extras!!))

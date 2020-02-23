@@ -62,7 +62,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
     }
 
     override suspend fun getConversationForUser(user: UserNgEntity, conversationToken: String): ConversationOverall {
-        return apiService.getConversation(user.getCredentials(), conversationToken)
+        return apiService.getConversation(user.getCredentials(), ApiUtils.getRoom(user.baseUrl, conversationToken))
     }
 
     override suspend fun joinConversationForUser(user: UserNgEntity, conversationToken: String, conversationPassword: String?): ConversationOverall {

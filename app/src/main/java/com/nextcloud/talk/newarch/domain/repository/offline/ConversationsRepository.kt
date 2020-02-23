@@ -28,12 +28,12 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 interface ConversationsRepository {
     fun getConversationsForUser(userId: Long, filter: CharSequence?): LiveData<List<Conversation>>
     fun getShortcutTargetConversations(userId: Long): LiveData<List<Conversation>>
-
     suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation?
     suspend fun clearConversationsForUser(userId: Long)
     suspend fun saveConversationsForUser(
             userId: Long,
-            conversations: List<Conversation>
+            conversations: List<Conversation>,
+            deleteOutdated: Boolean
     ): List<Long>
 
     suspend fun setChangingValueForConversation(
