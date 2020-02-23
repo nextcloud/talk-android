@@ -55,9 +55,6 @@ class ServerEntryView : BaseView() {
         viewModel = viewModelProvider(factory).get(ServerEntryViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
-        appBar?.isVisible = false
-        actionBar?.hide()
-
         view.serverEntryTextInputEditText.setCompoundDrawablesWithIntrinsicBounds(null, null, resources?.getDrawable(R.drawable.ic_arrow_forward_white_24px), null)
         view.serverEntryTextInputEditText.compoundDrawables[2].alpha = 99
 
@@ -125,5 +122,9 @@ class ServerEntryView : BaseView() {
         }
 
         return view
+    }
+
+    override fun getAppBarLayoutType(): AppBarLayoutType {
+        return AppBarLayoutType.EMPTY
     }
 }

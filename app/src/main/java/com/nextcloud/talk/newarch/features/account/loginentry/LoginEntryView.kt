@@ -72,9 +72,6 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
         viewModel = viewModelProvider(factory).get(LoginEntryViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
-        appBar?.isVisible = false
-        actionBar?.hide()
-
         assembledPrefix = resources?.getString(R.string.nc_talk_login_scheme) + protocolSuffix + "login/"
 
         viewModel.state.observe(this@LoginEntryView, Observer {
@@ -165,4 +162,7 @@ class LoginEntryView(val bundle: Bundle) : BaseView() {
         }
     }
 
+    override fun getAppBarLayoutType(): AppBarLayoutType {
+        return AppBarLayoutType.EMPTY
+    }
 }

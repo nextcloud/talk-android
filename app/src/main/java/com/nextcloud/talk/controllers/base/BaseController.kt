@@ -34,6 +34,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
@@ -44,6 +45,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.newarch.utils.dp
+import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -56,7 +59,8 @@ import java.util.*
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     enum class AppBarLayoutType {
         TOOLBAR,
-        SEARCH_BAR
+        SEARCH_BAR,
+        EMPTY
     }
 
     open val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
@@ -161,8 +165,17 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
         activity?.let {
             if (it is MainActivity) {
                 searchLayout?.isVisible = value
+                val appBarLayoutParams = appBar?.layoutParams as CoordinatorLayout.LayoutParams
                 floatingActionButton?.setImageResource(getFloatingActionButtonDrawableRes())
-                it.toolbar.isVisible = !value
+
+                if (getAppBarLayoutType() != AppBarLayoutType.EMPTY) {
+                    it.toolbar.isVisible = !value
+                    appBarLayoutParams.height = 56.px
+                } else {
+                    appBarLayoutParams.height = 0
+                }
+
+                appBar?.layoutParams = appBarLayoutParams
 
                 val layoutParams = it.searchCardView?.layoutParams as AppBarLayout.LayoutParams
 
@@ -181,7 +194,6 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
                 it.leftButton?.setOnClickListener {
                     router.popCurrentController()
                 }
-
             }
         }
 
