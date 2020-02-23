@@ -44,12 +44,14 @@ import com.nextcloud.talk.jobs.MessageNotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.newarch.utils.MagicJson
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INCOMING_PUSH_MESSSAGE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPEN_INCOMING_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -68,23 +70,6 @@ import javax.crypto.NoSuchPaddingException
 class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     val tag: String = "MagicFirebaseMessagingService"
     val appPreferences: AppPreferences by inject()
-    val retrofit: Retrofit by inject()
-    val okHttpClient: OkHttpClient by inject()
-    val eventBus: EventBus by inject()
-    val usersRepository: UsersRepository by inject()
-
-    private var isServiceInForeground: Boolean = false
-
-    override fun onCreate() {
-        super.onCreate()
-        //eventBus.register(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //eventBus.unregister(this)
-        isServiceInForeground = false
-    }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
@@ -93,110 +78,14 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
 
     @SuppressLint("LongLogTag")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        remoteMessage.data.let {
-            decryptMessage(it["subject"]!!, it["signature"]!!)
-        }
+        val incomingCallIntent = Intent(applicationContext, CallService::class.java)
+        incomingCallIntent.action = KEY_INCOMING_PUSH_MESSSAGE
+        incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SUBJECT, remoteMessage.data["subject"])
+        incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SIGNATURE, remoteMessage.data["signature"])
+        applicationContext.startService(incomingCallIntent)
     }
 
     @SuppressLint("LongLogTag")
-    private fun decryptMessage(subject: String, signature: String) {
-        val signatureVerification: SignatureVerification
-        val decryptedPushMessage: DecryptedPushMessage
-
-        try {
-            val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
-            val base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT)
-            val pushUtils = PushUtils(usersRepository)
-            val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
-            try {
-                signatureVerification = pushUtils.verifySignature(base64DecodedSignature, base64DecodedSubject)
-                if (signatureVerification.signatureValid) {
-                    val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
-                    cipher.init(Cipher.DECRYPT_MODE, privateKey)
-                    val decryptedSubject = cipher.doFinal(base64DecodedSubject)
-                    decryptedPushMessage = LoganSquare.parse(String(decryptedSubject), DecryptedPushMessage::class.java)
-                    decryptedPushMessage.apply {
-                        when {
-                            delete -> {
-                                cancelExistingNotificationWithId(applicationContext, signatureVerification.userEntity!!, notificationId!!)
-                            }
-                            deleteAll -> {
-                                cancelAllNotificationsForAccount(applicationContext, signatureVerification.userEntity!!)
-                            }
-                            type == "call" -> {
-                                val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
-                                fullScreenIntent.action = KEY_OPEN_INCOMING_CALL
-                                val bundle = Bundle()
-                                bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage.id)
-                                bundle.putParcelable(KEY_USER_ENTITY, signatureVerification.userEntity)
-                                fullScreenIntent.putExtras(bundle)
-
-                                fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                                val fullScreenPendingIntent = PendingIntent.getActivity(this@MagicFirebaseMessagingService, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-                                val audioAttributesBuilder = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
-
-                                val soundUri = NotificationUtils.getCallSoundUri(applicationContext, appPreferences)
-                                val vibrationEffect = NotificationUtils.getVibrationEffect(appPreferences)
-
-                                val notificationChannelId = NotificationUtils.getNotificationChannelId(applicationContext, applicationContext.resources
-                                        .getString(R.string.nc_notification_channel_calls), applicationContext.resources
-                                        .getString(R.string.nc_notification_channel_calls_description), true,
-                                        NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!,
-                                        audioAttributesBuilder.build(), vibrationEffect, false, null)
-
-                                val userBaseUrl = Uri.parse(signatureVerification.userEntity!!.baseUrl).toString()
-
-                                val notificationBuilder = NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
-                                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                        .setCategory(NotificationCompat.CATEGORY_CALL)
-                                        .setSmallIcon(R.drawable.ic_call_black_24dp)
-                                        .setSubText(userBaseUrl)
-                                        .setShowWhen(true)
-                                        .setWhen(System.currentTimeMillis())
-                                        .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
-                                        .setAutoCancel(true)
-                                        .setOngoing(true)
-                                        //.setTimeoutAfter(45000L)
-                                        .setContentIntent(fullScreenPendingIntent)
-                                        .setFullScreenIntent(fullScreenPendingIntent, true)
-                                        .setSound(NotificationUtils.getCallSoundUri(applicationContext, appPreferences), AudioManager.STREAM_RING)
-
-                                if (vibrationEffect != null) {
-                                    notificationBuilder.setVibrate(vibrationEffect)
-                                }
-
-                                val notification = notificationBuilder.build()
-                                notification.flags = notification.flags or Notification.FLAG_INSISTENT
-                                isServiceInForeground = true
-                                checkIfCallIsActive(signatureVerification, decryptedPushMessage)
-                                startForeground(timestamp.toInt(), notification)
-                            }
-                            else -> {
-                                val json = Json(MagicJson.customJsonConfiguration)
-
-                                val messageData = Data.Builder()
-                                        .putString(BundleKeys.KEY_DECRYPTED_PUSH_MESSAGE, LoganSquare.serialize(decryptedPushMessage))
-                                        .putString(BundleKeys.KEY_SIGNATURE_VERIFICATION, json.stringify(SignatureVerification.serializer(), signatureVerification))
-                                        .build()
-                                val pushNotificationWork = OneTimeWorkRequest.Builder(MessageNotificationWorker::class.java).setInputData(messageData).build()
-                                WorkManager.getInstance().enqueue(pushNotificationWork)
-                            }
-                        }
-                    }
-                }
-            } catch (e1: NoSuchAlgorithmException) {
-                Log.d(tag, "No proper algorithm to decrypt the message " + e1.localizedMessage)
-            } catch (e1: NoSuchPaddingException) {
-                Log.d(tag, "No proper padding to decrypt the message " + e1.localizedMessage)
-            } catch (e1: InvalidKeyException) {
-                Log.d(tag, "Invalid private key " + e1.localizedMessage)
-            }
-        } catch (exception: Exception) {
-            Log.d(tag, "Something went very wrong " + exception.localizedMessage)
-        }
-    }
 
     private fun checkIfCallIsActive(signatureVerification: SignatureVerification, decryptedPushMessage: DecryptedPushMessage) {
         /*val ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)

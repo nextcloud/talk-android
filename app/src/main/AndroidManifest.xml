@@ -125,6 +125,8 @@
         <service
             android:name="com.novoda.merlin.MerlinService"
             android:exported="false" />
+        <service android:name=".newarch.services.CallService"
+            android:exported="false"/>
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}"

@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.activities
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -36,6 +37,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.CallController
 import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
+import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 class MagicCallActivity : BaseActivity() {
@@ -64,7 +66,13 @@ class MagicCallActivity : BaseActivity() {
         router!!.setPopsLastView(false)
 
         if (!router!!.hasRootController()) {
-            if (intent.getBooleanExtra(BundleKeys.KEY_OPEN_INCOMING_CALL, false)) {
+            if (intent.action == BundleKeys.KEY_OPEN_INCOMING_CALL) {
+
+                val hideIncomingCallNotificationIntent = Intent(applicationContext, CallService::class.java)
+                hideIncomingCallNotificationIntent.action = BundleKeys.KEY_SHOW_INCOMING_CALL
+                hideIncomingCallNotificationIntent.putExtra(BundleKeys.KEY_NOTIFICATION_ID, intent.getLongExtra(BundleKeys.KEY_NOTIFICATION_ID, -1))
+                applicationContext?.startService(hideIncomingCallNotificationIntent)
+
                 router!!.setRoot(
                         RouterTransaction.with(CallNotificationController(intent.extras!!))
                                 .pushChangeHandler(HorizontalChangeHandler())

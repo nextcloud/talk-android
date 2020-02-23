@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -39,6 +40,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import butterknife.BindView
 import butterknife.OnClick
 import coil.api.load
@@ -62,6 +64,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DoNotDisturbUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -80,7 +83,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
 import org.michaelevans.colorart.library.ColorArt
-import org.parceler.Parcels
 import java.io.IOException
 
 class CallNotificationController(private val originalBundle: Bundle) : BaseController() {
@@ -111,7 +113,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     @JvmField
     @BindView(R.id.incomingTextRelativeLayout)
     var incomingTextRelativeLayout: RelativeLayout? = null
-    private val roomId: String
+    private val conversationToken: String
     private val userBeingCalled: UserNgEntity?
     private val credentials: String?
     private var currentConversation: Conversation? = null
@@ -121,11 +123,11 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     private var handler: Handler? = null
 
     init {
-        this.roomId = originalBundle.getString(BundleKeys.KEY_ROOM_ID, "")
-        this.currentConversation = Parcels.unwrap(originalBundle.getParcelable(BundleKeys.KEY_ROOM))
-        this.userBeingCalled = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)
-        credentials = ApiUtils.getCredentials(userBeingCalled!!.username, userBeingCalled.token)
+        this.conversationToken = originalBundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!
+        this.userBeingCalled = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
+        credentials = userBeingCalled.getCredentials()
     }
+
 
     override fun inflateView(
             inflater: LayoutInflater,
@@ -278,13 +280,9 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
             handler = Handler()
         }
 
-        if (currentConversation == null) {
-            handleFromNotification()
-        } else {
-            runAllThings()
-        }
+        runAllThings()
 
-        var importantConversation = false
+        /*var importantConversation = false
         val arbitraryStorageEntity: ArbitraryStorageEntity? = arbitraryStorageUtils.getStorageSetting(
                 userBeingCalled!!.id!!,
                 "important_conversation",
@@ -371,7 +369,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                     vibrator!!.cancel()
                 }
             }, 10000)
-        }
+        }*/
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
