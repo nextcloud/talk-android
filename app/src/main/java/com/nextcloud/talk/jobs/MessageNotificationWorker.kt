@@ -196,9 +196,6 @@ class MessageNotificationWorker(
             }
         }
 
-        val adjustedConversationType = conversationType
-                ?: Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
-
         val pendingIntent: PendingIntent? = PendingIntent.getActivity(applicationContext,
                 0, intent, 0)
 
@@ -291,13 +288,13 @@ class MessageNotificationWorker(
                         override fun onSuccess(result: Drawable) {
                             super.onSuccess(result)
                             person.setIcon(IconCompat.createWithBitmap(result.toBitmap()))
-                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, adjustedConversationType, person.build(), style))
+                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
                             NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
                         }
 
                         override fun onError(error: Drawable?) {
                             super.onError(error)
-                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, adjustedConversationType, person.build(), style))
+                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
                             NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
                         }
                     }
@@ -309,7 +306,7 @@ class MessageNotificationWorker(
 
                     componentsWithEmptyCookieJar.getImageLoader().load(request)
                 } else {
-                    notificationBuilder.setStyle(getStyle(decryptedPushMessage, adjustedConversationType, person.build(), style))
+                    notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
                     NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
                 }
             }
