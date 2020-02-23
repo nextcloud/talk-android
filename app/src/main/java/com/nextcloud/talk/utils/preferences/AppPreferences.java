@@ -182,6 +182,17 @@ public interface AppPreferences {
     @RemoveMethod
     void removeNotificationChannelUpgradeToV3();
 
+    @KeyByString("notification_channels_upgrade_to_v4")
+    boolean getIsNotificationChannelUpgradedToV4();
+
+    @KeyByString("notification_channels_upgrade_to_v4")
+    void setNotificationChannelIsUpgradedToV4(boolean value);
+
+    @KeyByString("notification_channels_upgrade_to_v4")
+    @RemoveMethod
+    void removeNotificationChannelUpgradeToV4();
+
+
     @KeyByString("notifications_vibrate")
     @DefaultValue(R.bool.value_true)
     boolean getShouldVibrateSetting();

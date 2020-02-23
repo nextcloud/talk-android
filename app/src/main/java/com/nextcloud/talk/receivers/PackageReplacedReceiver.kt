@@ -70,7 +70,7 @@ class PackageReplacedReceiver : BroadcastReceiver(), KoinComponent {
                         appPreferences.setNotificationChannelIsUpgradedToV2(true)
                     }
 
-                    if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
+                    if (!appPreferences.isNotificationChannelUpgradedToV3) {
                         notificationManager.deleteNotificationChannel(
                                 NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2
                         )
@@ -78,6 +78,16 @@ class PackageReplacedReceiver : BroadcastReceiver(), KoinComponent {
                                 NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2
                         )
                         appPreferences.setNotificationChannelIsUpgradedToV3(true)
+                    }
+
+                    if (!appPreferences.isNotificationChannelUpgradedToV4) {
+                        notificationManager.deleteNotificationChannel(
+                                NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V3
+                        )
+                        notificationManager.deleteNotificationChannel(
+                                NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V3
+                        )
+                        appPreferences.setNotificationChannelIsUpgradedToV4(true)
                     }
 
                 }

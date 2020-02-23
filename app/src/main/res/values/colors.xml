@@ -41,6 +41,7 @@
 
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>
+    <color name="per70white">#46FFFFFF</color>
     <color name="nc_white_color">@color/per70white</color>
     <color name="nc_light_blue_color">#7FC0E3</color>
     <color name="controller_chat_separator">#E8E8E8</color>
@@ -62,7 +63,6 @@
     <color name="nc_chip_mention_you_background">#0083C9</color>
     <color name="nc_chip_mention_others_background">@color/white</color>
     <color name="bg_dark_mention_chips">#333333</color>
-
 
     <color name="bg_selected_participant_clear_icon">#484848</color>
     <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
