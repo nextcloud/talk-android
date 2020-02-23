@@ -76,8 +76,6 @@ class ConversationsListView : BaseView() {
             inflater: LayoutInflater,
             container: ViewGroup
     ): View {
-        actionBar?.show()
-
         viewModel = viewModelProvider(factory).get(ConversationsListViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
