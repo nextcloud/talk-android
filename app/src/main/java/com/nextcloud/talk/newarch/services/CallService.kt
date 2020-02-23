@@ -47,7 +47,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.toUtf8Bytes
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
@@ -55,7 +54,6 @@ import retrofit2.Retrofit
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
-import java.util.zip.CRC32
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 import kotlin.coroutines.CoroutineContext
