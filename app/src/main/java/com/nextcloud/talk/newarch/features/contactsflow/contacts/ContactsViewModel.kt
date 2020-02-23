@@ -97,7 +97,6 @@ class ContactsViewModel constructor(
                 if (result.ocs.data.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION || participants.isEmpty()) {
                     result.ocs.data.token?.let {
                         _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.OK, null, it))
-
                     } ?: run {
                         _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.CONVERSATION_CREATION_FAILED, null, null))
                     }

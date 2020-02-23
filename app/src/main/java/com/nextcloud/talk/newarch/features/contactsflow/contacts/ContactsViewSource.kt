@@ -29,7 +29,6 @@ import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Source
 import com.otaliastudios.elements.extensions.MainSource
-import java.lang.Exception
 
 class ContactsViewSource<T : ParticipantElement>(private val data: LiveData<List<T>>, loadingIndicatorsEnabled: Boolean = true, errorIndicatorEnabled: Boolean = true, emptyIndicatorEnabled: Boolean = true) : MainSource<T>(loadingIndicatorsEnabled, errorIndicatorEnabled, emptyIndicatorEnabled) {
     private var currentPage: Page? = null
@@ -41,7 +40,7 @@ class ContactsViewSource<T : ParticipantElement>(private val data: LiveData<List
         }
     }
 
-    fun postError(exception: Exception){
+    fun postError(exception: Exception) {
         currentPage?.let { page ->
             postResult(page, exception)
         }

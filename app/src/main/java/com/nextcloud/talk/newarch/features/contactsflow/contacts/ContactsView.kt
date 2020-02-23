@@ -23,7 +23,6 @@
 package com.nextcloud.talk.newarch.features.contactsflow.contacts
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +41,7 @@ import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
+import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.mvvm.BaseView
@@ -168,8 +168,6 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
             }
 
             selectedParticipantsLiveData.observe(this@ContactsView) { participants ->
-                view.selectedParticipantsRecyclerView.isVisible = participants.isNotEmpty()
-                view.divider.isVisible = participants.isNotEmpty()
                 floatingActionButton?.isVisible = participants.isNotEmpty()
 
             }
@@ -223,29 +221,24 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     }
 
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<Any>) {
-        if (element.data is Participant?) {
-            val participant = element.data as Participant?
+        if (element.type == ParticipantElementType.PARTICIPANT.ordinal || element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
+            val participantElement = element.data as ParticipantElement
+            val participant = participantElement.data as Participant
 
             if (isNewGroupConversation || hasToken) {
-                val isElementSelected = participant?.selected == true
-                participant?.let {
-                    if (isElementSelected) {
-                        viewModel.unselectParticipant(it)
-                    } else {
-                        viewModel.selectParticipant(it)
-                    }
-                    it.selected = !isElementSelected
-                    if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
-                        participantsAdapter.notifyItemRangeChanged(0, participantsAdapter.itemCount, ElementPayload.SELECTION_TOGGLE)
-                    } else {
-                        participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
-                    }
+                if (participant.selected) {
+                    viewModel.unselectParticipant(participant)
+                } else {
+                    viewModel.selectParticipant(participant)
+                }
+                participant.selected = !participant.selected
+                if (element.type == ParticipantElementType.PARTICIPANT_SELECTED.ordinal) {
+                    participantsAdapter.notifyItemRangeChanged(0, participantsAdapter.itemCount, ElementPayload.SELECTION_TOGGLE)
+                } else {
+                    participantsAdapter.notifyItemChanged(holder.adapterPosition, ElementPayload.SELECTION_TOGGLE)
                 }
             } else {
-                participant?.let {
-                    // One to one conversation
-                    viewModel.createConversation(1, it.userId)
-                }
+                viewModel.createConversation(1, participant.userId)
             }
         } else if (element.type == ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal) {
             router.replaceTopController(RouterTransaction.with(GroupConversationView())

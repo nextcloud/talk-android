@@ -43,7 +43,6 @@ import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.parameter.parametersOf
 import java.net.URLDecoder
