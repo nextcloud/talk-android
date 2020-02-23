@@ -28,12 +28,12 @@ import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkReposito
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import org.koin.core.parameter.DefinitionParameters
 
-class GetPeersForCallUseCase constructor(
+class GetParticipantsForCallUseCase constructor(
         private val nextcloudTalkRepository: NextcloudTalkRepository,
         apiErrorHandler: ApiErrorHandler?
 ) : UseCase<ParticipantsOverall, Any?>(apiErrorHandler) {
     override suspend fun run(params: Any?): ParticipantsOverall {
         val definitionParameters = params as DefinitionParameters
-        return nextcloudTalkRepository.getPeersForCall(definitionParameters[0], definitionParameters[1])
+        return nextcloudTalkRepository.getParticipantsForCall(definitionParameters[0], definitionParameters[1])
     }
 }

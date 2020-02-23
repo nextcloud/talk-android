@@ -80,8 +80,8 @@ abstract class ConversationsDao {
             timestamp: Long
     )
 
-    @Query("SELECT * FROM conversations where id = :userId AND token = :token")
-    abstract suspend fun getConversationForUserWithToken(userId: Long, token: String): ConversationEntity?
+    @Query("SELECT * FROM conversations where id = :internalUserId AND token = :token")
+    abstract suspend fun getConversationForUserWithToken(internalUserId: Long, token: String): ConversationEntity?
 
     @Transaction
     open suspend fun updateConversationsForUser(

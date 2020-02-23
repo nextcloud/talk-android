@@ -83,8 +83,8 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
         }
     }
 
-    override suspend fun getConversationForUserWithToken(userId: Long, token: String): Conversation? {
-        val conversationEntity = conversationsDao.getConversationForUserWithToken(userId, token)
+    override suspend fun getConversationForUserWithToken(internalUserId: Long, token: String): Conversation? {
+        val conversationEntity = conversationsDao.getConversationForUserWithToken(internalUserId, token)
         if (conversationEntity != null) {
             return conversationEntity.toConversation()
         }

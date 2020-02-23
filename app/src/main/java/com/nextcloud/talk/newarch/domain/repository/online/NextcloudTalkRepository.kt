@@ -37,7 +37,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface NextcloudTalkRepository {
     suspend fun getNotificationForUser(user: UserNgEntity, notificationId: String): NotificationOverall
-    suspend fun getPeersForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall
+    suspend fun getParticipantsForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall
     suspend fun setPasswordForConversation(user: UserNgEntity, conversationToken: String, password: String): GenericOverall
     suspend fun addParticipantToConversation(user: UserNgEntity, conversationToken: String, participantId: String, source: String): AddParticipantOverall
     suspend fun createConversationForUser(user: UserNgEntity, conversationType: Int, invite: String?, source: String?, conversationName: String?): ConversationOverall

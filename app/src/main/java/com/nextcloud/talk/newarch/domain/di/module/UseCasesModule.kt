@@ -51,7 +51,7 @@ val UseCasesModule = module {
     single { createCreateConversationUseCase(get(), get()) }
     single { createAddParticipantToConversationUseCase(get(), get()) }
     single { setConversationPasswordUseCase(get(), get()) }
-    factory { getPeersForCallUseCase(get(), get()) }
+    factory { getParticipantsForCallUseCase(get(), get()) }
     factory { getNotificationUseCase(get(), get()) }
     factory { createChatViewModelFactory(get(), get(), get(), get(), get(), get()) }
 }
@@ -61,9 +61,9 @@ fun getNotificationUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
     return GetNotificationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
-fun getPeersForCallUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
-                           apiErrorHandler: ApiErrorHandler): GetPeersForCallUseCase {
-    return GetPeersForCallUseCase(nextcloudTalkRepository, apiErrorHandler)
+fun getParticipantsForCallUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
+                                  apiErrorHandler: ApiErrorHandler): GetParticipantsForCallUseCase {
+    return GetParticipantsForCallUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 

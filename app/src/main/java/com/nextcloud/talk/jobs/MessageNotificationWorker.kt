@@ -251,7 +251,7 @@ class MessageNotificationWorker(
         var notificationId = decryptedPushMessage.timestamp.toInt()
 
         val notificationInfoBundle = Bundle()
-        notificationInfoBundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.userEntity!!.id!!)
+        notificationInfoBundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.userEntity!!.id)
         notificationInfoBundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, decryptedPushMessage.id)
         notificationInfoBundle.putLong(BundleKeys.KEY_NOTIFICATION_ID, decryptedPushMessage.notificationId!!)
         notificationBuilder.extras = notificationInfoBundle

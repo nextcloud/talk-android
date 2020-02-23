@@ -99,7 +99,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         return apiService.getNotification(user.getCredentials(), ApiUtils.getUrlForNotificationWithId(user.baseUrl, notificationId))
     }
 
-    override suspend fun getPeersForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall {
+    override suspend fun getParticipantsForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall {
         return apiService.getPeersForCall(user.getCredentials(), ApiUtils.getUrlForCall(user.baseUrl, conversationToken))
     }
 

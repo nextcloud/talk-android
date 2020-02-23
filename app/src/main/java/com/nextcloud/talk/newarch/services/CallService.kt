@@ -10,6 +10,7 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.os.IBinder
 import android.util.Base64
 import android.util.Log
@@ -30,12 +31,16 @@ import com.nextcloud.talk.jobs.MessageNotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
+import com.nextcloud.talk.newarch.domain.usecases.GetParticipantsForCallUseCase
+import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.ComponentsWithEmptyCookieJar
@@ -57,8 +62,10 @@ import retrofit2.Retrofit
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
+import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
+import kotlin.concurrent.timerTask
 import kotlin.coroutines.CoroutineContext
 
 class CallService : Service(), KoinComponent, CoroutineScope {
@@ -83,12 +90,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                 decryptMessage(it.getStringExtra(BundleKeys.KEY_ENCRYPTED_SUBJECT), it.getStringExtra(BundleKeys.KEY_ENCRYPTED_SIGNATURE))
             } else if (it.action == BundleKeys.KEY_REJECT_INCOMING_CALL || it.action == BundleKeys.DISMISS_CALL_NOTIFICATION) {
                 if (it.getStringExtra(BundleKeys.KEY_ACTIVE_NOTIFICATION) == activeNotification) {
-                    stopForeground(true)
-                    if (it.action != BundleKeys.DISMISS_CALL_NOTIFICATION) {
-                        eventBus.post(CallEvent())
-                    } else {
-                        // do nothing
-                    }
+                    endIncomingConversation(it.action != BundleKeys.DISMISS_CALL_NOTIFICATION)
                 } else {
                     // do nothing? :D
                 }
@@ -184,7 +186,6 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                                 .setAutoCancel(true)
                                                 .setOngoing(true)
                                                 .addAction(R.drawable.ic_call_end_white_24px, resources.getString(R.string.reject_call), rejectCallPendingIntent)
-                                                //.setTimeoutAfter(45000L)
                                                 .setContentIntent(fullScreenPendingIntent)
                                                 .setFullScreenIntent(fullScreenPendingIntent, true)
                                                 .setSound(NotificationUtils.getCallSoundUri(applicationContext, appPreferences), AudioManager.STREAM_RING)
@@ -193,20 +194,18 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                             notificationBuilder.setVibrate(vibrationEffect)
                                         }
 
-                                        //checkIfCallIsActive(signatureVerification, decryptedPushMessage)
-
                                         if (conversation.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) {
                                             val target = object : Target {
                                                 override fun onSuccess(result: Drawable) {
                                                     super.onSuccess(result)
                                                     largeIcon = result.toBitmap()
                                                     notificationBuilder.setLargeIcon(largeIcon)
-                                                    showNotification(notificationBuilder, signatureVerification.userEntity!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
+                                                    showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
                                                 }
 
                                                 override fun onError(error: Drawable?) {
                                                     super.onError(error)
-                                                    showNotification(notificationBuilder, signatureVerification.userEntity!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
+                                                    showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
                                                 }
                                             }
 
@@ -219,7 +218,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
 
                                             imageLoader.load(request)
                                         } else {
-                                            showNotification(notificationBuilder, signatureVerification.userEntity!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
+                                            showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
                                         }
                                     }
                                 }
@@ -253,6 +252,41 @@ class CallService : Service(), KoinComponent, CoroutineScope {
         }
     }
 
+    private fun checkIsConversationActive(user: UserNgEntity, conversationToken: String, activeNotificationArgument: String) {
+        if (activeNotificationArgument == activeNotification) {
+            val getParticipantsForCallUseCase = GetParticipantsForCallUseCase(componentsWithEmptyCookieJar.getRepository(), apiErrorHandler)
+            getParticipantsForCallUseCase.invoke(this, parametersOf(user, conversationToken), object : UseCaseResponse<ParticipantsOverall> {
+                override suspend fun onSuccess(result: ParticipantsOverall) {
+                    val participants = result.ocs.data
+                    if (participants.size > 0 && activeNotificationArgument == activeNotification) {
+                        val activeParticipants = participants.filter { it.participantFlags != Participant.ParticipantFlags.NOT_IN_CALL }
+                        val activeOnAnotherDevice = activeParticipants.filter { it.userId == user.userId }
+                        if (activeParticipants.isNotEmpty() && activeOnAnotherDevice.isEmpty()) {
+                            delay(5000)
+                            checkIsConversationActive(user, conversationToken, activeNotificationArgument)
+                        } else {
+                            endIncomingConversation(true)
+                        }
+                    } else if (activeNotificationArgument == activeNotification) {
+                        endIncomingConversation(true)
+                    }
+                }
+
+                override suspend fun onError(errorModel: ErrorModel?) {
+                    endIncomingConversation(true)
+                }
+            })
+        }
+    }
+
+    private fun endIncomingConversation(triggerEventBus : Boolean) {
+        activeNotification = ""
+        stopForeground(true)
+        if (triggerEventBus) {
+            eventBus.post(CallEvent())
+        }
+    }
+
     private suspend fun getConversationForTokenAndUser(user: UserNgEntity, conversationToken: String): Conversation? {
         var conversation = conversationsRepository.getConversationForUserWithToken(user.id, conversationToken)
         if (conversation == null) {
@@ -275,13 +309,15 @@ class CallService : Service(), KoinComponent, CoroutineScope {
         return conversation
     }
 
-    private fun showNotification(builder: NotificationCompat.Builder, user: UserNgEntity, internalNotificationId: Long, generatedNotificationId: String) {
+    private fun showNotification(builder: NotificationCompat.Builder, user: UserNgEntity, conversationToken: String, internalNotificationId: Long, generatedNotificationId: String) {
+        endIncomingConversation(true)
         activeNotification = generatedNotificationId
         val notification = builder.build()
         notification.extras.putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         notification.extras.putLong(BundleKeys.KEY_NOTIFICATION_ID, internalNotificationId)
         notification.flags = notification.flags or Notification.FLAG_INSISTENT
         startForeground(generatedNotificationId.hashCode(), notification)
+        checkIsConversationActive(user, conversationToken, generatedNotificationId)
     }
 
     override fun onBind(intent: Intent?): IBinder? {
