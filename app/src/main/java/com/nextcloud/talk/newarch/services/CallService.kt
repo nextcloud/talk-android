@@ -10,7 +10,6 @@ import android.media.AudioAttributes
 import android.media.AudioManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
 import android.util.Base64
 import android.util.Log
@@ -40,7 +39,6 @@ import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsReposit
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetParticipantsForCallUseCase
-import com.nextcloud.talk.newarch.domain.usecases.base.UseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.ComponentsWithEmptyCookieJar
@@ -62,10 +60,8 @@ import retrofit2.Retrofit
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
-import java.util.*
 import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
-import kotlin.concurrent.timerTask
 import kotlin.coroutines.CoroutineContext
 
 class CallService : Service(), KoinComponent, CoroutineScope {

@@ -307,7 +307,7 @@ class MessageNotificationWorker(
                             target, null, CircleCropTransformation()
                     )
 
-                    Coil.loader().load(request)
+                    componentsWithEmptyCookieJar.getImageLoader().load(request)
                 } else {
                     notificationBuilder.setStyle(getStyle(decryptedPushMessage, adjustedConversationType, person.build(), style))
                     NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
