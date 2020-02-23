@@ -279,7 +279,6 @@ dependencies {
 
   implementation 'com.jakewharton:butterknife:10.2.1'
   kapt 'com.jakewharton:butterknife-compiler:10.2.1'
-  implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
   implementation 'eu.davidea:flexible-adapter:5.1.0'
   implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
   implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
