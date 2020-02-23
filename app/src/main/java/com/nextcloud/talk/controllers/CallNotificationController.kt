@@ -21,6 +21,7 @@
 package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
@@ -49,12 +50,14 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.events.CallEvent
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
@@ -71,11 +74,11 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
 import org.michaelevans.colorart.library.ColorArt
+import org.parceler.Parcels
 
 class CallNotificationController(private val originalBundle: Bundle) : BaseController() {
 
     val ncApi: NcApi by inject()
-    val arbitraryStorageUtils: ArbitraryStorageUtils by inject()
 
     @JvmField
     @BindView(R.id.conversationNameTextView)
@@ -100,23 +103,9 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     @JvmField
     @BindView(R.id.incomingTextRelativeLayout)
     var incomingTextRelativeLayout: RelativeLayout? = null
-    private val conversationToken: String
-    private val userBeingCalled: UserNgEntity?
-    private val credentials: String?
-    private val notificationId: Long?
-    private var currentConversation: Conversation? = null
-    private var mediaPlayer: MediaPlayer? = null
-    private var leavingScreen = false
-    private var vibrator: Vibrator? = null
-    private var handler: Handler? = null
-
-    init {
-        this.conversationToken = originalBundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!
-        this.userBeingCalled = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
-        this.notificationId = originalBundle.getLong(BundleKeys.KEY_NOTIFICATION_ID)
-        credentials = userBeingCalled.getCredentials()
-    }
-
+    private val conversation: Conversation = Parcels.unwrap(originalBundle.getParcelable(BundleKeys.KEY_CONVERSATION))
+    private val userBeingCalled: UserNgEntity = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
+    private val activeNotification: String = originalBundle.getString(BundleKeys.KEY_ACTIVE_NOTIFICATION)!!
 
     override fun inflateView(
             inflater: LayoutInflater,
@@ -135,18 +124,16 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
         eventBus.register(this)
     }
 
-    private fun showAnswerControls() {
-        callAnswerCameraView!!.visibility = View.VISIBLE
-        callAnswerVoiceOnlyView!!.visibility = View.VISIBLE
+    private fun dismissIncomingCallNotification() {
+        val hideIncomingCallNotificationIntent = Intent(applicationContext, CallService::class.java)
+        hideIncomingCallNotificationIntent.action = BundleKeys.DISMISS_CALL_NOTIFICATION
+        hideIncomingCallNotificationIntent.putExtra(BundleKeys.KEY_ACTIVE_NOTIFICATION, activeNotification)
+        applicationContext?.startService(hideIncomingCallNotificationIntent)
     }
-
     @OnClick(R.id.callControlHangupView)
     internal fun hangup() {
-        leavingScreen = true
-
-        if (activity != null) {
-            activity!!.finish()
-        }
+        dismissIncomingCallNotification()
+        activity?.finish()
     }
 
     @OnClick(R.id.callAnswerCameraView)
@@ -162,11 +149,8 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     }
 
     private fun proceedToCall() {
-        originalBundle.putString(
-                BundleKeys.KEY_CONVERSATION_TOKEN,
-                currentConversation!!.token
-        )
-
+        dismissIncomingCallNotification()
+        originalBundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation.token)
         router.replaceTopController(
                 RouterTransaction.with(CallController(originalBundle))
                         .popChangeHandler(HorizontalChangeHandler())
@@ -174,162 +158,18 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
         )
     }
 
-    private fun checkIfAnyParticipantsRemainInRoom() {
-        ncApi.getPeersForCall(
-                credentials, ApiUtils.getUrlForParticipants(
-                userBeingCalled!!.baseUrl,
-                currentConversation!!.token
-        )
-        )
-                .subscribeOn(Schedulers.io())
-                .takeWhile { observable -> !leavingScreen }
-                .retry(3)
-                .`as`(AutoDispose.autoDisposable(scopeProvider))
-                .subscribe(object : Observer<ParticipantsOverall> {
-                    override fun onSubscribe(d: Disposable) {}
-
-                    override fun onNext(participantsOverall: ParticipantsOverall) {
-                        var hasParticipantsInCall = false
-                        var inCallOnDifferentDevice = false
-                        val participantList = participantsOverall.ocs.data
-                        for (participant in participantList) {
-                            if (participant.participantFlags != Participant.ParticipantFlags.NOT_IN_CALL) {
-                                hasParticipantsInCall = true
-
-                                if (participant.userId == userBeingCalled.userId) {
-                                    inCallOnDifferentDevice = true
-                                    break
-                                }
-                            }
-                        }
-
-                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
-                            if (activity != null) {
-                                activity!!.runOnUiThread { hangup() }
-                            }
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-
-                    }
-
-                    override fun onComplete() {
-                        if (!leavingScreen) {
-                            checkIfAnyParticipantsRemainInRoom()
-                        }
-                    }
-                })
-    }
-
-    private fun runAllThings() {
-        /*if (conversationNameTextView != null) {
-            conversationNameTextView!!.text = currentConversation!!.displayName
-        }
-
-        loadAvatar()
-        checkIfAnyParticipantsRemainInRoom()
-        showAnswerControls()*/
-    }
-
     @SuppressLint("LongLogTag")
     override fun onViewBound(view: View) {
         super.onViewBound(view)
+        conversationNameTextView?.text = conversation.displayName
+        loadAvatar()
+        callAnswerCameraView?.visibility = View.VISIBLE
+        callAnswerVoiceOnlyView?.visibility = View.VISIBLE
+    }
 
-        if (handler == null) {
-            handler = Handler()
-        }
-
-        runAllThings()
-
-        /*var importantConversation = false
-        val arbitraryStorageEntity: ArbitraryStorageEntity? = arbitraryStorageUtils.getStorageSetting(
-                userBeingCalled!!.id!!,
-                "important_conversation",
-                currentConversation!!.token
-        )
-
-        if (arbitraryStorageEntity != null) {
-            importantConversation = arbitraryStorageEntity.value!!.toBoolean()
-        }
-
-        if (DoNotDisturbUtils.shouldPlaySound(importantConversation)) {
-            val callRingtonePreferenceString = appPreferences.callRingtoneUri
-            var ringtoneUri: Uri?
-
-            if (TextUtils.isEmpty(callRingtonePreferenceString)) {
-                // play default sound
-                ringtoneUri = Uri.parse(
-                        "android.resource://" + applicationContext!!.packageName +
-                                "/raw/librem_by_feandesign_call"
-                )
-            } else {
-                ringtoneUri = try {
-                    val ringtoneSettings =
-                            LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings::class.java)
-                    ringtoneSettings.ringtoneUri
-                } catch (e: IOException) {
-                    Log.e(TAG, "Failed to parse ringtone settings")
-                    Uri.parse(
-                            "android.resource://" + applicationContext!!.packageName +
-                                    "/raw/librem_by_feandesign_call"
-                    )
-                }
-
-            }
-
-            if (ringtoneUri != null && activity != null) {
-                mediaPlayer = MediaPlayer()
-                try {
-                    mediaPlayer!!.setDataSource(activity!!, ringtoneUri)
-
-                    mediaPlayer!!.isLooping = true
-                    val audioAttributes = AudioAttributes.Builder()
-                            .setContentType(
-                                    AudioAttributes
-                                            .CONTENT_TYPE_SONIFICATION
-                            )
-                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                            .build()
-                    mediaPlayer!!.setAudioAttributes(audioAttributes)
-
-                    mediaPlayer!!.setOnPreparedListener { mp -> mediaPlayer!!.start() }
-
-                    mediaPlayer!!.prepareAsync()
-                } catch (e: IOException) {
-                    Log.e(TAG, "Failed to set data source")
-                }
-
-            }
-        }
-
-        if (DoNotDisturbUtils.shouldVibrate(appPreferences.shouldVibrateSetting)) {
-            vibrator = applicationContext!!.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-
-            if (vibrator != null) {
-                val vibratePattern = longArrayOf(0, 400, 800, 600, 800, 800, 800, 1000)
-                val amplitudes = intArrayOf(0, 255, 0, 255, 0, 255, 0, 255)
-
-                val vibrationEffect: VibrationEffect
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (vibrator!!.hasAmplitudeControl()) {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1)
-                        vibrator!!.vibrate(vibrationEffect)
-                    } else {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1)
-                        vibrator!!.vibrate(vibrationEffect)
-                    }
-                } else {
-                    vibrator!!.vibrate(vibratePattern, -1)
-                }
-            }
-
-            handler!!.postDelayed({
-                if (vibrator != null) {
-                    vibrator!!.cancel()
-                }
-            }, 10000)
-        }*/
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(callEvent: CallEvent) {
+        activity?.finish()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -344,7 +184,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     }
 
     private fun loadAvatar() {
-        when (currentConversation!!.type) {
+        when (conversation.type) {
             Conversation.ConversationType.ONE_TO_ONE_CONVERSATION -> {
                 avatarImageView!!.visibility = View.VISIBLE
 
@@ -352,8 +192,8 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                         resources?.getDrawable(R.drawable.incoming_gradient)
                 avatarImageView?.load(
                         ApiUtils.getUrlForAvatarWithName(
-                                userBeingCalled!!.baseUrl,
-                                currentConversation!!.name, R.dimen.avatar_size_very_big
+                                userBeingCalled.baseUrl,
+                                conversation.name, R.dimen.avatar_size_very_big
                         )
                 ) {
                     addHeader("Authorization", userBeingCalled.getCredentials())
@@ -415,30 +255,8 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
         }
     }
 
-    private fun endMediaAndVibratorNotifications() {
-        if (mediaPlayer != null) {
-            if (mediaPlayer!!.isPlaying) {
-                mediaPlayer!!.stop()
-            }
-
-            mediaPlayer!!.release()
-            mediaPlayer = null
-        }
-
-        if (vibrator != null) {
-            vibrator!!.cancel()
-        }
-    }
-
     public override fun onDestroy() {
-        AvatarStatusCodeHolder.getInstance()
-                .statusCode = 0
-        leavingScreen = true
-        if (handler != null) {
-            handler!!.removeCallbacksAndMessages(null)
-            handler = null
-        }
-        endMediaAndVibratorNotifications()
+        AvatarStatusCodeHolder.getInstance().statusCode = 0
         super.onDestroy()
     }
 

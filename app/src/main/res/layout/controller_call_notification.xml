@@ -46,7 +46,7 @@
             android:layout_margin="24dp"
             android:visibility="gone"
             android:scaleType="centerInside"
-            android:background="@color/nc_darkGreen"
+            android:background="@drawable/primary_color_circle"
             android:src="@drawable/ic_call_white_24dp" />
 
         <ImageView
@@ -65,7 +65,7 @@
             android:layout_margin="24dp"
             android:visibility="gone"
             android:scaleType="centerInside"
-            android:background="@color/nc_darkGreen"
+            android:background="@drawable/primary_color_circle"
             android:src="@drawable/ic_videocam_white_24px" />
     </LinearLayout>
 

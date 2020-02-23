@@ -25,6 +25,7 @@ import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.events.CallEvent
 import com.nextcloud.talk.jobs.MessageNotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -47,9 +48,11 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.*
 import kotlinx.serialization.json.Json
+import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
+import org.parceler.Parcels
 import retrofit2.Retrofit
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -70,6 +73,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
     val retrofit: Retrofit by inject()
     val componentsWithEmptyCookieJar: ComponentsWithEmptyCookieJar by inject()
     val apiErrorHandler: ApiErrorHandler by inject()
+    val eventBus: EventBus by inject()
 
     private var activeNotification = ""
 
@@ -77,9 +81,14 @@ class CallService : Service(), KoinComponent, CoroutineScope {
         intent?.let {
             if (it.action == BundleKeys.KEY_INCOMING_PUSH_MESSSAGE) {
                 decryptMessage(it.getStringExtra(BundleKeys.KEY_ENCRYPTED_SUBJECT), it.getStringExtra(BundleKeys.KEY_ENCRYPTED_SIGNATURE))
-            } else if (it.action == BundleKeys.KEY_REJECT_INCOMING_CALL || it.action == BundleKeys.KEY_SHOW_INCOMING_CALL) {
+            } else if (it.action == BundleKeys.KEY_REJECT_INCOMING_CALL || it.action == BundleKeys.DISMISS_CALL_NOTIFICATION) {
                 if (it.getStringExtra(BundleKeys.KEY_ACTIVE_NOTIFICATION) == activeNotification) {
                     stopForeground(true)
+                    if (it.action != BundleKeys.DISMISS_CALL_NOTIFICATION) {
+                        eventBus.post(CallEvent())
+                    } else {
+                        // do nothing
+                    }
                 } else {
                     // do nothing? :D
                 }
@@ -124,7 +133,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                         val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
                                         fullScreenIntent.action = BundleKeys.KEY_OPEN_INCOMING_CALL
                                         val bundle = Bundle()
-                                        bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, decryptedPushMessage.id)
+                                        bundle.putParcelable(BundleKeys.KEY_CONVERSATION, Parcels.wrap(conversation))
                                         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.userEntity)
                                         bundle.putString(BundleKeys.KEY_ACTIVE_NOTIFICATION, generatedActiveNotificationId)
                                         fullScreenIntent.putExtras(bundle)
