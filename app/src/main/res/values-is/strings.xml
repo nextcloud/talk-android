@@ -71,9 +71,6 @@
     <string name="nc_settings_no_talk_installed">Talk-forritið er ekki uppsett á þjóninum sem þú reyndir að auðkenna hjá</string>
     <string name="nc_settings_account_updated">Fyrirliggjandi notandaaðgangur þinn var uppfærður í stað þess að bæta við nýjum</string>
     <string name="nc_account_scheduled_for_deletion">Þessi aðgangur er merktur til eyðingar og er því ekki hægt að breyta honum</string>
-    <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
-    <string name="nc_settings_call_ringtone">Maður-á-mann samtöl</string>
-    <string name="nc_settings_other_notifications_ringtone">Annað</string>
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
     <string name="nc_settings_vibrate">Titringur</string>
     <string name="nc_settings_vibrate_desc">Síminn þinn mun titra nema hann sé á hljóðlausi stillingu</string>

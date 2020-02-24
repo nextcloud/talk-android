@@ -60,8 +60,6 @@
     <string name="nc_settings_remove_account">Remover conta</string>
     <string name="nc_settings_add_account">Adicionar uma nova conta</string>
     <string name="nc_add">Adicionar</string>
-    <string name="nc_settings_notification_sounds">Sons de notificação</string>
-    <string name="nc_settings_other_notifications_ringtone">Outros</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_theme_title">Tema</string>

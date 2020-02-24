@@ -65,9 +65,8 @@
     <string name="nc_settings_wrong_account">Vetëm llogaria aktuale mund të riautorizohet</string>
     <string name="nc_settings_account_updated">Llogaria juaj ekzistuese u ripërditësua, në vend që të shtohej një e re</string>
     <string name="nc_account_scheduled_for_deletion">Llogaria është skeduluar që të fshihet dhe nuk mund të ndryshohet</string>
-    <string name="nc_settings_notification_sounds">Tingujt e njoftimeve</string>
-    <string name="nc_settings_call_ringtone">Thirrjet Një-me-Një</string>
-    <string name="nc_settings_other_notifications_ringtone">Tjetër</string>
+    <string name="nc_settings_call_ringtone">Thirrjet</string>
+    <string name="nc_settings_other_notifications_ringtone">Njoftimet</string>
     <string name="nc_settings_no_ringtone">Ska tingull</string>
     <string name="nc_settings_vibrate">Dridhje</string>
     <string name="nc_settings_theme_title">Shabllon</string>

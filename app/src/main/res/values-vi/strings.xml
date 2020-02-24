@@ -68,9 +68,7 @@
     <string name="nc_settings_wrong_account">Chỉ tài khoản hiện tại có thể chứng thực lại</string>
     <string name="nc_settings_account_updated">Bạn đã cập nhật tài khoản đã có, hãy thêm tài khoản mới</string>
     <string name="nc_account_scheduled_for_deletion">Tài khoản được lên lịch xóa và không thể thay đổi</string>
-    <string name="nc_settings_notification_sounds">Âm báo</string>
-    <string name="nc_settings_call_ringtone">Gọi trực tiếp</string>
-    <string name="nc_settings_other_notifications_ringtone">Khác</string>
+    <string name="nc_settings_other_notifications_ringtone">Thông b</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
     <string name="nc_settings_vibrate">Rung</string>
     <string name="nc_settings_theme_light">Sáng</string>

@@ -71,9 +71,7 @@
     <string name="nc_settings_no_talk_installed">Aplikacija Ćaskanja nije instalirana na serveru na koji se prijavljujete</string>
     <string name="nc_settings_account_updated">Vaš postojeći nalog je ažuriran, umesto što je dodat novi nalog</string>
     <string name="nc_account_scheduled_for_deletion">Nalogu je zakazano brisanje i to ne može da se promeni</string>
-    <string name="nc_settings_notification_sounds">Zvuci obaveštenja</string>
-    <string name="nc_settings_call_ringtone">Pozivi jedan-na-jedan</string>
-    <string name="nc_settings_other_notifications_ringtone">Ostali</string>
+    <string name="nc_settings_other_notifications_ringtone">Obaveštenja</string>
     <string name="nc_settings_no_ringtone">Nema zvuka</string>
     <string name="nc_settings_vibrate">Vibriraj</string>
     <string name="nc_settings_vibrate_desc">Telefon će vibrirati osim ako nije utišan</string>

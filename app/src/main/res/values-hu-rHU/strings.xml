@@ -74,9 +74,8 @@
     <string name="nc_settings_no_talk_installed">A Beszélgetés alkalmazás nincs telepítve azon a kiszolgálón, ahol hitelesíteni szeretne</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett, a már létező fiókja lett frissítve</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
-    <string name="nc_settings_notification_sounds">Értesítési hang</string>
-    <string name="nc_settings_call_ringtone">Négyszemközti hívások</string>
-    <string name="nc_settings_other_notifications_ringtone">Egyéb</string>
+    <string name="nc_settings_call_ringtone">Hívások</string>
+    <string name="nc_settings_other_notifications_ringtone">Értesítések</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
     <string name="nc_settings_vibrate">Rezgés</string>
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
@@ -316,4 +315,4 @@
     <string name="nc_search_for_more">További résztvevők keresése</string>
     <string name="nc_new_group">Új csoport</string>
     <string name="nc_search_empty_contacts">Hová tűnt mind?</string>
-</resources>
+    </resources>

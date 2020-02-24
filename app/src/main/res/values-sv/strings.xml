@@ -74,9 +74,8 @@
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
-    <string name="nc_settings_notification_sounds">Notifieringsljud</string>
-    <string name="nc_settings_call_ringtone">En-till-en samtal</string>
-    <string name="nc_settings_other_notifications_ringtone">Övrigt</string>
+    <string name="nc_settings_call_ringtone">Samtal</string>
+    <string name="nc_settings_other_notifications_ringtone">Aviseringar</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
     <string name="nc_settings_vibrate">Vibrera</string>
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
@@ -320,4 +319,4 @@
     <string name="nc_search_for_more">Sök efter fler deltagare</string>
     <string name="nc_new_group">Ny grupp</string>
     <string name="nc_search_empty_contacts">Var gömmer sig alla?</string>
-</resources>
+    </resources>

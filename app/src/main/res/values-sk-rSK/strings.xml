@@ -74,9 +74,8 @@
     <string name="nc_settings_no_talk_installed">Aplikácia Talk nie je na serveri, voči ktorému ste sa chceli overiť nainštalovaná.</string>
     <string name="nc_settings_account_updated">Namiesto pridania nového účtu, bol aktualizovaný existujúci účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
-    <string name="nc_settings_notification_sounds">Zvuky hlásení</string>
-    <string name="nc_settings_call_ringtone">Individuálne telefonáty</string>
-    <string name="nc_settings_other_notifications_ringtone">Iné</string>
+    <string name="nc_settings_call_ringtone">Hovory</string>
+    <string name="nc_settings_other_notifications_ringtone">Hlásenia</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
     <string name="nc_settings_vibrate">Vibrovať</string>
     <string name="nc_settings_vibrate_desc">Telefón bude vibrovať, pokiaľ nebude stíšený.</string>
@@ -318,4 +317,4 @@ v zozname rozhovorov</string>
     <string name="nc_search_for_more">Vyhľadanie ďalších účastníkov</string>
     <string name="nc_new_group">Nová skupina</string>
     <string name="nc_search_empty_contacts">Kde sa všetci schovali?</string>
-</resources>
+    </resources>

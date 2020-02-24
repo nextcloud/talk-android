@@ -51,8 +51,8 @@
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>
     <string name="nc_settings_account_updated">Olemassa oleva tilisi päivitettiin sen sijaan, että olisi lisätty tili</string>
     <string name="nc_account_scheduled_for_deletion">Tili on aikataulutettu poistettavaksi, joten tiliä ei voi muuttaa</string>
-    <string name="nc_settings_notification_sounds">Ilmoitusäänet</string>
-    <string name="nc_settings_other_notifications_ringtone">Muu</string>
+    <string name="nc_settings_call_ringtone">Puhelut</string>
+    <string name="nc_settings_other_notifications_ringtone">Ilmoitukset</string>
     <string name="nc_settings_no_ringtone">Ei ääntä</string>
     <string name="nc_settings_vibrate">Värinä</string>
     <string name="nc_settings_theme_title">Teema</string>

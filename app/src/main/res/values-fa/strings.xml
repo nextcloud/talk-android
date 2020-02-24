@@ -75,9 +75,6 @@
     <string name="nc_settings_no_talk_installed">برنامه گفتگو روی سروری که سعی در تأیید اعتبار داشته باشید نصب نشده است</string>
     <string name="nc_settings_account_updated">برنامه Talk روی سروری که سعی در تأیید اعتبار داشته باشید نصب نشده است</string>
     <string name="nc_account_scheduled_for_deletion">حساب برای حذف برنامه ریزی شده است و قابل تغییر نیست</string>
-    <string name="nc_settings_notification_sounds">صداهای اعلان</string>
-    <string name="nc_settings_call_ringtone">تماسهای یک به یک</string>
-    <string name="nc_settings_other_notifications_ringtone">دیگر</string>
     <string name="nc_settings_no_ringtone">بدون صدا</string>
     <string name="nc_settings_vibrate">لرزش</string>
     <string name="nc_settings_vibrate_desc">تلفن لرزش خواهد کرد مگر اینکه خاموش باشد</string>
@@ -314,4 +311,4 @@
     <string name="nc_search_for_more">برای شرکت کنندگان بیشتر جستجو کنید</string>
     <string name="nc_new_group">گروه جدید</string>
     <string name="nc_search_empty_contacts"> کجا  مخفی  شدن  ?</string>
-</resources>
+    </resources>

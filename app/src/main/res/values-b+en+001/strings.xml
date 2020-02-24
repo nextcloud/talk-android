@@ -70,9 +70,8 @@
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
-    <string name="nc_settings_notification_sounds">Notification sounds</string>
-    <string name="nc_settings_call_ringtone">One-on-One Calls</string>
-    <string name="nc_settings_other_notifications_ringtone">Other</string>
+    <string name="nc_settings_call_ringtone">Calls</string>
+    <string name="nc_settings_other_notifications_ringtone">Notifications</string>
     <string name="nc_settings_no_ringtone">No sound</string>
     <string name="nc_settings_vibrate">Vibrate</string>
     <string name="nc_settings_theme_title">Theme</string>

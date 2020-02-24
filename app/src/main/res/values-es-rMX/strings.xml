@@ -68,7 +68,8 @@
     <string name="nc_settings_wrong_account">Solo la cuenta actual se puede volver a autorizar</string>
     <string name="nc_settings_account_updated">Tu cuenta existente ha sido actualizada, en lugar de agregar una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está calendarizada para ser borrada, y no puede ser modificada</string>
-    <string name="nc_settings_other_notifications_ringtone">Otro</string>
+    <string name="nc_settings_call_ringtone">Llamadas</string>
+    <string name="nc_settings_other_notifications_ringtone">Notificaciones</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_dark">Oscuro</string>

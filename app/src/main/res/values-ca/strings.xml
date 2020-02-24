@@ -71,9 +71,7 @@
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
     <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
     <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
-    <string name="nc_settings_notification_sounds">So de les notificacions</string>
-    <string name="nc_settings_call_ringtone">Trucades Privades</string>
-    <string name="nc_settings_other_notifications_ringtone">Un altre</string>
+    <string name="nc_settings_other_notifications_ringtone">Notificacions</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
     <string name="nc_settings_vibrate">Vibra</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>

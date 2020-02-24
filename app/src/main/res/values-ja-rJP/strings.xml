@@ -72,9 +72,7 @@
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_account_scheduled_for_deletion">アカウントは削除予定であり、変更することはできません</string>
-    <string name="nc_settings_notification_sounds">通知音</string>
-    <string name="nc_settings_call_ringtone">1対1通話</string>
-    <string name="nc_settings_other_notifications_ringtone">その他</string>
+    <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_vibrate">振動</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>

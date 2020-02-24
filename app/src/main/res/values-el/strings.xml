@@ -74,9 +74,6 @@
     <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
     <string name="nc_settings_account_updated">Ο υπάρχων λογαριασμός ενημερώθηκε, χωρίς την εισαγωγή νέου</string>
     <string name="nc_account_scheduled_for_deletion">Ο λογαριασμός προγραμματίστηκε να διαγραφή και δεν μπορεί να αλλάξει</string>
-    <string name="nc_settings_notification_sounds">Ήχοι ειδοποιήσεων</string>
-    <string name="nc_settings_call_ringtone">Κλήση Ένας-προς-Ένας</string>
-    <string name="nc_settings_other_notifications_ringtone">Άλλο</string>
     <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
     <string name="nc_settings_vibrate">Δόνηση</string>
     <string name="nc_settings_vibrate_desc">Το τηλέφωνο θα δονείται έως τη σίγαση του</string>
@@ -318,4 +315,4 @@
     <string name="nc_search_for_more">Αναζήτηση περισσότερων συμμετεχόντων</string>
     <string name="nc_new_group">Νέα ομάδα</string>
     <string name="nc_search_empty_contacts">Πού κρύβονταν όλοι;</string>
-</resources>
+    </resources>

@@ -74,9 +74,7 @@
     <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
-    <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>
-    <string name="nc_settings_call_ringtone">Klici 1 na 1</string>
-    <string name="nc_settings_other_notifications_ringtone">Drugo</string>
+    <string name="nc_settings_other_notifications_ringtone">Obvestila</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_vibrate">Tresenje</string>
     <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
@@ -318,4 +316,4 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_search_for_more">Poišči več udeležencev</string>
     <string name="nc_new_group">Nova skupina</string>
     <string name="nc_search_empty_contacts">Kam so se vsi skrili?</string>
-</resources>
+    </resources>
