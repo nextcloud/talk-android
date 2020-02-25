@@ -74,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_account_updated">Namísto přidání nového byl zaktualizován váš stávající účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
+    <string name="nc_settings_notification_sounds">Zvuk</string>
     <string name="nc_settings_call_ringtone">Volání</string>
     <string name="nc_settings_other_notifications_ringtone">Upozorňování</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
@@ -312,4 +313,5 @@
     <string name="nc_search_for_more">Vyhledat další účastníky</string>
     <string name="nc_new_group">Nová skupina</string>
     <string name="nc_search_empty_contacts">Kam se všichni schovali?</string>
-    </resources>
+    <string name="reject_call">Odmítnout</string>
+</resources>

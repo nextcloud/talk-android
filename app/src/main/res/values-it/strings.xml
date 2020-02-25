@@ -74,6 +74,9 @@
     <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server sul quale hai provato ad autenticarti</string>
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
     <string name="nc_account_scheduled_for_deletion">L\'eliminazione dell\'account è stata pianificata, e non può essere modificata</string>
+    <string name="nc_settings_notification_sounds">Suono</string>
+    <string name="nc_settings_call_ringtone">Chiamate</string>
+    <string name="nc_settings_other_notifications_ringtone">Notifiche</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
     <string name="nc_settings_vibrate">Vibrazione</string>
     <string name="nc_settings_vibrate_desc">Il telefono vibrerà a meno che non sia silenziato</string>
@@ -317,4 +320,5 @@
     <string name="nc_search_for_more">Cerca altri partecipanti</string>
     <string name="nc_new_group">Nuovo gruppo</string>
     <string name="nc_search_empty_contacts">Dove si sono nascosti?</string>
-    </resources>
+    <string name="reject_call">Rifiuta</string>
+</resources>

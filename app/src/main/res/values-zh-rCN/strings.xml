@@ -74,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
     <string name="nc_settings_account_updated">已经更新了您现有的账号，而不是添加新的账号</string>
     <string name="nc_account_scheduled_for_deletion">此账号已计划删除，且无法更改</string>
+    <string name="nc_settings_notification_sounds">声音</string>
     <string name="nc_settings_call_ringtone">呼叫</string>
     <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">无声音</string>
@@ -316,4 +317,5 @@
     <string name="nc_search_for_more">搜索更多参与者</string>
     <string name="nc_new_group">新建群组</string>
     <string name="nc_search_empty_contacts">他们都藏在哪里？</string>
-    </resources>
+    <string name="reject_call">拒绝</string>
+</resources>

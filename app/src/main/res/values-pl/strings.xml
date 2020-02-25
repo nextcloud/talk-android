@@ -74,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_account_scheduled_for_deletion">Konto jest zaznaczone do usunięcia, nie można wprowadzać zmian</string>
+    <string name="nc_settings_notification_sounds">Dźwięk</string>
     <string name="nc_settings_call_ringtone">Połączenia</string>
     <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
@@ -319,4 +320,5 @@
     <string name="nc_search_for_more">Wyszukaj więcej uczestników</string>
     <string name="nc_new_group">Nowa grupa</string>
     <string name="nc_search_empty_contacts">Gdzie oni wszyscy się schowali?</string>
-    </resources>
+    <string name="reject_call">Odrzuć </string>
+</resources>

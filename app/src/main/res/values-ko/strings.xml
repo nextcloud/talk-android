@@ -65,6 +65,8 @@
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
     <string name="nc_account_scheduled_for_deletion">이 계정이 삭제 예정이며 변경할 수 없음</string>
+    <string name="nc_settings_call_ringtone">통화</string>
+    <string name="nc_settings_other_notifications_ringtone">알림</string>
     <string name="nc_settings_no_ringtone">무음</string>
     <string name="nc_settings_vibrate">진동</string>
     <string name="nc_settings_appearance">외형</string>
