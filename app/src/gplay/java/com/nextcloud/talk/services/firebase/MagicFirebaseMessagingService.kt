@@ -84,45 +84,4 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
         incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SIGNATURE, remoteMessage.data["signature"])
         applicationContext.startService(incomingCallIntent)
     }
-
-    @SuppressLint("LongLogTag")
-
-    private fun checkIfCallIsActive(signatureVerification: SignatureVerification, decryptedPushMessage: DecryptedPushMessage) {
-        /*val ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
-        var hasParticipantsInCall = false
-        var inCallOnDifferentDevice = false
-
-        ncApi.getPeersForCall(ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
-                ApiUtils.getUrlForParticipants(signatureVerification.userEntity.baseUrl,
-                        decryptedPushMessage.id))
-                .subscribeOn(Schedulers.io())
-                .subscribe(object : Observer<ParticipantsOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
-                    override fun onNext(participantsOverall: ParticipantsOverall) {
-                        val participantList: List<Participant> = participantsOverall.ocs.data
-                        for (participant in participantList) {
-                            if (participant.participantFlags != Participant.ParticipantFlags.NOT_IN_CALL) {
-                                hasParticipantsInCall = true
-                                if (participant.userId == signatureVerification.userEntity.userId) {
-                                    inCallOnDifferentDevice = true
-                                    break
-                                }
-                            }
-                        }
-
-                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
-                            stopForeground(true)
-                        } else if (isServiceInForeground) {
-                            checkIfCallIsActive(signatureVerification, decryptedPushMessage)
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {}
-                    override fun onComplete() {
-                    }
-                })*/
-
-    }
 }
