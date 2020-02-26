@@ -203,6 +203,7 @@
 
     <string name="nc_file_browser_back">חזרה</string>
     <string name="nc_file_browser_refresh">רענון</string>
+    <string name="nc_timeout_error">תום זמן המתנה</string>
     <string name="nc_not_defined_error">שגיאה בלתי ידועה</string>
     <string name="nc_general_settings">כללי</string>
     <string name="nc_copy_message">העתק</string>

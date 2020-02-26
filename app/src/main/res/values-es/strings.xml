@@ -74,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
+    <string name="nc_settings_notification_sounds">Sonido</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
     <string name="nc_settings_other_notifications_ringtone">Notificaciones</string>
     <string name="nc_settings_no_ringtone">Sonido NO</string>
@@ -315,4 +316,5 @@
     <string name="nc_search_for_more">Buscar más participantes</string>
     <string name="nc_new_group">Nuevo grupo</string>
     <string name="nc_search_empty_contacts">¿Dónde se escondieron todos?</string>
-    </resources>
+    <string name="reject_call">Rechazar</string>
+</resources>
