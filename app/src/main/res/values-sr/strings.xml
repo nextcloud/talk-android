@@ -145,8 +145,8 @@
     <string name="nc_delete">Обриши</string>
     <string name="nc_delete_conversation_default">Потврдите да желите да уклоните
  разговор.</string>
-    <string name="nc_delete_conversation_one2one">Уколико обришете разговор, он ће такође
-        бити уклоњен и за %1$s.</string>
+    <string name="nc_delete_conversation_one2one">Ако обришете разговор, он ће бити
+        обрисан и за корисника %1$s.</string>
     <string name="nc_delete_conversation_more">Ако обришете разговор, он ће такође бити
  обрисан и за све друге учеснике.</string>
 

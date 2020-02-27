@@ -74,6 +74,8 @@
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
     <string name="nc_account_scheduled_for_deletion">Kontua ezabatzeko programatuta dago eta ezin da harekin operatu</string>
+    <string name="nc_settings_notification_sounds">Soinua</string>
+    <string name="nc_settings_call_ringtone">Deiak</string>
     <string name="nc_settings_other_notifications_ringtone">Jakinarazpenak</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_vibrate">Bibratu</string>
@@ -304,6 +306,8 @@
     <string name="nc_not_defined_error">Errore ezezaguna</string>
     <string name="nc_unauthorized_error">Baimenik gabe</string>
 
+    <string name="nc_oops">Ups, zerbait txarto joan da!</string>
+
     <string name="nc_general_settings">Orokorra</string>
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
@@ -316,4 +320,6 @@
 
     <string name="nc_search_for_more">Bilatu parte-hartzaile gehiago</string>
     <string name="nc_new_group">Talde berria</string>
-    </resources>
+    <string name="nc_search_empty_contacts">Non ezkutatu dira denak?</string>
+    <string name="reject_call">Baztertu</string>
+</resources>
