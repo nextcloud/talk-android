@@ -318,4 +318,5 @@
     <string name="nc_search_for_more">Αναζήτηση περισσότερων συμμετεχόντων</string>
     <string name="nc_new_group">Νέα ομάδα</string>
     <string name="nc_search_empty_contacts">Πού κρύβονταν όλοι;</string>
-    </resources>
+    <string name="reject_call">Απόρριψη</string>
+</resources>

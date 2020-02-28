@@ -74,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">Апликација Ћаскања није инсталирана на серверу на који се пријављујете</string>
     <string name="nc_settings_account_updated">Ваш постојећи налог је ажуриран, уместо што је додат нови налог</string>
     <string name="nc_account_scheduled_for_deletion">Налогу је заказано брисање и то не може да се промени</string>
+    <string name="nc_settings_notification_sounds">Звук</string>
     <string name="nc_settings_call_ringtone">Позиви</string>
     <string name="nc_settings_other_notifications_ringtone">Обавештења</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
@@ -89,7 +90,7 @@
     <string name="nc_settings_privacy">Приватност</string>
     <string name="nc_settings_screen_lock_title">Закључавање екрана</string>
     <string name="nc_settings_screen_lock_desc">Закључајте %1$s са Андроидовим екраном закључавања или подржаним биометријским методом</string>
-    <string name="nc_settings_screen_lock_timeout_title">Период неактивности за закључавање екрана</string>
+    <string name="nc_settings_screen_lock_timeout_title">Период неактивности до закључавања екрана</string>
     <string name="nc_none">Ништа</string>
     <string name="nc_settings_screen_security_title">Безбедност екрана</string>
     <string name="nc_settings_screen_security_desc">Забрани снимке екрана у скорашњој листи и унутар апликације</string>
@@ -143,11 +144,11 @@
     <string name="nc_make_call_private">Учини разговор приватним</string>
     <string name="nc_delete_call">Обриши разговор</string>
     <string name="nc_delete">Обриши</string>
-    <string name="nc_delete_conversation_default">Потврдите да желите да уклоните
- разговор.</string>
+    <string name="nc_delete_conversation_default">Потврдите да желите да обришете
+    овај разговор.</string>
     <string name="nc_delete_conversation_one2one">Ако обришете разговор, он ће бити
         обрисан и за корисника %1$s.</string>
-    <string name="nc_delete_conversation_more">Ако обришете разговор, он ће такође бити
+    <string name="nc_delete_conversation_more">Ако обришете разговор, он ће бити
  обрисан и за све друге учеснике.</string>
 
     <string name="nc_new_conversation_short">Нов</string>
@@ -177,8 +178,8 @@
     <string name="nc_incoming_call">Долазни позив од</string>
     <string name="nc_nick_guest">Гост</string>
     <string name="nc_public_call">Нови јавни разговор</string>
-    <string name="nc_public_call_explanation">Јавни разговори Вам дозвољавају да позовете људе споља кроз
-        специјално направљену везу за њих.</string>
+    <string name="nc_public_call_explanation">Јавни разговори омогућавају да позовете људе споља кроз
+        посебно направљену везу за њих.</string>
     <string name="nc_call_timeout">Нема одговора у 45 секунди, притисните да пробате поново</string>
     <string name="nc_call_reconnecting">Поново се повезујем…</string>
     <string name="nc_offline">Тренутно ван мреже, проверите да ли имате интернет</string>
@@ -201,8 +202,8 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Извињавамо се, нешто је пошло наопако!</string>
-    <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним собама преко мобилног телефона.
-        Можете пробати да се придружите разговору преко веб читача.</string>
+    <string name="nc_failed_signaling_settings">Одредишни сервер не подржава придруживање јавним разговорима путем мобилног телефона.
+        Можете пробати да се придружите разговору преко веб прегледача.</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
     <string name="nc_ok">У реду</string>
     <string name="nc_call_name">Назив разговора</string>
@@ -304,10 +305,12 @@
     <string name="nc_not_defined_error">Непозната грешка</string>
     <string name="nc_unauthorized_error">Неовлашћено</string>
 
+    <string name="nc_oops">Нешто је пошло наопако!</string>
+
     <string name="nc_general_settings">Опште</string>
     <string name="nc_allow_guests">Дозволи госте</string>
-    <string name="nc_last_moderator_title">Не могу напустити разговор</string>
-    <string name="nc_last_moderator">Морате унапредити новог модератора пре него што напустите %1$s.</string>
+    <string name="nc_last_moderator_title">Не можете напустити разговор</string>
+    <string name="nc_last_moderator">Морате одредити новог модератора пре него што напустите %1$s.</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
@@ -317,4 +320,5 @@
     <string name="nc_search_for_more">Тражи још учесника</string>
     <string name="nc_new_group">Нова група</string>
     <string name="nc_search_empty_contacts">Где су сви нестали?</string>
-    </resources>
+    <string name="reject_call">Одбиј</string>
+</resources>
