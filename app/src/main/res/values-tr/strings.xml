@@ -74,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
     <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
     <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
+    <string name="nc_settings_notification_sounds">Ses</string>
     <string name="nc_settings_call_ringtone">Çağrılar</string>
     <string name="nc_settings_other_notifications_ringtone">Bildirimler</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
@@ -304,6 +305,8 @@
     <string name="nc_not_defined_error">Bilinmeyen sorun</string>
     <string name="nc_unauthorized_error">Kimliği doğrulanmamış</string>
 
+    <string name="nc_oops">Birşeyler ters gitti!</string>
+
     <string name="nc_general_settings">Genel</string>
     <string name="nc_allow_guests">Konuklar katılabilsin</string>
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
@@ -317,4 +320,5 @@
     <string name="nc_search_for_more">Başka katılımcılar arayın</string>
     <string name="nc_new_group">Yeni grup</string>
     <string name="nc_search_empty_contacts">Hepsi nereye gizlendiler?</string>
-    </resources>
+    <string name="reject_call">Reddet</string>
+</resources>

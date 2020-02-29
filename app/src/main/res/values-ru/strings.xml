@@ -47,6 +47,8 @@
 
     <string name="nc_never">Никогда не использовался</string>
     <string name="nc_search">Поиск</string>
+    <string name="nc_search_conversations">Найти обсуждение</string>
+
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
     <string name="nc_yes">Да</string>
@@ -72,6 +74,7 @@
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, приложение «Talk» не установлено.</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
+    <string name="nc_settings_notification_sounds">Звук</string>
     <string name="nc_settings_call_ringtone">Вызовы</string>
     <string name="nc_settings_other_notifications_ringtone">Уведомления</string>
     <string name="nc_settings_no_ringtone">Без звука</string>
@@ -113,6 +116,7 @@
     <string name="nc_username">Имя пользователя</string>
     <string name="nc_password">Пароль</string>
     <string name="nc_password_optional">Пароль (необязательно)</string>
+    <string name="nc_password_redacted">Скрыто для безопасности</string>
     <string name="nc_conversation_link">Ссылка на беседу</string>
     <string name="nc_new_password">Новый пароль</string>
     <string name="nc_wrong_password">Неправильный пароль</string>
@@ -155,6 +159,10 @@
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
     <string name="nc_favorites_explanation">Беседа будет закреплена вверху списка</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Найти участника</string>
+    <string name="nc_select_contacts">Найти участников</string>
+    <string name="nc_select_new_contacts">Найти новых участников</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
@@ -187,6 +195,8 @@
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
     <string name="nc_mute_calls_desc">Входящие вызовы будут проигнорированы</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
+    <string name="nc_important_conversation_desc">Уведомления о вызовах и сообщениях будут показаны даже в режиме «Не беспокоить» (в соответствии с параметром «Разрешены только приоритетные уведомления»)</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
@@ -218,6 +228,7 @@
     <string name="nc_conversation_menu_voice_call">Голосовой вызов</string>
     <string name="nc_conversation_menu_video_call">Видеозвонок</string>
     <string name="nc_conversation_menu_conversation_info">Информация о беседе</string>
+    <string name="nc_new_messages">Непрочитанные сообщения</string>
     <string name="nc_no_messages_yet">Сообщений еще нет</string>
     <string name="nc_sent_a_link" formatted="true">%1$s отправил(а) ссылку.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s отправил(а) GIF.</string>
@@ -255,6 +266,7 @@
     <string name="nc_groups">Группы</string>
     <string name="nc_contacts">Контакты</string>
     <string name="nc_circles">Круги</string>
+    <string name="nc_emails">Адреса эл. почты</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_others">Другие</string>
 
@@ -280,10 +292,28 @@
     <string name="nc_lobby_waiting_with_date">В данный момент вы ожидаете начала встречи, запланированной на %1$s.</string>
     <string name="nc_manual">Не задано</string>
 
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Нет подключения к сети</string>
+    <string name="nc_bad_response_error">Неверный ответ</string>
     <string name="nc_timeout_error">Тайм-аут</string>
+    <string name="nc_empty_response_error">Пустой ответ</string>
     <string name="nc_not_defined_error">Неизвестная ошибка</string>
+    <string name="nc_unauthorized_error">Неавторизовано</string>
+
+    <string name="nc_oops">Что-то пошло не так :(</string>
+
     <string name="nc_general_settings">Основные</string>
+    <string name="nc_allow_guests">Разрешить гостей</string>
+    <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
+    <string name="nc_last_moderator">Перед выходом из обсуждения %1$s необходимо назначить нового модератора.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Копировать</string>
     <string name="nc_reply">Ответить</string>
 
-    </resources>
+    <string name="nc_search_for_more">Искать дополнительных участников</string>
+    <string name="nc_new_group">Новая группа</string>
+    <string name="nc_search_empty_contacts">Где все?</string>
+    <string name="reject_call">Отклонить</string>
+</resources>
