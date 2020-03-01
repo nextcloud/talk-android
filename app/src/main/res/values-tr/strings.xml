@@ -305,7 +305,7 @@
     <string name="nc_not_defined_error">Bilinmeyen sorun</string>
     <string name="nc_unauthorized_error">Kimliği doğrulanmamış</string>
 
-    <string name="nc_oops">Birşeyler ters gitti!</string>
+    <string name="nc_oops">Maalesef bir şeyler ters gitti!</string>
 
     <string name="nc_general_settings">Genel</string>
     <string name="nc_allow_guests">Konuklar katılabilsin</string>
