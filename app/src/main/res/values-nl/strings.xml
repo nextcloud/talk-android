@@ -75,6 +75,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
+    <string name="nc_settings_notification_sounds">Geluid</string>
     <string name="nc_settings_call_ringtone">Oproepen</string>
     <string name="nc_settings_other_notifications_ringtone">Meldingen</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
@@ -318,4 +319,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_search_for_more">Zoek meer deelnemers</string>
     <string name="nc_new_group">Nieuwe groep</string>
     <string name="nc_search_empty_contacts">Waar zijn ze allemaal naar toe?</string>
-    </resources>
+    <string name="reject_call">Afwijzen</string>
+</resources>
