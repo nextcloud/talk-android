@@ -83,7 +83,7 @@
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_theme_title">Motyw</string>
     <string name="nc_settings_theme_key">motyw</string>
-    <string name="nc_settings_theme_follow_system">Użyj domyślnego systemu</string>
+    <string name="nc_settings_theme_follow_system">Użyj domyślnych ustawień systemu</string>
     <string name="nc_settings_theme_battery_saver">Ustawiony według Oszczędzania Baterii</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
