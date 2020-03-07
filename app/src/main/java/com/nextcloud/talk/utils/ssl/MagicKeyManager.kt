@@ -44,10 +44,11 @@ class MagicKeyManager(private val keyManager: X509KeyManager, private val usersR
         user?.let {
             it.clientCertificate?.let {
                 alias = it
-            } ?: run {
-                appPreferences.temporaryClientCertAlias?.let {
-                    alias = it
-                }
+            }
+        }
+        if (alias == null) {
+            appPreferences.temporaryClientCertAlias?.let {
+                alias = it
             }
         }
 
