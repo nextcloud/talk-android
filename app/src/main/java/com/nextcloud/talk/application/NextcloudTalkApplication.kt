@@ -52,8 +52,10 @@ import com.nextcloud.talk.newarch.features.account.di.module.AccountModule
 import com.nextcloud.talk.newarch.features.contactsflow.di.module.ContactsFlowModule
 import com.nextcloud.talk.newarch.features.conversationslist.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
+import com.nextcloud.talk.newarch.local.models.toUserEntity
 import com.nextcloud.talk.newarch.services.shortcuts.ShortcutService
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
@@ -192,44 +194,49 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
         if (!appPreferences.migrationToRoomFinished) {
             GlobalScope.launch {
                 val users: List<UserEntity> = userUtils.users as List<UserEntity>
-                var userNg: UserNgEntity
-                val newUsers = mutableListOf<UserNgEntity>()
+                var newUser: User
+                val newUsers = mutableListOf<User>()
                 for (user in users) {
-                    userNg = UserNgEntity(user.id, user.userId, user.username, user.baseUrl)
-                    userNg.token = user.token
-                    userNg.displayName = user.displayName
+                    newUser = User(userId =  user.userId, username = user.username, baseUrl = user.baseUrl)
+                    newUser.token = user.token
+                    newUser.displayName = user.displayName
                     try {
-                        userNg.pushConfiguration =
+                        newUser.pushConfiguration =
                                 LoganSquare.parse(user.pushConfigurationState, PushConfiguration::class.java)
                     } catch (e: Exception) {
                         // no push
                     }
                     if (user.capabilities != null) {
-                        userNg.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
+                        newUser.capabilities = LoganSquare.parse(user.capabilities, Capabilities::class.java)
                     }
-                    userNg.clientCertificate = user.clientCertificate
+                    newUser.clientCertificate = user.clientCertificate
                     try {
                         val external = LoganSquare.parse(user.externalSignalingServer, ExternalSignalingServer::class.java)
                         val signalingSettings = SignalingSettings()
                         signalingSettings.externalSignalingServer = external.externalSignalingServer
                         signalingSettings.externalSignalingTicket = external.externalSignalingTicket
-                        userNg.signalingSettings = signalingSettings
+                        newUser.signalingSettings = signalingSettings
                     } catch (e: Exception) {
                         // no external signaling
                     }
                     if (user.current) {
-                        userNg.status = ACTIVE
+                        newUser.status = ACTIVE
                     } else {
                         if (user.scheduledForDeletion) {
-                            userNg.status = PENDING_DELETE
+                            newUser.status = PENDING_DELETE
                         } else {
-                            userNg.status = DORMANT
+                            newUser.status = DORMANT
                         }
                     }
 
-                    newUsers.add(userNg)
+                    newUsers.add(newUser)
                 }
-                usersDao.saveUsers(*newUsers.toTypedArray())
+
+                val userEntities = newUsers.map {
+                    it.toUserEntity()
+                }
+                
+                usersDao.saveUsers(*userEntities.toTypedArray())
                 dataStore.delete()
                 appPreferences.migrationToRoomFinished = true
             }

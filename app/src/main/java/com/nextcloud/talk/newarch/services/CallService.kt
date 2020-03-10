@@ -284,14 +284,14 @@ class CallService : Service(), KoinComponent, CoroutineScope {
     }
 
     private suspend fun getConversationForTokenAndUser(user: UserNgEntity, conversationToken: String): Conversation? {
-        var conversation = conversationsRepository.getConversationForUserWithToken(user.id, conversationToken)
+        var conversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
         if (conversation == null) {
             val getConversationUseCase = GetConversationUseCase(componentsWithEmptyCookieJar.getRepository(), apiErrorHandler)
             runBlocking {
                 getConversationUseCase.invoke(this, parametersOf(user, conversationToken), object : UseCaseResponse<ConversationOverall> {
                     override suspend fun onSuccess(result: ConversationOverall) {
                         val internalConversation = result.ocs.data
-                        conversationsRepository.saveConversationsForUser(user.id, listOf(internalConversation), false)
+                        conversationsRepository.saveConversationsForUser(user.id!!, listOf(internalConversation), false)
                         conversation = result.ocs.data
                     }
 
@@ -309,7 +309,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
         endIncomingConversation(true)
         activeNotification = generatedNotificationId
         val notification = builder.build()
-        notification.extras.putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
+        notification.extras.putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
         notification.extras.putLong(BundleKeys.KEY_NOTIFICATION_ID, internalNotificationId)
         notification.flags = notification.flags or Notification.FLAG_INSISTENT
         startForeground(generatedNotificationId.hashCode(), notification)

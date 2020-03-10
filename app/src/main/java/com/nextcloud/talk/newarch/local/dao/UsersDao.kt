@@ -80,6 +80,7 @@ abstract class UsersDao {
         val users = getUsers()
         for (user in users) {
             user.status = UserStatus.ACTIVE
+            updateUser(user)
             return true
         }
 

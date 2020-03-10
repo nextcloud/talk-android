@@ -61,7 +61,7 @@ class ShortcutService constructor(private var context: Context,
         currentUser = user
         var internalUserId: Long = -1
         currentUser?.let {
-            internalUserId = it.id
+            internalUserId = it.id!!
         }
         conversationsRepository.getShortcutTargetConversations(internalUserId)
     }

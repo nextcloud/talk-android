@@ -39,7 +39,7 @@ import java.util.*
 @Serializable
 @Entity(tableName = "users")
 data class UserNgEntity(
-        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long,
+        @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
         @ColumnInfo(name = "user_id") var userId: String,
         @ColumnInfo(name = "username") var username: String,
         @ColumnInfo(name = "base_url") var baseUrl: String,
@@ -84,6 +84,10 @@ data class UserNgEntity(
     override fun hashCode(): Int {
         return Objects.hash(userId, username)
     }
+}
+
+fun UserNgEntity.toUser() : User {
+    return User(this.id, this.userId, this.username, this.baseUrl, this.token, this.displayName, this.pushConfiguration, this.capabilities, this.clientCertificate, this.signalingSettings, this.status)
 }
 
 fun UserNgEntity.getCredentials(): String = ApiUtils.getCredentials(username, token)

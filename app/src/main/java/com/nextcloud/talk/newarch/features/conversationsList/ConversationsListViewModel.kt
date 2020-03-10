@@ -78,7 +78,7 @@ class ConversationsListViewModel constructor(
         filterLiveData.value = null
         Transformations.switchMap(filterLiveData) { filter ->
             if (user != null) {
-                conversationsRepository.getConversationsForUser(user.id, filter)
+                conversationsRepository.getConversationsForUser(user.id!!, filter)
             } else {
                 liveData {
                     listOf<Conversation>()
@@ -99,7 +99,7 @@ class ConversationsListViewModel constructor(
                 object : UseCaseResponse<GenericOverall> {
                     override suspend fun onSuccess(result: GenericOverall) {
                         conversationsRepository.deleteConversation(
-                                globalService.currentUserLiveData.value!!.id, conversation
+                                globalService.currentUserLiveData.value!!.id!!, conversation
                                 .conversationId!!
                         )
                     }
@@ -128,7 +128,7 @@ class ConversationsListViewModel constructor(
                 object : UseCaseResponse<GenericOverall> {
                     override suspend fun onSuccess(result: GenericOverall) {
                         conversationsRepository.deleteConversation(
-                                globalService.currentUserLiveData.value!!.id, conversation
+                                globalService.currentUserLiveData.value!!.id!!, conversation
                                 .conversationId!!
                         )
                     }
@@ -159,7 +159,7 @@ class ConversationsListViewModel constructor(
                 object : UseCaseResponse<GenericOverall> {
                     override suspend fun onSuccess(result: GenericOverall) {
                         conversationsRepository.setFavoriteValueForConversation(
-                                globalService.currentUserLiveData.value!!.id,
+                                globalService.currentUserLiveData.value!!.id!!,
                                 conversation.conversationId!!, favorite
                         )
                     }
@@ -202,7 +202,7 @@ class ConversationsListViewModel constructor(
                     }
 
                     conversationsRepository.saveConversationsForUser(
-                            internalUserId,
+                            internalUserId!!,
                             mutableList, true)
                     messageData = ""
                     conversationsLoadingLock.unlock()
@@ -223,7 +223,7 @@ class ConversationsListViewModel constructor(
             value: Boolean
     ) {
         conversationsRepository.setChangingValueForConversation(
-                globalService.currentUserLiveData.value!!.id, conversation
+                globalService.currentUserLiveData.value!!.id!!, conversation
                 .conversationId!!, value
         )
     }
