@@ -57,6 +57,7 @@ abstract class TalkDatabase : RoomDatabase() {
 
     companion object {
         private const val DB_NAME = "talk.db"
+
         @Volatile
         private var INSTANCE: TalkDatabase? = null
 

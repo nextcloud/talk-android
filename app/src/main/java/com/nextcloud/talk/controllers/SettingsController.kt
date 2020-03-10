@@ -87,72 +87,95 @@ class SettingsController : BaseController() {
     @JvmField
     @BindView(R.id.settings_screen)
     var settingsScreen: MaterialPreferenceScreen? = null
+
     @JvmField
     @BindView(R.id.settings_proxy_choice)
     var proxyChoice: MaterialChoicePreference? = null
+
     @JvmField
     @BindView(R.id.settings_proxy_port_edit)
     var proxyPortEditText: MaterialEditTextPreference? = null
+
     @JvmField
     @BindView(R.id.settings_licence)
     var licenceButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_privacy)
     var privacyButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_source_code)
     var sourceCodeButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_version)
     var versionInfo: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.avatar_image)
     var avatarImageView: ImageView? = null
+
     @JvmField
     @BindView(R.id.display_name_text)
     var displayNameTextView: EmojiTextView? = null
+
     @JvmField
     @BindView(R.id.base_url_text)
     var baseUrlTextView: TextView? = null
+
     @JvmField
     @BindView(R.id.settings_call_sound)
     var settingsCallSound: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_message_sound)
     var settingsMessageSound: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_remove_account)
     var removeAccountButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_switch)
     var switchAccountButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_reauthorize)
     var reauthorizeButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_add_account)
     var addAccountButton: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.message_view)
     var messageView: MaterialPreferenceCategory? = null
+
     @JvmField
     @BindView(R.id.settings_client_cert)
     var certificateSetup: MaterialStandardPreference? = null
+
     @JvmField
     @BindView(R.id.settings_always_vibrate)
     var shouldVibrateSwitchPreference: MaterialSwitchPreference? = null
+
     @JvmField
     @BindView(R.id.settings_incognito_keyboard)
     var incognitoKeyboardSwitchPreference: MaterialSwitchPreference? = null
+
     @JvmField
     @BindView(R.id.settings_screen_security)
     var screenSecuritySwitchPreference: MaterialSwitchPreference? = null
+
     @JvmField
     @BindView(R.id.settings_link_previews)
     var linkPreviewsSwitchPreference: MaterialSwitchPreference? = null
+
     @JvmField
     @BindView(R.id.settings_screen_lock)
     var screenLockSwitchPreference: MaterialSwitchPreference? = null
+
     @JvmField
     @BindView(R.id.settings_screen_lock_timeout)
     var screenLockTimeoutChoicePreference: MaterialChoicePreference? = null
@@ -277,8 +300,8 @@ class SettingsController : BaseController() {
             } else {
                 withContext(Dispatchers.Main) {
                     router.setRoot(RouterTransaction.with(
-                            ServerEntryView()
-                    )
+                                    ServerEntryView()
+                            )
                             .pushChangeHandler(VerticalChangeHandler())
                             .popChangeHandler(VerticalChangeHandler())
                     )
@@ -397,8 +420,8 @@ class SettingsController : BaseController() {
                 addAccountButton!!.addPreferenceClickListener { view15 ->
                     router.pushController(
                             RouterTransaction.with(ServerEntryView()).pushChangeHandler(
-                                    VerticalChangeHandler()
-                            )
+                                            VerticalChangeHandler()
+                                    )
                                     .popChangeHandler(VerticalChangeHandler())
                     )
                 }
@@ -406,8 +429,8 @@ class SettingsController : BaseController() {
                 switchAccountButton!!.addPreferenceClickListener { view16 ->
                     router.pushController(
                             RouterTransaction.with(SwitchAccountController()).pushChangeHandler(
-                                    VerticalChangeHandler()
-                            )
+                                            VerticalChangeHandler()
+                                    )
                                     .popChangeHandler(VerticalChangeHandler())
                     )
                 }
@@ -442,7 +465,7 @@ class SettingsController : BaseController() {
                             realAlias = ""
                         }
 
-                        currentUser = usersRepository.getUserWithId(currentUser!!.id!!)
+                        currentUser = usersRepository.getUserWithId(currentUser!!.id)
                         currentUser!!.clientCertificate = realAlias
                         GlobalScope.launch {
                             usersRepository.updateUser(currentUser!!)
@@ -577,9 +600,9 @@ class SettingsController : BaseController() {
                     loadAvatarImage()
 
                     ncApi.getUserProfile(
-                            credentials,
-                            ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl)
-                    )
+                                    credentials,
+                                    ApiUtils.getUrlForUserProfile(currentUser!!.baseUrl)
+                            )
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .`as`<ObservableSubscribeProxy<UserProfileOverall>>(
@@ -590,7 +613,7 @@ class SettingsController : BaseController() {
                                 var displayName: String? = userProfileOverall.ocs.data.displayName
 
                                 if (!TextUtils.isEmpty(displayName) && displayName != currentUser!!.displayName) {
-                                    val user = usersRepository.getUserWithId(currentUser!!.id!!)
+                                    val user = usersRepository.getUserWithId(currentUser!!.id)
                                     user.displayName = displayName
                                     GlobalScope.launch {
                                         usersRepository.updateUser(user)

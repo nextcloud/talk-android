@@ -43,10 +43,10 @@ import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.newarch.utils.NetworkUtils
 import com.nextcloud.talk.newarch.utils.NetworkUtils.GetProxyRunnable
 import com.nextcloud.talk.newarch.utils.NetworkUtils.MagicAuthenticator
-import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.LoggingUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder

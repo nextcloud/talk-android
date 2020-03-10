@@ -55,15 +55,19 @@ import java.util.*
 
 class BrowserController(args: Bundle) : BaseController(), ListingInterface, FlexibleAdapter.OnItemClickListener, SelectionInterface {
     private val selectedPaths: MutableSet<String>
+
     @JvmField
     @BindView(R.id.recyclerView)
     internal var recyclerView: RecyclerView? = null
+
     @JvmField
     @BindView(R.id.fast_scroller)
     internal var fastScroller: FastScroller? = null
+
     @JvmField
     @BindView(R.id.action_back)
     internal var backMenuItem: BottomNavigationItemView? = null
+
     @JvmField
     @BindView(R.id.action_refresh)
     internal var actionRefreshMenuItem: BottomNavigationItemView? = null
@@ -126,7 +130,7 @@ class BrowserController(args: Bundle) : BaseController(), ListingInterface, Flex
                 iterator.remove()
                 if (paths.size == 10 || !iterator.hasNext()) {
                     data = Data.Builder()
-                            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, activeUser.id!!)
+                            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, activeUser.id)
                             .putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomToken)
                             .putStringArray(BundleKeys.KEY_FILE_PATHS, paths.toTypedArray())
                             .build()

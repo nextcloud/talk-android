@@ -43,8 +43,8 @@ class NetworkComponents(
         private val retrofit: Retrofit,
         private val androidApplication: Application
 ) : KoinComponent {
-    val usersSingleOperationRepositoryMap : MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
-    val usersMultipleOperationsRepositoryMap : MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
+    val usersSingleOperationRepositoryMap: MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
+    val usersMultipleOperationsRepositoryMap: MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
     val usersSingleOperationOkHttpMap: MutableMap<Long, OkHttpClient> = mutableMapOf()
     val usersMultipleOperationOkHttpMap: MutableMap<Long, OkHttpClient> = mutableMapOf()
 

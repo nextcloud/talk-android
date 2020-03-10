@@ -32,6 +32,7 @@ class UserProfileData {
     @JvmField
     @JsonField(name = ["display-name", "displayname"])
     var displayName: String? = null
+
     @JvmField
     @JsonField(name = ["id"])
     var userId: String? = null

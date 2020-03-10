@@ -436,9 +436,9 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
 
     private fun loadAvatar() {
         val avatarSize = DisplayUtils.convertDpToPixel(
-                conversationVoiceCallMenuItem?.icon!!
-                        .intrinsicWidth.toFloat(), activity!!
-        )
+                        conversationVoiceCallMenuItem?.icon!!
+                                .intrinsicWidth.toFloat(), activity!!
+                )
                 .toInt()
 
         avatarSize.let {

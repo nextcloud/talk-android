@@ -58,7 +58,7 @@ class DeleteConversationWorker(context: Context,
         operationUser?.let {
             val credentials = it.getCredentials()
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
-            val eventStatus = EventStatus(it.id!!,
+            val eventStatus = EventStatus(it.id,
                     EventStatus.EventType.CONVERSATION_UPDATE, true)
             ncApi!!.deleteRoom(credentials, ApiUtils.getRoom(it.baseUrl, conversationToken))
                     .subscribeOn(Schedulers.io())

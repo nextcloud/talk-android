@@ -49,6 +49,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @JvmField
     @BindView(R.id.messageText)
     var messageText: EmojiTextView? = null
+
     @JvmField
     @BindView(R.id.messageTime)
     var messageTimeView: TextView? = null

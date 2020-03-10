@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.activities
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -37,7 +36,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.CallController
 import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
-import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 class MagicCallActivity : BaseActivity() {

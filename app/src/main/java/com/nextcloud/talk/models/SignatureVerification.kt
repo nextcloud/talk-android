@@ -32,9 +32,9 @@ import org.parceler.Parcel
 @JsonObject
 @Serializable
 @Parcelize
-data class SignatureVerification (
-    @JvmField
-    var signatureValid: Boolean = false,
-    @JvmField
-    var userEntity: UserNgEntity? = null
-): Parcelable
+data class SignatureVerification(
+        @JvmField
+        var signatureValid: Boolean = false,
+        @JvmField
+        var userEntity: UserNgEntity? = null
+) : Parcelable

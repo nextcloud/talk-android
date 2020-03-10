@@ -162,7 +162,7 @@ class ConversationsListView : BaseView() {
                 bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
                 bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
                 ConductorRemapping.remapChatController(
-                        router, user.id!!, conversation.token!!,
+                        router, user.id, conversation.token!!,
                         bundle, false
                 )
             }

@@ -43,68 +43,95 @@ import java.util.*
 class Conversation {
     @JsonIgnore
     var databaseId: String? = null
+
     @JsonIgnore
     @NonNull
     var databaseUserId: Long? = null
+
     @JsonField(name = ["id"])
     var conversationId: String? = null
+
     @JsonField(name = ["token"])
     var token: String? = null
+
     @JsonField(name = ["name"])
     var name: String? = null
+
     @JsonField(name = ["displayName"])
     var displayName: String? = null
+
     @JsonField(name = ["type"], typeConverter = EnumRoomTypeConverter::class)
     var type: ConversationType? = null
+
     @JsonField(name = ["count"])
     var count: Long = 0
+
     /*@JsonField(name = ["lastPing"])
     var lastPing: Long = 0*/
     @JsonField(name = ["numGuests"])
     var numberOfGuests: Long = 0
+
     /*@JsonField(name = ["guestList"])
     var guestList: HashMap<String, HashMap<String, Any>>? = null*/
     @JsonField(name = ["participants"])
     var participants: HashMap<String, Participant>? = null
+
     @JsonField(name = ["participantType"], typeConverter = EnumParticipantTypeConverter::class)
     var participantType: Participant.ParticipantType? = null
+
     @JsonField(name = ["hasPassword"])
     var hasPassword: Boolean = false
+
     @JsonField(name = ["sessionId"])
     var sessionId: String? = null
+
     @JsonIgnore
     var password: String? = null
+
     @JsonField(name = ["isFavorite"])
     var favorite: Boolean = false
+
     @JsonField(name = ["lastActivity"])
     var lastActivity: Long = 0
+
     @JsonField(name = ["unreadMessages"])
     var unreadMessages: Int = 0
+
     @JsonField(name = ["unreadMention"])
     var unreadMention: Boolean = false
+
     @JsonField(name = ["lastMessage"])
     var lastMessage: ChatMessage? = null
+
     @JsonField(name = ["objectType"])
     var objectType: String? = null
+
     @JsonField(name = ["notificationLevel"], typeConverter = EnumNotificationLevelConverter::class)
     var notificationLevel: NotificationLevel? = null
+
     @JsonField(name = ["readOnly"], typeConverter = EnumReadOnlyConversationConverter::class)
     var conversationReadOnlyState:
             ConversationReadOnlyState? = null
+
     @JsonField(name = ["lobbyState"], typeConverter = EnumLobbyStateConverter::class)
     var lobbyState: LobbyState? = null
+
     @JsonField(name = ["lobbyTimer"])
     var lobbyTimer: Long? = 0
+
     @JsonField(name = ["lastReadMessageId"])
     var lastReadMessageId: Long = 0
+
     @JsonField(name = ["canStartCall"])
     var canStartCall: Boolean? = true
+
     @JsonIgnore
     var changing: Boolean = false
 
 
     @JsonIgnore
     val isPublic: Boolean = ConversationType.PUBLIC_CONVERSATION == type
+
     @JsonIgnore
     val isGuest: Boolean =
             Participant.ParticipantType.GUEST == participantType ||

@@ -117,46 +117,67 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
     @BindView(R.id.notification_settings)
     lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
+
     @BindView(R.id.progressBar)
     lateinit var progressBar: ProgressBar
+
     @BindView(R.id.conversation_info_message_notifications)
     lateinit var messageNotificationLevel: MaterialChoicePreference
+
     @BindView(R.id.webinar_settings)
     lateinit var conversationInfoWebinar: MaterialPreferenceScreen
+
     @BindView(R.id.conversation_info_lobby)
     lateinit var conversationInfoLobby: MaterialSwitchPreference
+
     @BindView(R.id.conversation_info_name)
     lateinit var nameCategoryView: MaterialPreferenceCategory
+
     @BindView(R.id.start_time_preferences)
     lateinit var startTimeView: MaterialStandardPreference
+
     @BindView(R.id.avatar_image)
     lateinit var conversationAvatarImageView: ImageView
+
     @BindView(R.id.display_name_text)
     lateinit var conversationDisplayName: EmojiTextView
+
     @BindView(R.id.participants_list_category)
     lateinit var participantsListCategory: MaterialPreferenceCategoryWithRightLink
+
     @BindView(R.id.recyclerView)
     lateinit var recyclerView: RecyclerView
+
     @BindView(R.id.deleteConversationAction)
     lateinit var deleteConversationAction: MaterialStandardPreference
+
     @BindView(R.id.leaveConversationAction)
     lateinit var leaveConversationAction: MaterialStandardPreference
+
     @BindView(R.id.ownOptions)
     lateinit var ownOptionsCategory: MaterialPreferenceCategory
+
     @BindView(R.id.muteCalls)
     lateinit var muteCalls: MaterialSwitchPreference
+
     @BindView(R.id.mpc_action)
     lateinit var actionTextView: TextView
+
     @BindView(R.id.generalConversationOptions)
     lateinit var generalConversationOptions: MaterialPreferenceScreen
+
     @BindView(R.id.changeConversationName)
     lateinit var changeConversationName: MaterialEditTextPreference
+
     @BindView(R.id.favoriteConversationAction)
     lateinit var favoriteConversationAction: MaterialSwitchPreference
+
     @BindView(R.id.allowGuestsAction)
     lateinit var allowGuestsAction: MaterialSwitchPreference
+
     @BindView(R.id.passwordAction)
     lateinit var passwordAction: MaterialEditTextPreference
+
     @BindView(R.id.shareAction)
     lateinit var shareAction: MaterialStandardPreference
 
@@ -181,7 +202,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
             if (!TextUtils.isEmpty(conversationToken) && conversationUser != null) {
                 val data = Data.Builder()
                 data.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversationToken)
-                data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
+                data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id)
                 return data.build()
             }
 
@@ -318,7 +339,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         if (databaseStorageModule != null && conversationUser != null && conversation != null) {
             if ((allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked) {
                 ncApi.makeRoomPublic(conversationUser.getCredentials(), ApiUtils.getUrlForRoomVisibility
-                (conversationUser.baseUrl, conversation!!.token))
+                        (conversationUser.baseUrl, conversation!!.token))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<GenericOverall> {
@@ -336,7 +357,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                         })
             } else {
                 ncApi.makeRoomPrivate(conversationUser.getCredentials(), ApiUtils.getUrlForRoomVisibility
-                (conversationUser.baseUrl, conversation!!.token))
+                        (conversationUser.baseUrl, conversation!!.token))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<GenericOverall> {
@@ -360,7 +381,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         if (databaseStorageModule != null && conversationUser != null && conversation != null) {
             if ((favoriteConversationAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked) {
                 ncApi.addConversationToFavorites(conversationUser.getCredentials(), ApiUtils
-                        .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))
+                                .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<GenericOverall> {
@@ -379,7 +400,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                         })
             } else {
                 ncApi.removeConversationFromFavorites(conversationUser.getCredentials(), ApiUtils
-                        .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))
+                                .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<GenericOverall> {
@@ -407,12 +428,12 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                 ) as SwitchCompat).isChecked
         ) 1 else 0
         ncApi.setLobbyForConversation(
-                ApiUtils.getCredentials(
-                        conversationUser!!.username,
-                        conversationUser.token
-                ), ApiUtils.getUrlForLobbyForConversation
-        (conversationUser.baseUrl, conversation!!.token), state, conversation!!.lobbyTimer
-        )
+                        ApiUtils.getCredentials(
+                                conversationUser!!.username,
+                                conversationUser.token
+                        ), ApiUtils.getUrlForLobbyForConversation
+                (conversationUser.baseUrl, conversation!!.token), state, conversation!!.lobbyTimer
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<GenericOverall> {
@@ -554,8 +575,8 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
     private fun getListOfParticipants() {
         ncApi.getPeersForCall(
-                credentials, ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken)
-        )
+                        credentials, ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken)
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ParticipantsOverall> {
@@ -873,10 +894,10 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                         if (index == 0) {
                             if (participant.type == Participant.ParticipantType.MODERATOR) {
                                 ncApi.demoteModeratorToUser(
-                                        credentials,
-                                        ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
-                                        participant.userId
-                                )
+                                                credentials,
+                                                ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
+                                                participant.userId
+                                        )
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe {
@@ -884,10 +905,10 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                                         }
                             } else if (participant.type == Participant.ParticipantType.USER) {
                                 ncApi.promoteUserToModerator(
-                                        credentials,
-                                        ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
-                                        participant.userId
-                                )
+                                                credentials,
+                                                ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
+                                                participant.userId
+                                        )
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe {
@@ -899,10 +920,10 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                                     participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
                             ) {
                                 ncApi.removeParticipantFromConversation(
-                                        credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                        conversationUser.baseUrl, conversation!!.token, true
-                                ), participant.sessionId
-                                )
+                                                credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(
+                                                conversationUser.baseUrl, conversation!!.token, true
+                                        ), participant.sessionId
+                                        )
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe {
@@ -911,10 +932,10 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
                             } else {
                                 ncApi.removeParticipantFromConversation(
-                                        credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                        conversationUser.baseUrl, conversation!!.token, false
-                                ), participant.userId
-                                )
+                                                credentials, ApiUtils.getUrlForRemovingParticipantFromConversation(
+                                                conversationUser.baseUrl, conversation!!.token, false
+                                        ), participant.userId
+                                        )
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe {

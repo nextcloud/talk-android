@@ -79,8 +79,8 @@ class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAd
         }
         adapter!!.setFilter(queryString)
         ncApi.getMentionAutocompleteSuggestions(
-                currentUser!!.getCredentials(), ApiUtils.getUrlForMentionSuggestions(currentUser!!.baseUrl, roomToken),
-                queryString, 5)
+                        currentUser!!.getCredentials(), ApiUtils.getUrlForMentionSuggestions(currentUser!!.baseUrl, roomToken),
+                        queryString, 5)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)

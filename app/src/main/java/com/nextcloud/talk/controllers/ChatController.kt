@@ -113,27 +113,35 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     @BindView(R.id.messagesListView)
     @JvmField
     var messagesListView: MessagesList? = null
+
     @BindView(R.id.messageInputView)
     @JvmField
     var messageInputView: MessageInput? = null
+
     @BindView(R.id.messageInput)
     @JvmField
     var messageInput: EmojiEditText? = null
+
     @BindView(R.id.popupBubbleView)
     @JvmField
     var popupBubble: PopupBubble? = null
+
     @BindView(R.id.progressBar)
     @JvmField
     var loadingProgressBar: ProgressBar? = null
+
     @BindView(R.id.smileyButton)
     @JvmField
     var smileyButton: ImageButton? = null
+
     @BindView(R.id.lobbyView)
     @JvmField
     var lobbyView: RelativeLayout? = null
+
     @BindView(R.id.lobbyTextView)
     @JvmField
     var conversationLobbyText: TextView? = null
+
     @JvmField
     @BindView(R.id.quotedChatMessageView)
     var quotedChatMessageView: RelativeLayout? = null
@@ -294,9 +302,9 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                         .ONE_TO_ONE_CONVERSATION && activity != null && conversationVoiceCallMenuItem != null
         ) {
             val avatarSize = DisplayUtils.convertDpToPixel(
-                    conversationVoiceCallMenuItem?.icon!!
-                            .intrinsicWidth.toFloat(), activity!!
-            )
+                            conversationVoiceCallMenuItem?.icon!!
+                                    .intrinsicWidth.toFloat(), activity!!
+                    )
                     .toInt()
 
             avatarSize.let {
@@ -755,11 +763,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     private fun startPing() {
         if (conversationUser != null && !conversationUser.hasSpreedFeatureCapability("no-ping")) {
             ncApi.pingCall(
-                    credentials, ApiUtils.getUrlForCallPing(
-                    conversationUser.baseUrl,
-                    roomToken
-            )
-            )
+                            credentials, ApiUtils.getUrlForCallPing(
+                            conversationUser.baseUrl,
+                            roomToken
+                    )
+                    )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.repeatWhen { observable -> observable.delay(5000, TimeUnit.MILLISECONDS) }
@@ -792,10 +800,10 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                 currentConversation?.sessionId == "0"
         ) {
             ncApi.joinRoom(
-                    credentials,
-                    ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken),
-                    roomPassword
-            )
+                            credentials,
+                            ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken),
+                            roomPassword
+                    )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.retry(3)
@@ -856,12 +864,12 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
     private fun leaveRoom() {
         ncApi.leaveRoom(
-                credentials,
-                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(
-                        conversationUser?.baseUrl,
-                        roomToken
+                        credentials,
+                        ApiUtils.getUrlForSettingMyselfAsActiveParticipant(
+                                conversationUser?.baseUrl,
+                                roomToken
+                        )
                 )
-        )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<GenericOverall> {
@@ -937,12 +945,12 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
         if (conversationUser != null) {
             ncApi.sendChatMessage(
-                    credentials, ApiUtils.getUrlForChat(
-                    conversationUser.baseUrl,
-                    roomToken
-            ),
-                    message, conversationUser.displayName, replyTo
-            )
+                            credentials, ApiUtils.getUrlForChat(
+                            conversationUser.baseUrl,
+                            roomToken
+                    ),
+                            message, conversationUser.displayName, replyTo
+                    )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.`as`(AutoDispose.autoDisposable(scopeProvider))
@@ -986,11 +994,11 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
     private fun setupWebsocket() {
         if (conversationUser != null) {
             if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(
-                            conversationUser.id!!
+                            conversationUser.id
                     ) != null
             ) {
                 magicWebSocketInstance =
-                        WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
+                        WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id)
             } else {
                 magicWebSocketInstance = null
             }
@@ -1045,8 +1053,8 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             if (lookIntoFuture > 0) {
                 val finalTimeout = timeout
                 ncApi.pullChatMessages(
-                        credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap
-                )
+                                credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap
+                        )
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.takeWhile { observable -> inConversation && !wasDetached }
@@ -1074,9 +1082,9 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
 
             } else {
                 ncApi.pullChatMessages(
-                        credentials,
-                        ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap
-                )
+                                credentials,
+                                ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap
+                        )
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.retry(3) { observable -> inConversation && !wasDetached }
@@ -1482,9 +1490,9 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
             )
 
             ncApi.createRoom(
-                    credentials,
-                    retrofitBucket.url, retrofitBucket.queryMap
-            )
+                            credentials,
+                            retrofitBucket.url, retrofitBucket.queryMap
+                    )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.`as`(AutoDispose.autoDisposable(scopeProvider))
@@ -1512,7 +1520,7 @@ class ChatController(args: Bundle) : BaseController(), MessagesListAdapter
                                             null && conversationOverall.ocs.data.token != null
                                     ) {
                                         ConductorRemapping.remapChatController(
-                                                router, conversationUser.id!!,
+                                                router, conversationUser.id,
                                                 conversationOverall.ocs.data.token!!, bundle, false
                                         )
                                     }

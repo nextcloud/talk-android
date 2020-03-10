@@ -61,8 +61,8 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
             userEntity = userEntityList[i]
             val finalUserEntity: UserNgEntity? = userEntity
             ncApi.getSignalingSettings(
-                    userEntity!!.getCredentials(),
-                    ApiUtils.getUrlForSignalingSettings(userEntity.baseUrl))
+                            userEntity!!.getCredentials(),
+                            ApiUtils.getUrlForSignalingSettings(userEntity.baseUrl))
                     .blockingSubscribe(object : Observer<SignalingSettingsOverall> {
                         override fun onSubscribe(d: Disposable) {}
                         override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
@@ -70,18 +70,18 @@ class SignalingSettingsWorker(context: Context, workerParams: WorkerParameters) 
                             externalSignalingServer = ExternalSignalingServer()
                             externalSignalingServer.externalSignalingServer = signalingSettingsOverall.ocs.signalingSettings.externalSignalingServer
                             externalSignalingServer.externalSignalingTicket = signalingSettingsOverall.ocs.signalingSettings.externalSignalingTicket
-                            val user = usersRepository.getUserWithId(userEntity.id!!)
+                            val user = usersRepository.getUserWithId(userEntity.id)
                             //user.externalSignaling = externalSignalingServer
                             runBlocking {
                                 val result = usersRepository.updateUser(user)
-                                eventBus.post(EventStatus(user.id!!,
+                                eventBus.post(EventStatus(user.id,
                                         EventStatus.EventType.SIGNALING_SETTINGS, result > 0))
                             }
 
                         }
 
                         override fun onError(e: Throwable) {
-                            eventBus.post(EventStatus(finalUserEntity!!.id!!,
+                            eventBus.post(EventStatus(finalUserEntity!!.id,
                                     EventStatus.EventType.SIGNALING_SETTINGS, false))
                         }
 

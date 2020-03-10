@@ -47,66 +47,84 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
     @JsonIgnore
     @Ignore
     var grouped = false
+
     @JvmField
     @JsonIgnore
     @Ignore
     var oneToOneConversation = false
+
     @JvmField
     @JsonIgnore
     @Ignore
     var activeUser: UserNgEntity? = null
+
     @JvmField
     @JsonIgnore
     @Ignore
     var selectedIndividualHashMap: Map<String, String>? = null
+
     @JvmField
     @JsonIgnore
     @Ignore
     var isLinkPreviewAllowed = false
+
     @JvmField
     @JsonIgnore
     var internalMessageId: String? = null
+
     @JvmField
     @JsonIgnore
     var internalConversationId: String? = null
+
     @JvmField
     @JsonField(name = ["id"])
     @Ignore
     var jsonMessageId: Long? = null
+
     @JvmField
     @JsonField(name = ["token"])
     var token: String? = null
+
     // guests or users
     @JvmField
     @JsonField(name = ["actorType"])
     var actorType: String? = null
+
     @JvmField
     @JsonField(name = ["actorId"])
     var actorId: String? = null
+
     // send when crafting a message
     @JvmField
     @JsonField(name = ["actorDisplayName"])
     var actorDisplayName: String? = null
+
     @JvmField
     @JsonField(name = ["timestamp"])
     var timestamp: Long = 0
+
     // send when crafting a message, max 1000 lines
     @JvmField
     @JsonField(name = ["message"])
     var message: String? = null
+
     @JvmField
     @JsonField(name = ["messageParameters"])
     @Ignore
     var messageParameters: HashMap<String, HashMap<String, String>>? = null
+
     @JvmField
     @JsonField(name = ["systemMessage"], typeConverter = EnumSystemMessageTypeConverter::class)
     var systemMessageType: SystemMessageType? = null
+
     @JvmField
     @JsonField(name = ["isReplyable"])
     var replyable = false
+
     @JvmField
     @JsonField(name = ["parent"])
     var parentMessage: ChatMessage? = null
+
     @JvmField
     @JsonIgnore
     @Ignore

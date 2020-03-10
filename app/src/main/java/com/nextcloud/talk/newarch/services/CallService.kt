@@ -42,9 +42,9 @@ import com.nextcloud.talk.newarch.domain.usecases.GetParticipantsForCallUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.toUser
-import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.MagicJson
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.PushUtils
@@ -57,7 +57,6 @@ import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 import org.parceler.Parcels
-import retrofit2.Retrofit
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
@@ -275,7 +274,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
         }
     }
 
-    private fun endIncomingConversation(triggerEventBus : Boolean) {
+    private fun endIncomingConversation(triggerEventBus: Boolean) {
         activeNotification = ""
         stopForeground(true)
         if (triggerEventBus) {
@@ -291,7 +290,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                 getConversationUseCase.invoke(this, parametersOf(user, conversationToken), object : UseCaseResponse<ConversationOverall> {
                     override suspend fun onSuccess(result: ConversationOverall) {
                         val internalConversation = result.ocs.data
-                        conversationsRepository.saveConversationsForUser(user.id!!, listOf(internalConversation), false)
+                        conversationsRepository.saveConversationsForUser(user.id, listOf(internalConversation), false)
                         conversation = result.ocs.data
                     }
 
@@ -309,7 +308,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
         endIncomingConversation(true)
         activeNotification = generatedNotificationId
         val notification = builder.build()
-        notification.extras.putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id!!)
+        notification.extras.putLong(BundleKeys.KEY_INTERNAL_USER_ID, user.id)
         notification.extras.putLong(BundleKeys.KEY_NOTIFICATION_ID, internalNotificationId)
         notification.flags = notification.flags or Notification.FLAG_INSISTENT
         startForeground(generatedNotificationId.hashCode(), notification)

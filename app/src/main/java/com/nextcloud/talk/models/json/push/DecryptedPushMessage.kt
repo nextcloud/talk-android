@@ -32,30 +32,39 @@ class DecryptedPushMessage {
     @JvmField
     @JsonField(name = ["app"])
     var app: String? = null
+
     @JvmField
     @JsonField(name = ["type"])
     var type: String? = null
+
     @JvmField
     @JsonField(name = ["subject"])
     var subject: String? = null
+
     @JvmField
     @JsonField(name = ["id"])
     var id: String? = null
+
     @JvmField
     @JsonField(name = ["nid"])
     var notificationId: Long? = null
+
     @JvmField
     @JsonField(name = ["delete"])
     var delete = false
+
     @JvmField
     @JsonField(name = ["delete-all"])
     var deleteAll = false
+
     @JvmField
     @JsonIgnore
     var notificationUser: NotificationUser? = null
+
     @JvmField
     @JsonIgnore
     var text: String? = null
+
     @JvmField
     @JsonIgnore
     var timestamp: Long = 0

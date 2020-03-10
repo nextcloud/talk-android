@@ -59,6 +59,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @BindView(R.id.toolbar)
     lateinit var toolbar: MaterialToolbar
+
     @BindView(R.id.controller_container)
     lateinit var container: ViewGroup
 
@@ -149,7 +150,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     extras.putParcelable(BundleKeys.KEY_USER_ENTITY, it)
                     withContext(Dispatchers.Main) {
                         ConductorRemapping.remapChatController(
-                                router!!, it.id!!,
+                                router!!, it.id,
                                 intent.getStringExtra(BundleKeys.KEY_CONVERSATION_TOKEN)!!, extras, false)
                     }
                 }

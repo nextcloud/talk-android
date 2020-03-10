@@ -56,10 +56,10 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
         if (operationUser != null) {
             val credentials = operationUser.getCredentials()
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
-            val eventStatus = EventStatus(operationUser.id!!,
+            val eventStatus = EventStatus(operationUser.id,
                     EventStatus.EventType.CONVERSATION_UPDATE, true)
             ncApi!!.removeSelfFromRoom(credentials,
-                    ApiUtils.getUrlForRemoveSelfFromRoom(operationUser.baseUrl, conversationToken))
+                            ApiUtils.getUrlForRemoveSelfFromRoom(operationUser.baseUrl, conversationToken))
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(object : Observer<GenericOverall?> {
                         var disposable: Disposable? = null

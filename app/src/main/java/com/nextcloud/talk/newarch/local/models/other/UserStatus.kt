@@ -25,8 +25,10 @@ package com.nextcloud.talk.newarch.local.models.other
 enum class UserStatus {
     // account that is NOT actively used by the UI, but might be used by background tasks
     DORMANT,
+
     // currently active account
     ACTIVE,
+
     // account that will be deleted in the near future
     PENDING_DELETE
 }

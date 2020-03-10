@@ -45,7 +45,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
-import com.nextcloud.talk.newarch.utils.dp
 import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider

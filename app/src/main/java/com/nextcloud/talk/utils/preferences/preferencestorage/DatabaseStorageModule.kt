@@ -95,16 +95,16 @@ class DatabaseStorageModule(
                             else -> 0
                         }
                         ncApi.setNotificationLevel(
-                                ApiUtils.getCredentials(
-                                        conversationUser.username,
-                                        conversationUser.token
-                                ),
-                                ApiUtils.getUrlForSettingNotificationlevel(
-                                        conversationUser.baseUrl,
-                                        conversationToken
-                                ),
-                                intValue
-                        )
+                                        ApiUtils.getCredentials(
+                                                conversationUser.username,
+                                                conversationUser.token
+                                        ),
+                                        ApiUtils.getUrlForSettingNotificationlevel(
+                                                conversationUser.baseUrl,
+                                                conversationToken
+                                        ),
+                                        intValue
+                                )
                                 .subscribeOn(Schedulers.io())
                                 .subscribe(object : Observer<GenericOverall> {
                                     override fun onSubscribe(d: Disposable) {}
@@ -122,15 +122,15 @@ class DatabaseStorageModule(
             } else if (key == "conversation_password") {
                 if (hasPassword != null) {
                     ncApi.setPassword(
-                            ApiUtils.getCredentials(
-                                    conversationUser.username,
-                                    conversationUser.token
-                            ),
-                            ApiUtils.getUrlForPassword(
-                                    conversationUser.baseUrl,
-                                    conversationToken
-                            ), value
-                    )
+                                    ApiUtils.getCredentials(
+                                            conversationUser.username,
+                                            conversationUser.token
+                                    ),
+                                    ApiUtils.getUrlForPassword(
+                                            conversationUser.baseUrl,
+                                            conversationToken
+                                    ), value
+                            )
                             .subscribeOn(Schedulers.io())
                             .subscribe(object : Observer<GenericOverall> {
                                 override fun onSubscribe(d: Disposable) {}
@@ -151,14 +151,14 @@ class DatabaseStorageModule(
                         ) && conversationNameValue != value
                 ) {
                     ncApi.renameRoom(
-                            ApiUtils.getCredentials(
-                                    conversationUser.username,
-                                    conversationUser.token
-                            ), ApiUtils.getRoom(
-                            conversationUser.baseUrl,
-                            conversationToken
-                    ), value
-                    )
+                                    ApiUtils.getCredentials(
+                                            conversationUser.username,
+                                            conversationUser.token
+                                    ), ApiUtils.getRoom(
+                                    conversationUser.baseUrl,
+                                    conversationToken
+                            ), value
+                            )
                             .subscribeOn(Schedulers.io())
                             .subscribe(object : Observer<GenericOverall> {
                                 override fun onSubscribe(d: Disposable) {}
@@ -263,6 +263,6 @@ class DatabaseStorageModule(
     override fun onRestoreInstanceState(savedState: Bundle) {}
 
     init {
-        accountIdentifier = conversationUser.id!!
+        accountIdentifier = conversationUser.id
     }
 }

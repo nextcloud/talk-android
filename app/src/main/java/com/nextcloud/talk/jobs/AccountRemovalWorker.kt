@@ -57,7 +57,7 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
             userEntity.pushConfiguration?.let {
                 ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
                 ncApi!!.unregisterDeviceForNotificationsWithNextcloud(credentials,
-                        ApiUtils.getUrlNextcloudPush(userEntity.baseUrl))
+                                ApiUtils.getUrlNextcloudPush(userEntity.baseUrl))
                         .blockingSubscribe(object : Observer<GenericOverall> {
                             override fun onSubscribe(d: Disposable) {}
                             override fun onNext(genericOverall: GenericOverall) {
@@ -77,7 +77,7 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
                         })
             } ?: run {
                 runBlocking {
-                    usersRepository.deleteUserWithId(userEntity.id!!)
+                    usersRepository.deleteUserWithId(userEntity.id)
                 }
             }
         }
@@ -100,7 +100,7 @@ class AccountRemovalWorker(context: Context, workerParams: WorkerParameters) : C
                     //deleteExternalSignalingInstanceForUserEntity(
                     //        userEntity.id!!)
                     runBlocking {
-                        usersRepository.deleteUserWithId(userEntity.id!!)
+                        usersRepository.deleteUserWithId(userEntity.id)
                     }
 
                 }

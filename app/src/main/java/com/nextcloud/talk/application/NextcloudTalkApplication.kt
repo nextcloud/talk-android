@@ -53,7 +53,6 @@ import com.nextcloud.talk.newarch.features.contactsflow.di.module.ContactsFlowMo
 import com.nextcloud.talk.newarch.features.conversationslist.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.User
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*
 import com.nextcloud.talk.newarch.local.models.toUserEntity
 import com.nextcloud.talk.newarch.services.shortcuts.ShortcutService
@@ -147,9 +146,9 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
                 .build()
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
-                CapabilitiesWorker::class.java,
-                12, TimeUnit.HOURS
-        )
+                        CapabilitiesWorker::class.java,
+                        12, TimeUnit.HOURS
+                )
                 .build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java)
                 .build()
@@ -197,7 +196,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
                 var newUser: User
                 val newUsers = mutableListOf<User>()
                 for (user in users) {
-                    newUser = User(userId =  user.userId, username = user.username, baseUrl = user.baseUrl, token = user.token, displayName = user.displayName)
+                    newUser = User(userId = user.userId, username = user.username, baseUrl = user.baseUrl, token = user.token, displayName = user.displayName)
                     try {
                         newUser.pushConfiguration =
                                 LoganSquare.parse(user.pushConfigurationState, PushConfiguration::class.java)
@@ -233,7 +232,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
                 val userEntities = newUsers.map {
                     it.toUserEntity()
                 }
-                
+
                 usersDao.saveUsers(*userEntities.toTypedArray())
                 dataStore.delete()
                 appPreferences.migrationToRoomFinished = true

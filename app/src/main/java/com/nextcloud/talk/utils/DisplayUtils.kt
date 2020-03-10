@@ -129,11 +129,11 @@ object DisplayUtils {
             context: Context
     ): Float {
         return Math.round(
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP, dp,
-                        context.resources.displayMetrics
-                ) + 0.5f
-        )
+                        TypedValue.applyDimension(
+                                TypedValue.COMPLEX_UNIT_DIP, dp,
+                                context.resources.displayMetrics
+                        ) + 0.5f
+                )
                 .toFloat()
     }
 
@@ -272,9 +272,9 @@ object DisplayUtils {
         val stringText = text.toString()
 
         val m = Pattern.compile(
-                "@$label",
-                Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
-        )
+                        "@$label",
+                        Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
+                )
                 .matcher(spannableString)
 
         val clickableSpan = object : ClickableSpan() {
@@ -319,9 +319,9 @@ object DisplayUtils {
         }
 
         val m = Pattern.compile(
-                searchText,
-                Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
-        )
+                        searchText,
+                        Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
+                )
                 .matcher(spannableString)
 
         val textSize = NextcloudTalkApplication.sharedApplication!!

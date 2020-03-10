@@ -175,10 +175,10 @@ class MagicPreviewMessageViewHolder(itemView: View?) : IncomingImageMessageViewH
             activeUser: UserNgEntity?
     ) {
         Single.fromCallable {
-            ReadFilesystemOperation(
-                    okHttpClient, activeUser, url, 0
-            )
-        }
+                    ReadFilesystemOperation(
+                            okHttpClient, activeUser, url, 0
+                    )
+                }
                 .observeOn(Schedulers.io())
                 .subscribe(object : SingleObserver<ReadFilesystemOperation?> {
                     override fun onSubscribe(d: Disposable) {}

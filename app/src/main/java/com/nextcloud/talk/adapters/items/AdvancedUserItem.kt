@@ -121,8 +121,8 @@ class AdvancedUserItem(
 
     override fun filter(constraint: String): Boolean {
         return model.name != null && Pattern.compile(
-                constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
-        )
+                        constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
+                )
                 .matcher(model.name!!.trim(' '))
                 .find()
     }
@@ -139,18 +139,23 @@ class AdvancedUserItem(
         @JvmField
         @BindView(R.id.participantNameTextView)
         var contactDisplayName: EmojiTextView? = null
+
         @JvmField
         @BindView(R.id.secondary_text)
         var serverUrl: TextView? = null
+
         @JvmField
         @BindView(R.id.avatar_image)
         var avatarImageView: ImageView? = null
+
         @JvmField
         @BindView(R.id.linear_layout)
         var linearLayout: LinearLayout? = null
+
         @JvmField
         @BindView(R.id.more_menu)
         var moreMenuButton: ImageButton? = null
+
         @JvmField
         @BindView(R.id.password_protected_image_view)
         var passwordProtectedImageView: ImageView? = null

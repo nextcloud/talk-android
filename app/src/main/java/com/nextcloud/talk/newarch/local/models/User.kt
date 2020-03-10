@@ -22,13 +22,13 @@ data class User(
         var clientCertificate: String? = null,
         var signalingSettings: SignalingSettings? = null,
         var status: UserStatus? = null
-): Parcelable
+) : Parcelable
 
-fun User.toUserEntity() : UserNgEntity {
+fun User.toUserEntity(): UserNgEntity {
     var userNgEntity: UserNgEntity? = null
     this.id?.let {
         userNgEntity = UserNgEntity(it, userId, username, baseUrl)
-    }?: run {
+    } ?: run {
         userNgEntity = UserNgEntity(userId = this.userId, username = this.username, baseUrl = this.baseUrl)
     }
 

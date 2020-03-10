@@ -235,8 +235,8 @@ class UserItem(
 
     override fun filter(constraint: String): Boolean {
         return model.displayName != null && (Pattern.compile(
-                constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
-        )
+                        constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL
+                )
                 .matcher(model.displayName!!.trim(' '))
                 .find() || Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
                 .matcher(model.userId!!.trim(' '))

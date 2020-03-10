@@ -86,7 +86,7 @@ data class UserNgEntity(
     }
 }
 
-fun UserNgEntity.toUser() : User {
+fun UserNgEntity.toUser(): User {
     return User(this.id, this.userId, this.username, this.baseUrl, this.token, this.displayName, this.pushConfiguration, this.capabilities, this.clientCertificate, this.signalingSettings, this.status)
 }
 

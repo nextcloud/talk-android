@@ -38,29 +38,37 @@ class Participant {
     @JvmField
     @JsonField(name = ["userId"])
     var userId: String? = null
+
     @JvmField
     @JsonField(name = ["type", "participantType"], typeConverter = EnumParticipantTypeConverter::class)
     var type: ParticipantType? = null
+
     @JvmField
     @JsonField(name = ["name"])
     var name: String? = null
+
     @JvmField
     @JsonField(name = ["displayName"])
     var displayName: String? = null
+
     /*@JsonField(name = "lastPing")
     public long lastPing;*/
     @JvmField
     @JsonField(name = ["sessionId"])
     var sessionId: String? = null
+
     @JvmField
     @JsonField(name = ["conversationId"])
     var conversationId: Long = 0
+
     @JvmField
     @JsonField(name = ["inCall", "call"], typeConverter = EnumParticipantFlagsConverter::class)
     var participantFlags: ParticipantFlags? = null
+
     @JvmField
     @JsonField(name = ["source"])
     var source: String? = null
+
     @JvmField
     @JsonIgnore
     var selected = false

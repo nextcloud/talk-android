@@ -52,7 +52,7 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
         internalUserEntity.capabilities = capabilitiesOverall.ocs.data.capabilities
         runBlocking {
             val result = usersRepository.updateUser(internalUserEntity)
-            eventBus.post(EventStatus(internalUserEntity.id!!,
+            eventBus.post(EventStatus(internalUserEntity.id,
                     EventStatus.EventType.CAPABILITIES_FETCH, result > 0))
         }
 
@@ -73,8 +73,8 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
         for (userEntityObject in userEntityObjectList) {
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
             ncApi!!.getCapabilities(ApiUtils.getCredentials(userEntityObject.username,
-                    userEntityObject.token),
-                    ApiUtils.getUrlForCapabilities(userEntityObject.baseUrl))
+                            userEntityObject.token),
+                            ApiUtils.getUrlForCapabilities(userEntityObject.baseUrl))
                     .retry(3)
                     .blockingSubscribe(object : Observer<CapabilitiesOverall> {
                         override fun onSubscribe(d: Disposable) {}
@@ -83,7 +83,7 @@ class CapabilitiesWorker(context: Context, workerParams: WorkerParameters) : Cor
                         }
 
                         override fun onError(e: Throwable) {
-                            eventBus.post(EventStatus(userEntityObject.id!!,
+                            eventBus.post(EventStatus(userEntityObject.id,
                                     EventStatus.EventType.CAPABILITIES_FETCH, false))
                         }
 

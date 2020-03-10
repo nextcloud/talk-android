@@ -102,6 +102,7 @@ class WebSocketConnectionHelper : KoinComponent {
 
     companion object {
         private val magicWebSocketInstanceMap: MutableMap<Long, MagicWebSocketInstance> = HashMap()
+
         @Synchronized
         fun getMagicWebSocketInstanceForUserId(
                 userId: Long): MagicWebSocketInstance? {
@@ -128,7 +129,7 @@ class WebSocketConnectionHelper : KoinComponent {
                     deleteExternalSignalingInstanceForUserEntity(userId)
                 }
                 magicWebSocketInstance = MagicWebSocketInstance(userEntity, generatedURL, webSocketTicket!!)
-                magicWebSocketInstanceMap[userEntity.id!!] = magicWebSocketInstance
+                magicWebSocketInstanceMap[userEntity.id] = magicWebSocketInstance
                 return magicWebSocketInstance
             }
         }

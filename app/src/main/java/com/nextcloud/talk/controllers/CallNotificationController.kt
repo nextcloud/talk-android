@@ -26,10 +26,7 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,19 +50,12 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.CallEvent
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
-import com.uber.autodispose.AutoDispose
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -130,6 +120,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
         hideIncomingCallNotificationIntent.putExtra(BundleKeys.KEY_ACTIVE_NOTIFICATION, activeNotification)
         applicationContext?.startService(hideIncomingCallNotificationIntent)
     }
+
     @OnClick(R.id.callControlHangupView)
     internal fun hangup() {
         dismissIncomingCallNotification()

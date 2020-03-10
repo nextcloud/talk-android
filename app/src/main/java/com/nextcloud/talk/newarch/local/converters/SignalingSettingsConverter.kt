@@ -29,6 +29,7 @@ import kotlinx.serialization.json.Json
 
 class SignalingSettingsConverter {
     val json = Json(MagicJson.customJsonConfiguration)
+
     @TypeConverter
     fun fromSignalingSettingsToString(signalingSettings: SignalingSettings?): String {
         return if (signalingSettings == null) {

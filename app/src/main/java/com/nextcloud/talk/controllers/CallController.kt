@@ -96,12 +96,15 @@ class CallController(args: Bundle) : BaseController() {
     @JvmField
     @BindView(R.id.callControlEnableSpeaker)
     var callControlEnableSpeaker: ImageView? = null
+
     @JvmField
     @BindView(R.id.pip_video_view)
     var pipVideoView: SurfaceViewRenderer? = null
+
     @JvmField
     @BindView(R.id.relative_layout)
     var relativeLayout: RelativeLayout? = null
+
     @JvmField
     @BindView(R.id.remote_renderers_layout)
     var remoteRenderersLayout: LinearLayout? = null
@@ -109,15 +112,19 @@ class CallController(args: Bundle) : BaseController() {
     @JvmField
     @BindView(R.id.callControlsRelativeLayout)
     var callControls: RelativeLayout? = null
+
     @JvmField
     @BindView(R.id.call_control_microphone)
     var microphoneControlButton: ImageView? = null
+
     @JvmField
     @BindView(R.id.call_control_camera)
     var cameraControlButton: ImageView? = null
+
     @JvmField
     @BindView(R.id.call_control_switch_camera)
     var cameraSwitchButton: ImageView? = null
+
     @JvmField
     @BindView(R.id.connectingTextView)
     var connectingTextView: TextView? = null
@@ -1028,11 +1035,11 @@ class CallController(args: Bundle) : BaseController() {
 
     private fun joinRoomAndCall() {
         ncApi.joinRoom(
-                credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(
-                baseUrl,
-                roomToken
-        ), conversationPassword
-        )
+                        credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(
+                        baseUrl,
+                        roomToken
+                ), conversationPassword
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
@@ -1067,9 +1074,9 @@ class CallController(args: Bundle) : BaseController() {
 
     private fun performCall() {
         ncApi.joinCall(
-                credentials,
-                ApiUtils.getUrlForCall(baseUrl, roomToken)
-        )
+                        credentials,
+                        ApiUtils.getUrlForCall(baseUrl, roomToken)
+                )
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1129,9 +1136,9 @@ class CallController(args: Bundle) : BaseController() {
 
                             if (!hasExternalSignalingServer) {
                                 ncApi.pullSignalingMessages(
-                                        credentials,
-                                        ApiUtils.getUrlForSignaling(baseUrl, urlToken)
-                                )
+                                                credentials,
+                                                ApiUtils.getUrlForSignaling(baseUrl, urlToken)
+                                        )
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .repeatWhen { observable -> observable }
@@ -1445,9 +1452,9 @@ class CallController(args: Bundle) : BaseController() {
 
     private fun leaveRoom(shutDownView: Boolean) {
         ncApi.leaveRoom(
-                credentials,
-                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken)
-        )
+                        credentials,
+                        ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken)
+                )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<GenericOverall> {
@@ -1879,9 +1886,9 @@ class CallController(args: Bundle) : BaseController() {
             }
 
             ncApi.sendSignalingMessages(
-                    credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
-                    strings.toString()
-            )
+                            credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
+                            strings.toString()
+                    )
                     .retry(3)
                     .subscribeOn(Schedulers.io())
                     .subscribe(object : Observer<SignalingOverall> {

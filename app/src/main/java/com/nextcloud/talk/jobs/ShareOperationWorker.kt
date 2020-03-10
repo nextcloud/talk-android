@@ -53,12 +53,12 @@ class ShareOperationWorker(
     override fun doWork(): Result {
         for (i in filesArray.indices) {
             ncApi.createRemoteShare(
-                    credentials,
-                    ApiUtils.getSharingUrl(baseUrl),
-                    filesArray[i],
-                    roomToken,
-                    "10"
-            )
+                            credentials,
+                            ApiUtils.getSharingUrl(baseUrl),
+                            filesArray[i],
+                            roomToken,
+                            "10"
+                    )
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(object : Observer<Void?> {
                         override fun onSubscribe(d: Disposable) {}

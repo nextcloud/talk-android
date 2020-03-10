@@ -80,9 +80,11 @@ class NotificationSoundItem(
         @JvmField
         @BindView(id.notificationNameTextView)
         var notificationName: TextView? = null
+
         @JvmField
         @BindView(id.imageView)
         var imageView: ImageView? = null
+
         @JvmField
         @BindView(id.checkedImageView)
         var checkedImageView: ImageView? = null

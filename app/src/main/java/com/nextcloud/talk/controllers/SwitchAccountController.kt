@@ -82,7 +82,7 @@ class SwitchAccountController : BaseController {
         if (userItems.size > position) {
             val userEntity = (userItems[position] as AdvancedUserItem).entity
             GlobalScope.launch {
-                usersRepository.setUserAsActiveWithId(userEntity!!.id!!)
+                usersRepository.setUserAsActiveWithId(userEntity!!.id)
                 cookieManager.cookieStore.removeAll()
                 withContext(Dispatchers.Main) {
                     router.popCurrentController()

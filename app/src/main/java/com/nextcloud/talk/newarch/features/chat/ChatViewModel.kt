@@ -57,7 +57,7 @@ class ChatViewModel constructor(application: Application,
     fun init(user: UserNgEntity, conversationToken: String, conversationPassword: String?) {
         viewModelScope.launch {
             this@ChatViewModel.user = user
-            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
+            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id, conversationToken)
             this@ChatViewModel.conversationPassword = conversationPassword
             globalService.getConversation(conversationToken, this@ChatViewModel)
         }
@@ -70,7 +70,7 @@ class ChatViewModel constructor(application: Application,
     override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
         if (operationStatus == GlobalServiceInterface.OperationStatus.STATUS_OK) {
             if (userNgEntity.id == user.id && conversation!!.token == initConversation?.token) {
-                this.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id!!, conversation.token!!)
+                this.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id, conversation.token!!)
                 conversation.token?.let { conversationToken ->
                     globalService.joinConversation(conversationToken, conversationPassword, this)
                 }
