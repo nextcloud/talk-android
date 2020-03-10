@@ -197,9 +197,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
                 var newUser: User
                 val newUsers = mutableListOf<User>()
                 for (user in users) {
-                    newUser = User(userId =  user.userId, username = user.username, baseUrl = user.baseUrl)
-                    newUser.token = user.token
-                    newUser.displayName = user.displayName
+                    newUser = User(userId =  user.userId, username = user.username, baseUrl = user.baseUrl, token = user.token, displayName = user.displayName)
                     try {
                         newUser.pushConfiguration =
                                 LoganSquare.parse(user.pushConfigurationState, PushConfiguration::class.java)
