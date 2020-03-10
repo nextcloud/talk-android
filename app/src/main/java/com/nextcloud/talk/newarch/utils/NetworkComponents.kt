@@ -31,32 +31,69 @@ import coil.decode.SvgDecoder
 import com.nextcloud.talk.newarch.data.repository.online.NextcloudTalkRepositoryImpl
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.local.models.User
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
 import retrofit2.Retrofit
 import java.net.CookieManager
 
-class ComponentsWithEmptyCookieJar(
+class NetworkComponents(
         private val okHttpClient: OkHttpClient,
         private val retrofit: Retrofit,
         private val androidApplication: Application
 ) : KoinComponent {
-    fun getRepository(): NextcloudTalkRepository {
-        return NextcloudTalkRepositoryImpl(retrofit.newBuilder().client(getOkHttpClient())
+    val usersSingleOperationRepositoryMap : MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
+    val usersMultipleOperationsRepositoryMap : MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
+    val usersSingleOperationOkHttpMap: MutableMap<Long, OkHttpClient> = mutableMapOf()
+    val usersMultipleOperationOkHttpMap: MutableMap<Long, OkHttpClient> = mutableMapOf()
+
+    fun getRepository(singleOperation: Boolean, user: User): NextcloudTalkRepository {
+        val mappedNextcloudTalkRepository = if (singleOperation) {
+            usersSingleOperationRepositoryMap[user.id]
+        } else {
+            usersMultipleOperationsRepositoryMap[user.id]
+        }
+
+        if (mappedNextcloudTalkRepository != null) {
+            return mappedNextcloudTalkRepository
+        }
+
+        return NextcloudTalkRepositoryImpl(retrofit.newBuilder().client(getOkHttpClient(singleOperation, user))
                 .build().create(ApiService::class.java))
     }
 
-    fun getOkHttpClient(): OkHttpClient {
-        return okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()
+    fun getOkHttpClient(singleOperation: Boolean, user: User): OkHttpClient {
+        val mappedOkHttpClient = if (singleOperation) {
+            usersSingleOperationOkHttpMap[user.id]
+        } else {
+            usersMultipleOperationOkHttpMap[user.id]
+        }
+
+        if (mappedOkHttpClient != null) {
+            return mappedOkHttpClient
+        }
+
+        val okHttpClientBuilder = okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager()))
+        val dispatcher = okHttpClient.dispatcher()
+        if (singleOperation) {
+            dispatcher.maxRequests = 1
+        } else {
+            dispatcher.maxRequests = 100
+        }
+
+        okHttpClientBuilder.dispatcher(dispatcher)
+
+
+        return okHttpClientBuilder.build()
     }
 
-    fun getImageLoader(): ImageLoader {
+    fun getImageLoader(user: User): ImageLoader {
         return ImageLoader(androidApplication) {
             availableMemoryPercentage(0.5)
             bitmapPoolPercentage(0.5)
             crossfade(false)
-            okHttpClient(getOkHttpClient())
+            okHttpClient(getOkHttpClient(false, user))
             componentRegistry {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     add(ImageDecoderDecoder())

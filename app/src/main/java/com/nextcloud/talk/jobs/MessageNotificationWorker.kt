@@ -53,9 +53,10 @@ import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.usecases.GetNotificationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
+import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.MagicJson
-import com.nextcloud.talk.newarch.utils.ComponentsWithEmptyCookieJar
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -73,7 +74,7 @@ class MessageNotificationWorker(
         workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
     val appPreferences: AppPreferences by inject()
-    private val componentsWithEmptyCookieJar: ComponentsWithEmptyCookieJar by inject()
+    private val networkComponents: NetworkComponents by inject()
     private val apiErrorHandler: ApiErrorHandler by inject()
 
     override suspend fun doWork(): Result = coroutineScope {
@@ -107,7 +108,7 @@ class MessageNotificationWorker(
     }
 
     private fun showNotificationWithObjectData(coroutineScope: CoroutineScope, decryptedPushMessage: DecryptedPushMessage, signatureVerification: SignatureVerification, intent: Intent) {
-        val nextcloudTalkRepository = componentsWithEmptyCookieJar.getRepository()
+        val nextcloudTalkRepository = networkComponents.getRepository(false, signatureVerification.userEntity!!.toUser())
         val getNotificationUseCase = GetNotificationUseCase(nextcloudTalkRepository, apiErrorHandler)
         getNotificationUseCase.invoke(coroutineScope, parametersOf(signatureVerification.userEntity, decryptedPushMessage.notificationId.toString()), object : UseCaseResponse<NotificationOverall> {
             override suspend fun onSuccess(result: NotificationOverall) {
@@ -304,7 +305,7 @@ class MessageNotificationWorker(
                             target, null, CircleCropTransformation()
                     )
 
-                    componentsWithEmptyCookieJar.getImageLoader().load(request)
+                    networkComponents.getImageLoader(signatureVerification.userEntity!!.toUser()).load(request)
                 } else {
                     notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
                     NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())

@@ -41,7 +41,8 @@ import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetParticipantsForCallUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.newarch.utils.ComponentsWithEmptyCookieJar
+import com.nextcloud.talk.newarch.local.models.toUser
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.MagicJson
 import com.nextcloud.talk.utils.ApiUtils
@@ -73,8 +74,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
     val appPreferences: AppPreferences by inject()
     val usersRepository: UsersRepository by inject()
     val conversationsRepository: ConversationsRepository by inject()
-    val retrofit: Retrofit by inject()
-    val componentsWithEmptyCookieJar: ComponentsWithEmptyCookieJar by inject()
+    val networkComponents: NetworkComponents by inject()
     val apiErrorHandler: ApiErrorHandler by inject()
     val eventBus: EventBus by inject()
 
@@ -206,7 +206,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                             }
 
                                             val avatarUrl = ApiUtils.getUrlForAvatarWithName(signatureVerification.userEntity!!.baseUrl, conversation.name, R.dimen.avatar_size)
-                                            val imageLoader = componentsWithEmptyCookieJar.getImageLoader()
+                                            val imageLoader = networkComponents.getImageLoader(signatureVerification.userEntity!!.toUser())
 
                                             val request = Images().getRequestForUrl(
                                                     imageLoader, applicationContext, avatarUrl, signatureVerification.userEntity,
@@ -250,7 +250,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
 
     private fun checkIsConversationActive(user: UserNgEntity, conversationToken: String, activeNotificationArgument: String) {
         if (activeNotificationArgument == activeNotification) {
-            val getParticipantsForCallUseCase = GetParticipantsForCallUseCase(componentsWithEmptyCookieJar.getRepository(), apiErrorHandler)
+            val getParticipantsForCallUseCase = GetParticipantsForCallUseCase(networkComponents.getRepository(false, user.toUser()), apiErrorHandler)
             getParticipantsForCallUseCase.invoke(this, parametersOf(user, conversationToken), object : UseCaseResponse<ParticipantsOverall> {
                 override suspend fun onSuccess(result: ParticipantsOverall) {
                     val participants = result.ocs.data
@@ -284,9 +284,9 @@ class CallService : Service(), KoinComponent, CoroutineScope {
     }
 
     private suspend fun getConversationForTokenAndUser(user: UserNgEntity, conversationToken: String): Conversation? {
-        var conversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
+        var conversation = conversationsRepository.getConversationForUserWithToken(user.id, conversationToken)
         if (conversation == null) {
-            val getConversationUseCase = GetConversationUseCase(componentsWithEmptyCookieJar.getRepository(), apiErrorHandler)
+            val getConversationUseCase = GetConversationUseCase(networkComponents.getRepository(false, user.toUser()), apiErrorHandler)
             runBlocking {
                 getConversationUseCase.invoke(this, parametersOf(user, conversationToken), object : UseCaseResponse<ConversationOverall> {
                     override suspend fun onSuccess(result: ConversationOverall) {
