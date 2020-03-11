@@ -73,7 +73,6 @@
     <string name="nc_settings_call_ringtone">Calls</string>
     <string name="nc_settings_other_notifications_ringtone">Notifications</string>
     <string name="nc_settings_no_ringtone">No sound</string>
-    <string name="nc_settings_vibrate">Vibrate</string>
     <string name="nc_settings_theme_title">Theme</string>
     <string name="nc_settings_theme_light">Light</string>
     <string name="nc_settings_theme_dark">Dark</string>

@@ -73,7 +73,6 @@
     <string name="nc_account_scheduled_for_deletion">Nalogu je zakazano brisanje i to ne može da se promeni</string>
     <string name="nc_settings_other_notifications_ringtone">Obaveštenja</string>
     <string name="nc_settings_no_ringtone">Nema zvuka</string>
-    <string name="nc_settings_vibrate">Vibriraj</string>
     <string name="nc_settings_vibrate_desc">Telefon će vibrirati osim ako nije utišan</string>
     <string name="nc_settings_appearance">Izgled</string>
     <string name="nc_settings_theme_title">Tema</string>

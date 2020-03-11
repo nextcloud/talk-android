@@ -78,7 +78,6 @@
     <string name="nc_settings_call_ringtone">Appels</string>
     <string name="nc_settings_other_notifications_ringtone">Notifications</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
-    <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_vibrate_desc">Le téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_theme_title">Thème</string>

@@ -77,7 +77,6 @@
     <string name="nc_settings_call_ringtone">Hívások</string>
     <string name="nc_settings_other_notifications_ringtone">Értesítések</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
-    <string name="nc_settings_vibrate">Rezgés</string>
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
     <string name="nc_settings_appearance">Megjelenés</string>
     <string name="nc_settings_theme_title">Téma</string>

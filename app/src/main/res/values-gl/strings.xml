@@ -80,7 +80,6 @@ Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
     <string name="nc_settings_other_notifications_ringtone">Notificacións</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
-    <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
     <string name="nc_settings_appearance">Aparencia</string>
     <string name="nc_settings_theme_title">Tema</string>

@@ -78,7 +78,6 @@
     <string name="nc_settings_call_ringtone">Połączenia</string>
     <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
-    <string name="nc_settings_vibrate">Wibracje</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_theme_title">Motyw</string>

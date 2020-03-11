@@ -70,7 +70,6 @@
     <string name="nc_account_scheduled_for_deletion">Tài khoản được lên lịch xóa và không thể thay đổi</string>
     <string name="nc_settings_other_notifications_ringtone">Thông b</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
-    <string name="nc_settings_vibrate">Rung</string>
     <string name="nc_settings_theme_light">Sáng</string>
     <string name="nc_settings_theme_dark">Tối</string>
     <string name="nc_settings_privacy">Riêng tư</string>

@@ -78,7 +78,6 @@
     <string name="nc_settings_call_ringtone">Klici</string>
     <string name="nc_settings_other_notifications_ringtone">Obvestila</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
-    <string name="nc_settings_vibrate">Tresenje</string>
     <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
     <string name="nc_settings_appearance">Videz</string>
     <string name="nc_settings_theme_title">Tema</string>

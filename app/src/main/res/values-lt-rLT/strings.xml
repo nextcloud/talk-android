@@ -52,7 +52,6 @@
     <string name="nc_settings_add_account">Pridėti naują paskyrą</string>
     <string name="nc_add">Pridėti</string>
     <string name="nc_settings_other_notifications_ringtone">Pranešimai</string>
-    <string name="nc_settings_vibrate">Vibruoti</string>
     <string name="nc_settings_vibrate_desc">Telefonas vibruos, nebent bus nutildytas</string>
     <string name="nc_settings_appearance">Išvaizda</string>
     <string name="nc_settings_theme_title">Apipavidalinimas</string>

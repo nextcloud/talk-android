@@ -78,7 +78,6 @@
     <string name="nc_settings_call_ringtone">Κλήσεις</string>
     <string name="nc_settings_other_notifications_ringtone">Ειδοποιήσεις</string>
     <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
-    <string name="nc_settings_vibrate">Δόνηση</string>
     <string name="nc_settings_vibrate_desc">Το τηλέφωνο θα δονείται έως τη σίγαση του</string>
     <string name="nc_settings_appearance">Εμφάνιση</string>
     <string name="nc_settings_theme_title">Θέμα</string>

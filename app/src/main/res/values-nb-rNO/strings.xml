@@ -73,7 +73,6 @@
     <string name="nc_settings_call_ringtone">Samtaler</string>
     <string name="nc_settings_other_notifications_ringtone">Varsler</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
-    <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Bruk systemets standard</string>

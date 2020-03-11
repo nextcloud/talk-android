@@ -54,7 +54,6 @@
     <string name="nc_settings_call_ringtone">Puhelut</string>
     <string name="nc_settings_other_notifications_ringtone">Ilmoitukset</string>
     <string name="nc_settings_no_ringtone">Ei ääntä</string>
-    <string name="nc_settings_vibrate">Värinä</string>
     <string name="nc_settings_theme_title">Teema</string>
     <string name="nc_settings_theme_light">Vaalea</string>
     <string name="nc_settings_theme_dark">Tumma</string>

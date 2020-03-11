@@ -77,7 +77,6 @@
     <string name="nc_account_scheduled_for_deletion">حساب برای حذف برنامه ریزی شده است و قابل تغییر نیست</string>
     <string name="nc_settings_other_notifications_ringtone">آگاهی‌ها</string>
     <string name="nc_settings_no_ringtone">بدون صدا</string>
-    <string name="nc_settings_vibrate">لرزش</string>
     <string name="nc_settings_vibrate_desc">تلفن لرزش خواهد کرد مگر اینکه خاموش باشد</string>
     <string name="nc_settings_appearance">ظاهر</string>
     <string name="nc_settings_theme_title">زمینه</string>

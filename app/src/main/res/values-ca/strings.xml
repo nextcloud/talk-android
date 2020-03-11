@@ -73,7 +73,6 @@
     <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
     <string name="nc_settings_other_notifications_ringtone">Notificacions</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
-    <string name="nc_settings_vibrate">Vibra</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
     <string name="nc_settings_appearance">Aparença</string>
     <string name="nc_settings_theme_title">Tema</string>

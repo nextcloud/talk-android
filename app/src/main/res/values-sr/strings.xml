@@ -78,7 +78,6 @@
     <string name="nc_settings_call_ringtone">Позиви</string>
     <string name="nc_settings_other_notifications_ringtone">Обавештења</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
-    <string name="nc_settings_vibrate">Вибрирај</string>
     <string name="nc_settings_vibrate_desc">Телефон ће вибрирати осим ако није утишан</string>
     <string name="nc_settings_appearance">Изглед</string>
     <string name="nc_settings_theme_title">Тема</string>

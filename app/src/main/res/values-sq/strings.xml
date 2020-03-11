@@ -68,7 +68,6 @@
     <string name="nc_settings_call_ringtone">Thirrjet</string>
     <string name="nc_settings_other_notifications_ringtone">Njoftimet</string>
     <string name="nc_settings_no_ringtone">Ska tingull</string>
-    <string name="nc_settings_vibrate">Dridhje</string>
     <string name="nc_settings_theme_title">Shabllon</string>
     <string name="nc_settings_theme_light">E çelët</string>
     <string name="nc_settings_theme_dark">E errët</string>
