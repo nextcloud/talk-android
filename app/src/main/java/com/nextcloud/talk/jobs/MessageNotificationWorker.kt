@@ -26,6 +26,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
+import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -234,7 +235,7 @@ class MessageNotificationWorker(
                 .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
-                .setSound(soundUri)
+                .setSound(soundUri, AudioManager.STREAM_NOTIFICATION)
 
         if (vibrationEffect != null) {
             notificationBuilder.setVibrate(vibrationEffect)
