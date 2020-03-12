@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 
 import androidx.annotation.DimenRes;
+import androidx.annotation.Nullable;
 
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
@@ -35,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Nullable;
 
 import okhttp3.Credentials;
 

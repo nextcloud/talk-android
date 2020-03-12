@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.models.json.notifications;
 
+import androidx.annotation.Nullable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.LoganSquareJodaTimeConverter;
@@ -29,8 +31,6 @@ import org.parceler.Parcel;
 
 import java.util.HashMap;
 import java.util.List;
-
-import javax.annotation.Nullable;
 
 import lombok.Data;
 
