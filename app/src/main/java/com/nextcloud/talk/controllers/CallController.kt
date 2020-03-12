@@ -28,6 +28,7 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -90,6 +91,8 @@ import java.io.IOException
 import java.net.CookieManager
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.abs
+import kotlin.math.log10
 
 class CallController(args: Bundle) : BaseController() {
 
@@ -197,6 +200,9 @@ class CallController(args: Bundle) : BaseController() {
     private var hasMCU: Boolean = false
     private var hasExternalSignalingServer: Boolean = false
     private val conversationPassword: String
+
+    private var recorder: MediaRecorder = MediaRecorder()
+    private val timer = Timer()
 
     private val powerManagerUtils: PowerManagerUtils
 
@@ -783,6 +789,10 @@ class CallController(args: Bundle) : BaseController() {
             }
         }
 
+        sendDataChannelMessage(message)
+    }
+
+    private fun sendDataChannelMessage(message: String) {
         if (isConnectionEstablished) {
             if (!hasMCU) {
                 for (i in magicPeerConnectionWrapperList.indices) {
@@ -795,6 +805,44 @@ class CallController(args: Bundle) : BaseController() {
                     ) {
                         magicPeerConnectionWrapperList[i].sendChannelData(DataChannelMessage(message))
                         break
+                    }
+                }
+            }
+        }
+    }
+
+    private fun startListening() {
+        recorder.setAudioSource(MediaRecorder.AudioSource.MIC)
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+        recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+        timer.scheduleAtFixedRate(RecorderTask(recorder), 0, 1000)
+        recorder.setOutputFile("/dev/null")
+
+        try {
+            recorder.prepare()
+            recorder.start()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
+
+    inner class RecorderTask(private val recorder: MediaRecorder) : TimerTask() {
+        private var speaking = false
+        override fun run() {
+            if (isConnectionEstablished) {
+                val amplitude: Int = recorder.maxAmplitude
+                val amplitudeDb = 20 * log10(abs(amplitude).toDouble())
+                if (amplitudeDb >= 50) {
+                    if (!speaking) {
+                        speaking = true
+                        sendDataChannelMessage("speaking")
+                    }
+                } else {
+                    if (speaking) {
+                        speaking = false
+                        sendDataChannelMessage("stoppedSpeaking")
                     }
                 }
             }
@@ -1411,6 +1459,10 @@ class CallController(args: Bundle) : BaseController() {
         for (i in magicPeerConnectionWrapperList.indices) {
             endPeerConnection(magicPeerConnectionWrapperList[i].sessionId, false)
         }
+
+        timer.cancel()
+        recorder.stop()
+        recorder.release()
 
         hangupNetworkCalls(shutDownView)
     }
@@ -2285,6 +2337,7 @@ class CallController(args: Bundle) : BaseController() {
 
     private fun playCallingSound() {
         stopCallingSound()
+        startListening()
         val ringtoneUri = Uri.parse(
                 "android.resource://"
                         + applicationContext!!.packageName
