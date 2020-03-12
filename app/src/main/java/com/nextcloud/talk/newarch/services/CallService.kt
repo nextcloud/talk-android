@@ -27,7 +27,6 @@ import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
-import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.newarch.data.model.ErrorModel
@@ -229,7 +228,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                 override suspend fun onSuccess(result: ParticipantsOverall) {
                     val participants = result.ocs.data
                     if (participants.size > 0 && activeNotificationArgument == activeNotification) {
-                        val activeParticipants = participants.filter { it.participantFlags != Participant.ParticipantFlags.NOT_IN_CALL }
+                        val activeParticipants = participants.filter { it.sessionId != null && !it.sessionId.equals("0") }
                         val activeOnAnotherDevice = activeParticipants.filter { it.userId == user.userId }
                         if (activeParticipants.isNotEmpty() && activeOnAnotherDevice.isEmpty()) {
                             delay(5000)

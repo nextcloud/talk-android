@@ -39,6 +39,7 @@ import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
@@ -79,6 +80,7 @@ import com.stfalcon.chatkit.commons.ImageLoader as ChatKitImageLoader
 class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesListAdapter.OnLoadMoreListener, MessagesListAdapter
 .OnMessageLongClickListener<IMessage>, MessagesListAdapter.Formatter<Date> {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+    override val lifecycleOwner = ControllerLifecycleOwner(this)
 
     lateinit var viewModel: ChatViewModel
     val factory: ChatViewModelFactory by inject()

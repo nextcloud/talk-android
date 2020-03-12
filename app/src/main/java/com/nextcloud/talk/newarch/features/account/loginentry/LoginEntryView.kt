@@ -33,6 +33,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
@@ -47,6 +48,7 @@ import java.util.*
 
 class LoginEntryView(val bundle: Bundle) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+    override val lifecycleOwner = ControllerLifecycleOwner(this)
 
     private val protocolSuffix = "://"
     private val dataSeparator = ":"

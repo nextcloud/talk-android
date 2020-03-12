@@ -21,12 +21,16 @@
 package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Vibrator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,25 +54,34 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.CallEvent
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall
+import com.nextcloud.talk.newarch.data.model.ErrorModel
+import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
+import com.nextcloud.talk.newarch.domain.usecases.GetParticipantsForCallUseCase
+import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.services.CallService
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import org.michaelevans.colorart.library.ColorArt
 import org.parceler.Parcels
 
 class CallNotificationController(private val originalBundle: Bundle) : BaseController() {
 
+    val scope = CoroutineScope(Job() + Dispatchers.IO)
     val ncApi: NcApi by inject()
+    val networkComponents: NetworkComponents by inject()
+    val apiErrorHandler: ApiErrorHandler by inject()
 
     @JvmField
     @BindView(R.id.conversationNameTextView)
@@ -96,6 +109,9 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     private val conversation: Conversation = Parcels.unwrap(originalBundle.getParcelable(BundleKeys.KEY_CONVERSATION))
     private val userBeingCalled: UserNgEntity = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
     private val activeNotification: String? = originalBundle.getString(BundleKeys.KEY_ACTIVE_NOTIFICATION)
+
+    private val mediaPlayer: MediaPlayer = MediaPlayer()
+    private var vibrator: Vibrator? = null
 
     override fun inflateView(
             inflater: LayoutInflater,
@@ -155,6 +171,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         conversationNameTextView?.text = conversation.displayName
+        handleIncomingConversation()
         loadAvatar()
         callAnswerCameraView?.visibility = View.VISIBLE
         callAnswerVoiceOnlyView?.visibility = View.VISIBLE
@@ -248,8 +265,67 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
         }
     }
 
+    private fun handleIncomingConversation() {
+        if (activeNotification == null) {
+            playSoundAndVibrate()
+            checkIsConversationActive()
+        }
+    }
+
+    private fun playSoundAndVibrate() {
+        activity?.let {
+            mediaPlayer.setDataSource(it, NotificationUtils.getCallSoundUri(it, appPreferences)!!)
+            mediaPlayer.isLooping = true
+            val audioAttributes: AudioAttributes = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST).build()
+            mediaPlayer.setAudioAttributes(audioAttributes)
+            mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
+            mediaPlayer.prepareAsync()
+            vibrator = applicationContext?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            if (vibrator?.hasVibrator() == true) {
+                vibrator?.vibrate(5000)
+            }
+        }
+    }
+
+    private fun checkIsConversationActive() {
+        run {
+            val getParticipantsForCallUseCase = GetParticipantsForCallUseCase(networkComponents.getRepository(false, userBeingCalled.toUser()), apiErrorHandler)
+            getParticipantsForCallUseCase.invoke(scope, parametersOf(userBeingCalled, conversation.token), object : UseCaseResponse<ParticipantsOverall> {
+                override suspend fun onSuccess(result: ParticipantsOverall) {
+                    val participants = result.ocs.data
+                    if (participants.size > 0) {
+                        val activeParticipants = participants.filter { it.sessionId != null && !it.sessionId.equals("0") }
+                        val activeOnAnotherDevice = activeParticipants.filter { it.userId == userBeingCalled.userId }
+                        if (activeParticipants.isNotEmpty() && activeOnAnotherDevice.isEmpty()) {
+                            delay(5000)
+                            checkIsConversationActive()
+                        } else {
+                            withContext(Dispatchers.Main) {
+                                activity?.finish()
+                            }
+                        }
+                    } else {
+                        withContext(Dispatchers.Main) {
+                            activity?.finish()
+                        }
+                    }
+                }
+
+                override suspend fun onError(errorModel: ErrorModel?) {
+                    withContext(Dispatchers.Main) {
+                        activity?.finish()
+                    }
+                }
+            })
+        }
+    }
+
     public override fun onDestroy() {
         AvatarStatusCodeHolder.getInstance().statusCode = 0
+        scope.cancel()
+        mediaPlayer.stop()
+        mediaPlayer.release()
+        vibrator?.cancel()
         super.onDestroy()
     }
 

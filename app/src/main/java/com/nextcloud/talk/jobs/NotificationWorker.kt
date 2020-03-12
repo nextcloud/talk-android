@@ -20,9 +20,7 @@
 package com.nextcloud.talk.jobs
 
 import android.app.Notification
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
@@ -43,7 +41,6 @@ import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.conversations.Conversation

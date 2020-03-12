@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.api.load
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
@@ -63,6 +64,7 @@ import org.koin.android.ext.android.inject
 
 class ContactsView(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+    override val lifecycleOwner = ControllerLifecycleOwner(this)
 
     private lateinit var viewModel: ContactsViewModel
     val factory: ContactsViewModelFactory by inject()

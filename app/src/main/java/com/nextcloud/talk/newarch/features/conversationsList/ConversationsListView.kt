@@ -35,6 +35,7 @@ import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
@@ -68,6 +69,7 @@ import org.parceler.Parcels
 class ConversationsListView : BaseView() {
 
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
+    override val lifecycleOwner = ControllerLifecycleOwner(this)
 
     private lateinit var viewModel: ConversationsListViewModel
     val factory: ConversationListViewModelFactory by inject()

@@ -34,7 +34,7 @@ import com.nextcloud.talk.controllers.base.BaseController
 abstract class BaseView : BaseController(), LifecycleOwner, ViewModelStoreOwner {
 
     private val viewModelStore = ViewModelStore()
-    private val lifecycleOwner = ControllerLifecycleOwner(this)
+    open val lifecycleOwner = ControllerLifecycleOwner(this)
 
     override fun onCreateView(
             inflater: LayoutInflater,

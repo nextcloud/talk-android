@@ -28,6 +28,7 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Vibrator
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import androidx.core.app.NotificationManagerCompat
@@ -41,8 +42,10 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import org.parceler.Parcels
+import org.webrtc.ContextUtils.getApplicationContext
 import java.io.IOException
 import java.util.*
+
 
 object NotificationUtils {
     val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
@@ -91,7 +94,8 @@ object NotificationUtils {
     }
 
     fun getVibrationEffect(appPreferences: AppPreferences): LongArray? {
-        return if (appPreferences.shouldVibrateSetting) {
+        val vibrator = getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        return if (appPreferences.shouldVibrateSetting && vibrator.hasVibrator()) {
             longArrayOf(0L, 400L, 800L, 600L, 800L, 800L, 800L, 1000L)
         } else {
             null
