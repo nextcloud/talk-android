@@ -2262,6 +2262,7 @@ class CallController(args: Bundle) : BaseController() {
                 }
                 CallController.CallStatus.IN_CONVERSATION -> handler!!.post {
                     stopCallingSound()
+                    startListening()
 
                     if (!isPTTActive) {
                         animateCallControls(false, 5000)
@@ -2337,7 +2338,6 @@ class CallController(args: Bundle) : BaseController() {
 
     private fun playCallingSound() {
         stopCallingSound()
-        startListening()
         val ringtoneUri = Uri.parse(
                 "android.resource://"
                         + applicationContext!!.packageName
