@@ -6,10 +6,8 @@ import android.app.Service
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
-import android.media.AudioAttributes
 import android.media.AudioManager
 import android.net.Uri
-import android.os.Bundle
 import android.os.IBinder
 import android.util.Base64
 import android.util.Log
@@ -24,9 +22,8 @@ import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.events.CallEvent
-import com.nextcloud.talk.jobs.MessageNotificationWorker
+import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
@@ -56,7 +53,6 @@ import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
-import org.parceler.Parcels
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
 import java.security.PrivateKey
@@ -124,22 +120,10 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                 deleteAll -> {
                                     NotificationUtils.cancelAllNotificationsForAccount(applicationContext, signatureVerification.userEntity!!)
                                 }
-                                type == "call" -> {
+                                type == "call" && (conversation?.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION || conversation?.objectType.equals("share:password")) -> {
                                     if (conversation != null) {
                                         val generatedActiveNotificationId = signatureVerification.userEntity!!.id.toString() + "@" + decryptedPushMessage.notificationId!!.toString()
-                                        val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
-                                        fullScreenIntent.action = BundleKeys.KEY_OPEN_INCOMING_CALL
-                                        val bundle = Bundle()
-                                        bundle.putParcelable(BundleKeys.KEY_CONVERSATION, Parcels.wrap(conversation))
-                                        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, signatureVerification.userEntity)
-                                        bundle.putString(BundleKeys.KEY_ACTIVE_NOTIFICATION, generatedActiveNotificationId)
-                                        fullScreenIntent.putExtras(bundle)
-
-                                        fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                                        val fullScreenPendingIntent = PendingIntent.getActivity(this@CallService, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-
-                                        val audioAttributesBuilder = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                                        audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
+                                        val fullScreenPendingIntent = NotificationUtils.getIncomingCallIPendingIntent(applicationContext, this@CallService, conversation, signatureVerification.userEntity!!, generatedActiveNotificationId)
 
                                         val soundUri = NotificationUtils.getCallSoundUri(applicationContext, appPreferences)
                                         val vibrationEffect = NotificationUtils.getVibrationEffect(appPreferences)
@@ -148,22 +132,16 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                                 .getString(R.string.nc_notification_channel_calls), applicationContext.resources
                                                 .getString(R.string.nc_notification_channel_calls_description), true,
                                                 NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!,
-                                                audioAttributesBuilder.build(), vibrationEffect, false, null)
+                                                NotificationUtils.getCallAudioAttributes(true), vibrationEffect, false, null)
 
-                                        val userBaseUrl = Uri.parse(signatureVerification.userEntity!!.baseUrl).toString()
+                                        val uri: Uri = Uri.parse(signatureVerification.userEntity?.baseUrl)
+                                        var baseUrl = uri.host
 
-                                        var largeIcon = when (conversation.type) {
-                                            Conversation.ConversationType.PUBLIC_CONVERSATION -> {
-                                                BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_link_black_24px)
-                                            }
-                                            Conversation.ConversationType.GROUP_CONVERSATION -> {
-                                                BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_people_group_black_24px)
-                                            }
-                                            else -> {
-                                                // one to one and unknown
-                                                BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_user)
-                                            }
+                                        if (baseUrl == null) {
+                                            baseUrl = signatureVerification.userEntity?.baseUrl
                                         }
+
+                                        var largeIcon = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_baseline_person_black_24)
 
                                         val rejectCallIntent = Intent(this@CallService, CallService::class.java)
                                         rejectCallIntent.action = BundleKeys.KEY_REJECT_INCOMING_CALL
@@ -174,7 +152,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                                 .setCategory(NotificationCompat.CATEGORY_CALL)
                                                 .setSmallIcon(R.drawable.ic_call_black_24dp)
                                                 .setLargeIcon(largeIcon)
-                                                .setSubText(userBaseUrl)
+                                                .setSubText(baseUrl)
                                                 .setShowWhen(true)
                                                 .setWhen(System.currentTimeMillis())
                                                 .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
@@ -189,32 +167,28 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                             notificationBuilder.setVibrate(vibrationEffect)
                                         }
 
-                                        if (conversation.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) {
-                                            val target = object : Target {
-                                                override fun onSuccess(result: Drawable) {
-                                                    super.onSuccess(result)
-                                                    largeIcon = result.toBitmap()
-                                                    notificationBuilder.setLargeIcon(largeIcon)
-                                                    showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
-                                                }
-
-                                                override fun onError(error: Drawable?) {
-                                                    super.onError(error)
-                                                    showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
-                                                }
+                                        val target = object : Target {
+                                            override fun onSuccess(result: Drawable) {
+                                                super.onSuccess(result)
+                                                largeIcon = result.toBitmap()
+                                                notificationBuilder.setLargeIcon(largeIcon)
+                                                showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
                                             }
 
-                                            val avatarUrl = ApiUtils.getUrlForAvatarWithName(signatureVerification.userEntity!!.baseUrl, conversation.name, R.dimen.avatar_size)
-                                            val imageLoader = networkComponents.getImageLoader(signatureVerification.userEntity!!.toUser())
-
-                                            val request = Images().getRequestForUrl(
-                                                    imageLoader, applicationContext, avatarUrl, signatureVerification.userEntity,
-                                                    target, null, CircleCropTransformation())
-
-                                            imageLoader.load(request)
-                                        } else {
-                                            showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
+                                            override fun onError(error: Drawable?) {
+                                                super.onError(error)
+                                                showNotification(notificationBuilder, signatureVerification.userEntity!!, conversation.token!!, decryptedPushMessage.notificationId!!, generatedActiveNotificationId)
+                                            }
                                         }
+
+                                        val avatarUrl = ApiUtils.getUrlForAvatarWithName(signatureVerification.userEntity!!.baseUrl, conversation.name, R.dimen.avatar_size)
+                                        val imageLoader = networkComponents.getImageLoader(signatureVerification.userEntity!!.toUser())
+
+                                        val request = Images().getRequestForUrl(
+                                                imageLoader, applicationContext, avatarUrl, signatureVerification.userEntity,
+                                                target, null, CircleCropTransformation())
+
+                                        imageLoader.load(request)
                                     }
                                 }
                                 else -> {
@@ -224,8 +198,9 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                         val messageData = Data.Builder()
                                                 .putString(BundleKeys.KEY_DECRYPTED_PUSH_MESSAGE, LoganSquare.serialize(decryptedPushMessage))
                                                 .putString(BundleKeys.KEY_SIGNATURE_VERIFICATION, json.stringify(SignatureVerification.serializer(), signatureVerification))
+                                                .putString(BundleKeys.KEY_CONVERSATION, json.stringify(Conversation.serializer(), conversation))
                                                 .build()
-                                        val pushNotificationWork = OneTimeWorkRequest.Builder(MessageNotificationWorker::class.java).setInputData(messageData).build()
+                                        val pushNotificationWork = OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData).build()
                                         WorkManager.getInstance().enqueue(pushNotificationWork)
                                     }
                                 }

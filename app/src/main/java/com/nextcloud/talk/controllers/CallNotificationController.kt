@@ -95,7 +95,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     var incomingTextRelativeLayout: RelativeLayout? = null
     private val conversation: Conversation = Parcels.unwrap(originalBundle.getParcelable(BundleKeys.KEY_CONVERSATION))
     private val userBeingCalled: UserNgEntity = originalBundle.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
-    private val activeNotification: String = originalBundle.getString(BundleKeys.KEY_ACTIVE_NOTIFICATION)!!
+    private val activeNotification: String? = originalBundle.getString(BundleKeys.KEY_ACTIVE_NOTIFICATION)
 
     override fun inflateView(
             inflater: LayoutInflater,
@@ -115,10 +115,12 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
     }
 
     private fun dismissIncomingCallNotification() {
-        val hideIncomingCallNotificationIntent = Intent(applicationContext, CallService::class.java)
-        hideIncomingCallNotificationIntent.action = BundleKeys.DISMISS_CALL_NOTIFICATION
-        hideIncomingCallNotificationIntent.putExtra(BundleKeys.KEY_ACTIVE_NOTIFICATION, activeNotification)
-        applicationContext?.startService(hideIncomingCallNotificationIntent)
+        if (activeNotification != null) {
+            val hideIncomingCallNotificationIntent = Intent(applicationContext, CallService::class.java)
+            hideIncomingCallNotificationIntent.action = BundleKeys.DISMISS_CALL_NOTIFICATION
+            hideIncomingCallNotificationIntent.putExtra(BundleKeys.KEY_ACTIVE_NOTIFICATION, activeNotification)
+            applicationContext?.startService(hideIncomingCallNotificationIntent)
+        }
     }
 
     @OnClick(R.id.callControlHangupView)

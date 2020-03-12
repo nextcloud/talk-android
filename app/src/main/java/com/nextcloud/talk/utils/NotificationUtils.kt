@@ -21,23 +21,26 @@
 package com.nextcloud.talk.utils
 
 import android.annotation.TargetApi
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
-import android.app.NotificationManager
+import android.app.*
 import android.content.Context
+import android.content.Intent
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import androidx.core.app.NotificationManagerCompat
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.models.RingtoneSettings
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import org.parceler.Parcels
 import java.io.IOException
 import java.util.*
 
@@ -48,6 +51,44 @@ object NotificationUtils {
     val NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2"
     val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
     val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
+
+    fun getNotificationPendingIntent(applicationContext: Context, internalUserId: Long, conversationToken: String): PendingIntent {
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        intent.action = BundleKeys.KEY_OPEN_CONVERSATION
+        intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, internalUserId)
+        intent.putExtra(BundleKeys.KEY_CONVERSATION_TOKEN, conversationToken)
+
+        return PendingIntent.getActivity(applicationContext, 0, intent, 0)
+    }
+
+    fun getIncomingCallIPendingIntent(applicationContext: Context, serviceContext: Context, conversation: Conversation, user: UserNgEntity, notificationId: String?): PendingIntent {
+        val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
+        fullScreenIntent.action = BundleKeys.KEY_OPEN_INCOMING_CALL
+        val bundle = Bundle()
+        bundle.putParcelable(BundleKeys.KEY_CONVERSATION, Parcels.wrap(conversation))
+        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, user)
+        if (notificationId != null) {
+            bundle.putString(BundleKeys.KEY_ACTIVE_NOTIFICATION, notificationId)
+        }
+        fullScreenIntent.putExtras(bundle)
+
+        fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        return PendingIntent.getActivity(serviceContext, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    fun getCallAudioAttributes(isCall: Boolean): AudioAttributes {
+        return if (isCall) {
+            val audioAttributesBuilder = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
+            audioAttributesBuilder.build()
+        } else {
+            val audioAttributesBuilder: AudioAttributes.Builder =
+                    AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+            audioAttributesBuilder.build()
+        }
+    }
 
     fun getVibrationEffect(appPreferences: AppPreferences): LongArray? {
         return if (appPreferences.shouldVibrateSetting) {

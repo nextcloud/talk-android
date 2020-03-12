@@ -70,7 +70,7 @@ import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
 import java.util.function.Consumer
 
-class MessageNotificationWorker(
+class NotificationWorker(
         context: Context,
         workerParams: WorkerParameters
 ) : CoroutineWorker(context, workerParams), KoinComponent {
@@ -82,23 +82,22 @@ class MessageNotificationWorker(
         val data = inputData
         val decryptedPushMessageString: String = data.getString(BundleKeys.KEY_DECRYPTED_PUSH_MESSAGE)!!
         val signatureVerificationString: String = data.getString(BundleKeys.KEY_SIGNATURE_VERIFICATION)!!
+        val conversationString: String = data.getString(BundleKeys.KEY_CONVERSATION)!!
 
         val json = Json(MagicJson.customJsonConfiguration)
         val decryptedPushMessage = LoganSquare.parse(decryptedPushMessageString, DecryptedPushMessage::class.java)
         val signatureVerification = json.parse(SignatureVerification.serializer(), signatureVerificationString)
-
-        // we support Nextcloud Talk 4.0 and up so assuming "no-ping" capability here
-        val intent = Intent(applicationContext, MainActivity::class.java)
-        intent.action = BundleKeys.KEY_OPEN_CONVERSATION
-        intent.putExtra(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.userEntity!!.id)
-        intent.putExtra(BundleKeys.KEY_CONVERSATION_TOKEN, decryptedPushMessage.id)
+        val conversation = json.parse(Conversation.serializer(), conversationString)
 
         when (decryptedPushMessage.type) {
             "room" -> {
-                showNotificationWithObjectData(this, decryptedPushMessage, signatureVerification, intent)
+                showNotificationWithObjectData(this, decryptedPushMessage, signatureVerification, conversation)
             }
             "chat" -> {
-                showNotificationWithObjectData(this, decryptedPushMessage, signatureVerification, intent)
+                showNotificationWithObjectData(this, decryptedPushMessage, signatureVerification, conversation)
+            }
+            "call" -> {
+                showNotification(decryptedPushMessage, signatureVerification, conversation)
             }
             else -> {
                 // do nothing
@@ -108,12 +107,11 @@ class MessageNotificationWorker(
         Result.success()
     }
 
-    private fun showNotificationWithObjectData(coroutineScope: CoroutineScope, decryptedPushMessage: DecryptedPushMessage, signatureVerification: SignatureVerification, intent: Intent) {
+    private fun showNotificationWithObjectData(coroutineScope: CoroutineScope, decryptedPushMessage: DecryptedPushMessage, signatureVerification: SignatureVerification, conversation: Conversation) {
         val nextcloudTalkRepository = networkComponents.getRepository(false, signatureVerification.userEntity!!.toUser())
         val getNotificationUseCase = GetNotificationUseCase(nextcloudTalkRepository, apiErrorHandler)
         getNotificationUseCase.invoke(coroutineScope, parametersOf(signatureVerification.userEntity, decryptedPushMessage.notificationId.toString()), object : UseCaseResponse<NotificationOverall> {
             override suspend fun onSuccess(result: NotificationOverall) {
-                var conversationTypeString = "one2one"
                 val notification = result.ocs.notification
 
                 notification.messageRichParameters?.let { messageRichParameters ->
@@ -138,9 +136,6 @@ class MessageNotificationWorker(
                         decryptedPushMessage.subject = notification.subject
                     }
 
-                    if (callHashMap.containsKey("call-type")) {
-                        conversationTypeString = callHashMap["call-type"]!!
-                    }
                 }
 
                 val notificationUser = NotificationUser()
@@ -156,22 +151,9 @@ class MessageNotificationWorker(
                     notificationUser.name = guestHashMap["name"]
                 }
 
-                var conversationType: Conversation.ConversationType = Conversation.ConversationType.ONE_TO_ONE_CONVERSATION
-                when (conversationTypeString) {
-                    "public" -> {
-                        conversationType = Conversation.ConversationType.PUBLIC_CONVERSATION
-                    }
-                    "group" -> {
-                        conversationType = Conversation.ConversationType.GROUP_CONVERSATION
-                    }
-                    else -> {
-                        // one2one
-                        // do nothing
-                    }
-                }
                 decryptedPushMessage.timestamp = notification.datetime.millis
                 decryptedPushMessage.notificationUser = notificationUser
-                showNotification(decryptedPushMessage, signatureVerification, conversationType, intent)
+                showNotification(decryptedPushMessage, signatureVerification, conversation)
             }
 
             override suspend fun onError(errorModel: ErrorModel?) {
@@ -184,8 +166,8 @@ class MessageNotificationWorker(
     private fun showNotification(
             decryptedPushMessage: DecryptedPushMessage,
             signatureVerification: SignatureVerification,
-            conversationType: Conversation.ConversationType = Conversation.ConversationType.ONE_TO_ONE_CONVERSATION, intent: Intent) {
-        val largeIcon = when (conversationType) {
+            conversation: Conversation) {
+        val largeIcon = when (conversation.type) {
             Conversation.ConversationType.PUBLIC_CONVERSATION -> {
                 BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_link_black_24px)
             }
@@ -194,12 +176,21 @@ class MessageNotificationWorker(
             }
             else -> {
                 // one to one and unknown
-                BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_chat_black_24dp)
+                if (decryptedPushMessage.type == "call") {
+                    BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_baseline_person_black_24)
+                } else {
+                    BitmapFactory.decodeResource(applicationContext.resources, R.drawable.ic_chat_black_24dp)
+                }
             }
         }
 
-        val pendingIntent: PendingIntent? = PendingIntent.getActivity(applicationContext,
-                0, intent, 0)
+        var notificationId = decryptedPushMessage.timestamp.toInt()
+
+        val pendingIntent = if (decryptedPushMessage.type == "call") {
+            NotificationUtils.getIncomingCallIPendingIntent(applicationContext, applicationContext, conversation, signatureVerification.userEntity!!, null)
+        } else {
+            NotificationUtils.getNotificationPendingIntent(applicationContext, signatureVerification.userEntity!!.id, conversation.token!!)
+        }
 
         val soundUri = NotificationUtils.getMessageSoundUri(applicationContext, appPreferences)
 
@@ -247,7 +238,6 @@ class MessageNotificationWorker(
             notificationBuilder.color = applicationContext.resources.getColor(R.color.colorPrimary)
         }
 
-        var notificationId = decryptedPushMessage.timestamp.toInt()
 
         val notificationInfoBundle = Bundle()
         notificationInfoBundle.putLong(BundleKeys.KEY_INTERNAL_USER_ID, signatureVerification.userEntity!!.id)
@@ -290,13 +280,13 @@ class MessageNotificationWorker(
                         override fun onSuccess(result: Drawable) {
                             super.onSuccess(result)
                             person.setIcon(IconCompat.createWithBitmap(result.toBitmap()))
-                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
+                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversation.type!!, person.build(), style))
                             NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
                         }
 
                         override fun onError(error: Drawable?) {
                             super.onError(error)
-                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
+                            notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversation.type!!, person.build(), style))
                             NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
                         }
                     }
@@ -308,7 +298,7 @@ class MessageNotificationWorker(
 
                     networkComponents.getImageLoader(signatureVerification.userEntity!!.toUser()).load(request)
                 } else {
-                    notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversationType, person.build(), style))
+                    notificationBuilder.setStyle(getStyle(decryptedPushMessage, conversation.type!!, person.build(), style))
                     NotificationManagerCompat.from(applicationContext).notify(notificationId, notificationBuilder.build())
                 }
             }

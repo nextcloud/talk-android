@@ -20,52 +20,15 @@
 package com.nextcloud.talk.services.firebase
 
 import android.annotation.SuppressLint
-import android.app.Notification
-import android.app.PendingIntent
 import android.content.Intent
-import android.media.AudioAttributes
-import android.media.AudioManager
-import android.net.Uri
-import android.os.Bundle
-import android.util.Base64
-import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.emoji.text.EmojiCompat
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
-import com.bluelinelabs.logansquare.LoganSquare
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MagicCallActivity
-import com.nextcloud.talk.jobs.MessageNotificationWorker
-import com.nextcloud.talk.models.SignatureVerification
-import com.nextcloud.talk.models.json.push.DecryptedPushMessage
-import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.services.CallService
-import com.nextcloud.talk.newarch.utils.MagicJson
-import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
-import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
-import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INCOMING_PUSH_MESSSAGE
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPEN_INCOMING_CALL
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import kotlinx.serialization.json.Json
-import okhttp3.OkHttpClient
-import org.greenrobot.eventbus.EventBus
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import retrofit2.Retrofit
-import java.security.InvalidKeyException
-import java.security.NoSuchAlgorithmException
-import java.security.PrivateKey
-import javax.crypto.Cipher
-import javax.crypto.NoSuchPaddingException
 
 class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     val tag: String = "MagicFirebaseMessagingService"
