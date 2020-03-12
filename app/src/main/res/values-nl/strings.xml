@@ -79,6 +79,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_call_ringtone">Oproepen</string>
     <string name="nc_settings_other_notifications_ringtone">Meldingen</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
+    <string name="nc_settings_vibrate">Trilstand</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_appearance">Uiterlijk</string>
     <string name="nc_settings_theme_title">Thema</string>

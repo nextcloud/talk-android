@@ -78,6 +78,7 @@
     <string name="nc_settings_call_ringtone">Volání</string>
     <string name="nc_settings_other_notifications_ringtone">Upozorňování</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
+    <string name="nc_settings_vibrate">Vibrace</string>
     <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_appearance">Vzhled</string>
     <string name="nc_settings_theme_title">Motiv vzhledu</string>
