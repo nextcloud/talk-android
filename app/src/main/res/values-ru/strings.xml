@@ -78,6 +78,7 @@
     <string name="nc_settings_call_ringtone">Вызовы</string>
     <string name="nc_settings_other_notifications_ringtone">Уведомления</string>
     <string name="nc_settings_no_ringtone">Без звука</string>
+    <string name="nc_settings_vibrate">Вибрация</string>
     <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
     <string name="nc_settings_appearance">Внешний вид</string>
     <string name="nc_settings_theme_title">Оформление</string>

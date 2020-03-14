@@ -78,6 +78,7 @@
     <string name="nc_settings_call_ringtone">Samtal</string>
     <string name="nc_settings_other_notifications_ringtone">Aviseringar</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
+    <string name="nc_settings_vibrate">Vibration</string>
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
     <string name="nc_settings_appearance">Utseende</string>
     <string name="nc_settings_theme_title">Tema</string>

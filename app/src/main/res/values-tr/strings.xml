@@ -78,6 +78,7 @@
     <string name="nc_settings_call_ringtone">Çağrılar</string>
     <string name="nc_settings_other_notifications_ringtone">Bildirimler</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
+    <string name="nc_settings_vibrate">Titreşim</string>
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_appearance">Görünüm</string>
     <string name="nc_settings_theme_title">Tema</string>
