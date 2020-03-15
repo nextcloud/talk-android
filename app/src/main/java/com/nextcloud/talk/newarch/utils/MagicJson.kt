@@ -22,22 +22,10 @@
 
 package com.nextcloud.talk.newarch.utils
 
-import kotlinx.serialization.json.JsonConfiguration
+import kotlinx.serialization.json.JsonConfiguration.Companion.Stable
 
 sealed class MagicJson {
     companion object {
-        private val defaultIndent: String = "    "
-        private val defaultDiscriminator = "type"
-
-        val customJsonConfiguration = JsonConfiguration(
-                encodeDefaults = true,
-                strictMode = true,
-                unquoted = false,
-                allowStructuredMapKeys = true,
-                prettyPrint = true,
-                indent = defaultIndent,
-                useArrayPolymorphism = true,
-                classDiscriminator = defaultDiscriminator
-        )
+        val customJsonConfiguration = Stable.copy(prettyPrint = true, useArrayPolymorphism = true)
     }
 }
