@@ -169,6 +169,9 @@
     <string name="nc_guest">Vieras</string>
     <string name="nc_file_browser_back">Takaisin</string>
     <string name="nc_file_browser_refresh">Päivitä</string>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinaari</string>
     <string name="nc_timeout_error">Aikakatkaisu</string>
     <string name="nc_not_defined_error">Tuntematon virhe</string>
     <string name="nc_general_settings">Yleiset</string>
