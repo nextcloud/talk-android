@@ -181,7 +181,7 @@
     <string name="nc_public_call_explanation">Le conversazioni pubbliche ti consentono di invitare persone esterne tramite un
        collegamento appositamente generato.</string>
     <string name="nc_call_timeout">Nessuna risposta in 45 secondi, tocca per provare ancora</string>
-    <string name="nc_call_reconnecting">Riconnesssione in corso...</string>
+    <string name="nc_call_reconnecting">Riconnessione in corso...</string>
     <string name="nc_offline">Attualmente non in linea, controlla la tua connettività</string>
     <string name="nc_leaving_call">Chiusura della chiamata in corso...</string>
 
@@ -216,7 +216,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Premi per parlare</string>
-    <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utillizzare Premi per parlare</string>
+    <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utilizzare Premi per parlare</string>
     <string name="nc_configure_cert_auth">Seleziona certificato di autenticazione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
 
