@@ -61,6 +61,7 @@ import com.google.android.material.chip.ChipDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.UserMentionClickEvent
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.text.Spans
@@ -186,7 +187,7 @@ object DisplayUtils {
             context: Context,
             id: String,
             label: CharSequence,
-            conversationUser: UserNgEntity,
+            conversationUser: User,
             type: String,
             @XmlRes chipResource: Int,
             emojiEditText: EditText?
@@ -264,7 +265,7 @@ object DisplayUtils {
             id: String,
             label: String,
             type: String,
-            conversationUser: UserNgEntity,
+            conversationUser: User,
             @XmlRes chipXmlRes: Int
     ): Spannable {
 

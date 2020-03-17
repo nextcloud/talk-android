@@ -22,6 +22,7 @@ package com.nextcloud.talk.components.filebrowser.webdav;
 
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
+import com.nextcloud.talk.newarch.local.models.User;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.newarch.utils.NetworkUtils;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -44,7 +45,7 @@ public class ReadFilesystemOperation {
     private final int depth;
     private final String basePath;
 
-    public ReadFilesystemOperation(OkHttpClient okHttpClient, UserNgEntity currentUser, String path,
+    public ReadFilesystemOperation(OkHttpClient okHttpClient, User currentUser, String path,
                                    int depth) {
         OkHttpClient.Builder okHttpClientBuilder = okHttpClient.newBuilder();
         okHttpClientBuilder.followRedirects(false);

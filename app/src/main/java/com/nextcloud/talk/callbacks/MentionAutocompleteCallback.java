@@ -27,6 +27,7 @@ import android.widget.EditText;
 
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.newarch.local.models.User;
 import com.nextcloud.talk.newarch.local.models.UserNgEntity;
 import com.nextcloud.talk.utils.BetterImageSpan;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -38,10 +39,10 @@ import com.vanniktech.emoji.EmojiUtils;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private Context context;
-    private UserNgEntity conversationUser;
+    private User conversationUser;
     private EditText editText;
 
-    public MentionAutocompleteCallback(Context context, UserNgEntity conversationUser,
+    public MentionAutocompleteCallback(Context context, User conversationUser,
                                        EditText editText) {
         this.context = context;
         this.conversationUser = conversationUser;

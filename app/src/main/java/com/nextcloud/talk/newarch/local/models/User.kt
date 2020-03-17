@@ -5,6 +5,7 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfiguration
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
+import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
 
@@ -23,6 +24,16 @@ data class User(
         var signalingSettings: SignalingSettings? = null,
         var status: UserStatus? = null
 ) : Parcelable
+
+fun User.getMaxMessageLength(): Int {
+    return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt() ?: 1000
+}
+
+fun User.getCredentials(): String = ApiUtils.getCredentials(username, token)
+
+fun User.hasSpreedFeatureCapability(capabilityName: String): Boolean {
+    return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
+}
 
 fun User.toUserEntity(): UserNgEntity {
     var userNgEntity: UserNgEntity? = null

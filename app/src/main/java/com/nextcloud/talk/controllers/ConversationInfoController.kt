@@ -69,6 +69,7 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
+import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -268,7 +269,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         if (conversationUser!!.hasSpreedFeatureCapability("webinary-lobby") && (conversation!!.type
                         == Conversation.ConversationType.GROUP_CONVERSATION || conversation!!.type ==
                         PUBLIC_CONVERSATION) && conversation!!.canModerate(
-                        conversationUser
+                        conversationUser.toUser()
                 )
         ) {
             conversationInfoWebinar.visibility = View.VISIBLE
@@ -652,7 +653,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
 
 
                         if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                            if (conversationCopy!!.canModerate(conversationUser)) {
+                            if (conversationCopy!!.canModerate(conversationUser.toUser())) {
                                 actionTextView.visibility = View.VISIBLE
                             } else {
                                 actionTextView.visibility = View.GONE
@@ -663,13 +664,13 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                             setupGeneralSettings()
                             setupWebinaryView()
 
-                            if (!conversation!!.canLeave(conversationUser)) {
+                            if (!conversation!!.canLeave(conversationUser.toUser())) {
                                 leaveConversationAction.visibility = View.GONE
                             } else {
                                 leaveConversationAction.visibility = View.VISIBLE
                             }
 
-                            if (!conversation!!.canModerate(conversationUser)) {
+                            if (!conversation!!.canModerate(conversationUser.toUser())) {
                                 deleteConversationAction.visibility = View.GONE
                             } else {
                                 deleteConversationAction.visibility = View.VISIBLE
@@ -709,7 +710,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         if (conversation != null && conversationUser != null) {
             changeConversationName.value = conversation!!.displayName
 
-            if (conversation!!.isNameEditable(conversationUser)) {
+            if (conversation!!.isNameEditable(conversationUser.toUser())) {
                 changeConversationName.visibility = View.VISIBLE
             } else {
                 changeConversationName.visibility = View.GONE
@@ -873,7 +874,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
                     )
             )
 
-            if (!conversation!!.canModerate(conversationUser)) {
+            if (!conversation!!.canModerate(conversationUser.toUser())) {
                 items = mutableListOf()
             } else {
                 if (participant.type == Participant.ParticipantType.MODERATOR || participant.type == Participant.ParticipantType.OWNER) {

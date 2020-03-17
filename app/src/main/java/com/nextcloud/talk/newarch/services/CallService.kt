@@ -157,7 +157,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                                 .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.subject.toString()))
                                                 .setAutoCancel(true)
                                                 .setOngoing(true)
-                                                .addAction(R.drawable.ic_call_end_white_24px, resources.getString(R.string.reject_call), rejectCallPendingIntent)
+                                                .addAction(R.drawable.ic_call_end_white_24px, resources.getString(R.string.nc_reject_call), rejectCallPendingIntent)
                                                 .setContentIntent(fullScreenPendingIntent)
                                                 .setFullScreenIntent(fullScreenPendingIntent, true)
                                                 .setSound(NotificationUtils.getCallSoundUri(applicationContext, appPreferences), AudioManager.STREAM_RING)
@@ -184,7 +184,7 @@ class CallService : Service(), KoinComponent, CoroutineScope {
                                         val imageLoader = networkComponents.getImageLoader(signatureVerification.userEntity!!.toUser())
 
                                         val request = Images().getRequestForUrl(
-                                                imageLoader, applicationContext, avatarUrl, signatureVerification.userEntity,
+                                                imageLoader, applicationContext, avatarUrl, signatureVerification.userEntity!!.toUser(),
                                                 target, null, CircleCropTransformation())
 
                                         imageLoader.load(request)

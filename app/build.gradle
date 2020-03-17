@@ -155,7 +155,7 @@ android {
 
 ext {
   work_version = '2.3.3'
-  koin_version = "2.1.0-alpha-1"
+  koin_version = "2.1.4"
   lifecycle_version = '2.2.0'
   coil_version = "0.9.5"
   room_version = "2.2.4"

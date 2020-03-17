@@ -32,6 +32,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsReposit
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.services.GlobalService
 import com.nextcloud.talk.newarch.services.GlobalServiceInterface
@@ -43,7 +44,7 @@ class ChatViewModel constructor(application: Application,
                                 private val conversationsRepository: ConversationsRepository,
                                 private val messagesRepository: MessagesRepository,
                                 private val globalService: GlobalService) : BaseViewModel<ChatView>(application), GlobalServiceInterface {
-    lateinit var user: UserNgEntity
+    lateinit var user: User
     val conversation: MutableLiveData<Conversation?> = MutableLiveData()
     var initConversation: Conversation? = null
     val messagesLiveData = Transformations.switchMap(conversation) {
@@ -54,10 +55,10 @@ class ChatViewModel constructor(application: Application,
     var conversationPassword: String? = null
 
 
-    fun init(user: UserNgEntity, conversationToken: String, conversationPassword: String?) {
+    fun init(user: User, conversationToken: String, conversationPassword: String?) {
         viewModelScope.launch {
             this@ChatViewModel.user = user
-            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id, conversationToken)
+            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
             this@ChatViewModel.conversationPassword = conversationPassword
             globalService.getConversation(conversationToken, this@ChatViewModel)
         }
@@ -70,7 +71,7 @@ class ChatViewModel constructor(application: Application,
     override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
         if (operationStatus == GlobalServiceInterface.OperationStatus.STATUS_OK) {
             if (userNgEntity.id == user.id && conversation!!.token == initConversation?.token) {
-                this.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id, conversation.token!!)
+                this.conversation.value = conversationsRepository.getConversationForUserWithToken(user.id!!, conversation.token!!)
                 conversation.token?.let { conversationToken ->
                     globalService.joinConversation(conversationToken, conversationPassword, this)
                 }

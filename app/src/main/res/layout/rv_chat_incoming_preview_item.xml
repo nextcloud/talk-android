@@ -20,46 +20,70 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="16dp"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="16dp"
     android:layout_marginBottom="2dp">
 
+
     <com.google.android.flexbox.FlexboxLayout
-        android:id="@id/bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
+        android:layout_toEndOf="@+id/messageUserAvatar"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="vertical"
         app:alignContent="stretch"
         app:alignItems="stretch"
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <include layout="@layout/item_message_quote" android:visibility="gone"/>
-
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@id/messageText"
+        <ImageView
+            android:id="@+id/incomingPreviewImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:lineSpacingMultiplier="1.2"
-            app:layout_alignSelf="flex_start"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
-            android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="false"
-            android:autoLink="all"/>
+            app:layout_alignSelf="flex_start"
+            tools:src="@tools:sample/backgrounds/scenic"/>
 
-        <TextView
-            android:id="@id/messageTime"
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@+id/incomingPreviewMessageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/messageText"
+            android:autoLink="all"
+            android:textColor="@color/warm_grey_four"
+            android:textColorLink="@color/warm_grey_four"
+            android:textIsSelectable="false"
+            android:textSize="12sp"
+            app:layout_alignSelf="flex_start"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="true" />
+
+        <TextView
+            android:id="@+id/incomingPreviewTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
+            android:textColor="@color/warm_grey_four"
             app:layout_alignSelf="center" />
 
     </com.google.android.flexbox.FlexboxLayout>
+
+
+    <ImageView
+        android:id="@id/messageUserAvatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="8dp"
+        />
+
 </RelativeLayout>

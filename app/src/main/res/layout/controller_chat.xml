@@ -72,6 +72,14 @@
         app:inputTextSize="16sp"
         app:showAttachmentButton="true" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/messageInputView"
+        app:stackFromEnd="true"
+        app:reverseLayout="true"
+        android:id="@+id/messagesRecyclerView"/>
+
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messagesListView"
         android:layout_width="match_parent"

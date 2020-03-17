@@ -320,5 +320,5 @@
     <string name="nc_search_for_more">Başka katılımcılar arayın</string>
     <string name="nc_new_group">Yeni grup</string>
     <string name="nc_search_empty_contacts">Hepsi nereye gizlendiler?</string>
-    <string name="reject_call">Reddet</string>
+    <string name="nc_reject_call">Reddet</string>
 </resources>

@@ -91,11 +91,3 @@ fun UserNgEntity.toUser(): User {
 }
 
 fun UserNgEntity.getCredentials(): String = ApiUtils.getCredentials(username, token)
-
-fun UserNgEntity.hasSpreedFeatureCapability(capabilityName: String): Boolean {
-    return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
-}
-
-fun UserNgEntity.getMaxMessageLength(): Int {
-    return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt() ?: 1000
-}

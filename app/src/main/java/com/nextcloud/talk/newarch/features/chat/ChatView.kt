@@ -22,19 +22,22 @@
 
 package com.nextcloud.talk.newarch.features.chat
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
-import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
-import android.widget.AbsListView
+import android.widget.ImageView
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import coil.ImageLoader
 import coil.api.load
 import coil.target.Target
 import coil.transform.CircleCropTransformation
@@ -43,60 +46,60 @@ import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.messages.*
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
-import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.mention.Mention
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.Images
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.*
+import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
-import com.stfalcon.chatkit.commons.models.IMessage
-import com.stfalcon.chatkit.messages.MessageHolders
+import com.otaliastudios.elements.Adapter
+import com.otaliastudios.elements.Element
+import com.otaliastudios.elements.Page
+import com.otaliastudios.elements.Presenter
+import com.otaliastudios.elements.pagers.PageSizePager
 import com.stfalcon.chatkit.messages.MessagesListAdapter
-import com.stfalcon.chatkit.utils.DateFormatter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.controller_chat.view.*
-import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
 import java.util.*
-import coil.ImageLoader as CoilImageLoader
-import com.stfalcon.chatkit.commons.ImageLoader as ChatKitImageLoader
 
-class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesListAdapter.OnLoadMoreListener, MessagesListAdapter
-.OnMessageLongClickListener<IMessage>, MessagesListAdapter.Formatter<Date> {
+class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
     override val lifecycleOwner = ControllerLifecycleOwner(this)
 
-    lateinit var viewModel: ChatViewModel
+    private lateinit var viewModel: ChatViewModel
     val factory: ChatViewModelFactory by inject()
-    val imageLoader: CoilImageLoader by inject()
+    private val networkComponents: NetworkComponents by inject()
 
     var conversationInfoMenuItem: MenuItem? = null
     var conversationVoiceCallMenuItem: MenuItem? = null
     var conversationVideoMenuItem: MenuItem? = null
-
-    private var newMessagesCount = 0
 
     private lateinit var recyclerViewAdapter: MessagesListAdapter<ChatMessage>
     private lateinit var mentionAutocomplete: Autocomplete<*>
 
     private var shouldShowLobby: Boolean = false
     private var isReadOnlyConversation: Boolean = false
+
+    private lateinit var messagesAdapter: Adapter
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -105,12 +108,22 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
         setHasOptionsMenu(true)
         actionBar?.show()
         viewModel = viewModelProvider(factory).get(ChatViewModel::class.java)
-        viewModel.init(args.getParcelable(BundleKeys.KEY_USER_ENTITY)!!, args.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!, args.getString(KEY_CONVERSATION_PASSWORD))
+        val view = super.onCreateView(inflater, container)
+
+        viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
+
+        messagesAdapter = Adapter.builder(this)
+                .setPager(PageSizePager(80))
+                //.addSource(ChatViewSource(itemsPerPage = 10))
+                .addSource(ChatDateHeaderSource(activity as Context, ChatElementTypes.DATE_HEADER.ordinal))
+                .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
+                .addPresenter(ChatPresenter(activity as Context, ::onElementClick, ::onElementLongClick, this))
+                .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
+                .into(view.messagesRecyclerView)
 
         viewModel.apply {
             conversation.observe(this@ChatView) { conversation ->
                 setTitle()
-                setupAdapter()
 
                 if (Conversation.ConversationType.ONE_TO_ONE_CONVERSATION == conversation?.type) {
                     loadAvatar()
@@ -124,36 +137,100 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                 activity?.invalidateOptionsMenu()
 
                 if (shouldShowLobby) {
-                    view?.messagesListView?.visibility = View.GONE
-                    view?.messageInputView?.visibility = View.GONE
-                    view?.lobbyView?.visibility = View.VISIBLE
+                    view.messagesListView?.visibility = View.GONE
+                    view.messageInputView?.visibility = View.GONE
+                    view.lobbyView?.visibility = View.VISIBLE
                     val timer = conversation.lobbyTimer
-                    if (timer != null && timer != 0L) {
-                        view?.lobbyTextView?.text = String.format(
+                    val unit = if (timer != null && timer != 0L) {
+                        view.lobbyTextView?.text = String.format(
                                 resources!!.getString(R.string.nc_lobby_waiting_with_date),
                                 DateUtils.getLocalDateStringFromTimestampForLobby(
                                         conversation.lobbyTimer!!
                                 ))
                     } else {
-                        view?.lobbyTextView?.setText(R.string.nc_lobby_waiting)
+                        view.lobbyTextView?.setText(R.string.nc_lobby_waiting)
                     }
                 } else {
-                    view?.messagesListView?.visibility = View.GONE
-                    view?.lobbyView?.visibility = View.GONE
+                    view.messagesListView?.visibility = View.GONE
+                    view.lobbyView?.visibility = View.GONE
 
                     if (isReadOnlyConversation) {
-                        view?.messageInputView?.visibility = View.GONE
+                        view.messageInputView?.visibility = View.GONE
                     } else {
-                        view?.messageInputView?.visibility = View.VISIBLE
-
+                        view.messageInputView?.visibility = View.VISIBLE
                     }
                 }
-
             }
         }
-        return super.onCreateView(inflater, container)
+        return view
     }
 
+    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>) {
+        if (element.type == ChatElementTypes.INCOMING_PREVIEW_MESSAGE.ordinal || element.type == ChatElementTypes.OUTGOING_PREVIEW_MESSAGE.ordinal) {
+            element.data?.let { chatElement ->
+                val chatMessage = chatElement.data as ChatMessage
+                val currentUser = viewModel.user
+                if (chatMessage.messageType == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
+                    val accountString = currentUser.username + "@" + currentUser.baseUrl
+                            .replace("https://", "")
+                            .replace("http://", "")
+                    if (canWeOpenFilesApp(context, accountString)) {
+                        val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
+                        val componentName = ComponentName(
+                                context.getString(R.string.nc_import_accounts_from),
+                                "com.owncloud.android.ui.activity.FileDisplayActivity"
+                        )
+                        filesAppIntent.component = componentName
+                        filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        filesAppIntent.setPackage(
+                                context.getString(R.string.nc_import_accounts_from)
+                        )
+                        filesAppIntent.putExtra(
+                                KEY_ACCOUNT, accountString
+                        )
+                        filesAppIntent.putExtra(
+                                KEY_FILE_ID,
+                                chatMessage.selectedIndividualHashMap!!["id"]
+                        )
+                        context.startActivity(filesAppIntent)
+                    } else {
+                        val browserIntent = Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse(chatMessage.selectedIndividualHashMap!!["link"])
+                        )
+                        browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        context.startActivity(browserIntent)
+                    }
+                } else if (chatMessage.messageType == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
+                    val browserIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://giphy.com")
+                    )
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(browserIntent)
+                } else if (chatMessage.messageType == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {
+                    val browserIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse("https://tenor.com")
+                    )
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(browserIntent)
+                } else if (chatMessage.messageType == ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE) {
+                    val browserIntent = Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(chatMessage.imageUrl)
+                    )
+                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    context.startActivity(browserIntent)
+                }
+            }
+
+        }
+    }
+
+    private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>) {
+
+    }
 
     override fun onAttach(view: View) {
         super.onAttach(view)
@@ -185,55 +262,14 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
 
     private fun setupViews() {
         view?.let { view ->
-            view.recyclerView.initRecyclerView(
+            view.messagesRecyclerView.initRecyclerView(
                     LinearLayoutManager(view.context), recyclerViewAdapter, false
             )
 
-            recyclerViewAdapter.setLoadMoreListener(this)
-            recyclerViewAdapter.setDateHeadersFormatter { format(it) }
-            recyclerViewAdapter.setOnMessageLongClickListener { onMessageLongClick(it) }
-
             view.popupBubbleView.setRecyclerView(view.messagesListView)
-
-            view.popupBubbleView.setPopupBubbleListener { context ->
-                if (newMessagesCount != 0) {
-                    val scrollPosition: Int
-                    if (newMessagesCount - 1 < 0) {
-                        scrollPosition = 0
-                    } else {
-                        scrollPosition = newMessagesCount - 1
-                    }
-                    view.messagesListView.postDelayed({
-                        view.messagesListView.smoothScrollToPosition(scrollPosition)
-                    }, 200)
-                }
-            }
-
-            view.messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(
-                        recyclerView: RecyclerView,
-                        newState: Int
-                ) {
-                    super.onScrollStateChanged(recyclerView, newState)
-
-                    if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                        if (newMessagesCount != 0) {
-                            val layoutManager: LinearLayoutManager = view.messagesListView.layoutManager as LinearLayoutManager
-                            if (layoutManager.findFirstCompletelyVisibleItemPosition() <
-                                    newMessagesCount
-                            ) {
-                                newMessagesCount = 0
-
-                                view.popupBubbleView?.hide()
-                            }
-                        }
-                    }
-                }
-            })
 
             val filters = arrayOfNulls<InputFilter>(1)
             val lengthFilter = viewModel.user.getMaxMessageLength()
-
 
             filters[0] = InputFilter.LengthFilter(lengthFilter)
             view.messageInput.filters = filters
@@ -365,9 +401,9 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
         viewModel.conversation.value?.let {
             val bundle = Bundle()
             bundle.putParcelable(
-                    BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType)
+                    BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap(browserType)
             )
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserNgEntity>(viewModel.user))
+            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, viewModel.user)
             bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, it.token)
             router.pushController(
                     RouterTransaction.with(BrowserController(bundle))
@@ -378,65 +414,8 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
         }
     }
 
-    private fun setupAdapter() {
-        val messageHolders = MessageHolders()
-        messageHolders.setIncomingTextConfig(
-                MagicIncomingTextMessageViewHolder::class.java, R.layout.item_custom_incoming_text_message
-        )
-        messageHolders.setOutcomingTextConfig(
-                MagicOutcomingTextMessageViewHolder::class.java,
-                R.layout.item_custom_outcoming_text_message
-        )
-
-        messageHolders.setIncomingImageConfig(
-                MagicPreviewMessageViewHolder::class.java, R.layout.item_custom_incoming_preview_message
-        )
-        messageHolders.setOutcomingImageConfig(
-                MagicPreviewMessageViewHolder::class.java, R.layout.item_custom_outcoming_preview_message
-        )
-
-        messageHolders.registerContentType(
-                ChatController.CONTENT_TYPE_SYSTEM_MESSAGE, MagicSystemMessageViewHolder::class.java,
-                R.layout.item_system_message, MagicSystemMessageViewHolder::class.java,
-                R.layout.item_system_message,
-                this
-        )
-
-        messageHolders.registerContentType(
-                ChatController.CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
-                MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header,
-                MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header, this
-        )
-
-        recyclerViewAdapter = MessagesListAdapter(
-                viewModel.user.userId, messageHolders, ChatKitImageLoader { imageView, url, payload ->
-            imageView.load(url) {
-                if (url!!.contains("/avatar/")) {
-                    transformations(CircleCropTransformation())
-                } else {
-                    if (payload is ImageLoaderPayload) {
-                        payload.map?.let {
-                            if (payload.map.containsKey("mimetype")) {
-                                placeholder(
-                                        DrawableUtils.getDrawableResourceIdForMimeType(
-                                                payload.map.get("mimetype") as String?
-                                        )
-                                )
-                            }
-                        }
-                    }
-                }
-
-                val needsAuthBasedOnUrl = url.contains("index.php/core/preview?fileId=") || url.contains("index.php/avatar/")
-                if (url.startsWith(viewModel.user.baseUrl) && needsAuthBasedOnUrl) {
-                    addHeader("Authorization", viewModel.user.getCredentials())
-                }
-            }
-        })
-
-    }
-
     private fun loadAvatar() {
+        val imageLoader = networkComponents.getImageLoader(viewModel.user)
         val avatarSize = DisplayUtils.convertDpToPixel(
                         conversationVoiceCallMenuItem?.icon!!
                                 .intrinsicWidth.toFloat(), activity!!
@@ -459,9 +438,7 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
                 ), viewModel.user, target, this,
                         CircleCropTransformation()
                 )
-
                 imageLoader.load(avatarRequest)
-
             }
         }
     }
@@ -474,35 +451,30 @@ class ChatView : BaseView(), MessageHolders.ContentChecker<IMessage>, MessagesLi
         return viewModel.conversation.value?.displayName
     }
 
-    override fun hasContentFor(message: IMessage, type: Byte): Boolean {
-        when (type) {
-            ChatController.CONTENT_TYPE_SYSTEM_MESSAGE -> return !TextUtils.isEmpty(message.systemMessage)
-            ChatController.CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> return message.id == "-1"
+    override fun getImageLoader(): ImageLoader {
+        return networkComponents.getImageLoader(viewModel.user)
+    }
+
+    override fun loadImage(imageView: ImageView, url: String, payload: MutableMap<String, String>?) {
+        val imageLoader = networkComponents.getImageLoader(viewModel.user)
+
+        imageLoader.load(activity as Context, url) {
+            if (url.contains("/avatar/")) {
+                transformations(CircleCropTransformation())
+            } else {
+                payload?.let {
+                    if (payload.containsKey("mimetype")) {
+                        placeholder(DrawableUtils.getDrawableResourceIdForMimeType(payload["mimetype"])
+                        )
+                    }
+                }
+            }
+
+            target(imageView)
+            val needsAuthBasedOnUrl = url.contains("index.php/core/preview?fileId=") || url.contains("index.php/avatar/")
+            if (url.startsWith(viewModel.user.baseUrl) && needsAuthBasedOnUrl) {
+                addHeader("Authorization", viewModel.user.getCredentials())
+            }
         }
-
-        return false
     }
-
-    override fun format(date: Date): String {
-        return when {
-            DateFormatter.isToday(date) -> {
-                resources!!.getString(R.string.nc_date_header_today)
-            }
-            DateFormatter.isYesterday(date) -> {
-                resources!!.getString(R.string.nc_date_header_yesterday)
-            }
-            else -> {
-                DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH_YEAR)
-            }
-        }
-    }
-
-    override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onMessageLongClick(message: IMessage?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
 }

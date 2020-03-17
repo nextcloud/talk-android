@@ -36,6 +36,7 @@ import coil.target.Target
 import coil.transform.Transformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.DisplayUtils
@@ -46,7 +47,7 @@ class Images {
             context: Context,
             url: String,
             userEntity:
-            UserNgEntity?,
+            User?,
             target: Target?,
             lifecycleOwner: LifecycleOwner?,
             vararg transformations: Transformation

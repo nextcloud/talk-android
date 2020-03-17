@@ -38,9 +38,9 @@ import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
-import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
+import com.nextcloud.talk.newarch.features.chat.ChatView
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationView
@@ -180,7 +180,7 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                         val bundle = Bundle()
                         if (!hasToken || isNewGroupConversation) {
                             bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
-                            router.replaceTopController(RouterTransaction.with(ChatController(bundle))
+                            router.replaceTopController(RouterTransaction.with(ChatView(bundle))
                                     .popChangeHandler(HorizontalChangeHandler())
                                     .pushChangeHandler(HorizontalChangeHandler()))
                         } else {

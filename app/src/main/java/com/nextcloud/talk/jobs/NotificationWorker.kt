@@ -289,7 +289,7 @@ class NotificationWorker(
                     }
 
                     val request = Images().getRequestForUrl(
-                            Coil.loader(), applicationContext, avatarUrl!!, signatureVerification.userEntity,
+                            Coil.loader(), applicationContext, avatarUrl!!, signatureVerification.userEntity!!.toUser(),
                             target, null, CircleCropTransformation()
                     )
 

@@ -32,6 +32,7 @@ import coil.api.load
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.interfaces.SelectionInterface
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
@@ -47,7 +48,7 @@ import org.koin.core.inject
 
 class BrowserFileItem(
         val model: BrowserFile,
-        private val activeUser: UserNgEntity,
+        private val activeUser: User,
         private val selectionInterface: SelectionInterface
 ) : AbstractFlexibleItem<BrowserFileItem.ViewHolder>(), IFilterable<String>, KoinComponent {
     val context: Context by inject()

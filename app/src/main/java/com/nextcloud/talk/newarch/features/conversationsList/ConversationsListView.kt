@@ -49,6 +49,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
 import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
+import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -265,7 +266,7 @@ class ConversationsListView : BaseView() {
             )
         }
 
-        if (conversation.canLeave(viewModel.globalService.currentUserLiveData.value!!)) {
+        if (conversation.canLeave(viewModel.globalService.currentUserLiveData.value!!.toUser())) {
             items.add(
                     BasicListItemWithImage(
                             drawable.ic_exit_to_app_black_24dp, context.getString
@@ -274,7 +275,7 @@ class ConversationsListView : BaseView() {
             )
         }
 
-        if (conversation.canModerate(viewModel.globalService.currentUserLiveData.value!!)) {
+        if (conversation.canModerate(viewModel.globalService.currentUserLiveData.value!!.toUser())) {
             items.add(
                     BasicListItemWithImage(
                             drawable.ic_delete_grey600_24dp, context.getString(

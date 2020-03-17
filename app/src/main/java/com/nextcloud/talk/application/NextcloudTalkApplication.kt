@@ -176,7 +176,7 @@ class NextcloudTalkApplication : Application(), LifecycleObserver, Configuration
     //endregion
 
     //region Protected methods
-    protected fun startKoin() {
+    private fun startKoin() {
         startKoin {
             androidContext(this@NextcloudTalkApplication)
             androidLogger()

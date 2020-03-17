@@ -24,7 +24,7 @@ import android.os.Bundle
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.newarch.features.chat.ChatView
 
 object ConductorRemapping {
     fun remapChatController(
@@ -51,13 +51,13 @@ object ConductorRemapping {
         } else {
             if (!replaceTop) {
                 router.pushController(
-                        RouterTransaction.with(ChatController(bundle))
+                        RouterTransaction.with(ChatView(bundle))
                                 .pushChangeHandler(HorizontalChangeHandler())
                                 .popChangeHandler(HorizontalChangeHandler()).tag(tag)
                 )
             } else {
                 router.replaceTopController(
-                        RouterTransaction.with(ChatController(bundle))
+                        RouterTransaction.with(ChatView(bundle))
                                 .pushChangeHandler(HorizontalChangeHandler())
                                 .popChangeHandler(HorizontalChangeHandler()).tag(tag)
                 )

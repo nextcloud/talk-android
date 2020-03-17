@@ -40,6 +40,7 @@ import com.nextcloud.talk.components.filebrowser.operations.ListingAbstractClass
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.jobs.ShareOperationWorker
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import eu.davidea.fastscroller.FastScroller
@@ -83,13 +84,13 @@ class BrowserController(args: Bundle) : BaseController(), ListingInterface, Flex
     private var listingAbstractClass: ListingAbstractClass? = null
     private val browserType: BrowserType
     private var currentPath: String? = null
-    private val activeUser: UserNgEntity
+    private val activeUser: User
     private val roomToken: String?
 
     init {
         setHasOptionsMenu(true)
         browserType = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_BROWSER_TYPE))
-        activeUser = Parcels.unwrap(args.getParcelable(BundleKeys.KEY_USER_ENTITY))
+        activeUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)!!
         roomToken = args.getString(BundleKeys.KEY_CONVERSATION_TOKEN)
 
         currentPath = "/"
@@ -130,7 +131,7 @@ class BrowserController(args: Bundle) : BaseController(), ListingInterface, Flex
                 iterator.remove()
                 if (paths.size == 10 || !iterator.hasNext()) {
                     data = Data.Builder()
-                            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, activeUser.id)
+                            .putLong(BundleKeys.KEY_INTERNAL_USER_ID, activeUser.id!!)
                             .putString(BundleKeys.KEY_CONVERSATION_TOKEN, roomToken)
                             .putStringArray(BundleKeys.KEY_FILE_PATHS, paths.toTypedArray())
                             .build()
