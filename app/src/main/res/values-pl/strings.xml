@@ -198,7 +198,7 @@
     <string name="nc_mute_calls">Wycisz połączenia</string>
     <string name="nc_mute_calls_desc">Połączenia przychodzące będą ignorowane</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
-    <string name="nc_important_conversation_desc">Powiadomienia o połączeniach i wiadomościach będą wyświetlane w trybie Nie przeszkadzać (zgodnie z konfiguracją systemu „Zezwalaj tylko na priorytetowe”)</string>
+    <string name="nc_important_conversation_desc">Powiadomienia o połączeniach i wiadomościach będą wyświetlane w trybie Nie przeszkadzać (zgodnie z konfiguracją systemu \"Zezwalaj tylko na priorytetowe\")</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
