@@ -20,5 +20,5 @@
 
 dependencies {
   implementation "androidx.work:work-gcm:2.3.3"
-  implementation "com.google.firebase:firebase-messaging:20.1.2"
+  implementation "com.google.firebase:firebase-messaging:20.1.3"
 }
