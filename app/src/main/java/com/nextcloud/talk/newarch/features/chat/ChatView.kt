@@ -137,7 +137,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 activity?.invalidateOptionsMenu()
 
                 if (shouldShowLobby) {
-                    view.messagesListView?.visibility = View.GONE
+                    view.messagesRecyclerView?.visibility = View.GONE
                     view.messageInputView?.visibility = View.GONE
                     view.lobbyView?.visibility = View.VISIBLE
                     val timer = conversation.lobbyTimer
@@ -151,7 +151,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                         view.lobbyTextView?.setText(R.string.nc_lobby_waiting)
                     }
                 } else {
-                    view.messagesListView?.visibility = View.GONE
+                    view.messagesRecyclerView?.visibility = View.GONE
                     view.lobbyView?.visibility = View.GONE
 
                     if (isReadOnlyConversation) {
@@ -266,7 +266,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                     LinearLayoutManager(view.context), recyclerViewAdapter, false
             )
 
-            view.popupBubbleView.setRecyclerView(view.messagesListView)
+            view.popupBubbleView.setRecyclerView(view.messagesRecyclerView)
 
             val filters = arrayOfNulls<InputFilter>(1)
             val lengthFilter = viewModel.user.getMaxMessageLength()
