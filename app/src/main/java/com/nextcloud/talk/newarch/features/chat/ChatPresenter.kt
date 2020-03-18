@@ -195,8 +195,6 @@ open class ChatPresenter<T : Any>(context: Context, onElementClick: ((Page, Hold
 
                             holder.itemView.outgoingPreviewTime.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                         }
-
-
                     } else {
                         // it's ChatElementTypes.SYSTEM_MESSAGE
                         holder.itemView.systemMessageText.text = chatMessage.text
