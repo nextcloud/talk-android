@@ -78,6 +78,7 @@
     <string name="nc_settings_call_ringtone">Deiak</string>
     <string name="nc_settings_other_notifications_ringtone">Jakinarazpenak</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
+    <string name="nc_settings_vibrate">Bibrazioa</string>
     <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_theme_title">Gaia</string>
