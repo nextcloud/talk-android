@@ -361,13 +361,13 @@ public class CallNotificationController extends BaseController {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (vibrator.hasAmplitudeControl()) {
                         vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
-                        vibrator.vibrate(vibrationEffect);
+                        //vibrator.vibrate(vibrationEffect);
                     } else {
                         vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
-                        vibrator.vibrate(vibrationEffect);
+                        //vibrator.vibrate(vibrationEffect);
                     }
                 } else {
-                    vibrator.vibrate(vibratePattern, -1);
+                    //vibrator.vibrate(vibratePattern, -1);
                 }
             }
 

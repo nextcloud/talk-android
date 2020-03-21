@@ -214,7 +214,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                     .setContentIntent(fullScreenPendingIntent)
                                     .setFullScreenIntent(fullScreenPendingIntent, true)
                                     .setSound(soundUri)
-                                    .setVibrate(NotificationUtils.getVibrationEffectForCalls())
                                     .build()
                             notification.flags = notification.flags or Notification.FLAG_INSISTENT
                             isServiceInForeground = true
