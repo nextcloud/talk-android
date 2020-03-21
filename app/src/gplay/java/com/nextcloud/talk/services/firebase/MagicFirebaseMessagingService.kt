@@ -189,13 +189,13 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             val notificationChannelId = NotificationUtils.getNotificationChannelId(applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls), applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls_description), true,
-                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!, audioAttributesBuilder.build(), NotificationUtils.getVibrationEffectForCalls(), false)
+                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!, audioAttributesBuilder.build(), null, false)
 
                             createNotificationChannel(applicationContext!!,
                                     notificationChannelId, applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls), applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls_description), true,
-                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build(), NotificationUtils.getVibrationEffectForCalls(), false)
+                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build(), null, false)
 
                             val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
                             val baseUrl = uri.host
