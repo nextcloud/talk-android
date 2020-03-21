@@ -42,6 +42,7 @@ import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationSta
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationStateWrapper
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
+import com.nextcloud.talk.newarch.local.models.canUserCreateGroupConversations
 import com.nextcloud.talk.newarch.services.GlobalService
 import kotlinx.coroutines.runBlocking
 import org.koin.core.parameter.parametersOf
@@ -137,41 +138,44 @@ class ContactsViewModel constructor(
 
     private fun loadContacts() {
         val searchQuery: String = if (filterMutableLiveData.value.isNullOrBlank()) "" else filterMutableLiveData.value.toString()
-        getContactsUseCase.invoke(viewModelScope, parametersOf(globalService.currentUserLiveData.value, groupConversation, searchQuery, conversationToken), object :
-                UseCaseResponse<List<Participant>> {
-            override suspend fun onSuccess(result: List<Participant>) {
-                val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 3)
+        val user = globalService.currentUserLiveData.value
+        user?.let { operationUser ->
+            getContactsUseCase.invoke(viewModelScope, parametersOf(operationUser, groupConversation, searchQuery, conversationToken), object :
+                    UseCaseResponse<List<Participant>> {
+                override suspend fun onSuccess(result: List<Participant>) {
+                    val sortPriority = mapOf("users" to 0, "groups" to 1, "emails" to 2, "circles" to 3)
 
-                val sortedList = result.sortedWith(compareBy({
-                    sortPriority[it.source]
-                }, {
-                    it.displayName!!.toLowerCase()
-                }))
+                    val sortedList = result.sortedWith(compareBy({
+                        sortPriority[it.source]
+                    }, {
+                        it.displayName!!.toLowerCase()
+                    }))
 
-                val selectedUserIds = selectedParticipants.map { (it.data as Participant).userId }
+                    val selectedUserIds = selectedParticipants.map { (it.data as Participant).userId }
 
 
-                val participantElementsList: MutableList<ParticipantElement> = sortedList.map {
-                    if (it.userId in selectedUserIds) {
-                        it.selected = true
+                    val participantElementsList: MutableList<ParticipantElement> = sortedList.map {
+                        if (it.userId in selectedUserIds) {
+                            it.selected = true
+                        }
+
+                        ParticipantElement(it, ParticipantElementType.PARTICIPANT.ordinal)
+                    } as MutableList<ParticipantElement>
+
+
+                    if (operationUser.canUserCreateGroupConversations() && conversationToken.isNullOrEmpty() && filterLiveData.value.isNullOrEmpty()) {
+                        val newGroupElement = ParticipantElement(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal)
+                        participantElementsList.add(0, newGroupElement)
                     }
 
-                    ParticipantElement(it, ParticipantElementType.PARTICIPANT.ordinal)
-                } as MutableList<ParticipantElement>
-
-
-                if (conversationToken.isNullOrEmpty() && filterLiveData.value.isNullOrEmpty()) {
-                    val newGroupElement = ParticipantElement(Pair(context.getString(R.string.nc_new_group), R.drawable.ic_people_group_white_24px), ParticipantElementType.PARTICIPANT_NEW_GROUP.ordinal)
-                    participantElementsList.add(0, newGroupElement)
+                    _contacts.postValue(participantElementsList)
                 }
 
-                _contacts.postValue(participantElementsList)
-            }
+                override suspend fun onError(errorModel: ErrorModel?) {
+                    _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.LOADING_FAILED, errorModel?.getErrorMessage(), conversationToken))
 
-            override suspend fun onError(errorModel: ErrorModel?) {
-                _operationState.postValue(ContactsViewOperationStateWrapper(ContactsViewOperationState.LOADING_FAILED, errorModel?.getErrorMessage(), conversationToken))
-
-            }
-        })
+                }
+            })
+        }
     }
 }

@@ -39,7 +39,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
 
 android {
   compileSdkVersion 29
-  buildToolsVersion '29.0.2'
+  buildToolsVersion '29.0.3'
   defaultConfig {
     applicationId "com.nextcloud.talk2"
     versionName version
@@ -47,7 +47,7 @@ android {
     targetSdkVersion 29
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-    versionCode 130
+    versionCode 132
     versionName "9.0.0alpha1"
 
     flavorDimensions "default"

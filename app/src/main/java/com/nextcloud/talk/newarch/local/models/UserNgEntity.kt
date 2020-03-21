@@ -86,6 +86,14 @@ data class UserNgEntity(
     }
 }
 
+fun UserNgEntity.canUserCreateGroupConversations(): Boolean {
+    val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
+    canCreateValue?.let {
+        return it.toBoolean()
+    }
+    return true
+}
+
 fun UserNgEntity.toUser(): User {
     return User(this.id, this.userId, this.username, this.baseUrl, this.token, this.displayName, this.pushConfiguration, this.capabilities, this.clientCertificate, this.signalingSettings, this.status)
 }

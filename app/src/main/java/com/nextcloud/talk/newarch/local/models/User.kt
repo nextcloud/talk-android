@@ -29,6 +29,20 @@ fun User.getMaxMessageLength(): Int {
     return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt() ?: 1000
 }
 
+
+fun User.getAttachmentsConfig(key: String): Any? {
+    return capabilities?.spreedCapability?.config?.get("attachments")?.get(key)
+}
+
+fun User.canUserCreateGroupConversations(): Boolean {
+    val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
+    canCreateValue?.let {
+        return it.toBoolean()
+    }
+    return true
+}
+
+
 fun User.getCredentials(): String = ApiUtils.getCredentials(username, token)
 
 fun User.hasSpreedFeatureCapability(capabilityName: String): Boolean {
