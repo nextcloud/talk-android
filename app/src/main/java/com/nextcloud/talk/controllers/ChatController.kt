@@ -1015,6 +1015,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 if (isFromTheFuture) {
                     globalLastKnownFutureMessageId = header
                 } else {
+                    if (globalLastKnownFutureMessageId == -1) {
+                        globalLastKnownFutureMessageId = header
+                    }
                     globalLastKnownPastMessageId = header
                 }
             }
@@ -1024,8 +1027,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
             val chatOverall = response.body() as ChatOverall?
             val chatMessageList = chatOverall?.ocs!!.data
-
-            val wasFirstMessageProcessing = isFirstMessagesProcessing
 
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation()
@@ -1059,10 +1060,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
                     chatMessage.activeUser = conversationUser
 
-                }
-
-                if (wasFirstMessageProcessing && chatMessageList.size > 0) {
-                    globalLastKnownFutureMessageId = chatMessageList[0].jsonMessageId
                 }
 
                 if (adapter != null) {
