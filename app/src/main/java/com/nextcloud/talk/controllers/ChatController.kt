@@ -194,6 +194,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     var lobbyTimerHandler: Handler? = null
     val roomJoined: Boolean = false
+    var pastPreconditionFailed = false
+    var futurePreconditionFailed = false
 
     init {
         setHasOptionsMenu(true)
@@ -471,8 +473,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
                 handleFromNotification()
-            } else {
-                getRoomInfo()
             }
         }
     }
@@ -529,11 +529,25 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 lobbyView?.visibility = View.GONE
                 messagesListView?.visibility = View.VISIBLE
                 messageInput?.visibility = View.VISIBLE
+                if (isFirstMessagesProcessing && pastPreconditionFailed) {
+                    pastPreconditionFailed = false
+                    pullChatMessages(0)
+                } else if (futurePreconditionFailed) {
+                    futurePreconditionFailed = false
+                    pullChatMessages(1)
+                }
             }
         } else {
             lobbyView?.visibility = View.GONE
             messagesListView?.visibility = View.VISIBLE
             messageInput?.visibility = View.VISIBLE
+            if (isFirstMessagesProcessing && pastPreconditionFailed) {
+                pastPreconditionFailed = false
+                pullChatMessages(0)
+            } else if (futurePreconditionFailed) {
+                futurePreconditionFailed = false
+                pullChatMessages(1)
+            }
         }
     }
 
@@ -913,7 +927,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
 
         if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)) {
-            return
+            //return
         }
 
         val fieldMap = HashMap<String, Int>()
@@ -964,13 +978,15 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             override fun onNext(response: Response<*>) {
                                 if (response.code() == 304) {
                                     pullChatMessages(1)
+                                } else if (response.code() == 412) {
+                                    futurePreconditionFailed = true
+
                                 } else {
                                     processMessages(response, true, finalTimeout)
                                 }
                             }
 
                             override fun onError(e: Throwable) {
-
                             }
 
                             override fun onComplete() {
@@ -983,7 +999,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap)
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
-                        ?.retry(3) { observable -> inConversation && !wasDetached }
                         ?.takeWhile { observable -> inConversation && !wasDetached }
                         ?.subscribe(object : Observer<Response<*>> {
                             override fun onSubscribe(d: Disposable) {
@@ -991,11 +1006,14 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             }
 
                             override fun onNext(response: Response<*>) {
-                                processMessages(response, false, 0)
+                                if (response.code() == 412) {
+                                    pastPreconditionFailed = true
+                                } else {
+                                    processMessages(response, false, 0)
+                                }
                             }
 
                             override fun onError(e: Throwable) {
-
                             }
 
                             override fun onComplete() {
