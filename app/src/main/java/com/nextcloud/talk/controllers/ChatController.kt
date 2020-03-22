@@ -919,13 +919,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         val fieldMap = HashMap<String, Int>()
         fieldMap["includeLastKnown"] = 0
 
-        var timeout = 30
-        if (!lookingIntoFuture) {
-            timeout = 0;
-        }
-
-        fieldMap["timeout"] = timeout
-
         if (lookIntoFuture > 0) {
             lookingIntoFuture = true
         } else if (isFirstMessagesProcessing) {
@@ -935,6 +928,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 fieldMap["includeLastKnown"] = 1
             }
         }
+
+        var timeout = 30
+        if (!lookingIntoFuture) {
+            timeout = 0;
+        }
+
+        fieldMap["timeout"] = timeout
 
         fieldMap["lookIntoFuture"] = lookIntoFuture
         fieldMap["limit"] = 100
