@@ -290,10 +290,10 @@ Pozdravite prijatelje in znance.</string>
     <!-- Lobby -->
 
     <string name="nc_webinar">Spletinar</string>
-    <string name="nc_lobby">Spletna avla</string>
+    <string name="nc_lobby">Spletna čakalnica</string>
     <string name="nc_start_time">Čas začetka</string>
-    <string name="nc_lobby_waiting">Trenutno še čakate v spletni avli.</string>
-    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni avli.\n
+    <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
+    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\n
         sestanek je načrtovan za %1$s.</string>
     <string name="nc_manual">Ni nastavljeno</string>
 
