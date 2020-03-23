@@ -333,8 +333,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     override fun onViewBound(view: View) {
-        super.onViewBound(view)
-
         actionBar?.show()
         var adapterWasNull = false
 
@@ -465,7 +463,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
         if (currentConversation != null && currentConversation?.roomId != null) {
             loadAvatarForStatusBar()
-            checkLobbyState()
             setTitle()
         }
 
@@ -473,8 +470,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             // we're starting
             if (TextUtils.isEmpty(roomToken)) {
                 handleFromNotification()
+            } else {
+                getRoomInfo()
             }
         }
+        super.onViewBound(view)
     }
 
 
@@ -541,13 +541,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             lobbyView?.visibility = View.GONE
             messagesListView?.visibility = View.VISIBLE
             messageInput?.visibility = View.VISIBLE
-            if (isFirstMessagesProcessing && pastPreconditionFailed) {
-                pastPreconditionFailed = false
-                pullChatMessages(0)
-            } else if (futurePreconditionFailed) {
-                futurePreconditionFailed = false
-                pullChatMessages(1)
-            }
         }
     }
 
