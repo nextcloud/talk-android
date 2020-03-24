@@ -320,4 +320,5 @@ v zozname rozhovorov</string>
     <string name="nc_search_for_more">Vyhľadanie ďalších účastníkov</string>
     <string name="nc_new_group">Nová skupina</string>
     <string name="nc_search_empty_contacts">Kde sa všetci schovali?</string>
-    </resources>
+    <string name="nc_reject_call">Odmietnuť </string>
+</resources>
