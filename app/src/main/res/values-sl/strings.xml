@@ -320,4 +320,5 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_search_for_more">Poišči več udeležencev</string>
     <string name="nc_new_group">Nova skupina</string>
     <string name="nc_search_empty_contacts">Kam so se vsi skrili?</string>
-    </resources>
+    <string name="nc_reject_call">Zavrni</string>
+</resources>

@@ -26,7 +26,7 @@
     <string name="nc_server_url">Adresse du serveur</string>
     <string name="nc_server_not_installed">Veuillez terminer votre installation de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
-    <string name="nc_server_maintenance">S’il vous plaît désactivez la maintenance de %1$s</string>
+    <string name="nc_server_maintenance">S’il vous plaît, désactivez la maintenance de %1$s</string>
     <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
     <string name="nc_server_import_account_plain">Importer le compte</string>
     <string name="nc_server_import_accounts_plain">Importer les comptes</string>
@@ -50,7 +50,7 @@
     <string name="nc_search_conversations">Rechercher une discussion</string>
 
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
-    <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
+    <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque-là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
     <string name="nc_yes">Oui</string>
     <string name="nc_no">Non</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
@@ -174,7 +174,7 @@
     <string name="nc_incoming_call">Appel entrant de</string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_public_call">Nouvelle conversation public</string>
-    <string name="nc_public_call_explanation">Les conversations publiques vous permet d\'inviter des personnes extérieures
+    <string name="nc_public_call_explanation">Les conversations publiques vous permettent d\'inviter des personnes extérieures
 grâce à un lien spécialement créé.</string>
     <string name="nc_call_timeout">Aucune réponse depuis 45 secondes, appuyez pour essayer à nouveau</string>
     <string name="nc_call_reconnecting">Reconnexion en cours…</string>
@@ -211,8 +211,8 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_push_to_talk">fonction Talkie-Walkie</string>
-    <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-Walkie</string>
+    <string name="nc_push_to_talk">fonction Talkie-walkie</string>
+    <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-walkie</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
 
