@@ -250,10 +250,10 @@
     <string name="nc_formatted_message_you">Du: %1$s</string>
 
     <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Inga fler objekt att ladda. Uppdatera för att försöka igen.</string>
-    <string name="nc_endless_disabled">Inga fler objekt att ladda (max nått).</string>
+    <string name="nc_no_more_load_retry">Inga fler objekt att läsa in. Uppdatera för att försöka igen.</string>
+    <string name="nc_endless_disabled">Inga fler objekt att läsa in (max nått).</string>
     <string name="nc_endless_cancel">Avbruten av användaren.</string>
-    <string name="nc_endless_error">Ett fel uppstod när fler objekt laddades in.</string>
+    <string name="nc_endless_error">Ett fel uppstod när fler objekt lästes in.</string>
 
     <!-- Content descriptions -->
     <string name="nc_description_more_menu_one_to_one">Meny för konversation med %1$s</string>

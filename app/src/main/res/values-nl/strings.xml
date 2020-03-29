@@ -319,4 +319,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_search_for_more">Zoek meer deelnemers</string>
     <string name="nc_new_group">Nieuwe groep</string>
     <string name="nc_search_empty_contacts">Waar zijn ze allemaal naar toe?</string>
-    </resources>
+    <string name="nc_reject_call">Afwijzen</string>
+</resources>
