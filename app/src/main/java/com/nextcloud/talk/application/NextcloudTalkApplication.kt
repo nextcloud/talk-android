@@ -50,7 +50,7 @@ import com.nextcloud.talk.newarch.di.module.StorageModule
 import com.nextcloud.talk.newarch.domain.di.module.UseCasesModule
 import com.nextcloud.talk.newarch.features.account.di.module.AccountModule
 import com.nextcloud.talk.newarch.features.contactsflow.di.module.ContactsFlowModule
-import com.nextcloud.talk.newarch.features.conversationslist.di.module.ConversationsListModule
+import com.nextcloud.talk.newarch.features.conversationsList.di.module.ConversationsListModule
 import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.other.UserStatus.*

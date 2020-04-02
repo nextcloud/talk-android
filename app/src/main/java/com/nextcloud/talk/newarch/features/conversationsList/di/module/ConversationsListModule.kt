@@ -20,15 +20,17 @@
  *  
  */
 
-package com.nextcloud.talk.newarch.features.conversationslist.di.module
+package com.nextcloud.talk.newarch.features.conversationsList.di.module
 
 import android.app.Application
+import android.os.CountDownTimer
+import android.util.Log
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationsUseCase
 import com.nextcloud.talk.newarch.domain.usecases.LeaveConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationFavoriteValueUseCase
-import com.nextcloud.talk.newarch.features.conversationslist.ConversationListViewModelFactory
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationListViewModelFactory
 import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
