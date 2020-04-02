@@ -20,7 +20,7 @@
  *  
  */
 
-package com.nextcloud.talk.newarch.features.conversationslist
+package com.nextcloud.talk.newarch.features.conversationsList
 
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.conversations.Conversation

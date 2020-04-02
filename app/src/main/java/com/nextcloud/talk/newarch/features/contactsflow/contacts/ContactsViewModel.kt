@@ -41,7 +41,7 @@ import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationStateWrapper
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
-import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 import com.nextcloud.talk.newarch.local.models.canUserCreateGroupConversations
 import com.nextcloud.talk.newarch.services.GlobalService
 import kotlinx.coroutines.runBlocking

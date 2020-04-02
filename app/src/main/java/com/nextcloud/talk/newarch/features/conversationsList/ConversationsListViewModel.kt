@@ -20,7 +20,7 @@
  *  
  */
 
-package com.nextcloud.talk.newarch.features.conversationslist
+package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.app.Application
 import android.graphics.drawable.Drawable
@@ -49,7 +49,7 @@ import org.koin.core.parameter.parametersOf
 import java.util.concurrent.locks.ReentrantLock
 
 
-class ConversationsListViewModel constructor(
+class ConversationsListViewModel (
         application: Application,
         private val getConversationsUseCase: GetConversationsUseCase,
         private val setConversationFavoriteValueUseCase: SetConversationFavoriteValueUseCase,

@@ -20,7 +20,7 @@
  *  
  */
 
-package com.nextcloud.talk.newarch.features.conversationslist
+package com.nextcloud.talk.newarch.features.conversationsList
 
 enum class ConversationsListViewNetworkState {
     LOADING,

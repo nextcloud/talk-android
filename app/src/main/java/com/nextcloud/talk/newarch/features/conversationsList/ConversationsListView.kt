@@ -20,9 +20,8 @@
  *
  */
 
-package com.nextcloud.talk.newarch.features.conversationslist
+package com.nextcloud.talk.newarch.features.conversationsList
 
-import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,7 +29,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -51,12 +49,12 @@ import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
 import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.mvvm.BaseView
-import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.animations.SharedElementTransition
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.Adapter
+import com.otaliastudios.elements.Adapter.Companion.AUTOSCROLL_POSITION_0
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
@@ -76,67 +74,73 @@ class ConversationsListView : BaseView() {
     val factory: ConversationListViewModelFactory by inject()
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup
+        inflater: LayoutInflater,
+        container: ViewGroup
     ): View {
         viewModel = viewModelProvider(factory).get(ConversationsListViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
         val adapter = Adapter.builder(this)
-                .addSource(ConversationsListSource(viewModel.conversationsLiveData))
-                .addPresenter(ConversationPresenter(activity as Context, ::onElementClick, ::onElementLongClick))
-                .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
-                .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, ::openNewConversationScreen) { view ->
-                    view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
-                })
-                .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
-                    view.messageStateTextView.setText(R.string.nc_oops)
-                    view.messageStateImageView.setImageDrawable((activity as Context).getDrawable(drawable.ic_announcement_white_24dp))
-                    view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
-                })
-                .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
-                .into(view.recyclerView)
-
+            .addSource(ConversationsListSource(viewModel.conversationsLiveData))
+            .addPresenter(ConversationPresenter(context, ::onElementClick, ::onElementLongClick))
+            .addPresenter(Presenter.forLoadingIndicator(context, R.layout.loading_state))
+            .addPresenter(AdvancedEmptyPresenter(context, R.layout.message_state, ::openNewConversationScreen) { view ->
+                view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
+            })
+            .addPresenter(Presenter.forErrorIndicator(context, R.layout.message_state) { view, _ ->
+                with(view) {
+                    messageStateTextView.setText(R.string.nc_oops)
+                    messageStateImageView.setImageDrawable(context.getDrawable(drawable.ic_announcement_white_24dp))
+                    messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
+                }
+            }
+            )
+            .setAutoScrollMode(AUTOSCROLL_POSITION_0, true)
+            .into(view.recyclerView)
 
         view.apply {
-            recyclerView.initRecyclerView(LinearLayoutManager(activity), adapter, true)
-            swipeRefreshLayoutView.setOnRefreshListener {
-                view.swipeRefreshLayoutView.isRefreshing = false
-                viewModel.loadConversations()
+            recyclerView.adapter = adapter
+            with(swipeRefreshLayoutView) {
+                setColorSchemeResources(R.color.colorPrimary)
+                setOnRefreshListener {
+                    view.swipeRefreshLayoutView.isRefreshing = false
+                    viewModel.loadConversations()
+                }
             }
-
-            swipeRefreshLayoutView.setColorSchemeResources(R.color.colorPrimary)
         }
 
         activity?.inputEditText?.addTextChangedListener(DebouncingTextWatcher(lifecycle, ::setSearchQuery))
         activity?.settingsButton?.setOnClickListener {
             val settingsTransitionName = "userAvatar.transitionTag"
             router.pushController(
-                    RouterTransaction.with(SettingsController())
-                            .pushChangeHandler(
-                                    TransitionChangeHandlerCompat(
-                                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
-                                    )
-                            )
-                            .popChangeHandler(
-                                    TransitionChangeHandlerCompat(
-                                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
-                                    )
-                            )
+                RouterTransaction.with(SettingsController())
+                    .pushChangeHandler(
+                        TransitionChangeHandlerCompat(
+                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
+                        )
+                    )
+                    .popChangeHandler(
+                        TransitionChangeHandlerCompat(
+                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
+                        )
+                    )
             )
-
         }
 
         viewModel.apply {
-            avatar.observe(this@ConversationsListView) { avatar ->
-                activity?.settingsButton?.imageTintList = null
-                activity?.settingsButton?.setImageDrawable(avatar)
+            avatar.observe(this@ConversationsListView) {
+                with(activity) {
+                    this?.settingsButton?.imageTintList = null
+                    this?.settingsButton?.setImageDrawable(it)
+                }
             }
 
             filterLiveData.observe(this@ConversationsListView) { query ->
                 if (!transitionInProgress) {
-                    activity?.settingsButton?.isVisible = query.isNullOrEmpty()
-                    activity?.clearButton?.isVisible = !query.isNullOrEmpty()
+                    with(activity) {
+                        this?.settingsButton?.isVisible = query.isNullOrEmpty()
+                        this?.clearButton?.isVisible = !query.isNullOrEmpty()
+                    }
                 }
             }
         }
@@ -149,9 +153,7 @@ class ConversationsListView : BaseView() {
         appBar?.isVisible = true
     }
 
-    private fun setSearchQuery(query: CharSequence?) {
-        viewModel.filterLiveData.postValue(query)
-    }
+    private fun setSearchQuery(query: CharSequence?) = viewModel.filterLiveData.postValue(query)
 
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<Conversation>) {
         val conversation = element.data
@@ -160,16 +162,18 @@ class ConversationsListView : BaseView() {
         user?.let { user ->
             conversation?.let { conversation ->
                 val bundle = Bundle()
-                bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, user)
-                bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation.token)
-                bundle.putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
-                bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
+                with(bundle) {
+                    putParcelable(BundleKeys.KEY_USER_ENTITY, user)
+                    putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation.token)
+                    putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
+                    putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
+                }
+
                 ConductorRemapping.remapChatController(
-                        router, user.id, conversation.token!!,
-                        bundle, false
+                    router, user.id, conversation.token!!,
+                    bundle, false
                 )
             }
-
         }
     }
 
@@ -182,7 +186,7 @@ class ConversationsListView : BaseView() {
                     cornerRadius(res = R.dimen.corner_radius)
                     title(text = conversation.displayName)
 
-                    listItemsWithImage(getConversationMenuItemsForConversation(conversation)) { dialog, index, item ->
+                    listItemsWithImage(getConversationMenuItemsForConversation(conversation)) { _, _, item ->
                         when (item.iconRes) {
                             drawable.ic_star_border_black_24dp -> {
                                 viewModel.changeFavoriteValueForConversation(conversation, false)
@@ -211,10 +215,10 @@ class ConversationsListView : BaseView() {
                                     }
                                     negativeButton(R.string.nc_cancel)
                                     icon(
-                                            drawable = DisplayUtils.getTintedDrawable(
-                                                    resources!!, drawable
-                                                    .ic_delete_grey600_24dp, R.color.nc_darkRed
-                                            )
+                                        drawable = DisplayUtils.getTintedDrawable(
+                                            resources!!, drawable
+                                            .ic_delete_grey600_24dp, R.color.nc_darkRed
+                                        )
                                     )
                                 }
                             }
@@ -227,78 +231,69 @@ class ConversationsListView : BaseView() {
         }
     }
 
-    override fun getLayoutId(): Int {
-        return R.layout.conversations_list_view
-    }
+    override fun getLayoutId(): Int = R.layout.conversations_list_view
 
-    private fun openNewConversationScreen() {
+    private fun openNewConversationScreen() =
         router.pushController(
-                RouterTransaction.with(ContactsView())
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-    }
+            RouterTransaction.with(ContactsView())
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
 
     private fun getConversationMenuItemsForConversation(conversation: Conversation): MutableList<BasicListItemWithImage> {
         val items = mutableListOf<BasicListItemWithImage>()
-
         if (conversation.favorite) {
             items.add(
-                    BasicListItemWithImage(
-                            drawable.ic_star_border_black_24dp,
-                            context.getString(R.string.nc_remove_from_favorites)
-                    )
+                BasicListItemWithImage(
+                    drawable.ic_star_border_black_24dp,
+                    context.getString(R.string.nc_remove_from_favorites)
+                )
             )
         } else {
             items.add(
-                    BasicListItemWithImage(
-                            drawable.ic_star_black_24dp,
-                            context.getString(R.string.nc_add_to_favorites)
-                    )
+                BasicListItemWithImage(
+                    drawable.ic_star_black_24dp,
+                    context.getString(R.string.nc_add_to_favorites)
+                )
             )
         }
 
         if (conversation.isPublic) {
             items.add(
-                    (BasicListItemWithImage(
-                            drawable
-                                    .ic_share_black_24dp, context.getString(R.string.nc_share_link)
-                    ))
+                (BasicListItemWithImage(
+                    drawable
+                        .ic_share_black_24dp, context.getString(R.string.nc_share_link)
+                ))
             )
         }
 
         if (conversation.canLeave(viewModel.globalService.currentUserLiveData.value!!.toUser())) {
             items.add(
-                    BasicListItemWithImage(
-                            drawable.ic_exit_to_app_black_24dp, context.getString
-                    (R.string.nc_leave)
-                    )
+                BasicListItemWithImage(
+                    drawable.ic_exit_to_app_black_24dp, context.getString
+                (R.string.nc_leave)
+                )
             )
         }
 
         if (conversation.canModerate(viewModel.globalService.currentUserLiveData.value!!.toUser())) {
             items.add(
-                    BasicListItemWithImage(
-                            drawable.ic_delete_grey600_24dp, context.getString(
-                            R.string.nc_delete_call
-                    )
-                    )
+                BasicListItemWithImage(
+                    drawable.ic_delete_grey600_24dp, context.getString(
+                    R.string.nc_delete_call
+                )
+                )
             )
         }
 
         return items
     }
 
-    override fun onFloatingActionButtonClick() {
-        openNewConversationScreen()
-    }
+    override fun onFloatingActionButtonClick() = openNewConversationScreen()
 
-    override fun getAppBarLayoutType(): AppBarLayoutType {
-        return AppBarLayoutType.SEARCH_BAR
-    }
+    override fun getAppBarLayoutType(): AppBarLayoutType = AppBarLayoutType.SEARCH_BAR
 
-    override fun getTitle(): String? {
-        return resources?.getString(R.string.nc_search_conversations)
-    }
+    override fun getTitle(): String? = resources?.getString(R.string.nc_search_conversations)
 
     override fun onRestoreViewState(view: View, savedViewState: Bundle) {
         super.onRestoreViewState(view, savedViewState)

@@ -36,7 +36,7 @@ import com.nextcloud.talk.newarch.domain.usecases.SetConversationPasswordUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationState
 import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationStateWrapper
-import com.nextcloud.talk.newarch.features.conversationslist.ConversationsListView
+import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 import com.nextcloud.talk.newarch.services.GlobalService
 import org.koin.core.parameter.parametersOf
 
