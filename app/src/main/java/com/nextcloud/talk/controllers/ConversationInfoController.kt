@@ -76,7 +76,6 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
@@ -190,7 +189,6 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
 
-    private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: Conversation? = null
 
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
@@ -252,15 +250,6 @@ class ConversationInfoController(args: Bundle) : BaseController(),
         if (saveStateHandler == null) {
             saveStateHandler = LovelySaveStateHandler()
         }
-
-        if (databaseStorageModule == null) {
-            databaseStorageModule = DatabaseStorageModule(
-                    conversationUser!!, conversationToken!!, this)
-        }
-
-        notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
-        conversationInfoWebinar.setStorageModule(databaseStorageModule)
-        generalConversationOptions.setStorageModule(databaseStorageModule)
 
         actionTextView.visibility = View.GONE
     }
@@ -337,7 +326,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     }
 
     fun submitGuestChange() {
-        if (databaseStorageModule != null && conversationUser != null && conversation != null) {
+        if ( conversationUser != null && conversation != null) {
             if ((allowGuestsAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked) {
                 ncApi.makeRoomPublic(conversationUser.getCredentials(), ApiUtils.getUrlForRoomVisibility
                         (conversationUser.baseUrl, conversation!!.token))
@@ -379,7 +368,7 @@ class ConversationInfoController(args: Bundle) : BaseController(),
     }
 
     fun submitFavoriteChange() {
-        if (databaseStorageModule != null && conversationUser != null && conversation != null) {
+        if (conversationUser != null && conversation != null) {
             if ((favoriteConversationAction.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked) {
                 ncApi.addConversationToFavorites(conversationUser.getCredentials(), ApiUtils
                                 .getUrlForConversationFavorites(conversationUser.baseUrl, conversation!!.token))

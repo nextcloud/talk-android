@@ -34,6 +34,7 @@ import com.nextcloud.talk.newarch.local.dao.UsersDao
 import com.nextcloud.talk.newarch.local.models.ConversationEntity
 import com.nextcloud.talk.newarch.local.models.MessageEntity
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import org.parceler.converter.HashMapParcelConverter
 
 @Database(
         entities = [ConversationEntity::class, MessageEntity::class, UserNgEntity::class],
@@ -46,7 +47,8 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
         ConversationTypeConverter::class, ParticipantTypeConverter::class,
         PushConfigurationConverter::class, CapabilitiesConverter::class,
         SignalingSettingsConverter::class,
-        UserStatusConverter::class, SystemMessageTypeConverter::class, ParticipantMapConverter::class
+        UserStatusConverter::class, SystemMessageTypeConverter::class, ParticipantMapConverter::class,
+        HashMapHashMapConverter::class
 )
 
 abstract class TalkDatabase : RoomDatabase() {

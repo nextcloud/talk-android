@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.newarch.features.conversationsList
 
+import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -82,7 +83,7 @@ class ConversationsListView : BaseView() {
 
         val adapter = Adapter.builder(this)
             .addSource(ConversationsListSource(viewModel.conversationsLiveData))
-            .addPresenter(ConversationPresenter(context, ::onElementClick, ::onElementLongClick))
+            .addPresenter(ConversationPresenter(activity as Context, ::onElementClick, ::onElementLongClick))
             .addPresenter(Presenter.forLoadingIndicator(context, R.layout.loading_state))
             .addPresenter(AdvancedEmptyPresenter(context, R.layout.message_state, ::openNewConversationScreen) { view ->
                 view.messageStateImageView.imageTintList = resources?.getColor(R.color.colorPrimary)?.let { ColorStateList.valueOf(it) }
@@ -163,7 +164,7 @@ class ConversationsListView : BaseView() {
             conversation?.let { conversation ->
                 val bundle = Bundle()
                 with(bundle) {
-                    putParcelable(BundleKeys.KEY_USER_ENTITY, user)
+                    putParcelable(BundleKeys.KEY_USER, user.toUser())
                     putString(BundleKeys.KEY_CONVERSATION_TOKEN, conversation.token)
                     putString(BundleKeys.KEY_ROOM_ID, conversation.conversationId)
                     putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))

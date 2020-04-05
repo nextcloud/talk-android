@@ -179,11 +179,13 @@ class ConversationsListViewModel (
         operationUser?.let {
             viewModelScope.launch {
                 val url = ApiUtils.getUrlForAvatarWithNameAndPixels(it.baseUrl, it.userId, 256)
-                val drawable = Coil.get((url)) {
-                    addHeader("Authorization", it.getCredentials())
-                    transformations(CircleCropTransformation())
-                }
-                avatar.postValue(drawable)
+                try {
+                    val drawable = Coil.get((url)) {
+                        addHeader("Authorization", it.getCredentials())
+                        transformations(CircleCropTransformation())
+                    }
+                    avatar.postValue(drawable)
+                } catch (e: Exception) {}
             }
         }
     }

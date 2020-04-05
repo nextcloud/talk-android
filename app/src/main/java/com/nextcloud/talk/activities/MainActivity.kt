@@ -46,6 +46,7 @@ import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryView
 import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.features.conversationsList.ConversationsListView
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -147,7 +148,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     // due to complications with persistablebundle not supporting complex types we do this magic
                     // remove this once we rewrite chat magic
                     val extras = intent.extras!!
-                    extras.putParcelable(BundleKeys.KEY_USER_ENTITY, it)
+                    extras.putParcelable(BundleKeys.KEY_USER, it.toUser())
                     withContext(Dispatchers.Main) {
                         ConductorRemapping.remapChatController(
                                 router!!, it.id,

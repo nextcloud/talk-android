@@ -37,6 +37,7 @@ import android.view.*
 import android.widget.ImageView
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.api.load
 import coil.target.Target
@@ -71,8 +72,6 @@ import com.otaliastudios.elements.Adapter
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
-import com.otaliastudios.elements.pagers.PageSizePager
-import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.controller_chat.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
@@ -93,7 +92,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     var conversationVoiceCallMenuItem: MenuItem? = null
     var conversationVideoMenuItem: MenuItem? = null
 
-    private lateinit var recyclerViewAdapter: MessagesListAdapter<ChatMessage>
     private lateinit var mentionAutocomplete: Autocomplete<*>
 
     private var shouldShowLobby: Boolean = false
@@ -113,13 +111,29 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
 
         messagesAdapter = Adapter.builder(this)
-                .setPager(PageSizePager(80))
-                //.addSource(ChatViewSource(itemsPerPage = 10))
+                .addSource(ChatViewLiveDataSource(viewModel.messagesLiveData))
                 .addSource(ChatDateHeaderSource(activity as Context, ChatElementTypes.DATE_HEADER.ordinal))
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
                 .addPresenter(ChatPresenter(activity as Context, ::onElementClick, ::onElementLongClick, this))
-                .setAutoScrollMode(Adapter.AUTOSCROLL_POSITION_0, true)
                 .into(view.messagesRecyclerView)
+
+        messagesAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+                val layoutManager = view.messagesRecyclerView.layoutManager as LinearLayoutManager
+                if (layoutManager.findLastVisibleItemPosition() == positionStart - 1) {
+                    view.messagesRecyclerView.post {
+                        view.messagesRecyclerView.smoothScrollToPosition(positionStart + 1)
+                    }
+                } else {
+                    // show popup
+                }
+            }
+        })
+
+        val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+        layoutManager.stackFromEnd = true
+        view.messagesRecyclerView.initRecyclerView(layoutManager, messagesAdapter, true)
 
         viewModel.apply {
             conversation.observe(this@ChatView) { conversation ->
@@ -151,7 +165,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                         view.lobbyTextView?.setText(R.string.nc_lobby_waiting)
                     }
                 } else {
-                    view.messagesRecyclerView?.visibility = View.GONE
+                    view.messagesRecyclerView?.visibility = View.VISIBLE
                     view.lobbyView?.visibility = View.GONE
 
                     if (isReadOnlyConversation) {
@@ -165,8 +179,8 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         return view
     }
 
-    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>) {
-        if (element.type == ChatElementTypes.INCOMING_PREVIEW_MESSAGE.ordinal || element.type == ChatElementTypes.OUTGOING_PREVIEW_MESSAGE.ordinal) {
+    private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
+        if (element.type == ChatElementTypes.CHAT_MESSAGE.ordinal) {
             element.data?.let { chatElement ->
                 val chatMessage = chatElement.data as ChatMessage
                 val currentUser = viewModel.user
@@ -228,13 +242,19 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         }
     }
 
-    private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>) {
+    private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
 
     }
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+        viewModel.view = this
         setupViews()
+    }
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        viewModel.view = null
     }
 
     override fun onCreateOptionsMenu(
@@ -242,7 +262,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             inflater: MenuInflater
     ) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
+        inflater.inflate(R.menu.menu_conversation, menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -258,14 +278,14 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             conversationVoiceCallMenuItem?.isVisible = true
             conversationVideoMenuItem?.isVisible = true
         }
+
+        if (Conversation.ConversationType.ONE_TO_ONE_CONVERSATION == viewModel.conversation.value?.type) {
+            loadAvatar()
+        }
     }
 
     private fun setupViews() {
         view?.let { view ->
-            view.messagesRecyclerView.initRecyclerView(
-                    LinearLayoutManager(view.context), recyclerViewAdapter, false
-            )
-
             view.popupBubbleView.setRecyclerView(view.messagesRecyclerView)
 
             val filters = arrayOfNulls<InputFilter>(1)
@@ -416,30 +436,32 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
 
     private fun loadAvatar() {
         val imageLoader = networkComponents.getImageLoader(viewModel.user)
-        val avatarSize = DisplayUtils.convertDpToPixel(
-                        conversationVoiceCallMenuItem?.icon!!
-                                .intrinsicWidth.toFloat(), activity!!
-                )
-                .toInt()
+        conversationVoiceCallMenuItem?.let {
+            val avatarSize = DisplayUtils.convertDpToPixel(
+                    it.icon!!.intrinsicWidth.toFloat(), activity!!
+            )
+                    .toInt()
 
-        avatarSize.let {
-            val target = object : Target {
-                override fun onSuccess(result: Drawable) {
-                    super.onSuccess(result)
-                    actionBar?.setIcon(result)
+            avatarSize.let {
+                val target = object : Target {
+                    override fun onSuccess(result: Drawable) {
+                        super.onSuccess(result)
+                        actionBar?.setIcon(result)
+                    }
+                }
+
+                viewModel.conversation.value?.let {
+                    val avatarRequest = Images().getRequestForUrl(
+                            imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
+                            viewModel.user.baseUrl,
+                            it.name, avatarSize / 2
+                    ), viewModel.user, target, this,
+                            CircleCropTransformation()
+                    )
+                    imageLoader.load(avatarRequest)
                 }
             }
 
-            viewModel.conversation.value?.let {
-                val avatarRequest = Images().getRequestForUrl(
-                        imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
-                        viewModel.user.baseUrl,
-                        it.name, avatarSize / 2
-                ), viewModel.user, target, this,
-                        CircleCropTransformation()
-                )
-                imageLoader.load(avatarRequest)
-            }
         }
     }
 

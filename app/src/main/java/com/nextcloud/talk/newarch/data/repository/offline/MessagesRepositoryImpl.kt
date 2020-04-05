@@ -23,16 +23,38 @@
 package com.nextcloud.talk.newarch.data.repository.offline
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.map
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
+import com.nextcloud.talk.newarch.local.models.toChatMessage
+import com.nextcloud.talk.newarch.local.models.toMessageEntity
 
-class MessagesRepositoryImpl(val messagesDao: MessagesDao) : MessagesRepository {
+class MessagesRepositoryImpl(private val messagesDao: MessagesDao) : MessagesRepository {
     override fun getMessagesWithUserForConversation(
             conversationId: String
     ): LiveData<List<ChatMessage>> {
-        TODO(
-                "not implemented"
-        ) //To change body of created functions use File | Settings | File Templates.
+        return messagesDao.getMessagesWithUserForConversation(conversationId).distinctUntilChanged().map {
+            it.map { messageEntity ->
+                messageEntity.toChatMessage()
+            }
+        }
+    }
+
+    override fun getMessagesWithUserForConversationSince(conversationId: String, messageId: Long): LiveData<List<ChatMessage>> {
+        return messagesDao.getMessagesWithUserForConversationSince(conversationId, messageId).distinctUntilChanged().map {
+            it.map { messageEntity ->
+                messageEntity.toChatMessage()
+            }
+        }
+    }
+
+    override suspend fun saveMessagesForConversation(messages: List<ChatMessage>): List<Long> {
+        val updatedMessages = messages.map {
+            it.toMessageEntity()
+        }
+
+        return messagesDao.saveMessages(*updatedMessages.toTypedArray())
     }
 }

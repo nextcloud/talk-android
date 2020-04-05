@@ -47,6 +47,7 @@ class NetworkComponents(
     val usersMultipleOperationsRepositoryMap: MutableMap<Long, NextcloudTalkRepository> = mutableMapOf()
     val usersSingleOperationOkHttpMap: MutableMap<Long, OkHttpClient> = mutableMapOf()
     val usersMultipleOperationOkHttpMap: MutableMap<Long, OkHttpClient> = mutableMapOf()
+    val usersImageLoaderMap: MutableMap<Long, ImageLoader> = mutableMapOf()
 
     fun getRepository(singleOperation: Boolean, user: User): NextcloudTalkRepository {
         val mappedNextcloudTalkRepository = if (singleOperation) {
@@ -89,20 +90,28 @@ class NetworkComponents(
     }
 
     fun getImageLoader(user: User): ImageLoader {
-        return ImageLoader(androidApplication) {
-            availableMemoryPercentage(0.5)
-            bitmapPoolPercentage(0.5)
-            crossfade(false)
-            okHttpClient(getOkHttpClient(false, user))
-            componentRegistry {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    add(ImageDecoderDecoder())
-                } else {
-                    add(GifDecoder())
+        var mappedImageLoader = usersImageLoaderMap[user.id]
+
+        if (mappedImageLoader == null) {
+            mappedImageLoader = ImageLoader(androidApplication) {
+                availableMemoryPercentage(0.5)
+                bitmapPoolPercentage(0.5)
+                crossfade(false)
+                okHttpClient(getOkHttpClient(false, user))
+                componentRegistry {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                        add(ImageDecoderDecoder())
+                    } else {
+                        add(GifDecoder())
+                    }
+                    add(SvgDecoder(androidApplication))
                 }
-                add(SvgDecoder(androidApplication))
             }
+
+            usersImageLoaderMap[user.id!!] = mappedImageLoader
         }
+
+        return mappedImageLoader
 
     }
 }

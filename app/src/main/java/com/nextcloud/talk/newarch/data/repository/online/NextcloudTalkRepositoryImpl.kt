@@ -23,6 +23,7 @@
 package com.nextcloud.talk.newarch.data.repository.online
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -35,9 +36,11 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.data.source.remote.ApiService
 import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkRepository
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.utils.ApiUtils
+import retrofit2.Response
 
 class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : NextcloudTalkRepository {
     override suspend fun deleteConversationForUser(
@@ -93,6 +96,17 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
                     ApiUtils.getUrlForConversationFavorites(user.baseUrl, conversation.token)
             )
         }
+    }
+
+    override suspend fun getChatMessagesForConversation(user: User, conversationToken: String, lookIntoFuture: Int, lastKnownMessageId: Int, includeLastKnown: Int): Response<ChatOverall> {
+        val mutableMap = mutableMapOf<String, Int>()
+        mutableMap["lookIntoFuture"] = lookIntoFuture
+        mutableMap["lastKnownMessageId"] = lastKnownMessageId
+        mutableMap["includeLastKnown"] = includeLastKnown
+        mutableMap["timeout"] = 30
+        mutableMap["setReadMarker"] = 1
+
+        return apiService.pullChatMessages(user.getCredentials(), ApiUtils.getUrlForChat(user.baseUrl, conversationToken), mutableMap)
     }
 
     override suspend fun getNotificationForUser(user: UserNgEntity, notificationId: String): NotificationOverall {

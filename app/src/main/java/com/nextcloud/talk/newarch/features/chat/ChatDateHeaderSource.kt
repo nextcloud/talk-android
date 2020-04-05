@@ -13,7 +13,7 @@ class ChatDateHeaderSource(private val context: Context, private val elementType
     // Store the last header that was added, even if it belongs to a previous page.
     private var headersAlreadyAdded = mutableListOf<String>()
 
-    override fun dependsOn(source: Source<*>) = source is ChatViewSource
+    override fun dependsOn(source: Source<*>) = source is ChatViewLiveDataSource
 
     override fun getElementType(data: Data<ChatElement, String>): Int {
         return elementType

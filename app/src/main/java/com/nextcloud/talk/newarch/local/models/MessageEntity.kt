@@ -48,13 +48,12 @@ data class MessageEntity(
         @ColumnInfo(name = "actor_display_name") var actorDisplayName: String? = null,
         @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
         @ColumnInfo(name = "message") var message: String? = null,
-        /*@JsonField(name = "messageParameters")
-        public HashMap<String, HashMap<String, String>> messageParameters;*/
+        @ColumnInfo(name = "messageParameters") var messageParameters: HashMap<String, HashMap<String, String>>? = null,
+        @ColumnInfo(name = "parent") var parentMessage: ChatMessage? = null,
         @ColumnInfo(name = "replyable") var replyable: Boolean = false,
         @ColumnInfo(name = "system_message_type") var systemMessageType: SystemMessageType? = null
 )
 
-@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun MessageEntity.toChatMessage(): ChatMessage {
     val chatMessage = ChatMessage()
     chatMessage.internalMessageId = this.id
@@ -65,15 +64,15 @@ fun MessageEntity.toChatMessage(): ChatMessage {
     chatMessage.actorDisplayName = this.actorDisplayName
     chatMessage.timestamp = this.timestamp
     chatMessage.message = this.message
-    //chatMessage.messageParameters = this.messageParameters
+    chatMessage.messageParameters = this.messageParameters
     chatMessage.systemMessageType = this.systemMessageType
     chatMessage.replyable = this.replyable
+    chatMessage.parentMessage = this.parentMessage
     return chatMessage
 }
 
-@SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
 fun ChatMessage.toMessageEntity(): MessageEntity {
-    val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.activeUser!!.id.toString() + "@" + this.internalConversationId)
+    val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.internalConversationId!!)
     messageEntity.messageId = this.jsonMessageId!!
     messageEntity.actorType = this.actorType
     messageEntity.actorId = this.actorId
@@ -82,7 +81,8 @@ fun ChatMessage.toMessageEntity(): MessageEntity {
     messageEntity.message = this.message
     messageEntity.systemMessageType = this.systemMessageType
     messageEntity.replyable = this.replyable
-    //messageEntity.messageParameters = this.messageParameters
+    messageEntity.messageParameters = this.messageParameters
+    messageEntity.parentMessage = this.parentMessage
 
     return messageEntity
 }

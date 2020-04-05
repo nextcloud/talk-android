@@ -25,16 +25,18 @@ package com.nextcloud.talk.newarch.features.chat
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.services.GlobalService
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 
 class ChatViewModelFactory constructor(
         private val application: Application,
-        private val joinConversationUseCase: JoinConversationUseCase,
-        private val exitConversationUseCase: ExitConversationUseCase,
+        private val networkComponents: NetworkComponents,
+        private val apiErrorHandler: ApiErrorHandler,
         private val conversationsRepository: ConversationsRepository,
         private val messagesRepository: MessagesRepository,
         private val globalService: GlobalService
@@ -42,7 +44,7 @@ class ChatViewModelFactory constructor(
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         return ChatViewModel(
-                application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, globalService
+                application, networkComponents, apiErrorHandler, conversationsRepository, messagesRepository, globalService
         ) as T
     }
 }

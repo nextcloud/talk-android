@@ -45,6 +45,7 @@ import com.nextcloud.talk.newarch.features.contactsflow.ContactsViewOperationSta
 import com.nextcloud.talk.newarch.features.contactsflow.ParticipantElement
 import com.nextcloud.talk.newarch.features.contactsflow.groupconversation.GroupConversationView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
+import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
@@ -179,10 +180,13 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                     ContactsViewOperationState.OK -> {
                         val bundle = Bundle()
                         if (!hasToken || isNewGroupConversation) {
-                            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
-                            router.replaceTopController(RouterTransaction.with(ChatView(bundle))
-                                    .popChangeHandler(HorizontalChangeHandler())
-                                    .pushChangeHandler(HorizontalChangeHandler()))
+                            globalService.currentUserLiveData.value?.let {
+                                bundle.putParcelable(BundleKeys.KEY_USER, it.toUser())
+                                bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, operationState.conversationToken)
+                                router.replaceTopController(RouterTransaction.with(ChatView(bundle))
+                                        .popChangeHandler(HorizontalChangeHandler())
+                                        .pushChangeHandler(HorizontalChangeHandler()))
+                            }
                         } else {
                             // we added the participants - go back to conversations info
                             router.popCurrentController()

@@ -55,7 +55,6 @@ class GlobalService constructor(usersRepository: UsersRepository,
             user?.let {
                 if (it.id != previousUser?.id) {
                     cookieManager.cookieStore.removeAll()
-                    //okHttpClient.dispatcher().cancelAll()
                     currentConversation = null
                 }
             }

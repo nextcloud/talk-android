@@ -30,30 +30,36 @@ import com.nextcloud.talk.newarch.domain.repository.online.NextcloudTalkReposito
 import com.nextcloud.talk.newarch.domain.usecases.*
 import com.nextcloud.talk.newarch.features.chat.ChatViewModelFactory
 import com.nextcloud.talk.newarch.services.GlobalService
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import org.koin.dsl.module
 
 val UseCasesModule = module {
-    single { createGetConversationUseCase(get(), get()) }
-    single { createGetConversationsUseCase(get(), get()) }
-    single { createSetConversationFavoriteValueUseCase(get(), get()) }
-    single { createLeaveConversationUseCase(get(), get()) }
-    single { createDeleteConversationUseCase(get(), get()) }
-    single { createJoinConversationUseCase(get(), get()) }
-    single { createExitConversationUseCase(get(), get()) }
-    single { createGetProfileUseCase(get(), get()) }
-    single { createGetSignalingUseCase(get(), get()) }
-    single { createGetCapabilitiesUseCase(get(), get()) }
-    single { createRegisterPushWithProxyUseCase(get(), get()) }
-    single { createRegisterPushWithServerUseCase(get(), get()) }
-    single { createUnregisterPushWithProxyUseCase(get(), get()) }
-    single { createUnregisterPushWithServerUseCase(get(), get()) }
-    single { createGetContactsUseCase(get(), get()) }
-    single { createCreateConversationUseCase(get(), get()) }
-    single { createAddParticipantToConversationUseCase(get(), get()) }
-    single { setConversationPasswordUseCase(get(), get()) }
+    factory { createGetConversationUseCase(get(), get()) }
+    factory { createGetConversationsUseCase(get(), get()) }
+    factory { createSetConversationFavoriteValueUseCase(get(), get()) }
+    factory { createLeaveConversationUseCase(get(), get()) }
+    factory { createDeleteConversationUseCase(get(), get()) }
+    factory { createJoinConversationUseCase(get(), get()) }
+    factory { createExitConversationUseCase(get(), get()) }
+    factory { createGetProfileUseCase(get(), get()) }
+    factory { createGetSignalingUseCase(get(), get()) }
+    factory { createGetCapabilitiesUseCase(get(), get()) }
+    factory { createRegisterPushWithProxyUseCase(get(), get()) }
+    factory { createRegisterPushWithServerUseCase(get(), get()) }
+    factory { createUnregisterPushWithProxyUseCase(get(), get()) }
+    factory { createUnregisterPushWithServerUseCase(get(), get()) }
+    factory { createGetContactsUseCase(get(), get()) }
+    factory { createCreateConversationUseCase(get(), get()) }
+    factory { createAddParticipantToConversationUseCase(get(), get()) }
+    factory { setConversationPasswordUseCase(get(), get()) }
     factory { getParticipantsForCallUseCase(get(), get()) }
+    factory { createGetChatMessagesUseCase(get(), get()) }
     factory { getNotificationUseCase(get(), get()) }
     factory { createChatViewModelFactory(get(), get(), get(), get(), get(), get()) }
+}
+
+fun createGetChatMessagesUseCase(nextcloudTalkRepository: NextcloudTalkRepository, apiErrorHandler: ApiErrorHandler): GetChatMessagesUseCase {
+    return GetChatMessagesUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
 fun getNotificationUseCase(nextcloudTalkRepository: NextcloudTalkRepository,
@@ -181,6 +187,6 @@ fun createExitConversationUseCase(nextcloudTalkRepository: NextcloudTalkReposito
     return ExitConversationUseCase(nextcloudTalkRepository, apiErrorHandler)
 }
 
-fun createChatViewModelFactory(application: Application, joinConversationUseCase: JoinConversationUseCase, exitConversationUseCase: ExitConversationUseCase, conversationsRepository: ConversationsRepository, messagesRepository: MessagesRepository, globalService: GlobalService): ChatViewModelFactory {
-    return ChatViewModelFactory(application, joinConversationUseCase, exitConversationUseCase, conversationsRepository, messagesRepository, globalService)
+fun createChatViewModelFactory(application: Application, networkComponents: NetworkComponents, apiErrorHandler: ApiErrorHandler, conversationsRepository: ConversationsRepository, messagesRepository: MessagesRepository, globalService: GlobalService): ChatViewModelFactory {
+    return ChatViewModelFactory(application, networkComponents, apiErrorHandler, conversationsRepository, messagesRepository, globalService)
 }

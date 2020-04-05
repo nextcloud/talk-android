@@ -23,6 +23,7 @@
 package com.nextcloud.talk.newarch.domain.repository.online
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -33,9 +34,12 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import retrofit2.Response
 
 interface NextcloudTalkRepository {
+    suspend fun getChatMessagesForConversation(user: User, conversationToken: String, lookIntoFuture: Int, lastKnownMessageId: Int, includeLastKnown: Int = 0): Response<ChatOverall>
     suspend fun getNotificationForUser(user: UserNgEntity, notificationId: String): NotificationOverall
     suspend fun getParticipantsForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall
     suspend fun setPasswordForConversation(user: UserNgEntity, conversationToken: String, password: String): GenericOverall

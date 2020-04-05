@@ -27,5 +27,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 
 interface MessagesRepository {
     fun getMessagesWithUserForConversation(conversationId: String): LiveData<List<ChatMessage>>
-
+    fun getMessagesWithUserForConversationSince(conversationId: String, messageId: Long): LiveData<List<ChatMessage>>
+    suspend fun saveMessagesForConversation(messages: List<ChatMessage>): List<Long>
 }

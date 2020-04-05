@@ -1,77 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/quotedChatMessageView"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/quotedMessageLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp">
+    android:layout_height="wrap_content">
 
     <View
         android:id="@+id/quoteColoredView"
         android:layout_width="2dp"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@id/flexboxQuoted"
+        android:layout_height="100dp"
         android:layout_alignParentStart="true"
+        android:layout_alignBottom="@id/quotedChatText"
         android:layout_marginEnd="4dp"
-        android:background="@color/colorPrimary"/>
+        android:background="@color/colorPrimary"
+        />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/quoteColoredView"
+        android:layout_marginEnd="8dp"
+        android:id="@+id/quotedAuthorLayout">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/quotedUserAvatar"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            app:shapeAppearanceOverlay="@style/circleImageView"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/quotedUserAvatar"
+            android:textSize="12sp"
+            android:id="@+id/quotedAuthor"
+            android:layout_alignBaseline="@id/quotedUserAvatar"
+            tools:text="Another user"/>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/quotedPreviewImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/quotedAuthorLayout"
+        android:adjustViewBounds="true"
+        android:layout_alignParentStart="true"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="8dp"
+        android:layout_toStartOf="@id/cancelReplyButton"
+        android:layout_marginTop="8dp"
+        tools:src="@tools:sample/backgrounds/scenic"/>
 
     <androidx.emoji.widget.EmojiTextView
-        android:id="@+id/quotedMessageAuthor"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:ellipsize="end"
-        android:textSize="12sp"
-        tools:text="Mario" />
-
-    <com.google.android.flexbox.FlexboxLayout
-        android:id="@+id/flexboxQuoted"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/quotedMessageAuthor"
-        android:layout_alignStart="@id/quotedMessageAuthor"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="8dp"
         android:layout_toStartOf="@id/cancelReplyButton"
-        android:layout_marginTop="4dp"
-        android:orientation="vertical"
-        app:alignContent="stretch"
-        app:alignItems="stretch"
-        app:flexWrap="wrap"
-        app:justifyContent="flex_start">
+        android:id="@+id/quotedChatText"
+        android:layout_below="@id/quotedPreviewImage"
+        tools:text="Just another chat message"/>
 
-        <ImageView
-            android:id="@+id/quotedMessageImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
-            app:layout_alignSelf="flex_start"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="true"
-            tools:src="@tools:sample/backgrounds/scenic" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@id/quotedChatText"
+        android:textSize="12sp"
+        android:id="@+id/quotedMessageTime"
+        android:layout_marginEnd="8dp"
+        tools:text="12:30"/>
 
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@+id/quotedMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/quotedMessageImage"
-            android:layout_alignStart="@id/quotedMessageAuthor"
-            android:lineSpacingMultiplier="1.2"
-            android:textSize="14sp"
-            app:layout_alignSelf="flex_start"
-            app:layout_flexGrow="1"
-            app:layout_wrapBefore="true"
-            tools:text="Hello, this is me!" />
-    </com.google.android.flexbox.FlexboxLayout>
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         android:background="@drawable/ic_cancel_black_24dp"

@@ -129,10 +129,16 @@ class ShortcutService constructor(private var context: Context,
                 iconImage = images.getImageForConversation(context, conversation)
 
                 if (iconImage == null) {
-                    iconImage = Coil.get(ApiUtils.getUrlForAvatarWithName(user.baseUrl, conversation.name, R.dimen.avatar_size_big)) {
-                        addHeader("Authorization", user.getCredentials())
-                        transformations(CircleCropTransformation())
+                    try {
+                        iconImage = Coil.get(ApiUtils.getUrlForAvatarWithName(user.baseUrl, conversation.name, R.dimen.avatar_size_big)) {
+                            addHeader("Authorization", user.getCredentials())
+                            transformations(CircleCropTransformation())
+                        }
+                    } catch (e: Exception) {
+                        // no icon, that's fine for now
+                        iconImage = images.getImageForConversation(context, conversation, true)
                     }
+
                 }
 
                 shortcuts.add(ShortcutInfoCompat.Builder(context, "current_conversation_" + (index + 1))

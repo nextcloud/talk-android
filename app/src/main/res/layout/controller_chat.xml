@@ -32,8 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/separator"
-        app:stackFromEnd="true"
-        app:reverseLayout="true"
         android:id="@+id/messagesRecyclerView"/>
 
     <View

@@ -51,15 +51,6 @@ public class ArbitraryStorageUtils {
                 .subscribe();
     }
 
-    public ArbitraryStorageEntity getStorageSetting(long accountIdentifier, String key,
-                                                    @Nullable String object) {
-        Result findStorageQueryResult = dataStore.select(ArbitraryStorage.class)
-                .where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)
-                        .and(ArbitraryStorageEntity.KEY.eq(key)).and(ArbitraryStorageEntity.OBJECT.eq(object)))
-                .limit(1).get();
-
-        return (ArbitraryStorageEntity) findStorageQueryResult.firstOrNull();
-    }
 
     public Observable deleteAllEntriesForAccountIdentifier(long accountIdentifier) {
         ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class)

@@ -31,10 +31,13 @@ import com.nextcloud.talk.newarch.local.models.MessageEntity
 
 @Dao
 abstract class MessagesDao {
-    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId")
+    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId ORDER BY message_id ASC")
     abstract fun getMessagesWithUserForConversation(conversationId: String):
             LiveData<List<MessageEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveMessagesWithInsert(vararg messages: MessageEntity): List<Long>
+    abstract suspend fun saveMessages(vararg messages: MessageEntity): List<Long>
+
+    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId AND message_id >= :messageId ORDER BY message_id ASC")
+    abstract fun getMessagesWithUserForConversationSince(conversationId: String, messageId: Long): LiveData<List<MessageEntity>>
 }
