@@ -84,8 +84,7 @@ class NetworkComponents(
         }
 
         okHttpClientBuilder.dispatcher(dispatcher)
-
-
+        
         return okHttpClientBuilder.build()
     }
 

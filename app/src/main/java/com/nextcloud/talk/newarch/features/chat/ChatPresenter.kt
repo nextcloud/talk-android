@@ -46,6 +46,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
     override fun onBind(page: Page, holder: Holder, element: Element<T>, payloads: List<Any>) {
         super.onBind(page, holder, element, payloads)
 
+
         holder.itemView.setOnLongClickListener {
             onElementLongClick?.invoke(page, holder, element, mapOf())
             true
@@ -64,114 +65,131 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                 val elementType = chatElement!!.elementType
                 chatMessage.let {
                     if (elementType == ChatElementTypes.CHAT_MESSAGE) {
-                    holder.itemView.authorName?.text = it.actorDisplayName
-                    holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
-                    holder.itemView.chatMessage.text = it.text
-
-                    if (it.actorType == "bots" && it.actorId == "changelog") {
-                        val layers = arrayOfNulls<Drawable>(2)
-                        layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
-                        layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
-                        val layerDrawable = LayerDrawable(layers)
-                        val loadBuilder = imageLoader.getImageLoader().newLoadBuilder(context).target(holder.itemView.authorAvatar).data(DisplayUtils.getRoundedDrawable(layerDrawable))
-                        imageLoader.getImageLoader().load(loadBuilder.build())
-                    } else if (it.actorType == "bots") {
-                        val drawable = TextDrawable.builder()
-                                .beginConfig()
-                                .bold()
-                                .endConfig()
-                                .buildRound(
-                                        ">",
-                                        context.resources.getColor(R.color.black)
-                                )
-                        val loadBuilder = imageLoader.getImageLoader().newLoadBuilder(context).target(holder.itemView.authorAvatar).data(DisplayUtils.getRoundedDrawable(drawable))
-                        imageLoader.getImageLoader().load(loadBuilder.build())
-                    } else {
-                        imageLoader.loadImage(holder.itemView.authorAvatar, it.user.avatar)
-                    }
-
-                    it.parentMessage?.let { parentMessage ->
-                        holder.itemView.quotedMessageLayout.isVisible = true
-                        holder.itemView.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
-                        holder.itemView.quotedPreviewImage.setOnClickListener {
-                            onElementClickPass?.invoke(page, holder, element, mapOf("parentMessage" to "yes"))
-                            true
+                        var shouldShowNameAndAvatar = true
+                        val previousElement = getAdapter().elementAt(holder.adapterPosition - 1)
+                        if (previousElement != null && previousElement.element.data != null && previousElement.element.data is ChatElement) {
+                            val previousChatElement = previousElement.element.data as ChatElement
+                            if (previousChatElement.elementType == ChatElementTypes.CHAT_MESSAGE) {
+                                val previousChatMessage = previousChatElement.data as ChatMessage
+                                if (previousChatMessage.actorId == it.actorId) {
+                                    shouldShowNameAndAvatar = false
+                                }
+                            }
                         }
 
-                        parentMessage.imageUrl?.let { previewMessageUrl ->
-                            if (previewMessageUrl == "no-preview") {
+                        holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
+                        holder.itemView.chatMessage.text = it.text
 
-                                if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                        if (shouldShowNameAndAvatar) {
+                            holder.itemView.authorLayout.isVisible = true
+                            holder.itemView.authorName?.text = it.actorDisplayName
+                            if (it.actorType == "bots" && it.actorId == "changelog") {
+                                val layers = arrayOfNulls<Drawable>(2)
+                                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
+                                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
+                                val layerDrawable = LayerDrawable(layers)
+                                val loadBuilder = imageLoader.getImageLoader().newLoadBuilder(context).target(holder.itemView.authorAvatar).data(DisplayUtils.getRoundedDrawable(layerDrawable))
+                                imageLoader.getImageLoader().load(loadBuilder.build())
+                            } else if (it.actorType == "bots") {
+                                val drawable = TextDrawable.builder()
+                                        .beginConfig()
+                                        .bold()
+                                        .endConfig()
+                                        .buildRound(
+                                                ">",
+                                                context.resources.getColor(R.color.black)
+                                        )
+                                val loadBuilder = imageLoader.getImageLoader().newLoadBuilder(context).target(holder.itemView.authorAvatar).data(DisplayUtils.getRoundedDrawable(drawable))
+                                imageLoader.getImageLoader().load(loadBuilder.build())
+                            } else {
+                                imageLoader.loadImage(holder.itemView.authorAvatar, it.user.avatar)
+                            }
+                        } else {
+                            holder.itemView.authorLayout.isVisible = false
+                        }
+
+                        it.parentMessage?.let { parentMessage ->
+                            holder.itemView.quotedMessageLayout.isVisible = true
+                            holder.itemView.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+                            holder.itemView.quotedPreviewImage.setOnClickListener {
+                                onElementClickPass?.invoke(page, holder, element, mapOf("parentMessage" to "yes"))
+                                true
+                            }
+
+                            parentMessage.imageUrl?.let { previewMessageUrl ->
+                                if (previewMessageUrl == "no-preview") {
+
+                                    if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                        holder.itemView.quotedPreviewImage.visibility = View.VISIBLE
+                                        imageLoader.getImageLoader().loadAny(context, getDrawableResourceIdForMimeType(parentMessage.selectedIndividualHashMap!!["mimetype"])) {
+                                            target(holder.itemView.previewImage)
+                                        }
+                                    } else {
+                                        holder.itemView.quotedPreviewImage.visibility = View.GONE
+                                    }
+                                } else {
                                     holder.itemView.quotedPreviewImage.visibility = View.VISIBLE
-                                    imageLoader.getImageLoader().loadAny(context, getDrawableResourceIdForMimeType(parentMessage.selectedIndividualHashMap!!["mimetype"])) {
+                                    val mutableMap = mutableMapOf<String, String>()
+                                    if (parentMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                        mutableMap["mimetype"] = it.selectedIndividualHashMap!!["mimetype"]!!
+                                    }
+
+                                    imageLoader.loadImage(holder.itemView.previewImage, previewMessageUrl, mutableMap)
+                                }
+                            } ?: run {
+                                holder.itemView.quotedPreviewImage.visibility = View.GONE
+                            }
+
+                            imageLoader.loadImage(holder.itemView.quotedUserAvatar, parentMessage.user.avatar)
+                            holder.itemView.quotedAuthor.text = parentMessage.actorDisplayName
+                                    ?: context.getText(R.string.nc_nick_guest)
+                            holder.itemView.quotedChatText.text = parentMessage.text
+                            holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
+                        } ?: run {
+                            holder.itemView.quotedMessageLayout.isVisible = false
+                        }
+
+                        it.imageUrl?.let { imageUrl ->
+                            holder.itemView.previewImage.setOnClickListener {
+                                onElementClickPass?.invoke(page, holder, element, emptyMap())
+                                true
+                            }
+
+                            if (imageUrl == "no-preview") {
+                                if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                    holder.itemView.previewImage.visibility = View.VISIBLE
+                                    imageLoader.getImageLoader().loadAny(context, getDrawableResourceIdForMimeType(it.selectedIndividualHashMap!!["mimetype"])) {
                                         target(holder.itemView.previewImage)
                                     }
                                 } else {
-                                    holder.itemView.quotedPreviewImage.visibility = View.GONE
+                                    holder.itemView.previewImage.visibility = View.GONE
                                 }
                             } else {
-                                holder.itemView.quotedPreviewImage.visibility = View.VISIBLE
+                                holder.itemView.previewImage.visibility = View.VISIBLE
                                 val mutableMap = mutableMapOf<String, String>()
-                                if (parentMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
                                     mutableMap["mimetype"] = it.selectedIndividualHashMap!!["mimetype"]!!
                                 }
 
-                                imageLoader.loadImage(holder.itemView.previewImage, previewMessageUrl, mutableMap)
+                                imageLoader.loadImage(holder.itemView.previewImage, imageUrl, mutableMap)
                             }
                         } ?: run {
-                            holder.itemView.quotedPreviewImage.visibility = View.GONE
+                            holder.itemView.previewImage.visibility = View.GONE
                         }
 
-                        imageLoader.loadImage(holder.itemView.quotedUserAvatar, parentMessage.user.avatar)
-                        holder.itemView.quotedAuthor.text = parentMessage.actorDisplayName
-                                ?: context.getText(R.string.nc_nick_guest)
-                        holder.itemView.quotedChatText.text = parentMessage.text
-                        holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
-                    } ?: run {
-                        holder.itemView.quotedMessageLayout.isVisible = false
+                    } else {
+                        holder.itemView.systemMessageText.text = it.text
+                        holder.itemView.systemItemTime.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                     }
-
-                    it.imageUrl?.let { imageUrl ->
-                        holder.itemView.previewImage.setOnClickListener {
-                            onElementClickPass?.invoke(page, holder, element, emptyMap())
-                            true
-                        }
-
-                        if (imageUrl == "no-preview") {
-                            if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
-                                holder.itemView.previewImage.visibility = View.VISIBLE
-                                imageLoader.getImageLoader().loadAny(context, getDrawableResourceIdForMimeType(it.selectedIndividualHashMap!!["mimetype"])) {
-                                    target(holder.itemView.previewImage)
-                                }
-                            } else {
-                                holder.itemView.previewImage.visibility = View.GONE
-                            }
-                        } else {
-                            holder.itemView.previewImage.visibility = View.VISIBLE
-                            val mutableMap = mutableMapOf<String, String>()
-                            if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
-                                mutableMap["mimetype"] = it.selectedIndividualHashMap!!["mimetype"]!!
-                            }
-
-                            imageLoader.loadImage(holder.itemView.previewImage, imageUrl, mutableMap)
-                        }
-                    } ?: run {
-                        holder.itemView.previewImage.visibility = View.GONE
-                    }
-
-                } else {
-                    holder.itemView.systemMessageText.text = it.text
-                    holder.itemView.systemItemTime.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                 }
             }
-        }
-        element.type == ChatElementTypes.UNREAD_MESSAGE_NOTICE.ordinal -> {
-            holder.itemView.noticeText.text = context.resources.getString(R.string.nc_new_messages)
-        }
-        else -> {
-            // Date header
-            holder.itemView.noticeText.text = (element.data as HeaderSource.Data<*, *>).header.toString()
+            element.type == ChatElementTypes.UNREAD_MESSAGE_NOTICE.ordinal -> {
+                holder.itemView.noticeText.text = context.resources.getString(R.string.nc_new_messages)
+            }
+            else -> {
+                // Date header
+                holder.itemView.noticeText.text = (element.data as HeaderSource.Data<*, *>).header.toString()
+            }
         }
     }
-}
 }

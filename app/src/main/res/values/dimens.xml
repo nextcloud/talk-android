@@ -30,7 +30,7 @@
     <!-- Custom transition dimensions -->
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="double_margin_between_elements">16dp</dimen>
-    <dimen name="avatar_size">40dp</dimen>
+    <dimen name="avatar_size">48dp</dimen>
     <dimen name="avatar_size_big">96dp</dimen>
     <dimen name="avatar_size_very_big">@dimen/avatar_fetching_size_very_big</dimen>
     <dimen name="avatar_fetching_size_very_big">180dp</dimen>

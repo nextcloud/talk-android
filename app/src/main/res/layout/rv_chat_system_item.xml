@@ -58,10 +58,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/warm_grey_four"
-            android:textSize="12sp"
+            android:textSize="10sp"
             tools:text="17:30"
             android:layout_marginStart="8dp"
-            app:layout_alignSelf="center"
+            app:layout_alignSelf="flex_end"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="false"/>
     </com.google.android.flexbox.FlexboxLayout>

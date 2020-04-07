@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/quotedUserAvatar"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:id="@+id/quotedAuthor"
             android:layout_alignBaseline="@id/quotedUserAvatar"
             tools:text="Another user"/>
@@ -63,6 +63,7 @@
         android:layout_marginTop="8dp"
         android:layout_toStartOf="@id/cancelReplyButton"
         android:id="@+id/quotedChatText"
+        android:textSize="12sp"
         android:layout_below="@id/quotedPreviewImage"
         tools:text="Just another chat message"/>
 
@@ -71,7 +72,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_below="@id/quotedChatText"
-        android:textSize="12sp"
+        android:textSize="10sp"
+        android:textAlignment="textEnd"
         android:id="@+id/quotedMessageTime"
         android:layout_marginEnd="8dp"
         tools:text="12:30"/>

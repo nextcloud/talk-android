@@ -31,6 +31,7 @@ import androidx.lifecycle.viewModelScope
 import coil.Coil
 import coil.api.get
 import coil.transform.CircleCropTransformation
+import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
@@ -178,7 +179,7 @@ class ConversationsListViewModel (
 
         operationUser?.let {
             viewModelScope.launch {
-                val url = ApiUtils.getUrlForAvatarWithNameAndPixels(it.baseUrl, it.userId, 256)
+                val url = ApiUtils.getUrlForAvatarWithName(it.baseUrl, it.userId, R.dimen.avatar_size)
                 try {
                     val drawable = Coil.get((url)) {
                         addHeader("Authorization", it.getCredentials())
