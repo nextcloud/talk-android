@@ -9,6 +9,6 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textAlignment="center"
-        android:padding="16dp"/>
+        android:padding="8dp"/>
 
 </RelativeLayout>

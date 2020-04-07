@@ -118,7 +118,6 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
 
                             parentMessage.imageUrl?.let { previewMessageUrl ->
                                 if (previewMessageUrl == "no-preview") {
-
                                     if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
                                         holder.itemView.quotedPreviewImage.visibility = View.VISIBLE
                                         imageLoader.getImageLoader().loadAny(context, getDrawableResourceIdForMimeType(parentMessage.selectedIndividualHashMap!!["mimetype"])) {
@@ -131,10 +130,10 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                                     holder.itemView.quotedPreviewImage.visibility = View.VISIBLE
                                     val mutableMap = mutableMapOf<String, String>()
                                     if (parentMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
-                                        mutableMap["mimetype"] = it.selectedIndividualHashMap!!["mimetype"]!!
+                                        mutableMap["mimetype"] = parentMessage.selectedIndividualHashMap!!["mimetype"]!!
                                     }
 
-                                    imageLoader.loadImage(holder.itemView.previewImage, previewMessageUrl, mutableMap)
+                                    imageLoader.loadImage(holder.itemView.quotedPreviewImage, previewMessageUrl, mutableMap)
                                 }
                             } ?: run {
                                 holder.itemView.quotedPreviewImage.visibility = View.GONE
@@ -144,7 +143,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             holder.itemView.quotedAuthor.text = parentMessage.actorDisplayName
                                     ?: context.getText(R.string.nc_nick_guest)
                             holder.itemView.quotedChatText.text = parentMessage.text
-                            holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
+                            holder.itemView.quotedMessageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                         } ?: run {
                             holder.itemView.quotedMessageLayout.isVisible = false
                         }

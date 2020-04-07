@@ -9,9 +9,10 @@
     <View
         android:id="@+id/quoteColoredView"
         android:layout_width="2dp"
-        android:layout_height="100dp"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@id/quotedAuthorLayout"
         android:layout_alignParentStart="true"
-        android:layout_alignBottom="@id/quotedChatText"
+        android:layout_alignBottom="@id/quotedMessageTime"
         android:layout_marginEnd="4dp"
         android:background="@color/colorPrimary"
         />
@@ -75,7 +76,6 @@
         android:textSize="10sp"
         android:textAlignment="textEnd"
         android:id="@+id/quotedMessageTime"
-        android:layout_marginEnd="8dp"
         tools:text="12:30"/>
 
 
