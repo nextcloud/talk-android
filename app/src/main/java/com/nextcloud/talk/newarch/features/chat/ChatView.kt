@@ -182,7 +182,10 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
         if (element.type == ChatElementTypes.CHAT_MESSAGE.ordinal) {
             element.data?.let { chatElement ->
-                val chatMessage = chatElement.data as ChatMessage
+                var chatMessage = chatElement.data as ChatMessage
+                if (payload.containsKey("parentMessage")) {
+                    chatMessage = chatMessage.parentMessage!!
+                }
                 val currentUser = viewModel.user
                 if (chatMessage.messageType == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
                     val accountString = currentUser.username + "@" + currentUser.baseUrl
