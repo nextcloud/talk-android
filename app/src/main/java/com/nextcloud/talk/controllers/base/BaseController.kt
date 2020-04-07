@@ -32,6 +32,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -40,6 +41,7 @@ import com.bluelinelabs.conductor.ControllerChangeHandler
 import com.bluelinelabs.conductor.ControllerChangeType
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.google.android.material.appbar.AppBarLayout
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
@@ -127,6 +129,18 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
             }
 
             return appBarLayout
+        }
+
+    protected val toolbar: MaterialToolbar?
+        get() {
+            var toolbar: MaterialToolbar? = null
+            activity?.let {
+                if (it is MainActivity) {
+                    toolbar = it.toolbar
+                }
+            }
+
+            return toolbar
         }
 
 

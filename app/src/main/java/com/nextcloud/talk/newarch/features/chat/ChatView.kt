@@ -106,6 +106,9 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private var isReadOnlyConversation: Boolean = false
 
     private lateinit var messagesAdapter: Adapter
+    private val toolbarOnClickListener: View.OnClickListener = View.OnClickListener {
+        showConversationInfoScreen()
+    }
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -186,6 +189,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         }
         return view
     }
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -289,16 +293,16 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
 
     }
-
+    
     override fun onAttach(view: View) {
         super.onAttach(view)
-        viewModel.view = this
-        setupViews()
+        toolbar?.setOnClickListener(toolbarOnClickListener)
     }
 
     override fun onDetach(view: View) {
         super.onDetach(view)
         viewModel.view = null
+        toolbar?.setOnClickListener(null)
     }
 
     override fun onCreateOptionsMenu(

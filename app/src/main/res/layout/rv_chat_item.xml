@@ -59,6 +59,7 @@
         android:layout_marginEnd="8dp"
         android:textSize="12sp"
         android:id="@+id/chatMessage"
+        android:autoLink="all"
         android:layout_below="@id/previewImage"
         tools:text="Just another chat message"/>
 

@@ -62,6 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="8dp"
+        android:autoLink="all"
         android:layout_toStartOf="@id/cancelReplyButton"
         android:id="@+id/quotedChatText"
         android:textSize="12sp"
