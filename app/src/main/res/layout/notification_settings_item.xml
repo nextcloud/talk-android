@@ -39,6 +39,7 @@
             apc:mp_default_value="false"
             apc:mp_icon="@drawable/ic_whatshot_black_24dp"
             apc:mp_icon_tint="@color/grey_600"
+            android:visibility="gone"
             apc:mp_key="important_conversation"
             apc:mp_title="@string/nc_important_conversation"
             apc:mp_summary="@string/nc_important_conversation_desc"/>
@@ -58,6 +59,7 @@
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/muteCalls"
             android:layout_width="match_parent"
+            android:visibility="gone"
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
             apc:mp_key="mute_calls"

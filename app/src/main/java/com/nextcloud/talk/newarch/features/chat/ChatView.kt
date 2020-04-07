@@ -45,16 +45,20 @@ import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
+import com.nextcloud.talk.controllers.ConversationInfoController
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
+import com.nextcloud.talk.newarch.local.models.toUserEntity
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.Images
@@ -64,8 +68,12 @@ import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BROWSER_TYPE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.otaliastudios.elements.Adapter
@@ -108,7 +116,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         viewModel = viewModelProvider(factory).get(ChatViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
-        viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
+        viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
 
         messagesAdapter = Adapter.builder(this)
                 .addSource(ChatViewLiveDataSource(viewModel.messagesLiveData))
@@ -177,6 +185,39 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             }
         }
         return view
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                router.popCurrentController()
+                return true
+            }
+            R.id.conversation_video_call -> {
+                startACall(true)
+                return true
+            }
+            R.id.conversation_voice_call -> {
+                startACall(false)
+            }
+            R.id.conversation_info -> {
+                showConversationInfoScreen()
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun showConversationInfoScreen() {
+        viewModel.conversation.value?.let { conversation ->
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_USER_ENTITY, viewModel.user.toUserEntity())
+            bundle.putString(KEY_CONVERSATION_TOKEN, conversation.token)
+            router.pushController(RouterTransaction.with(ConversationInfoController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler()))
+        }
     }
 
     private fun onElementClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
@@ -420,14 +461,49 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         }
     }
 
+    private fun startACall(isVoiceOnlyCall: Boolean) {
+        if (!isVoiceOnlyCall) {
+            val videoCallIntent = getIntentForCall(false)
+            if (videoCallIntent != null) {
+                startActivity(videoCallIntent)
+            }
+        } else {
+            val voiceCallIntent = getIntentForCall(true)
+            if (voiceCallIntent != null) {
+                startActivity(voiceCallIntent)
+            }
+        }
+    }
+
+    private fun getIntentForCall(isVoiceOnlyCall: Boolean): Intent? {
+        viewModel.conversation.value?.let {
+            val bundle = Bundle()
+            bundle.putString(KEY_CONVERSATION_TOKEN, it.token)
+            bundle.putString(KEY_ROOM_ID, it.conversationId)
+            bundle.putParcelable(KEY_USER_ENTITY, viewModel.user.toUserEntity())
+            bundle.putString(KEY_CONVERSATION_PASSWORD, viewModel.conversationPassword)
+
+            if (isVoiceOnlyCall) {
+                bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
+            }
+
+            activity?.let {
+                val callIntent = Intent(activity, MagicCallActivity::class.java)
+                callIntent.putExtras(bundle)
+                return callIntent
+            }
+        }
+
+        return null
+    }
+
     private fun showBrowserScreen(browserType: BrowserController.BrowserType) {
         viewModel.conversation.value?.let {
             val bundle = Bundle()
-            bundle.putParcelable(
-                    BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap(browserType)
+            bundle.putParcelable(KEY_BROWSER_TYPE, Parcels.wrap(browserType)
             )
-            bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, viewModel.user)
-            bundle.putString(BundleKeys.KEY_CONVERSATION_TOKEN, it.token)
+            bundle.putParcelable(KEY_USER_ENTITY, viewModel.user)
+            bundle.putString(KEY_CONVERSATION_TOKEN, it.token)
             router.pushController(
                     RouterTransaction.with(BrowserController(bundle))
                             .pushChangeHandler(VerticalChangeHandler())
