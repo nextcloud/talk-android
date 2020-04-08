@@ -71,8 +71,7 @@ class MentionAutocompletePresenter : RecyclerViewPresenter<Mention?>, FlexibleAd
     }
 
     override fun onQuery(query: CharSequence?) {
-        val queryString: String
-        queryString = if (query != null && query.length > 1) {
+        val queryString: String = if (query != null && query.length > 1) {
             query.subSequence(1, query.length).toString()
         } else {
             ""

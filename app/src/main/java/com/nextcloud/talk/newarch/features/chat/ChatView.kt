@@ -92,10 +92,12 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
     override val lifecycleOwner = ControllerLifecycleOwner(this)
 
+
     private lateinit var viewModel: ChatViewModel
     val factory: ChatViewModelFactory by inject()
     private val networkComponents: NetworkComponents by inject()
 
+    private var popupBubbleScrollPosition = 0
     var conversationInfoMenuItem: MenuItem? = null
     var conversationVoiceCallMenuItem: MenuItem? = null
     var conversationVideoMenuItem: MenuItem? = null
@@ -128,7 +130,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 .addPresenter(ChatPresenter(activity as Context, ::onElementClick, ::onElementLongClick, this))
                 .into(view.messagesRecyclerView)
 
-        messagesAdapter.registerAdapterDataObserver(object: RecyclerView.AdapterDataObserver() {
+        messagesAdapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 val layoutManager = view.messagesRecyclerView.layoutManager as LinearLayoutManager
@@ -137,7 +139,10 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                         view.messagesRecyclerView.smoothScrollToPosition(positionStart + 1)
                     }
                 } else {
-                    // show popup
+                    if (popupBubbleScrollPosition == 0) {
+                        popupBubbleScrollPosition = positionStart
+                    }
+                    view.popupBubbleView.activate()
                 }
             }
         })
@@ -160,6 +165,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 isReadOnlyConversation = conversation.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
 
                 activity?.invalidateOptionsMenu()
+                setupMentionAutocomplete()
 
                 if (shouldShowLobby) {
                     view.messagesRecyclerView?.visibility = View.GONE
@@ -187,6 +193,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 }
             }
         }
+
         return view
     }
 
@@ -293,9 +300,11 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
 
     }
-    
+
     override fun onAttach(view: View) {
         super.onAttach(view)
+        viewModel.view = this
+        setupViews()
         toolbar?.setOnClickListener(toolbarOnClickListener)
     }
 
@@ -334,7 +343,17 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
 
     private fun setupViews() {
         view?.let { view ->
-            view.popupBubbleView.setRecyclerView(view.messagesRecyclerView)
+            with(view.popupBubbleView) {
+                setRecyclerView(view.messagesRecyclerView)
+                setPopupBubbleListener {
+                    view.messagesRecyclerView.post {
+                        view.messagesRecyclerView.smoothScrollToPosition(popupBubbleScrollPosition)
+                        popupBubbleScrollPosition = 0
+                    }
+
+                    deactivate()
+                }
+            }
 
             val filters = arrayOfNulls<InputFilter>(1)
             val lengthFilter = viewModel.user.getMaxMessageLength()
@@ -418,15 +437,16 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private fun setupMentionAutocomplete() {
         viewModel.conversation.value?.let { conversation ->
             view?.let { view ->
-                val elevation = 6f
-                val backgroundDrawable = ColorDrawable(resources!!.getColor(R.color.bg_default))
-                val presenter = MentionAutocompletePresenter(context, conversation.token)
-                val callback = MentionAutocompleteCallback(
-                        activity,
-                        viewModel.user, view.messageInput
-                )
-
                 if (!::mentionAutocomplete.isInitialized) {
+
+                    val elevation = 6f
+                    val backgroundDrawable = ColorDrawable(resources!!.getColor(R.color.bg_default))
+                    val presenter = MentionAutocompletePresenter(activity as Context, conversation.token)
+                    val callback = MentionAutocompleteCallback(
+                            activity,
+                            viewModel.user, view.messageInput
+                    )
+
                     mentionAutocomplete = Autocomplete.on<Mention>(view.messageInput)
                             .with(elevation)
                             .with(backgroundDrawable)
