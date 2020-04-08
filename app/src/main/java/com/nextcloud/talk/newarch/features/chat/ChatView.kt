@@ -26,6 +26,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
+import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -82,6 +83,7 @@ import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
+import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.controller_chat.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
@@ -109,6 +111,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private var shouldShowLobby: Boolean = false
     private var isReadOnlyConversation: Boolean = false
 
+    private var emojiPopup: EmojiPopup? = null
     private lateinit var messagesAdapter: Adapter
     private val toolbarOnClickListener: View.OnClickListener = View.OnClickListener {
         showConversationInfoScreen()
@@ -177,6 +180,21 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         layoutManager.stackFromEnd = true
         view.messagesRecyclerView.initRecyclerView(layoutManager, messagesAdapter, true)
 
+        emojiPopup = view.messageInput.let {
+            EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
+                if (resources != null) {
+                    view.smileyButton?.setColorFilter(resources!!.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
+                }
+            }.setOnEmojiPopupDismissListener {
+                view.smileyButton.setColorFilter(resources!!.getColor(R.color.emoji_icons),
+                        PorterDuff.Mode.SRC_IN)
+            }.setOnEmojiClickListener { emoji, imageView -> it.editableText?.append(" ") }.build(it)
+        }
+
+        view.smileyButton.setOnClickListener {
+            emojiPopup?.toggle()
+        }
+        
         viewModel.apply {
             conversation.observe(this@ChatView) { conversation ->
                 setTitle()
