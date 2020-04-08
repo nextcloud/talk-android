@@ -27,13 +27,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
         <androidx.emoji.widget.EmojiEditText
             android:id="@id/messageInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/quotedChatMessageView"
+            android:layout_below="@+id/quotedMessageLayout"
             android:layout_centerHorizontal="true"
             android:layout_toStartOf="@id/sendButtonSpace"
             android:layout_toEndOf="@id/attachmentButtonSpace"
@@ -45,14 +46,14 @@
             android:id="@id/attachmentButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_below="@id/quotedChatMessageView"
+            android:layout_below="@id/quotedMessageLayout"
             android:scaleType="centerInside" />
 
         <ImageButton
             android:id="@+id/smileyButton"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_below="@id/quotedChatMessageView"
+            android:layout_below="@id/quotedMessageLayout"
             android:layout_toStartOf="@id/messageSendButton"
             android:background="@color/transparent"
             android:src="@drawable/ic_insert_emoticon_black_24dp"
@@ -63,7 +64,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_below="@id/quotedChatMessageView"
+            android:layout_below="@id/quotedMessageLayout"
             android:adjustViewBounds="true"
             android:padding="4dp"
             android:scaleType="centerInside" />
@@ -72,14 +73,14 @@
             android:id="@id/attachmentButtonSpace"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_below="@id/quotedChatMessageView"
+            android:layout_below="@id/quotedMessageLayout"
             android:layout_toEndOf="@id/attachmentButton" />
 
         <Space
             android:id="@id/sendButtonSpace"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_below="@id/quotedChatMessageView"
+            android:layout_below="@id/quotedMessageLayout"
             android:layout_toStartOf="@id/smileyButton" />
     </RelativeLayout>
 

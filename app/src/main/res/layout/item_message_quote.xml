@@ -10,9 +10,9 @@
         android:id="@+id/quoteColoredView"
         android:layout_width="2dp"
         android:layout_height="match_parent"
-        android:layout_alignTop="@id/quotedAuthorLayout"
+        android:layout_alignTop="@id/quotedTextLayout"
         android:layout_alignParentStart="true"
-        android:layout_alignBottom="@id/quotedMessageTime"
+        android:layout_alignBottom="@id/quotedTextLayout"
         android:layout_marginEnd="4dp"
         android:background="@color/colorPrimary"
         />
@@ -20,72 +20,78 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@id/quoteColoredView"
+        android:id="@+id/quotedTextLayout"
+        android:layout_toStartOf="@id/cancelReplyButton"
         android:layout_marginEnd="8dp"
-        android:id="@+id/quotedAuthorLayout">
+        android:layout_toEndOf="@id/quoteColoredView">
 
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/quotedUserAvatar"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_alignParentTop="true"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            app:shapeAppearanceOverlay="@style/circleImageView"
-            tools:srcCompat="@tools:sample/avatars" />
+            android:id="@+id/quotedAuthorLayout">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/quotedUserAvatar"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="8dp"
+                app:shapeAppearanceOverlay="@style/circleImageView"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/quotedUserAvatar"
+                android:textSize="14sp"
+                android:id="@+id/quotedAuthor"
+                android:layout_alignBaseline="@id/quotedUserAvatar"
+                tools:text="Another user"/>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/quotedPreviewImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quotedAuthorLayout"
+            android:adjustViewBounds="true"
+            android:layout_alignParentStart="true"
+            android:scaleType="fitCenter"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            tools:src="@tools:sample/backgrounds/scenic"/>
+
+        <androidx.emoji.widget.EmojiTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:autoLink="all"
+            android:id="@+id/quotedChatText"
+            android:textSize="12sp"
+            android:layout_below="@id/quotedPreviewImage"
+            tools:text="Just another chat message"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/quotedUserAvatar"
-            android:textSize="14sp"
-            android:id="@+id/quotedAuthor"
-            android:layout_alignBaseline="@id/quotedUserAvatar"
-            tools:text="Another user"/>
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/quotedChatText"
+            android:textSize="10sp"
+            android:textAlignment="textEnd"
+            android:id="@+id/quotedMessageTime"
+            tools:text="12:30"/>
 
     </RelativeLayout>
-
-    <ImageView
-        android:id="@+id/quotedPreviewImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/quotedAuthorLayout"
-        android:adjustViewBounds="true"
-        android:layout_alignParentStart="true"
-        android:scaleType="fitCenter"
-        android:layout_marginStart="8dp"
-        android:layout_toStartOf="@id/cancelReplyButton"
-        android:layout_marginTop="8dp"
-        tools:src="@tools:sample/backgrounds/scenic"/>
-
-    <androidx.emoji.widget.EmojiTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="8dp"
-        android:autoLink="all"
-        android:layout_toStartOf="@id/cancelReplyButton"
-        android:id="@+id/quotedChatText"
-        android:textSize="12sp"
-        android:layout_below="@id/quotedPreviewImage"
-        tools:text="Just another chat message"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_below="@id/quotedChatText"
-        android:textSize="10sp"
-        android:textAlignment="textEnd"
-        android:id="@+id/quotedMessageTime"
-        tools:text="12:30"/>
 
 
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginHorizontal="8dp"
+        android:visibility="visible"
         android:layout_centerVertical="true"
+        android:layout_marginHorizontal="8dp"
         android:layout_alignParentEnd="true"
         android:background="@drawable/ic_cancel_black_24dp"
         android:backgroundTint="@color/grey_600"

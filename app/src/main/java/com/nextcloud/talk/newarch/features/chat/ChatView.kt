@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.newarch.features.chat
 
+import android.content.ClipData
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -33,10 +34,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
+import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.widget.ImageView
+import android.widget.PopupMenu
+import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -82,9 +86,11 @@ import com.otaliastudios.elements.Adapter
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
+import com.stfalcon.chatkit.utils.DateFormatter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.controller_chat.view.*
+import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.koin.android.ext.android.inject
@@ -194,7 +200,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         view.smileyButton.setOnClickListener {
             emojiPopup?.toggle()
         }
-        
+
         viewModel.apply {
             conversation.observe(this@ChatView) { conversation ->
                 setTitle()
@@ -238,6 +244,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             }
         }
 
+        view.cancelReplyButton.setOnClickListener { hideReplyView() }
         return view
     }
 
@@ -341,8 +348,73 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         }
     }
 
+    private fun hideReplyView() {
+        view?.messageInputView?.let {
+            with (it) {
+                quotedMessageLayout.isVisible = false
+                attachmentButton.isVisible = true
+                attachmentButtonSpace.isVisible = true
+            }
+        }
+    }
     private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
+        if (element.type == ChatElementTypes.CHAT_MESSAGE.ordinal) {
+            element.data?.let { chatElement ->
+                var chatMessage = chatElement.data as ChatMessage
+                if (payload.containsKey("parentMessage")) {
+                    chatMessage = chatMessage.parentMessage!!
+                }
 
+                PopupMenu(this.context, holder.itemView, Gravity.START).apply {
+                    setOnMenuItemClickListener { item ->
+                        when (item?.itemId) {
+
+                            R.id.action_copy_message -> {
+                                val clipboardManager =
+                                        activity?.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+                                val clipData = ClipData.newPlainText(resources?.getString(R.string.nc_app_name), chatMessage.text)
+                                clipboardManager.setPrimaryClip(clipData)
+                                true
+                            }
+                            R.id.action_reply_to_message -> {
+                                view?.let {
+                                    with(it.messageInputView) {
+                                        attachmentButton.isVisible = false
+                                        attachmentButtonSpace.isVisible = false
+                                        cancelReplyButton.isVisible = true
+                                        quotedChatText.maxLines = 2
+                                        quotedChatText.ellipsize = TextUtils.TruncateAt.END
+                                        quotedChatText.text = chatMessage.text
+                                        quotedAuthor.text = chatMessage.user.name
+                                        quotedMessageTime.text = DateFormatter.format(chatMessage.createdAt, DateFormatter.Template.TIME)
+
+                                        loadImage(quotedUserAvatar, chatMessage.user.avatar)
+
+                                        chatMessage.imageUrl?.let { previewImageUrl ->
+                                            quotedPreviewImage.isVisible = true
+
+                                            val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96f, resources?.displayMetrics)
+                                            quotedPreviewImage.maxHeight = px.toInt()
+                                            loadImage(quotedPreviewImage, previewImageUrl)
+                                        } ?: run {
+                                            quotedPreviewImage.isVisible = false
+                                        }
+                                        quotedMessageLayout.tag = chatMessage.jsonMessageId
+                                        quotedMessageLayout.isVisible = true
+
+                                    }
+                                }
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    inflate(R.menu.chat_message_menu)
+                    menu.findItem(R.id.action_reply_to_message).isVisible = chatMessage.replyable
+                    show()
+                }
+            }
+        }
     }
 
     override fun onAttach(view: View) {
