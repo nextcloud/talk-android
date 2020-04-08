@@ -121,7 +121,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         setHasOptionsMenu(true)
         actionBar?.show()
         viewModel = viewModelProvider(factory).get(ChatViewModel::class.java)
-        val view = super.onCreateView(inflater,  )
+        val view = super.onCreateView(inflater, container)
 
         viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
 
