@@ -33,6 +33,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import androidx.lifecycle.observe
@@ -97,6 +98,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     val factory: ChatViewModelFactory by inject()
     private val networkComponents: NetworkComponents by inject()
 
+    private var initialAdapterFillFinished = false
     private var popupBubbleScrollPosition = 0
     var conversationInfoMenuItem: MenuItem? = null
     var conversationVoiceCallMenuItem: MenuItem? = null
@@ -119,7 +121,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         setHasOptionsMenu(true)
         actionBar?.show()
         viewModel = viewModelProvider(factory).get(ChatViewModel::class.java)
-        val view = super.onCreateView(inflater, container)
+        val view = super.onCreateView(inflater,  )
 
         viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
 
@@ -134,15 +136,39 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 val layoutManager = view.messagesRecyclerView.layoutManager as LinearLayoutManager
+
                 if (layoutManager.findLastVisibleItemPosition() == positionStart - 1) {
                     view.messagesRecyclerView.post {
                         view.messagesRecyclerView.smoothScrollToPosition(positionStart + 1)
                     }
                 } else {
-                    if (popupBubbleScrollPosition == 0) {
-                        popupBubbleScrollPosition = positionStart
+                    if (initialAdapterFillFinished) {
+                        var minus = itemCount
+                        for (i in positionStart..positionStart + itemCount) {
+                            val item = messagesAdapter.elementAt(i)
+                            if (item != null) {
+                                if (item.element.data is ChatElement) {
+                                    val data = item.element.data as ChatElement
+                                    if (data.elementType == ChatElementTypes.CHAT_MESSAGE) {
+                                        val chatElement = item.element.data as ChatElement
+                                        val chatMessage = chatElement.data as ChatMessage
+                                        if (chatMessage.actorId == viewModel.user.userId) {
+                                            minus -= 1
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (popupBubbleScrollPosition == 0 && minus != 0) {
+                            popupBubbleScrollPosition = messagesAdapter.itemCount - minus
+                            view.popupBubbleView.activate()
+                        } else if (popupBubbleScrollPosition > 0) {
+                            popupBubbleScrollPosition -= itemCount
+                        }
+                    } else {
+                        initialAdapterFillFinished = true
                     }
-                    view.popupBubbleView.activate()
                 }
             }
         })
@@ -347,11 +373,12 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 setRecyclerView(view.messagesRecyclerView)
                 setPopupBubbleListener {
                     view.messagesRecyclerView.post {
+
                         view.messagesRecyclerView.smoothScrollToPosition(popupBubbleScrollPosition)
                         popupBubbleScrollPosition = 0
-                    }
+                        deactivate()
 
-                    deactivate()
+                    }
                 }
             }
 
