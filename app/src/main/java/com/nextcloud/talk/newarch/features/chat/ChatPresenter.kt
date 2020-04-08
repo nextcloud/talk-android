@@ -46,7 +46,6 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
     override fun onBind(page: Page, holder: Holder, element: Element<T>, payloads: List<Any>) {
         super.onBind(page, holder, element, payloads)
 
-
         holder.itemView.setOnLongClickListener {
             onElementLongClick?.invoke(page, holder, element, mapOf())
             true

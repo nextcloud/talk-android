@@ -36,12 +36,12 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.TypedValue
 import android.view.*
 import android.widget.ImageView
 import android.widget.PopupMenu
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
@@ -54,6 +54,7 @@ import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.capybaralabs.swipetoreply.ISwipeControllerActions
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
@@ -68,6 +69,7 @@ import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.local.models.toUserEntity
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
+import com.nextcloud.talk.newarch.utils.ChatSwipeCallback
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
@@ -93,7 +95,6 @@ import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.controller_chat.view.*
 import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
-import kotlinx.android.synthetic.main.rv_chat_item.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
@@ -247,6 +248,21 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         }
 
         view.cancelReplyButton.setOnClickListener { hideReplyView() }
+
+        val controller = ChatSwipeCallback(messagesAdapter, context, ISwipeControllerActions {
+            val element = messagesAdapter.elementAt(it)
+            if (element != null) {
+                val adapterChatElement = element.element as Element<ChatElement>
+                if (adapterChatElement.data is ChatElement) {
+                    val chatElement = adapterChatElement.data as ChatElement
+                    view.messagesRecyclerView.postDelayed({ showReplyView(chatElement.data as ChatMessage)}, 50)
+                }
+            }
+        })
+
+        val itemTouchHelper = ItemTouchHelper(controller)
+        itemTouchHelper.attachToRecyclerView(view.messagesRecyclerView)
+
         return view
     }
 
@@ -359,6 +375,49 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             }
         }
     }
+
+    private fun showReplyView(chatMessage: ChatMessage) {
+        view?.let {
+            with(it.messageInputView) {
+                attachmentButton.isVisible = false
+                attachmentButtonSpace.isVisible = false
+                cancelReplyButton.isVisible = true
+                quotedChatText.maxLines = 2
+                quotedChatText.ellipsize = TextUtils.TruncateAt.END
+                quotedChatText.text = chatMessage.text
+                quotedAuthor.text = chatMessage.user.name
+                quotedMessageTime.text = DateFormatter.format(chatMessage.createdAt, DateFormatter.Template.TIME)
+
+                loadImage(quotedUserAvatar, chatMessage.user.avatar)
+
+                chatMessage.imageUrl?.let { previewImageUrl ->
+                    if (previewImageUrl == "no-preview") {
+                        if (chatMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                            quotedPreviewImage.isVisible = true
+                            networkComponents.getImageLoader(viewModel.user).loadAny(context, DrawableUtils.getDrawableResourceIdForMimeType(chatMessage.selectedIndividualHashMap!!["mimetype"])) {
+                                target(quotedPreviewImage) }
+                        } else {
+                            quotedPreviewImage.isVisible = false
+                        }
+                    } else {
+                        quotedPreviewImage.isVisible = true
+                        val mutableMap = mutableMapOf<String, String>()
+                        if (chatMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                            mutableMap["mimetype"] = chatMessage.selectedIndividualHashMap!!["mimetype"]!!
+                        }
+
+                        loadImage(quotedPreviewImage, previewImageUrl, mutableMap)
+                    }
+                } ?: run {
+                    quotedPreviewImage.isVisible = false
+                }
+                quotedMessageLayout.tag = chatMessage.jsonMessageId
+                quotedMessageLayout.isVisible = true
+
+            }
+        }
+    }
+
     private fun onElementLongClick(page: Page, holder: Presenter.Holder, element: Element<ChatElement>, payload: Map<String, String>) {
         if (element.type == ChatElementTypes.CHAT_MESSAGE.ordinal) {
             element.data?.let { chatElement ->
@@ -366,6 +425,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 if (payload.containsKey("parentMessage")) {
                     chatMessage = chatMessage.parentMessage!!
                 }
+
 
                 PopupMenu(this.context, holder.itemView, Gravity.START).apply {
                     setOnMenuItemClickListener { item ->
@@ -379,45 +439,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                                 true
                             }
                             R.id.action_reply_to_message -> {
-                                view?.let {
-                                    with(it.messageInputView) {
-                                        attachmentButton.isVisible = false
-                                        attachmentButtonSpace.isVisible = false
-                                        cancelReplyButton.isVisible = true
-                                        quotedChatText.maxLines = 2
-                                        quotedChatText.ellipsize = TextUtils.TruncateAt.END
-                                        quotedChatText.text = chatMessage.text
-                                        quotedAuthor.text = chatMessage.user.name
-                                        quotedMessageTime.text = DateFormatter.format(chatMessage.createdAt, DateFormatter.Template.TIME)
-
-                                        loadImage(quotedUserAvatar, chatMessage.user.avatar)
-
-                                        chatMessage.imageUrl?.let { previewImageUrl ->
-                                            if (previewImageUrl == "no-preview") {
-                                                if (chatMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
-                                                    quotedPreviewImage.isVisible = true
-                                                    networkComponents.getImageLoader(viewModel.user).loadAny(context, DrawableUtils.getDrawableResourceIdForMimeType(chatMessage.selectedIndividualHashMap!!["mimetype"])) {
-                                                        target(quotedPreviewImage) }
-                                                } else {
-                                                    quotedPreviewImage.isVisible = false
-                                                }
-                                            } else {
-                                                quotedPreviewImage.isVisible = true
-                                                val mutableMap = mutableMapOf<String, String>()
-                                                if (chatMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
-                                                    mutableMap["mimetype"] = chatMessage.selectedIndividualHashMap!!["mimetype"]!!
-                                                }
-
-                                                loadImage(quotedPreviewImage, previewImageUrl, mutableMap)
-                                            }
-                                        } ?: run {
-                                            quotedPreviewImage.isVisible = false
-                                        }
-                                        quotedMessageLayout.tag = chatMessage.jsonMessageId
-                                        quotedMessageLayout.isVisible = true
-
-                                    }
-                                }
+                                showReplyView(chatMessage)
                                 true
                             }
                             else -> false
