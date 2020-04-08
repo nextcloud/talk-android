@@ -110,6 +110,12 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
 
                         it.parentMessage?.let { parentMessage ->
                             holder.itemView.quotedMessageLayout.isVisible = true
+
+                            holder.itemView.quotedMessageLayout.setOnClickListener {
+                                onElementLongClick?.invoke(page, holder, element, mapOf("parentMessage" to "yes"))
+                                true
+                            }
+
                             holder.itemView.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
                             holder.itemView.quotedPreviewImage.setOnClickListener {
                                 onElementClickPass?.invoke(page, holder, element, mapOf("parentMessage" to "yes"))
@@ -118,10 +124,10 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
 
                             parentMessage.imageUrl?.let { previewMessageUrl ->
                                 if (previewMessageUrl == "no-preview") {
-                                    if (it.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                    if (parentMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
                                         holder.itemView.quotedPreviewImage.visibility = View.VISIBLE
                                         imageLoader.getImageLoader().loadAny(context, getDrawableResourceIdForMimeType(parentMessage.selectedIndividualHashMap!!["mimetype"])) {
-                                            target(holder.itemView.previewImage)
+                                            target(holder.itemView.quotedPreviewImage)
                                         }
                                     } else {
                                         holder.itemView.quotedPreviewImage.visibility = View.GONE
@@ -140,8 +146,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             }
 
                             imageLoader.loadImage(holder.itemView.quotedUserAvatar, parentMessage.user.avatar)
-                            holder.itemView.quotedAuthor.text = parentMessage.actorDisplayName
-                                    ?: context.getText(R.string.nc_nick_guest)
+                            holder.itemView.quotedAuthor.text = parentMessage.user.name
                             holder.itemView.quotedChatText.text = parentMessage.text
                             holder.itemView.quotedMessageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                         } ?: run {

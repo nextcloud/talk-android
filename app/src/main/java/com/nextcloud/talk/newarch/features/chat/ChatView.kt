@@ -46,6 +46,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.api.load
+import coil.api.loadAny
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
@@ -92,6 +93,7 @@ import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.controller_chat.view.*
 import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
+import kotlinx.android.synthetic.main.rv_chat_item.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.koin.android.ext.android.inject
 import org.parceler.Parcels
@@ -391,11 +393,23 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                                         loadImage(quotedUserAvatar, chatMessage.user.avatar)
 
                                         chatMessage.imageUrl?.let { previewImageUrl ->
-                                            quotedPreviewImage.isVisible = true
+                                            if (previewImageUrl == "no-preview") {
+                                                if (chatMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                                    quotedPreviewImage.isVisible = true
+                                                    networkComponents.getImageLoader(viewModel.user).loadAny(context, DrawableUtils.getDrawableResourceIdForMimeType(chatMessage.selectedIndividualHashMap!!["mimetype"])) {
+                                                        target(quotedPreviewImage) }
+                                                } else {
+                                                    quotedPreviewImage.isVisible = false
+                                                }
+                                            } else {
+                                                quotedPreviewImage.isVisible = true
+                                                val mutableMap = mutableMapOf<String, String>()
+                                                if (chatMessage.selectedIndividualHashMap?.containsKey("mimetype") == true) {
+                                                    mutableMap["mimetype"] = chatMessage.selectedIndividualHashMap!!["mimetype"]!!
+                                                }
 
-                                            val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96f, resources?.displayMetrics)
-                                            quotedPreviewImage.maxHeight = px.toInt()
-                                            loadImage(quotedPreviewImage, previewImageUrl)
+                                                loadImage(quotedPreviewImage, previewImageUrl, mutableMap)
+                                            }
                                         } ?: run {
                                             quotedPreviewImage.isVisible = false
                                         }
