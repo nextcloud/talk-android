@@ -46,7 +46,7 @@
 
         <ImageView
             android:id="@+id/quotedPreviewImage"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/quotedAuthor"
             android:layout_alignStart="@id/quotedAuthor"
