@@ -93,6 +93,7 @@ import com.stfalcon.chatkit.utils.DateFormatter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.controller_chat.view.*
+import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
@@ -188,6 +189,8 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         val layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
         layoutManager.stackFromEnd = true
         view.messagesRecyclerView.initRecyclerView(layoutManager, messagesAdapter, true)
+        view.messagesRecyclerView.preserveFocusAfterLayout = true
+
 
         emojiPopup = view.messageInput.let {
             EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {

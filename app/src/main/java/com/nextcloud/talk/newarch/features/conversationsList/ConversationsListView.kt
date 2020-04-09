@@ -101,6 +101,7 @@ class ConversationsListView : BaseView() {
 
         view.apply {
             recyclerView.adapter = adapter
+            recyclerView.preserveFocusAfterLayout = true
             with(swipeRefreshLayoutView) {
                 setColorSchemeResources(R.color.colorPrimary)
                 setOnRefreshListener {
