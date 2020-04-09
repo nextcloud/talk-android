@@ -255,7 +255,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 val adapterChatElement = element.element as Element<ChatElement>
                 if (adapterChatElement.data is ChatElement) {
                     val chatElement = adapterChatElement.data as ChatElement
-                    view.messagesRecyclerView.postDelayed({ showReplyView(chatElement.data as ChatMessage)}, 100)
+                    view.messagesRecyclerView.postDelayed({ showReplyView(chatElement.data as ChatMessage)}, 125)
                 }
             }
         })
