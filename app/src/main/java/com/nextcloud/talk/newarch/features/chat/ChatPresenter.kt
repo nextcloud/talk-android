@@ -3,6 +3,7 @@ package com.nextcloud.talk.newarch.features.chat
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
@@ -14,11 +15,13 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
+import com.nextcloud.talk.utils.TextMatchers
 import com.otaliastudios.elements.Element
 import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
 import com.otaliastudios.elements.extensions.HeaderSource
 import com.stfalcon.chatkit.utils.DateFormatter
+import com.vanniktech.emoji.EmojiUtils
 import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.rv_chat_item.view.*
 import kotlinx.android.synthetic.main.rv_chat_system_item.view.*
@@ -78,6 +81,11 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
 
                         holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                         holder.itemView.chatMessage.text = it.text
+                        if (TextMatchers.isMessageWithSingleEmoticonOnly(it.text)) {
+                            holder.itemView.chatMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
+                        } else {
+                            holder.itemView.chatMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                        }
 
                         if (shouldShowNameAndAvatar) {
                             holder.itemView.authorLayout.isVisible = true
