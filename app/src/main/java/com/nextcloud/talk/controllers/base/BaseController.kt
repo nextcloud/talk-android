@@ -47,6 +47,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.newarch.utils.dp
 import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
@@ -183,7 +184,7 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
                 if (getAppBarLayoutType() != AppBarLayoutType.EMPTY) {
                     it.toolbar.isVisible = !value
-                    appBarLayoutParams.height = 56.px
+                    appBarLayoutParams.height = 56.dp
                 } else {
                     appBarLayoutParams.height = 0
                 }

@@ -54,7 +54,6 @@ import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
-import com.capybaralabs.swipetoreply.ISwipeControllerActions
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
@@ -69,9 +68,10 @@ import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.local.models.toUserEntity
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
-import com.nextcloud.talk.newarch.utils.ChatSwipeCallback
+import com.nextcloud.talk.newarch.utils.swipe.ChatMessageSwipeCallback
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.NetworkComponents
+import com.nextcloud.talk.newarch.utils.swipe.ChatMessageSwipeInterface
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
@@ -249,13 +249,16 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
 
         view.cancelReplyButton.setOnClickListener { hideReplyView() }
 
-        val controller = ChatSwipeCallback(messagesAdapter, context, ISwipeControllerActions {
-            val element = messagesAdapter.elementAt(it)
-            if (element != null) {
-                val adapterChatElement = element.element as Element<ChatElement>
-                if (adapterChatElement.data is ChatElement) {
-                    val chatElement = adapterChatElement.data as ChatElement
-                    view.messagesRecyclerView.postDelayed({ showReplyView(chatElement.data as ChatMessage)}, 125)
+        val controller = ChatMessageSwipeCallback(context, messagesAdapter, object : ChatMessageSwipeInterface {
+            override fun onSwipePerformed(position: Int) {
+                val element = messagesAdapter.elementAt(position)
+                if (element != null) {
+                    val adapterChatElement = element.element as Element<ChatElement>
+                    if (adapterChatElement.data is ChatElement) {
+                        val chatElement = adapterChatElement.data as ChatElement
+                        showReplyView(chatElement.data as ChatMessage)
+                        //view.messagesRecyclerView.postDelayed({ showReplyView(chatElement.data as ChatMessage)}, 125)
+                    }
                 }
             }
         })

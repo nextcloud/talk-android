@@ -49,6 +49,7 @@ import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
 import com.nextcloud.talk.newarch.utils.ElementPayload
+import com.nextcloud.talk.newarch.utils.dp
 import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.otaliastudios.elements.Adapter
@@ -98,8 +99,8 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                 .addPresenter(Presenter.forLoadingIndicator(activity as Context, R.layout.loading_state))
                 .addPresenter(AdvancedEmptyPresenter(activity as Context, R.layout.message_state, null) { view ->
                     val layoutParams = view.messageStateImageView.layoutParams as RelativeLayout.LayoutParams
-                    layoutParams.height = 128.px
-                    layoutParams.width = 128.px
+                    layoutParams.height = 128.dp
+                    layoutParams.width = 128.dp
                     view.messageStateImageView.layoutParams = layoutParams
                     view.messageStateTextView.setText(R.string.nc_search_empty_contacts)
                     view.messageStateImageView.load(context.getDrawable(R.drawable.ic_undraw_not_found_60pq))
@@ -107,8 +108,8 @@ class ContactsView(private val bundle: Bundle? = null) : BaseView() {
                 })
                 .addPresenter(Presenter.forErrorIndicator(activity as Context, R.layout.message_state) { view, throwable ->
                     val layoutParams = view.messageStateImageView.layoutParams as RelativeLayout.LayoutParams
-                    layoutParams.height = 128.px
-                    layoutParams.width = 128.px
+                    layoutParams.height = 128.dp
+                    layoutParams.width = 128.dp
                     view.messageStateImageView.layoutParams = layoutParams
                     view.messageStateTextView.setText(R.string.nc_oops)
                     view.messageStateImageView.load((activity as Context).getDrawable(R.drawable.ic_undraw_server_down_s4lk))

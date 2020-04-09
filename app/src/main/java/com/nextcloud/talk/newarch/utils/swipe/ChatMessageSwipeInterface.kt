@@ -18,24 +18,10 @@
  *  * You should have received a copy of the GNU General Public License
  *  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
+ *  Inspired by: https://github.com/izjumovfs/SwipeToReply
  */
+package com.nextcloud.talk.newarch.utils.swipe
 
-package com.nextcloud.talk.newarch.utils
-
-import android.content.res.Resources
-import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.utils.ApiUtils
-import java.security.MessageDigest
-
-fun UserEntity.getCredentials() = ApiUtils.getCredentials(username, token)
-fun String.hashWithAlgorithm(algorithm: String): String {
-    val digest = MessageDigest.getInstance(algorithm)
-    val bytes = digest.digest(this.toByteArray(Charsets.UTF_8))
-    return bytes.fold("", { str, it -> str + "%02x".format(it) })
+interface ChatMessageSwipeInterface {
+    fun onSwipePerformed(position: Int)
 }
-
-val Int.px: Int
-    get() = (this / Resources.getSystem().displayMetrics.density).toInt()
-
-val Int.dp: Int
-    get() = (this * Resources.getSystem().displayMetrics.density).toInt()
