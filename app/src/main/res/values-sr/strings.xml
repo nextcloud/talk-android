@@ -78,6 +78,7 @@
     <string name="nc_settings_call_ringtone">Позиви</string>
     <string name="nc_settings_other_notifications_ringtone">Обавештења</string>
     <string name="nc_settings_no_ringtone">Нема звука</string>
+    <string name="nc_settings_vibrate">Вибрација</string>
     <string name="nc_settings_vibrate_desc">Телефон ће вибрирати осим ако није утишан</string>
     <string name="nc_settings_appearance">Изглед</string>
     <string name="nc_settings_theme_title">Тема</string>
@@ -319,4 +320,5 @@
     <string name="nc_search_for_more">Тражи још учесника</string>
     <string name="nc_new_group">Нова група</string>
     <string name="nc_search_empty_contacts">Где су сви нестали?</string>
-    </resources>
+    <string name="nc_reject_call">Одбиј</string>
+</resources>
