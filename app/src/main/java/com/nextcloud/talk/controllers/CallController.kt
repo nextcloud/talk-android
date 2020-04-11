@@ -654,11 +654,11 @@ class CallController(args: Bundle) : BaseController() {
                     microphoneControlButton?.setImageResource(R.drawable.ic_mic_off_white_24px)
                 }
 
-                toggleMedia(audioOn, false)
+                toggleMedia(audioOn, false, false)
             } else {
                 microphoneControlButton?.setImageResource(R.drawable.ic_mic_white_24px)
                 pulseAnimation!!.start()
-                toggleMedia(true, false)
+                toggleMedia(true, false, false)
             }
 
             if (isVoiceOnlyCall && !isConnectionEstablished) {
@@ -709,7 +709,7 @@ class CallController(args: Bundle) : BaseController() {
                 cameraSwitchButton!!.visibility = View.GONE
             }
 
-            toggleMedia(videoOn, true)
+            toggleMedia(videoOn, true, false)
         } else if (activity != null && EffortlessPermissions.somePermissionPermanentlyDenied(
                         activity!!,
                         *PERMISSIONS_CAMERA
@@ -746,9 +746,11 @@ class CallController(args: Bundle) : BaseController() {
 
     private fun toggleMedia(
             enable: Boolean,
-            video: Boolean
+            video: Boolean,
+            silencedByModerator: Boolean = false
     ) {
         var message: String
+        val alreadySilenced = microphoneControlButton?.alpha == 0.7f
         if (video) {
             message = "videoOff"
             if (enable) {
@@ -787,6 +789,11 @@ class CallController(args: Bundle) : BaseController() {
             if (localMediaStream != null && localMediaStream!!.audioTracks.size > 0) {
                 localMediaStream!!.audioTracks[0].setEnabled(enable)
             }
+        }
+
+        if (!alreadySilenced && !enable && !video && silencedByModerator) {
+            microphoneControlButton?.setImageResource(R.drawable.ic_mic_off_white_24px)
+            Toast.makeText(context, R.string.silenced_by_moderator, Toast.LENGTH_SHORT).show()
         }
 
         sendDataChannelMessage(message)
@@ -974,21 +981,6 @@ class CallController(args: Bundle) : BaseController() {
                                 hasExternalSignalingServer = true
                             } else {
                                 hasExternalSignalingServer = false
-                            }
-
-                            if (conversationUser!!.userId != "?") {
-                                /*try {
-                                    userUtils.createOrUpdateUser(
-                                            null, null, null, null, null, null, null,
-                                            conversationUser.id, null, null,
-                                            LoganSquare.serialize(externalSignalingServer!!)
-                                    )
-                                            .subscribeOn(Schedulers.io())
-                                            .subscribe()
-                                } catch (exception: IOException) {
-                                    Log.e(TAG, "Failed to serialize external signaling server")
-                                }*/
-
                             }
 
                             if (signalingSettingsOverall.ocs.signalingSettings.stunServers != null) {
@@ -1305,6 +1297,9 @@ class CallController(args: Bundle) : BaseController() {
                         it, "video"
                 )
             }
+            "mutedByModerator" -> {
+                toggleMedia(enable = false, video = false, silencedByModerator = true)
+            }
         }
     }
 
@@ -1399,6 +1394,16 @@ class CallController(args: Bundle) : BaseController() {
                         magicPeerConnectionWrapper.addCandidate(iceCandidate)
                     }
                     "endOfCandidates" -> magicPeerConnectionWrapper.drainIceCandidates()
+                    "control" -> {
+                        when (ncSignalingMessage.payload.action) {
+                            "forceMute" -> {
+                                if (ncSignalingMessage.payload.peerId == callSession) {
+                                    toggleMedia(false, video = false, silencedByModerator = true)
+                                }
+                            }
+                            else -> {}
+                        }
+                    }
                     else -> {
                     }
                 }
@@ -1799,7 +1804,7 @@ class CallController(args: Bundle) : BaseController() {
                         (currentCallStatus == CallStatus.CALLING || isConnectionEstablished) && videoOn
                         && enableVideo != localVideoTrack!!.enabled()
                 ) {
-                    toggleMedia(enableVideo, true)
+                    toggleMedia(enableVideo, true, false)
                 }
             }
         } else if (peerConnectionEvent.peerConnectionEventType == PeerConnectionEvent
@@ -2426,7 +2431,7 @@ class CallController(args: Bundle) : BaseController() {
                 isPTTActive = false
                 microphoneControlButton?.setImageResource(R.drawable.ic_mic_off_white_24px)
                 pulseAnimation!!.stop()
-                toggleMedia(false, false)
+                toggleMedia(false, false, false)
                 animateCallControls(false, 5000)
             }
             return true

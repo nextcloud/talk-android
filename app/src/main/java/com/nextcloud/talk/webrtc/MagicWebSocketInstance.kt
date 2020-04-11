@@ -309,8 +309,16 @@ class MagicWebSocketInstance internal constructor(
                         if (!TextUtils.isEmpty(ncSignalingMessage.from)) {
                             val messageHashMap =
                                     HashMap<String, String>()
-                            messageHashMap["jobId"] = Integer.toString(magicMap.add(ncSignalingMessage))
+                            messageHashMap["jobId"] = magicMap.add(ncSignalingMessage).toString()
                             eventBus.post(WebSocketCommunicationEvent("signalingMessage", messageHashMap))
+                        }
+                    }
+                    "control" -> {
+                        val controlOverallWebSocketMessage = LoganSquare.parse(text, ControlOverallWebSocketMessage::class.java)
+                        if (controlOverallWebSocketMessage.controlWebSocketMessage?.data?.peerId == sessionId) {
+                            if (controlOverallWebSocketMessage.controlWebSocketMessage?.data?.action?.equals("forceMute") == true) {
+                                eventBus.post(WebSocketCommunicationEvent("mutedByModerator", hashMapOf()))
+                            }
                         }
                     }
                     "bye" -> {

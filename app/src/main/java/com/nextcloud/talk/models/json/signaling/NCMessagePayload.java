@@ -45,4 +45,11 @@ public class NCMessagePayload {
 
     @JsonField(name = "name")
     public String name;
+
+    @JsonField(name = "action")
+    public String action;
+
+    @JsonField(name = "peerId")
+    public String peerId;
+
 }

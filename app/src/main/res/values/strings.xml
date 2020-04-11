@@ -344,5 +344,6 @@
     <string name="nc_search_for_more">Search for more participants</string>
     <string name="nc_new_group">New group</string>
     <string name="nc_search_empty_contacts">Where did they all hide?</string>
-    <string name="nc_reject_call">Reject </string>
+    <string name="nc_reject_call">Reject</string>
+    <string name="silenced_by_moderator">You were silenced by a moderator</string>
 </resources>
