@@ -255,4 +255,5 @@
     <string name="nc_copy_message">Afrita</string>
     <string name="nc_reply">Svara</string>
 
+    <string name="nc_reject_call">Hafna</string>
     </resources>

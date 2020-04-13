@@ -227,4 +227,5 @@
     <string name="nc_search_for_more">Ieškoti daugiau dalyvių</string>
     <string name="nc_new_group">Nauja grupė</string>
     <string name="nc_search_empty_contacts">Kur jie visi pasislėpė?</string>
+    <string name="nc_reject_call">Atmesti</string>
     </resources>
