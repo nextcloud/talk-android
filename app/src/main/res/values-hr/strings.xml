@@ -320,4 +320,5 @@ popisa razgovora</string>
     <string name="nc_search_for_more">Potraži još sudionika</string>
     <string name="nc_new_group">Nova grupa</string>
     <string name="nc_search_empty_contacts">Gdje su se svi skrili?</string>
+    <string name="nc_reject_call">Odbij</string>
     </resources>

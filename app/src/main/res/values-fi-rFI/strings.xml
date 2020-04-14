@@ -270,4 +270,5 @@
     <string name="nc_search_for_more">Etsi lisää osallistujia</string>
     <string name="nc_new_group">Uusi ryhmä</string>
     <string name="nc_search_empty_contacts">Mihin he kaikki piiloutuivat?</string>
+    <string name="nc_reject_call">Hylkää</string>
     </resources>

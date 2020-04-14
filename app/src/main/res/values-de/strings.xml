@@ -321,4 +321,5 @@ Meeting ist für %1$s geplant.</string>
     <string name="nc_new_group">Neue Gruppe</string>
     <string name="nc_search_empty_contacts">Wo haben sie sich alle versteckt?</string>
     <string name="nc_reject_call">Ablehnen</string>
-    </resources>
+    <string name="silenced_by_moderator">Sie wurden von einem Moderator stumm-geschaltet</string>
+</resources>

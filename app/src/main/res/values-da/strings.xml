@@ -300,4 +300,5 @@ møde er planlagt til %1$s.</string>
     <string name="nc_search_for_more">Søg efter flere deltagere</string>
     <string name="nc_new_group">Ny gruppe</string>
     <string name="nc_search_empty_contacts">Hvor har de gemt sig alle sammen?</string>
+    <string name="nc_reject_call">Afvis</string>
     </resources>
