@@ -26,6 +26,7 @@ import android.content.Intent
 import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
@@ -89,6 +90,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     var isServiceInForeground: Boolean = false
     private var decryptedPushMessage: DecryptedPushMessage? = null
     private var signatureVerification: SignatureVerification? = null
+    private var handler: Handler = Handler()
 
     @JvmField
     @Inject
@@ -119,6 +121,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         isServiceInForeground = false
         eventBus?.unregister(this)
         stopForeground(true)
+        handler.removeCallbacksAndMessages(null)
         super.onDestroy()
     }
 
@@ -247,8 +250,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         var inCallOnDifferentDevice = false
 
         ncApi.getPeersForCall(ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
-                ApiUtils.getUrlForParticipants(signatureVerification.userEntity.baseUrl,
+                ApiUtils.getUrlForCall(signatureVerification.userEntity.baseUrl,
                         decryptedPushMessage.id))
+                .takeWhile {
+                    isServiceInForeground
+                }
                 .subscribeOn(Schedulers.io())
                 .subscribe(object : Observer<ParticipantsOverall> {
                     override fun onSubscribe(d: Disposable) {
@@ -256,9 +262,9 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
                     override fun onNext(participantsOverall: ParticipantsOverall) {
                         val participantList: List<Participant> = participantsOverall.ocs.data
-                        for (participant in participantList) {
-                            if (participant.participantFlags != Participant.ParticipantFlags.NOT_IN_CALL) {
-                                hasParticipantsInCall = true
+                        hasParticipantsInCall = participantList.isNotEmpty()
+                        if (!hasParticipantsInCall) {
+                            for (participant in participantList) {
                                 if (participant.userId == signatureVerification.userEntity.userId) {
                                     inCallOnDifferentDevice = true
                                     break
@@ -268,8 +274,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
                         if (!hasParticipantsInCall || inCallOnDifferentDevice) {
                             stopForeground(true)
+                            handler.removeCallbacksAndMessages(null)
                         } else if (isServiceInForeground) {
-                            checkIfCallIsActive(signatureVerification, decryptedPushMessage)
+                            handler.postDelayed({
+                                checkIfCallIsActive(signatureVerification, decryptedPushMessage)
+                            }, 5000)
                         }
                     }
 
@@ -277,7 +286,5 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     override fun onComplete() {
                     }
                 })
-
     }
-
 }

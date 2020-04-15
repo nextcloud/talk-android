@@ -29,7 +29,11 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.*;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.renderscript.RenderScript;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,11 +43,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -65,32 +68,38 @@ import com.nextcloud.talk.events.CallNotificationClick;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
+import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Cache;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
-import javax.annotation.Nullable;
-import javax.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.Cache;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
@@ -195,11 +204,10 @@ public class CallNotificationController extends BaseController {
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForParticipants(userBeingCalled.getBaseUrl(),
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(userBeingCalled.getBaseUrl(),
                 currentConversation.getToken()))
                 .subscribeOn(Schedulers.io())
                 .takeWhile(observable -> !leavingScreen)
-                .retry(3)
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
@@ -211,10 +219,10 @@ public class CallNotificationController extends BaseController {
                         boolean hasParticipantsInCall = false;
                         boolean inCallOnDifferentDevice = false;
                         List<Participant> participantList = participantsOverall.getOcs().getData();
-                        for (Participant participant : participantList) {
-                            if (participant.getParticipantFlags() != Participant.ParticipantFlags.NOT_IN_CALL) {
-                                hasParticipantsInCall = true;
+                        hasParticipantsInCall = participantList.size() > 0;
 
+                        if (hasParticipantsInCall) {
+                            for (Participant participant : participantList) {
                                 if (participant.getUserId().equals(userBeingCalled.getUserId())) {
                                     inCallOnDifferentDevice = true;
                                     break;
@@ -237,7 +245,7 @@ public class CallNotificationController extends BaseController {
                     @Override
                     public void onComplete() {
                         if (!leavingScreen) {
-                            checkIfAnyParticipantsRemainInRoom();
+                            handler.postDelayed(() -> checkIfAnyParticipantsRemainInRoom(), 5000);
                         }
                     }
                 });

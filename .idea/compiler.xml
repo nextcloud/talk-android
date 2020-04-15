@@ -6,6 +6,7 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="app" target="1.8" />
+      <module name="talk-android.app" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

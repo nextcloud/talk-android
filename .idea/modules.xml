@@ -4,9 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Projects-talk-android.iml" filepath="$PROJECT_DIR$/.idea/modules/Projects-talk-android.iml" group="talk-android" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Projects-talk-android-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Projects-talk-android-app.iml" group="talk-android/app" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="talk-android/app" />
-      <module fileurl="file://$PROJECT_DIR$/talk-android.iml" filepath="$PROJECT_DIR$/talk-android.iml" group="talk-android" />
+      <module fileurl="file://$PROJECT_DIR$/talk-android.iml" filepath="$PROJECT_DIR$/talk-android.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/talk-android-app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/talk-android-app.iml" group="talk-android/app" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/talk-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/talk-android.app.iml" />
     </modules>
   </component>
 </project>
