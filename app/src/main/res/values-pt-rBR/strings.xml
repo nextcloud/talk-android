@@ -321,4 +321,5 @@
     <string name="nc_new_group">Novo grupo</string>
     <string name="nc_search_empty_contacts">Onde eles todos se esconderam?</string>
     <string name="nc_reject_call">Rejeitar</string>
-    </resources>
+    <string name="silenced_by_moderator">Você foi silenciado por um moderador.</string>
+</resources>
