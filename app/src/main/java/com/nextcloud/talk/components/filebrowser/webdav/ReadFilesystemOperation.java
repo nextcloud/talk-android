@@ -28,6 +28,7 @@ import com.nextcloud.talk.newarch.utils.NetworkUtils;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,10 +92,10 @@ public class ReadFilesystemOperation {
         }
 
         remoteFiles.add(BrowserFile.getModelFromResponse(rootElement[0],
-                rootElement[0].getHref().toString().substring(basePath.length())));
+                URLDecoder.decode(rootElement[0].getHref().toString()).substring(basePath.length())));
         for (Response memberElement : memberElements) {
             remoteFiles.add(BrowserFile.getModelFromResponse(memberElement,
-                    memberElement.getHref().toString().substring(basePath.length())));
+                    URLDecoder.decode(memberElement.getHref().toString()).substring(basePath.length())));
         }
 
         davResponse.data = remoteFiles;
