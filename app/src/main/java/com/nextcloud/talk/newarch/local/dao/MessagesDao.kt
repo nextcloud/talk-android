@@ -84,7 +84,8 @@ abstract class MessagesDao {
                 }
             }
 
-            messagesToUpdate.forEach { internalUpsert(it) }
+            saveMessages(*messagesToUpdate.toTypedArray())
+            //messagesToUpdate.forEach { internalUpsert(it) }
         }
     }
 
