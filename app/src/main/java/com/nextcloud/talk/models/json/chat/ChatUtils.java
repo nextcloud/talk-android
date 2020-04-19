@@ -31,10 +31,9 @@ public class ChatUtils {
                 HashMap<String, String> individualHashMap = messageParameters.get(key);
                 if (individualHashMap.get("type").equals("user") || individualHashMap.get("type")
                         .equals("guest") || individualHashMap.get("type").equals("call")) {
-                    message = message.replaceAll("\\{" + key + "\\}", "@" +
-                            messageParameters.get(key).get("name"));
+                    message = message.replace("{" + key + "}", "@" + messageParameters.get(key).get("name"));
                 } else if (individualHashMap.get("type").equals("file")) {
-                    message = message.replaceAll("\\{" + key + "\\}", messageParameters.get(key).get("name"));
+                    message = message.replace("{" + key + "}", messageParameters.get(key).get("name"));
                 }
             }
         }

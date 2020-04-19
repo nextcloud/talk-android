@@ -20,7 +20,7 @@
  *
  */
 
-package com.nextcloud.talk.newarch.conversationsList.mvp
+package com.nextcloud.talk.newarch.mvvm
 
 import android.app.Application
 import android.content.Context

@@ -93,7 +93,6 @@ import com.stfalcon.chatkit.utils.DateFormatter
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.android.synthetic.main.controller_chat.view.*
-import kotlinx.android.synthetic.main.conversations_list_view.view.*
 import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.lobby_view.view.*
 import kotlinx.android.synthetic.main.view_message_input.view.*
@@ -104,7 +103,6 @@ import java.util.*
 class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
     override val lifecycleOwner = ControllerLifecycleOwner(this)
-
 
     private lateinit var viewModel: ChatViewModel
     val factory: ChatViewModelFactory by inject()
@@ -210,12 +208,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         viewModel.apply {
             conversation.observe(this@ChatView) { conversation ->
                 setTitle()
-
-                if (Conversation.ConversationType.ONE_TO_ONE_CONVERSATION == conversation?.type) {
-                    loadAvatar()
-                } else {
-                    actionBar?.setIcon(null)
-                }
 
                 shouldShowLobby = conversation!!.shouldShowLobby(user)
                 isReadOnlyConversation = conversation.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
@@ -375,6 +367,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private fun hideReplyView() {
         view?.messageInputView?.let {
             with (it) {
+                quotedMessageLayout.tag = null
                 quotedMessageLayout.isVisible = false
                 attachmentButton.isVisible = true
                 attachmentButtonSpace.isVisible = true
@@ -393,7 +386,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 quotedChatText.text = chatMessage.text
                 quotedAuthor.text = chatMessage.user.name
                 quotedMessageTime.text = DateFormatter.format(chatMessage.createdAt, DateFormatter.Template.TIME)
-
                 loadImage(quotedUserAvatar, chatMessage.user.avatar)
 
                 chatMessage.imageUrl?.let { previewImageUrl ->
@@ -492,10 +484,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         } else {
             conversationVoiceCallMenuItem?.isVisible = true
             conversationVideoMenuItem?.isVisible = true
-        }
-
-        if (Conversation.ConversationType.ONE_TO_ONE_CONVERSATION == viewModel.conversation.value?.type) {
-            loadAvatar()
         }
     }
 
@@ -622,25 +610,12 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     private fun submitMessage() {
         val editable = view?.messageInput?.editableText
         editable?.let {
-            val mentionSpans = it.getSpans(
-                    0, it.length,
-                    Spans.MentionChipSpan::class.java
-            )
-            var mentionSpan: Spans.MentionChipSpan
-            for (i in mentionSpans.indices) {
-                mentionSpan = mentionSpans[i]
-                var mentionId = mentionSpan.id
-                if (mentionId.contains(" ") || mentionId.startsWith("guest/")) {
-                    mentionId = "\"" + mentionId + "\""
-                }
-                it.replace(
-                        it.getSpanStart(mentionSpan), it.getSpanEnd(mentionSpan), "@$mentionId"
-                )
-            }
-
+            val replyMessageId= view?.messageInputView?.quotedMessageLayout?.tag as Long?
             view?.messageInput?.setText("")
-            viewModel.sendMessage(it)
-
+            viewModel.sendMessage(it, replyMessageId)
+            if (replyMessageId != null) {
+                hideReplyView()
+            }
         }
     }
 
@@ -692,37 +667,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                             .pushChangeHandler(VerticalChangeHandler())
                             .popChangeHandler(VerticalChangeHandler())
             )
-
-        }
-    }
-
-    private fun loadAvatar() {
-        val imageLoader = networkComponents.getImageLoader(viewModel.user)
-        conversationVoiceCallMenuItem?.let {
-            val avatarSize = DisplayUtils.convertDpToPixel(
-                    it.icon!!.intrinsicWidth.toFloat(), activity!!
-            )
-                    .toInt()
-
-            avatarSize.let {
-                val target = object : Target {
-                    override fun onSuccess(result: Drawable) {
-                        super.onSuccess(result)
-                        actionBar?.setIcon(result)
-                    }
-                }
-
-                viewModel.conversation.value?.let {
-                    val avatarRequest = Images().getRequestForUrl(
-                            imageLoader, context, ApiUtils.getUrlForAvatarWithNameAndPixels(
-                            viewModel.user.baseUrl,
-                            it.name, avatarSize / 2
-                    ), viewModel.user, target, this,
-                            CircleCropTransformation()
-                    )
-                    imageLoader.load(avatarRequest)
-                }
-            }
 
         }
     }

@@ -40,6 +40,20 @@ import retrofit2.http.*
 
 interface ApiService {
     /*
+        Fieldmap items are as follows:
+          - "message": ,
+          - "actorDisplayName"
+    */
+    @FormUrlEncoded
+    @POST
+    suspend fun sendChatMessage(@Header("Authorization") authorization: String,
+                        @Url url: String,
+                        @Field("message") message: CharSequence,
+                        @Field("actorDisplayName") actorDisplayName: String?,
+                        @Field("replyTo") replyTo: Int?,
+                        @Field("referenceId") referenceId: String?): Response<ChatOverall>
+
+    /*
     QueryMap items are as follows:
      - "lookIntoFuture": int (0 or 1),
      - "limit" : int, range 100-200,

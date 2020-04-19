@@ -26,17 +26,18 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType
+import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
 
 @Entity(
         tableName = "messages",
         indices = [Index(value = ["conversation_id"])],
         foreignKeys = [ForeignKey(
                 entity = ConversationEntity::class,
+                deferred = true,
                 parentColumns = arrayOf("id"),
                 childColumns = arrayOf("conversation_id"),
                 onDelete = CASCADE,
-                onUpdate = CASCADE,
-                deferred = true
+                onUpdate = CASCADE
         )]
 )
 data class MessageEntity(
@@ -51,7 +52,9 @@ data class MessageEntity(
         @ColumnInfo(name = "messageParameters") var messageParameters: HashMap<String, HashMap<String, String>>? = null,
         @ColumnInfo(name = "parent") var parentMessage: ChatMessage? = null,
         @ColumnInfo(name = "replyable") var replyable: Boolean = false,
-        @ColumnInfo(name = "system_message_type") var systemMessageType: SystemMessageType? = null
+        @ColumnInfo(name = "system_message_type") var systemMessageType: SystemMessageType? = null,
+        @ColumnInfo(name = "reference_id") var referenceId: String? = null,
+        @ColumnInfo(name = "message_status") var chatMessageStatus: ChatMessageStatus = ChatMessageStatus.RECEIVED
 )
 
 fun MessageEntity.toChatMessage(): ChatMessage {
@@ -68,12 +71,15 @@ fun MessageEntity.toChatMessage(): ChatMessage {
     chatMessage.systemMessageType = this.systemMessageType
     chatMessage.replyable = this.replyable
     chatMessage.parentMessage = this.parentMessage
+    chatMessage.referenceId = this.referenceId
+    chatMessage.chatMessageStatus = this.chatMessageStatus
     return chatMessage
 }
 
 fun ChatMessage.toMessageEntity(): MessageEntity {
-    val messageEntity = MessageEntity(this.internalConversationId + "@" + this.jsonMessageId, this.internalConversationId!!)
-    messageEntity.messageId = this.jsonMessageId!!
+    val messageEntityId = if (this.internalMessageId != null) internalMessageId else this.internalConversationId + "@" + this.jsonMessageId
+    val messageEntity = MessageEntity(messageEntityId!!, this.internalConversationId!!)
+    messageEntity.messageId = this.jsonMessageId ?: 0
     messageEntity.actorType = this.actorType
     messageEntity.actorId = this.actorId
     messageEntity.actorDisplayName = this.actorDisplayName
@@ -83,6 +89,7 @@ fun ChatMessage.toMessageEntity(): MessageEntity {
     messageEntity.replyable = this.replyable
     messageEntity.messageParameters = this.messageParameters
     messageEntity.parentMessage = this.parentMessage
-
+    messageEntity.referenceId = this.referenceId
+    messageEntity.chatMessageStatus = this.chatMessageStatus
     return messageEntity
 }

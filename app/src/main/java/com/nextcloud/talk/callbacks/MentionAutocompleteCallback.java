@@ -63,12 +63,21 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         }
 
         editable.replace(start, end, replacementStringBuilder.toString() + " ");
+
+        String type = "user";
+
+        if (item.source.equals("users")) {
+            // do nothing
+        } else if (item.source.equals("guests")) {
+            type = "guests";
+        } else if (item.source.equals("calls")) {
+            type = "call";
+        }
+
         Spans.MentionChipSpan mentionChipSpan =
                 new Spans.MentionChipSpan(DisplayUtils.INSTANCE.getDrawableForMentionChipSpan(context,
                         item.id, item.label, conversationUser, item.source,
-                        R.xml.chip_you, editText),
-                        BetterImageSpan.ALIGN_CENTER,
-                        item.id, item.label);
+                        R.xml.chip_you, editText), BetterImageSpan.ALIGN_CENTER, item.id, item.label, type);
         editable.setSpan(mentionChipSpan, start, start + replacementStringBuilder.toString().length(),
                 Spanned.SPAN_INCLUSIVE_INCLUSIVE);
         return true;

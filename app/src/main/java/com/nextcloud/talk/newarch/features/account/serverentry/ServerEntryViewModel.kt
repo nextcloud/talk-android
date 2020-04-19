@@ -26,7 +26,7 @@ import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
+import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.usecases.GetCapabilitiesUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse

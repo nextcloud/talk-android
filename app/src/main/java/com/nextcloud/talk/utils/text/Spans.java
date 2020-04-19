@@ -34,12 +34,14 @@ public class Spans {
     public static class MentionChipSpan extends BetterImageSpan {
         public String id;
         public CharSequence label;
+        public String type;
 
         public MentionChipSpan(@NonNull Drawable drawable, int verticalAlignment, String id,
-                               CharSequence label) {
+                               CharSequence label, String type) {
             super(drawable, verticalAlignment);
             this.id = id;
             this.label = label;
+            this.type = type;
         }
     }
 }

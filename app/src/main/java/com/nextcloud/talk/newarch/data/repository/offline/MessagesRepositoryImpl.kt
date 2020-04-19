@@ -28,6 +28,9 @@ import androidx.lifecycle.map
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
+import com.nextcloud.talk.newarch.local.models.User
+import com.nextcloud.talk.newarch.local.models.hasSpreedFeatureCapability
+import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
 import com.nextcloud.talk.newarch.local.models.toChatMessage
 import com.nextcloud.talk.newarch.local.models.toMessageEntity
 
@@ -42,6 +45,18 @@ class MessagesRepositoryImpl(private val messagesDao: MessagesDao) : MessagesRep
         }
     }
 
+    override fun getPendingMessagesForConversation(conversationId: String): LiveData<List<ChatMessage>> {
+        return messagesDao.getPendingMessagesLive(conversationId).distinctUntilChanged().map {
+            it.map { messageEntity ->
+                messageEntity.toChatMessage()
+            }
+        }
+    }
+
+    override suspend fun getMessageForConversation(conversationId: String, messageId: Long): ChatMessage? {
+        return messagesDao.getMessageForConversation(conversationId, messageId)?.toChatMessage()
+    }
+
     override fun getMessagesWithUserForConversationSince(conversationId: String, messageId: Long): LiveData<List<ChatMessage>> {
         return messagesDao.getMessagesWithUserForConversationSince(conversationId, messageId).distinctUntilChanged().map {
             it.map { messageEntity ->
@@ -50,11 +65,23 @@ class MessagesRepositoryImpl(private val messagesDao: MessagesDao) : MessagesRep
         }
     }
 
-    override suspend fun saveMessagesForConversation(messages: List<ChatMessage>): List<Long> {
+    override suspend fun saveMessagesForConversation(user: User, messages: List<ChatMessage>, sendingMessages: Boolean){
+        val shouldInsert = !user.hasSpreedFeatureCapability("chat-reference-id") || sendingMessages
         val updatedMessages = messages.map {
+            if (!user.hasSpreedFeatureCapability("chat-reference-id")) {
+                it.chatMessageStatus = ChatMessageStatus.RECEIVED
+            }
             it.toMessageEntity()
         }
 
-        return messagesDao.saveMessages(*updatedMessages.toTypedArray())
+        if (shouldInsert) {
+            messagesDao.saveMessages(*updatedMessages.toTypedArray())
+        } else {
+            messagesDao.updateMessages(user, updatedMessages.toTypedArray())
+        }
+    }
+
+    override suspend fun updateMessageStatus(status: Int, conversationId: String, messageId: Long) {
+        messagesDao.updateMessageStatus(status, conversationId, messageId)
     }
 }

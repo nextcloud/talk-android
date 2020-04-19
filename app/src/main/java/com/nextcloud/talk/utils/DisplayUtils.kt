@@ -291,15 +291,15 @@ object DisplayUtils {
             val start = stringText.indexOf(m.group(), lastStartIndex)
             val end = start + m.group().length
             lastStartIndex = end
-            mentionChipSpan = Spans.MentionChipSpan(
+            /*mentionChipSpan = Spans.MentionChipSpan(
                     getDrawableForMentionChipSpan(
                             context,
-                            id, label, conversationUser, type, chipXmlRes, null
+                            id, label, conversationUser, chipXmlRes, null
                     ),
                     BetterImageSpan.ALIGN_CENTER, id,
                     label
-            )
-            spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            )*/
+            //spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             if ("user" == type && conversationUser.userId != id) {
                 spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }

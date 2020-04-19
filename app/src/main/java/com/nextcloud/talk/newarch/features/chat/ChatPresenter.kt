@@ -13,6 +13,7 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
+import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.TextMatchers
@@ -80,6 +81,8 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                         }
 
                         holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
+                        holder.itemView.sendingProgressBar.isVisible = it.chatMessageStatus != ChatMessageStatus.RECEIVED
+                        holder.itemView.failedToSendNotice.isVisible = it.chatMessageStatus == ChatMessageStatus.FAILED
                         holder.itemView.chatMessage.text = it.text
                         if (TextMatchers.isMessageWithSingleEmoticonOnly(it.text)) {
                             holder.itemView.chatMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)

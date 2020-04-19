@@ -23,7 +23,7 @@
 package com.nextcloud.talk.newarch.features.chat
 
 import android.app.Application
-import android.text.TextUtils
+import android.text.Editable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.map
@@ -32,23 +32,31 @@ import com.bluelinelabs.conductor.Controller
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.usecases.GetChatMessagesUseCase
+import com.nextcloud.talk.newarch.domain.usecases.SendChatMessageUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
-import com.nextcloud.talk.newarch.local.models.User
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
-import com.nextcloud.talk.newarch.local.models.toUser
-import com.nextcloud.talk.newarch.local.models.toUserEntity
+import com.nextcloud.talk.newarch.local.models.*
+import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
+import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.services.GlobalService
 import com.nextcloud.talk.newarch.services.GlobalServiceInterface
 import com.nextcloud.talk.newarch.utils.NetworkComponents
+import com.nextcloud.talk.newarch.utils.hashWithAlgorithm
+import com.nextcloud.talk.utils.text.Spans
 import kotlinx.coroutines.launch
 import org.koin.core.parameter.parametersOf
 import retrofit2.Response
+import kotlin.collections.HashMap
+import kotlin.collections.hashMapOf
+import kotlin.collections.indices
+import kotlin.collections.listOf
+import kotlin.collections.map
+import kotlin.collections.mutableListOf
+import kotlin.collections.set
 
 class ChatViewModel constructor(application: Application,
                                 private val networkComponents: NetworkComponents,
@@ -62,7 +70,7 @@ class ChatViewModel constructor(application: Application,
     val futureStartingPoint: MutableLiveData<Long> = MutableLiveData()
     private var initConversation: Conversation? = null
 
-    val messagesLiveData = Transformations.switchMap(futureStartingPoint) {futureStartingPoint ->
+    val messagesLiveData = Transformations.switchMap(futureStartingPoint) { futureStartingPoint ->
         conversation.value?.let {
             messagesRepository.getMessagesWithUserForConversationSince(it.databaseId!!, futureStartingPoint).map { chatMessagesList ->
                 chatMessagesList.map { chatMessage ->
@@ -92,8 +100,75 @@ class ChatViewModel constructor(application: Application,
         }
     }
 
-    fun sendMessage(message: CharSequence) {
+    fun sendMessage(editable: Editable, replyTo: Long?) {
+        val messageParameters = hashMapOf<String, HashMap<String, String>>()
+        val mentionSpans = editable.getSpans(
+                0, editable.length,
+                Spans.MentionChipSpan::class.java
+        )
+        var mentionSpan: Spans.MentionChipSpan
+        val ids = mutableListOf<String>()
+        for (i in mentionSpans.indices) {
+            mentionSpan = mentionSpans[i]
+            var mentionId = mentionSpan.id
+            if (mentionId.contains(" ") || mentionId.startsWith("guest/")) {
+                mentionId = "\"" + mentionId + "\""
+            }
 
+            val mentionNo = if (ids.contains("mentionId")) ids.indexOf("mentionId") + 1 else ids.size + 1
+            val mentionReplace = "mention-${mentionSpan.type}$mentionNo"
+            if (!ids.contains(mentionId)) {
+                ids.add(mentionId)
+                messageParameters[mentionReplace] = hashMapOf("type" to mentionSpan.type, "id" to mentionId.toString(), "name" to mentionSpan.label.toString())
+            }
+
+            val start = editable.getSpanStart(mentionSpan)
+            editable.replace(start, editable.getSpanEnd(mentionSpan), "")
+            editable.insert(start, "{$mentionReplace}")
+        }
+
+        if (user.hasSpreedFeatureCapability("chat-reference-id")) {
+            ioScope.launch {
+                val chatMessage = ChatMessage()
+                val timestamp = System.currentTimeMillis()
+                val sha1 = timestamp.toString().hashWithAlgorithm("SHA-1")
+                conversation.value?.databaseId?.let { conversationDatabaseId ->
+                    chatMessage.internalMessageId = sha1
+                    chatMessage.internalConversationId = conversationDatabaseId
+                    chatMessage.timestamp = timestamp / 1000
+                    chatMessage.referenceId = sha1
+                    chatMessage.replyable = false
+                    // can also be "guests", but not now
+                    chatMessage.actorId = user.userId
+                    chatMessage.actorType = "users"
+                    chatMessage.actorDisplayName = user.displayName
+                    chatMessage.message = editable.toString()
+                    chatMessage.systemMessageType = null
+                    chatMessage.chatMessageStatus = ChatMessageStatus.PENDING_MESSAGE_SEND
+                    if (replyTo != null) {
+                        chatMessage.parentMessage = messagesRepository.getMessageForConversation(conversationDatabaseId, replyTo)
+                    } else {
+                        chatMessage.parentMessage = null
+                    }
+                    chatMessage.messageParameters = messageParameters
+                    messagesRepository.saveMessagesForConversation(user, listOf(chatMessage), true)
+                }
+            }
+        } else {
+            val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), apiErrorHandler)
+            // No reference id needed here
+            initConversation?.let {
+                sendChatMessageUseCase.invoke(viewModelScope, parametersOf(user, it.token, editable, replyTo, null), object : UseCaseResponse<Response<ChatOverall>> {
+                    override suspend fun onSuccess(result: Response<ChatOverall>) {
+                        // also do nothing, we did it - time to celebrate1
+                    }
+
+                    override suspend fun onError(errorModel: ErrorModel?) {
+                        // Do nothing, error - tough luck
+                    }
+                })
+            }
+        }
     }
 
     override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
@@ -124,11 +199,10 @@ class ChatViewModel constructor(application: Application,
                     val messages = result.body()?.ocs?.data
                     messages?.let {
                         for (message in it) {
-                            message.activeUser = userNgEntity
                             message.internalConversationId = conversation.databaseId
                         }
 
-                        messagesRepository.saveMessagesForConversation(it)
+                        messagesRepository.saveMessagesForConversation(user, it, false)
                     }
 
                     val xChatLastGivenHeader: String? = result.headers().get("X-Chat-Last-Given")
@@ -159,25 +233,19 @@ class ChatViewModel constructor(application: Application,
                     val messages = result.body()?.ocs?.data
                     messages?.let {
                         for (message in it) {
-                            message.activeUser = userNgEntity
                             message.internalConversationId = conversation.databaseId
                         }
 
-                       messagesRepository.saveMessagesForConversation(it)
+                        messagesRepository.saveMessagesForConversation(user, it, false)
                     }
 
-                    if (result.code() == 200) {
                         val xChatLastGivenHeader: String? = result.headers().get("X-Chat-Last-Given")
                         if (xChatLastGivenHeader != null) {
                             pullFutureMessagesForUserAndConversation(userNgEntity, conversation, xChatLastGivenHeader.toInt())
                         }
-                    } else {
-                        pullFutureMessagesForUserAndConversation(userNgEntity, conversation, lastKnownMessageId)
-                    }
                 }
 
                 override suspend fun onError(errorModel: ErrorModel?) {
-                    pullFutureMessagesForUserAndConversation(userNgEntity, conversation)
                 }
             })
         }

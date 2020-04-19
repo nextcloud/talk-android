@@ -29,7 +29,7 @@ import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
+import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SetConversationPasswordUseCase

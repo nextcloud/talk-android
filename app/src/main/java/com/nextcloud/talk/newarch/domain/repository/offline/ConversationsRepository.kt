@@ -35,7 +35,7 @@ interface ConversationsRepository {
             userId: Long,
             conversations: List<Conversation>,
             deleteOutdated: Boolean
-    ): List<Long>
+    )
 
     suspend fun setChangingValueForConversation(
             userId: Long,

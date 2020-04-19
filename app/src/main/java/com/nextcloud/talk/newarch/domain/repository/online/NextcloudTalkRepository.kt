@@ -39,6 +39,7 @@ import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import retrofit2.Response
 
 interface NextcloudTalkRepository {
+    suspend fun sendChatMessage(user: User, conversationToken: String, message: CharSequence, authorDisplayName: String?, replyTo: Int?, referenceId: String?): Response<ChatOverall>
     suspend fun getChatMessagesForConversation(user: User, conversationToken: String, lookIntoFuture: Int, lastKnownMessageId: Int, includeLastKnown: Int = 0): Response<ChatOverall>
     suspend fun getNotificationForUser(user: UserNgEntity, notificationId: String): NotificationOverall
     suspend fun getParticipantsForCall(user: UserNgEntity, conversationToken: String): ParticipantsOverall

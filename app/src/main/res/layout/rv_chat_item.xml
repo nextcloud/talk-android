@@ -64,14 +64,37 @@
         android:layout_below="@id/previewImage"
         tools:text="Just another chat message"/>
 
+    <ProgressBar
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:id="@+id/sendingProgressBar"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        android:progressBackgroundTint="@color/colorPrimary"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_below="@id/chatMessage"
         android:textSize="10sp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toStartOf="@id/sendingProgressBar"
         android:id="@+id/messageTime"
         android:layout_marginEnd="8dp"
         tools:text="12:30"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:text="@string/nc_failed_to_send"
+        android:layout_below="@id/messageTime"
+        android:id="@+id/failedToSendNotice"
+        android:visibility="gone"
+        android:layout_alignParentEnd="true"/>
+
 
 </RelativeLayout>

@@ -98,6 +98,11 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         }
     }
 
+    override suspend fun sendChatMessage(user: User, conversationToken: String, message: CharSequence, authorDisplayName: String?, replyTo: Int?, referenceId: String?): Response<ChatOverall> {
+        return apiService.sendChatMessage(user.getCredentials(), ApiUtils.getUrlForChat(user.baseUrl, conversationToken), message, authorDisplayName, replyTo, referenceId)
+    }
+
+
     override suspend fun getChatMessagesForConversation(user: User, conversationToken: String, lookIntoFuture: Int, lastKnownMessageId: Int, includeLastKnown: Int): Response<ChatOverall> {
         val mutableMap = mutableMapOf<String, Int>()
         mutableMap["lookIntoFuture"] = lookIntoFuture

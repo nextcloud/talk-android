@@ -34,7 +34,7 @@ import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
+import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.usecases.DeleteConversationUseCase
@@ -200,9 +200,6 @@ class ConversationsListViewModel (
                     networkStateLiveData.postValue(ConversationsListViewNetworkState.LOADED)
                     val mutableList = result.toMutableList()
                     val internalUserId = globalService.currentUserLiveData.value!!.id
-                    mutableList.forEach {
-                        it.databaseUserId = internalUserId
-                    }
 
                     conversationsRepository.saveConversationsForUser(
                             internalUserId,

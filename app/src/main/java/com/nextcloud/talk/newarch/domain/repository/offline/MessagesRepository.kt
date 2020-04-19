@@ -24,9 +24,13 @@ package com.nextcloud.talk.newarch.domain.repository.offline
 
 import androidx.lifecycle.LiveData
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.newarch.local.models.User
 
 interface MessagesRepository {
     fun getMessagesWithUserForConversation(conversationId: String): LiveData<List<ChatMessage>>
+    fun getPendingMessagesForConversation(conversationId: String): LiveData<List<ChatMessage>>
+    suspend fun getMessageForConversation(conversationId: String, messageId: Long): ChatMessage?
     fun getMessagesWithUserForConversationSince(conversationId: String, messageId: Long): LiveData<List<ChatMessage>>
-    suspend fun saveMessagesForConversation(messages: List<ChatMessage>): List<Long>
+    suspend fun saveMessagesForConversation(user: User, messages: List<ChatMessage>, sendingMessages: Boolean)
+    suspend fun updateMessageStatus(status: Int, conversationId: String, messageId: Long)
 }

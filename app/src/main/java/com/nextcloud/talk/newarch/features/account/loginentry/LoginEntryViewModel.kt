@@ -33,7 +33,7 @@ import com.nextcloud.talk.models.json.push.PushConfigurationStateWrapper
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
+import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.*

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4e8c1ae6a440d8491937afe33a3ab085",
+    "identityHash": "4623fd40c40300731b8871e7d43e5f65",
     "entities": [
       {
         "tableName": "conversations",
@@ -212,7 +212,7 @@
       },
       {
         "tableName": "messages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `conversation_id` TEXT NOT NULL, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `messageParameters` TEXT, `parent` TEXT, `replyable` INTEGER NOT NULL, `system_message_type` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`conversation_id`) REFERENCES `conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `conversation_id` TEXT NOT NULL, `message_id` INTEGER NOT NULL, `actor_id` TEXT, `actor_type` TEXT, `actor_display_name` TEXT, `timestamp` INTEGER NOT NULL, `message` TEXT, `messageParameters` TEXT, `parent` TEXT, `replyable` INTEGER NOT NULL, `system_message_type` TEXT, `reference_id` TEXT, `message_status` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`conversation_id`) REFERENCES `conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE DEFERRABLE INITIALLY DEFERRED)",
         "fields": [
           {
             "fieldPath": "id",
@@ -285,6 +285,18 @@
             "columnName": "system_message_type",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "referenceId",
+            "columnName": "reference_id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "chatMessageStatus",
+            "columnName": "message_status",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -401,7 +413,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4e8c1ae6a440d8491937afe33a3ab085')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4623fd40c40300731b8871e7d43e5f65')"
     ]
   }
 }

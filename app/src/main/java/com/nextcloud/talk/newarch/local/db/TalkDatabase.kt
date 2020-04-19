@@ -27,6 +27,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.nextcloud.talk.newarch.local.converters.*
 import com.nextcloud.talk.newarch.local.dao.ConversationsDao
 import com.nextcloud.talk.newarch.local.dao.MessagesDao
@@ -48,7 +50,7 @@ import org.parceler.converter.HashMapParcelConverter
         PushConfigurationConverter::class, CapabilitiesConverter::class,
         SignalingSettingsConverter::class,
         UserStatusConverter::class, SystemMessageTypeConverter::class, ParticipantMapConverter::class,
-        HashMapHashMapConverter::class
+        HashMapHashMapConverter::class, ChatMessageStatusConverter::class
 )
 
 abstract class TalkDatabase : RoomDatabase() {
@@ -71,6 +73,12 @@ abstract class TalkDatabase : RoomDatabase() {
         private fun build(context: Context) =
                 Room.databaseBuilder(context.applicationContext, TalkDatabase::class.java, DB_NAME)
                         .fallbackToDestructiveMigration()
+                        .addCallback(object : RoomDatabase.Callback() {
+                            override fun onOpen(db: SupportSQLiteDatabase) {
+                                super.onOpen(db)
+                                db.execSQL("PRAGMA defer_foreign_keys = 1")
+                            }
+                        })
                         .build()
     }
 }

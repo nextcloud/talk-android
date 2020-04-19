@@ -41,11 +41,11 @@ abstract class ConversationsDao {
     @Query("DELETE FROM conversations WHERE user_id = :userId")
     abstract suspend fun clearConversationsForUser(userId: Long)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveConversationWithInsert(conversation: ConversationEntity): Long
+    @Update(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun update(conversation: ConversationEntity): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract suspend fun saveConversationsWithInsert(vararg conversations: ConversationEntity): List<Long>
+    abstract suspend fun insert(conversation: ConversationEntity)
 
     @Query(
             "UPDATE conversations SET changing = :changing WHERE user_id = :userId AND conversation_id = :conversationId"
@@ -88,18 +88,26 @@ abstract class ConversationsDao {
             userId: Long,
             newConversations: Array<ConversationEntity>,
             deleteOutdated: Boolean
-    ): List<Long> {
+    ) {
         val timestamp = System.currentTimeMillis()
 
         val conversationsWithTimestampApplied = newConversations.map {
             it.modifiedAt = timestamp
+            it.userId = userId
+            it.id = it.userId.toString() + "@" + it.token
             it
         }
 
-        val list = saveConversationsWithInsert(*conversationsWithTimestampApplied.toTypedArray())
+        conversationsWithTimestampApplied.forEach { internalUpsert(it) }
         if (deleteOutdated) {
             deleteConversationsForUserWithTimestamp(userId, timestamp)
         }
-        return list
+    }
+
+    private suspend fun internalUpsert(conversationEntity: ConversationEntity) {
+        val count = update(conversationEntity)
+        if (count == 0) {
+            insert(conversationEntity)
+        }
     }
 }

@@ -28,6 +28,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -82,6 +83,10 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
     var jsonMessageId: Long? = null
 
     @JvmField
+    @JsonField(name = ["referenceId"])
+    var referenceId: String? = null
+
+    @JvmField
     @JsonField(name = ["token"])
     var token: String? = null
 
@@ -131,6 +136,9 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
     var messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE)
+
+    @JsonIgnore
+    var chatMessageStatus: ChatMessageStatus = ChatMessageStatus.RECEIVED
 
     override fun equals(o: Any?): Boolean {
         if (this === o) return true
@@ -289,7 +297,7 @@ class ChatMessage : IMessage, MessageContentType, MessageContentType.Image {
                         ApiUtils.getUrlForAvatarWithName(activeUser!!.baseUrl, actorId,
                                 R.dimen.avatar_size)
                     }
-                    actorType.equals("guests") -> {
+                    actorType.equals("guests") || actorType.equals("bots") -> {
                         var apiId: String? = sharedApplication!!.getString(R.string.nc_guest)
                         if (!TextUtils.isEmpty(actorDisplayName)) {
                             apiId = actorDisplayName

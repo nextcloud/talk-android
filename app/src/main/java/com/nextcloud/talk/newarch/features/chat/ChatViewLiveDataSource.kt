@@ -33,7 +33,7 @@ class ChatViewLiveDataSource<T : ChatElement>(private val data: LiveData<List<T>
         }
 
         if (first.data is ChatMessage && second.data is ChatMessage) {
-            return first.data.jsonMessageId == second.data.jsonMessageId
+            return first.data.jsonMessageId == second.data.jsonMessageId || first.data.referenceId == second.data.referenceId
         }
 
         return false

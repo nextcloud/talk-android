@@ -32,7 +32,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.newarch.conversationsList.mvp.BaseViewModel
+import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.domain.usecases.AddParticipantToConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.CreateConversationUseCase

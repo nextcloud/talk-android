@@ -101,7 +101,7 @@ class ConversationsRepositoryImpl(val conversationsDao: ConversationsDao) :
             userId: Long,
             conversations: List<Conversation>,
             deleteOutdated: Boolean
-    ): List<Long> {
+    ) {
         val map = conversations.map {
             it.toConversationEntity()
         }
