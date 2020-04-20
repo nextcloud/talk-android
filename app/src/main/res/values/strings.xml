@@ -346,5 +346,5 @@
     <string name="nc_search_empty_contacts">Where did they all hide?</string>
     <string name="nc_reject_call">Reject</string>
     <string name="silenced_by_moderator">You were silenced by a moderator</string>
-    <string name="nc_failed_to_send">Failed to sent - tap to retry sending.</string>
+    <string name="nc_failed_to_send">Failed to send - tap to retry sending.</string>
 </resources>
