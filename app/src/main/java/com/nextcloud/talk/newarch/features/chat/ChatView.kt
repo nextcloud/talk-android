@@ -252,7 +252,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                     if (adapterChatElement.data is ChatElement) {
                         val chatElement = adapterChatElement.data as ChatElement
                         showReplyView(chatElement.data as ChatMessage)
-                        //view.messagesRecyclerView.postDelayed({ showReplyView(chatElement.data as ChatMessage)}, 125)
                     }
                 }
             }
@@ -272,11 +271,12 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 return true
             }
             R.id.conversation_video_call -> {
-                startACall(true)
+                startACall(false)
                 return true
             }
             R.id.conversation_voice_call -> {
-                startACall(false)
+                startACall(true)
+                return true
             }
             R.id.conversation_info -> {
                 showConversationInfoScreen()
