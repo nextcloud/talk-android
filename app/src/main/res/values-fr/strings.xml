@@ -317,4 +317,5 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_new_group">Nouveau groupe</string>
     <string name="nc_search_empty_contacts">Où se cachent-ils tous ?</string>
     <string name="nc_reject_call">Refuser</string>
+    <string name="silenced_by_moderator">Vous avez été rendu muet par un modérateur</string>
     </resources>
