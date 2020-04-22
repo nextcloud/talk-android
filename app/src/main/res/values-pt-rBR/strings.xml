@@ -322,4 +322,5 @@
     <string name="nc_search_empty_contacts">Onde eles todos se esconderam?</string>
     <string name="nc_reject_call">Rejeitar</string>
     <string name="silenced_by_moderator">Você foi silenciado por um moderador.</string>
-    </resources>
+    <string name="nc_failed_to_send">Erro ao enviar - Toque para tentar novamente.</string>
+</resources>
