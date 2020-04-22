@@ -96,7 +96,6 @@ class ChatViewModel constructor(application: Application,
             this@ChatViewModel.user = user
             this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
             this@ChatViewModel.conversationPassword = conversationPassword
-            globalService.getConversation(conversationToken, this@ChatViewModel)
         }
     }
 
@@ -171,6 +170,23 @@ class ChatViewModel constructor(application: Application,
         }
     }
 
+    fun joinConversation() {
+        initConversation?.token?.let {
+            viewModelScope.launch {
+                globalService.getConversation(it, this@ChatViewModel)
+            }
+        }
+    }
+
+    fun leaveConversation() {
+        conversation.value?.let {
+            viewModelScope.launch {
+                globalService.exitConversation(it.token!!, this@ChatViewModel)
+            }
+
+        }
+    }
+
     override suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
         if (operationStatus == GlobalServiceInterface.OperationStatus.STATUS_OK) {
             if (userNgEntity.id == user.id && conversation!!.token == initConversation?.token) {
@@ -188,6 +204,10 @@ class ChatViewModel constructor(application: Application,
                 pullPastMessagesForUserAndConversation(userNgEntity, conversation)
             }
         }
+    }
+
+    override suspend fun leftConversationForUser(user: User, conversation: Conversation?, operationStatus: GlobalServiceInterface.OperationStatus) {
+        // We left the conversation
     }
 
     private suspend fun pullPastMessagesForUserAndConversation(userNgEntity: UserNgEntity, conversation: Conversation) {

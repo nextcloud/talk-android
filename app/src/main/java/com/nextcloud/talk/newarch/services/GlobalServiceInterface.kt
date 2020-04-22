@@ -23,6 +23,7 @@
 package com.nextcloud.talk.newarch.services
 
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface GlobalServiceInterface {
@@ -33,4 +34,5 @@ interface GlobalServiceInterface {
 
     suspend fun gotConversationInfoForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: OperationStatus)
     suspend fun joinedConversationForUser(userNgEntity: UserNgEntity, conversation: Conversation?, operationStatus: OperationStatus)
+    suspend fun leftConversationForUser(user: User, conversation: Conversation?, operationStatus: OperationStatus)
 }

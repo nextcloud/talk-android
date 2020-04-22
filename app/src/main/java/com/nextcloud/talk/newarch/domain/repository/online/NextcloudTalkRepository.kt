@@ -82,7 +82,7 @@ interface NextcloudTalkRepository {
     ): ConversationOverall
 
     suspend fun exitConversationForUser(
-            userNgEntity: UserNgEntity,
+            user: User,
             conversationToken: String
     ): GenericOverall
 

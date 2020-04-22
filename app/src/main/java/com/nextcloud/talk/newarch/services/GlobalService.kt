@@ -29,11 +29,13 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.MessagesRepository
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.domain.usecases.ExitConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.JoinConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.SendChatMessageUseCase
@@ -45,6 +47,7 @@ import com.nextcloud.talk.newarch.utils.NetworkComponents
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.koin.core.KoinComponent
 import org.koin.core.parameter.parametersOf
@@ -128,6 +131,22 @@ class GlobalService constructor(usersRepository: UsersRepository,
         }
     }
 
+    suspend fun exitConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
+        val currentUser = currentUserLiveData.value!!.toUser()
+        val exitConversationUseCase = ExitConversationUseCase(networkComponents.getRepository(true, currentUser), apiErrorHandler)
+        exitConversationUseCase.invoke(applicationScope, parametersOf(currentUser, conversationToken), object: UseCaseResponse<GenericOverall> {
+            override suspend fun onSuccess(result: GenericOverall) {
+                globalServiceInterface.leftConversationForUser(currentUser, currentConversation.value, GlobalServiceInterface.OperationStatus.STATUS_OK)
+                withContext(Dispatchers.Main) {
+                    currentConversation.postValue(null)
+                }
+            }
+
+            override suspend fun onError(errorModel: ErrorModel?) {
+                globalServiceInterface.leftConversationForUser(currentUser, currentConversation.value, GlobalServiceInterface.OperationStatus.STATUS_FAILED)
+            }
+        })
+    }
     suspend fun getConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value
         val getConversationUseCase = GetConversationUseCase(networkComponents.getRepository(true, currentUser!!.toUser()), apiErrorHandler)
@@ -165,7 +184,9 @@ class GlobalService constructor(usersRepository: UsersRepository,
                     override suspend fun onSuccess(result: ConversationOverall) {
                         currentUser?.let {
                             conversationsRepository.saveConversationsForUser(it.id, listOf(result.ocs.data), false)
-                            currentConversation.postValue(conversationsRepository.getConversationForUserWithToken(it.id, result.ocs!!.data!!.token!!))
+                            withContext(Dispatchers.Main) {
+                                currentConversation.postValue(conversationsRepository.getConversationForUserWithToken(it.id, result.ocs!!.data!!.token!!))
+                            }
                             globalServiceInterface.joinedConversationForUser(it, currentConversation.value, GlobalServiceInterface.OperationStatus.STATUS_OK)
                         }
                     }

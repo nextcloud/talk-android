@@ -456,11 +456,13 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         viewModel.view = this
         setupViews()
         toolbar?.setOnClickListener(toolbarOnClickListener)
+        viewModel.joinConversation()
     }
 
     override fun onDetach(view: View) {
         super.onDetach(view)
         viewModel.view = null
+        viewModel.leaveConversation()
         toolbar?.setOnClickListener(null)
     }
 

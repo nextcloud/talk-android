@@ -72,7 +72,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         return apiService.joinConversation(user.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(user.baseUrl, conversationToken), conversationPassword)
     }
 
-    override suspend fun exitConversationForUser(user: UserNgEntity, conversationToken: String): GenericOverall {
+    override suspend fun exitConversationForUser(user: User, conversationToken: String): GenericOverall {
         return apiService.exitConversation(user.getCredentials(), ApiUtils.getUrlForSettingMyselfAsActiveParticipant(user.baseUrl, conversationToken))
     }
 
