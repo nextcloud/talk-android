@@ -129,10 +129,11 @@ class SettingsPrivacyView(private val bundle: Bundle? = null) : BaseView() {
         view?.settings_proxy_host_edit?.isVisible = shouldBeVisible
         view?.settings_proxy_port_edit?.isVisible = shouldBeVisible
         view?.settings_proxy_use_credentials?.isVisible = shouldBeVisible
-
         if (!shouldBeVisible) {
             appPreferences.setProxyNeedsCredentials(false)
+            toggleCredentialsSettingsVisibility(view, shouldBeVisible)
         }
+
     }
 
     private fun toggleCredentialsSettingsVisibility(view: View?, shouldBeVisible: Boolean) {
