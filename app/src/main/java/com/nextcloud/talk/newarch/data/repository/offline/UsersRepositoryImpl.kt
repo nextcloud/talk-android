@@ -71,8 +71,8 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.saveUser(user)
     }
 
-    override suspend fun setUserAsActiveWithId(id: Long) {
-        usersDao.setUserAsActiveWithId(id)
+    override suspend fun setUserAsActiveWithId(id: Long): Boolean {
+        return usersDao.setUserAsActiveWithId(id)
     }
 
     override suspend fun deleteUserWithId(id: Long) {

@@ -65,7 +65,7 @@ abstract class UsersDao {
     abstract suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
 
     @Transaction
-    open suspend fun setUserAsActiveWithId(id: Long) {
+    open suspend fun setUserAsActiveWithId(id: Long) : Boolean {
         val users = getUsers()
         for (user in users) {
             if (user.id != id && UserStatus.ACTIVE == user.status) {
@@ -76,6 +76,8 @@ abstract class UsersDao {
                 updateUser(user)
             }
         }
+
+        return true
     }
 
     @Transaction

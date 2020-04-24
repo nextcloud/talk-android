@@ -22,7 +22,6 @@
 package com.nextcloud.talk.newarch.features.settingsflow.settings
 
 import android.app.Application
-import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.User
@@ -31,7 +30,6 @@ import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.services.GlobalService
 import com.nextcloud.talk.newarch.utils.NetworkComponents
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 
@@ -45,21 +43,19 @@ class SettingsViewModel constructor(
     val users = usersRepository.getUsersLiveData()
     val activeUser = globalService.currentUserLiveData
 
-    fun setUserAsActive(user: User): Boolean {
-        if (user.status == UserStatus.DORMANT) {
-            val job = runBlocking {
-                viewModelScope.launch {
-                    user.id?.let {
-                        usersRepository.setUserAsActiveWithId(it)
-                    }
-                }
-            }
+    private suspend fun setUserAsActiveWithId(id: Long): Boolean {
+        return usersRepository.setUserAsActiveWithId(id)
+    }
 
-            job.start()
-            return true
+    fun setUserAsActive(user: User): Boolean = runBlocking {
+        var operationFinished = false
+        if (user.status == UserStatus.DORMANT) {
+            operationFinished = withContext(Dispatchers.Default) {
+                runBlocking { setUserAsActive(user) }
+            }
         }
 
-        return false
+        operationFinished
     }
 
     private suspend fun removeUserWithId(id: Long): Boolean {
