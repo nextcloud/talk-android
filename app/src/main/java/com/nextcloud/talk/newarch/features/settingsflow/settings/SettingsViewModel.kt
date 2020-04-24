@@ -50,8 +50,10 @@ class SettingsViewModel constructor(
     fun setUserAsActive(user: User): Boolean = runBlocking {
         var operationFinished = false
         if (user.status == UserStatus.DORMANT) {
-            operationFinished = withContext(Dispatchers.Default) {
-                runBlocking { setUserAsActive(user) }
+            user.id?.let {
+                operationFinished = withContext(Dispatchers.Default) {
+                    runBlocking { setUserAsActiveWithId(it) }
+                }
             }
         }
 
