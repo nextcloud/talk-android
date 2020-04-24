@@ -32,6 +32,7 @@ interface UsersRepository {
     fun getUsers(): List<UserNgEntity>
     fun getUserWithId(id: Long): UserNgEntity
     fun getUsersLiveData(): LiveData<List<User>>
+    fun getUsersLiveDataWithoutActive(): LiveData<List<User>>
     suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
     suspend fun updateUser(user: UserNgEntity): Int
     suspend fun insertUser(user: UserNgEntity): Long

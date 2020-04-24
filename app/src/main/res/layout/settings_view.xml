@@ -45,25 +45,41 @@
 
             <androidx.emoji.widget.EmojiTextView
                 android:id="@+id/display_name_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/avatar_image"
-                android:layout_centerHorizontal="true"
+                android:paddingStart="32dp"
+                android:textAlignment="center"
+                android:layout_alignBaseline="@id/avatar_image"
                 android:layout_marginTop="@dimen/margin_between_elements"
+                android:layout_marginStart="8dp"
                 tools:text="Important user"
+                android:layout_toStartOf="@id/activeUserMoreOptions"
                 android:textColor="@color/nc_incoming_text_default" />
 
             <TextView
                 android:id="@+id/base_url_text"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/display_name_text"
+                android:paddingStart="32dp"
+                android:layout_marginStart="8dp"
                 android:layout_centerHorizontal="true"
-                android:layout_margin="4dp"
+                android:textAlignment="center"
+                android:layout_toStartOf="@id/activeUserMoreOptions"
                 tools:text="nextcloud.com"
                 android:textColor="@color/nc_incoming_text_default"
                 android:layout_marginBottom="8dp"/>
 
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/display_name_text"
+                android:layout_alignBottom="@id/base_url_text"
+                android:src="@drawable/ic_baseline_more_vert_24"
+                android:id="@+id/activeUserMoreOptions"
+                android:layout_alignParentEnd="true"
+                android:layout_marginHorizontal="8dp"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"

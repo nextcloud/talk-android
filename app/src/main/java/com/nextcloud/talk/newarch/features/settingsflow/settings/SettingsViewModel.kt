@@ -40,7 +40,7 @@ class SettingsViewModel constructor(
         private val apiErrorHandler: ApiErrorHandler,
         private val globalService: GlobalService
 ) : BaseViewModel<SettingsView>(application) {
-    val users = usersRepository.getUsersLiveData()
+    val users = usersRepository.getUsersLiveDataWithoutActive()
     val activeUser = globalService.currentUserLiveData
 
     private suspend fun setUserAsActiveWithId(id: Long): Boolean {

@@ -96,6 +96,12 @@ class SettingsView(private val bundle: Bundle? = null) : BaseView() {
             )
         }
 
+        view.activeUserMoreOptions.setOnClickListener {
+            viewModel.activeUser.value?.let {
+                onMoreOptionsClick(it.toUser())
+            }
+        }
+
         showFallbackAvatar(view.avatar_image)
 
         viewModel.activeUser.observe(this@SettingsView) { user ->

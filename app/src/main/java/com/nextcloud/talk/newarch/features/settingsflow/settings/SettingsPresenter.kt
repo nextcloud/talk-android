@@ -60,12 +60,7 @@ open class SettingsPresenter<T : Any>(context: Context, onElementClick: ((Page, 
                 holder.itemView.background.alpha = 191
                 holder.itemView.userMoreOptionsView.visibility = View.INVISIBLE
             } else {
-                if (user.status == UserStatus.ACTIVE) {
-                    holder.itemView.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
-                    holder.itemView.background.alpha = 191
-                } else {
-                    holder.itemView.setBackgroundColor(0)
-                }
+                holder.itemView.setBackgroundColor(0)
                 holder.itemView.userMoreOptionsView.visibility = View.VISIBLE
                 holder.itemView.userMoreOptionsView.setOnClickListener {
                     onMoreOptionsClick?.invoke(user)

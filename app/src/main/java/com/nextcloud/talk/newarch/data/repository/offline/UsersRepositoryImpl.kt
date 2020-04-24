@@ -56,6 +56,14 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         }
     }
 
+    override fun getUsersLiveDataWithoutActive(): LiveData<List<User>> {
+        return usersDao.getUsersLiveDataWithoutActive().distinctUntilChanged().map { usersList ->
+            usersList.map {
+                it.toUser()
+            }
+        }
+    }
+
     override suspend fun getUserWithUsernameAndServer(
             username: String,
             server: String

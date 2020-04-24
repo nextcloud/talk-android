@@ -39,6 +39,9 @@ abstract class UsersDao {
     @Query("SELECT * from users ORDER BY status DESC")
     abstract fun getUsersLiveData(): LiveData<List<UserNgEntity>>
 
+    @Query("SELECT * from users WHERE status != 2 ORDER BY status DESC")
+    abstract fun getUsersLiveDataWithoutActive(): LiveData<List<UserNgEntity>>
+
     @Query("DELETE FROM users WHERE id = :id")
     abstract suspend fun deleteUserWithId(id: Long)
 
