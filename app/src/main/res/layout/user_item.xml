@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:paddingVertical="8dp"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/avatarImageView"
+        android:layout_width="@dimen/small_item_height"
+        android:layout_height="@dimen/small_item_height"
+        android:layout_centerVertical="true"
+        android:layout_marginHorizontal="8dp"
+        app:shapeAppearanceOverlay="@style/circleImageView"
+        tools:srcCompat="@tools:sample/avatars[1]" />
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/userDisplayName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toStartOf="@id/userMoreOptionsView"
+        android:layout_toEndOf="@id/avatarImageView"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:lines="1"
+        tools:text="Awesome user" />
+
+    <ImageView
+        android:id="@+id/userMoreOptionsView"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_marginHorizontal="8dp"
+        android:layout_centerVertical="true"
+        android:scaleType="center"
+        android:src="@drawable/ic_baseline_more_vert_24" />
+
+    <ProgressBar
+        android:id="@+id/userProgressBar"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="12dp"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone" />
+
+</RelativeLayout>

@@ -75,7 +75,7 @@ class Images {
         val layers = arrayOfNulls<Drawable>(2)
         layers[0] = context.getDrawable(backgroundDrawableId)
         var scale = 0.25f
-        if (drawableId == R.drawable.ic_baseline_email_24 || drawableId == R.drawable.ic_link_white_24px) {
+        if (drawableId == R.drawable.ic_baseline_email_24 || drawableId == R.drawable.ic_link_white_24px || drawableId == R.drawable.ic_add_white_24px) {
             scale = 0.5f
         } else if (drawableId == R.drawable.ic_user) {
             scale = 0.625f

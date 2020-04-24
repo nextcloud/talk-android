@@ -32,7 +32,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ProgressBar
-import android.widget.Toolbar
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBar
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -45,10 +44,8 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.utils.dp
-import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.activity_main.*
@@ -56,7 +53,6 @@ import kotlinx.android.synthetic.main.search_layout.*
 import kotlinx.android.synthetic.main.search_layout.view.*
 import org.greenrobot.eventbus.EventBus
 import org.koin.android.ext.android.inject
-import java.util.*
 
 abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
     enum class AppBarLayoutType {
@@ -213,20 +209,9 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
 
     }
 
-    private fun cleanTempCertPreference() {
-        val temporaryClassNames = ArrayList<String>()
-        temporaryClassNames.add(SwitchAccountController::class.java.name)
-
-        if (!temporaryClassNames.contains(javaClass.name)) {
-            appPreferences.removeTemporaryClientCertAlias()
-        }
-
-    }
-
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
-        cleanTempCertPreference()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
             disableKeyboardPersonalisedLearning(view as ViewGroup)
 

@@ -143,6 +143,14 @@ public interface AppPreferences {
     void removePushToTalkIntroShown();
 
     @KeyByString("call_ringtone")
+    @RegisterChangeListenerMethod
+    void registerCallRingtoneListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByString("call_ringtone")
+    @UnregisterChangeListenerMethod
+    void unregisterCallRingtoneListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByString("call_ringtone")
     String getCallRingtoneUri();
 
     @KeyByString("call_ringtone")
@@ -151,6 +159,14 @@ public interface AppPreferences {
     @KeyByString("call_ringtone")
     @RemoveMethod
     void removeCallRingtoneUri();
+
+    @KeyByString("message_ringtone")
+    @RegisterChangeListenerMethod
+    void registerMessageRingtoneListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByString("message_ringtone")
+    @UnregisterChangeListenerMethod
+    void unregisterMessageRingtoneListener(OnPreferenceValueChangedListener<String> listener);
 
     @KeyByString("message_ringtone")
     String getMessageRingtoneUri();

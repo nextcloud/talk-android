@@ -23,6 +23,7 @@
 package com.nextcloud.talk.newarch.domain.repository.offline
 
 import androidx.lifecycle.LiveData
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
 
 interface UsersRepository {
@@ -30,10 +31,12 @@ interface UsersRepository {
     fun getActiveUser(): UserNgEntity?
     fun getUsers(): List<UserNgEntity>
     fun getUserWithId(id: Long): UserNgEntity
+    fun getUsersLiveData(): LiveData<List<User>>
     suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
     suspend fun updateUser(user: UserNgEntity): Int
     suspend fun insertUser(user: UserNgEntity): Long
     suspend fun setUserAsActiveWithId(id: Long)
     suspend fun deleteUserWithId(id: Long)
     suspend fun setAnyUserAsActive(): Boolean
+    suspend fun markUserForDeletion(id: Long): Boolean
 }

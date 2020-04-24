@@ -39,9 +39,9 @@ class UserStatusConverter {
     @TypeConverter
     fun fromIntToUserStatus(value: Int): UserStatus? {
         return when (value) {
-            0 -> DORMANT
-            1 -> ACTIVE
-            else -> PENDING_DELETE
+            0 -> PENDING_DELETE
+            1 -> DORMANT
+            else -> ACTIVE
         }
     }
 }

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017 Mario Danic
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:apc="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/avatar_image"
+                android:layout_width="@dimen/avatar_size_big"
+                android:layout_height="@dimen/avatar_size_big"
+                android:focusable="true"
+                android:layout_centerHorizontal="true"
+                tools:src="@tools:sample/avatars[0]"
+                android:transitionName="userAvatar.transitionTag" />
+
+            <androidx.emoji.widget.EmojiTextView
+                android:id="@+id/display_name_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/avatar_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/margin_between_elements"
+                tools:text="Important user"
+                android:textColor="@color/nc_incoming_text_default" />
+
+            <TextView
+                android:id="@+id/base_url_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/display_name_text"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="4dp"
+                tools:text="nextcloud.com"
+                android:textColor="@color/nc_incoming_text_default"
+                android:layout_marginBottom="8dp"/>
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/user_item"
+                tools:itemCount="5"
+                android:layout_below="@id/base_url_text"
+                android:id="@+id/settingsRecyclerView"/>
+        </RelativeLayout>
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_preferences"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_look_n_feel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_title="@string/nc_look_and_feel" />
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_privacy_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_title="@string/nc_privacy" />
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_about"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_title="@string/nc_privacy" />
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_source_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_title="@string/nc_get_source_code"/>
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_licence"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_summary="@string/nc_license_summary"
+            apc:mp_title="@string/nc_license_title"/>
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_summary="v0.1"
+            apc:mp_title="@string/nc_app_name"/>
+
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+</com.yarolegovich.mp.MaterialPreferenceScreen>

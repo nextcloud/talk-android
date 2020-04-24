@@ -41,13 +41,13 @@ import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.R.drawable
-import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.newarch.data.presenters.AdvancedEmptyPresenter
 import com.nextcloud.talk.newarch.features.contactsflow.contacts.ContactsView
 import com.nextcloud.talk.newarch.features.search.DebouncingTextWatcher
+import com.nextcloud.talk.newarch.features.settingsflow.settings.SettingsView
 import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -115,17 +115,13 @@ class ConversationsListView : BaseView() {
         activity?.settingsButton?.setOnClickListener {
             val settingsTransitionName = "userAvatar.transitionTag"
             router.pushController(
-                RouterTransaction.with(SettingsController())
+                RouterTransaction.with(SettingsView())
                     .pushChangeHandler(
                         TransitionChangeHandlerCompat(
                             SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
                         )
                     )
-                    .popChangeHandler(
-                        TransitionChangeHandlerCompat(
-                            SharedElementTransition(arrayListOf(settingsTransitionName)), VerticalChangeHandler()
-                        )
-                    )
+                    .popChangeHandler(HorizontalChangeHandler())
             )
         }
 

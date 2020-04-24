@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017 Mario Danic
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:apc="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/privacy_screen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_settings_privacy"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialChoicePreference
+            android:id="@+id/settings_screen_lock_timeout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@string/nc_screen_lock_timeout_sixty"
+            apc:mp_entry_descriptions="@array/screen_lock_timeout_descriptions"
+            apc:mp_entry_values="@array/screen_lock_timeout_entry_values"
+            apc:mp_key="@string/nc_settings_screen_lock_timeout_key"
+            apc:mp_show_value="onBottom"
+            apc:mp_title="@string/nc_settings_screen_lock_timeout_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_screen_lock"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_false"
+            apc:mp_key="@string/nc_settings_screen_lock_key"
+            apc:mp_title="@string/nc_settings_screen_lock_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_screen_security"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_false"
+            apc:mp_key="@string/nc_settings_screen_security_key"
+            apc:mp_summary="@string/nc_settings_screen_security_desc"
+            apc:mp_title="@string/nc_settings_screen_security_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_incognito_keyboard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_true"
+            apc:mp_key="@string/nc_settings_incognito_keyboard_key"
+            apc:mp_summary="@string/nc_settings_incognito_keyboard_desc"
+            apc:mp_title="@string/nc_settings_incognito_keyboard_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_link_previews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@bool/value_true"
+            apc:mp_key="@string/nc_settings_link_previews_key"
+            apc:mp_summary="@string/nc_settings_link_previews_desc"
+            apc:mp_title="@string/nc_settings_link_previews_title" />
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+    <com.yarolegovich.mp.MaterialPreferenceCategory
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        apc:mpc_title="@string/nc_settings_proxy_title"
+        apc:mpc_title_color="@color/colorPrimary">
+
+        <com.yarolegovich.mp.MaterialChoicePreference
+            android:id="@+id/settings_proxy_choice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="@string/nc_no_proxy"
+            apc:mp_entry_descriptions="@array/proxy_type_descriptions"
+            apc:mp_key="@string/nc_settings_proxy_type_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_settings_proxy_type_title"></com.yarolegovich.mp.MaterialChoicePreference>
+
+        <com.yarolegovich.mp.MaterialEditTextPreference
+            android:id="@+id/settings_proxy_host_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_proxy_host_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_settings_proxy_host_title" />
+
+        <com.yarolegovich.mp.MaterialEditTextPreference
+            android:id="@+id/settings_proxy_port_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_proxy_port_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_settings_proxy_port_title" />
+
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_proxy_use_credentials"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_default_value="false"
+            apc:mp_key="@string/nc_settings_use_credentials_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_settings_use_credentials_title"/>
+
+        <com.yarolegovich.mp.MaterialEditTextPreference
+            android:id="@+id/settings_proxy_username_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_proxy_username_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_username" />
+
+        <com.yarolegovich.mp.MaterialEditTextPreference
+            android:id="@+id/settings_proxy_password_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_proxy_password_key"
+            apc:mp_show_value="onRight"
+            apc:mp_title="@string/nc_password" />
+    </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+</com.yarolegovich.mp.MaterialPreferenceScreen>

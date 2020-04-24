@@ -30,11 +30,14 @@ import com.nextcloud.talk.newarch.local.models.other.UserStatus
 @Dao
 abstract class UsersDao {
     // get active user
-    @Query("SELECT * FROM users where status = 1")
+    @Query("SELECT * FROM users where status = 2")
     abstract fun getActiveUser(): UserNgEntity?
 
-    @Query("SELECT * FROM users WHERE status = 1")
+    @Query("SELECT * FROM users WHERE status = 2")
     abstract fun getActiveUserLiveData(): LiveData<UserNgEntity?>
+
+    @Query("SELECT * from users ORDER BY status DESC")
+    abstract fun getUsersLiveData(): LiveData<List<UserNgEntity>>
 
     @Query("DELETE FROM users WHERE id = :id")
     abstract suspend fun deleteUserWithId(id: Long)
@@ -49,13 +52,13 @@ abstract class UsersDao {
     abstract suspend fun saveUsers(vararg users: UserNgEntity): List<Long>
 
     // get all users not scheduled for deletion
-    @Query("SELECT * FROM users where status != 2")
+    @Query("SELECT * FROM users where status != 0")
     abstract fun getUsers(): List<UserNgEntity>
 
     @Query("SELECT * FROM users where id = :id")
     abstract fun getUserWithId(id: Long): UserNgEntity
 
-    @Query("SELECT * FROM users where status = 2")
+    @Query("SELECT * FROM users where status = 0")
     abstract fun getUsersScheduledForDeletion(): List<UserNgEntity>
 
     @Query("SELECT * FROM users WHERE username = :username AND base_url = :server")
@@ -75,6 +78,20 @@ abstract class UsersDao {
         }
     }
 
+    @Transaction
+    open suspend fun markUserForDeletion(id: Long): Boolean {
+        val users = getUsers()
+        for (user in users) {
+            if (user.id == id) {
+                user.status = UserStatus.PENDING_DELETE
+                updateUser(user)
+                break
+            }
+        }
+
+        return setAnyUserAsActive()
+    }
+    
     @Transaction
     open suspend fun setAnyUserAsActive(): Boolean {
         val users = getUsers()

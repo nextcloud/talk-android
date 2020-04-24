@@ -24,9 +24,12 @@ package com.nextcloud.talk.newarch.data.repository.offline
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.distinctUntilChanged
+import androidx.lifecycle.map
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.dao.UsersDao
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.UserNgEntity
+import com.nextcloud.talk.newarch.local.models.toUser
 
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override fun getActiveUserLiveData(): LiveData<UserNgEntity?> {
@@ -43,6 +46,14 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override fun getUserWithId(id: Long): UserNgEntity {
         return usersDao.getUserWithId(id)
+    }
+
+    override fun getUsersLiveData(): LiveData<List<User>> {
+        return usersDao.getUsersLiveData().distinctUntilChanged().map { usersList ->
+            usersList.map {
+                it.toUser()
+            }
+        }
     }
 
     override suspend fun getUserWithUsernameAndServer(
@@ -70,6 +81,10 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override suspend fun setAnyUserAsActive(): Boolean {
         return usersDao.setAnyUserAsActive()
+    }
+
+    override suspend fun markUserForDeletion(id: Long): Boolean {
+        return usersDao.markUserForDeletion(id)
     }
 
 }

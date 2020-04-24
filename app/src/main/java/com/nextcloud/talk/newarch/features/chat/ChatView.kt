@@ -267,7 +267,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                router.popCurrentController()
+                router.popController(this)
                 return true
             }
             R.id.conversation_video_call -> {

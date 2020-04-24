@@ -19,16 +19,5 @@
  *  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+package com.nextcloud.talk.newarch.features.settingsflow.settings
 
-package com.nextcloud.talk.newarch.local.models.other
-
-enum class UserStatus {
-    // account that will be deleted in the near future
-    PENDING_DELETE,
-
-    // account that is NOT actively used by the UI, but might be used by background tasks
-    DORMANT,
-
-    // currently active account
-    ACTIVE,
-}

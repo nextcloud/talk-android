@@ -204,7 +204,12 @@ class RingtoneSelectionController(args: Bundle) : BaseController(), FlexibleAdap
     }
 
     override fun getTitle(): String? {
-        return resources!!.getString(R.string.nc_settings_notification_sounds)
+        return if (callNotificationSounds) {
+            resources?.getString(R.string.nc_settings_calls_sound)
+        } else {
+            resources?.getString(R.string.nc_settings_notifications_sound)
+
+        }
     }
 
     @SuppressLint("LongLogTag")
