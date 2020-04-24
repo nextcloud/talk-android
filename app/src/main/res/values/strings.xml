@@ -349,7 +349,7 @@
     <string name="silenced_by_moderator">You were silenced by a moderator</string>
     <string name="nc_failed_to_send">Failed to send - tap to retry sending.</string>
     <string name="nc_preferences">Preferences</string>
-    <string name="nc_look_and_feel">Theme&amp;Sounds</string>
+    <string name="nc_look_and_feel">Appearance &amp; Sounds</string>
     <string name="nc_settings_calls_sound">Calls sound</string>
     <string name="nc_settings_notifications_sound">Notifications sound</string>
 </resources>
