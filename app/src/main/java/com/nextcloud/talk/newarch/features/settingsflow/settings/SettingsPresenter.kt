@@ -56,7 +56,8 @@ open class SettingsPresenter<T : Any>(context: Context, onElementClick: ((Page, 
             holder.itemView.userProgressBar.isVisible = user.status == UserStatus.PENDING_DELETE
 
             if (user.status == UserStatus.PENDING_DELETE) {
-                holder.itemView.setBackgroundResource(0)
+                holder.itemView.setBackgroundColor(context.resources.getColor(R.color.nc_darkRed))
+                holder.itemView.background.alpha = 191
                 holder.itemView.userMoreOptionsView.visibility = View.INVISIBLE
             } else {
                 if (user.status == UserStatus.ACTIVE) {
