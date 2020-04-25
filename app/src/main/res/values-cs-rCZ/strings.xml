@@ -316,4 +316,5 @@
     <string name="nc_reject_call">Odmítnout</string>
     <string name="silenced_by_moderator">Byli jste ztlumeni moderátorem</string>
     <string name="nc_failed_to_send">Odeslání se nezdařilo – klepněte pro opakování pokusu.</string>
-</resources>
+    <string name="nc_preferences">Předvolby</string>
+    </resources>

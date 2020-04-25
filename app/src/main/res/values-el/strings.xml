@@ -321,4 +321,5 @@
     <string name="nc_reject_call">Απόρριψη</string>
     <string name="silenced_by_moderator">Ένας συντονιστής σας σίγασε</string>
     <string name="nc_failed_to_send">Αποτυχία αποστολής - πατήστε για επαναποστολή.</string>
-</resources>
+    <string name="nc_preferences">Προτιμήσεις</string>
+    </resources>

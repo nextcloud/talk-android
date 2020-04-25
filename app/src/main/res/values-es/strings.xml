@@ -319,4 +319,4 @@
     <string name="nc_reject_call">Rechazar</string>
     <string name="silenced_by_moderator">Ha sido silenciado por un moderador</string>
     <string name="nc_failed_to_send">Fallo al enviar. Pulsar para volver a intentar el envío.</string>
-</resources>
+    </resources>

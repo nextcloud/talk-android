@@ -322,4 +322,5 @@ v zozname rozhovorov</string>
     <string name="nc_search_empty_contacts">Kde sa všetci schovali?</string>
     <string name="nc_reject_call">Odmietnuť</string>
     <string name="silenced_by_moderator">Boli ste stíšení moderátorom</string>
+    <string name="nc_failed_to_send">Nepodarilo sa odoslať - kliknutím skúste znova odoslať.</string>
     </resources>

@@ -322,4 +322,5 @@
     <string name="nc_search_empty_contacts">Var gömmer sig alla?</string>
     <string name="nc_reject_call">Avvisa</string>
     <string name="silenced_by_moderator">Du tystades av en moderator</string>
+    <string name="nc_failed_to_send">Det gick inte att skicka - tryck för att försöka igen.</string>
     </resources>

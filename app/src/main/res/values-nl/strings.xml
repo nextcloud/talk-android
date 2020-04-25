@@ -320,4 +320,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_new_group">Nieuwe groep</string>
     <string name="nc_search_empty_contacts">Waar zijn ze allemaal naar toe?</string>
     <string name="nc_reject_call">Afwijzen</string>
+    <string name="silenced_by_moderator">Je microfoon werd uitgezet door een moderator</string>
     </resources>

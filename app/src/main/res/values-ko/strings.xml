@@ -201,4 +201,5 @@
     <string name="nc_copy_message">복사</string>
     <string name="nc_reply">답장</string>
 
+    <string name="nc_preferences">환경 설정</string>
     </resources>
