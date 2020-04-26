@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Bitte bestätigen Sie, dass Sie dieses Konto entfernen möchten.</string>
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_add_account">Konto hinzufügen</string>
+    <string name="nc_settings_new_account">Neues Konto</string>
     <string name="nc_add">Hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
@@ -324,4 +325,7 @@ Meeting ist für %1$s geplant.</string>
     <string name="silenced_by_moderator">Sie wurden von einem Moderator stummgeschaltet</string>
     <string name="nc_failed_to_send">Senden fehlgeschlagen - Tippen um erneut zu senden.</string>
     <string name="nc_preferences">Einstellungen</string>
-    </resources>
+    <string name="nc_look_and_feel">Aussehen &amp; Bedienung</string>
+    <string name="nc_settings_calls_sound">Anrufton</string>
+    <string name="nc_settings_notifications_sound">Benachrichtigungston</string>
+</resources>

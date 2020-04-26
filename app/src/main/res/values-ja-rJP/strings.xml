@@ -299,4 +299,5 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_reply">返信</string>
 
     <string name="nc_reject_call">拒否</string>
+    <string name="nc_preferences">環境設定</string>
     </resources>

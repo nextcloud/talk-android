@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Potvrďte, že chcete stávající účet odebrat.</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
+    <string name="nc_settings_new_account">Nový účet</string>
     <string name="nc_add">Přidat</string>
     <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
@@ -317,4 +318,7 @@
     <string name="silenced_by_moderator">Byli jste ztlumeni moderátorem</string>
     <string name="nc_failed_to_send">Odeslání se nezdařilo – klepněte pro opakování pokusu.</string>
     <string name="nc_preferences">Předvolby</string>
-    </resources>
+    <string name="nc_look_and_feel">Vzhled a dojem z aplikace</string>
+    <string name="nc_settings_calls_sound">Zvuk volání</string>
+    <string name="nc_settings_notifications_sound">Zvuk upozornění</string>
+</resources>

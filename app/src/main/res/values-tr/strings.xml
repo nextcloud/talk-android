@@ -323,4 +323,5 @@
     <string name="nc_reject_call">Reddet</string>
     <string name="silenced_by_moderator">Bir sorumlu tarafından sessize alındınız</string>
     <string name="nc_failed_to_send">Göndeme başarısız oldu - göndermeyi tekrar denemek için dokunun.</string>
+    <string name="nc_preferences">Ayarlar</string>
     </resources>

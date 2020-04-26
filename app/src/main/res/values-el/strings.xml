@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Παρακαλώ επιβεβαιώστε την πρόθεσή σας να αφαιρέσετε το λογαριασμό,</string>
     <string name="nc_settings_remove_account">Αφαίρεση λογαριασμού</string>
     <string name="nc_settings_add_account">Προσθήκη νέου λογαριασμού</string>
+    <string name="nc_settings_new_account">Νέος λογαριασμός</string>
     <string name="nc_add">Προσθήκη</string>
     <string name="nc_settings_wrong_account">Μόνο ο παρόν λογαριασμός μπορεί να επαναεγκριθεί</string>
     <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
@@ -214,7 +215,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Push-to-talk</string>
-    <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφων, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
+    <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφωνο, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
     <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
 
@@ -322,4 +323,7 @@
     <string name="silenced_by_moderator">Ένας συντονιστής σας σίγασε</string>
     <string name="nc_failed_to_send">Αποτυχία αποστολής - πατήστε για επαναποστολή.</string>
     <string name="nc_preferences">Προτιμήσεις</string>
-    </resources>
+    <string name="nc_look_and_feel">Look&amp;Feel</string>
+    <string name="nc_settings_calls_sound">Ήχος κλήσεων</string>
+    <string name="nc_settings_notifications_sound">Ήχος ειδοποιήσεων</string>
+</resources>

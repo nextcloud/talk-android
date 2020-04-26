@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
+    <string name="nc_settings_new_account">Nova conta</string>
     <string name="nc_add">Adicionar</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
@@ -323,4 +324,8 @@
     <string name="nc_reject_call">Rejeitar</string>
     <string name="silenced_by_moderator">Você foi silenciado por um moderador.</string>
     <string name="nc_failed_to_send">Erro ao enviar - Toque para tentar novamente.</string>
-    </resources>
+    <string name="nc_preferences">Preferências</string>
+    <string name="nc_look_and_feel">Aparência</string>
+    <string name="nc_settings_calls_sound">Som de chamadas</string>
+    <string name="nc_settings_notifications_sound">Som de notificações</string>
+</resources>

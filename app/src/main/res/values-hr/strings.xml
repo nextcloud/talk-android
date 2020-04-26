@@ -321,4 +321,5 @@ popisa razgovora</string>
     <string name="nc_new_group">Nova grupa</string>
     <string name="nc_search_empty_contacts">Gdje su se svi skrili?</string>
     <string name="nc_reject_call">Odbij</string>
+    <string name="nc_preferences">Preferencije</string>
     </resources>

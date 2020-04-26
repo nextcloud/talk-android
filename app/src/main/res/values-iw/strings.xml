@@ -202,6 +202,9 @@
 
     <string name="nc_file_browser_back">חזרה</string>
     <string name="nc_file_browser_refresh">רענון</string>
+    <!-- Lobby -->
+
+    <string name="nc_webinar">סמינר מקוון</string>
     <string name="nc_timeout_error">תום זמן המתנה</string>
     <string name="nc_not_defined_error">שגיאה בלתי ידועה</string>
     <string name="nc_general_settings">כללי</string>
@@ -209,4 +212,5 @@
     <string name="nc_reply">תגובה</string>
 
     <string name="nc_reject_call">דחייה</string>
+    <string name="nc_preferences">העדפות</string>
     </resources>
