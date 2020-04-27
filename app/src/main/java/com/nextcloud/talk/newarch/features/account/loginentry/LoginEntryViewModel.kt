@@ -177,6 +177,7 @@ class LoginEntryViewModel(
                 val pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PENDING, 0)
                 pushConfiguration.pushConfigurationStateWrapper = pushConfigurationStateWrapper
                 user!!.pushConfiguration = pushConfiguration
+                user!!.id = null
                 withContext(Dispatchers.IO) {
                     user!!.id = usersRepository.insertUser(user!!.toUserEntity())
                     usersRepository.setUserAsActiveWithId(user!!.id!!)

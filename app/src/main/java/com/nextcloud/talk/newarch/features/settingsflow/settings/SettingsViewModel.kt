@@ -22,6 +22,9 @@
 package com.nextcloud.talk.newarch.features.settingsflow.settings
 
 import android.app.Application
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.local.models.User
@@ -77,6 +80,9 @@ class SettingsViewModel constructor(
             }
         }
 
+        val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java)
+                .build()
+        WorkManager.getInstance(context).enqueue(accountRemovalWork)
         weHaveActiveUser
     }
 
