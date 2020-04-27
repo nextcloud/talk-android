@@ -111,7 +111,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
                 } else {
                     currentUser?.let { user ->
                         if (chatMessage.internalConversationId == conversation.databaseId && conversation.databaseUserId == currentUser.id) {
-                            val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), apiErrorHandler)
+                            val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), ApiErrorHandler())
                             sendChatMessageUseCase.invoke(applicationScope, parametersOf(user, conversation.token, chatMessage.message, chatMessage.parentMessage?.jsonMessageId, chatMessage.referenceId), object : UseCaseResponse<Response<ChatOverall>> {
                                 override suspend fun onSuccess(result: Response<ChatOverall>) {
                                     messagesOperations.remove(pair.first.internalMessageId!!)
@@ -133,7 +133,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
 
     suspend fun exitConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value!!.toUser()
-        val exitConversationUseCase = ExitConversationUseCase(networkComponents.getRepository(true, currentUser), apiErrorHandler)
+        val exitConversationUseCase = ExitConversationUseCase(networkComponents.getRepository(true, currentUser), ApiErrorHandler())
         exitConversationUseCase.invoke(applicationScope, parametersOf(currentUser, conversationToken), object: UseCaseResponse<GenericOverall> {
             override suspend fun onSuccess(result: GenericOverall) {
                 globalServiceInterface.leftConversationForUser(currentUser, currentConversation.value, GlobalServiceInterface.OperationStatus.STATUS_OK)
@@ -149,7 +149,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
     }
     suspend fun getConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value
-        val getConversationUseCase = GetConversationUseCase(networkComponents.getRepository(true, currentUser!!.toUser()), apiErrorHandler)
+        val getConversationUseCase = GetConversationUseCase(networkComponents.getRepository(true, currentUser!!.toUser()), ApiErrorHandler())
         getConversationUseCase.invoke(applicationScope, parametersOf(
                 currentUser,
                 conversationToken
@@ -174,7 +174,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
 
     suspend fun joinConversation(conversationToken: String, conversationPassword: String?, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value
-        val joinConversationUseCase = JoinConversationUseCase(networkComponents.getRepository(true, currentUser!!.toUser()), apiErrorHandler)
+        val joinConversationUseCase = JoinConversationUseCase(networkComponents.getRepository(true, currentUser!!.toUser()), ApiErrorHandler())
         joinConversationUseCase.invoke(applicationScope, parametersOf(
                 currentUser,
                 conversationToken,

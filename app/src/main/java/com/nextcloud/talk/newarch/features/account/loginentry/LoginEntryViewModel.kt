@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.newarch.mvvm.BaseViewModel
 import com.nextcloud.talk.newarch.data.model.ErrorModel
+import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
 import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.*
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
@@ -42,6 +43,7 @@ import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.other.UserStatus
 import com.nextcloud.talk.newarch.local.models.toUser
 import com.nextcloud.talk.newarch.local.models.toUserEntity
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.Dispatchers
@@ -50,13 +52,9 @@ import kotlinx.coroutines.withContext
 import org.koin.core.parameter.parametersOf
 import java.net.URLDecoder
 
-class LoginEntryViewModel constructor(
+class LoginEntryViewModel(
         application: Application,
-        private val getProfileUseCase: GetProfileUseCase,
-        private val getCapabilitiesUseCase: GetCapabilitiesUseCase,
-        private val getSignalingSettingsUseCase: GetSignalingSettingsUseCase,
-        private val registerPushWithServerUseCase: RegisterPushWithServerUseCase,
-        private val registerPushWithProxyUseCase: RegisterPushWithProxyUseCase,
+        private val networkComponents: NetworkComponents,
         private val appPreferences: AppPreferences,
         private val usersRepository: UsersRepository) :
         BaseViewModel<LoginEntryView>(application) {
@@ -131,9 +129,12 @@ class LoginEntryViewModel constructor(
     }
 
     private fun getProfile(loginData: LoginData) {
+        user!!.id = -1
         user!!.username = loginData.username!!
         user!!.baseUrl = loginData.serverUrl!!
         user!!.token = loginData.token
+        val repository = networkComponents.getRepository(false, user!!)
+        val getProfileUseCase = GetProfileUseCase(repository, ApiErrorHandler())
         getProfileUseCase.invoke(viewModelScope, parametersOf(user!!.toUserEntity()), object : UseCaseResponse<UserProfileOverall> {
             override suspend fun onSuccess(result: UserProfileOverall) {
                 result.ocs.data.userId?.let { userId ->
@@ -152,6 +153,8 @@ class LoginEntryViewModel constructor(
     }
 
     private fun getCapabilities() {
+        val repository = networkComponents.getRepository(false, user!!)
+        val getCapabilitiesUseCase = GetCapabilitiesUseCase(repository, ApiErrorHandler())
         getCapabilitiesUseCase.invoke(viewModelScope, parametersOf(user!!.baseUrl), object : UseCaseResponse<CapabilitiesOverall> {
             override suspend fun onSuccess(result: CapabilitiesOverall) {
                 user!!.capabilities = result.ocs.data.capabilities
@@ -165,6 +168,8 @@ class LoginEntryViewModel constructor(
     }
 
     private fun getSignalingSettings() {
+        val repository = networkComponents.getRepository(false, user!!)
+        val getSignalingSettingsUseCase = GetSignalingSettingsUseCase(repository, ApiErrorHandler())
         getSignalingSettingsUseCase.invoke(viewModelScope, parametersOf(user!!.toUserEntity()), object : UseCaseResponse<SignalingSettingsOverall> {
             override suspend fun onSuccess(result: SignalingSettingsOverall) {
                 user!!.signalingSettings = result.ocs.signalingSettings
@@ -200,6 +205,8 @@ class LoginEntryViewModel constructor(
 
     private fun registerForPushWithServer(token: String) {
         val options = PushUtils(usersRepository).getMapForPushRegistrationWithServer(context, token)
+        val repository = networkComponents.getRepository(false, user!!)
+        val registerPushWithServerUseCase = RegisterPushWithServerUseCase(repository, ApiErrorHandler())
         registerPushWithServerUseCase.invoke(viewModelScope, parametersOf(user!!.toUserEntity(), options), object : UseCaseResponse<PushRegistrationOverall> {
             override suspend fun onSuccess(result: PushRegistrationOverall) {
                 user!!.pushConfiguration!!.deviceIdentifier = result.ocs.data.deviceIdentifier
@@ -223,6 +230,9 @@ class LoginEntryViewModel constructor(
         val options = PushUtils(usersRepository).getMapForPushRegistrationWithServer(user!!.toUserEntity())
 
         if (options != null) {
+            val repository = networkComponents.getRepository(false, user!!)
+            val registerPushWithProxyUseCase = RegisterPushWithProxyUseCase(repository, ApiErrorHandler())
+
             registerPushWithProxyUseCase.invoke(viewModelScope, parametersOf(user!!.toUserEntity(), options), object : UseCaseResponse<Any> {
                 override suspend fun onSuccess(result: Any) {
                     user!!.pushConfiguration!!.pushConfigurationStateWrapper = PushConfigurationStateWrapper(PushConfigurationState.PROXY_REGISTRATION_DONE, null)

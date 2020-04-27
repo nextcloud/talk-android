@@ -154,7 +154,7 @@ class ChatViewModel constructor(application: Application,
                 }
             }
         } else {
-            val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), apiErrorHandler)
+            val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), ApiErrorHandler())
             // No reference id needed here
             initConversation?.let {
                 sendChatMessageUseCase.invoke(viewModelScope, parametersOf(user, it.token, editable, replyTo, null), object : UseCaseResponse<Response<ChatOverall>> {
@@ -212,7 +212,7 @@ class ChatViewModel constructor(application: Application,
 
     private suspend fun pullPastMessagesForUserAndConversation(userNgEntity: UserNgEntity, conversation: Conversation) {
         if (userNgEntity.id == user.id && conversation.token == initConversation?.token && view != null) {
-            val getChatMessagesUseCase = GetChatMessagesUseCase(networkComponents.getRepository(true, userNgEntity.toUser()), apiErrorHandler)
+            val getChatMessagesUseCase = GetChatMessagesUseCase(networkComponents.getRepository(true, userNgEntity.toUser()), ApiErrorHandler())
             val lastReadMessageId = conversation.lastReadMessageId
             getChatMessagesUseCase.invoke(viewModelScope, parametersOf(user, conversation.token, 0, lastReadMessageId, 1), object : UseCaseResponse<Response<ChatOverall>> {
                 override suspend fun onSuccess(result: Response<ChatOverall>) {
@@ -243,7 +243,7 @@ class ChatViewModel constructor(application: Application,
 
     suspend fun pullFutureMessagesForUserAndConversation(userNgEntity: UserNgEntity, conversation: Conversation, lastGivenMessage: Int = 0) {
         if (userNgEntity.id == user.id && conversation.token == initConversation?.token && view != null) {
-            val getChatMessagesUseCase = GetChatMessagesUseCase(networkComponents.getRepository(true, userNgEntity.toUser()), apiErrorHandler)
+            val getChatMessagesUseCase = GetChatMessagesUseCase(networkComponents.getRepository(true, userNgEntity.toUser()), ApiErrorHandler())
             var lastKnownMessageId = lastGivenMessage
             if (lastGivenMessage == 0) {
                 lastKnownMessageId = conversation.lastReadMessageId.toInt()

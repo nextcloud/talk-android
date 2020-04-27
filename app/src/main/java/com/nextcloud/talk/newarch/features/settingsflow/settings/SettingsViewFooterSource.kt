@@ -50,7 +50,9 @@ class SettingsViewFooterSource(private val context: Context) : FooterSource<User
             results.add(Data(user, context.resources.getString(R.string.nc_settings_new_account)))
             user
         } else {
-            null
+            val user = User(-1, "-1", "-1", "")
+            results.add(Data(user, context.resources.getString(R.string.nc_settings_new_account)))
+            user
         }
 
         return results

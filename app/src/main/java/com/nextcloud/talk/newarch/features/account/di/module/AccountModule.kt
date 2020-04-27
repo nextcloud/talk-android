@@ -27,6 +27,7 @@ import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
 import com.nextcloud.talk.newarch.domain.usecases.*
 import com.nextcloud.talk.newarch.features.account.loginentry.LoginEntryViewModelFactory
 import com.nextcloud.talk.newarch.features.account.serverentry.ServerEntryViewModelFactory
+import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import org.koin.android.ext.koin.androidApplication
 import org.koin.dsl.module
@@ -38,7 +39,7 @@ val AccountModule = module {
         )
     }
     factory {
-        createLoginEntryViewModelFactory(androidApplication(), get(), get(), get(), get(), get(), get(), get())
+        createLoginEntryViewModelFactory(androidApplication(), get(), get(), get())
     }
 }
 
@@ -53,15 +54,11 @@ fun createServerEntryViewModelFactory(
 
 fun createLoginEntryViewModelFactory(
         application: Application,
-        getProfileUseCase: GetProfileUseCase,
-        getCapabilitiesUseCase: GetCapabilitiesUseCase,
-        getSignalingSettingsUseCase: GetSignalingSettingsUseCase,
-        registerPushWithServerUseCase: RegisterPushWithServerUseCase,
-        registerPushWithProxyUseCase: RegisterPushWithProxyUseCase,
+        networkComponents: NetworkComponents,
         appPreferences: AppPreferences,
         usersRepository: UsersRepository
 ): LoginEntryViewModelFactory {
     return LoginEntryViewModelFactory(
-            application, getProfileUseCase, getCapabilitiesUseCase, getSignalingSettingsUseCase, registerPushWithServerUseCase, registerPushWithProxyUseCase, appPreferences, usersRepository
+            application, networkComponents, appPreferences, usersRepository
     )
 }

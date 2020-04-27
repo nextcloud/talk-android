@@ -56,7 +56,7 @@ class NetworkComponents(
             usersMultipleOperationsRepositoryMap[user.id]
         }
 
-        if (mappedNextcloudTalkRepository != null) {
+        if (mappedNextcloudTalkRepository != null && user.id != -1L) {
             return mappedNextcloudTalkRepository
         }
 
@@ -71,7 +71,7 @@ class NetworkComponents(
             usersMultipleOperationOkHttpMap[user.id]
         }
 
-        if (mappedOkHttpClient != null) {
+        if (mappedOkHttpClient != null && user.id != -1L) {
             return mappedOkHttpClient
         }
 
@@ -91,7 +91,7 @@ class NetworkComponents(
     fun getImageLoader(user: User): ImageLoader {
         var mappedImageLoader = usersImageLoaderMap[user.id]
 
-        if (mappedImageLoader == null) {
+        if (mappedImageLoader == null || user.id == -1L) {
             mappedImageLoader = ImageLoader(androidApplication) {
                 availableMemoryPercentage(0.5)
                 bitmapPoolPercentage(0.5)

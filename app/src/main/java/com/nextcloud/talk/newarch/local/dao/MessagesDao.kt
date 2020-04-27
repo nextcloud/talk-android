@@ -30,7 +30,7 @@ import com.nextcloud.talk.newarch.local.models.User
 
 @Dao
 abstract class MessagesDao {
-    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId ORDER BY timestamp ASC")
+    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId ORDER BY timestamp ASC, message_id ASC")
     abstract fun getMessagesWithUserForConversation(conversationId: String):
             LiveData<List<MessageEntity>>
 
@@ -48,7 +48,7 @@ abstract class MessagesDao {
     )
     abstract suspend fun updateMessageId(newId: String, conversationId: String, referenceId: String)
 
-    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId AND (message_id >= :messageId OR message_id = 0) ORDER BY timestamp ASC")
+    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId AND (message_id >= :messageId OR message_id = 0) ORDER BY timestamp ASC, message_id ASC")
     abstract fun getMessagesWithUserForConversationSince(conversationId: String, messageId: Long): LiveData<List<MessageEntity>>
 
     @Query("SELECT * FROM messages WHERE conversation_id = :conversationId AND message_id = :messageId")
