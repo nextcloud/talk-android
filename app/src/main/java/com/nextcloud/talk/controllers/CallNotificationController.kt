@@ -221,7 +221,7 @@ class CallNotificationController(private val originalBundle: Bundle) : BaseContr
                             if ((AvatarStatusCodeHolder.getInstance().statusCode == 200 || AvatarStatusCodeHolder.getInstance().statusCode == 0)) {
 
                                 if (activity != null) {
-                                    val newBitmap = BlurTransformation(activity!!, 5f).transform(
+                                    val newBitmap = BlurTransformation(activity!!, 8f).transform(
                                             BitmapPool(10000000), bitmapFromImageView, OriginalSize
                                     )
                                     withContext(Dispatchers.Main) {
