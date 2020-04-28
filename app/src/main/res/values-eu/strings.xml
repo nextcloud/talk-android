@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Mesedez, berretsi oraingo kontua ezabatzeko asmoa duzula.</string>
     <string name="nc_settings_remove_account">Ezabatu kontua</string>
     <string name="nc_settings_add_account">Kontu berria gehitu</string>
+    <string name="nc_settings_new_account">Kontu berria</string>
     <string name="nc_add">Gehitu</string>
     <string name="nc_settings_wrong_account">Oraingo kontua baino ezin da berrbaimendu</string>
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
@@ -323,5 +324,8 @@
     <string name="nc_search_empty_contacts">Non ezkutatu dira denak?</string>
     <string name="nc_reject_call">Ukatu</string>
     <string name="silenced_by_moderator">Moderatzaile batek isilarazi zaitu</string>
+    <string name="nc_failed_to_send">Bidalketak huts egin du - sakatu berriro, bidaltzen saiatzeko.</string>
     <string name="nc_preferences">Hobespenak</string>
-    </resources>
+    <string name="nc_settings_calls_sound">Deiaren soinua</string>
+    <string name="nc_settings_notifications_sound">Jakinarazpen soinua</string>
+</resources>

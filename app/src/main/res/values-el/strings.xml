@@ -323,7 +323,6 @@
     <string name="silenced_by_moderator">Ένας συντονιστής σας σίγασε</string>
     <string name="nc_failed_to_send">Αποτυχία αποστολής - πατήστε για επαναποστολή.</string>
     <string name="nc_preferences">Προτιμήσεις</string>
-    <string name="nc_look_and_feel">Look&amp;Feel</string>
     <string name="nc_settings_calls_sound">Ήχος κλήσεων</string>
     <string name="nc_settings_notifications_sound">Ήχος ειδοποιήσεων</string>
 </resources>

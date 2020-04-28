@@ -325,7 +325,6 @@ Meeting ist für %1$s geplant.</string>
     <string name="silenced_by_moderator">Sie wurden von einem Moderator stummgeschaltet</string>
     <string name="nc_failed_to_send">Senden fehlgeschlagen - Tippen um erneut zu senden.</string>
     <string name="nc_preferences">Einstellungen</string>
-    <string name="nc_look_and_feel">Aussehen &amp; Bedienung</string>
     <string name="nc_settings_calls_sound">Anrufton</string>
     <string name="nc_settings_notifications_sound">Benachrichtigungston</string>
 </resources>
