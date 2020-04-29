@@ -321,6 +321,7 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="silenced_by_moderator">Vous avez été rendu muet par un modérateur</string>
     <string name="nc_failed_to_send">Impossible d\'envoyer - appuyez pour ré-essayer l\'envoi.</string>
     <string name="nc_preferences">Préférences</string>
+    <string name="nc_look_and_feel">Sons  du thème &amp;</string>
     <string name="nc_settings_calls_sound">Son des appels</string>
     <string name="nc_settings_notifications_sound">Sons de notification</string>
 </resources>

@@ -326,6 +326,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="silenced_by_moderator">Vostede foi silenciado por un moderador</string>
     <string name="nc_failed_to_send">Produciuse un fallo no envio: toque para volver tentar o envío.</string>
     <string name="nc_preferences">Preferencias</string>
+    <string name="nc_look_and_feel">Aparencia e sons</string>
     <string name="nc_settings_calls_sound">Son das chamadas</string>
     <string name="nc_settings_notifications_sound">Son das notificacións</string>
 </resources>

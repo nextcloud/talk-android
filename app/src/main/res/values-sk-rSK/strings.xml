@@ -325,6 +325,7 @@ v zozname rozhovorov</string>
     <string name="silenced_by_moderator">Boli ste stíšení moderátorom</string>
     <string name="nc_failed_to_send">Nepodarilo sa odoslať - kliknutím skúste znova odoslať.</string>
     <string name="nc_preferences">Nastavenia</string>
+    <string name="nc_look_and_feel">Vzhľad a zvuky</string>
     <string name="nc_settings_calls_sound">Zvuk zvonenia</string>
     <string name="nc_settings_notifications_sound">Zvuk oznámenia</string>
 </resources>

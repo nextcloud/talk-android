@@ -318,6 +318,7 @@
     <string name="silenced_by_moderator">Byli jste ztlumeni moderátorem</string>
     <string name="nc_failed_to_send">Odeslání se nezdařilo – klepněte pro opakování pokusu.</string>
     <string name="nc_preferences">Předvolby</string>
+    <string name="nc_look_and_feel">Vzhled a zvuky</string>
     <string name="nc_settings_calls_sound">Zvuk volání</string>
     <string name="nc_settings_notifications_sound">Zvuk upozornění</string>
 </resources>

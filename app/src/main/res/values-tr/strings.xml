@@ -325,6 +325,7 @@
     <string name="silenced_by_moderator">Bir sorumlu tarafından sessize alındınız</string>
     <string name="nc_failed_to_send">Göndeme başarısız oldu - göndermeyi tekrar denemek için dokunun.</string>
     <string name="nc_preferences">Ayarlar</string>
+    <string name="nc_look_and_feel">Görünüm &amp; Sesler</string>
     <string name="nc_settings_calls_sound">Çağrı sesi</string>
     <string name="nc_settings_notifications_sound">Bildirim sesi</string>
 </resources>

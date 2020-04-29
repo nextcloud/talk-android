@@ -325,6 +325,7 @@
     <string name="silenced_by_moderator">Zostałeś wyciszony przez moderatora</string>
     <string name="nc_failed_to_send">Nie udało się wysłać - dotknij, aby powtórzyć wysyłanie.</string>
     <string name="nc_preferences">Preferencje</string>
+    <string name="nc_look_and_feel">Wygląd i dźwięki</string>
     <string name="nc_settings_calls_sound">Dźwięki połączeń</string>
     <string name="nc_settings_notifications_sound">Dźwięki powiadomień</string>
 </resources>
