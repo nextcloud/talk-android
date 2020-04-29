@@ -15,6 +15,10 @@ Nextcloud Talk lowers the barrier for communication and lets your team connect a
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
 
+| Screen 1 | Screen 2 | Screen 3 |
+| --- | --- | --- |
+| ![List](https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/conversations.jpg) | ![Contacts](https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/contacts_selection.jpg) | ![Chat](https://raw.githubusercontent.com/nextcloud/talk-android/master/fastlane/metadata/android/en-US/phoneScreenshots/receive_gifs.jpg) |
+
 ## Why is this so awesome?
 Because it is self hosted!!! Audio/video calls and text chat typically require a central server. Some projects go commendably far in trying to ensure they can't see the data, so nobody, not government, advertising company or somebody who broke in the servers, can follow conversations. But the servers still have to mediate every call and text message, allowing them to map out who talks to who and at what time. This 'metadata' [is as useful](https://www.wired.com/2015/03/data-and-goliath-nsa-metadata-spying-your-secrets/), if not more, to track people, than the full content, especially for mass surveillance purposes. Even if the data is not stored by the chat server, the hosting provider or a hacker could simply gather the data.
 
