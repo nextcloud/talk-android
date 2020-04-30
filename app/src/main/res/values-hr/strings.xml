@@ -321,5 +321,7 @@ popisa razgovora</string>
     <string name="nc_new_group">Nova grupa</string>
     <string name="nc_search_empty_contacts">Gdje su se svi skrili?</string>
     <string name="nc_reject_call">Odbij</string>
+    <string name="silenced_by_moderator">Moderator vas je utišao</string>
+    <string name="nc_failed_to_send">Neuspješno slanje – dodirnite za ponovno slanje.</string>
     <string name="nc_preferences">Preferencije</string>
     </resources>

@@ -324,6 +324,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="silenced_by_moderator">Je microfoon werd uitgezet door een moderator</string>
     <string name="nc_failed_to_send">Versturen mislukt, tik om het opnieuw te proberen.</string>
     <string name="nc_preferences">Voorkeuren</string>
+    <string name="nc_look_and_feel">Uiterlijk &amp; Geluiden</string>
     <string name="nc_settings_calls_sound">Oproepgeluid</string>
     <string name="nc_settings_notifications_sound">Meldingengeluid</string>
 </resources>
