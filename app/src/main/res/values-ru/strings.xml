@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Пожалуйста, подтвердите удаление текущего аккаунта.</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_add_account">Добавить учётную запись</string>
+    <string name="nc_settings_new_account">Новая учётная запись</string>
     <string name="nc_add">Добавить</string>
     <string name="nc_settings_wrong_account">Повторный вход может быть выполнен только в текущую учётную запись</string>
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, приложение «Talk» не установлено.</string>
@@ -317,5 +318,9 @@
     <string name="nc_search_empty_contacts">Где все?</string>
     <string name="nc_reject_call">Отклонить</string>
     <string name="silenced_by_moderator">Трансляция вашего звука была отключена модератором</string>
-    <string name="nc_preferences">Настройки</string>
-    </resources>
+    <string name="nc_failed_to_send">Ошибка отправки,  нажмите чтобы повторить передачу.</string>
+    <string name="nc_preferences">Свойства</string>
+    <string name="nc_look_and_feel">Внешний вид и звуковые уведомления</string>
+    <string name="nc_settings_calls_sound">Звук вызова</string>
+    <string name="nc_settings_notifications_sound">Звук уведомления</string>
+</resources>

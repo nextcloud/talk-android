@@ -321,6 +321,7 @@
     <string name="silenced_by_moderator">Ha sido silenciado por un moderador</string>
     <string name="nc_failed_to_send">Fallo al enviar. Pulsar para volver a intentar el envío.</string>
     <string name="nc_preferences">Preferencias</string>
+    <string name="nc_look_and_feel">Apariencia y sonidos</string>
     <string name="nc_settings_calls_sound">Sonido de llamada</string>
     <string name="nc_settings_notifications_sound">Sonidos de notificación</string>
 </resources>
