@@ -115,7 +115,7 @@ fun createOkHttpClient(
 ): OkHttpClient {
     val httpClient = OkHttpClient.Builder()
 
-    httpClient.retryOnConnectionFailure(true)
+    httpClient.retryOnConnectionFailure(false)
     httpClient.connectTimeout(300, TimeUnit.SECONDS)
     httpClient.readTimeout(300, TimeUnit.SECONDS)
     httpClient.writeTimeout(300, TimeUnit.SECONDS)
@@ -125,7 +125,6 @@ fun createOkHttpClient(
 
     // Trust own CA and all self-signed certs
     httpClient.sslSocketFactory(sslSocketFactory, magicTrustManager)
-    httpClient.retryOnConnectionFailure(true)
     httpClient.hostnameVerifier(magicTrustManager.getHostnameVerifier(OkHostnameVerifier.INSTANCE))
 
     if (SDK_INT == Build.VERSION_CODES.N) {

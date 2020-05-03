@@ -102,11 +102,10 @@ class GlobalService constructor(usersRepository: UsersRepository,
 
         chatMessage.let { chatMessage ->
             conversation?.let { conversation ->
-                val currentStatus = chatMessage.chatMessageStatus
-                applicationScope.launch {
-                    //messagesRepository.updateMessageStatus(ChatMessageStatus.PROCESSING.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
-                }
                 currentUser?.let { user ->
+                    val currentStatus = chatMessage.chatMessageStatus
+                    messagesRepository.updateMessageStatus(ChatMessageStatus.PROCESSING.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
+
                     if (chatMessage.internalConversationId == conversation.databaseId && conversation.databaseUserId == currentUser.id) {
                         val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), ApiErrorHandler())
                         val messageToSend = ChatUtils.getParsedMessageForSending(chatMessage.message, chatMessage.messageParameters)
