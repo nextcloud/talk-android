@@ -22,11 +22,13 @@
 
 package com.nextcloud.talk.newarch.services
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -74,16 +76,12 @@ class GlobalService constructor(usersRepository: UsersRepository,
         }
     }
 
-    private var messagesOperations: ConcurrentHashMap<String, Pair<ChatMessage, Int>> = ConcurrentHashMap<String, Pair<ChatMessage, Int>>()
 
     init {
         pendingMessages.observeForever { chatMessages ->
             for (chatMessage in chatMessages) {
-                if (!messagesOperations.contains(chatMessage.internalMessageId) || messagesOperations[chatMessage.internalMessageId]?.first != chatMessage) {
-                    messagesOperations[chatMessage.internalMessageId!!] = Pair(chatMessage, 0)
-                    applicationScope.launch {
-                        sendMessage(chatMessage)
-                    }
+                applicationScope.launch {
+                    sendMessage(chatMessage)
                 }
             }
         }
@@ -101,30 +99,36 @@ class GlobalService constructor(usersRepository: UsersRepository,
     suspend fun sendMessage(chatMessage: ChatMessage) {
         val currentUser = currentUserLiveData.value?.toUser()
         val conversation = currentConversation.value
-        val operationChatMessage = messagesOperations[chatMessage.internalMessageId]
 
-        operationChatMessage?.let { pair ->
+        chatMessage.let { chatMessage ->
             conversation?.let { conversation ->
-                if (pair.second == 4) {
-                    messagesOperations.remove(pair.first.internalMessageId)
-                    messagesRepository.updateMessageStatus(ChatMessageStatus.FAILED.ordinal, conversation.databaseId!!, pair.first.jsonMessageId!!)
-                } else {
-                    currentUser?.let { user ->
-                        if (chatMessage.internalConversationId == conversation.databaseId && conversation.databaseUserId == currentUser.id) {
-                            val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), ApiErrorHandler())
-                            sendChatMessageUseCase.invoke(applicationScope, parametersOf(user, conversation.token, chatMessage.message, chatMessage.parentMessage?.jsonMessageId, chatMessage.referenceId), object : UseCaseResponse<Response<ChatOverall>> {
-                                override suspend fun onSuccess(result: Response<ChatOverall>) {
-                                    messagesOperations.remove(pair.first.internalMessageId!!)
-                                    messagesRepository.updateMessageStatus(ChatMessageStatus.SENT.ordinal, conversation.databaseId!!, pair.first.jsonMessageId!!)
-                                }
+                val currentStatus = chatMessage.chatMessageStatus
+                applicationScope.launch {
+                    //messagesRepository.updateMessageStatus(ChatMessageStatus.PROCESSING.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
+                }
+                currentUser?.let { user ->
+                    if (chatMessage.internalConversationId == conversation.databaseId && conversation.databaseUserId == currentUser.id) {
+                        val sendChatMessageUseCase = SendChatMessageUseCase(networkComponents.getRepository(false, user), ApiErrorHandler())
+                        val messageToSend = ChatUtils.getParsedMessageForSending(chatMessage.message, chatMessage.messageParameters)
+                        sendChatMessageUseCase.invoke(applicationScope, parametersOf(user, conversation.token, messageToSend, chatMessage.parentMessage?.jsonMessageId, chatMessage.referenceId), object : UseCaseResponse<Response<ChatOverall>> {
+                            override suspend fun onSuccess(result: Response<ChatOverall>) {
+                                messagesRepository.updateMessageStatus(ChatMessageStatus.SENT.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
+                            }
 
-                                override suspend fun onError(errorModel: ErrorModel?) {
-                                    val newValue = operationChatMessage.second + 1
-                                    messagesOperations[pair.first.internalMessageId!!] = Pair(chatMessage, newValue)
-                                    sendMessage(chatMessage)
+                            override suspend fun onError(errorModel: ErrorModel?) {
+                                when (currentStatus) {
+                                    ChatMessageStatus.PENDING -> {
+                                        messagesRepository.updateMessageStatus(ChatMessageStatus.FAILED_ONCE.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
+                                    }
+                                    ChatMessageStatus.FAILED_ONCE -> {
+                                        messagesRepository.updateMessageStatus(ChatMessageStatus.FAILED_TWICE.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
+                                    }
+                                    else -> {
+                                        messagesRepository.updateMessageStatus(ChatMessageStatus.FAILED.ordinal, conversation.databaseId!!, chatMessage.jsonMessageId!!)
+                                    }
                                 }
-                            })
-                        }
+                            }
+                        })
                     }
                 }
             }
@@ -134,7 +138,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
     suspend fun exitConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value!!.toUser()
         val exitConversationUseCase = ExitConversationUseCase(networkComponents.getRepository(true, currentUser), ApiErrorHandler())
-        exitConversationUseCase.invoke(applicationScope, parametersOf(currentUser, conversationToken), object: UseCaseResponse<GenericOverall> {
+        exitConversationUseCase.invoke(applicationScope, parametersOf(currentUser, conversationToken), object : UseCaseResponse<GenericOverall> {
             override suspend fun onSuccess(result: GenericOverall) {
                 globalServiceInterface.leftConversationForUser(currentUser, currentConversation.value, GlobalServiceInterface.OperationStatus.STATUS_OK)
                 withContext(Dispatchers.Main) {
@@ -147,6 +151,7 @@ class GlobalService constructor(usersRepository: UsersRepository,
             }
         })
     }
+
     suspend fun getConversation(conversationToken: String, globalServiceInterface: GlobalServiceInterface) {
         val currentUser = currentUserLiveData.value
         val getConversationUseCase = GetConversationUseCase(networkComponents.getRepository(true, currentUser!!.toUser()), ApiErrorHandler())

@@ -81,7 +81,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                         }
 
                         holder.itemView.messageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
-                        holder.itemView.sendingProgressBar.isVisible = it.chatMessageStatus != ChatMessageStatus.RECEIVED
+                        holder.itemView.sendingProgressBar.isVisible = it.chatMessageStatus != ChatMessageStatus.RECEIVED && it.chatMessageStatus != ChatMessageStatus.FAILED
                         holder.itemView.failedToSendNotice.isVisible = it.chatMessageStatus == ChatMessageStatus.FAILED
                         holder.itemView.chatMessage.text = it.text
                         if (TextMatchers.isMessageWithSingleEmoticonOnly(it.text)) {

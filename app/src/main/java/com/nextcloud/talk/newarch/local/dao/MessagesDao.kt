@@ -40,7 +40,7 @@ abstract class MessagesDao {
     @Query("SELECT * FROM messages WHERE conversation_id = :conversationId AND id = reference_id")
     abstract suspend fun getPendingMessages(conversationId: String): List<MessageEntity>
 
-    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId and id = reference_id and message_status != 5 and message_status != 0")
+    @Query("SELECT * FROM messages WHERE conversation_id = :conversationId and id = reference_id and message_status NOT IN (0, 3, 6)")
     abstract fun getPendingMessagesLive(conversationId: String): LiveData<List<MessageEntity>>
 
     @Query(

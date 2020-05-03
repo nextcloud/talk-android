@@ -63,6 +63,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
+import com.nextcloud.talk.newarch.local.models.User
 import com.nextcloud.talk.newarch.local.models.getCredentials
 import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.local.models.toUserEntity
@@ -125,6 +126,10 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         showConversationInfoScreen()
     }
 
+    private lateinit var user: User
+    private lateinit var conversationToken: String
+    private var conversationPassword: String? = null
+
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup
@@ -133,8 +138,6 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
         actionBar?.show()
         viewModel = viewModelProvider(factory).get(ChatViewModel::class.java)
         val view = super.onCreateView(inflater, container)
-
-        viewModel.init(bundle.getParcelable(BundleKeys.KEY_USER)!!, bundle.getString(KEY_CONVERSATION_TOKEN)!!, bundle.getString(KEY_CONVERSATION_PASSWORD))
 
         messagesAdapter = Adapter.builder(this)
                 .addSource(ChatViewLiveDataSource(viewModel.messagesLiveData))
@@ -218,6 +221,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 if (shouldShowLobby) {
                     view.messagesRecyclerView?.visibility = View.GONE
                     view.messageInputView?.visibility = View.GONE
+                    view.separator?.visibility = View.GONE
                     view.lobbyView?.visibility = View.VISIBLE
                     val timer = conversation.lobbyTimer
                     val unit = if (timer != null && timer != 0L) {
@@ -235,8 +239,10 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
 
                     if (isReadOnlyConversation) {
                         view.messageInputView?.visibility = View.GONE
+                        view.separator?.visibility = View.GONE
                     } else {
                         view.messageInputView?.visibility = View.VISIBLE
+                        view.separator?.visibility = View.VISIBLE
                     }
                 }
             }
@@ -454,9 +460,14 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
     override fun onAttach(view: View) {
         super.onAttach(view)
         viewModel.view = this
+        user = bundle.getParcelable(BundleKeys.KEY_USER)!!
+        conversationToken = bundle.getString(BundleKeys.KEY_CONVERSATION_TOKEN)!!
+        conversationPassword = bundle.getString(KEY_CONVERSATION_PASSWORD)
+        viewModel.user = user
+        viewModel.conversationPassword = conversationPassword
         setupViews()
         toolbar?.setOnClickListener(toolbarOnClickListener)
-        viewModel.joinConversation()
+        viewModel.joinConversation(user, conversationToken, conversationPassword)
     }
 
     override fun onDetach(view: View) {

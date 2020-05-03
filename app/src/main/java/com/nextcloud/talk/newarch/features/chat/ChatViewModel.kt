@@ -65,14 +65,14 @@ class ChatViewModel constructor(application: Application,
                                 private val messagesRepository: MessagesRepository,
                                 private val globalService: GlobalService) : BaseViewModel<ChatView>(application), GlobalServiceInterface {
     lateinit var user: User
-    val conversation: MutableLiveData<Conversation?> = MutableLiveData()
+    val conversation: MutableLiveData<Conversation?> = MutableLiveData<Conversation?>()
     var pastStartingPoint: Long = -1
     val futureStartingPoint: MutableLiveData<Long> = MutableLiveData()
     private var initConversation: Conversation? = null
 
-    val messagesLiveData = Transformations.switchMap(futureStartingPoint) { futureStartingPoint ->
-        conversation.value?.let {
-            messagesRepository.getMessagesWithUserForConversationSince(it.databaseId!!, futureStartingPoint).map { chatMessagesList ->
+    val messagesLiveData = Transformations.switchMap(conversation) { conversation ->
+        conversation?.let {
+            messagesRepository.getMessagesWithUserForConversation(it.databaseId!!).map { chatMessagesList ->
                 chatMessagesList.map { chatMessage ->
                     chatMessage.activeUser = user.toUserEntity()
                     chatMessage.parentMessage?.activeUser = chatMessage.activeUser
@@ -83,21 +83,12 @@ class ChatViewModel constructor(application: Application,
                     }
                 }
             }
-
         }
     }
 
     var conversationPassword: String? = null
     var view: Controller? = null
 
-
-    fun init(user: User, conversationToken: String, conversationPassword: String?) {
-        viewModelScope.launch {
-            this@ChatViewModel.user = user
-            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
-            this@ChatViewModel.conversationPassword = conversationPassword
-        }
-    }
 
     fun sendMessage(editable: Editable, replyTo: Long?) {
         val messageParameters = hashMapOf<String, HashMap<String, String>>()
@@ -143,7 +134,7 @@ class ChatViewModel constructor(application: Application,
                     chatMessage.actorDisplayName = user.displayName
                     chatMessage.message = editable.toString()
                     chatMessage.systemMessageType = null
-                    chatMessage.chatMessageStatus = ChatMessageStatus.PENDING_MESSAGE_SEND
+                    chatMessage.chatMessageStatus = ChatMessageStatus.PENDING
                     if (replyTo != null) {
                         chatMessage.parentMessage = messagesRepository.getMessageForConversation(conversationDatabaseId, replyTo)
                     } else {
@@ -170,11 +161,12 @@ class ChatViewModel constructor(application: Application,
         }
     }
 
-    fun joinConversation() {
-        initConversation?.token?.let {
-            viewModelScope.launch {
-                globalService.getConversation(it, this@ChatViewModel)
-            }
+    fun joinConversation(user: User, conversationToken: String, conversationPassword: String?) {
+        viewModelScope.launch {
+            this@ChatViewModel.user = user
+            this@ChatViewModel.initConversation = conversationsRepository.getConversationForUserWithToken(user.id!!, conversationToken)
+            this@ChatViewModel.conversationPassword = conversationPassword
+            globalService.getConversation(conversationToken, this@ChatViewModel)
         }
     }
 

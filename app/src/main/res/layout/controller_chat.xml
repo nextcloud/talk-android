@@ -42,11 +42,13 @@
         android:layout_above="@+id/messageInputView"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:visibility="gone"
         android:background="@color/controller_chat_separator" />
 
     <com.stfalcon.chatkit.messages.MessageInput
         android:id="@+id/messageInputView"
         android:animateLayoutChanges="true"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

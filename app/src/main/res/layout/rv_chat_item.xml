@@ -79,9 +79,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/chatMessage"
         android:textSize="10sp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignWithParentIfMissing="true"
+        android:layout_above="@id/failedToSendNotice"
         android:layout_toStartOf="@id/sendingProgressBar"
+        android:layout_alignWithParentIfMissing="true"
         android:id="@+id/messageTime"
         android:layout_marginEnd="8dp"
         tools:text="12:30"/>
@@ -91,9 +91,11 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:text="@string/nc_failed_to_send"
-        android:layout_below="@id/messageTime"
+        android:layout_alignParentBottom="true"
+        android:textAlignment="viewEnd"
+        android:textColor="@color/nc_darkRed"
         android:id="@+id/failedToSendNotice"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_alignParentEnd="true"/>
 
 

@@ -36,9 +36,10 @@ class ChatMessageStatusConverter {
         return when (value) {
             0 -> ChatMessageStatus.SENT
             1 -> ChatMessageStatus.RECEIVED
-            2 -> ChatMessageStatus.PENDING_MESSAGE_SEND
-            3 -> ChatMessageStatus.PENDING_FILE_UPLOAD
-            4 -> ChatMessageStatus.PENDING_FILE_SHARE
+            2 -> ChatMessageStatus.PENDING
+            3 -> ChatMessageStatus.PROCESSING
+            4 -> ChatMessageStatus.FAILED_ONCE
+            5 -> ChatMessageStatus.FAILED_TWICE
             else -> ChatMessageStatus.FAILED
         }
     }

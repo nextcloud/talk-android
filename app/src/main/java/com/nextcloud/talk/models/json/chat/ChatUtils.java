@@ -20,6 +20,9 @@
 
 package com.nextcloud.talk.models.json.chat;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.HashMap;
 
 public class ChatUtils {
@@ -34,6 +37,23 @@ public class ChatUtils {
                     message = message.replace("{" + key + "}", "@" + messageParameters.get(key).get("name"));
                 } else if (individualHashMap.get("type").equals("file")) {
                     message = message.replace("{" + key + "}", messageParameters.get(key).get("name"));
+                }
+            }
+        }
+
+        return message;
+    }
+
+    @NotNull
+    public static Object getParsedMessageForSending(String message, HashMap<String, HashMap<String, String>> messageParameters) {
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
+                HashMap<String, String> individualHashMap = messageParameters.get(key);
+                if (individualHashMap.get("type").equals("user") || individualHashMap.get("type")
+                        .equals("guest") || individualHashMap.get("type").equals("call")) {
+                    message = message.replace("{" + key + "}", "@" + messageParameters.get(key).get("id"));
+                } else if (individualHashMap.get("type").equals("file")) {
+                    message = message.replace("{" + key + "}", messageParameters.get(key).get("id"));
                 }
             }
         }
