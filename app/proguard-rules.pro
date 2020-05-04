@@ -19,3 +19,8 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class org.webrtc.** { *; }
+-keep class com.nextcloud.talk.**  { *; }
+-keepclasseswithmembernames class * { native <methods>; }
+-keep class de.tavendo.autobahn.**  { *; }
+-keep class org.appspot.apprtc.**  { *; }

@@ -47,8 +47,8 @@ android {
     targetSdkVersion 29
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-    versionCode 138
-    versionName "9.0.0beta2"
+    versionCode 139
+    versionName "9.0.0beta3"
 
     flavorDimensions "default"
     renderscriptTargetApi 19
@@ -124,8 +124,8 @@ android {
     }
 
     release {
-      minifyEnabled true
-      shrinkResources true
+      minifyEnabled false
+      shrinkResources false
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
@@ -283,7 +283,7 @@ dependencies {
   implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
   implementation 'eu.davidea:flexible-adapter-livedata:1.0.0-b3'
   implementation 'com.otaliastudios:elements:0.3.7'
-  implementation 'org.webrtc:google-webrtc:1.0.23295'
+  implementation 'org.webrtc:google-webrtc:1.0.23995'
   implementation 'com.yarolegovich:lovely-dialog:1.1.0'
   implementation 'com.yarolegovich:lovelyinput:1.0.9'
   implementation 'com.yarolegovich:mp:1.0.9'
