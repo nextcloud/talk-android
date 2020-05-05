@@ -21,6 +21,8 @@
 
 <resources>
     <bool name="is_night">false</bool>
+    <bool name="status_bar_light">true</bool>
+
     <color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>

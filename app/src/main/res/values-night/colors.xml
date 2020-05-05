@@ -23,6 +23,7 @@
 
 <resources>
     <bool name="is_night">true</bool>
+    <bool name="status_bar_light">false</bool>
 
     <color name="conversation_item_header">#9FBDCC</color>
     <!--<color name="conversation_item_header">#CFCFCF</color>-->
