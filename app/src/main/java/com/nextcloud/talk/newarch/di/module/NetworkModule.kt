@@ -115,7 +115,7 @@ fun createOkHttpClient(
 ): OkHttpClient {
     val httpClient = OkHttpClient.Builder()
 
-    httpClient.retryOnConnectionFailure(false)
+    httpClient.retryOnConnectionFailure(true)
     httpClient.connectTimeout(300, TimeUnit.SECONDS)
     httpClient.readTimeout(300, TimeUnit.SECONDS)
     httpClient.writeTimeout(300, TimeUnit.SECONDS)
