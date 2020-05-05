@@ -193,6 +193,7 @@
 
     <string name="nc_groups">קבוצות</string>
     <string name="nc_contacts">אנשי קשר</string>
+    <string name="nc_circles">מעגלים</string>
     <string name="nc_participants">משתתפים</string>
     <string name="nc_owner">בעלות</string>
     <string name="nc_moderator">פיקוח</string>
