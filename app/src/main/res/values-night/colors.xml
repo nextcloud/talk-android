@@ -41,7 +41,7 @@
     <color name="bg_selected_participant_clear_icon">#EFEFEF</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
     <color name="bg_message_list_outcoming_bubble">#003F62</color>
-
+    <color name="fg_inverse">#222222</color>
 
     <color name="emoji_background">#313031</color>
     <color name="emoji_divider">#15FFFFFF</color>
