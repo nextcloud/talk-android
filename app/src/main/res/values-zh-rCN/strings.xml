@@ -25,7 +25,7 @@
     <!-- Server selection -->
     <string name="nc_server_url">服务器地址</string>
     <string name="nc_server_not_installed">请完成您的 %1$s 安装</string>
-    <string name="nc_server_db_upgrade_needed">请升级您的%1$s数据库</string>
+    <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_maintenance">请将您的 %1$s 退出维护模式</string>
     <string name="nc_server_version">%1$s 仅支持 %2$s 13 及更高版本</string>
     <string name="nc_server_import_account_plain">导入账号</string>
@@ -43,7 +43,7 @@
     <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
-    <string name="nc_display_name_not_stored">无法储存显示名称，终止中</string>
+    <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
 
     <string name="nc_never">从未加入</string>
     <string name="nc_search">搜索</string>
@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">请确认您真要移除当前账号。</string>
     <string name="nc_settings_remove_account">移除账号</string>
     <string name="nc_settings_add_account">添加一个新账号</string>
+    <string name="nc_settings_new_account">新建帐号</string>
     <string name="nc_add">新增</string>
     <string name="nc_settings_wrong_account">仅当前账号可以重新授权</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
@@ -318,5 +319,10 @@
     <string name="nc_new_group">新建群组</string>
     <string name="nc_search_empty_contacts">他们都藏在哪里？</string>
     <string name="nc_reject_call">拒绝</string>
+    <string name="silenced_by_moderator">您已被一位主持人禁言</string>
+    <string name="nc_failed_to_send">发送失败 - 点击重试发送</string>
     <string name="nc_preferences">设置偏好</string>
-    </resources>
+    <string name="nc_look_and_feel">外观和声音</string>
+    <string name="nc_settings_calls_sound">通话声音</string>
+    <string name="nc_settings_notifications_sound">通知声音</string>
+</resources>
