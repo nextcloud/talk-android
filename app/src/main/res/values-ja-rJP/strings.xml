@@ -47,6 +47,8 @@
 
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_search">検索</string>
+    <string name="nc_search_conversations">会話を探す</string>
+
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
     <string name="nc_yes">はい</string>
@@ -67,13 +69,17 @@
     <string name="nc_settings_remove_confirmation">現在のアカウントを削除する目的を確認してください。</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
+    <string name="nc_settings_new_account">新規アカウント</string>
     <string name="nc_add">追加</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_account_scheduled_for_deletion">アカウントは削除予定であり、変更することはできません</string>
+    <string name="nc_settings_notification_sounds">サウンド</string>
+    <string name="nc_settings_call_ringtone">コール</string>
     <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">音無し</string>
+    <string name="nc_settings_vibrate">バイブレーション</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
     <string name="nc_settings_appearance">表示</string>
     <string name="nc_settings_theme_title">テーマ</string>
@@ -111,6 +117,7 @@
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_username">ユーザー名</string>
     <string name="nc_password">パスワード</string>
+    <string name="nc_password_optional">パスワード（オプショナル）</string>
     <string name="nc_password_redacted">プライバシー上の理由で編集済み</string>
     <string name="nc_conversation_link">会話リンク</string>
     <string name="nc_new_password">新しいパスワード</string>
@@ -152,6 +159,10 @@
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
     <string name="nc_favorites_explanation">会話は会話リストのトップに固定されます</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">参加者を探す</string>
+    <string name="nc_select_contacts">参加者を探す</string>
+    <string name="nc_select_new_contacts">新しい参加者を探す</string>
     <string name="nc_contacts_done">完了</string>
 
     <!-- Permissions -->
@@ -258,6 +269,8 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_circles">サークル</string>
     <string name="nc_emails">メール</string>
     <string name="nc_participants">参加者</string>
+    <string name="nc_others">その他</string>
+
     <string name="nc_owner">オーナー</string>
     <string name="nc_moderator">モデレータ</string>
     <string name="nc_user">ユーザー</string>
@@ -288,6 +301,8 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_not_defined_error">不明なエラー</string>
     <string name="nc_unauthorized_error">権限がありません</string>
 
+    <string name="nc_oops">おっと、何かがおかしいようです。</string>
+
     <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">ゲストを許可する</string>
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>
@@ -298,6 +313,14 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_copy_message">コピー</string>
     <string name="nc_reply">返信</string>
 
+    <string name="nc_search_for_more">さらに参加者を探す</string>
+    <string name="nc_new_group">新規グループ</string>
+    <string name="nc_search_empty_contacts">みんなどこに隠れたの？</string>
     <string name="nc_reject_call">拒否</string>
+    <string name="silenced_by_moderator">モデレータに発言を禁じられました</string>
+    <string name="nc_failed_to_send">送信に失敗しました - タップして再送</string>
     <string name="nc_preferences">環境設定</string>
-    </resources>
+    <string name="nc_look_and_feel">参加 &amp; サウンド</string>
+    <string name="nc_settings_calls_sound">呼び出し音</string>
+    <string name="nc_settings_notifications_sound">通知音</string>
+</resources>
