@@ -21,6 +21,7 @@ package com.nextcloud.talk.services.firebase
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nextcloud.talk.newarch.services.CallService
@@ -45,6 +46,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
         incomingCallIntent.action = KEY_INCOMING_PUSH_MESSSAGE
         incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SUBJECT, remoteMessage.data["subject"])
         incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SIGNATURE, remoteMessage.data["signature"])
-        applicationContext.startService(incomingCallIntent)
+        ContextCompat.startForegroundService(applicationContext, incomingCallIntent)
     }
 }
