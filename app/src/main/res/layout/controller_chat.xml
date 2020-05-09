@@ -56,6 +56,7 @@
         android:maxLength="1000"
         app:attachmentButtonDefaultBgColor="@color/colorPrimary"
         app:attachmentButtonDefaultIconColor="@color/white"
+        app:attachmentButtonIcon="@drawable/ic_attachment_white_24dp"
         app:attachmentButtonHeight="36dp"
         app:attachmentButtonWidth="36dp"
         app:inputButtonDefaultBgColor="@color/colorPrimary"
