@@ -25,20 +25,19 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isVisible
 import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
 import com.bluelinelabs.conductor.autodispose.ControllerScopeProvider
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.mvvm.BaseView
+import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.settings_privacy_view.view.*
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import java.util.*
+
 
 class SettingsPrivacyView(private val bundle: Bundle? = null) : BaseView() {
     override val scopeProvider: LifecycleScopeProvider<*> = ControllerScopeProvider.from(this)
@@ -46,6 +45,10 @@ class SettingsPrivacyView(private val bundle: Bundle? = null) : BaseView() {
 
     private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String> = ProxyTypeChangeListener()
     private var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean> = ProxyCredentialsChangeListener()
+    private var screenSecurityChangeListener: OnPreferenceValueChangedListener<Boolean> = ScreenSecurityChangeListener()
+
+    private var screenLockListener: OnPreferenceValueChangedListener<Boolean> = ScreenLockListener()
+    private var screenLockTimeoutListener: OnPreferenceValueChangedListener<String?> = ScreenLockTimeoutListener()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
         setHasOptionsMenu(true)
@@ -89,6 +92,9 @@ class SettingsPrivacyView(private val bundle: Bundle? = null) : BaseView() {
 
         appPreferences.registerProxyTypeListener(proxyTypeChangeListener)
         appPreferences.registerProxyCredentialsListener(proxyCredentialsChangeListener)
+        appPreferences.registerScreenSecurityListener(screenSecurityChangeListener)
+        appPreferences.registerScreenLockListener(screenLockListener)
+        appPreferences.registerScreenLockTimeoutListener(screenLockTimeoutListener)
 
         setupProxySection(view)
         return view
@@ -97,6 +103,7 @@ class SettingsPrivacyView(private val bundle: Bundle? = null) : BaseView() {
     override fun onDestroy() {
         appPreferences.unregisterProxyCredentialsListener(proxyCredentialsChangeListener)
         appPreferences.unregisterProxyTypeListener(proxyTypeChangeListener)
+        appPreferences.unregisterScreenSecurityListener(screenSecurityChangeListener)
         super.onDestroy()
     }
 
@@ -173,6 +180,36 @@ class SettingsPrivacyView(private val bundle: Bundle? = null) : BaseView() {
                 }
 
                 toggleProxySettingsVisibility(view, true)
+            }
+        }
+    }
+
+
+    private inner class ScreenSecurityChangeListener : OnPreferenceValueChangedListener<Boolean> {
+        override fun onChanged(newValue: Boolean) {
+            if (newValue) {
+                activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            } else {
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+            }
+        }
+    }
+
+
+    private inner class ScreenLockTimeoutListener : OnPreferenceValueChangedListener<String?> {
+        override fun onChanged(newValue: String?) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                SecurityUtils.createKey(appPreferences.screenLockTimeout)
+            }
+        }
+    }
+
+    private inner class ScreenLockListener : OnPreferenceValueChangedListener<Boolean> {
+        override fun onChanged(newValue: Boolean) {
+            if (newValue) {
+                view?.settings_screen_lock_timeout?.alpha = 1.0f
+            } else {
+                view?.settings_screen_lock_timeout?.alpha = 0.38f
             }
         }
     }
