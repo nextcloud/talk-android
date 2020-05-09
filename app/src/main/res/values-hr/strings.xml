@@ -87,7 +87,7 @@
     <string name="nc_settings_theme_battery_saver">Postavlja alat za uštedu baterije</string>
     <string name="nc_settings_theme_light">Svijetlo</string>
     <string name="nc_settings_theme_dark">Tamno</string>
-    <string name="nc_settings_privacy">Privatnost</string>
+    <string name="nc_settings_privacy_legal">Privatnost</string>
     <string name="nc_settings_screen_lock_title">Zaključavanje zaslona</string>
     <string name="nc_settings_screen_lock_desc">Zaključaj %1$s s pomoću značajke zaključavanja zaslona Android uređaja ili podržanom biometrijskom metodom</string>
     <string name="nc_settings_screen_lock_timeout_title">Istek vremena neaktivnosti zaključavanja zaslona</string>

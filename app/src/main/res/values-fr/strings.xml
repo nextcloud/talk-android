@@ -88,7 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_light">Clair</string>
     <string name="nc_settings_theme_dark">Sombre</string>
-    <string name="nc_settings_privacy">Vie privée</string>
+    <string name="nc_settings_privacy_legal">Vie privée</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>

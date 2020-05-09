@@ -88,7 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Ustawiony według Oszczędzania Baterii</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
-    <string name="nc_settings_privacy">Prywatność</string>
+    <string name="nc_settings_privacy_legal">Prywatność</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
     <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Androida lub obsługiwanej metody biometrycznej</string>
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>

@@ -88,7 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Nastavené pomocou Šetriča batérie</string>
     <string name="nc_settings_theme_light">Svetlý</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
-    <string name="nc_settings_privacy">Súkromie</string>
+    <string name="nc_settings_privacy_legal">Súkromie</string>
     <string name="nc_settings_screen_lock_title">Zámok obrazovky</string>
     <string name="nc_settings_screen_lock_desc">Zamknúť %1$s so zámkou obrazovky systému Android alebo podporovanou biometrickou metódou.</string>
     <string name="nc_settings_screen_lock_timeout_title">Zamknúť obrazovku po uplynutí času nečinnosti</string>

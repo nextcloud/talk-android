@@ -85,7 +85,7 @@
     <string name="nc_settings_theme_battery_saver">تنظیم شده توسط ذخیره نیرو</string>
     <string name="nc_settings_theme_light">روشن</string>
     <string name="nc_settings_theme_dark">تیره</string>
-    <string name="nc_settings_privacy">حریم خصوصی</string>
+    <string name="nc_settings_privacy_legal">حریم خصوصی</string>
     <string name="nc_settings_screen_lock_title">قفل صفحه</string>
     <string name="nc_settings_screen_lock_desc">قفل %1$s با قفل صفحه Android یا روش بیومتریک پشتیبانی شده</string>
     <string name="nc_settings_screen_lock_timeout_title">زمان غیرفعال کردن قفل صفحه</string>

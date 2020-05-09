@@ -71,7 +71,7 @@
     <string name="nc_settings_theme_title">Shabllon</string>
     <string name="nc_settings_theme_light">E çelët</string>
     <string name="nc_settings_theme_dark">E errët</string>
-    <string name="nc_settings_privacy">Privatësia</string>
+    <string name="nc_settings_privacy_legal">Privatësia</string>
     <string name="nc_none">Asnjë</string>
     <string name="nc_screen_lock_timeout_300">5 minuta</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>

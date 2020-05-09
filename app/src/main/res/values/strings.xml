@@ -102,7 +102,7 @@
     <string name="nc_settings_theme_battery_saver">Set by Battery Saver</string>
     <string name="nc_settings_theme_light">Light</string>
     <string name="nc_settings_theme_dark">Dark</string>
-    <string name="nc_settings_privacy">Privacy</string>
+    <string name="nc_settings_privacy_legal">Privacy &amp; Legal Policy</string>
     <string name="nc_settings_screen_lock_title">Screen lock</string>
     <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or supported biometric method</string>
     <string name="nc_settings_screen_lock_key" translatable="false">screen_lock</string>

@@ -87,7 +87,7 @@
     <string name="nc_settings_theme_battery_saver">Nastavljeno prek zunanjega programa</string>
     <string name="nc_settings_theme_light">Svetla</string>
     <string name="nc_settings_theme_dark">Temna</string>
-    <string name="nc_settings_privacy">Zasebnost</string>
+    <string name="nc_settings_privacy_legal">Zasebnost</string>
     <string name="nc_settings_screen_lock_title">Zaklep zaslona</string>
     <string name="nc_settings_screen_lock_desc">Zakleni %1$s z zaklepom zaslona oziroma drugo podprto biometrično metodo</string>
     <string name="nc_settings_screen_lock_timeout_title">Časovni zamik zaklepa ob nedejavnosti</string>

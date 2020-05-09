@@ -124,7 +124,7 @@
             android:id="@+id/settings_privacy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_privacy" />
+            apc:mp_title="@string/nc_settings_privacy_legal" />
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_source_code"

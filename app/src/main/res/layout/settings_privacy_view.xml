@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_settings_privacy"
+        apc:mpc_title="@string/nc_privacy"
         apc:mpc_title_color="@color/colorPrimary">
 
         <com.yarolegovich.mp.MaterialChoicePreference

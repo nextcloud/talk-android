@@ -87,7 +87,7 @@
     <string name="nc_settings_theme_battery_saver">Поставља штедња батерије</string>
     <string name="nc_settings_theme_light">Светла</string>
     <string name="nc_settings_theme_dark">Тамна</string>
-    <string name="nc_settings_privacy">Приватност</string>
+    <string name="nc_settings_privacy_legal">Приватност</string>
     <string name="nc_settings_screen_lock_title">Закључавање екрана</string>
     <string name="nc_settings_screen_lock_desc">Закључајте %1$s са Андроидовим екраном закључавања или подржаним биометријским методом</string>
     <string name="nc_settings_screen_lock_timeout_title">Период неактивности до закључавања екрана</string>
