@@ -1466,8 +1466,12 @@ class CallController(args: Bundle) : BaseController() {
         }
 
         timer.cancel()
-        recorder.stop()
-        recorder.release()
+        try {
+            recorder.stop()
+            recorder.release()
+        } catch (e: Exception) {
+            // do nothing
+        }
 
         hangupNetworkCalls(shutDownView)
     }
@@ -2267,7 +2271,7 @@ class CallController(args: Bundle) : BaseController() {
                 }
                 CallController.CallStatus.IN_CONVERSATION -> handler!!.post {
                     stopCallingSound()
-                    startListening()
+                    //startListening()
 
                     if (!isPTTActive) {
                         animateCallControls(false, 5000)

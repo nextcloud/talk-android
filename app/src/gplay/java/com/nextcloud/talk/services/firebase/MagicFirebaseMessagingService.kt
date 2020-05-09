@@ -21,9 +21,14 @@ package com.nextcloud.talk.services.firebase
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.util.Log
 import androidx.core.content.ContextCompat
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INCOMING_PUSH_MESSSAGE
@@ -42,10 +47,12 @@ class MagicFirebaseMessagingService : FirebaseMessagingService(), KoinComponent 
 
     @SuppressLint("LongLogTag")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
-        val incomingCallIntent = Intent(applicationContext, CallService::class.java)
-        incomingCallIntent.action = KEY_INCOMING_PUSH_MESSSAGE
-        incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SUBJECT, remoteMessage.data["subject"])
-        incomingCallIntent.putExtra(BundleKeys.KEY_ENCRYPTED_SIGNATURE, remoteMessage.data["signature"])
-        ContextCompat.startForegroundService(applicationContext, incomingCallIntent)
+        val messageData = Data.Builder()
+                .putString(BundleKeys.KEY_ENCRYPTED_SUBJECT, remoteMessage.data["subject"])
+                .putString(BundleKeys.KEY_ENCRYPTED_SIGNATURE, remoteMessage.data["signature"])
+                .build()
+
+        val pushNotificationWork = OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData).build()
+        WorkManager.getInstance().enqueue(pushNotificationWork)
     }
 }

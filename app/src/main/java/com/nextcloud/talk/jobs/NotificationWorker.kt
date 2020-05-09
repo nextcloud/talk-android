@@ -21,6 +21,7 @@ package com.nextcloud.talk.jobs
 
 import android.app.Notification
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
@@ -28,9 +29,12 @@ import android.media.AudioManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.util.Base64
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.emoji.text.EmojiCompat
@@ -44,28 +48,42 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationOverall
 import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage
 import com.nextcloud.talk.models.json.push.NotificationUser
 import com.nextcloud.talk.newarch.data.model.ErrorModel
 import com.nextcloud.talk.newarch.data.source.remote.ApiErrorHandler
+import com.nextcloud.talk.newarch.domain.repository.offline.ConversationsRepository
+import com.nextcloud.talk.newarch.domain.repository.offline.UsersRepository
+import com.nextcloud.talk.newarch.domain.usecases.GetConversationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.GetNotificationUseCase
 import com.nextcloud.talk.newarch.domain.usecases.base.UseCaseResponse
+import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.local.models.toUser
+import com.nextcloud.talk.newarch.services.CallService
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.MagicJson
 import com.nextcloud.talk.newarch.utils.NetworkComponents
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
+import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHOW_INCOMING_CALL
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.koin.core.parameter.parametersOf
+import java.security.InvalidKeyException
+import java.security.NoSuchAlgorithmException
+import java.security.PrivateKey
 import java.util.function.Consumer
+import javax.crypto.Cipher
+import javax.crypto.NoSuchPaddingException
 
 class NotificationWorker(
         context: Context,
@@ -74,34 +92,106 @@ class NotificationWorker(
     val appPreferences: AppPreferences by inject()
     private val networkComponents: NetworkComponents by inject()
     private val apiErrorHandler: ApiErrorHandler by inject()
+    private val usersRepository: UsersRepository by inject()
+    private val conversationsRepository: ConversationsRepository by inject()
+
+    val tag: String = "NotificationWorker"
 
     override suspend fun doWork(): Result = coroutineScope {
         val data = inputData
-        val decryptedPushMessageString: String = data.getString(BundleKeys.KEY_DECRYPTED_PUSH_MESSAGE)!!
-        val signatureVerificationString: String = data.getString(BundleKeys.KEY_SIGNATURE_VERIFICATION)!!
-        val conversationString: String = data.getString(BundleKeys.KEY_CONVERSATION)!!
+        decryptMessage(data.getString(BundleKeys.KEY_ENCRYPTED_SUBJECT)!!, data.getString(BundleKeys.KEY_ENCRYPTED_SIGNATURE)!!)
 
-        val json = Json(MagicJson.customJsonConfiguration)
-        val decryptedPushMessage = LoganSquare.parse(decryptedPushMessageString, DecryptedPushMessage::class.java)
-        val signatureVerification = json.parse(SignatureVerification.serializer(), signatureVerificationString)
-        val conversation = json.parse(Conversation.serializer(), conversationString)
+        Result.success()
+    }
 
-        when (decryptedPushMessage.type) {
-            "room" -> {
-                showNotificationWithObjectData(this, decryptedPushMessage, signatureVerification, conversation)
+    private suspend fun decryptMessage(subject: String, signature: String) = coroutineScope {
+        val signatureVerification: SignatureVerification
+        val decryptedPushMessage: DecryptedPushMessage
+
+        try {
+            val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
+            val base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT)
+            val pushUtils = PushUtils(usersRepository)
+            val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
+            try {
+                signatureVerification = pushUtils.verifySignature(base64DecodedSignature, base64DecodedSubject)
+                if (signatureVerification.signatureValid) {
+                    val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
+                    cipher.init(Cipher.DECRYPT_MODE, privateKey)
+                    val decryptedSubject = cipher.doFinal(base64DecodedSubject)
+                    decryptedPushMessage = LoganSquare.parse(String(decryptedSubject), DecryptedPushMessage::class.java)
+                    var conversation: Conversation? = null
+                    decryptedPushMessage.id?.let {
+                        conversation = getConversationForTokenAndUser(signatureVerification.userEntity!!, it)
+                    }
+
+                    decryptedPushMessage.apply {
+                        when {
+                            delete -> {
+                                NotificationUtils.cancelExistingNotificationWithId(applicationContext, signatureVerification.userEntity!!, notificationId!!)
+                            }
+                            deleteAll -> {
+                                NotificationUtils.cancelAllNotificationsForAccount(applicationContext, signatureVerification.userEntity!!)
+                            }
+                            type == "call" && (conversation?.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION || conversation?.objectType.equals("share:password")) -> {
+                                conversation?.let {
+                                    // start service
+                                    val json = Json(MagicJson.customJsonConfiguration)
+                                    val incomingCallIntent = Intent(applicationContext, CallService::class.java)
+                                    incomingCallIntent.action = KEY_SHOW_INCOMING_CALL
+                                    incomingCallIntent.putExtra(BundleKeys.KEY_DECRYPTED_PUSH_MESSAGE, LoganSquare.serialize(decryptedPushMessage))
+                                    incomingCallIntent.putExtra(BundleKeys.KEY_SIGNATURE_VERIFICATION, json.stringify(SignatureVerification.serializer(), signatureVerification))
+                                    incomingCallIntent.putExtra(BundleKeys.KEY_CONVERSATION, json.stringify(Conversation.serializer(), it))
+                                    ContextCompat.startForegroundService(applicationContext, incomingCallIntent)
+                                }
+
+                            }
+                            type == "call" -> {
+                                conversation?.let { showNotification(decryptedPushMessage, signatureVerification, it) }
+                            }
+                            type == "room" -> {
+                                conversation?.let { showNotificationWithObjectData(this@coroutineScope, decryptedPushMessage, signatureVerification, it) }
+                            }
+                            type == "chat" -> {
+                                conversation?.let { showNotificationWithObjectData(this@coroutineScope, decryptedPushMessage, signatureVerification, it) }
+                            }
+                        }
+                    }
+                } else {
+                    // do nothing
+                }
+            } catch (e1: NoSuchAlgorithmException) {
+                Log.d(tag, "No proper algorithm to decrypt the message " + e1.localizedMessage)
+            } catch (e1: NoSuchPaddingException) {
+                Log.d(tag, "No proper padding to decrypt the message " + e1.localizedMessage)
+            } catch (e1: InvalidKeyException) {
+                Log.d(tag, "Invalid private key " + e1.localizedMessage)
             }
-            "chat" -> {
-                showNotificationWithObjectData(this, decryptedPushMessage, signatureVerification, conversation)
-            }
-            "call" -> {
-                showNotification(decryptedPushMessage, signatureVerification, conversation)
-            }
-            else -> {
-                // do nothing
+        } catch (exception: Exception) {
+            Log.d(tag, "Something went very wrong " + exception.localizedMessage)
+        }
+    }
+
+    private suspend fun getConversationForTokenAndUser(user: UserNgEntity, conversationToken: String): Conversation? {
+        var conversation = conversationsRepository.getConversationForUserWithToken(user.id, conversationToken)
+        if (conversation == null) {
+            val getConversationUseCase = GetConversationUseCase(networkComponents.getRepository(false, user.toUser()), apiErrorHandler)
+            runBlocking {
+                getConversationUseCase.invoke(this, parametersOf(user, conversationToken), object : UseCaseResponse<ConversationOverall> {
+                    override suspend fun onSuccess(result: ConversationOverall) {
+                        val internalConversation = result.ocs.data
+                        conversationsRepository.saveConversationsForUser(user.id, listOf(internalConversation), false)
+                        conversation = result.ocs.data
+                    }
+
+                    override suspend fun onError(errorModel: ErrorModel?) {
+                        conversation = null
+                    }
+                })
             }
         }
 
-        Result.success()
+        return conversation
     }
 
     private fun showNotificationWithObjectData(coroutineScope: CoroutineScope, decryptedPushMessage: DecryptedPushMessage, signatureVerification: SignatureVerification, conversation: Conversation) {
