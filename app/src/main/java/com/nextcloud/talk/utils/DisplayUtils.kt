@@ -62,7 +62,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.newarch.local.models.User
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.utils.text.Spans
 import kotlinx.coroutines.runBlocking
@@ -106,11 +105,10 @@ object DisplayUtils {
 
     fun getRoundedDrawable(drawable: Drawable?): Drawable {
         val bitmap = getBitmap(drawable!!)
-        val drawable = runBlocking {
+
+        return runBlocking {
             return@runBlocking BitmapDrawable(CircleCropTransformation().transform(BitmapPool(0), bitmap, OriginalSize))
         }
-
-        return drawable
     }
 
 
