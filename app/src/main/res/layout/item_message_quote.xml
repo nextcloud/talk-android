@@ -62,7 +62,7 @@
             android:layout_alignStart="@id/quotedAuthor"
             android:layout_below="@id/quotedPreviewImage"
             android:autoLink="all"
-            android:textSize="12sp"
+            android:textSize="14sp"
             tools:text="Just another chat message" />
 
         <TextView
@@ -72,7 +72,7 @@
             android:layout_below="@id/quotedChatText"
             android:layout_alignParentEnd="true"
             android:textAlignment="textEnd"
-            android:textSize="10sp"
+            android:textSize="12sp"
             tools:text="12:30" />
 
     </RelativeLayout>

@@ -88,7 +88,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                         if (TextMatchers.isMessageWithSingleEmoticonOnly(it.text)) {
                             holder.itemView.chatMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24f)
                         } else {
-                            holder.itemView.chatMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+                            holder.itemView.chatMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
                         }
 
                         if (shouldShowNameAndAvatar) {
@@ -112,7 +112,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                                                 ">_",
                                                 context.resources.getColor(R.color.black)
                                         )
-                                holder.itemView.authorAvatar.load(drawable)
+                                holder.itemView.authorAvatar.loadAny(drawable, imageLoader.getImageLoader())
                             } else {
                                 imageLoader.loadImage(holder.itemView.authorAvatar, it.user.avatar)
                             }
