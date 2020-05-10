@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginVertical="2dp"
     android:animateLayoutChanges="true">
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:id="@+id/authorLayout">
 
         <com.google.android.material.imageview.ShapeableImageView
@@ -17,74 +20,71 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentTop="true"
-            android:layout_marginEnd="8dp"
             android:layout_centerVertical="true"
             app:shapeAppearanceOverlay="@style/circleImageView"
             tools:srcCompat="@tools:sample/avatars" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_toEndOf="@id/authorAvatar"
-            android:textSize="14sp"
-            android:id="@+id/authorName"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            tools:text="Regular user"/>
-
     </RelativeLayout>
 
-    <include layout="@layout/item_message_quote"
-        android:layout_below="@id/authorLayout"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
-
-    <ImageView
-        android:id="@+id/previewImage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:layout_alignParentStart="true"
-        android:scaleType="fitStart"
-        android:layout_below="@id/quotedMessageLayout"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="8dp"
-        tools:src="@tools:sample/backgrounds/scenic"/>
-
-    <androidx.emoji.widget.EmojiTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="8dp"
-        android:textSize="14sp"
-        android:id="@+id/chatMessage"
-        android:autoLink="all"
-        android:layout_below="@id/previewImage"
-        tools:text="Just another chat message"/>
-
-    <ProgressBar
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:id="@+id/sendingProgressBar"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="8dp"
-        android:visibility="gone"
-        android:progressBackgroundTint="@color/colorPrimary"/>
-
-    <TextView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/chatMessage"
-        android:textSize="12sp"
-        android:layout_above="@id/failedToSendNotice"
-        android:layout_toStartOf="@id/sendingProgressBar"
-        android:layout_alignWithParentIfMissing="true"
-        android:id="@+id/messageTime"
-        android:layout_marginEnd="8dp"
-        tools:text="12:30"/>
+        android:id="@+id/messageLayout"
+        android:layout_toEndOf="@id/authorLayout"
+        android:background="@drawable/incoming_message_background">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:id="@+id/authorName"
+            android:layout_alignParentTop="true"
+            android:layout_marginHorizontal="8dp"
+            tools:text="Regular user"/>
+
+        <include layout="@layout/item_message_quote"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_below="@id/authorName"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"/>
+
+        <ImageView
+            android:id="@+id/previewImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_marginTop="4dp"
+            android:layout_alignParentStart="true"
+            android:scaleType="fitStart"
+            android:layout_below="@id/quotedMessageLayout"
+            android:layout_marginHorizontal="8dp"
+            tools:src="@tools:sample/backgrounds/scenic"/>
+
+        <androidx.emoji.widget.EmojiTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp"
+            android:layout_marginHorizontal="8dp"
+            android:id="@+id/chatMessage"
+            android:autoLink="all"
+            android:layout_below="@id/previewImage"
+            tools:text="Just another chat message"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/chatMessage"
+            android:textSize="12sp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:id="@+id/messageTime"
+            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="8dp"
+            tools:text="12:30"/>
+    </RelativeLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -92,11 +92,23 @@
         android:layout_marginHorizontal="8dp"
         android:text="@string/nc_failed_to_send"
         android:layout_alignParentBottom="true"
-        android:textAlignment="viewEnd"
+        android:layout_alignStart="@id/messageLayout"
+        android:layout_alignEnd="@id/messageLayout"
+        android:layout_below="@id/messageLayout"
         android:textColor="@color/nc_darkRed"
         android:id="@+id/failedToSendNotice"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_alignParentEnd="true"/>
 
+    <ProgressBar
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:id="@+id/sendingProgressBar"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/messageLayout"
+        android:layout_marginEnd="8dp"
+        android:visibility="gone"
+        android:progressBackgroundTint="@color/colorPrimary"/>
 
 </RelativeLayout>

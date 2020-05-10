@@ -1,0 +1,11 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners
+        android:bottomLeftRadius="15dp"
+        android:bottomRightRadius="15dp"
+        android:topLeftRadius="0dp"
+        android:topRightRadius="15dp" />
+
+    <solid android:color="@color/bg_message_list_incoming_bubble" />
+</shape>
