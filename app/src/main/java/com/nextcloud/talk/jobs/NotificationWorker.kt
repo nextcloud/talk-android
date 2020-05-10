@@ -286,7 +286,7 @@ class NotificationWorker(
                         .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                         .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
 
-        val vibrationEffect = NotificationUtils.getVibrationEffect(appPreferences)
+        val vibrationEffect = NotificationUtils.getVibrationEffect(appPreferences, false)
 
         val notificationChannelId = NotificationUtils.getNotificationChannelId(applicationContext, applicationContext.resources
                 .getString(R.string.nc_notification_channel_messages), applicationContext.resources

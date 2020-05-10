@@ -93,10 +93,14 @@ object NotificationUtils {
         }
     }
 
-    fun getVibrationEffect(appPreferences: AppPreferences): LongArray? {
+    fun getVibrationEffect(appPreferences: AppPreferences, forCalls: Boolean = true): LongArray? {
         val vibrator = getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         return if (appPreferences.shouldVibrateSetting && vibrator.hasVibrator()) {
-            longArrayOf(0L, 400L, 800L, 600L, 800L, 800L, 800L, 1000L)
+            if (forCalls) {
+                longArrayOf(0L, 400L, 800L, 600L, 800L, 800L, 800L, 1000L)
+            } else {
+                longArrayOf(0L, 100L, 1000L)
+            }
         } else {
             null
         }
