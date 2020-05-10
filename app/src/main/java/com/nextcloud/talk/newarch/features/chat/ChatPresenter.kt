@@ -14,6 +14,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
 import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
+import com.nextcloud.talk.newarch.utils.px
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.TextMatchers
@@ -22,7 +23,6 @@ import com.otaliastudios.elements.Page
 import com.otaliastudios.elements.Presenter
 import com.otaliastudios.elements.extensions.HeaderSource
 import com.stfalcon.chatkit.utils.DateFormatter
-import com.vanniktech.emoji.EmojiUtils
 import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.rv_chat_item.view.*
 import kotlinx.android.synthetic.main.rv_chat_system_item.view.*
@@ -92,7 +92,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
 
                         if (shouldShowNameAndAvatar) {
                             holder.itemView.authorLayout.isVisible = true
-                            holder.itemView.authorName?.text = it.actorDisplayName
+                            holder.itemView.authorName?.text = if (it.user.name.isNotEmpty()) it.user.name else context.resources.getText(R.string.nc_guest)
                             if (it.actorType == "bots" && it.actorId == "changelog") {
                                 val layers = arrayOfNulls<Drawable>(2)
                                 layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
@@ -103,14 +103,15 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             } else if (it.actorType == "bots") {
                                 val drawable = TextDrawable.builder()
                                         .beginConfig()
+                                        .width(24.px)
+                                        .height(24.px)
                                         .bold()
                                         .endConfig()
                                         .buildRound(
                                                 ">",
                                                 context.resources.getColor(R.color.black)
                                         )
-                                val loadBuilder = imageLoader.getImageLoader().newLoadBuilder(context).target(holder.itemView.authorAvatar).data(DisplayUtils.getRoundedDrawable(drawable))
-                                imageLoader.getImageLoader().load(loadBuilder.build())
+                                holder.itemView.authorAvatar.setImageDrawable(drawable)
                             } else {
                                 imageLoader.loadImage(holder.itemView.authorAvatar, it.user.avatar)
                             }
@@ -156,7 +157,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             }
 
                             imageLoader.loadImage(holder.itemView.quotedUserAvatar, parentMessage.user.avatar)
-                            holder.itemView.quotedAuthor.text = parentMessage.user.name
+                            holder.itemView.quotedAuthor.text = if (parentMessage.user.name.isNotEmpty()) parentMessage.user.name else context.resources.getText(R.string.nc_guest)
                             holder.itemView.quotedChatText.text = parentMessage.text
                             holder.itemView.quotedMessageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                         } ?: run {
