@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import coil.api.load
 import coil.api.loadAny
 import coil.api.newLoadBuilder
 import com.amulyakhare.textdrawable.TextDrawable
@@ -14,7 +15,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.newarch.features.chat.interfaces.ImageLoaderInterface
 import com.nextcloud.talk.newarch.local.models.other.ChatMessageStatus
-import com.nextcloud.talk.newarch.utils.px
+import com.nextcloud.talk.newarch.utils.dp
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.TextMatchers
@@ -103,15 +104,15 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             } else if (it.actorType == "bots") {
                                 val drawable = TextDrawable.builder()
                                         .beginConfig()
-                                        .width(24.px)
-                                        .height(24.px)
+                                        .width(24.dp)
+                                        .height(24.dp)
                                         .bold()
                                         .endConfig()
-                                        .buildRound(
-                                                ">",
+                                        .buildRect(
+                                                ">_",
                                                 context.resources.getColor(R.color.black)
                                         )
-                                holder.itemView.authorAvatar.setImageDrawable(drawable)
+                                holder.itemView.authorAvatar.load(drawable)
                             } else {
                                 imageLoader.loadImage(holder.itemView.authorAvatar, it.user.avatar)
                             }
