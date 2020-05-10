@@ -390,7 +390,7 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
                 quotedChatText.maxLines = 2
                 quotedChatText.ellipsize = TextUtils.TruncateAt.END
                 quotedChatText.text = chatMessage.text
-                quotedAuthor.text = chatMessage.user.name
+                quotedAuthor.text = if (chatMessage.user.name.isNotEmpty()) chatMessage.user.name else resources.getText(R.string.nc_guest)
                 quotedMessageTime.text = DateFormatter.format(chatMessage.createdAt, DateFormatter.Template.TIME)
                 loadImage(quotedUserAvatar, chatMessage.user.avatar)
 
