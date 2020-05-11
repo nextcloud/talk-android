@@ -63,6 +63,8 @@
         app:inputButtonHeight="36dp"
         app:inputButtonMargin="8dp"
         app:inputButtonWidth="36dp"
+        app:attachmentButtonMargin="8dp"
+        app:inputButtonIcon="@drawable/ic_send_white_24dp"
         app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/nc_incoming_text_default"
         app:inputTextSize="16sp"
