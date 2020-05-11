@@ -84,7 +84,6 @@
     <string name="nc_settings_theme_battery_saver">Sat af batteri-spare funktion</string>
     <string name="nc_settings_theme_light">Lys</string>
     <string name="nc_settings_theme_dark">Mørk</string>
-    <string name="nc_settings_privacy_legal">Privatliv</string>
     <string name="nc_settings_screen_lock_title">Skærm lås</string>
     <string name="nc_settings_screen_lock_desc">Lås %1$s med Android Skærm lås en understøttet biometrisk metode</string>
     <string name="nc_settings_screen_lock_timeout_title">Skærm lås inaktivitets timeout</string>

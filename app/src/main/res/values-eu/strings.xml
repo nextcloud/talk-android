@@ -88,7 +88,6 @@
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_dark">Iluna</string>
-    <string name="nc_settings_privacy_legal">Pribatutasuna</string>
     <string name="nc_settings_screen_lock_title">Pantailaren blokeoa</string>
     <string name="nc_settings_screen_lock_desc">Giltzatu %1$s Androiden pantaila giltzapen edo onartutako metodo biometrikoarekin</string>
     <string name="nc_settings_screen_lock_timeout_title">Jardun gabeko denbora-muga pantaila blokeatzeko</string>

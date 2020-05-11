@@ -88,7 +88,6 @@
     <string name="nc_settings_theme_battery_saver">Pil Koruyucu Tarafından</string>
     <string name="nc_settings_theme_light">Açık</string>
     <string name="nc_settings_theme_dark">Koyu</string>
-    <string name="nc_settings_privacy_legal">Gizlilik</string>
     <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
     <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da desteklenen biyometrik yöntem ile kilitlensin</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekran kilidi zaman aşımı süresi</string>

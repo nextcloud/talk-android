@@ -72,7 +72,6 @@
     <string name="nc_settings_theme_title">ערכת עיצוב</string>
     <string name="nc_settings_theme_light">בהירה</string>
     <string name="nc_settings_theme_dark">כהה</string>
-    <string name="nc_settings_privacy_legal">פרטיות</string>
     <string name="nc_settings_screen_lock_title">נעילת מסך</string>
     <string name="nc_none">אין</string>
     <string name="nc_settings_screen_security_title">אבטחת מסך</string>

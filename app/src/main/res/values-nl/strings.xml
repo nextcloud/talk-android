@@ -89,7 +89,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_light">Licht</string>
     <string name="nc_settings_theme_dark">Donker</string>
-    <string name="nc_settings_privacy_legal">Privacy</string>
     <string name="nc_settings_screen_lock_title">Schermvergrendeling</string>
     <string name="nc_settings_screen_lock_desc">Vergrendel %1$s via de Android schermvergendeling of een ondersteunde biometrische methode</string>
     <string name="nc_settings_screen_lock_timeout_title">Schermblokkade inactiviteit time-out</string>

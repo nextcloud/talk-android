@@ -65,7 +65,6 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_dark">Escuro</string>
-    <string name="nc_settings_privacy_legal">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloqueio de ecrã</string>
     <string name="nc_none">Nenhum</string>
     <string name="nc_settings_screen_security_title">Segurança de ecrã</string>
