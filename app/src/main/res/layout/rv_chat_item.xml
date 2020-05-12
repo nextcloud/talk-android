@@ -67,6 +67,7 @@
             android:layout_height="wrap_content"
             android:textSize="14sp"
             android:layout_marginTop="4dp"
+            android:textIsSelectable="false"
             android:layout_marginHorizontal="8dp"
             android:id="@+id/chatMessage"
             android:autoLink="all"
