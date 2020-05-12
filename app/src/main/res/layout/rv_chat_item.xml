@@ -26,17 +26,22 @@
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/messageLayout"
+        android:orientation="vertical"
+        app:alignContent="stretch"
+        app:alignItems="stretch"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start"
         android:layout_toEndOf="@id/authorLayout"
         android:background="@drawable/incoming_message_background">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:textSize="12sp"
             android:layout_marginTop="4dp"
             android:id="@+id/authorName"
             android:layout_alignParentTop="true"
@@ -46,7 +51,6 @@
         <include layout="@layout/item_message_quote"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="4dp"
-            android:layout_below="@id/authorName"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"/>
 
@@ -58,7 +62,6 @@
             android:layout_marginTop="4dp"
             android:layout_alignParentStart="true"
             android:scaleType="fitStart"
-            android:layout_below="@id/quotedMessageLayout"
             android:layout_marginHorizontal="8dp"
             tools:src="@tools:sample/backgrounds/scenic"/>
 
@@ -71,21 +74,21 @@
             android:layout_marginHorizontal="8dp"
             android:id="@+id/chatMessage"
             android:autoLink="all"
-            android:layout_below="@id/previewImage"
+            app:layout_alignSelf="flex_start"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="true"
             tools:text="Just another chat message"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:textAlignment="viewEnd"
             android:layout_height="wrap_content"
-            android:layout_below="@id/chatMessage"
             android:textSize="12sp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignWithParentIfMissing="true"
             android:id="@+id/messageTime"
             android:layout_marginBottom="4dp"
             android:layout_marginEnd="8dp"
             tools:text="12:30"/>
-    </RelativeLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 
     <TextView
         android:layout_width="match_parent"
