@@ -88,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Ορισμός από Διαχείριση Μπαταρίας</string>
     <string name="nc_settings_theme_light">Φωτεινό</string>
     <string name="nc_settings_theme_dark">Σκούρο</string>
+    <string name="nc_settings_privacy_legal">Νομική &amp; Πολιτική Απορρήτου</string>
     <string name="nc_settings_screen_lock_title">Κλείδωμα οθόνης</string>
     <string name="nc_settings_screen_lock_desc">Κλείδωμα %1$sμε Android οθόνη κλειδώματος ή υποστηριζόμενη μέθοδο βιομετρικών</string>
     <string name="nc_settings_screen_lock_timeout_title">Χρονικό όριο αδράνειας κλειδώματος οθόνης</string>
