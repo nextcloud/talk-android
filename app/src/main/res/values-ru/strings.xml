@@ -88,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
     <string name="nc_settings_theme_light">Светлое</string>
     <string name="nc_settings_theme_dark">Тёмное</string>
+    <string name="nc_settings_privacy_legal">Политика безопасности и правовая политика</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_lock_desc">Защищать %1$s с помощью системой блокировки  Android или поддерживаемого биометрического метода</string>
     <string name="nc_settings_screen_lock_timeout_title">Задержка блокирования экрана при бездействии</string>
