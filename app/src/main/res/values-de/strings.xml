@@ -34,7 +34,7 @@
     <string name="nc_server_import_accounts">Importieren Sie Konten aus der App %1$s</string>
     <string name="nc_server_failed_to_import_account">Das Importieren des ausgewählten Kontos ist fehlgeschlagen</string>
     <string name="nc_server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
-    <string name="nc_server_unsupported">Der Server hat keine unterstützte Talk-App installiert</string>
+    <string name="nc_server_unsupported">Auf dem Server ist kein unterstützte Talk-App installiert</string>
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Server-Anbieter zu finden</string>
 
     <!-- Account verification -->
@@ -202,7 +202,7 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_important_conversation_desc">Anrufe und Nachrichtenbenachrichtigungen werden auch im Nicht-Stören-Modus angezeigt (Entsprechend der Systemeinstellung \"Nur vorrangige Benachrichtigungen zulassen\").</string>
 
     <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
+    <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
         Probieren Sie mit einem Internetbrowser der Unterhaltung beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
