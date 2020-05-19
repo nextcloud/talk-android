@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Potvrdite namjeru uklanjanja predmetnog računa.</string>
     <string name="nc_settings_remove_account">Izbriši račun</string>
     <string name="nc_settings_add_account">Dodaj novi račun</string>
+    <string name="nc_settings_new_account">Novi račun</string>
     <string name="nc_add">Dodaj</string>
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Talk nije instalirana na poslužitelju s kojim ste se pokušali autentificirati</string>
@@ -87,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Postavlja alat za uštedu baterije</string>
     <string name="nc_settings_theme_light">Svijetlo</string>
     <string name="nc_settings_theme_dark">Tamno</string>
+    <string name="nc_settings_privacy_legal">Pravila o privatnosti i pravne obavijesti</string>
     <string name="nc_settings_screen_lock_title">Zaključavanje zaslona</string>
     <string name="nc_settings_screen_lock_desc">Zaključaj %1$s s pomoću značajke zaključavanja zaslona Android uređaja ili podržanom biometrijskom metodom</string>
     <string name="nc_settings_screen_lock_timeout_title">Istek vremena neaktivnosti zaključavanja zaslona</string>
@@ -323,4 +325,7 @@ popisa razgovora</string>
     <string name="silenced_by_moderator">Moderator vas je utišao</string>
     <string name="nc_failed_to_send">Neuspješno slanje – dodirnite za ponovno slanje.</string>
     <string name="nc_preferences">Preferencije</string>
-    </resources>
+    <string name="nc_look_and_feel">Izgled i zvukovi</string>
+    <string name="nc_settings_calls_sound">Zvuk poziva</string>
+    <string name="nc_settings_notifications_sound">Zvuk obavijesti</string>
+</resources>
