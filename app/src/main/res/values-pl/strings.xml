@@ -290,7 +290,7 @@
 
     <!-- Lobby -->
 
-    <string name="nc_webinar">Seminarium online</string>
+    <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Poczekalnia</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>

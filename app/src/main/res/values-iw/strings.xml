@@ -69,6 +69,7 @@
     <string name="nc_settings_call_ringtone">שיחות</string>
     <string name="nc_settings_other_notifications_ringtone">התראות</string>
     <string name="nc_settings_no_ringtone">אין צליל</string>
+    <string name="nc_settings_appearance">מראה</string>
     <string name="nc_settings_theme_title">ערכת עיצוב</string>
     <string name="nc_settings_theme_light">בהירה</string>
     <string name="nc_settings_theme_dark">כהה</string>
