@@ -195,6 +195,8 @@
     <string name="nc_contacts">אנשי קשר</string>
     <string name="nc_circles">מעגלים</string>
     <string name="nc_participants">משתתפים</string>
+    <string name="nc_others">חרים</string>
+
     <string name="nc_owner">בעלות</string>
     <string name="nc_moderator">פיקוח</string>
     <string name="nc_user">משתמש</string>
