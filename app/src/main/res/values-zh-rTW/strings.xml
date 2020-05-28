@@ -187,6 +187,8 @@
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
     <string name="nc_not_defined_error">未知的錯誤</string>
+    <string name="nc_unauthorized_error">未授權</string>
+
     <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_copy_message">複製</string>
