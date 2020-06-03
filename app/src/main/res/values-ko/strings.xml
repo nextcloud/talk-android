@@ -65,9 +65,12 @@
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
     <string name="nc_account_scheduled_for_deletion">이 계정이 삭제 예정이며 변경할 수 없음</string>
+    <string name="nc_settings_notification_sounds">유음 모드</string>
     <string name="nc_settings_call_ringtone">통화</string>
     <string name="nc_settings_other_notifications_ringtone">알림</string>
     <string name="nc_settings_no_ringtone">무음</string>
+    <string name="nc_settings_vibrate">진동 모드</string>
+    <string name="nc_settings_vibrate_desc">유음 모드라면 진동이 울릴 것입니다.</string>
     <string name="nc_settings_appearance">외형</string>
     <string name="nc_settings_theme_title">테마</string>
     <string name="nc_settings_theme_key">테마</string>
@@ -76,6 +79,8 @@
     <string name="nc_settings_theme_dark">어두움</string>
     <string name="nc_settings_screen_lock_title">화면 잠금</string>
     <string name="nc_none">없음</string>
+    <string name="nc_settings_screen_security_title">화면 보안</string>
+    <string name="nc_settings_screen_security_desc">현재 리스트와 앱 내부에서 스크린샷이 제한됩니다.</string>
     <string name="nc_locked">잠금 해제를 위해 탭하기</string>
 
     <string name="nc_screen_lock_timeout_30">30 초</string>
@@ -118,10 +123,12 @@
     <string name="nc_make_call_private">비공개 대화로 전환</string>
     <string name="nc_delete_call">대화 삭제</string>
     <string name="nc_delete">삭제</string>
+    <string name="nc_delete_conversation_default">정말로 지우시겠습니까?</string>
     <string name="nc_new_conversation_short">새로 만들기</string>
     <string name="nc_new_conversation">새 대화</string>
     <string name="nc_join_via_link">링크로 참여</string>
     <string name="nc_join_via_web">웹에서 참여</string>
+    <string name="nc_favorite_conversation">대화 즐겨찾기</string>
     <string name="nc_add_to_favorites">즐겨찾기에 추가</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
     <string name="nc_contacts_done">완료</string>
@@ -185,9 +192,12 @@
 
     <string name="nc_description_send_message_button">메시지 보내기</string>
 
+    <string name="nc_hello">안녕하세요</string>
+
     <string name="nc_groups">그룹</string>
     <string name="nc_contacts">연락처</string>
     <string name="nc_circles">서클</string>
+    <string name="nc_emails">이메일</string>
     <string name="nc_participants">참가자</string>
     <string name="nc_owner">Owner</string>
     <string name="nc_moderator">중재자</string>
@@ -195,10 +205,16 @@
     <string name="nc_guest">손님</string>
     <string name="nc_file_browser_back">뒤로</string>
     <string name="nc_file_browser_refresh">새로 고침</string>
+    <string name="nc_start_time">시작 시간</string>
+    <string name="nc_timeout_error">시간 초과</string>
     <string name="nc_not_defined_error">알 수 없는 오류</string>
+    <string name="nc_unauthorized_error">권한 없음</string>
+
     <string name="nc_general_settings">일반</string>
     <string name="nc_copy_message">복사</string>
     <string name="nc_reply">답장</string>
 
+    <string name="nc_reject_call">거절</string>
     <string name="nc_preferences">환경 설정</string>
+    <string name="nc_settings_calls_sound">벨소리</string>
     </resources>
