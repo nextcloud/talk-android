@@ -44,6 +44,8 @@
 
     <string name="nc_never">참가하지 않음</string>
     <string name="nc_search">검색</string>
+    <string name="nc_search_conversations">대화 찾기</string>
+
     <string name="nc_certificate_dialog_title">인증서 확인</string>
     <string name="nc_certificate_dialog_text">%1$s에서 %2$s에게 발급한 %3$s부터 %4$s까지 유효한 알 수 없는 인증서를 신뢰하시겠습니까?</string>
     <string name="nc_yes">예</string>
@@ -58,9 +60,12 @@
     <string name="nc_settings_use_credentials_title">인증 정보 사용</string>
     <string name="nc_settings_switch_account">계정간 전환</string>
     <string name="nc_settings_reauthorize">다시 인증</string>
+    <string name="nc_client_cert_setup">클라이언트 인증서 설정</string>
+    <string name="nc_client_cert_change">클라이언트 인증서 병경</string>
     <string name="nc_settings_remove">제거</string>
     <string name="nc_settings_remove_account">계정 삭제</string>
     <string name="nc_settings_add_account">새 계정 추가</string>
+    <string name="nc_settings_new_account">새로운 계정</string>
     <string name="nc_add">추가</string>
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
@@ -81,6 +86,7 @@
     <string name="nc_none">없음</string>
     <string name="nc_settings_screen_security_title">화면 보안</string>
     <string name="nc_settings_screen_security_desc">현재 리스트와 앱 내부에서 스크린샷이 제한됩니다.</string>
+    <string name="nc_settings_link_previews_title">링크 미리보기</string>
     <string name="nc_locked">잠금 해제를 위해 탭하기</string>
 
     <string name="nc_screen_lock_timeout_30">30 초</string>
@@ -131,6 +137,10 @@
     <string name="nc_favorite_conversation">대화 즐겨찾기</string>
     <string name="nc_add_to_favorites">즐겨찾기에 추가</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
+    <!-- Contacts -->
+    <string name="nc_select_contact">참여자 찾기</string>
+    <string name="nc_select_contacts">참여자들 찾기</string>
+    <string name="nc_select_new_contacts">새로운 참여자 찾기</string>
     <string name="nc_contacts_done">완료</string>
 
     <!-- Permissions -->
@@ -143,6 +153,8 @@
     <string name="nc_calling">통화 중...</string>
     <string name="nc_incoming_call">수신 통화 대상: </string>
     <string name="nc_nick_guest">손님</string>
+    <string name="nc_public_call">새로운 공적 대화</string>
+    <string name="nc_call_timeout">45초 동안 응답이 없다면 다시 시도하기를 눌러주십시오.</string>
     <string name="nc_call_reconnecting">재연결 중...</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s 알림 채널의 %1$s</string>
@@ -155,6 +167,7 @@
     <string name="nc_notify_me_mention">언급 시 알림</string>
     <string name="nc_notify_me_never">알림 끄기</string>
     <string name="nc_mute_calls">전화 무음</string>
+    <string name="nc_important_conversation">중요한 대화</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_all_ok_operation">모두 완료되었습니다!</string>
@@ -162,6 +175,12 @@
     <string name="nc_call_name">대화명</string>
     <string name="nc_proceed">진행</string>
     <string name="nc_call_name_is_same">입력한 이름이 이미 사용 중입니다</string>
+    <string name="nc_wrong_link">무효한 대화 링크</string>
+    <string name="nc_share_text">%1$s/index.php/call/%2$s 대화에 참여</string>
+    <string name="nc_share_subject">%1$s 초대</string>
+    <string name="nc_configure_cert_auth">인증서 선택</string>
+    <string name="nc_change_cert_auth">인증서 변경</string>
+
     <!-- Moderation -->
     <string name="nc_demote">중재자 권한 박탈</string>
     <string name="nc_promote">중재자 권한 부여</string>
@@ -174,6 +193,7 @@
     <string name="nc_conversation_menu_voice_call">음성 통화</string>
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
+    <string name="nc_new_messages">읽지 않은 메세지</string>
     <string name="nc_no_messages_yet">아직 메시지 없음</string>
     <string name="nc_sent_a_link" formatted="true">%1$s이(가) 링크를 보냈습니다.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s이(가) GIF를 보냈습니다.</string>
@@ -190,8 +210,21 @@
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">나: %1$s</string>
 
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">아이템 없음. 새로고침 하시오.</string>
+    <string name="nc_endless_disabled">더 이상 아이템을 올릴 수 없습니다. (최대치에 다다름)</string>
+    <string name="nc_endless_cancel">사용자에 의해 취소됨</string>
+    <string name="nc_endless_error">아이템을 불러오던 중 에러가 발생했습니다.</string>
+
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">%1$s와 대화하기위한 메뉴</string>
+    <string name="nc_description_more_menu_public">%1$s 그룹 대화를 위한 메뉴</string>
+    <string name="nc_description_more_menu_group">%1$s 공적 대화를 위한 메뉴</string>
     <string name="nc_description_send_message_button">메시지 보내기</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">대화에 참여하거나 새로운 대화를 만드시오
+안녕 친구들!</string>
     <string name="nc_hello">안녕하세요</string>
 
     <string name="nc_groups">그룹</string>
@@ -203,6 +236,7 @@
     <string name="nc_moderator">중재자</string>
     <string name="nc_user">사용자</string>
     <string name="nc_guest">손님</string>
+    <string name="nc_select_files">파일 선택</string>
     <string name="nc_file_browser_back">뒤로</string>
     <string name="nc_file_browser_refresh">새로 고침</string>
     <string name="nc_start_time">시작 시간</string>
@@ -210,11 +244,21 @@
     <string name="nc_not_defined_error">알 수 없는 오류</string>
     <string name="nc_unauthorized_error">권한 없음</string>
 
+    <string name="nc_oops">오,  뭔가 잘못됐습니다!</string>
+
     <string name="nc_general_settings">일반</string>
+    <string name="nc_allow_guests">게스트 초대</string>
+    <string name="nc_last_moderator_title">대화를 떠날 수 없습니다.</string>
+    <string name="nc_last_moderator">당신이 %1$s을 떠나기 전에 새로운 방장을 임명해야합니다.</string>
+
     <string name="nc_copy_message">복사</string>
     <string name="nc_reply">답장</string>
 
+    <string name="nc_search_for_more">더 많은 참여자 검색하기</string>
+    <string name="nc_new_group">새 그룹</string>
     <string name="nc_reject_call">거절</string>
+    <string name="silenced_by_moderator">당신은 방장에의해 음소거처리 되었습니다.</string>
     <string name="nc_preferences">환경 설정</string>
     <string name="nc_settings_calls_sound">벨소리</string>
-    </resources>
+    <string name="nc_settings_notifications_sound">알림음</string>
+</resources>
