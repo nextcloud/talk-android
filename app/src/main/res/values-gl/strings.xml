@@ -223,7 +223,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
 
     <!-- Moderation -->
-    <string name="nc_demote">Degradar de moderador</string>
+    <string name="nc_demote">Relegar de moderador</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_remove_participant">Retirar participante</string>
 

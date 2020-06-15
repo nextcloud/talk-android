@@ -73,7 +73,7 @@
     <string name="nc_add">Hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
-    <string name="nc_settings_account_updated">Ihr bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
+    <string name="nc_settings_account_updated">Ihr bereits existierendes Konto wurde aktualisiert, anstelle ein neues hinzuzufügen</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
     <string name="nc_settings_notification_sounds">Ton</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
@@ -181,7 +181,7 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
     <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über 
  einen speziellen Link eingeladen werden.</string>
-    <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicke um es erneut zu versuchen</string>
+    <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_offline">Aktuell offline, bitte prüfen Sie die Verbindung</string>
     <string name="nc_leaving_call">Verlasse Anruf…</string>
@@ -199,7 +199,7 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_mute_calls">Anrufe stummschalten</string>
     <string name="nc_mute_calls_desc">Eingehende Anrufe werden ignoriert</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
-    <string name="nc_important_conversation_desc">Anrufe und Nachrichtenbenachrichtigungen werden auch im Nicht-Stören-Modus angezeigt (Entsprechend der Systemeinstellung \"Nur vorrangige Benachrichtigungen zulassen\").</string>
+    <string name="nc_important_conversation_desc">Anrufe und Nachrichtenbenachrichtigungen werden auch im Nicht-Stören-Modus angezeigt (entsprechend der Systemeinstellung \"Nur vorrangige Benachrichtigungen zulassen\").</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
