@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">importa els comptes des de l\'aplicació %1$s</string>
     <string name="nc_server_failed_to_import_account">Ha fallat la importació del compte seleccionat</string>
     <string name="nc_server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
+    <string name="nc_server_unsupported">El servidor no té instal·lada l\'aplicació Talk</string>
     <string name="nc_get_from_provider">Encara no teniu cap servidor?\nFeu clic aquí per obtenir-ne un d\'un proveïdor</string>
 
     <!-- Account verification -->
@@ -46,6 +47,8 @@
 
     <string name="nc_never">Mai no us hi heu unit</string>
     <string name="nc_search">Cerca</string>
+    <string name="nc_search_conversations">Troba la conversa</string>
+
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
     <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid del %3$s fins el %4$s?</string>
     <string name="nc_yes">Sí</string>
@@ -66,13 +69,17 @@
     <string name="nc_settings_remove_confirmation">Si us plau, confirmeu la vostra intenció de suprimir el compte actual.</string>
     <string name="nc_settings_remove_account">Suprimeix el compte</string>
     <string name="nc_settings_add_account">Afegeix un nou compte</string>
+    <string name="nc_settings_new_account">Nou compte</string>
     <string name="nc_add">Afegeix</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
     <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
     <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
+    <string name="nc_settings_notification_sounds">So</string>
+    <string name="nc_settings_call_ringtone">Trucades</string>
     <string name="nc_settings_other_notifications_ringtone">Notificacions</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
+    <string name="nc_settings_vibrate">Vibració</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
     <string name="nc_settings_appearance">Aparença</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -81,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Configura l\'Estalvi de Bateria</string>
     <string name="nc_settings_theme_light">Clar</string>
     <string name="nc_settings_theme_dark">Fosc</string>
+    <string name="nc_settings_privacy_legal">Privacitat &amp; política legal</string>
     <string name="nc_settings_screen_lock_title">Bloqueig de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloca %1$s amb el bloqueig de pantalla d\'Android o mètode biomètric compatible </string>
     <string name="nc_settings_screen_lock_timeout_title">Temps d\'espera d’inactivitat de bloqueig de pantalla</string>
@@ -108,6 +116,7 @@
     <string name="nc_no_proxy">Sense proxy</string>
     <string name="nc_username">Nom d\'usuari</string>
     <string name="nc_password">Contrasenya</string>
+    <string name="nc_password_optional">Contrasenya (opcional)</string>
     <string name="nc_password_redacted">Ocult per motius de privadesa</string>
     <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_new_password">Nova contrasenya</string>
@@ -153,6 +162,10 @@ suprimirà per la resta de participants.</string>
     <string name="nc_favorites_explanation">La conversa es fixarà a dalt de la
 llista de converses</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Troba un participant</string>
+    <string name="nc_select_contacts">Troba participants</string>
+    <string name="nc_select_new_contacts">Troba nous participants</string>
     <string name="nc_contacts_done">Fet</string>
 
     <!-- Permissions -->
@@ -258,6 +271,7 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_groups">Grups</string>
     <string name="nc_contacts">Contactes</string>
     <string name="nc_circles">Cercles</string>
+    <string name="nc_emails">Correus electrònics</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_others">Altres</string>
 
@@ -292,6 +306,8 @@ trobada està prevista per a les %1$s.</string>
     <string name="nc_not_defined_error">Error desconegut</string>
     <string name="nc_unauthorized_error">No autoritzat</string>
 
+    <string name="nc_oops">Ups, alguna cosa ha anat malament!</string>
+
     <string name="nc_general_settings">General</string>
     <string name="nc_allow_guests">Permet visitants</string>
     <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
@@ -302,6 +318,14 @@ trobada està prevista per a les %1$s.</string>
     <string name="nc_copy_message">Copia</string>
     <string name="nc_reply">Respon</string>
 
+    <string name="nc_search_for_more">Cerca més participants</string>
+    <string name="nc_new_group">Nou grup</string>
+    <string name="nc_search_empty_contacts">On s\'han amagat?</string>
     <string name="nc_reject_call">Rebutja</string>
+    <string name="silenced_by_moderator">Us ha silenciat un moderador</string>
+    <string name="nc_failed_to_send">Ha fallat l\'enviament - toqueu per enviar de nou.</string>
     <string name="nc_preferences">Preferències</string>
-    </resources>
+    <string name="nc_look_and_feel">Aparença i sons</string>
+    <string name="nc_settings_calls_sound">So de les trucades</string>
+    <string name="nc_settings_notifications_sound">So de les notificacions</string>
+</resources>
