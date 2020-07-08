@@ -39,11 +39,14 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">התראות בדחיפה הושבתו</string>
     <string name="nc_capabilities_failed">אחזור היכולות נכשל, התהליך נפסק</string>
+    <string name="nc_external_server_failed">משיכת הגדרות האיתות נכשלה</string>
     <string name="nc_display_name_not_fetched">לא ניתן לאחזר את שם התצוגה, התהליך נפסק</string>
     <string name="nc_nextcloud_talk_app_not_installed">היישומון %1$s אינו מותקן על השרת, הפעולה מבוטלת</string>
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
 
     <string name="nc_search">חיפוש</string>
+    <string name="nc_search_conversations">איתור דיון</string>
+
     <string name="nc_certificate_dialog_title">חקירת האישור</string>
     <string name="nc_yes">כן</string>
     <string name="nc_no">לא</string>
@@ -60,23 +63,34 @@
     <string name="nc_client_cert_setup">הגדרת אישור לקוח</string>
     <string name="nc_client_cert_change">החלפת אישור לקוח</string>
     <string name="nc_settings_remove">הסרה</string>
+    <string name="nc_settings_remove_confirmation">נא לאשר את כוונתך להסיר את החשבון הנוכחי.</string>
     <string name="nc_settings_remove_account">הסרת חשבון</string>
     <string name="nc_settings_add_account">הוספת חשבון חדש</string>
+    <string name="nc_settings_new_account">חשבון חדש</string>
     <string name="nc_add">הוספה</string>
     <string name="nc_settings_wrong_account">ניתן לאמת רק את החשבון הנוכחי</string>
     <string name="nc_settings_account_updated">החשבון הקיים שלך עודכן, במקום הוספת חדש</string>
     <string name="nc_account_scheduled_for_deletion">החשבון מועמד למחיקה ולא ניתן לשנות אותו</string>
+    <string name="nc_settings_notification_sounds">צליל</string>
     <string name="nc_settings_call_ringtone">שיחות</string>
     <string name="nc_settings_other_notifications_ringtone">התראות</string>
     <string name="nc_settings_no_ringtone">אין צליל</string>
+    <string name="nc_settings_vibrate">רטט</string>
+    <string name="nc_settings_vibrate_desc">הטלפון ירטוט אלמלא הוא על מצב שקט</string>
     <string name="nc_settings_appearance">מראה</string>
     <string name="nc_settings_theme_title">ערכת עיצוב</string>
+    <string name="nc_settings_theme_key">ערכת עיצוב</string>
+    <string name="nc_settings_theme_follow_system">להשתמש בבררת המחדל של המערכת</string>
+    <string name="nc_settings_theme_battery_saver">הוגדרה על ידי חוסך הסוללה</string>
     <string name="nc_settings_theme_light">בהירה</string>
     <string name="nc_settings_theme_dark">כהה</string>
+    <string name="nc_settings_privacy_legal">מדיניות משפטית ופרטיות</string>
     <string name="nc_settings_screen_lock_title">נעילת מסך</string>
     <string name="nc_none">אין</string>
     <string name="nc_settings_screen_security_title">אבטחת מסך</string>
     <string name="nc_settings_incognito_keyboard_title">מקלדת אלמונית</string>
+    <string name="nc_settings_link_previews_title">הצגת תצוגות מקדימות של קישורים</string>
+    <string name="nc_settings_link_previews_desc">מאפשר תצוגה מקדימה של תוכן מקישורים שהתקבלו עבור שירותים נתמכים</string>
     <string name="nc_locked">יש לגעת כדי לשחרר</string>
 
     <string name="nc_screen_lock_timeout_30">30 שניות</string>
@@ -94,6 +108,8 @@
     <string name="nc_no_proxy">אין מתווך</string>
     <string name="nc_username">שם משתמש</string>
     <string name="nc_password">ססמה</string>
+    <string name="nc_password_optional">ססמה (רשות)</string>
+    <string name="nc_password_redacted">בוצע מחדש מטעמי פרטיות</string>
     <string name="nc_conversation_link">קישור לדיון</string>
     <string name="nc_new_password">ססמה חדשה</string>
     <string name="nc_wrong_password">ססמה שגויה</string>
@@ -109,6 +125,8 @@
     <string name="nc_start_conversation">התחלת דיון</string>
     <string name="nc_configure_room">הגדרת דיון</string>
     <string name="nc_leave">יציאה מהדיון</string>
+    <string name="nc_leave_message">נא לאשר את כוונתך לעזוב את הדיון הזה.</string>
+    <string name="nc_simple_leave">לעזוב</string>
     <string name="nc_rename">שינוי שם הדיון</string>
     <string name="nc_set_password">הגדרת ססמה</string>
     <string name="nc_change_password">החלפת ססמה</string>
@@ -119,20 +137,44 @@
     <string name="nc_make_call_private">להפוך את הדיון לפרטי</string>
     <string name="nc_delete_call">מחיקת דיון</string>
     <string name="nc_delete">מחיקה</string>
+    <string name="nc_delete_conversation_default">נא לאשר את כוונתך למחוק את
+        הדיון הזה.</string>
+    <string name="nc_delete_conversation_one2one">מחיקת הדיון הזה תוביל למחיקתו
+        גם אצל %1$s.</string>
+    <string name="nc_delete_conversation_more">מחיקת הדיון הזה תוביל למחיקתו
+        גם אצל כל המשתתפים האחרים.</string>
+
     <string name="nc_new_conversation_short">חדש</string>
     <string name="nc_new_conversation">דיון חדש</string>
+    <string name="nc_join_via_link">הצטרפות עם קישור</string>
     <string name="nc_join_via_web">הצטרפות דרך דפדפן</string>
+    <string name="nc_favorite_conversation">דיון מועדף</string>
     <string name="nc_add_to_favorites">הוספה למועדפים</string>
     <string name="nc_remove_from_favorites">הסרה מהמועדפים</string>
+    <string name="nc_favorites_explanation">הדיון יינעץ לראש רשימת הדיונים</string>
+
+    <!-- Contacts -->
+    <string name="nc_select_contact">איתור משתתף</string>
+    <string name="nc_select_contacts">איתור משתתפים</string>
+    <string name="nc_select_new_contacts">איתור משתתפים חדשים</string>
     <string name="nc_contacts_done">סיום</string>
 
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">כדי לאפשר תקשורת וידאו נא להעניק את ההרשאה „מצלמה” בהגדרות המערכת.</string>
+    <string name="nc_microphone_permission_permanently_denied">כדי להפעיל תקשורת שמע נא להעניק את ההרשאה „מיקרופון” בהגדרות המערכת.</string>
     <string name="nc_permissions_settings">פתיחת הגדרות</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">מתבצעת התחברות…</string>
+    <string name="nc_calling">מתבצעת התקשרות…</string>
     <string name="nc_incoming_call">שיחה נכנסת מאת</string>
     <string name="nc_nick_guest">אורח/ת</string>
     <string name="nc_public_call">דיון ציבורי חדש</string>
+    <string name="nc_call_timeout">אין תגובה תוך 45 שניות, יש לגעת כדי לנסות שוב</string>
+    <string name="nc_call_reconnecting">התחברות מחדש…</string>
+    <string name="nc_offline">אין חיבור כרגע, נא לבדוק את הקישוריות שלך</string>
+    <string name="nc_leaving_call">עזיבת השיחה…</string>
+
     <string name="nc_notification_channel_calls">ערוץ התראות על שיחות</string>
     <string name="nc_notification_channel_messages">ערוץ התראות על הודעות</string>
     <string name="nc_notification_channel_calls_description">מציג שיחות נכנסות</string>
@@ -142,16 +184,27 @@
     <string name="nc_notify_me_mention">להודיע כשהזכירו אותי</string>
     <string name="nc_notify_me_never">לא להודיע אף פעם</string>
     <string name="nc_mute_calls">השתקת שיחות</string>
+    <string name="nc_mute_calls_desc">שיחות נכנסות יזכו להתעלמות</string>
+    <string name="nc_important_conversation">דיון חשוב</string>
+    <string name="nc_important_conversation_desc">התראות על שיחות והודעות יופיעו אפילו במצב לא להפריע (בהתאם להגדרת „לאפשר הפרעות דחופות בלבד”)</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
+    <string name="nc_failed_signaling_settings">שרת היעד אינו תומך בהצטרפות לדיונים ציבוריים דרך טלפונים ניידים. יש לך
+        אפשרות להצטרף לדיון דרך דפדפן במחשב.</string>
     <string name="nc_all_ok_operation">סבבה, הכול בוצע!</string>
     <string name="nc_ok">אישור</string>
     <string name="nc_call_name">שם הדיון</string>
     <string name="nc_proceed">להמשיך</string>
     <string name="nc_call_name_is_same">השם שהקלדת זהה לקיים</string>
     <string name="nc_wrong_link">הקישור לדיון אינו תקף</string>
+    <string name="nc_share_text">כדאי להצטרף לדיון תחת %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">הזמנה אל %1$s</string>
     <string name="nc_share_text_pass">\nססמה: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">לחיצה לדיבור</string>
+    <string name="nc_push_to_talk_desc">כשהמיקרופון מושבת, יש ללחוץ ולהחזיק כדי להשתמש בלחיצה לדיבור</string>
     <string name="nc_configure_cert_auth">בחירת אישור לאימות</string>
     <string name="nc_change_cert_auth">החלפת אישור לאימות</string>
 
@@ -167,7 +220,14 @@
     <string name="nc_conversation_menu_voice_call">שיחה קולית</string>
     <string name="nc_conversation_menu_video_call">שיחת וידאו</string>
     <string name="nc_conversation_menu_conversation_info">פרטי דיון</string>
+    <string name="nc_new_messages">הודעות שלא נקראו</string>
     <string name="nc_no_messages_yet">אין הודעות עדיין</string>
+    <string name="nc_sent_a_link" formatted="true">נשלח קישור על ידי %1$s.</string>
+    <string name="nc_sent_a_gif" formatted="true">נשלח GIF על ידי %1$s.</string>
+    <string name="nc_sent_an_attachment" formatted="true">נשלח קובץ על ידי %1$s.</string>
+    <string name="nc_sent_an_audio" formatted="true">נשלח מקטע שמע על ידי %1$s.</string>
+    <string name="nc_sent_a_video" formatted="true">נשלח סרטון על ידי %1$s.</string>
+    <string name="nc_sent_an_image" formatted="true">נשלחה תמונה על ידי %1$s.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">שלחת קישור.</string>
     <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">שלחת הנפשה.</string>
     <string name="nc_sent_an_attachment_you">שלחת קובץ מצורף.</string>
@@ -189,11 +249,16 @@
     <string name="nc_description_more_menu_group">תפריט לדיון ציבורי %1$s</string>
     <string name="nc_description_send_message_button">שליחת הודעה</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">ניתן להצטרף לדיון או לפתוח דיון חדש.\nעל הדרך לראות מה עם חבריך לעבודה!</string>
     <string name="nc_hello">שלום</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">הגעת למגבלת %s התווים</string>
     <string name="nc_groups">קבוצות</string>
     <string name="nc_contacts">אנשי קשר</string>
     <string name="nc_circles">מעגלים</string>
+    <string name="nc_emails">כתובות דוא״ל</string>
     <string name="nc_participants">משתתפים</string>
     <string name="nc_others">חרים</string>
 
@@ -203,17 +268,51 @@
     <string name="nc_guest">אורח</string>
     <string name="nc_following_link">משתמש שעוקב אחר קישור ציבורי</string>
 
+    <!-- Browser component -->
+    <string name="nc_file_browser">סייר קבצים</string>
+    <string name="nc_select_files">בחירת קבצים</string>
     <string name="nc_file_browser_back">חזרה</string>
     <string name="nc_file_browser_refresh">רענון</string>
+    <string name="nc_last_modified">%1$s | שינוי אחרון: %2$s</string>
+
     <!-- Lobby -->
 
     <string name="nc_webinar">סמינר מקוון</string>
+    <string name="nc_lobby">לובי</string>
+    <string name="nc_start_time">מועד התחלה</string>
+    <string name="nc_lobby_waiting">כרגע מיקומך הוא בהמתנה בלובי.</string>
+    <string name="nc_lobby_waiting_with_date">כרגע מיקומך הוא בהמתנה בלובי.\n פגישה
+        זו מתוזמנת ל־%1$s.</string>
+    <string name="nc_manual">לא מוגדר</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">אין חיבור</string>
+    <string name="nc_bad_response_error">תגובה שגויה</string>
     <string name="nc_timeout_error">תום זמן המתנה</string>
+    <string name="nc_empty_response_error">תגובה ריקה</string>
     <string name="nc_not_defined_error">שגיאה בלתי ידועה</string>
+    <string name="nc_unauthorized_error">אין הרשאה</string>
+
+    <string name="nc_oops">אופס, משהו השתבש!</string>
+
     <string name="nc_general_settings">כללי</string>
+    <string name="nc_allow_guests">לאפשר אורחים</string>
+    <string name="nc_last_moderator_title">לא ניתן לעזוב את הדיון</string>
+    <string name="nc_last_moderator">עליך לקדם מפקח חדש בטרם עזיבת %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">‎99+‎</string>
     <string name="nc_copy_message">העתק</string>
     <string name="nc_reply">תגובה</string>
 
+    <string name="nc_search_for_more">חיפוש אחר משתתפים נוספים</string>
+    <string name="nc_new_group">קבוצה חדשה</string>
+    <string name="nc_search_empty_contacts">איפה כולם התחבאו?</string>
     <string name="nc_reject_call">דחייה</string>
+    <string name="silenced_by_moderator">הושתקת על ידי ההנהלה</string>
+    <string name="nc_failed_to_send">השליחה נכשלה - יש לגעת כדי לנסות לשלוח שוב.</string>
     <string name="nc_preferences">העדפות</string>
-    </resources>
+    <string name="nc_look_and_feel">מראה וצלילים</string>
+    <string name="nc_settings_calls_sound">צלילי שיחה</string>
+    <string name="nc_settings_notifications_sound">צלילי התראה</string>
+</resources>
