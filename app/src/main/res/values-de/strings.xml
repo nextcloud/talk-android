@@ -290,7 +290,7 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
 
     <!-- Lobby -->
 
-    <string name="nc_webinar">Webinar</string>
+    <string name="nc_webinar">Online-Seminar</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
