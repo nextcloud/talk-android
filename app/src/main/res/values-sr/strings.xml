@@ -69,6 +69,7 @@
     <string name="nc_settings_remove_confirmation">Потврдите да желите да уклоните тренутни налог.</string>
     <string name="nc_settings_remove_account">Уклони налог</string>
     <string name="nc_settings_add_account">Додај нови налог</string>
+    <string name="nc_settings_new_account">Нови налог</string>
     <string name="nc_add">Додај</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
     <string name="nc_settings_no_talk_installed">Апликација Ћаскања није инсталирана на серверу на који се пријављујете</string>
@@ -87,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Поставља штедња батерије</string>
     <string name="nc_settings_theme_light">Светла</string>
     <string name="nc_settings_theme_dark">Тамна</string>
+    <string name="nc_settings_privacy_legal">Приватност и правна политика</string>
     <string name="nc_settings_screen_lock_title">Закључавање екрана</string>
     <string name="nc_settings_screen_lock_desc">Закључајте %1$s са Андроидовим екраном закључавања или подржаним биометријским методом</string>
     <string name="nc_settings_screen_lock_timeout_title">Период неактивности до закључавања екрана</string>
@@ -320,5 +322,10 @@
     <string name="nc_new_group">Нова група</string>
     <string name="nc_search_empty_contacts">Где су сви нестали?</string>
     <string name="nc_reject_call">Одбаци</string>
+    <string name="silenced_by_moderator">Модератор Вас је утишао</string>
+    <string name="nc_failed_to_send">Грешка приликом слања - тапните да покушате слање поново.</string>
     <string name="nc_preferences">Поставке</string>
-    </resources>
+    <string name="nc_look_and_feel">Изглед &amp; Звуци</string>
+    <string name="nc_settings_calls_sound">Звук позива</string>
+    <string name="nc_settings_notifications_sound">Звук обавештења</string>
+</resources>
