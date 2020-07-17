@@ -209,7 +209,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_proceed">Kontynuuj</string>
-    <string name="nc_call_name_is_same">Nazwa którą wprowadziłeś już istnieje</string>
+    <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s zaprasza</string>
