@@ -72,7 +72,7 @@
     <string name="nc_settings_add_account">Engadir unha conta nova</string>
     <string name="nc_settings_new_account">Conta nova</string>
     <string name="nc_add">Engadir</string>
-    <string name="nc_settings_wrong_account">Só pode volver a autorizarse a conta actual</string>
+    <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>
     <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
