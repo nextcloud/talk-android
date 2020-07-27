@@ -80,7 +80,7 @@
     <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_vibrate">震动</string>
-    <string name="nc_settings_vibrate_desc">您的杀机将会震动，除非您的手机已静音</string>
+    <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_appearance">外观</string>
     <string name="nc_settings_theme_title">主题</string>
     <string name="nc_settings_theme_key">主题</string>
@@ -212,14 +212,14 @@
     <string name="nc_share_text_pass">\n密码： %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_push_to_talk">Push-to-talk</string>
+    <string name="nc_push_to_talk">按住以说话</string>
     <string name="nc_push_to_talk_desc">在禁用麦克风的情况下，单击并按住即可使用 “按键发言” 功能</string>
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
 
     <!-- Moderation -->
     <string name="nc_demote">取消主持人资格</string>
-    <string name="nc_promote">提升为主持人</string>
+    <string name="nc_promote">设置为主持人</string>
     <string name="nc_remove_participant">远程参与者</string>
 
     <!-- Chat -->
@@ -308,14 +308,14 @@
     <string name="nc_general_settings">通用</string>
     <string name="nc_allow_guests">允许访客</string>
     <string name="nc_last_moderator_title">无法离开会话</string>
-    <string name="nc_last_moderator">在您离开%1$s之前您需要推举一位新的主持人。</string>
+    <string name="nc_last_moderator">在您离开%1$s之前您需要选出一位新的主持人。</string>
 
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">复制</string>
     <string name="nc_reply">回复</string>
 
-    <string name="nc_search_for_more">搜索更多参与者</string>
+    <string name="nc_search_for_more">查找更多参与者</string>
     <string name="nc_new_group">新建群组</string>
     <string name="nc_search_empty_contacts">他们都藏在哪里？</string>
     <string name="nc_reject_call">拒绝</string>
