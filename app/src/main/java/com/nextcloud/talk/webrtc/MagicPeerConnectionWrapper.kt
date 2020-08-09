@@ -284,7 +284,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
         }
 
         override fun onDataChannel(dataChannel: DataChannel) {
-            if (dataChannel.label() == "status") {
+            if ((dataChannel.label() == "status") || (dataChannel.label() == "JanusDataChannel")) {
                 magicDataChannel = dataChannel
                 magicDataChannel!!.registerObserver(MagicDataChannelObserver())
             }
