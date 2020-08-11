@@ -109,6 +109,7 @@ class NextcloudTalkRepositoryImpl(private val apiService: ApiService) : Nextclou
         mutableMap["lastKnownMessageId"] = lastKnownMessageId
         mutableMap["includeLastKnown"] = includeLastKnown
         mutableMap["timeout"] = 30
+        mutableMap["limit"] = 200 //Set max messages received to 200
         mutableMap["setReadMarker"] = 1
 
         return apiService.pullChatMessages(user.getCredentials(), ApiUtils.getUrlForChat(user.baseUrl, conversationToken), mutableMap)
