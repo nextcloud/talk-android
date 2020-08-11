@@ -161,7 +161,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
     private inner class MagicDataChannelObserver : DataChannel.Observer {
         override fun onBufferedAmountChange(l: Long) {}
         override fun onStateChange() {
-            if (magicDataChannel != null && magicDataChannel!!.state() == DataChannel.State.OPEN && magicDataChannel!!.label() == "status") {
+            if (magicDataChannel != null && magicDataChannel!!.state() == DataChannel.State.OPEN && (magicDataChannel!!.label() == "status" || magicDataChannel!!.label() == "JanusDataChannel")) {
                 sendInitialMediaStatus()
             }
         }
@@ -284,7 +284,7 @@ class MagicPeerConnectionWrapper(peerConnectionFactory: PeerConnectionFactory,
         }
 
         override fun onDataChannel(dataChannel: DataChannel) {
-            if (dataChannel.label() == "status") {
+            if (dataChannel.label() == "status" || magicDataChannel!!.label() == "JanusDataChannel") {
                 magicDataChannel = dataChannel
                 magicDataChannel!!.registerObserver(MagicDataChannelObserver())
             }
