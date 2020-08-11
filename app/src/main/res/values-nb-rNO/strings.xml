@@ -270,5 +270,6 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_copy_message">Kopier</string>
     <string name="nc_reply">Svar</string>
 
+    <string name="nc_reject_call">Avvis</string>
     <string name="nc_preferences">Innstillinger</string>
     </resources>
