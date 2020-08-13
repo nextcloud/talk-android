@@ -38,8 +38,7 @@
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedo</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Notificacións «push» desactivadas
-</string>
+    <string name="nc_push_disabled">Desactivadas as notificacións do servidor</string>
     <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar funcionalidades. Interrompendo.</string>
     <string name="nc_external_server_failed">Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel recuperar o nome para amosar, interrompendo</string>
