@@ -23,7 +23,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/bg_default">
 
     <include layout="@layout/lobby_view"
         android:visibility="gone"/>

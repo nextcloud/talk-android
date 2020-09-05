@@ -24,7 +24,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true">
+    android:animateLayoutChanges="true"
+    android:background="@color/bg_default">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -35,7 +36,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:endIconMode="clear_text"
-            android:hint="@string/nc_call_name">
+            android:hint="@string/nc_call_name"
+            android:theme="@style/TextInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/conversationNameInputEditText"
@@ -52,7 +54,7 @@
             android:layout_below="@id/conversationNameTextInputLayout"
             android:layout_marginHorizontal="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@string/nc_allow_guests"></com.google.android.material.switchmaterial.SwitchMaterial>
+            android:text="@string/nc_allow_guests" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/passwordTextInputLayout"
@@ -61,7 +63,8 @@
             android:layout_below="@id/allowGuestsSwitchMaterial"
             android:visibility="gone"
             app:endIconMode="password_toggle"
-            android:hint="@string/nc_password_optional">
+            android:hint="@string/nc_password_optional"
+            android:theme="@style/TextInputLayout">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/passwordInputEditText"

@@ -23,10 +23,7 @@
 package com.nextcloud.talk.newarch.features.account.serverentry
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
@@ -37,6 +34,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.newarch.features.account.loginentry.LoginEntryView
 import com.nextcloud.talk.newarch.mvvm.BaseView
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.server_entry_view.view.*
@@ -128,5 +126,12 @@ class ServerEntryView : BaseView() {
 
     override fun getAppBarLayoutType(): AppBarLayoutType {
         return AppBarLayoutType.EMPTY
+    }
+
+    override fun onAttach(view: View) {
+        super.onAttach(view)
+
+        DisplayUtils.applyColorToStatusBar(activity!!, resources!!.getColor(R.color.colorPrimary))
+        DisplayUtils.applyColorToNavgiationBar(activity!!.window, resources!!.getColor(R.color.colorPrimary))
     }
 }

@@ -49,5 +49,5 @@
         android:padding="16dp"
         android:text="@string/nc_locked"
         android:textAlignment="center"
-        android:textColor="@color/white" />
+        android:textColor="@color/fg_inverse" />
 </RelativeLayout>

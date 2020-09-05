@@ -31,6 +31,7 @@
         <item name="android:textColor">@color/nc_incoming_text_default</item>
         <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
+        <item name="textInputStyle">@style/TextInputLayout</item>
     </style>
 
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
@@ -56,8 +57,9 @@
     </style>
 
     <style name="Toolbar_TextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:colorPrimary">@color/fg_inverse</item>
-        <item name="android:textColor">@color/fg_inverse</item>
+        <item name="android:colorPrimary">@color/fg_default</item>
+        <item name="android:textColor">@color/fg_default</item>
+        <item name="android:textColorPrimary">@color/fg_default</item>
     </style>
 
     <style name="appActionBarPopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
@@ -69,5 +71,14 @@
     <style name="circleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="colorControlActivated">@color/fg_default</item>
+        <item name="colorControlHighlight">@color/fg_default</item>
+        <item name="boxBackgroundColor">@color/bg_default</item>
+        <item name="hintTextColor">@color/fg_default</item>
+        <item name="helperTextTextColor">@color/fg_default</item>
+        <item name="boxStrokeColor">@color/fg_default</item>
     </style>
 </resources>

@@ -46,9 +46,11 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.newarch.utils.dp
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.view.*
 import kotlinx.android.synthetic.main.search_layout.*
 import kotlinx.android.synthetic.main.search_layout.view.*
 import org.greenrobot.eventbus.EventBus
@@ -190,13 +192,14 @@ abstract class BaseController : ButterKnifeController(), ComponentCallbacks {
                 val layoutParams = it.searchCardView?.layoutParams as AppBarLayout.LayoutParams
 
                 if (value) {
-                    it.appBar?.setBackgroundResource(R.color.transparent)
                     layoutParams.scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP or AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                 } else {
-                    it.appBar?.setBackgroundResource(R.color.colorPrimary)
+                    it.appBar.setStatusBarForegroundColor(resources!!.getColor(R.color.fg_default))
+                    it.appBar?.toolbar?.setTitleTextColor(resources!!.getColor(R.color.fg_default))
                     layoutParams.scrollFlags = 0
                 }
-
+                DisplayUtils.applyColorToStatusBar(activity!!, resources!!.getColor(R.color.bg_default))
+                DisplayUtils.applyColorToNavgiationBar(activity!!.window, resources!!.getColor(R.color.bg_default))
                 it.searchCardView?.layoutParams = layoutParams
                 it.clearButton?.setOnClickListener {
                     activity?.inputEditText?.text = null

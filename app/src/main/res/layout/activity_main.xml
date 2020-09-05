@@ -31,7 +31,7 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="@color/transparent"
+        android:background="@color/bg_default"
         android:elevation="0dp"
         android:clipChildren="true"
         android:clipToPadding="false"
@@ -46,8 +46,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/transparent"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
             app:contentInsetStartWithNavigation="0dp"
             app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
             app:popupTheme="@style/appActionBarPopupMenu">

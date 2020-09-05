@@ -22,7 +22,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/nc_white_color"
+    android:background="@color/bg_default"
     android:keepScreenOn="true">
 
     <ProgressBar
@@ -53,6 +53,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:textAlignment="center"
         android:textSize="18sp"
+        android:textColor="@color/fg_default"
         tools:text="Verifying..." />
 
 </RelativeLayout>
