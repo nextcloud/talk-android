@@ -29,7 +29,6 @@ import android.content.Intent
 import android.content.res.Resources
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -49,7 +48,6 @@ import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.api.load
 import coil.api.loadAny
-import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.archlifecycle.ControllerLifecycleOwner
@@ -71,13 +69,14 @@ import com.nextcloud.talk.newarch.local.models.getMaxMessageLength
 import com.nextcloud.talk.newarch.local.models.toUserEntity
 import com.nextcloud.talk.newarch.mvvm.BaseView
 import com.nextcloud.talk.newarch.mvvm.ext.initRecyclerView
-import com.nextcloud.talk.newarch.utils.swipe.ChatMessageSwipeCallback
-import com.nextcloud.talk.newarch.utils.Images
 import com.nextcloud.talk.newarch.utils.NetworkComponents
+import com.nextcloud.talk.newarch.utils.swipe.ChatMessageSwipeCallback
 import com.nextcloud.talk.newarch.utils.swipe.ChatMessageSwipeInterface
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
-import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
+import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DrawableUtils
+import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BROWSER_TYPE
@@ -152,6 +151,10 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
                 val layoutManager = view.messagesRecyclerView.layoutManager as LinearLayoutManager
+
+                if (layoutManager.findLastVisibleItemPosition() == RecyclerView.NO_POSITION) {
+                    return
+                }
 
                 if (layoutManager.findLastVisibleItemPosition() == positionStart - 1) {
                     view.messagesRecyclerView.post {
