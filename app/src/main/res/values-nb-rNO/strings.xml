@@ -73,6 +73,7 @@
     <string name="nc_settings_call_ringtone">Samtaler</string>
     <string name="nc_settings_other_notifications_ringtone">Varsler</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
+    <string name="nc_settings_appearance">Utseende</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Bruk systemets standard</string>
@@ -236,6 +237,8 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_contacts">Kontakter</string>
     <string name="nc_circles">Sirkler</string>
     <string name="nc_participants">Deltakere</string>
+    <string name="nc_others">Andre</string>
+
     <string name="nc_owner">Eier</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Bruker</string>
