@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">Importer kontoer fra %1$s-appen</string>
     <string name="nc_server_failed_to_import_account">Klarte ikke å importere valgt konto</string>
     <string name="nc_server_account_imported">Valgt konto er nå importert og tilgjengelig</string>
+    <string name="nc_server_unsupported">Serveren har ikke en støttet Talk app installert</string>
     <string name="nc_get_from_provider">Har du ingen server enda?\nKlikk her for å opprette en hos en tilbyder</string>
 
     <!-- Account verification -->
@@ -46,6 +47,8 @@
 
     <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_search">Søk</string>
+    <string name="nc_search_conversations">Finn samtale</string>
+
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_dialog_text">Ønsker du å stole på det hittil ukjente SSL-sertifikatet, utstedt av %1$s for %2$s gyldig fra %3$s til %4$s?</string>
     <string name="nc_yes">Ja</string>
@@ -63,27 +66,39 @@
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
     <string name="nc_settings_remove">Fjern</string>
+    <string name="nc_settings_remove_confirmation">Bekreft at du vil fjerne den nåværende kontoen.</string>
     <string name="nc_settings_remove_account">Fjern konto</string>
     <string name="nc_settings_add_account">Legg til ny konto</string>
+    <string name="nc_settings_new_account">Ny konto</string>
     <string name="nc_add">Legg til</string>
     <string name="nc_settings_wrong_account">Bare gjeldende konto kan reautoriseres</string>
     <string name="nc_settings_no_talk_installed">Samtale-appen er ikke installert på serveren du forsøkte å autentisere mot</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt slettet, og kan ikke endres.</string>
+    <string name="nc_settings_notification_sounds">Lyd</string>
     <string name="nc_settings_call_ringtone">Samtaler</string>
     <string name="nc_settings_other_notifications_ringtone">Varsler</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
+    <string name="nc_settings_vibrate">Vibrasjon</string>
+    <string name="nc_settings_vibrate_desc">Telefonen vil vibrere med mindre den er satt i stille modus</string>
     <string name="nc_settings_appearance">Utseende</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Bruk systemets standard</string>
+    <string name="nc_settings_theme_battery_saver">Satt av batterisparer</string>
     <string name="nc_settings_theme_light">Lys</string>
     <string name="nc_settings_theme_dark">Mørk</string>
+    <string name="nc_settings_privacy_legal">Personvern &amp; Juridiske vilkår</string>
     <string name="nc_settings_screen_lock_title">Skjermlås</string>
+    <string name="nc_settings_screen_lock_desc">Lås %1$s med Android skjermlås eller støttet biometrisk metode.</string>
     <string name="nc_settings_screen_lock_timeout_title">Skjermlås forsinkelse</string>
     <string name="nc_none">Ingen</string>
     <string name="nc_settings_screen_security_title">Skjerm sikkerhet</string>
+    <string name="nc_settings_screen_security_desc">Forhindrer skjermbilder i den siste listen og inne i appen</string>
+    <string name="nc_settings_incognito_keyboard_title">Inkognito-tastatur</string>
+    <string name="nc_settings_incognito_keyboard_desc">Instruerer tastaturet om å deaktivere personlig læring (uten garantier)</string>
     <string name="nc_settings_link_previews_title">Vis forhåndsvisning av lenker</string>
+    <string name="nc_settings_link_previews_desc">Tillater forhåndsvisning av innhold fra mottatte lenker for støttede tjenester</string>
     <string name="nc_locked">Trykk for å låse opp</string>
 
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
@@ -95,11 +110,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">Lås opp %1$s</string>
     <string name="nc_cancel">Avbryt</string>
 
     <string name="nc_no_proxy">Ingen mellomserver</string>
     <string name="nc_username">Brukernavn</string>
     <string name="nc_password">Passord</string>
+    <string name="nc_password_optional">Passord (Valgfritt)</string>
+    <string name="nc_password_redacted">Redigert av personvernhensyn</string>
     <string name="nc_conversation_link">Samtale lenke</string>
     <string name="nc_new_password">Nytt passord</string>
     <string name="nc_wrong_password">Feil passord</string>
@@ -115,6 +133,7 @@
     <string name="nc_start_conversation">Start en samtale</string>
     <string name="nc_configure_room">Konfigurer samtale</string>
     <string name="nc_leave">Forlat samtale</string>
+    <string name="nc_leave_message">Bekreft at du vil forlate denne samtalen.</string>
     <string name="nc_simple_leave">Forlat</string>
     <string name="nc_rename">Endre navn på samtale</string>
     <string name="nc_set_password">Sett et passord</string>
@@ -126,8 +145,16 @@
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_delete_call">Slett samtale</string>
     <string name="nc_delete">Slett</string>
+    <string name="nc_delete_conversation_default">Bekreft at du vil slette denne
+samtalen</string>
+    <string name="nc_delete_conversation_one2one">Hvis du sletter denne samtalen, så vil den også bli
+slettet for %1$s.</string>
+    <string name="nc_delete_conversation_more">Hvis du sletter denne samtalen, så vil den også bli
+slettet for alle andre deltakere.</string>
+
     <string name="nc_new_conversation_short">Ny</string>
     <string name="nc_new_conversation">Ny samtale</string>
+    <string name="nc_join_via_link">Bli med via en lenke</string>
     <string name="nc_join_via_web">Bli med via nett</string>
     <string name="nc_favorite_conversation">Favoritt samtale</string>
     <string name="nc_add_to_favorites">Legg til favoritter</string>
@@ -135,6 +162,10 @@
     <string name="nc_favorites_explanation">Samtalen vil bli festet på toppen av
         samtalelisten</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contact">Finn deltager</string>
+    <string name="nc_select_contacts">Finn deltakere</string>
+    <string name="nc_select_new_contacts">Finn nye deltakere</string>
     <string name="nc_contacts_done">Ferdig</string>
 
     <!-- Permissions -->
@@ -150,6 +181,7 @@
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_public_call_explanation">Offentlige samtaler lar deg invitere personer fra utsiden gjennom en spesialdesignet lenke.</string>
     <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
+    <string name="nc_call_reconnecting">Kobler til igjen...</string>
     <string name="nc_offline">Offline, vennligst sjekk din nett forbindelse</string>
     <string name="nc_leaving_call">Forlater samtalen...</string>
 
@@ -166,6 +198,8 @@
     <string name="nc_mute_calls">Slå av samtaler</string>
     <string name="nc_mute_calls_desc">Innkommende samtaler vil bli ignorert</string>
     <string name="nc_important_conversation">Viktig samtale</string>
+    <string name="nc_important_conversation_desc">Anrops- og meldingsvarsler vises selv i ikke-forstyrr-modus (følger systemkonfigurasjonen \"Tillat bare prioritetsavbrudd\")</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_failed_signaling_settings">Målserveren støtter ikke å bli med i offentlige samtaler via mobil
@@ -236,6 +270,7 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_contacts">Kontakter</string>
     <string name="nc_circles">Sirkler</string>
+    <string name="nc_emails">E-post</string>
     <string name="nc_participants">Deltakere</string>
     <string name="nc_others">Andre</string>
 
@@ -252,7 +287,14 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_file_browser_refresh">Oppdater</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
 
+    <!-- Lobby -->
+
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Start tidspunkt</string>
+    <string name="nc_lobby_waiting">Du venter for øyeblikket i lobbyen.</string>
+    <string name="nc_lobby_waiting_with_date">Du venter for øyeblikket i lobbyen.\n Dette
+møte er planlagt for %1$s.</string>
     <string name="nc_manual">Ikke satt</string>
 
     <!-- Errors -->
@@ -262,6 +304,8 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_empty_response_error">Ingen tilbakemelding</string>
     <string name="nc_not_defined_error">Ukjent feil</string>
     <string name="nc_unauthorized_error">Uautorisert</string>
+
+    <string name="nc_oops">Obs, noe gikk galt!</string>
 
     <string name="nc_general_settings">Generell</string>
     <string name="nc_allow_guests">Tillat gjester</string>
@@ -273,6 +317,14 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_copy_message">Kopier</string>
     <string name="nc_reply">Svar</string>
 
+    <string name="nc_search_for_more">Søk etter flere deltakere</string>
+    <string name="nc_new_group">Ny gruppe</string>
+    <string name="nc_search_empty_contacts">Hvor har alle gjemt seg?</string>
     <string name="nc_reject_call">Avvis</string>
+    <string name="silenced_by_moderator">Du ble dempet av en moderator</string>
+    <string name="nc_failed_to_send">Kunne ikke sende - trykk for å prøve å sende på nytt.</string>
     <string name="nc_preferences">Innstillinger</string>
-    </resources>
+    <string name="nc_look_and_feel">Utseende &amp; Lyder</string>
+    <string name="nc_settings_calls_sound">Ringelyder</string>
+    <string name="nc_settings_notifications_sound">Lyd for varsler</string>
+</resources>
