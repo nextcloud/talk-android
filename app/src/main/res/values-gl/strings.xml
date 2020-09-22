@@ -291,10 +291,10 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <!-- Lobby -->
 
     <string name="nc_webinar">Seminario web</string>
-    <string name="nc_lobby">Vestíbulo</string>
+    <string name="nc_lobby">Ástrago</string>
     <string name="nc_start_time">Hora de comezo</string>
-    <string name="nc_lobby_waiting">Actualmente estás agardando no vestíbulo.</string>
-    <string name="nc_lobby_waiting_with_date">Actualmente estás agardando no vestíbulo.\n Esta
+    <string name="nc_lobby_waiting">Actualmente está agardando no ástrago.</string>
+    <string name="nc_lobby_waiting_with_date">Actualmente está agardando no ástrago.\n Esta
         xuntanza está programada para %1$s.</string>
     <string name="nc_manual">Sen estabelecer</string>
 

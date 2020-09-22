@@ -34,7 +34,7 @@
     <string name="nc_server_import_accounts">%1$s uygulamasındaki hesapları içe aktar</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
     <string name="nc_server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
-    <string name="nc_server_unsupported">Sunucuda desteklenen bir Sohbet uygulaması kurulu değil</string>
+    <string name="nc_server_unsupported">Sunucuda desteklenen bir Talk uygulaması kurulu değil</string>
     <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Listeden bir hizmet sağlayıcısı seçebilirsiniz</string>
 
     <!-- Account verification -->
