@@ -36,9 +36,11 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.PopupMenu
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.isVisible
 import androidx.lifecycle.observe
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -496,6 +498,14 @@ class ChatView(private val bundle: Bundle) : BaseView(), ImageLoaderInterface {
             conversationVideoMenuItem?.isVisible = false
         } else {
             conversationVoiceCallMenuItem?.isVisible = true
+
+            if (!DisplayUtils.isDarkThemeEnabled(resources!!)) {
+                conversationVoiceCallMenuItem?.icon = DisplayUtils.getTintedDrawable(resources!!, R.drawable.ic_call_black_24dp, R.color.fg_default)
+                conversationVideoMenuItem?.icon = DisplayUtils.getTintedDrawable(resources!!, R.drawable.ic_videocam_white_24px, R.color.fg_default)
+            } else {
+                conversationVoiceCallMenuItem?.icon = resources!!.getDrawable(R.drawable.ic_call_white_24dp)
+            }
+
             conversationVideoMenuItem?.isVisible = true
         }
     }

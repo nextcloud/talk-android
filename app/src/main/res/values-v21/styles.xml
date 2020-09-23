@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
-        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-        <item name="textInputStyle">@style/TextInputLayout</item>
+        <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
-
-
 </resources>

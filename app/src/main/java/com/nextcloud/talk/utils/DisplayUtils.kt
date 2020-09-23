@@ -21,9 +21,11 @@
 package com.nextcloud.talk.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -41,12 +43,15 @@ import android.text.style.StyleSpan
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.XmlRes
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.AppCompatDrawableManager
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
@@ -375,5 +380,54 @@ object DisplayUtils {
                 )
         )
         return drawable
+    }
+
+    fun applyColorToNavgiationBar(window: Window, @ColorInt color: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                var decor = window.decorView
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+                    var systemUiFlags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        systemUiFlags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR or
+                                WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS
+                    }
+                    decor.systemUiVisibility = systemUiFlags
+                } else {
+                    decor.systemUiVisibility = 0
+                }
+                window.navigationBarColor = color
+            }
+        }
+    }
+
+    fun applyColorToStatusBar(activity: Activity, @ColorInt color: Int) {
+        val window = activity.window
+        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = color
+        }
+    }
+
+    fun isDarkThemeEnabled(resources: Resources): Boolean {
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+            return false
+        }
+
+        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
+            return true
+        }
+
+        val currentNightMode = (resources!!.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)
+        when (currentNightMode) {
+            Configuration.UI_MODE_NIGHT_YES -> {
+                return true
+            }
+            Configuration.UI_MODE_NIGHT_NO,
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
+            }
+        }
+        return false
     }
 }

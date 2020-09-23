@@ -56,6 +56,6 @@
         android:gravity="center"
         android:text="@string/nc_connecting_call"
         android:textAlignment="center"
-        android:textColor="@color/white" />
+        android:textColor="@color/fg_inverse" />
 
 </RelativeLayout>

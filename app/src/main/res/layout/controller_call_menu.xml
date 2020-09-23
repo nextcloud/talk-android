@@ -22,7 +22,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/nc_white_color">
+    android:background="@color/bg_default">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"

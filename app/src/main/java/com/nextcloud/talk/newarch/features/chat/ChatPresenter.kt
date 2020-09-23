@@ -120,7 +120,7 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                                         .endConfig()
                                         .buildRect(
                                                 ">_",
-                                                context.resources.getColor(R.color.black)
+                                                context.resources.getColor(R.color.fg_default)
                                         )
                                 holder.itemView.authorAvatar.loadAny(drawable, imageLoader.getImageLoader())
                             } else {

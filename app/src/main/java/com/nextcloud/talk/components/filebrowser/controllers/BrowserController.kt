@@ -41,7 +41,6 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.newarch.local.models.User
-import com.nextcloud.talk.newarch.local.models.UserNgEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import eu.davidea.fastscroller.FastScroller
 import eu.davidea.flexibleadapter.FlexibleAdapter

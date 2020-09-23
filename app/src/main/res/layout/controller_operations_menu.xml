@@ -21,7 +21,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/nc_white_color">
+    android:background="@color/bg_default">
 
     <ImageView
         android:id="@+id/result_image_view"
@@ -70,7 +70,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
-        android:background="#0000"
+        android:background="@color/bg_inverse"
         android:text="@string/nc_ok"
         android:textColor="@color/colorPrimary"
         android:visibility="gone" />
@@ -84,7 +84,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="12dp"
         android:layout_toStartOf="@id/ok_button"
-        android:background="#0000"
+        android:background="@color/bg_inverse"
         android:text="@string/nc_join_via_web"
         android:textColor="@color/nc_darkGreen"
         android:visibility="gone" />
