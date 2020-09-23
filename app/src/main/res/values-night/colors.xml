@@ -25,6 +25,10 @@
     <bool name="is_night">true</bool>
     <bool name="status_bar_light">false</bool>
 
+    <color name="colorPrimary">#0082C9</color>
+    <color name="colorPrimaryDark">#006AA3</color>
+    <color name="colorAccent">#007CC2</color>
+
     <color name="conversation_item_header">#9FBDCC</color>
     <!--<color name="conversation_item_header">#CFCFCF</color>-->
 
@@ -34,6 +38,7 @@
 
     <color name="fg_default">#FFFFFF</color>
     <color name="fg_inverse">#222222</color>
+    <color name="fg_chat_message_sent">@color/fg_default</color>
 
     <!-- Chat window incoming message text & informational -->
     <color name="nc_incoming_text_default">#D8D8D8</color>

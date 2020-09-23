@@ -29,6 +29,7 @@ import kotlinx.android.synthetic.main.item_message_quote.view.*
 import kotlinx.android.synthetic.main.rv_chat_item.view.*
 import kotlinx.android.synthetic.main.rv_chat_system_item.view.*
 import kotlinx.android.synthetic.main.rv_date_and_unread_notice_item.view.*
+import kotlinx.android.synthetic.main.rv_item_conversation_with_last_message.view.*
 import org.koin.core.KoinComponent
 
 open class ChatPresenter<T : Any>(context: Context, private val onElementClickPass: ((Page, Holder, Element<T>, Map<String, String>) -> Unit)?, private val onElementLongClick: ((Page, Holder, Element<T>, Map<String, String>) -> Unit)?, private val imageLoader: ImageLoaderInterface) : Presenter<T>(context), KoinComponent {
@@ -147,9 +148,14 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             if (isOutgoingMessage) {
                                 messageLayoutParams.marginEnd = 8.dp
                                 holder.itemView.messageLayout.background = context.resources.getDrawable(R.drawable.outgoing_grouped_message_background)
+                                holder.itemView.chatMessage.setTextColor(context.resources.getColor(R.color.fg_chat_message_sent))
+                                holder.itemView.messageTime.setTextColor(context.resources.getColor(R.color.fg_default_high))
+                                holder.itemView.chatMessage.setLinkTextColor(context.resources.getColor(R.color.fg_chat_message_url))
                             } else {
                                 messageLayoutParams.marginStart = 40.dp
                                 holder.itemView.messageLayout.background = context.resources.getDrawable(R.drawable.incoming_grouped_message_background)
+                                holder.itemView.chatMessage.setTextColor(context.resources.getColor(R.color.fg_default))
+                                holder.itemView.chatMessage.setLinkTextColor(context.resources.getColor(R.color.colorPrimary))
                             }
                             holder.itemView.messageLayout.layoutParams = messageLayoutParams
 
@@ -158,9 +164,14 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             if (isOutgoingMessage) {
                                 messageLayoutParams.marginEnd = 8.dp
                                 holder.itemView.messageLayout.background = context.resources.getDrawable(R.drawable.outgoing_message_background)
+                                holder.itemView.chatMessage.setTextColor(context.resources.getColor(R.color.fg_chat_message_sent))
+                                holder.itemView.messageTime.setTextColor(context.resources.getColor(R.color.fg_default_high))
+                                holder.itemView.chatMessage.setLinkTextColor(context.resources.getColor(R.color.fg_chat_message_url))
                             } else {
                                 messageLayoutParams.marginStart = 0
                                 holder.itemView.messageLayout.background = context.resources.getDrawable(R.drawable.incoming_message_background)
+                                holder.itemView.chatMessage.setTextColor(context.resources.getColor(R.color.fg_default))
+                                holder.itemView.chatMessage.setLinkTextColor(context.resources.getColor(R.color.colorPrimary))
                             }
 
                             holder.itemView.messageLayout.layoutParams = messageLayoutParams
@@ -209,6 +220,10 @@ open class ChatPresenter<T : Any>(context: Context, private val onElementClickPa
                             holder.itemView.quotedMessageTime?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                             if (isOutgoingMessage) {
                                 holder.itemView.quoteColoredView.setBackgroundColor(context.resources.getColor(R.color.bg_message_list_incoming_bubble))
+                                holder.itemView.quotedChatText.setTextColor(context.resources.getColor(R.color.fg_chat_message_sent))
+                                holder.itemView.quotedMessageTime.setTextColor(context.resources.getColor(R.color.fg_default_high))
+                                holder.itemView.quotedChatText.setLinkTextColor(context.resources.getColor(R.color.fg_chat_message_url))
+                                holder.itemView.quotedAuthor.setTextColor(context.resources.getColor(R.color.fg_chat_message_sent))
                             } else {
                                 holder.itemView.quoteColoredView.setBackgroundColor(context.resources.getColor(R.color.bg_message_list_outcoming_bubble))
                             }
