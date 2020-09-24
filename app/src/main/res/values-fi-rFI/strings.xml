@@ -32,6 +32,8 @@
     <string name="nc_server_failed_to_import_account">Valitun tilin tuominen epäonnistui</string>
     <string name="nc_server_account_imported">Valittu tili on nyt tuotu ja käytettävissä</string>
     <string name="nc_server_unsupported">Tuettua Talk-sovellusta ei ole asennettu palvelimelle</string>
+    <string name="nc_get_from_provider">Ei palvelinta?\nNapsauta tästä ja hanki palveluntarjoajalta</string>
+
     <!-- Account verification -->
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
@@ -58,6 +60,7 @@
     <string name="nc_settings_remove_confirmation">Vahvista nykyisen tilin poistaminen.</string>
     <string name="nc_settings_remove_account">Poista tili</string>
     <string name="nc_settings_add_account">Lisää uusi tili</string>
+    <string name="nc_settings_new_account">Uusi tili</string>
     <string name="nc_add">Lisää</string>
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>
     <string name="nc_settings_no_talk_installed">Talk-sovellusta ei ole asennettu palvelimelle, johon koetit kirjautua</string>
@@ -71,6 +74,7 @@
     <string name="nc_settings_vibrate_desc">Puhelin värisee ellei se ole äänettömänä</string>
     <string name="nc_settings_appearance">Ulkoasu</string>
     <string name="nc_settings_theme_title">Teema</string>
+    <string name="nc_settings_theme_key">teema</string>
     <string name="nc_settings_theme_follow_system">Käytä järjestelmän oletusta</string>
     <string name="nc_settings_theme_battery_saver">Asetettu akunsäästäjän toimesta</string>
     <string name="nc_settings_theme_light">Vaalea</string>
@@ -271,4 +275,7 @@
     <string name="nc_search_empty_contacts">Mihin he kaikki piiloutuivat?</string>
     <string name="nc_reject_call">Hylkää</string>
     <string name="nc_preferences">Asetukset</string>
-    </resources>
+    <string name="nc_look_and_feel">Ulkoasu ja äänet</string>
+    <string name="nc_settings_calls_sound">Puhelujen ääni</string>
+    <string name="nc_settings_notifications_sound">Ilmoitusten ääni</string>
+</resources>
