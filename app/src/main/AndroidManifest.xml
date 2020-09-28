@@ -81,6 +81,11 @@
             android:name="android.max_aspect"
             android:value="10" />
 
+        <provider
+        android:name="androidx.work.impl.WorkManagerInitializer"
+        android:authorities=".workmanager-init"
+        android:exported="false"
+        tools:node="remove" />
 
         <activity
             android:name=".activities.MainActivity"
