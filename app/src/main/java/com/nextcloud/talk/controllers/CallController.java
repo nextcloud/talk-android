@@ -39,14 +39,13 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
-import butterknife.OnLongClick;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -55,17 +54,29 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.events.*;
+import com.nextcloud.talk.events.ConfigurationChangeEvent;
+import com.nextcloud.talk.events.MediaStreamEvent;
+import com.nextcloud.talk.events.NetworkEvent;
+import com.nextcloud.talk.events.PeerConnectionEvent;
+import com.nextcloud.talk.events.SessionDescriptionSendEvent;
+import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.ExternalSignalingServer;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
+import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.conversations.RoomsOverall;
-import com.nextcloud.talk.models.json.signaling.*;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
+import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
+import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.Signaling;
+import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -77,8 +88,57 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.webrtc.*;
+import com.nextcloud.talk.webrtc.MagicAudioManager;
+import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
+import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
+import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
+import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
+
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcel;
+import org.webrtc.AudioSource;
+import org.webrtc.AudioTrack;
+import org.webrtc.Camera1Enumerator;
+import org.webrtc.Camera2Enumerator;
+import org.webrtc.CameraEnumerator;
+import org.webrtc.CameraVideoCapturer;
+import org.webrtc.EglBase;
+import org.webrtc.IceCandidate;
+import org.webrtc.Logging;
+import org.webrtc.MediaConstraints;
+import org.webrtc.MediaStream;
+import org.webrtc.PeerConnection;
+import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RendererCommon;
+import org.webrtc.SessionDescription;
+import org.webrtc.SurfaceViewRenderer;
+import org.webrtc.VideoCapturer;
+import org.webrtc.VideoSource;
+import org.webrtc.VideoTrack;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
+import butterknife.OnLongClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -88,18 +148,7 @@ import me.zhanghai.android.effortlesspermissions.AfterPermissionDenied;
 import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcel;
-import org.webrtc.*;
 import pub.devrel.easypermissions.AfterPermissionGranted;
-
-import javax.inject.Inject;
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallController extends BaseController {
@@ -1001,10 +1050,10 @@ public class CallController extends BaseController {
                                 .getCapabilities().getSpreedCapability()
                                 .getFeatures().contains("no-ping"));
 
-                        if (!hasExternalSignalingServer) {
-                            joinRoomAndCall();
-                        } else {
+                        if (hasExternalSignalingServer) {
                             setupAndInitiateWebSocketsConnection();
+                        } else {
+                            joinRoomAndCall();
                         }
                     }
 
@@ -1021,44 +1070,51 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
-        ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
-                roomToken), conversationPassword)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(3)
-                .subscribe(new Observer<RoomOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+        callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
-                    }
+        if (TextUtils.isEmpty(callSession)) {
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
+                    roomToken), conversationPassword)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(3)
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    @Override
-                    public void onNext(RoomOverall roomOverall) {
-                        callSession = roomOverall.getOcs().getData().getSessionId();
-                        ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
-                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
-                        callOrJoinRoomViaWebSocket();
-                    }
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            callSession = roomOverall.getOcs().getData().getSessionId();
+                            ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
+                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
+                            ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
+                            callOrJoinRoomViaWebSocket();
+                        }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
 
-                    @Override
-                    public void onComplete() {
+                        }
 
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } else {
+            // we are in a room and start a call -> same session needs to be used
+            callOrJoinRoomViaWebSocket();
+        }
     }
 
     private void callOrJoinRoomViaWebSocket() {
-        if (!hasExternalSignalingServer) {
-            performCall();
-        } else {
+        if (hasExternalSignalingServer) {
             webSocketClient.joinRoomWithRoomTokenAndSession(roomToken, callSession);
+        } else {
+            performCall();
         }
     }
 
@@ -1399,10 +1455,6 @@ public class CallController extends BaseController {
 
                         @Override
                         public void onNext(GenericOverall genericOverall) {
-                            if (!TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
-                                webSocketClient.joinRoomWithRoomTokenAndSession("", callSession);
-                            }
-
                             if (isMultiSession) {
                                 if (shutDownView && getActivity() != null) {
                                     getActivity().finish();
