@@ -17,16 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import com.github.spotbugs.snom.SpotBugsTask
 
 apply plugin: 'com.android.application'
-//apply plugin: 'findbugs'
 apply plugin: 'kotlin-android'
+apply plugin: 'com.github.spotbugs'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlinx-serialization'
 
 def taskRequest = getGradle().getStartParameter().getTaskRequests().toString()
-if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") ||
+if (taskRequest.contains("Gplay") || taskRequest.contains("spotbugs") ||
     taskRequest.contains("lint")) {
   apply from: 'gplay.gradle'
 }
@@ -151,6 +153,26 @@ android {
     htmlOutput file("$project.buildDir/reports/lint/lint.html")
     disable 'MissingTranslation'
   }
+
+    android.applicationVariants.all { variant ->
+        String variantName = variant.name
+        String capVariantName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1)
+        tasks.register("spotbugs${capVariantName}Report", SpotBugsTask) {
+            ignoreFailures = true // should continue checking
+            effort = "max"
+            reportLevel = "medium"
+            classes = fileTree("${project.rootDir}/app/build/intermediates/javac/${variantName}/classes/com/nextcloud/talk/")
+            excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
+
+            reports {
+                xml.enabled = false
+                html {
+                    enabled = true
+                    destination = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+                }
+            }
+        }
+    }
 }
 
 ext {
@@ -325,4 +347,7 @@ dependencies {
   })
   implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.0.0'
   implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
+
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.10.1'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
 }
