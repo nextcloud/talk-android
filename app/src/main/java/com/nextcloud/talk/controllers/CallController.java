@@ -2031,16 +2031,11 @@ public class CallController extends BaseController {
         }
     }
 
-    private void gotNick(String sessionOrUserId, String nick, boolean isFromAnEvent, String type) {
-        if (isFromAnEvent && hasExternalSignalingServer) {
-            // get session based on userId
-            sessionOrUserId = webSocketClient.getSessionForUserId(sessionOrUserId);
-        }
-
-        sessionOrUserId += "+" + type;
+    private void gotNick(String sessionId, String nick, boolean isFromAnEvent, String type) {
+        sessionId += "+" + type;
 
         if (relativeLayout != null) {
-            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionOrUserId);
+            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
             TextView textView = relativeLayout.findViewById(R.id.peer_nick_text_view);
             if (!textView.getText().equals(nick)) {
                 textView.setText(nick);

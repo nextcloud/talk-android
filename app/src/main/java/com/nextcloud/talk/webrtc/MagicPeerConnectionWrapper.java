@@ -279,7 +279,7 @@ public class MagicPeerConnectionWrapper {
                         if (dataChannelMessage.getPayload() != null) {
                             HashMap<String, String> payloadHashMap = (HashMap<String, String>) dataChannelMessage.getPayload();
                             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                                    .NICK_CHANGE, payloadHashMap.get("userid"), payloadHashMap.get("name"), null, videoStreamType));
+                                    .NICK_CHANGE, sessionId, payloadHashMap.get("name"), null, videoStreamType));
                         }
                     }
 
