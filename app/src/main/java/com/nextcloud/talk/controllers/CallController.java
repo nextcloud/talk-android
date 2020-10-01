@@ -1746,7 +1746,7 @@ public class CallController extends BaseController {
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {
-            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick(), true, peerConnectionEvent.getVideoStreamType());
+            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick(), peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
             gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId() + "+" + peerConnectionEvent.getVideoStreamType(),
@@ -2017,9 +2017,9 @@ public class CallController extends BaseController {
                 surfaceViewRenderer.setOnClickListener(videoOnClickListener);
                 remoteRenderersLayout.addView(relativeLayout);
                 if (hasExternalSignalingServer) {
-                    gotNick(session, webSocketClient.getDisplayNameForSession(session), false, type);
+                    gotNick(session, webSocketClient.getDisplayNameForSession(session), type);
                 } else {
-                    gotNick(session, getPeerConnectionWrapperForSessionIdAndType(session, type, false).getNick(), false, type);
+                    gotNick(session, getPeerConnectionWrapperForSessionIdAndType(session, type, false).getNick(), type);
                 }
 
                 if ("video".equals(type)) {
@@ -2031,7 +2031,7 @@ public class CallController extends BaseController {
         }
     }
 
-    private void gotNick(String sessionId, String nick, boolean isFromAnEvent, String type) {
+    private void gotNick(String sessionId, String nick, String type) {
         sessionId += "+" + type;
 
         if (relativeLayout != null) {
