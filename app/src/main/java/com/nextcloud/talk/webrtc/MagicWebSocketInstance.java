@@ -406,16 +406,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
     }
 
-    public String getSessionForUserId(String userId) {
-        for (String session : usersHashMap.keySet()) {
-            if (userId.equals(usersHashMap.get(session).getUserId())) {
-                return session;
-            }
-        }
-
-        return "";
-    }
-
     public String getUserIdForSession(String session) {
         if (usersHashMap.containsKey(session)) {
             return usersHashMap.get(session).getUserId();
