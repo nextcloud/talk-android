@@ -271,7 +271,7 @@ public class MagicPeerConnectionWrapper {
                     if (dataChannelMessage.getPayload() instanceof String) {
                         internalNick = (String) dataChannelMessage.getPayload();
                         if (!internalNick.equals(nick)) {
-                            setNick(nick);
+                            setNick(internalNick);
                             EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                                     .NICK_CHANGE, sessionId, getNick(), null, videoStreamType));
                         }
