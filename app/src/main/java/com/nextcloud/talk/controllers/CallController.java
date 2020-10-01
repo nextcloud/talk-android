@@ -1914,23 +1914,35 @@ public class CallController extends BaseController {
                 SimpleDraweeView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
 
                 String userId;
+                String displayName;
 
                 if (hasMCU) {
                     userId = webSocketClient.getUserIdForSession(session);
+                    displayName = getPeerConnectionWrapperForSessionIdAndType(session, "video", false).getNick();
                 } else {
                     userId = participantMap.get(session).getUserId();
+                    displayName = getPeerConnectionWrapperForSessionIdAndType(session, "video", false).getNick();
                 }
 
-                if (!TextUtils.isEmpty(userId)) {
+                if (!TextUtils.isEmpty(userId) || !TextUtils.isEmpty(displayName)) {
 
                     if (getActivity() != null) {
                         avatarImageView.setController(null);
 
+                        String urlForAvatar;
+                        if (!TextUtils.isEmpty(userId)) {
+                            urlForAvatar = ApiUtils.getUrlForAvatarWithName(baseUrl,
+                                    userId,
+                                    R.dimen.avatar_size_big);
+                        } else {
+                            urlForAvatar = ApiUtils.getUrlForAvatarWithNameForGuests(baseUrl,
+                                    displayName,
+                                    R.dimen.avatar_size_big);
+                        }
+
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                                 .setOldController(avatarImageView.getController())
-                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(baseUrl,
-                                        userId,
-                                        R.dimen.avatar_size_big), null))
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(urlForAvatar, null))
                                 .build();
                         avatarImageView.setController(draweeController);
                     }
@@ -2032,13 +2044,17 @@ public class CallController extends BaseController {
     }
 
     private void gotNick(String sessionId, String nick, String type) {
-        sessionId += "+" + type;
+        String remoteRendererTag = sessionId + "+" + type;
 
         if (relativeLayout != null) {
-            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionId);
+            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(remoteRendererTag);
             TextView textView = relativeLayout.findViewById(R.id.peer_nick_text_view);
             if (!textView.getText().equals(nick)) {
                 textView.setText(nick);
+
+                if (getActivity() != null && type.equals("video")) {
+                    getActivity().runOnUiThread(() -> setupAvatarForSession(sessionId));
+                }
             }
         }
     }
