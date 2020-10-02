@@ -65,6 +65,7 @@
             android:textIsSelectable="false"
             android:autoLink="all"
             android:textSize="14sp"
+            android:textColorLink="@color/colorPrimary"
             tools:text="Just another chat message" />
 
         <TextView

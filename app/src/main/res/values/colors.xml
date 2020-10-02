@@ -59,6 +59,9 @@
 
     <color name="fg_default">#666666</color>
     <color name="fg_inverse">#FFFFFF</color>
+    <color name="fg_chat_message_sent">#FFFFFF</color>
+    <color name="fg_chat_message_url">#dddddd</color>
+    <color name="fg_default_high">#cccccc</color>
 
     <color name="bg_default">#FFFFFF</color>
     <color name="bg_alt">@color/white60</color>
