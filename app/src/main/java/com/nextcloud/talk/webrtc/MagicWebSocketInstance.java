@@ -247,7 +247,10 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                             HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
                                             participant = new Participant();
                                             participant.setUserId((String) internalHashMap.get("userid"));
-                                            participant.setDisplayName((String) userMap.get("displayname"));
+                                            if (userMap != null) {
+                                                // There is no "user" attribute for guest participants.
+                                                participant.setDisplayName((String) userMap.get("displayname"));
+                                            }
                                             usersHashMap.put((String) internalHashMap.get("sessionid"), participant);
                                         }
                                     }
@@ -401,16 +404,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
         }
 
         return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
-    }
-
-    public String getSessionForUserId(String userId) {
-        for (String session : usersHashMap.keySet()) {
-            if (userId.equals(usersHashMap.get(session).getUserId())) {
-                return session;
-            }
-        }
-
-        return "";
     }
 
     public String getUserIdForSession(String session) {

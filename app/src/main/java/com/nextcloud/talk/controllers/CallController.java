@@ -1746,7 +1746,7 @@ public class CallController extends BaseController {
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.NICK_CHANGE)) {
-            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick(), true, peerConnectionEvent.getVideoStreamType());
+            gotNick(peerConnectionEvent.getSessionId(), peerConnectionEvent.getNick(), peerConnectionEvent.getVideoStreamType());
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
                 .PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
             gotAudioOrVideoChange(true, peerConnectionEvent.getSessionId() + "+" + peerConnectionEvent.getVideoStreamType(),
@@ -1914,23 +1914,35 @@ public class CallController extends BaseController {
                 SimpleDraweeView avatarImageView = relativeLayout.findViewById(R.id.avatarImageView);
 
                 String userId;
+                String displayName;
 
                 if (hasMCU) {
                     userId = webSocketClient.getUserIdForSession(session);
+                    displayName = getPeerConnectionWrapperForSessionIdAndType(session, "video", false).getNick();
                 } else {
                     userId = participantMap.get(session).getUserId();
+                    displayName = getPeerConnectionWrapperForSessionIdAndType(session, "video", false).getNick();
                 }
 
-                if (!TextUtils.isEmpty(userId)) {
+                if (!TextUtils.isEmpty(userId) || !TextUtils.isEmpty(displayName)) {
 
                     if (getActivity() != null) {
                         avatarImageView.setController(null);
 
+                        String urlForAvatar;
+                        if (!TextUtils.isEmpty(userId)) {
+                            urlForAvatar = ApiUtils.getUrlForAvatarWithName(baseUrl,
+                                    userId,
+                                    R.dimen.avatar_size_big);
+                        } else {
+                            urlForAvatar = ApiUtils.getUrlForAvatarWithNameForGuests(baseUrl,
+                                    displayName,
+                                    R.dimen.avatar_size_big);
+                        }
+
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                                 .setOldController(avatarImageView.getController())
-                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(baseUrl,
-                                        userId,
-                                        R.dimen.avatar_size_big), null))
+                                .setImageRequest(DisplayUtils.getImageRequestForUrl(urlForAvatar, null))
                                 .build();
                         avatarImageView.setController(draweeController);
                     }
@@ -2017,9 +2029,9 @@ public class CallController extends BaseController {
                 surfaceViewRenderer.setOnClickListener(videoOnClickListener);
                 remoteRenderersLayout.addView(relativeLayout);
                 if (hasExternalSignalingServer) {
-                    gotNick(session, webSocketClient.getDisplayNameForSession(session), false, type);
+                    gotNick(session, webSocketClient.getDisplayNameForSession(session), type);
                 } else {
-                    gotNick(session, getPeerConnectionWrapperForSessionIdAndType(session, type, false).getNick(), false, type);
+                    gotNick(session, getPeerConnectionWrapperForSessionIdAndType(session, type, false).getNick(), type);
                 }
 
                 if ("video".equals(type)) {
@@ -2031,19 +2043,18 @@ public class CallController extends BaseController {
         }
     }
 
-    private void gotNick(String sessionOrUserId, String nick, boolean isFromAnEvent, String type) {
-        if (isFromAnEvent && hasExternalSignalingServer) {
-            // get session based on userId
-            sessionOrUserId = webSocketClient.getSessionForUserId(sessionOrUserId);
-        }
-
-        sessionOrUserId += "+" + type;
+    private void gotNick(String sessionId, String nick, String type) {
+        String remoteRendererTag = sessionId + "+" + type;
 
         if (relativeLayout != null) {
-            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(sessionOrUserId);
+            RelativeLayout relativeLayout = remoteRenderersLayout.findViewWithTag(remoteRendererTag);
             TextView textView = relativeLayout.findViewById(R.id.peer_nick_text_view);
             if (!textView.getText().equals(nick)) {
                 textView.setText(nick);
+
+                if (getActivity() != null && type.equals("video")) {
+                    getActivity().runOnUiThread(() -> setupAvatarForSession(sessionId));
+                }
             }
         }
     }
