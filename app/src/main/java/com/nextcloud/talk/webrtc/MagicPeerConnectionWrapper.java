@@ -406,7 +406,7 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-            if (dataChannel.label().equals("status")) {
+            if (dataChannel.label().equals("status") || dataChannel.label().equals("JanusDataChannel")) {
                 magicDataChannel = dataChannel;
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
             }
