@@ -109,11 +109,13 @@ public class MagicPeerConnectionWrapper {
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
                     peerConnection.createOffer(magicSdpObserver, sdpConstraints);
-                } else if (hasMCU) {
+                } else if (hasMCU && this.videoStreamType.equals("video")) {
+                    // If the connection type is "screen" the client sharing the screen will send an
+                    // offer; offers should be requested only for videos.
                     HashMap<String, String> hashMap = new HashMap<>();
                     hashMap.put("sessionId", sessionId);
                     EventBus.getDefault().post(new WebSocketCommunicationEvent("peerReadyForRequestingOffer", hashMap));
-                } else if (hasInitiated) {
+                } else if (!hasMCU && hasInitiated) {
                     peerConnection.createOffer(magicSdpObserver, sdpConstraints);
 
                 }
