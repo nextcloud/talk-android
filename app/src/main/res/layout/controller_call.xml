@@ -55,6 +55,15 @@
         android:layout_marginBottom="8dp"
         android:animateLayoutChanges="true">
 
+        <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/callControlToggleChat"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            app:backgroundImage="@color/whiteHalfTransparent"
+            app:placeholderImage="@drawable/ic_comment"
+            app:roundAsCircle="true" />
+
         <LinearLayout
             android:id="@+id/callControlsLinearLayoutView"
             android:layout_width="match_parent"

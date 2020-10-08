@@ -47,6 +47,7 @@
     <color name="nc_grey">#D5D5D5</color>
     <color name="controller_call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
+    <color name="whiteHalfTransparent">#7Fffffff</color>
 
     <!-- Emoji list in chat window -->
     <color name="emoji_background">#eceff1</color>

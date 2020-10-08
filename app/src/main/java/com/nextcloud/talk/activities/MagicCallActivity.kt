@@ -37,16 +37,26 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.CallController
 import com.nextcloud.talk.controllers.CallNotificationController
+import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicCallActivity : BaseActivity() {
 
+    private lateinit var chatController: ChatController
+
     @BindView(R.id.controller_container)
     lateinit var container: ViewGroup
+    
+    @BindView(R.id.chatControllerView)
+    lateinit var chatContainer: ViewGroup
 
     private var router: Router? = null
+    private var chatRouter: Router? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,6 +86,28 @@ class MagicCallActivity : BaseActivity() {
                         .popChangeHandler(HorizontalChangeHandler()))
             }
         }
+
+        val extras = intent.extras ?: Bundle()
+        extras.putBoolean("showToggleChat", true)
+        
+        chatController = ChatController(extras)
+        chatRouter = Conductor.attachRouter(this, chatContainer, savedInstanceState)
+        chatRouter!!.setRoot(RouterTransaction.with(chatController)
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler()))
+    }
+    
+    fun showChat() {
+        chatContainer.visibility = View.VISIBLE
+        container.visibility = View.GONE
+        chatController.wasDetached = false
+        chatController.pullChatMessages(1)
+    }
+
+    fun showCall() {
+        container.visibility = View.VISIBLE
+        chatContainer.visibility = View.GONE
+        chatController.wasDetached = true
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

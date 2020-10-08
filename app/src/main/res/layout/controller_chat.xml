@@ -28,6 +28,18 @@
     <include layout="@layout/lobby_view"
         android:visibility="gone"/>
 
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/callControlToggleChat"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="16dp"
+        app:backgroundImage="@color/nc_grey"
+        app:placeholderImage="@drawable/ic_call_black_24dp"
+        app:roundAsCircle="true"
+        android:elevation="10dp"
+        android:visibility="gone"
+        />
+
     <ProgressBar
         android:id="@+id/progressBar"
         android:layout_width="@dimen/item_height"

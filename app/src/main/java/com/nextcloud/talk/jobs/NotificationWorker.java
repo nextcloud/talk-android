@@ -32,23 +32,11 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.Person;
-import androidx.core.graphics.drawable.IconCompat;
-import androidx.emoji.text.EmojiCompat;
-import androidx.work.Data;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
@@ -84,7 +72,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.vanniktech.emoji.emoji.Emoji;
 
 import org.parceler.Parcels;
 
@@ -100,6 +87,16 @@ import javax.crypto.Cipher;
 import javax.crypto.NoSuchPaddingException;
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.app.Person;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.emoji.text.EmojiCompat;
+import androidx.work.Data;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -293,7 +290,7 @@ public class NotificationWorker extends Worker {
             default:
                 // assuming one2one
                 if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
-                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_chat_black_24dp);
+                    largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_comment);
                 } else {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
                 }

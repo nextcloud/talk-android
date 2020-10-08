@@ -30,4 +30,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <com.bluelinelabs.conductor.ChangeHandlerFrameLayout
+        android:id="@+id/chatControllerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </RelativeLayout>
