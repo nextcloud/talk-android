@@ -37,15 +37,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Checkable;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.emoji.widget.EmojiTextView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
@@ -61,7 +53,11 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.utils.*;
+import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.DoNotDisturbUtils;
+import com.nextcloud.talk.utils.LoggingUtils;
+import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -69,18 +65,38 @@ import com.nextcloud.talk.utils.preferences.MagicUserInputModule;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
-import com.yarolegovich.mp.*;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
-import org.greenrobot.eventbus.EventBus;
+import com.yarolegovich.mp.MaterialChoicePreference;
+import com.yarolegovich.mp.MaterialEditTextPreference;
+import com.yarolegovich.mp.MaterialPreferenceCategory;
+import com.yarolegovich.mp.MaterialPreferenceScreen;
+import com.yarolegovich.mp.MaterialStandardPreference;
+import com.yarolegovich.mp.MaterialSwitchPreference;
 
-import javax.inject.Inject;
+import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SettingsController extends BaseController {
@@ -264,11 +280,15 @@ public class SettingsController extends BaseController {
                     .popChangeHandler(new HorizontalChangeHandler()));
         });
 
-        addAccountButton.addPreferenceClickListener(view15 -> {
-            getRouter().pushController(RouterTransaction.with(new
-                    ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
-                    .popChangeHandler(new VerticalChangeHandler()));
-        });
+        if (getResources().getBoolean(R.bool.multiaccount_support)) {
+            addAccountButton.addPreferenceClickListener(view15 -> {
+                getRouter().pushController(RouterTransaction.with(new
+                        ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
+                        .popChangeHandler(new VerticalChangeHandler()));
+            });
+        } else {
+            addAccountButton.setVisibility(View.GONE);
+        }
 
         switchAccountButton.addPreferenceClickListener(view16 -> {
             getRouter().pushController(RouterTransaction.with(new
