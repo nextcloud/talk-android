@@ -49,7 +49,7 @@ android {
     targetSdkVersion 29
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-    versionCode 141
+    versionCode 90000055 // 0-50=Alpha / 51-98=RC / 90-99=stable
     versionName "9.0.0beta5"
 
     flavorDimensions "default"
