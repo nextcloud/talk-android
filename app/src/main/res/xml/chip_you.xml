@@ -22,5 +22,5 @@
 <chip xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:textAppearance="@style/ChipOutgoingTextAppearance"
-    app:chipBackgroundColor="@color/nc_chip_mention_you_background"
+    app:chipBackgroundColor="@color/colorPrimary"
     app:closeIconEnabled="false"/>

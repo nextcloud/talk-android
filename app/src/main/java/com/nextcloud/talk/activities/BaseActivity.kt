@@ -108,7 +108,7 @@ open class BaseActivity : AppCompatActivity() {
             LovelyStandardDialog(this)
                     .setTopColorRes(R.color.nc_darkRed)
                     .setNegativeButtonColorRes(R.color.nc_darkRed)
-                    .setPositiveButtonColorRes(R.color.colorPrimaryDark)
+                    .setPositiveButtonColorRes(R.color.colorPrimary)
                     .setIcon(R.drawable.ic_security_white_24dp)
                     .setTitle(R.string.nc_certificate_dialog_title)
                     .setMessage(dialogText)

@@ -83,7 +83,7 @@
                 android:gravity="top"
                 android:lines="1"
                 android:singleLine="true"
-                android:textColor="@color/conversation_last_message"
+                android:textColor="@color/textColorMaxContrast"
                 tools:text="This is the last message\nof an incredibly long two line  conversation text" />
 
             <TextView
@@ -110,7 +110,7 @@
             android:layout_alignParentEnd="true"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/conversation_date" />
+            android:textColor="@color/textColorMaxContrast" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/dialogName"

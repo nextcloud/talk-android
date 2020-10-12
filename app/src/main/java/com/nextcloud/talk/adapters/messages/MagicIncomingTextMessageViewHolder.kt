@@ -247,11 +247,11 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
                     ?: context!!.getText(R.string.nc_nick_guest)
             quotedMessage?.text = parentChatMessage.text
 
-            quotedUserName?.setTextColor(context!!.resources.getColor(R.color.colorPrimary))
+            quotedUserName?.setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
             quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
             quotedMessageTime?.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
-            quoteColoredView?.setBackgroundResource(R.color.colorPrimary)
+            quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)
             quotedChatMessageView?.visibility = View.VISIBLE
         } ?: run {
             quotedChatMessageView?.visibility = View.GONE

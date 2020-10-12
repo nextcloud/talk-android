@@ -133,16 +133,16 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         val resources = sharedApplication!!.resources
         if (message.isGrouped) {
             val bubbleDrawable = getMessageSelector(
-                    resources.getColor(R.color.bg_message_list_outcoming_bubble),
+                    resources.getColor(R.color.colorPrimary),
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.bg_message_list_outcoming_bubble),
+                    resources.getColor(R.color.colorPrimary),
                     R.drawable.shape_grouped_outcoming_message)
             ViewCompat.setBackground(bubble, bubbleDrawable)
         } else {
             val bubbleDrawable = getMessageSelector(
-                    resources.getColor(R.color.bg_message_list_outcoming_bubble),
+                    resources.getColor(R.color.colorPrimary),
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.bg_message_list_outcoming_bubble),
+                    resources.getColor(R.color.colorPrimary),
                     R.drawable.shape_outcoming_message)
             ViewCompat.setBackground(bubble, bubbleDrawable)
         }

@@ -26,7 +26,7 @@ import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.view.View;
-import androidx.core.view.ViewCompat;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
@@ -35,7 +35,10 @@ import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.util.Map;
+
 import javax.inject.Inject;
+
+import androidx.core.view.ViewCompat;
 import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -63,7 +66,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
 
         pressedColor = normalColor;
-        mentionColor = resources.getColor(R.color.nc_author_text);
+        mentionColor = resources.getColor(R.color.textColorMaxContrast);
 
         Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
                                 resources.getColor(R.color.transparent), pressedColor,

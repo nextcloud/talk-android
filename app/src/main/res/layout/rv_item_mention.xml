@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="@color/nc_author_text"
+            android:textColor="@color/textColorMaxContrast"
             android:textSize="16sp"
             tools:text="Call item text" />
 

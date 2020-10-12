@@ -65,7 +65,8 @@
         android:text="@string/nc_get_from_provider"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_light_blue_color" />
+        android:alpha="0.5"
+        android:textColor="@color/textColorOnPrimaryBackground" />
 
     <TextView
         android:id="@+id/cert_text_view"
@@ -80,7 +81,8 @@
         android:text="@string/nc_configure_cert_auth"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_light_blue_color" />
+        android:alpha="0.5"
+        android:textColor="@color/textColorOnPrimaryBackground" />
 
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"
