@@ -20,7 +20,7 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#0082C9</color>
+    <color name="colorPrimary">#043F21</color>
     <color name="textColorOnPrimaryBackground">#ffffff</color> <!-- white/black depending on primary color -->
 
     <!-- Text color of sent messages -->

@@ -175,6 +175,7 @@ public class SettingsController extends BaseController {
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
 
+    @NonNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_settings, container, false);

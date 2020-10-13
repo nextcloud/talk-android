@@ -118,7 +118,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_settings_appearance"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:mpc_title_color="@color/textColorMaxContrast">
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_theme"
@@ -138,7 +138,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_settings_notification_sounds"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:mpc_title_color="@color/textColorMaxContrast">
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_call_sound"
@@ -170,7 +170,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_settings_privacy"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:mpc_title_color="@color/textColorMaxContrast">
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_screen_lock_timeout"
@@ -224,7 +224,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_settings_proxy_title"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:mpc_title_color="@color/textColorMaxContrast">
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_proxy_choice"
@@ -285,7 +285,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_about"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:mpc_title_color="@color/textColorMaxContrast">
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_privacy"
