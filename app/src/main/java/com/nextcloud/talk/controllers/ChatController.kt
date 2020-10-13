@@ -27,8 +27,6 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -58,6 +56,7 @@ import com.facebook.common.executors.UiThreadImmediateExecutorService
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
@@ -82,6 +81,9 @@ import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -160,6 +162,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     @JvmField
     @BindView(R.id.quotedChatMessageView)
     var quotedChatMessageView: RelativeLayout? = null
+    @BindView(R.id.callControlToggleChat)
+    @JvmField
+    var toggleChat: SimpleDraweeView? = null
     var roomToken: String? = null
     val conversationUser: UserEntity?
     val roomPassword: String
@@ -388,6 +393,15 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                 }
                 Handler().postDelayed({ messagesListView?.smoothScrollToPosition(scrollPosition) }, 200)
             }
+        }
+
+        if (args.containsKey("showToggleChat") && args.getBoolean("showToggleChat")) {
+            toggleChat?.visibility = View.VISIBLE
+            wasDetached = true
+        }
+        
+        toggleChat?.setOnClickListener{
+            (activity as MagicCallActivity).showCall()
         }
 
         messagesListView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -752,7 +766,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             if (isFirstMessagesProcessing) {
                                 pullChatMessages(0)
                             } else {
-                                pullChatMessages(1)
+                                pullChatMessages(1, 0)
                             }
 
                             if (magicWebSocketInstance != null) {
@@ -854,7 +868,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
             messageInput?.setText("")
             val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
-            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId else null )
+            sendMessage(editable, if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId else null)
             cancelReply()
         }
     }
@@ -918,7 +932,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
-    private fun pullChatMessages(lookIntoFuture: Int) {
+    fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1) {
         if (!inConversation) {
             return
         }
@@ -940,16 +954,17 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             }
         }
 
-        var timeout = 30
-        if (!lookingIntoFuture) {
-            timeout = 0;
+        val timeout = if (lookingIntoFuture) {
+            30
+        } else {
+            0
         }
 
         fieldMap["timeout"] = timeout
 
         fieldMap["lookIntoFuture"] = lookIntoFuture
         fieldMap["limit"] = 100
-        fieldMap["setReadMarker"] = 1
+        fieldMap["setReadMarker"] = setReadMarker
 
         val lastKnown: Int
         if (lookIntoFuture > 0) {
@@ -974,7 +989,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                             override fun onNext(response: Response<*>) {
                                 if (response.code() == 304) {
-                                    pullChatMessages(1)
+                                    pullChatMessages(1, setReadMarker)
                                 } else if (response.code() == 412) {
                                     futurePreconditionFailed = true
 
@@ -1127,7 +1142,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                     if (adapter != null) {
                         chatMessage.isGrouped = (adapter!!.isPreviousSameAuthor(chatMessage
-                        .actorId, -1) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0)
+                                .actorId, -1) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0)
                         chatMessage.isOneToOneConversation = (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
                         adapter?.addToStart(chatMessage, shouldScroll)
                     }
@@ -1298,7 +1313,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.ellipsize = TextUtils.TruncateAt.END
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.text = it.text
                             messageInputView?.findViewById<TextView>(R.id.quotedMessageTime)?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
-                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
+                            messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName
+                                    ?: context!!.getText(R.string.nc_nick_guest)
 
                             conversationUser?.let { currentUser ->
 
@@ -1307,7 +1323,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                                     transformations(CircleCropTransformation())
                                 }
 
-                                chatMessage.imageUrl?.let{ previewImageUrl ->
+                                chatMessage.imageUrl?.let { previewImageUrl ->
                                     messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.VISIBLE
 
                                     val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 96f, resources?.displayMetrics)
@@ -1387,14 +1403,14 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.roomId)
 
                             if (conversationUser != null) {
-                            if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
-                                bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                        Parcels.wrap(roomOverall.ocs.data))
-                                conversationIntent.putExtras(bundle)
+                                if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
+                                    bundle.putParcelable(BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                            Parcels.wrap(roomOverall.ocs.data))
+                                    conversationIntent.putExtras(bundle)
 
-                                ConductorRemapping.remapChatController(router, conversationUser.id,
-                                        roomOverall.ocs.data.token, bundle, false)
-                            }
+                                    ConductorRemapping.remapChatController(router, conversationUser.id,
+                                            roomOverall.ocs.data.token, bundle, false)
+                                }
 
                             } else {
                                 conversationIntent.putExtras(bundle)

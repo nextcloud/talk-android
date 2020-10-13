@@ -51,6 +51,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -294,7 +295,12 @@ public class CallController extends BaseController {
         }
 
         powerManagerUtils = new PowerManagerUtils();
-        setCallState(CallStatus.CALLING);
+        
+        if (args.getString("state", "").equalsIgnoreCase("resume")) {
+            setCallState(CallStatus.IN_CONVERSATION);
+        } else {
+            setCallState(CallStatus.CALLING);
+        }
     }
 
     @Override
@@ -719,6 +725,11 @@ public class CallController extends BaseController {
                 onRequestPermissionsResult(100, PERMISSIONS_MICROPHONE, new int[]{1});
             }
         }
+    }
+    
+    @OnClick(R.id.callControlToggleChat)
+    void onToggleChatClick() {
+        ((MagicCallActivity) getActivity()).showChat();
     }
 
     @OnClick(R.id.callControlHangupView)
