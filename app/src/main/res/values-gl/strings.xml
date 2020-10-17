@@ -25,7 +25,7 @@
     <!-- Server selection -->
     <string name="nc_server_url">Enderezo do servidor </string>
     <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
-    <string name="nc_server_db_upgrade_needed">Ten que actualizar a base de datos %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
     <string name="nc_server_import_account_plain">Importar unha conta</string>
