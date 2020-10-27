@@ -174,8 +174,8 @@
     <string name="nc_permissions_settings">Otwórz ustawienia</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Łączę...</string>
-    <string name="nc_calling">Łączenie...</string>
+    <string name="nc_connecting_call">Łączę…</string>
+    <string name="nc_calling">Łączenie…</string>
     <string name="nc_incoming_call">Połączenie przychodzące od </string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
@@ -184,7 +184,7 @@
     <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, stuknij aby spróbować ponownie</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
-    <string name="nc_leaving_call">Opuszczanie połączenia...</string>
+    <string name="nc_leaving_call">Opuszczanie połączenia…</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s kanale powiadomień</string>
@@ -227,7 +227,7 @@
     <string name="nc_remove_participant">Usuń uczestnika</string>
 
     <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Wpisz wiadomość...</string>
+    <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>
     <string name="nc_date_header_today">Dzisiaj</string>
     <string name="nc_conversation_menu_voice_call">Rozmowa głosowa</string>
