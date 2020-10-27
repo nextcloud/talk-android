@@ -47,7 +47,7 @@
             android:gravity="center_horizontal"
             android:textAlignment="center"
             tools:text="System message"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/textColorMaxContrast"
             android:textSize="14sp"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"

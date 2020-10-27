@@ -22,22 +22,18 @@
   -->
 
 <resources>
-    <color name="conversation_item_header">#9FBDCC</color>
-    <!--<color name="conversation_item_header">#CFCFCF</color>-->
+    <color name="conversation_item_header">#ffffff</color>
 
     <color name="bg_default">#222222</color>
     <color name="bg_alt">#222222</color>
 
     <!-- Chat window incoming message text & informational -->
     <color name="nc_incoming_text_default">#D8D8D8</color>
-    <color name="nc_author_text">#65A7CA</color>
-    <color name="nc_chip_mention_you_background">#0083C9</color>
-    <color name="nc_chip_mention_others_background">#6F6F6F</color>
     <color name="nc_grey">@android:color/holo_purple</color>
     <color name="bg_bottom_sheet">#222222</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
-    <color name="bg_message_list_outcoming_bubble">#003F62</color>
 
+    <color name="textColorMaxContrast">#8c8c8c</color>
 
     <color name="emoji_background">#313031</color>
     <color name="emoji_divider">#15FFFFFF</color>

@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         apc:mpc_title="@string/nc_notification_settings"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:mpc_title_color="@color/textColorMaxContrast">
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/conversation_info_priority_conversation"

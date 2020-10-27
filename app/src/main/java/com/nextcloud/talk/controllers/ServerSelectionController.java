@@ -35,10 +35,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
@@ -51,14 +48,20 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
+
+import java.security.cert.CertificateException;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
 import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
-
-import javax.inject.Inject;
-import java.security.cert.CertificateException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ServerSelectionController extends BaseController {
@@ -128,8 +131,13 @@ public class ServerSelectionController extends BaseController {
         textFieldBoxes.getEndIconImageButton().setVisibility(View.VISIBLE);
         textFieldBoxes.getEndIconImageButton().setOnClickListener(view1 -> checkServerAndProceed());
 
-        if (TextUtils.isEmpty(getResources().getString(R.string.nc_providers_url)) && (TextUtils.isEmpty(getResources
-                ().getString(R.string.nc_import_account_type)))) {
+        if (getResources().getBoolean(R.bool.hide_auth_cert)) {
+            certTextView.setVisibility(View.GONE);
+        }
+
+        if (getResources().getBoolean(R.bool.hide_provider) ||
+                TextUtils.isEmpty(getResources().getString(R.string.nc_providers_url)) && 
+                        (TextUtils.isEmpty(getResources().getString(R.string.nc_import_account_type)))) {
             providersTextView.setVisibility(View.INVISIBLE);
         } else {
             if ((TextUtils.isEmpty(getResources
@@ -178,6 +186,11 @@ public class ServerSelectionController extends BaseController {
         }
 
         serverEntry.requestFocus();
+        
+        if (!TextUtils.isEmpty(getResources().getString(R.string.weblogin_url))) {
+            serverEntry.setText(getResources().getString(R.string.weblogin_url));
+            checkServerAndProceed();
+        }
 
         serverEntry.addTextChangedListener(new TextWatcher() {
             @Override

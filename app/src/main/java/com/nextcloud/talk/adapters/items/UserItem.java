@@ -243,7 +243,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
                 if (!holder.contactMentionId.getText().equals(userType)) {
                     holder.contactMentionId.setText(userType);
-                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.colorPrimary));
+                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.textColorMaxContrast));
                 }
             }
         }

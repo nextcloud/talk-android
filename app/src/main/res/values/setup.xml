@@ -30,6 +30,12 @@
 
     <string name="nc_push_server_url" translatable="false">https://push-notifications.nextcloud.com</string>
 
+    <!-- Branding -->
+    <bool name="hide_provider">false</bool>
+    <bool name="hide_auth_cert">false</bool>
+    <bool name="multiaccount_support">true</bool>
+    <string name="weblogin_url" translatable="false"></string>
+
     <!-- Will not be shown if empty -->
     <string name="nc_privacy_url" translatable="false">https://nextcloud.com/privacy/</string>
     <string name="nc_gpl3_url" translatable="false">https://www.gnu.org/licenses/gpl-3.0.en.html</string>

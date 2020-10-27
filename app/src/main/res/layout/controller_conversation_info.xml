@@ -35,7 +35,7 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTint="@color/textColorMaxContrast"
         android:indeterminateTintMode="src_in" />
 
     <ScrollView
@@ -102,7 +102,7 @@
                 android:visibility="gone"
                 apc:mpc_title="@string/nc_participants"
                 apc:mpc_action="@string/nc_add"
-                apc:mpc_title_color="@color/colorPrimary"
+                apc:mpc_title_color="@color/textColorMaxContrast"
                 tools:ignore="UnknownIdInLayout">
 
                 <androidx.recyclerview.widget.RecyclerView

@@ -24,7 +24,7 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
@@ -48,11 +48,11 @@
     </style>
 
     <style name="ChipOutgoingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">@color/nc_incoming_text_default</item>
+        <item name="android:textColor">@color/textColorOnPrimaryBackground</item>
     </style>
 
     <style name="ChipMentionTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <style name="appActionBarStyle" parent="@style/Widget.MaterialComponents.ActionBar.Solid">

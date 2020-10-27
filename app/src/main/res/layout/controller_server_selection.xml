@@ -28,11 +28,10 @@
     <ImageView
         android:id="@+id/image_logo"
         android:layout_width="96dp"
-        android:layout_height="96dp"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="92dp"
         android:layout_marginBottom="36dp"
-        android:scaleType="fitXY"
         app:srcCompat="@drawable/ic_logo" />
 
     <!-- Server selection window should be ignorant of theme colour
@@ -65,7 +64,8 @@
         android:text="@string/nc_get_from_provider"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_light_blue_color" />
+        android:alpha="0.5"
+        android:textColor="@color/textColorOnPrimaryBackground" />
 
     <TextView
         android:id="@+id/cert_text_view"
@@ -80,7 +80,8 @@
         android:text="@string/nc_configure_cert_auth"
         android:textAlignment="center"
         android:textAllCaps="true"
-        android:textColor="@color/nc_light_blue_color" />
+        android:alpha="0.5"
+        android:textColor="@color/textColorOnPrimaryBackground" />
 
     <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
         android:id="@+id/text_field_boxes"

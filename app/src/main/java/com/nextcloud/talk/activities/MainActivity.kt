@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
@@ -38,10 +39,7 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.appbar.MaterialToolbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.CallNotificationController
-import com.nextcloud.talk.controllers.ConversationsListController
-import com.nextcloud.talk.controllers.LockedController
-import com.nextcloud.talk.controllers.ServerSelectionController
+import com.nextcloud.talk.controllers.*
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.SecurityUtils
@@ -103,15 +101,28 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler()))
                 } else {
+                    if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
+                        router!!.pushController(RouterTransaction.with(
+                                WebViewLoginController(resources.getString(R.string.weblogin_url), false))
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler()))
+                    } else {
+                        router!!.setRoot(RouterTransaction.with(ServerSelectionController())
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler()))
+                    }
+                }
+            } else {
+                if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
+                    router!!.pushController(RouterTransaction.with(
+                            WebViewLoginController(resources.getString(R.string.weblogin_url), false))
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler()))
+                } else {
                     router!!.setRoot(RouterTransaction.with(ServerSelectionController())
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler()))
                 }
-            } else {
-                router!!.setRoot(RouterTransaction.with(ServerSelectionController())
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
-
             }
         }
     }

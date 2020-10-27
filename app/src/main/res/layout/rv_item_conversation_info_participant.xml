@@ -81,7 +81,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/textColorMaxContrast"
             tools:text="A week ago" />
 
     </LinearLayout>
