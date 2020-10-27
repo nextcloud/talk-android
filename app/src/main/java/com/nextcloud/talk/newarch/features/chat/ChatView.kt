@@ -75,6 +75,7 @@ import com.nextcloud.talk.newarch.utils.swipe.ChatMessageSwipeInterface
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.bundle.BundleKeys
