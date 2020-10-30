@@ -39,6 +39,7 @@ At last you need to adjust the TURN servers configuration file to work with Next
 
          tls-listening-port=<yourChosenPortNumber>
          fingerprint
+         lt-cred-mech # Only on coTURN below v4.5.0.8!
          use-auth-secret
          static-auth-secret=<yourChosen/GeneratedSecret>
          realm=your.domain.org
