@@ -26,13 +26,14 @@ At last you need to adjust the TURN servers configuration file to work with Next
 
          listening-port=<yourChosenPortNumber>
          fingerprint
+         lt-cred-mech # Only on coTURN below v4.5.0.8!
          use-auth-secret
          static-auth-secret=<yourChosen/GeneratedSecret>
          realm=your.domain.org
          total-quota=100
          bps-capacity=0
          stale-nonce
-         no-loopback-peers
+         no-loopback-peers # Only on coTURN below v4.5.1.0!
          no-multicast-peers
    - **With TLS** you need to provide the path to your certificate and key files as well and it is highly recommended to adjust the cipher list:
 
@@ -47,7 +48,7 @@ At last you need to adjust the TURN servers configuration file to work with Next
          cert=/path/to/your/cert.pem
          pkey=/path/to/your/privkey.pem
          cipher-list="ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AES:RSA+3DES:!ADH:!AECDH:!MD5"
-         no-loopback-peers
+         no-loopback-peers # Only on coTURN below v4.5.1.0!
          no-multicast-peers
 
      Note that in case of TLS you only need to set `tls-listening-port`, otherwise only `listening-port`. Nextcloud Talk uses a single port only, thus the _alternative_ ports offered by the settings file can be ignored.
