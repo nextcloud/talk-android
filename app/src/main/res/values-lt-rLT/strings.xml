@@ -59,6 +59,7 @@
     <string name="nc_settings_remove_confirmation">Patvirtinkite savo ketinimą pašalinti esamą paskyrą.</string>
     <string name="nc_settings_remove_account">Šalinti paskyrą</string>
     <string name="nc_settings_add_account">Pridėti naują paskyrą</string>
+    <string name="nc_settings_new_account">Nauja paskyra</string>
     <string name="nc_add">Pridėti</string>
     <string name="nc_settings_wrong_account">Iš naujo įgaliota gali būti tik esama paskyra</string>
     <string name="nc_settings_no_talk_installed">Pokalbių programėlė nėra įdiegta serveryje, kuriame bandėte nusistatyti tapatybę</string>
@@ -274,4 +275,6 @@
     <string name="nc_reject_call">Atmesti</string>
     <string name="silenced_by_moderator">Moderatorius jus nutildė</string>
     <string name="nc_preferences">Nuostatos</string>
-    </resources>
+    <string name="nc_settings_calls_sound">Skambučių garsas</string>
+    <string name="nc_settings_notifications_sound">Pranešimų garsas</string>
+</resources>
