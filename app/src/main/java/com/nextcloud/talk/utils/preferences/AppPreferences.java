@@ -221,7 +221,7 @@ public interface AppPreferences {
     void removeVibrateSetting();
 
     @KeyByString("screen_security")
-    @DefaultValue(R.bool.value_false)
+    @DefaultValue(R.bool.value_true)
     boolean getIsScreenSecured();
 
     @KeyByString("screen_security")
