@@ -144,7 +144,7 @@
     <string name="nc_make_call_public">Gör konversationen offentlig</string>
     <string name="nc_make_call_private">Gör samtalet privat</string>
     <string name="nc_delete_call">Ta bort konversation</string>
-    <string name="nc_delete">Radera</string>
+    <string name="nc_delete">Ta bort</string>
     <string name="nc_delete_conversation_default">Bekräfta att du vill radera den här
         konversationen.</string>
     <string name="nc_delete_conversation_one2one">Om du raderar konversationen kommer den även att
