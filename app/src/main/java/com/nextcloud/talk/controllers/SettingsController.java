@@ -25,6 +25,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.KeyguardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -38,6 +39,7 @@ import android.view.WindowManager;
 import android.widget.Checkable;
 import android.widget.TextView;
 
+import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
@@ -45,12 +47,14 @@ import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.snackbar.Snackbar;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
+import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -151,6 +155,8 @@ public class SettingsController extends BaseController {
     MaterialSwitchPreference screenLockSwitchPreference;
     @BindView(R.id.settings_screen_lock_timeout)
     MaterialChoicePreference screenLockTimeoutChoicePreference;
+    @BindView(R.id.settings_phone_book_integration)
+    MaterialSwitchPreference phoneBookIntegretationPreference;
 
     @BindView(R.id.message_text)
     TextView messageText;
@@ -171,6 +177,7 @@ public class SettingsController extends BaseController {
     private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
     private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
     private OnPreferenceValueChangedListener<String> themeChangeListener;
+    private OnPreferenceValueChangedListener<Boolean> phoneBookIntegrationChangeListener;
 
     private Disposable profileQueryDisposable;
     private Disposable dbQueryDisposable;
@@ -206,6 +213,8 @@ public class SettingsController extends BaseController {
         appPreferences.registerScreenLockListener(screenLockChangeListener = new ScreenLockListener());
         appPreferences.registerScreenLockTimeoutListener(screenLockTimeoutChangeListener = new ScreenLockTimeoutListener());
         appPreferences.registerThemeChangeListener(themeChangeListener = new ThemeChangeListener());
+        appPreferences.registerPhoneBookIntegrationChangeListener(
+                phoneBookIntegrationChangeListener = new PhoneBookIntegrationChangeListener(this));
 
         List<String> listWithIntFields = new ArrayList<>();
         listWithIntFields.add("proxy_port");
@@ -435,6 +444,7 @@ public class SettingsController extends BaseController {
         }
 
         ((Checkable) linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
+        ((Checkable) phoneBookIntegretationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
@@ -645,6 +655,7 @@ public class SettingsController extends BaseController {
             appPreferences.unregisterScreenLockListener(screenLockChangeListener);
             appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener);
             appPreferences.unregisterThemeChangeListener(themeChangeListener);
+            appPreferences.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener);
         }
         super.onDestroy();
     }
@@ -705,6 +716,24 @@ public class SettingsController extends BaseController {
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_settings);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+       if (requestCode == ContactAddressBookWorker.REQUEST_PERMISSION && 
+               grantResults.length > 0 && 
+               grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+           WorkManager
+                   .getInstance()
+                   .enqueue(new OneTimeWorkRequest.Builder(ContactAddressBookWorker.class).build());
+       } else {
+           appPreferences.setPhoneBookIntegration(false);
+           ((Checkable) phoneBookIntegretationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
+           Snackbar.make(getView(), 
+                   context.getResources().getString(R.string.no_phone_book_integration_due_to_permissions), 
+                   Snackbar.LENGTH_LONG)
+                   .show();
+       }
     }
 
     private class ScreenLockTimeoutListener implements OnPreferenceValueChangedListener<String> {
@@ -795,6 +824,21 @@ public class SettingsController extends BaseController {
         @Override
         public void onChanged(String newValue) {
             NextcloudTalkApplication.Companion.setAppTheme(newValue);
+        }
+    }
+    
+    private class PhoneBookIntegrationChangeListener implements OnPreferenceValueChangedListener<Boolean> {
+        private final Controller controller;
+        
+        public PhoneBookIntegrationChangeListener(Controller controller) {
+            this.controller = controller;
+        }
+        
+        @Override
+        public void onChanged(Boolean newValue) {
+            if (newValue) {
+                ContactAddressBookWorker.Companion.checkPermission(controller, context);
+            }
         }
     }
 }

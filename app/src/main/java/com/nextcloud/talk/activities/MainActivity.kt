@@ -25,6 +25,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
@@ -37,17 +39,31 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.*
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
+import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import io.requery.Persistable
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import io.requery.reactivex.ReactiveEntityStore
+import org.parceler.Parcels
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -64,6 +80,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var dataStore: ReactiveEntityStore<Persistable>
     @Inject
     lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
+    @Inject
+    lateinit var ncApi: NcApi
 
     private var router: Router? = null
 
@@ -132,8 +150,91 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkIfWeAreSecure()
         }
+        
+        handleActionFromContact(intent)
     }
 
+    private fun handleActionFromContact(intent: Intent) {
+        if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
+
+            val cursor = contentResolver.query(intent.data!!, null, null, null, null)
+
+            var userId = ""
+            if (cursor != null) {
+                if (cursor.moveToFirst()) {
+                    // userId @ server
+                    userId = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
+                }
+                
+                cursor.close()
+            }
+
+            when (intent.type) {
+                "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
+                    val user = userId.split("@")[0]
+                    val baseUrl = userId.split("@")[1]
+                    if (userUtils.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                        startConversation(user)
+                    } else {
+                        Snackbar.make(container, "Account not found", Snackbar.LENGTH_LONG).show()
+                    }
+                }
+            }
+        }
+    }
+    
+    private fun startConversation(userId: String) {
+        val roomType = "1"
+        val currentUser = userUtils.currentUser ?: return
+
+        val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.baseUrl, roomType,
+                userId, null)
+        ncApi.createRoom(credentials,
+                retrofitBucket.url, retrofitBucket.queryMap)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(roomOverall: RoomOverall) {
+                        val conversationIntent = Intent(context, MagicCallActivity::class.java)
+                        val bundle = Bundle()
+                        bundle.putParcelable(KEY_USER_ENTITY, currentUser)
+                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
+                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
+                        if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                            ncApi.getRoom(credentials,
+                                    ApiUtils.getRoom(currentUser.baseUrl,
+                                            roomOverall.ocs.data.token))
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(object : Observer<RoomOverall> {
+                                        override fun onSubscribe(d: Disposable) {}
+                                        override fun onNext(roomOverall: RoomOverall) {
+                                            bundle.putParcelable(KEY_ACTIVE_CONVERSATION,
+                                                    Parcels.wrap(roomOverall.ocs.data))
+                                            remapChatController(router!!, currentUser.id,
+                                                    roomOverall.ocs.data.token, bundle, true)
+                                        }
+
+                                        override fun onError(e: Throwable) {}
+                                        override fun onComplete() {}
+                                    })
+                        } else {
+                            conversationIntent.putExtras(bundle)
+                            startActivity(conversationIntent)
+                            Handler().postDelayed({
+                                if (!isDestroyed) {
+                                    router!!.popCurrentController()
+                                }
+                            }, 100)
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {}
+                    override fun onComplete() {}
+                })
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     fun checkIfWeAreSecure() {
@@ -153,6 +254,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+
+        handleActionFromContact(intent)
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {

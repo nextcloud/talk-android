@@ -29,23 +29,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.TransitionChangeHandlerCompat;
@@ -74,10 +67,11 @@ import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
+import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
-import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -88,6 +82,32 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
+
+import org.apache.commons.lang3.builder.CompareToBuilder;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+import org.parceler.Parcels;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import autodagger.AutoInjector;
+import butterknife.BindView;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -95,17 +115,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import org.apache.commons.lang3.builder.CompareToBuilder;
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.parceler.Parcels;
 import retrofit2.HttpException;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
@@ -442,6 +452,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         emptyLayoutView.setOnClickListener(v -> showNewConversationsScreen());
         floatingActionButton.setOnClickListener(v -> {
+            ContactAddressBookWorker.Companion.run(context);
             showNewConversationsScreen();
         });
 
