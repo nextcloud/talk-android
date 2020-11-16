@@ -30,17 +30,17 @@ if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskReq
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.nextcloud.talk2"
         versionName version
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 80010050 // 0-50=Alpha / 51-98=RC / 90-99=stable
-        versionName "8.1.0 Alpha 51"
+        versionCode 80010090 // 0-50=Alpha / 51-98=RC / 90-99=stable
+        versionName "8.1.0"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
