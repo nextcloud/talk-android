@@ -15,6 +15,9 @@ Nextcloud Talk lowers the barrier for communication and lets your team connect a
 [<img src="https://f-droid.org/badge/get-it-on.png"
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
+      
+**Documentation**  
+[CoTURN](https://nextcloud-talk.readthedocs.io/en/latest/TURN/)
 
 | Screen 1 | Screen 2 | Screen 3 |
 | --- | --- | --- |
