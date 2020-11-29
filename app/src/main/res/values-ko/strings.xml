@@ -240,6 +240,7 @@
     <string name="nc_file_browser_back">뒤로</string>
     <string name="nc_file_browser_refresh">새로 고침</string>
     <string name="nc_start_time">시작 시간</string>
+    <string name="nc_bad_response_error">잘못된 응답</string>
     <string name="nc_timeout_error">시간 초과</string>
     <string name="nc_not_defined_error">알 수 없는 오류</string>
     <string name="nc_unauthorized_error">권한 없음</string>
