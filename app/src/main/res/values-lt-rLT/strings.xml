@@ -274,7 +274,9 @@
     <string name="nc_search_empty_contacts">Kur jie visi pasislėpė?</string>
     <string name="nc_reject_call">Atmesti</string>
     <string name="silenced_by_moderator">Moderatorius jus nutildė</string>
+    <string name="nc_failed_to_send">Nepavyko išsiųsti - bakstelėkite norėdami bandyti siųsti iš naujo.</string>
     <string name="nc_preferences">Nuostatos</string>
+    <string name="nc_look_and_feel">Išvaizda ir garsai</string>
     <string name="nc_settings_calls_sound">Skambučių garsas</string>
     <string name="nc_settings_notifications_sound">Pranešimų garsas</string>
 </resources>
