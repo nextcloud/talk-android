@@ -302,7 +302,7 @@
     <string name="nc_oops">Jejda, něco se pokazilo!</string>
 
     <string name="nc_general_settings">Obecné</string>
-    <string name="nc_allow_guests">Umožnit hosty</string>
+    <string name="nc_allow_guests">Povolit hosty</string>
     <string name="nc_last_moderator_title">Konverzaci zatím nemůžete opustit</string>
     <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
 
