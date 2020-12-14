@@ -342,6 +342,10 @@ public interface NcApi {
                                                        @Field("timer") Long timer);
 
     @POST
+    Observable<GenericOverall> setReadStatusPrivacy(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Body RequestBody body);
+    @POST
     Observable<ContactsByNumberOverall> searchContactsByPhoneNumber(@Header("Authorization") String authorization,
                                                                     @Url String url,
                                                                     @Body RequestBody search);

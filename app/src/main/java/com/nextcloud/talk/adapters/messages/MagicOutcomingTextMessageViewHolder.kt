@@ -21,6 +21,7 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
@@ -36,12 +37,12 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import coil.api.load
 import coil.transform.CircleCropTransformation
-import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
@@ -87,6 +88,10 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @JvmField
     @BindView(R.id.quoteColoredView)
     var quoteColoredView: View? = null
+
+    @JvmField
+    @BindView(R.id.checkMark)
+    var checkMark: ImageView? = null
 
     @JvmField
     @Inject
@@ -181,6 +186,18 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             quotedChatMessageView?.visibility = View.GONE
         }
 
+        val readStatusDrawableInt = when (message.readStatus) {
+            ReadStatus.READ -> R.drawable.ic_check_all
+            ReadStatus.SENT -> R.drawable.ic_check
+            else -> null
+        }
+
+        readStatusDrawableInt?.let {
+            context?.resources?.getDrawable(it, null)?.let {
+                it.setColorFilter(context?.resources!!.getColor(R.color.warm_grey_four), PorterDuff.Mode.SRC_ATOP)
+                checkMark?.setImageDrawable(it)
+            }
+        }
     }
 
     init {

@@ -57,6 +57,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -98,9 +99,12 @@ import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class SettingsController extends BaseController {
@@ -157,6 +161,8 @@ public class SettingsController extends BaseController {
     MaterialChoicePreference screenLockTimeoutChoicePreference;
     @BindView(R.id.settings_phone_book_integration)
     MaterialSwitchPreference phoneBookIntegretationPreference;
+    @BindView(R.id.settings_read_privacy)
+    MaterialSwitchPreference readPrivacyPreference;
 
     @BindView(R.id.message_text)
     TextView messageText;
@@ -177,6 +183,7 @@ public class SettingsController extends BaseController {
     private OnPreferenceValueChangedListener<Boolean> screenLockChangeListener;
     private OnPreferenceValueChangedListener<String> screenLockTimeoutChangeListener;
     private OnPreferenceValueChangedListener<String> themeChangeListener;
+    private OnPreferenceValueChangedListener<Boolean> readPrivacyChangeListener;
     private OnPreferenceValueChangedListener<Boolean> phoneBookIntegrationChangeListener;
 
     private Disposable profileQueryDisposable;
@@ -215,6 +222,7 @@ public class SettingsController extends BaseController {
         appPreferences.registerThemeChangeListener(themeChangeListener = new ThemeChangeListener());
         appPreferences.registerPhoneBookIntegrationChangeListener(
                 phoneBookIntegrationChangeListener = new PhoneBookIntegrationChangeListener(this));
+        appPreferences.registerReadPrivacyChangeListener(readPrivacyChangeListener = new ReadPrivacyChangeListener());
 
         List<String> listWithIntFields = new ArrayList<>();
         listWithIntFields.add("proxy_port");
@@ -449,6 +457,8 @@ public class SettingsController extends BaseController {
             ((Checkable) incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
         }
 
+        ((Checkable) readPrivacyPreference.findViewById(R.id.mp_checkable)).setChecked(!currentUser.isReadStatusPrivate());
+
         ((Checkable) linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
         ((Checkable) phoneBookIntegretationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
 
@@ -661,6 +671,7 @@ public class SettingsController extends BaseController {
             appPreferences.unregisterScreenLockListener(screenLockChangeListener);
             appPreferences.unregisterScreenLockTimeoutListener(screenLockTimeoutChangeListener);
             appPreferences.unregisterThemeChangeListener(themeChangeListener);
+            appPreferences.unregisterReadPrivacyChangeListener(readPrivacyChangeListener);
             appPreferences.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener);
         }
         super.onDestroy();
@@ -845,6 +856,40 @@ public class SettingsController extends BaseController {
             if (newValue) {
                 ContactAddressBookWorker.Companion.checkPermission(controller, context);
             }
+        }
+    }
+    
+    private class ReadPrivacyChangeListener implements OnPreferenceValueChangedListener<Boolean> {
+        @Override
+        public void onChanged(Boolean newValue) {
+            String booleanValue = newValue ? "0" : "1";
+            String json = "{\"key\": \"read_status_privacy\", \"value\" : " + booleanValue + "}";
+
+            ncApi.setReadStatusPrivacy(
+                    ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                    ApiUtils.getUrlForUserSettings(currentUser.getBaseUrl()),
+                    RequestBody.create(MediaType.parse("application/json"), json))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<GenericOverall>() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        }
+
+                        @Override
+                        public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
+                        }
+
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                            appPreferences.setReadPrivacy(!newValue);
+                            ((Checkable) readPrivacyPreference.findViewById(R.id.mp_checkable)).setChecked(!newValue);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
         }
     }
 }

@@ -73,6 +73,7 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -174,7 +175,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     var historyRead = false
     var globalLastKnownFutureMessageId = -1
     var globalLastKnownPastMessageId = -1
-    var adapter: MessagesListAdapter<ChatMessage>? = null
+    var adapter: TalkMessagesListAdapter<ChatMessage>? = null
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var lookingIntoFuture = false
@@ -361,7 +362,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header,
                     MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header, this)
 
-            adapter = MessagesListAdapter(conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
+            adapter = TalkMessagesListAdapter(conversationUser?.userId, messageHolders, ImageLoader { imageView, url, payload ->
                 val draweeController = Fresco.newDraweeControllerBuilder()
                         .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
                         .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
@@ -932,7 +933,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
-    fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1) {
+    fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = -1) {
         if (!inConversation) {
             return
         }
@@ -974,6 +975,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
 
         fieldMap["lastKnownMessageId"] = lastKnown
+        xChatLastCommonRead?.let {
+            fieldMap["lastCommonReadId"] = it
+        }
 
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
@@ -989,10 +993,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                             override fun onNext(response: Response<*>) {
                                 if (response.code() == 304) {
-                                    pullChatMessages(1, setReadMarker)
+                                    pullChatMessages(1, setReadMarker, xChatLastCommonRead)
                                 } else if (response.code() == 412) {
                                     futurePreconditionFailed = true
-
                                 } else {
                                     processMessages(response, true, finalTimeout)
                                 }
@@ -1038,6 +1041,9 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun processMessages(response: Response<*>, isFromTheFuture: Boolean, timeout: Int) {
         val xChatLastGivenHeader: String? = response.headers().get("X-Chat-Last-Given")
+        val xChatLastCommonRead = response.headers().get("X-Chat-Last-Common-Read")?.let {
+            Integer.parseInt(it)
+        }
         if (response.headers().size() > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
 
             val header = Integer.parseInt(xChatLastGivenHeader!!)
@@ -1089,7 +1095,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     chatMessage.isOneToOneConversation = currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
                     chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
                     chatMessage.activeUser = conversationUser
-
                 }
 
                 if (adapter != null) {
@@ -1155,8 +1160,24 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
             }
 
+            // update read status of all messages
+            for (message in adapter!!.items) {
+                xChatLastCommonRead?.let {
+                    if (message.item is ChatMessage) {
+                        val chatMessage = message.item as ChatMessage
+
+                        if (chatMessage.jsonMessageId <= it) {
+                            chatMessage.readStatus = ReadStatus.READ
+                        } else {
+                            chatMessage.readStatus = ReadStatus.SENT
+                        }
+                    }
+                }
+            }
+            adapter?.notifyDataSetChanged()
+
             if (inConversation) {
-                pullChatMessages(1)
+                pullChatMessages(1, 1, xChatLastCommonRead)
             }
         } else if (response.code() == 304 && !isFromTheFuture) {
             if (isFirstMessagesProcessing) {
