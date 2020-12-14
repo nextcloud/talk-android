@@ -21,16 +21,18 @@ package com.nextcloud.talk.models.database;
 
 import android.os.Parcelable;
 import android.util.Log;
+
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
-import io.requery.Entity;
-import io.requery.Generated;
-import io.requery.Key;
-import io.requery.Persistable;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
+
+import io.requery.Entity;
+import io.requery.Generated;
+import io.requery.Key;
+import io.requery.Persistable;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {
@@ -127,5 +129,21 @@ public interface User extends Parcelable, Persistable, Serializable {
             }
         }
         return 1000;
+    }
+
+    default boolean isPhoneBookIntegrationAvailable() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                return capabilities != null &&
+                        capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getFeatures() != null && 
+                        capabilities.getSpreedCapability().getFeatures().contains("phonebook-search");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 }

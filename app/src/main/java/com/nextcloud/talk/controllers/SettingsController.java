@@ -305,6 +305,12 @@ public class SettingsController extends BaseController {
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
+        
+        if (userUtils.getCurrentUser().isPhoneBookIntegrationAvailable()) {
+            phoneBookIntegretationPreference.setVisibility(View.VISIBLE);
+        } else {
+            phoneBookIntegretationPreference.setVisibility(View.GONE);
+        }
 
         String host = null;
         int port = -1;
