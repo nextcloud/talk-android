@@ -238,6 +238,13 @@ public interface AppPreferences {
     @KeyByString("link_previews")
     @DefaultValue(R.bool.value_true)
     boolean getAreLinkPreviewsAllowed();
+    
+    @KeyByString("phone_book_integration")
+    @DefaultValue(R.bool.value_false)
+    boolean isPhoneBookIntegrationEnabled();
+    
+    @KeyByString("phone_book_integration") 
+    void setPhoneBookIntegration(boolean value);
 
     @KeyByString("link_previews")
     void setLinkPreviewsAllowed(boolean value);
@@ -280,6 +287,20 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_settings_theme_key)
     @UnregisterChangeListenerMethod
     void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
+    
+    @KeyByResource(R.string.nc_settings_phone_book_integration_key)
+    @RegisterChangeListenerMethod
+    void registerPhoneBookIntegrationChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByResource(R.string.nc_settings_phone_book_integration_key)
+    @UnregisterChangeListenerMethod
+    void unregisterPhoneBookIntegrationChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByString("phone_book_integration_last_run")
+    void setPhoneBookIntegrationLastRun(long currentTimeMillis);
+
+    @KeyByString("phone_book_integration_last_run")
+    long getPhoneBookIntegrationLastRun(Long defaultValue);
 
     @ClearMethod
     void clear();
