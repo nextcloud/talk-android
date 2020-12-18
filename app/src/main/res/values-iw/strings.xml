@@ -34,6 +34,7 @@
     <string name="nc_server_import_accounts">ייבוא חשבונות מהיישומון %1$s</string>
     <string name="nc_server_failed_to_import_account">ייבוא החשבון הנבחר נכשל</string>
     <string name="nc_server_account_imported">החשבון שנבחר עבר ייבוא והוא זמין</string>
+    <string name="nc_server_unsupported">השרת אין לו התקנה של אפליקציית ה-Talk הנתמכת</string>
     <string name="nc_get_from_provider">עדיין אין לך שרת?\nניתן ללחוץ כאן ולקבל אחת מספק</string>
 
     <!-- Account verification -->
@@ -44,10 +45,12 @@
     <string name="nc_nextcloud_talk_app_not_installed">היישומון %1$s אינו מותקן על השרת, הפעולה מבוטלת</string>
     <string name="nc_display_name_not_stored">לא ניתן לאחסן את שם התצוגה, התהליך נפסק</string>
 
+    <string name="nc_never">מעולם לא הצטרף</string>
     <string name="nc_search">חיפוש</string>
     <string name="nc_search_conversations">איתור דיון</string>
 
     <string name="nc_certificate_dialog_title">חקירת האישור</string>
+    <string name="nc_certificate_dialog_text">האם אתה סומך על אישור ה- SSL הלא ידוע עד כה, שהונפק על ידי %1$s עבור %2$s, תקף מ-%3$sעד %4$s?</string>
     <string name="nc_yes">כן</string>
     <string name="nc_no">לא</string>
     <string name="nc_certificate_error">הגדרות ה־SSL שלך מנעו חיבור</string>
@@ -69,6 +72,7 @@
     <string name="nc_settings_new_account">חשבון חדש</string>
     <string name="nc_add">הוספה</string>
     <string name="nc_settings_wrong_account">ניתן לאמת רק את החשבון הנוכחי</string>
+    <string name="nc_settings_no_talk_installed">אפליקציית Talk אינה מותקנת בשרת שניסית לאמת נגדו</string>
     <string name="nc_settings_account_updated">החשבון הקיים שלך עודכן, במקום הוספת חדש</string>
     <string name="nc_account_scheduled_for_deletion">החשבון מועמד למחיקה ולא ניתן לשנות אותו</string>
     <string name="nc_settings_notification_sounds">צליל</string>
@@ -86,9 +90,13 @@
     <string name="nc_settings_theme_dark">כהה</string>
     <string name="nc_settings_privacy_legal">מדיניות משפטית ופרטיות</string>
     <string name="nc_settings_screen_lock_title">נעילת מסך</string>
+    <string name="nc_settings_screen_lock_desc">תנעל את %1$s באמצעות נעילת מסך Android או שיטה ביומטרית נתמכת</string>
+    <string name="nc_settings_screen_lock_timeout_title">נגמר הזמן הקצוב של חוסר פעילות לנעילת המסך</string>
     <string name="nc_none">אין</string>
     <string name="nc_settings_screen_security_title">אבטחת מסך</string>
+    <string name="nc_settings_screen_security_desc">מונע צילומי מסך ברשימה האחרונה ובתוך האפליקציה</string>
     <string name="nc_settings_incognito_keyboard_title">מקלדת אלמונית</string>
+    <string name="nc_settings_incognito_keyboard_desc">מורה למקלדת להשבית למידה מותאמת אישית (ללא ערבויות)</string>
     <string name="nc_settings_link_previews_title">הצגת תצוגות מקדימות של קישורים</string>
     <string name="nc_settings_link_previews_desc">מאפשר תצוגה מקדימה של תוכן מקישורים שהתקבלו עבור שירותים נתמכים</string>
     <string name="nc_locked">יש לגעת כדי לשחרר</string>
@@ -170,11 +178,15 @@
     <string name="nc_incoming_call">שיחה נכנסת מאת</string>
     <string name="nc_nick_guest">אורח/ת</string>
     <string name="nc_public_call">דיון ציבורי חדש</string>
+    <string name="nc_public_call_explanation">שיחות פומביות מאפשרות לך להזמין אנשים מבחוץ דרך
+קישור בעל מבנה מיוחד.</string>
     <string name="nc_call_timeout">אין תגובה תוך 45 שניות, יש לגעת כדי לנסות שוב</string>
     <string name="nc_call_reconnecting">התחברות מחדש…</string>
     <string name="nc_offline">אין חיבור כרגע, נא לבדוק את הקישוריות שלך</string>
     <string name="nc_leaving_call">עזיבת השיחה…</string>
 
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s על %2$s בערוץ ההודעות</string>
     <string name="nc_notification_channel_calls">ערוץ התראות על שיחות</string>
     <string name="nc_notification_channel_messages">ערוץ התראות על הודעות</string>
     <string name="nc_notification_channel_calls_description">מציג שיחות נכנסות</string>
