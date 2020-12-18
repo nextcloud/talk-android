@@ -457,7 +457,11 @@ public class SettingsController extends BaseController {
             ((Checkable) incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
         }
 
-        ((Checkable) readPrivacyPreference.findViewById(R.id.mp_checkable)).setChecked(!currentUser.isReadStatusPrivate());
+        if (userUtils.getCurrentUser().isReadStatusAvailable()) {
+            ((Checkable) readPrivacyPreference.findViewById(R.id.mp_checkable)).setChecked(!currentUser.isReadStatusPrivate());
+        } else {
+            readPrivacyPreference.setVisibility(View.GONE);
+        }
 
         ((Checkable) linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
         ((Checkable) phoneBookIntegretationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());

@@ -146,6 +146,25 @@ public interface User extends Parcelable, Persistable, Serializable {
         }
         return false;
     }
+
+    default boolean isReadStatusAvailable() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities != null &&
+                        capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getConfig() != null &&
+                        capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+                    HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
+                    return map != null && map.containsKey("read-privacy");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
     
     default boolean isReadStatusPrivate() {
         if (getCapabilities() != null) {

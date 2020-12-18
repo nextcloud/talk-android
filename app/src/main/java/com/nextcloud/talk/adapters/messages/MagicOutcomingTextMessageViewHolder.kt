@@ -192,9 +192,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             else -> null
         }
 
-        readStatusDrawableInt?.let {
-            context?.resources?.getDrawable(it, null)?.let {
-                it.setColorFilter(context?.resources!!.getColor(R.color.warm_grey_four), PorterDuff.Mode.SRC_ATOP)
+        readStatusDrawableInt?.let { drawableInt ->
+            context?.resources?.getDrawable(drawableInt, null)?.let {
+                it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 checkMark?.setImageDrawable(it)
             }
         }
