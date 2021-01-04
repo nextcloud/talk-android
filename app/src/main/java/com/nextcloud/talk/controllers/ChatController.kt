@@ -933,7 +933,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
-    fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = -1) {
+    fun pullChatMessages(lookIntoFuture: Int, setReadMarker: Int = 1, xChatLastCommonRead: Int? = null) {
         if (!inConversation) {
             return
         }
