@@ -158,7 +158,7 @@ sie auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
     <string name="nc_favorite_conversation">Beliebte Unterhaltung</string>
     <string name="nc_add_to_favorites">Zu Favoriten hinzufügen</string>
-    <string name="nc_remove_from_favorites">Von den Favoriten entfernen</string>
+    <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
     <string name="nc_favorites_explanation">Das Unterhaltung wird an den oberen Rand der
        Unterhaltungssliste angeheftet</string>
 
