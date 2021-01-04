@@ -57,5 +57,13 @@
             android:layout_marginStart="8dp"
             app:layout_alignSelf="center" />
 
+        <ImageView
+            android:id="@+id/checkMark"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageTime"
+            android:layout_marginStart="8dp"
+            app:layout_alignSelf="center" />
+
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

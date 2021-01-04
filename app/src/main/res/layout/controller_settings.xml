@@ -226,6 +226,14 @@
             apc:mp_key="@string/nc_settings_phone_book_integration_key"
             apc:mp_summary="@string/nc_settings_phone_book_integration_desc"
             apc:mp_title="@string/nc_settings_phone_book_integration_title" />
+        
+        <com.yarolegovich.mp.MaterialSwitchPreference
+            android:id="@+id/settings_read_privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_key="@string/nc_settings_read_privacy_key"
+            apc:mp_summary="@string/nc_settings_read_privacy_desc"
+            apc:mp_title="@string/nc_settings_read_privacy_title" />
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
     <com.yarolegovich.mp.MaterialPreferenceCategory

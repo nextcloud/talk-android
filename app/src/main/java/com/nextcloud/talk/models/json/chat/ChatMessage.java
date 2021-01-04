@@ -20,7 +20,7 @@
 package com.nextcloud.talk.models.json.chat;
 
 import android.text.TextUtils;
-import androidx.annotation.Nullable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -33,10 +33,17 @@ import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import androidx.annotation.Nullable;
+import lombok.Data;
 
 @Parcel
 @Data
@@ -77,6 +84,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public boolean replyable;
     @JsonField(name = "parent")
     public ChatMessage parentMessage;
+    public Enum<ReadStatus> readStatus = ReadStatus.NONE;
 
     @JsonIgnore
     List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,

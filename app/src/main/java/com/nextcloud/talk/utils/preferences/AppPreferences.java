@@ -302,6 +302,17 @@ public interface AppPreferences {
     @KeyByString("phone_book_integration_last_run")
     long getPhoneBookIntegrationLastRun(Long defaultValue);
 
+    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    void setReadPrivacy(boolean value);
+    
+    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @RegisterChangeListenerMethod
+    void registerReadPrivacyChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByResource(R.string.nc_settings_read_privacy_key)
+    @UnregisterChangeListenerMethod
+    void unregisterReadPrivacyChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
     @ClearMethod
     void clear();
 }

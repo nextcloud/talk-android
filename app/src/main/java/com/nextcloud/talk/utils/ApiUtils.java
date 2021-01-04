@@ -225,6 +225,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/user";
     }
 
+    public static String getUrlForUserSettings(String baseUrl) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/settings/user";
+    }
+
     public static String getUrlPostfixForStatus() {
         return "/status.php";
     }
