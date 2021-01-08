@@ -138,7 +138,7 @@ public interface User extends Parcelable, Persistable, Serializable {
                 capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
                 return capabilities != null &&
                         capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getFeatures() != null && 
+                        capabilities.getSpreedCapability().getFeatures() != null &&
                         capabilities.getSpreedCapability().getFeatures().contains("phonebook-search");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -165,15 +165,15 @@ public interface User extends Parcelable, Persistable, Serializable {
         }
         return false;
     }
-    
+
     default boolean isReadStatusPrivate() {
         if (getCapabilities() != null) {
             Capabilities capabilities;
             try {
                 capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
-                if (capabilities != null && 
-                        capabilities.getSpreedCapability() != null && 
-                        capabilities.getSpreedCapability().getConfig() != null && 
+                if (capabilities != null &&
+                        capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getConfig() != null &&
                         capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
                     HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
                     if (map != null && map.containsKey("read-privacy")) {
@@ -185,5 +185,26 @@ public interface User extends Parcelable, Persistable, Serializable {
             }
         }
         return false;
+    }
+
+    default String getAttachmentFolder() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities != null &&
+                        capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getConfig() != null &&
+                        capabilities.getSpreedCapability().getConfig().containsKey("attachments")) {
+                    HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("attachments");
+                    if (map != null && map.containsKey("folder")) {
+                        return map.get("folder");
+                    }
+                }
+            } catch (IOException e) {
+                Log.e("User.java", "Failed to get attachment folder", e);
+            }
+        }
+        return "/Talk";
     }
 }

@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers
 
+import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
@@ -44,6 +45,9 @@ import androidx.emoji.widget.EmojiEditText
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
@@ -70,6 +74,7 @@ import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
@@ -80,11 +85,9 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
+import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.utils.*
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -123,46 +126,60 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     @Inject
     @JvmField
     var ncApi: NcApi? = null
+
     @Inject
     @JvmField
     var userUtils: UserUtils? = null
+
     @Inject
     @JvmField
     var appPreferences: AppPreferences? = null
+
     @Inject
     @JvmField
     var context: Context? = null
+
     @Inject
     @JvmField
     var eventBus: EventBus? = null
+
     @BindView(R.id.messagesListView)
     @JvmField
     var messagesListView: MessagesList? = null
+
     @BindView(R.id.messageInputView)
     @JvmField
     var messageInputView: MessageInput? = null
+
     @BindView(R.id.messageInput)
     @JvmField
     var messageInput: EmojiEditText? = null
+
     @BindView(R.id.popupBubbleView)
     @JvmField
     var popupBubble: PopupBubble? = null
+
     @BindView(R.id.progressBar)
     @JvmField
     var loadingProgressBar: ProgressBar? = null
+
     @BindView(R.id.smileyButton)
     @JvmField
     var smileyButton: ImageButton? = null
+
     @BindView(R.id.lobby_view)
     @JvmField
     var lobbyView: RelativeLayout? = null
+
     @BindView(R.id.lobby_text_view)
     @JvmField
     var conversationLobbyText: TextView? = null
     val disposableList = ArrayList<Disposable>()
+
     @JvmField
     @BindView(R.id.quotedChatMessageView)
     var quotedChatMessageView: RelativeLayout? = null
+
     @BindView(R.id.callControlToggleChat)
     @JvmField
     var toggleChat: SimpleDraweeView? = null
@@ -378,7 +395,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         messagesListView?.setAdapter(adapter)
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
-        adapter?.setOnMessageViewLongClickListener { view, message ->  onMessageViewLongClick(view, message)}
+        adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
 
         layoutManager = messagesListView?.layoutManager as LinearLayoutManager?
 
@@ -400,8 +417,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             toggleChat?.visibility = View.VISIBLE
             wasDetached = true
         }
-        
-        toggleChat?.setOnClickListener{
+
+        toggleChat?.setOnClickListener {
             (activity as MagicCallActivity).showCall()
         }
 
@@ -467,8 +484,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         })
 
         messageInputView?.setAttachmentsListener {
-            showBrowserScreen(BrowserController
-                    .BrowserType.DAV_BROWSER)
+            activity?.let { AttachmentDialog(it, this).show() };
         }
 
         messageInputView?.button?.setOnClickListener { v -> submitMessage() }
@@ -495,7 +511,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun checkReadOnlyState() {
         if (currentConversation != null) {
-            if (currentConversation?.shouldShowLobby(conversationUser)?: false || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY) {
+            if (currentConversation?.shouldShowLobby(conversationUser) ?: false || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY) {
 
                 conversationVoiceCallMenuItem?.icon?.alpha = 99
                 conversationVideoMenuItem?.icon?.alpha = 99
@@ -559,7 +575,58 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
-    private fun showBrowserScreen(browserType: BrowserController.BrowserType) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_CHOOSE_FILE) {
+            if (resultCode == RESULT_OK) {
+                uploadFile(data)
+            }
+        }
+    }
+
+    private fun uploadFile(intentData: Intent?) {
+        try {
+            checkNotNull(intentData)
+            val files: MutableList<String> = ArrayList()
+            intentData.clipData?.let {
+                for (index in 0 until it.itemCount) {
+                    files.add(it.getItemAt(index).uri.toString())
+                }
+            } ?: run {
+                checkNotNull(intentData.data)
+                intentData.data.let {
+                    files.add(intentData.data.toString())
+                }
+            }
+            require(files.isNotEmpty())
+            val data: Data = Data.Builder()
+                    .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, files.toTypedArray())
+                    .putString(UploadAndShareFilesWorker.NC_TARGETPATH, conversationUser?.getAttachmentFolder())
+                    .putString(UploadAndShareFilesWorker.ROOM_TOKEN, roomToken)
+                    .build()
+            val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
+                    .setInputData(data)
+                    .build()
+            WorkManager.getInstance().enqueue(uploadWorker)
+        } catch (e: IllegalStateException) {
+            Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        } catch (e: IllegalArgumentException) {
+            Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        }
+    }
+
+    fun sendSelectLocalFileIntent() {
+        val action = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+            type = "*/*"
+            addCategory(Intent.CATEGORY_OPENABLE)
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+        startActivityForResult(Intent.createChooser(action, context?.resources?.getString(
+                R.string.nc_upload_choose_local_files)), REQUEST_CODE_CHOOSE_FILE);
+    }
+
+    fun showBrowserScreen(browserType: BrowserController.BrowserType) {
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType))
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserEntity>(conversationUser))
@@ -618,13 +685,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
         emojiPopup = messageInput?.let {
             EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
-            if (resources != null) {
-                smileyButton?.setColorFilter(resources!!.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
-            }
-        }.setOnEmojiPopupDismissListener {
-            smileyButton?.setColorFilter(resources!!.getColor(R.color.emoji_icons),
-                    PorterDuff.Mode.SRC_IN)
-        }.setOnEmojiClickListener { emoji, imageView -> messageInput?.editableText?.append(" ") }.build(it)
+                if (resources != null) {
+                    smileyButton?.setColorFilter(resources!!.getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN)
+                }
+            }.setOnEmojiPopupDismissListener {
+                smileyButton?.setColorFilter(resources!!.getColor(R.color.emoji_icons),
+                        PorterDuff.Mode.SRC_IN)
+            }.setOnEmojiClickListener { emoji, imageView -> messageInput?.editableText?.append(" ") }.build(it)
         }
 
         if (activity != null) {
@@ -656,7 +723,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        
+
         if (!isLeavingForConversation) {
             // current room is still "active", we need the info
             ApplicationWideCurrentRoomHolder.getInstance().clear()
@@ -878,11 +945,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
         if (conversationUser != null) {
             ncApi!!.sendChatMessage(
-                    credentials, ApiUtils.getUrlForChat(
-                    conversationUser.baseUrl,
-                    roomToken
-            ),
-                    message, conversationUser.displayName, replyTo
+                    credentials,
+                    ApiUtils.getUrlForChat(conversationUser.baseUrl, roomToken),
+                    message,
+                    conversationUser.displayName,
+                    replyTo
             )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
@@ -1457,5 +1524,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         private val TAG = "ChatController"
         private val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
         private val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
+        val REQUEST_CODE_CHOOSE_FILE: Int = 555
     }
 }

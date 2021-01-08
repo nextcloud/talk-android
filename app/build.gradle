@@ -60,8 +60,6 @@ android {
         lintOptions {
             disable 'InvalidPackage'
             disable 'MissingTranslation'
-            disable "ValidController"
-            disable "ValidControllerChangeHandler"
         }
 
         javaCompileOptions {

@@ -321,6 +321,12 @@
     <string name="nc_copy_message">Copy</string>
     <string name="nc_reply">Reply</string>
 
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Upload local file</string>
+    <string name="nc_upload_from_nextcloud">Upload from Nextcloud</string>
+    <string name="nc_upload_failed">Failed to upload file</string>
+    <string name="nc_upload_choose_local_files">Choose files</string>
+
     <!-- Non-translatable strings -->
 
     <string name="path_password_strike_through" translatable="false"

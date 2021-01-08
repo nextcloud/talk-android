@@ -20,6 +20,8 @@
  */
 package com.nextcloud.talk.api;
 
+import androidx.annotation.Nullable;
+
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
@@ -39,7 +41,6 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
 import io.reactivex.Observable;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -327,7 +328,6 @@ public interface NcApi {
     @PUT
     Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization, @Url String url, @Field("state") int state);
 
-
     @FormUrlEncoded
     @POST
     Observable<Void> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url,
@@ -338,15 +338,21 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setLobbyForConversation(@Header("Authorization") String authorization,
-                                      @Url String url, @Field("state") Integer state,
+                                                       @Url String url, @Field("state") Integer state,
                                                        @Field("timer") Long timer);
 
     @POST
     Observable<GenericOverall> setReadStatusPrivacy(@Header("Authorization") String authorization,
                                                     @Url String url,
                                                     @Body RequestBody body);
+
     @POST
     Observable<ContactsByNumberOverall> searchContactsByPhoneNumber(@Header("Authorization") String authorization,
                                                                     @Url String url,
                                                                     @Body RequestBody search);
+
+    @PUT
+    Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization,
+                                                    @Url String url,
+                                                    @Body RequestBody body);
 }
