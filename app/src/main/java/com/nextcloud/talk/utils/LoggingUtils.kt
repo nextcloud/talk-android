@@ -26,14 +26,10 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import com.nextcloud.talk.BuildConfig
-
-import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileOutputStream
 import java.io.IOException
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 object LoggingUtils {
     fun writeLogEntryToFile(context: Context, logEntry: String) {
@@ -58,7 +54,7 @@ object LoggingUtils {
     fun sendMailWithAttachment(context: Context) {
         val logFile = context.getFileStreamPath("nc_log.txt")
         val emailIntent = Intent(Intent.ACTION_SEND)
-        val mailto = "mario@nextcloud.com"
+        val mailto = "android@nextcloud.com"
         emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(mailto))
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Talk logs")
         emailIntent.type = "text/plain"
