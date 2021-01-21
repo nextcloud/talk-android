@@ -160,7 +160,11 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
         val resources = itemView.resources
 
-        val bg_bubble_color = resources.getColor(R.color.bg_message_list_incoming_bubble)
+        val bg_bubble_color = if (message.isDeleted) {
+            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+        } else {
+            resources.getColor(R.color.bg_message_list_incoming_bubble)
+        }
 
         var bubbleResource = R.drawable.shape_incoming_message
 
@@ -229,13 +233,14 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
         // parent message handling
 
-        message.parentMessage?.let { parentChatMessage ->
+        if (!message.isDeleted && message.parentMessage != null) {
+            var parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             quotedUserAvatar?.load(parentChatMessage.user.avatar) {
                 addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
                 transformations(CircleCropTransformation())
             }
-            parentChatMessage.imageUrl?.let{
+            parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 quotedMessagePreview?.load(it) {
                     addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
@@ -253,7 +258,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
             quotedMessageTime?.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
             quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)
             quotedChatMessageView?.visibility = View.VISIBLE
-        } ?: run {
+        } else {
             quotedChatMessageView?.visibility = View.GONE
         }
     }

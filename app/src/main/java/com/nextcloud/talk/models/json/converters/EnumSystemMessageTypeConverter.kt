@@ -63,6 +63,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "lobby_none" -> return LOBBY_NONE
             "lobby_non_moderators" -> return LOBBY_NON_MODERATORS
             "lobby_timer_reached" -> return LOBBY_OPEN_TO_EVERYONE
+            "message_deleted" -> return PARENT_MESSAGE_DELETED
             else -> return DUMMY
         }
     }

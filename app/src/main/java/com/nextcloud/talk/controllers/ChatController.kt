@@ -78,6 +78,7 @@ import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -114,6 +115,7 @@ import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
 import retrofit2.HttpException
 import retrofit2.Response
+import java.net.HttpURLConnection
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -1049,7 +1051,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (!wasDetached) {
             if (lookIntoFuture > 0) {
                 val finalTimeout = timeout
-                ncApi?.pullChatMessages(credentials, ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap)
+                ncApi?.pullChatMessages(credentials,
+                        ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap)
                         ?.subscribeOn(Schedulers.io())
                         ?.observeOn(AndroidSchedulers.mainThread())
                         ?.takeWhile { observable -> inConversation && !wasDetached }
@@ -1129,7 +1132,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         if (response.code() == 200) {
 
             val chatOverall = response.body() as ChatOverall?
-            val chatMessageList = chatOverall?.ocs!!.data
+            val chatMessageList = setDeletionFlagsAndRemoveInfomessages(chatOverall?.ocs!!.data)
 
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation()
@@ -1331,6 +1334,31 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
+    private fun setDeletionFlagsAndRemoveInfomessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
+        val chatMessageIterator = chatMessageMap.iterator()
+        while (chatMessageIterator.hasNext()) {
+            val currentMessage = chatMessageIterator.next()
+            if (isInfoMessageAboutDeletion(currentMessage)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
+                    // if chatMessageMap doesnt't contain message to delete (this happens when lookingIntoFuture),
+                    // the message to delete has to be modified directly inside the adapter
+                    setMessageAsDeleted(currentMessage.value.parentMessage)
+                } else {
+                    chatMessageMap[currentMessage.value.parentMessage.id]!!.isDeleted = true
+                }
+                chatMessageIterator.remove()
+            }
+        }
+        return chatMessageMap.values.toList()
+    }
+
+    private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
+        return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
+                .SystemMessageType.PARENT_MESSAGE_DELETED
+    }
+
+
     private fun startACall(isVoiceOnlyCall: Boolean) {
         isLeavingForConversation = true
         if (!isVoiceOnlyCall) {
@@ -1432,14 +1460,81 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         }
                         true
                     }
+                    R.id.action_delete_message -> {
+                        ncApi?.deleteChatMessage(
+                                credentials,
+                                ApiUtils.getUrlForMessageDeletion(conversationUser?.baseUrl, roomToken, message?.id)
+                        )?.subscribeOn(Schedulers.io())
+                                ?.observeOn(AndroidSchedulers.mainThread())
+                                ?.subscribe(object : Observer<ChatOverallSingleMessage> {
+                                    override fun onSubscribe(d: Disposable) {
+                                    }
+
+                                    override fun onNext(t: ChatOverallSingleMessage) {
+                                        if (t.ocs.meta.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
+                                            Toast.makeText(context, R.string.nc_delete_message_leaked_to_matterbridge,
+                                                    Toast.LENGTH_LONG).show()
+                                        }
+                                    }
+
+                                    override fun onError(e: Throwable) {
+                                        Log.e(TAG, "Something went wrong when trying to delete message with id " +
+                                                message?.id, e)
+                                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                                    }
+
+                                    override fun onComplete() {
+                                    }
+                                })
+                        true
+                    }
                     else -> false
                 }
             }
             inflate(R.menu.chat_message_menu)
+            menu.findItem(R.id.action_copy_message).isVisible = !(message as ChatMessage).isDeleted
             menu.findItem(R.id.action_reply_to_message).isVisible = (message as ChatMessage).replyable
-            show()
+            menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
+            if(menu.hasVisibleItems()){
+                show()
+            }
         }
     }
+
+    private fun setMessageAsDeleted(message: IMessage?) {
+        val messageTemp = message as ChatMessage
+        messageTemp.isDeleted = true
+
+        messageTemp.isOneToOneConversation = currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        messageTemp.isLinkPreviewAllowed = isLinkPreviewAllowed
+        messageTemp.activeUser = conversationUser
+
+        adapter?.update(messageTemp)
+    }
+
+    private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
+        if (conversationUser == null) return false
+
+        if(message.systemMessageType != ChatMessage.SystemMessageType.DUMMY) return false
+
+        if(message.isDeleted) return false
+
+        val sixHoursInMillis = 6 * 3600 * 1000
+        val isOlderThanSixHours = message.createdAt?.before(Date(System.currentTimeMillis() - sixHoursInMillis)) == true
+        if(isOlderThanSixHours) return false
+
+        val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
+            true
+        } else {
+            currentConversation!!.isParticipantOwnerOrModerator
+        }
+        if(!isUserAllowedByPrivileges) return false
+
+        if(!conversationUser.hasSpreedFeatureCapability("delete-messages")) return false
+
+        return true
+    }
+
 
     override fun hasContentFor(message: IMessage, type: Byte): Boolean {
         when (type) {

@@ -136,18 +136,23 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             realView.isSelected = true
         }
         val resources = sharedApplication!!.resources
+        val bg_bubble_color = if (message.isDeleted) {
+            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
+        } else {
+            resources.getColor(R.color.bg_message_list_outcoming_bubble)
+        }
         if (message.isGrouped) {
             val bubbleDrawable = getMessageSelector(
-                    resources.getColor(R.color.colorPrimary),
+                    bg_bubble_color,
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.colorPrimary),
+                    bg_bubble_color,
                     R.drawable.shape_grouped_outcoming_message)
             ViewCompat.setBackground(bubble, bubbleDrawable)
         } else {
             val bubbleDrawable = getMessageSelector(
-                    resources.getColor(R.color.colorPrimary),
+                    bg_bubble_color,
                     resources.getColor(R.color.transparent),
-                    resources.getColor(R.color.colorPrimary),
+                    bg_bubble_color,
                     R.drawable.shape_outcoming_message)
             ViewCompat.setBackground(bubble, bubbleDrawable)
         }
@@ -157,13 +162,14 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         // parent message handling
 
-        message.parentMessage?.let { parentChatMessage ->
+        if (!message.isDeleted && message.parentMessage != null) {
+            var parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             quotedUserAvatar?.load(parentChatMessage.user.avatar) {
                 transformations(CircleCropTransformation())
                 addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
             }
-            parentChatMessage.imageUrl?.let{
+            parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 quotedMessagePreview?.load(it) {
                     addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
@@ -182,7 +188,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             quoteColoredView?.setBackgroundResource(R.color.white)
 
             quotedChatMessageView?.visibility = View.VISIBLE
-        } ?: run {
+        } else {
             quotedChatMessageView?.visibility = View.GONE
         }
 

@@ -292,4 +292,8 @@ public class ApiUtils {
     public static String getUrlForFileUpload(String baseUrl, String user, String attachmentFolder, String filename) {
         return baseUrl + "/remote.php/dav/files/" + user + attachmentFolder + "/" + filename;
     }
+
+    public static String getUrlForMessageDeletion(String baseUrl, String token, String messageId) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token + "/" + messageId;
+    }
 }

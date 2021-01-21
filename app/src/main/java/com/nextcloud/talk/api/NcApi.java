@@ -24,6 +24,7 @@ import androidx.annotation.Nullable;
 
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -296,7 +297,8 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization, @Url String url,
+    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization,
+                                               @Url String url,
                                                @Field("message") CharSequence message,
                                                @Field("actorDisplayName") String actorDisplayName,
                                                @Field("replyTo") Integer replyTo);
@@ -355,4 +357,8 @@ public interface NcApi {
     Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization,
                                                     @Url String url,
                                                     @Body RequestBody body);
+
+    @DELETE
+    Observable<ChatOverallSingleMessage> deleteChatMessage(@Header("Authorization") String authorization,
+                                                           @Url String url);
 }
