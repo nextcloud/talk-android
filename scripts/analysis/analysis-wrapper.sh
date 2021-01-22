@@ -29,7 +29,7 @@ if [ $3 = "master" ]; then
     
     if [ $lintValue -ne 1 ]; then
         echo "New lint result for master at: https://www.kaminsky.me/nc-dev/talk-lint/master.html"
-        curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/master.html --upload-file app/build/reports/lint/lint.html
+        curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-lint/master.html --upload-file app/build/reports/lint/lint.html
         exit 0
     fi
 else
@@ -37,7 +37,7 @@ else
         6="master-"$(date +%F)
     fi
     echo "New lint results at https://www.kaminsky.me/nc-dev/talk-lint/$6.html"
-    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-droneLogs/$6.html --upload-file app/build/reports/lint/lint.html
+    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-lint/$6.html --upload-file app/build/reports/lint/lint.html
     
     echo "New findbugs results at https://www.kaminsky.me/nc-dev/talk-findbugs/$6.html"
     curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/$6.html --upload-file app/build/reports/findbugs/findbugs.html

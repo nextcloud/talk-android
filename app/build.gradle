@@ -34,13 +34,12 @@ android {
     buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.nextcloud.talk2"
-        versionName version
         minSdkVersion 21
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 80020090 // 0-50=Alpha / 51-98=RC / 90-99=stable
-        versionName "8.2.0"
+        versionCode 110000001 // 0-50=Alpha / 51-98=RC / 90-99=stable
+        versionName "11.0.0 Alpha 01"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
