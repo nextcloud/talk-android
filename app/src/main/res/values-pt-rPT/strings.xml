@@ -29,7 +29,6 @@
     <string name="nc_server_import_account">Importar conta da aplicação %1$s</string>
     <string name="nc_server_import_accounts">Importar contas da aplicação %1$s</string>
     <string name="nc_server_failed_to_import_account">Não foi possível importar a conta selecionada</string>
-    <string name="nc_Server_account_imported">A conta selecionada foi importada e está disponível</string>
     <string name="nc_get_from_provider">Ainda não tem um servidor?\nClique aqui para obter um de um fornecedor</string>
 
     <!-- Account verification -->
@@ -60,11 +59,11 @@
     <string name="nc_settings_remove">Remover</string>
     <string name="nc_settings_remove_account">Remover conta</string>
     <string name="nc_settings_add_account">Adicionar uma nova conta</string>
-    <string name="nc_settings_notification_sounds">Sons de notificação</string>
-    <string name="nc_settings_other_notifications_ringtone">Outros</string>
+    <string name="nc_add">Adicionar</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
-    <string name="nc_settings_vibrate">Vibrar</string>
-    <string name="nc_settings_privacy">Privacidade</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_theme_light">Claro</string>
+    <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_screen_lock_title">Bloqueio de ecrã</string>
     <string name="nc_none">Nenhum</string>
     <string name="nc_settings_screen_security_title">Segurança de ecrã</string>
@@ -112,8 +111,6 @@
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecionar contactos</string>
     <string name="nc_contacts_done">Concluir </string>
 
     <string name="nc_permissions_settings">Abrir definições</string>
@@ -147,6 +144,11 @@
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Relegar de moderador</string>
+    <string name="nc_promote">Promover a moderador</string>
+    <string name="nc_remove_participant">Remover participante</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Insira uma mensagem...</string>
     <string name="nc_date_header_yesterday">Ontem</string>
@@ -178,5 +180,10 @@
     <string name="nc_file_browser_back">Anterior</string>
     <string name="nc_file_browser_refresh">Atualizar</string>
     <string name="nc_last_modified">%1$s | Última modificação: %2$s</string>
+
+    <string name="nc_not_defined_error">Erro desconhecido</string>
+    <string name="nc_general_settings">Geral</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Resposta</string>
 
     </resources>

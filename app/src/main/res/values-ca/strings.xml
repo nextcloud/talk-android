@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">importa el compte des de l\'aplicació %1$s</string>
     <string name="nc_server_import_accounts">importa els comptes des de l\'aplicació %1$s</string>
     <string name="nc_server_failed_to_import_account">Ha fallat la importació del compte seleccionat</string>
-    <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_get_from_provider">Encara no teniu cap servidor?\nFeu clic aquí per obtenir-ne un d\'un proveïdor</string>
 
     <!-- Account verification -->
@@ -67,15 +66,12 @@
     <string name="nc_settings_remove_confirmation">Si us plau, confirmeu la vostra intenció de suprimir el compte actual.</string>
     <string name="nc_settings_remove_account">Suprimeix el compte</string>
     <string name="nc_settings_add_account">Afegeix un nou compte</string>
+    <string name="nc_add">Afegeix</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
     <string name="nc_settings_account_updated">S\'ha actualitzat el vostre compte ja existent enlloc d’afegir-ne un de nou</string>
     <string name="nc_account_scheduled_for_deletion">El compte està planificat per ser suprimit i no es pot canviar</string>
-    <string name="nc_settings_notification_sounds">So de les notificacions</string>
-    <string name="nc_settings_call_ringtone">Trucades Privades</string>
-    <string name="nc_settings_other_notifications_ringtone">Un altre</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
-    <string name="nc_settings_vibrate">Vibra</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
     <string name="nc_settings_appearance">Aparença</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -84,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">Configura l\'Estalvi de Bateria</string>
     <string name="nc_settings_theme_light">Clar</string>
     <string name="nc_settings_theme_dark">Fosc</string>
-    <string name="nc_settings_privacy">Privadesa</string>
     <string name="nc_settings_screen_lock_title">Bloqueig de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloca %1$s amb el bloqueig de pantalla d\'Android o mètode biomètric compatible </string>
     <string name="nc_settings_screen_lock_timeout_title">Temps d\'espera d’inactivitat de bloqueig de pantalla</string>
@@ -96,7 +91,6 @@
     <string name="nc_settings_link_previews_title">Mostra les visualitzacions prèvies dels enllaços</string>
     <string name="nc_settings_link_previews_desc">Permet la visualització prèvia del contingut dels enllaços rebuts per als serveis compatibles</string>
     <string name="nc_locked">Toca per desblocar</string>
-
     <string name="nc_screen_lock_timeout_30">30 segons</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minuts</string>
@@ -137,19 +131,12 @@
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_delete_call">Suprimeix la conversa</string>
     <string name="nc_delete">Suprimeix</string>
-    <string name="nc_delete_conversation_default">Si us plau, confirmeu la vostra intenció de suprimir la conversa.</string>
-    <string name="nc_delete_conversation_one2one">Si suprimiu la conversa, també serà suprimit
-per %1$s.</string>
-    <string name="nc_delete_conversation_more">Si suprimiu la conversa, també se suprimirà per a la resta de participants.</string>
-
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
     <string name="nc_join_via_web">Uniu-vos via web</string>
     <string name="nc_add_to_favorites">Afegeix a favorits</string>
     <string name="nc_remove_from_favorites">Suprimeix de favorits</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecciona els contactes</string>
     <string name="nc_contacts_done">Fet</string>
 
     <!-- Permissions -->
@@ -181,11 +168,7 @@ enllaç especialment dissenyat.</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
     <string name="nc_notify_me_never">No notifiquis mai</string>
     <string name="nc_mute_calls">Silencia les trucades</string>
-    <string name="nc_mute_calls_desc">Les trucades entrants se silenciaran.</string>
     <string name="nc_important_conversation">Conversa important</string>
-    <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran
-        els paràmetres de no destorbar.</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons
@@ -205,6 +188,11 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Deposat des del moderador</string>
+    <string name="nc_promote">Promou a moderador</string>
+    <string name="nc_remove_participant">Suprimeix el participant</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Introduïu un missatge...</string>
@@ -272,5 +260,24 @@ mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</st
     <string name="nc_lobby_waiting">Esteu esperant al vestíbul.</string>
     <string name="nc_lobby_waiting_with_date">Actualment esteu esperant al vestíbul.\n Aquesta
 trobada està prevista per a les %1$s.</string>
-    <string name="nc_manual">Manual</string>
-</resources>
+    <string name="nc_manual">No establert</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Sense connexió</string>
+    <string name="nc_bad_response_error">Resposta incorrecta</string>
+    <string name="nc_timeout_error">Temps d\'espera excedit</string>
+    <string name="nc_empty_response_error">Resposta buida</string>
+    <string name="nc_not_defined_error">Error desconegut</string>
+    <string name="nc_unauthorized_error">No autoritzat</string>
+
+    <string name="nc_general_settings">General</string>
+    <string name="nc_allow_guests">Permet visitants</string>
+    <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
+    <string name="nc_last_moderator">Heu de designar un nou moderador abans de deixar %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copia</string>
+    <string name="nc_reply">Respon</string>
+
+    </resources>

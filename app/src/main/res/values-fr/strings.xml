@@ -26,14 +26,13 @@
     <string name="nc_server_url">Adresse du serveur</string>
     <string name="nc_server_not_installed">Veuillez terminer votre installation de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
-    <string name="nc_server_maintenance">S’il vous plaît désactivez la maintenance de %1$s</string>
+    <string name="nc_server_maintenance">S’il vous plaît, désactivez la maintenance de %1$s</string>
     <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
     <string name="nc_server_import_account_plain">Importer le compte</string>
     <string name="nc_server_import_accounts_plain">Importer les comptes</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
     <string name="nc_server_import_accounts">Importer les comptes depuis l\'application %1$s</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
-    <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
     <string name="nc_get_from_provider">Vous n\'avez pas encore de serveur?\nCliquez-ici pour en obtenir un chez un fournisseur d\'accès.</string>
 
     <!-- Account verification -->
@@ -48,7 +47,7 @@
     <string name="nc_search">Recherche</string>
 
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
-    <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
+    <string name="nc_certificate_dialog_text">Faites-vous confiance au certificat SSL jusque-là inconnu, émis par %1$s pour%2$s, et est valide du %3$s au %4$s ?</string>
     <string name="nc_yes">Oui</string>
     <string name="nc_no">Non</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
@@ -72,11 +71,7 @@
     <string name="nc_settings_no_talk_installed">L\'application Talk n\'est pas installée sur le serveur auquel vous essayez de vous connecter.</string>
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_account_scheduled_for_deletion">Le compte va être supprimé et ne peut donc pas être utilisé</string>
-    <string name="nc_settings_notification_sounds">Sons de notification</string>
-    <string name="nc_settings_call_ringtone">Appels en tête-à-tête</string>
-    <string name="nc_settings_other_notifications_ringtone">Autre</string>
     <string name="nc_settings_no_ringtone">Aucun son</string>
-    <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_vibrate_desc">Le téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_theme_title">Thème</string>
@@ -85,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_light">Clair</string>
     <string name="nc_settings_theme_dark">Sombre</string>
-    <string name="nc_settings_privacy">Vie privée</string>
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_lock_desc">Verrouiller %1$s avec le verrouillage d’écran Android ou une méthode biométrique supportée</string>
     <string name="nc_settings_screen_lock_timeout_title">Délai d\'inactivité avant verrouillage écran</string>
@@ -97,7 +91,6 @@
     <string name="nc_settings_link_previews_title">Afficher les prévisualisations de lien</string>
     <string name="nc_settings_link_previews_desc">Autorise la prévisualisation du contenu des liens reçus pour les services pris en charge.</string>
     <string name="nc_locked">Appuyer pour déverrouiller</string>
-
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
@@ -113,7 +106,7 @@
     <string name="nc_no_proxy">Aucun proxy</string>
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_password">Mot de passe</string>
-    <string name="nc_conversation_link">Lien de conversation</string>
+    <string name="nc_conversation_link">Lien de la conversation</string>
     <string name="nc_new_password">Nouveau mot de passe</string>
     <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_about">À propos</string>
@@ -138,18 +131,12 @@
     <string name="nc_make_call_private">Effectuer une conversation privée</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
     <string name="nc_delete">Supprimer</string>
-    <string name="nc_delete_conversation_default">Veuillez confirmer votre volonté de supprimer la conversation.</string>
-    <string name="nc_delete_conversation_one2one">Si vous supprimez la conversation, elle sera aussi supprimée pour %1$s.</string>
-    <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
-
     <string name="nc_new_conversation">Nouvelle conversation</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
     <string name="nc_join_via_web">Joindre via le web</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_contacts_done">Terminé</string>
 
     <!-- Permissions -->
@@ -163,7 +150,7 @@
     <string name="nc_incoming_call">Appel entrant de</string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_public_call">Nouvelle conversation public</string>
-    <string name="nc_public_call_explanation">Les conversations publiques vous permet d\'inviter des personnes extérieures
+    <string name="nc_public_call_explanation">Les conversations publiques vous permettent d\'inviter des personnes extérieures
 grâce à un lien spécialement créé.</string>
     <string name="nc_call_timeout">Aucune réponse depuis 45 secondes, appuyez pour essayer à nouveau</string>
     <string name="nc_call_reconnecting">Reconnexion en cours…</string>
@@ -181,11 +168,7 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_mute_calls">Rendre les appels silencieux</string>
-    <string name="nc_mute_calls_desc">Les appels entrants seront réduits au silence</string>
     <string name="nc_important_conversation">Conversation importante</string>
-    <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent 
-       sur les paramètres Ne Pas Déranger</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
     <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
@@ -201,8 +184,8 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_push_to_talk">fonction Talkie-Walkie</string>
-    <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-Walkie</string>
+    <string name="nc_push_to_talk">fonction Talkie-walkie</string>
+    <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-walkie</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
 
@@ -277,5 +260,24 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
     <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\n
 Le démarrage de cette réunion est prévu à %1$s.</string>
-    <string name="nc_manual">Manuel</string>
-</resources>
+    <string name="nc_manual">Non défini</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Aucune connexion</string>
+    <string name="nc_bad_response_error">Mauvaise réponse</string>
+    <string name="nc_timeout_error">Délai d\'attente</string>
+    <string name="nc_empty_response_error">Réponse vide</string>
+    <string name="nc_not_defined_error">Erreur inconnue </string>
+    <string name="nc_unauthorized_error">Interdit</string>
+
+    <string name="nc_general_settings">Général</string>
+    <string name="nc_allow_guests">Autoriser les invités</string>
+    <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
+    <string name="nc_last_moderator">Vous devez désigner un nouveau modérateur avant de quitter %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copier</string>
+    <string name="nc_reply">Répondre</string>
+
+    </resources>

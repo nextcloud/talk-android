@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_import_accounts">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_failed_to_import_account">選択したアカウントのインポートに失敗しました</string>
-    <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
 
     <!-- Account verification -->
@@ -67,15 +66,12 @@
     <string name="nc_settings_remove_confirmation">現在のアカウントを削除する目的を確認してください。</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
+    <string name="nc_add">追加</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_account_scheduled_for_deletion">アカウントは削除予定であり、変更することはできません</string>
-    <string name="nc_settings_notification_sounds">通知音</string>
-    <string name="nc_settings_call_ringtone">1対1通話</string>
-    <string name="nc_settings_other_notifications_ringtone">その他</string>
     <string name="nc_settings_no_ringtone">音無し</string>
-    <string name="nc_settings_vibrate">振動</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
     <string name="nc_settings_appearance">表示</string>
     <string name="nc_settings_theme_title">テーマ</string>
@@ -84,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_dark">ダーク</string>
-    <string name="nc_settings_privacy">プライバシー</string>
     <string name="nc_settings_screen_lock_title">スクリーンロック</string>
     <string name="nc_settings_screen_lock_desc">%1$sをアンドロイドスクリーンロックかサポートされている生体認証でロックします。</string>
     <string name="nc_settings_screen_lock_timeout_title">タイムアウト時のスクリーンロック</string>
@@ -96,7 +91,6 @@
     <string name="nc_settings_link_previews_title">リンクプレビューを表示</string>
     <string name="nc_settings_link_previews_desc">サポートされているサービスに送られてきたリンクからコンテンツのプレビューを許可する。</string>
     <string name="nc_locked">タップしてロック解除</string>
-
     <string name="nc_screen_lock_timeout_30">30 秒</string>
     <string name="nc_screen_lock_timeout_60">1 分間
 </string>
@@ -138,18 +132,12 @@
     <string name="nc_make_call_private">会話を非公開にする</string>
     <string name="nc_delete_call">会話を削除</string>
     <string name="nc_delete">削除</string>
-    <string name="nc_delete_conversation_default">会話を削除しますが本当によろしいですか。</string>
-    <string name="nc_delete_conversation_one2one">会話を削除すると、%1$sも一緒に削除されます。</string>
-    <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者も一緒に削除されます。</string>
-
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_join_via_link">トークに参加する</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">連絡先を選択</string>
     <string name="nc_contacts_done">完了</string>
 
     <!-- Permissions -->
@@ -180,7 +168,6 @@
     <string name="nc_notify_me_mention">言及したときに通知する</string>
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_mute_calls">通話をミュートする</string>
-    <string name="nc_mute_calls_desc">着信音を消す</string>
     <string name="nc_important_conversation">重要な会議</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
@@ -201,6 +188,11 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">モデレータから降格</string>
+    <string name="nc_promote">モデレータに昇格</string>
+    <string name="nc_remove_participant">参加者を削除</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
@@ -266,5 +258,25 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_lobby">ロビー</string>
     <string name="nc_start_time">開始時刻</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
-    <string name="nc_manual">手動</string>
-</resources>
+    <string name="nc_lobby_waiting_with_date">現在ロビーで待機中。\n この会議は%1$sに予定されています。</string>
+    <string name="nc_manual">未設定</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">接続がありません</string>
+    <string name="nc_bad_response_error">不正なレスポンス</string>
+    <string name="nc_timeout_error">タイムアウト</string>
+    <string name="nc_empty_response_error">空のレスポンス</string>
+    <string name="nc_not_defined_error">不明なエラー</string>
+    <string name="nc_unauthorized_error">権限がありません</string>
+
+    <string name="nc_general_settings">一般</string>
+    <string name="nc_allow_guests">ゲストを許可する</string>
+    <string name="nc_last_moderator_title">会話を退出できませんでした</string>
+    <string name="nc_last_moderator">%1$sを退出する前に、新しいモデレータを昇格させる必要があります。</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">コピー</string>
+    <string name="nc_reply">返信</string>
+
+    </resources>

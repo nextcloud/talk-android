@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Flytja inn aðgang úr %1$s forritinu</string>
     <string name="nc_server_import_accounts">Flytja inn aðganga úr %1$s forritinu</string>
     <string name="nc_server_failed_to_import_account">Mistókst að flytja inn valinn notandaaðgang</string>
-    <string name="nc_Server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
     <string name="nc_get_from_provider">Ertu ekki enn með skýjaþjón?\nSmelltu hér til að fá þér einn frá þjónustuaðila.</string>
 
     <!-- Account verification -->
@@ -67,23 +66,24 @@
     <string name="nc_settings_remove_confirmation">Endilega staðfestu að þú viljir fjarlægja þennan aðgang.</string>
     <string name="nc_settings_remove_account">Fjarlægja notandaaðgang</string>
     <string name="nc_settings_add_account">Bæta við nýjum notandaaðgangi</string>
+    <string name="nc_add">Bæta við</string>
     <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
     <string name="nc_settings_no_talk_installed">Talk-forritið er ekki uppsett á þjóninum sem þú reyndir að auðkenna hjá</string>
     <string name="nc_settings_account_updated">Fyrirliggjandi notandaaðgangur þinn var uppfærður í stað þess að bæta við nýjum</string>
     <string name="nc_account_scheduled_for_deletion">Þessi aðgangur er merktur til eyðingar og er því ekki hægt að breyta honum</string>
-    <string name="nc_settings_notification_sounds">Hljóð með tilkynningum</string>
-    <string name="nc_settings_call_ringtone">Maður-á-mann samtöl</string>
-    <string name="nc_settings_other_notifications_ringtone">Annað</string>
     <string name="nc_settings_no_ringtone">Ekkert hljóð</string>
-    <string name="nc_settings_vibrate">Titringur</string>
     <string name="nc_settings_vibrate_desc">Síminn þinn mun titra nema hann sé á hljóðlausi stillingu</string>
-    <string name="nc_settings_privacy">Gagnaleynd</string>
+    <string name="nc_settings_appearance">Útlit</string>
+    <string name="nc_settings_theme_title">Þema</string>
+    <string name="nc_settings_theme_key">þema</string>
+    <string name="nc_settings_theme_follow_system">Nota sjálfgefið á kerfi</string>
+    <string name="nc_settings_theme_light">Ljóst</string>
+    <string name="nc_settings_theme_dark">Dökkt</string>
     <string name="nc_settings_screen_lock_title">Skjálæsing</string>
     <string name="nc_settings_screen_lock_timeout_title">Tímamörk skjálæsingar við aðgerðaleysi</string>
     <string name="nc_none">Ekkert</string>
     <string name="nc_settings_screen_security_title">Öryggi skjás</string>
     <string name="nc_locked">Ýttu til að aflæsa</string>
-
     <string name="nc_screen_lock_timeout_30">30 sekúndur</string>
     <string name="nc_screen_lock_timeout_60">1 mínúta</string>
     <string name="nc_screen_lock_timeout_300">5 mínútur</string>
@@ -124,14 +124,11 @@
     <string name="nc_make_call_private">Gera samtal að einka</string>
     <string name="nc_delete_call">Eyða samtali</string>
     <string name="nc_delete">Eyða</string>
-    <string name="nc_delete_conversation_default">Endilega staðfestu að þú viljir fjarlægja þetta samtal.</string>
     <string name="nc_new_conversation">Nýtt samtal</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_add_to_favorites">Bæta í eftirlæti</string>
     <string name="nc_remove_from_favorites">Fjarlægja úr eftirlætum</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Veldu tengiliði</string>
     <string name="nc_contacts_done">Lokið</string>
 
     <!-- Permissions -->
@@ -177,6 +174,11 @@
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
     <string name="nc_change_cert_auth">Skipta um skilríki fyrir auðkenningu</string>
 
+    <!-- Moderation -->
+    <string name="nc_demote">Láta hætta sem umsjónarmann</string>
+    <string name="nc_promote">Gera að umsjónarmanni</string>
+    <string name="nc_remove_participant">Fjarlægja þátttakanda</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Settu inn skilaboð…</string>
     <string name="nc_date_header_yesterday">Í gær</string>
@@ -184,6 +186,7 @@
     <string name="nc_conversation_menu_voice_call">Raddsímtal</string>
     <string name="nc_conversation_menu_video_call">Myndsímtal</string>
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
+    <string name="nc_new_messages">Ólesin skilaboð</string>
     <string name="nc_no_messages_yet">Engin skilaboð ennþá</string>
     <string name="nc_sent_a_link" formatted="true">%1$s sendi tengil.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendi GIF-mynd.</string>
@@ -224,5 +227,26 @@
     <string name="nc_user">Notandi</string>
     <string name="nc_guest">Gestur</string>
     <string name="nc_following_link">Notandi sem fylgdi almenningstengli</string>
+
+    <string name="nc_select_files">Veldu skrár</string>
+    <string name="nc_file_browser_back">Til baka</string>
+    <string name="nc_file_browser_refresh">Endurlesa</string>
+    <string name="nc_last_modified">%1$s | Síðast breytt: %2$s</string>
+
+    <string name="nc_start_time">Upphafstími</string>
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Engin tenging</string>
+    <string name="nc_bad_response_error">Rangt svar</string>
+    <string name="nc_timeout_error">Rann út á tímamörkum</string>
+    <string name="nc_not_defined_error">Óþekkt villa</string>
+    <string name="nc_unauthorized_error">Ekki heimilað</string>
+
+    <string name="nc_general_settings">Almennt</string>
+    <string name="nc_allow_guests">Leyfa gesti</string>
+    <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Afrita</string>
+    <string name="nc_reply">Svara</string>
 
     </resources>

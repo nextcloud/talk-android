@@ -1,0 +1,168 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Rregullimet</string>
+
+    <!-- Server selection -->
+    <string name="nc_server_url">Adresa e serverit</string>
+    <string name="nc_server_not_installed">Ju lutem përfundoni %1$s instalimin tuaj</string>
+    <string name="nc_server_db_upgrade_needed">Ju lutem bëjini upgrade databazës tuaj %1$s</string>
+    <string name="nc_server_maintenance">Ju lutem sillni %1$s jashtë perfomances</string>
+    <string name="nc_server_version">%1$s punon vetëm me %2$s 13 dhe lart</string>
+    <string name="nc_server_import_account_plain">Importoni llogari</string>
+    <string name="nc_server_import_accounts_plain">Importoni llogaritë</string>
+    <string name="nc_server_import_account">Importoni llogarinë nga %1$s aplikacioni</string>
+    <string name="nc_server_import_accounts">Importoni llogaritë nga %1$s aplikacioni</string>
+    <string name="nc_server_failed_to_import_account">Dështoi të importonte llogarinë e përzgjedhur</string>
+    <string name="nc_get_from_provider">Akoma nuk ke një server ?\nKliko këtu për të marrë një nga një ofrues </string>
+
+    <string name="nc_display_name_not_fetched">Emri i shfaqur nuk mund të merret, ndërpritet</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s app nuk u instalua në server, ndërpritet</string>
+    <string name="nc_display_name_not_stored">Emri i shfaqur nuk mund të ruhej, ndërpritet</string>
+
+    <string name="nc_never">Nuk u bashkua kurrë</string>
+    <string name="nc_search">Kërko</string>
+
+    <string name="nc_certificate_dialog_title">Kontrollo çertifikaten</string>
+    <string name="nc_certificate_dialog_text">A e beson deri tani çertifikatën e panjohur deri tani SSL, lëshuar nga %1$spër %2$s, e vlefshme nga %3$s në %4$s?</string>
+    <string name="nc_yes">Po</string>
+    <string name="nc_no">Jo</string>
+    <string name="nc_certificate_error">Struktura juaj SSL e ndaloi lidhjen</string>
+
+    <!-- Settings -->
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_title">Lloji i Proxy</string>
+    <string name="nc_settings_proxy_host_title">Hosti i Proxy</string>
+    <string name="nc_settings_proxy_port_title">Porta e Proxy</string>
+    <string name="nc_settings_use_credentials_title">Kredencialet e përdorimit</string>
+    <string name="nc_settings_switch_account">Kaloni mes llogarive</string>
+    <string name="nc_settings_reauthorize">Riautorizo</string>
+    <string name="nc_client_cert_setup">Organizoni certifikatën e klientit</string>
+    <string name="nc_client_cert_change">Ndryshoni certifikatën e klientit</string>
+    <string name="nc_settings_remove">Hiq</string>
+    <string name="nc_settings_remove_account">Fshij llogarinë</string>
+    <string name="nc_settings_add_account">Shto një llogari të re</string>
+    <string name="nc_add">Shto</string>
+    <string name="nc_settings_wrong_account">Vetëm llogaria aktuale mund të riautorizohet</string>
+    <string name="nc_settings_account_updated">Llogaria juaj ekzistuese u ripërditësua, në vend që të shtohej një e re</string>
+    <string name="nc_account_scheduled_for_deletion">Llogaria është skeduluar që të fshihet dhe nuk mund të ndryshohet</string>
+    <string name="nc_settings_no_ringtone">Ska tingull</string>
+    <string name="nc_settings_theme_title">Shabllon</string>
+    <string name="nc_settings_theme_light">E çelët</string>
+    <string name="nc_settings_theme_dark">E errët</string>
+    <string name="nc_none">Asnjë</string>
+    <string name="nc_screen_lock_timeout_300">5 minuta</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_cancel">Anullo</string>
+
+    <string name="nc_no_proxy">Jo proxy</string>
+    <string name="nc_username">Emri i përdoruesit</string>
+    <string name="nc_password">Fjalëkalimi</string>
+    <string name="nc_conversation_link">Lidhja e bisedës</string>
+    <string name="nc_new_password">Fjalëkalim i ri</string>
+    <string name="nc_wrong_password">Fjalëkalim i gabuar</string>
+    <string name="nc_about">Rreth</string>
+    <string name="nc_privacy">Privatësia</string>
+    <string name="nc_get_source_code">Merr kodin e burimit</string>
+    <string name="nc_license_title">Liçenca</string>
+    <string name="nc_license_summary">GNU General Public License, Version 3</string>
+
+    <string name="nc_select_an_account">Zgjedh një llogari</string>
+
+    <!-- Conversation menu -->
+    <string name="nc_start_conversation">Filloni një bisedë</string>
+    <string name="nc_configure_room">Konfiguroni bisedën</string>
+    <string name="nc_leave">Largohuni nga biseda</string>
+    <string name="nc_rename">Riemërtojeni bisedën</string>
+    <string name="nc_set_password">Vendosni një fjalëkalim</string>
+    <string name="nc_change_password">Ndrysho fjalëkalimin</string>
+    <string name="nc_clear_password">Pastro fjalëkalimin</string>
+    <string name="nc_share_link">Ndaj linkun</string>
+    <string name="nc_share_link_via">Ndaj nëpërmjet lidhjes</string>
+    <string name="nc_make_call_public">Bëje bisedën publike</string>
+    <string name="nc_make_call_private">Bëje bisedën private</string>
+    <string name="nc_delete_call">Fshijeni bisedën</string>
+    <string name="nc_delete">Delete</string>
+    <string name="nc_new_conversation">Bisedë e re</string>
+    <string name="nc_add_to_favorites">Shto tek të preferuarat</string>
+    <string name="nc_remove_from_favorites">Hiqeni nga të parapëlqyerat</string>
+
+    <string name="nc_contacts_done">U bë</string>
+
+    <string name="nc_permissions_settings">Hap rregullimet</string>
+
+    <!-- Call -->
+    <string name="nc_connecting_call">Po lidhet...</string>
+    <string name="nc_incoming_call">Thirrje hyrëse nga</string>
+    <string name="nc_nick_guest">I ftuar</string>
+    <string name="nc_public_call">Bisedë e re publike</string>
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">%1$s në %2$s kanalin e njoftimeve</string>
+    <string name="nc_notification_channel_calls">Kanali i njoftimeve të thirrjeve</string>
+    <string name="nc_notification_channel_messages">Kanali i njoftimeve të mesazheve</string>
+    <string name="nc_notification_channel_calls_description">Tregon thirrjet hyrëse</string>
+    <!-- Bottom sheet menu -->
+    <string name="nc_failed_to_perform_operation">Na falni, diçka nuk shkoi mirë!</string>
+    <string name="nc_ok">OK</string>
+    <string name="nc_call_name">Emri i bisedës</string>
+    <string name="nc_proceed">Proceed</string>
+    <string name="nc_call_name_is_same">Emri që vendosët është i njëjtë me një ekzistues</string>
+    <string name="nc_wrong_link">Lidhja e bisedës nuk është e vlefshme</string>
+    <string name="nc_share_text">Bashkojuni bisedës në %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_subject">%1$s ftesë</string>
+    <string name="nc_share_text_pass">\nFjalëkalimi: %1$s</string>
+
+    <string name="nc_configure_cert_auth">Përzgjidhni certifikatën e indetifikimit</string>
+    <string name="nc_change_cert_auth">Ndryshoni certifikatën e indetifikimit</string>
+
+    <!-- Chat -->
+    <string name="nc_hint_enter_a_message">Shkruani një mesazh...</string>
+    <string name="nc_date_header_yesterday">Dje</string>
+    <string name="nc_date_header_today">Sot</string>
+    <string name="nc_conversation_menu_video_call">Thirrje me Video</string>
+    <string name="nc_no_messages_yet">Ska mesazhe akoma</string>
+    <string name="nc_endless_disabled">Ska më artikuj për t\'u ngarkuar (u arrit maksimumi).</string>
+    <string name="nc_endless_cancel">U anullua nga përdoruesi.</string>
+    <string name="nc_endless_error">Ndodhi një gabim gjatë ngarkimit të artikujve.</string>
+
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">Menuja e bisedës me %1$s</string>
+    <string name="nc_description_more_menu_public">Menuja për bisedën në grup %1$s</string>
+    <string name="nc_description_more_menu_group">Menuja për bisedën publike %1$s</string>
+    <string name="nc_description_send_message_button">Dërgo mesazh</string>
+
+    <string name="nc_hello">Përshëndetje</string>
+
+    <string name="nc_groups">Grupet</string>
+    <string name="nc_owner">Zotëruesi</string>
+    <string name="nc_moderator">Moderator</string>
+    <string name="nc_user">Përdorues</string>
+    <string name="nc_guest">I ftuar</string>
+    <string name="nc_file_browser_back">Prapa</string>
+    <string name="nc_file_browser_refresh">Rifresko</string>
+    <string name="nc_not_defined_error">Gabim i panjohur</string>
+    <string name="nc_general_settings">Të përgjithshme</string>
+    <string name="nc_copy_message">Kopjo</string>
+    <string name="nc_reply">Përgjigju</string>
+
+    </resources>

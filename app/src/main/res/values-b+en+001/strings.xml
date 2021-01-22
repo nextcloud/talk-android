@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Import account from the %1$s app</string>
     <string name="nc_server_import_accounts">Import accounts from the %1$s app</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
-    <string name="nc_Server_account_imported">Selected account is now imported and available</string>
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
 
     <!-- Account verification -->
@@ -63,17 +62,23 @@
     <string name="nc_settings_reauthorize">Reauthorise</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
     <string name="nc_client_cert_change">Change client certificate</string>
+    <string name="nc_settings_remove">Remove</string>
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
+    <string name="nc_add">Add</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorised</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
-    <string name="nc_settings_notification_sounds">Notification sounds</string>
-    <string name="nc_settings_call_ringtone">One-on-One Calls</string>
-    <string name="nc_settings_other_notifications_ringtone">Other</string>
     <string name="nc_settings_no_ringtone">No sound</string>
-    <string name="nc_settings_vibrate">Vibrate</string>
+    <string name="nc_settings_theme_title">Theme</string>
+    <string name="nc_settings_theme_light">Light</string>
+    <string name="nc_settings_theme_dark">Dark</string>
+    <string name="nc_none">None</string>
+    <string name="nc_screen_lock_timeout_300">5 minutes</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_cancel">Cancel</string>
+
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_username">Username</string>
     <string name="nc_password">Password</string>
@@ -101,13 +106,12 @@
     <string name="nc_make_call_public">Make conversation public</string>
     <string name="nc_make_call_private">Make conversation private</string>
     <string name="nc_delete_call">Delete conversation</string>
+    <string name="nc_delete">Delete</string>
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Select contacts</string>
     <string name="nc_contacts_done">Done</string>
 
     <!-- Permissions -->
@@ -152,6 +156,11 @@
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Demote from moderator</string>
+    <string name="nc_promote">Promote to moderator</string>
+    <string name="nc_remove_participant">Remove participant</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>
@@ -200,5 +209,12 @@
     <string name="nc_user">User</string>
     <string name="nc_guest">Guest</string>
     <string name="nc_following_link">User following a public link</string>
+
+    <string name="nc_file_browser_back">Back</string>
+    <string name="nc_file_browser_refresh">Refresh</string>
+    <string name="nc_not_defined_error">Unknown error</string>
+    <string name="nc_general_settings">General</string>
+    <string name="nc_copy_message">Copy</string>
+    <string name="nc_reply">Reply</string>
 
     </resources>

@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Importuj konto z aplikacji %1$s</string>
     <string name="nc_server_import_accounts">Importuj konta z aplikacji %1$s</string>
     <string name="nc_server_failed_to_import_account">Nie udało się zaimportować wybranego konta</string>
-    <string name="nc_Server_account_imported">Wybrane konto jest zaimportowane i dostępne</string>
     <string name="nc_get_from_provider">Nie masz jeszcze serwera?\nKliknij tutaj, aby uzyskać jeden od dostawcy</string>
 
     <!-- Account verification -->
@@ -72,22 +71,17 @@
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_account_scheduled_for_deletion">Konto jest zaznaczone do usunięcia, nie można wprowadzać zmian</string>
-    <string name="nc_settings_notification_sounds">Dźwięk powiadomienia</string>
-    <string name="nc_settings_call_ringtone">Połączenia indywidualne</string>
-    <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
-    <string name="nc_settings_vibrate">Wibracje</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_theme_title">Motyw</string>
     <string name="nc_settings_theme_key">motyw</string>
-    <string name="nc_settings_theme_follow_system">Użyj domyślnego systemu</string>
+    <string name="nc_settings_theme_follow_system">Użyj domyślnych ustawień systemu</string>
     <string name="nc_settings_theme_battery_saver">Ustawiony według Oszczędzania Baterii</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
-    <string name="nc_settings_privacy">Prywatność</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
-    <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Android lub obsługiwanej metody biometrycznej</string>
+    <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Androida lub obsługiwanej metody biometrycznej</string>
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
     <string name="nc_none">Brak</string>
     <string name="nc_settings_screen_security_title">Zabezpieczenie ekranu</string>
@@ -95,9 +89,8 @@
     <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
     <string name="nc_settings_link_previews_title">Pokaż podgląd linków</string>
-    <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków dla obsługiwanych usług</string>
+    <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków przez obsługiwane usługi</string>
     <string name="nc_locked">Stuknij, aby odblokować</string>
-
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -138,19 +131,12 @@
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
-    <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
-    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, usuniesz
-        również dla %1$s.</string>
-    <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
-
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_join_via_link">Dołącz przez link</string>
     <string name="nc_join_via_web">Dołącz przez sieć</string>
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Wybierz kontakty</string>
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
@@ -159,8 +145,8 @@
     <string name="nc_permissions_settings">Otwórz ustawienia</string>
 
     <!-- Call -->
-    <string name="nc_connecting_call">Łączę...</string>
-    <string name="nc_calling">Łączenie...</string>
+    <string name="nc_connecting_call">Łączę…</string>
+    <string name="nc_calling">Łączenie…</string>
     <string name="nc_incoming_call">Połączenie przychodzące od </string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
@@ -169,7 +155,7 @@
     <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, stuknij aby spróbować ponownie</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
-    <string name="nc_leaving_call">Opuszczanie połączenia...</string>
+    <string name="nc_leaving_call">Opuszczanie połączenia…</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s kanale powiadomień</string>
@@ -182,11 +168,7 @@
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
     <string name="nc_notify_me_never">Nigdy nie powiadamiaj</string>
     <string name="nc_mute_calls">Wycisz połączenia</string>
-    <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
-    <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie będą zastąpione na
-        \"Nie przeszkadzać\"</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
@@ -195,10 +177,10 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_proceed">Kontynuuj</string>
-    <string name="nc_call_name_is_same">Nazwa którą wprowadziłeś już istnieje</string>
+    <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_subject">%1$s zaprasza</string>
+    <string name="nc_share_subject">zaproszenie %1$s</string>
     <string name="nc_share_text_pass">\nHasło: %1$s</string>
 
     <!-- Magical stuff -->
@@ -213,7 +195,7 @@
     <string name="nc_remove_participant">Usuń uczestnika</string>
 
     <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Wpisz wiadomość...</string>
+    <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>
     <string name="nc_date_header_today">Dzisiaj</string>
     <string name="nc_conversation_menu_voice_call">Rozmowa głosowa</string>
@@ -272,11 +254,30 @@
 
     <!-- Lobby -->
 
-    <string name="nc_webinar">Seminarium online</string>
+    <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Poczekalnia</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>
     <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie
          jest zaplanowane na %1$s.</string>
-    <string name="nc_manual">Ręczne</string>
-</resources>
+    <string name="nc_manual">Nie ustawiony</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Brak połączenia</string>
+    <string name="nc_bad_response_error">Błędna odpowiedź</string>
+    <string name="nc_timeout_error">Przekroczono limit czasu</string>
+    <string name="nc_empty_response_error">Pusta odpowiedź</string>
+    <string name="nc_not_defined_error">Nieznany błąd</string>
+    <string name="nc_unauthorized_error">Nieautoryzowany</string>
+
+    <string name="nc_general_settings">Ogólne</string>
+    <string name="nc_allow_guests">Zezwól gościom</string>
+    <string name="nc_last_moderator_title">Nie udało się opuścić rozmowy</string>
+    <string name="nc_last_moderator">Musisz promować nowego moderatora, zanim opuścisz %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopiuj</string>
+    <string name="nc_reply">Odpowiedz</string>
+
+    </resources>

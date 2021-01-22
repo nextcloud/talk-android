@@ -25,7 +25,7 @@
     <!-- Server selection -->
     <string name="nc_server_url">Enderezo do servidor </string>
     <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
-    <string name="nc_server_db_upgrade_needed">Ten que actualizar a base de datos %1$s</string>
+    <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
     <string name="nc_server_import_account_plain">Importar unha conta</string>
@@ -33,15 +33,12 @@
     <string name="nc_server_import_account">Importar unha conta dende a aplicación %1$s</string>
     <string name="nc_server_import_accounts">Importar contas dende a aplicación%1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
-    <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedo</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Notificacións «push» desactivadas
-</string>
-    <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar funcionalidades. Interrompendo.</string>
-    <string name="nc_external_server_failed">
-Produciuse un fallo aorecuperar os axustes da sinalización</string>
+    <string name="nc_push_disabled">Desactivadas as notificacións do servidor</string>
+    <string name="nc_capabilities_failed">Produciuse un fallo ao obter as funcionalidades. Interrompendo.</string>
+    <string name="nc_external_server_failed">Produciuse un fallo ao obter os axustes da sinalización</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
     <string name="nc_nextcloud_talk_app_not_installed">A aplicación %1$s non está instalado no servidor, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
@@ -58,7 +55,7 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
-    <string name="nc_settings_proxy_host_title">Enderezo/máquina proxy</string>
+    <string name="nc_settings_proxy_host_title">Máquina do proxy</string>
     <string name="nc_settings_proxy_port_title">Porto do proxy</string>
     <string name="nc_settings_use_credentials_title">Usar credenciais</string>
     <string name="nc_settings_switch_account">Cambiar entre contas</string>
@@ -70,24 +67,19 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_settings_remove_account">Retirar a conta</string>
     <string name="nc_settings_add_account">Engadir unha conta nova</string>
     <string name="nc_add">Engadir</string>
-    <string name="nc_settings_wrong_account">Só pode volver a autorizarse a conta actual</string>
+    <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>
     <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
-    <string name="nc_settings_notification_sounds">Sons de notificación</string>
-    <string name="nc_settings_call_ringtone">Chamadas persoais</string>
-    <string name="nc_settings_other_notifications_ringtone">Outro</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
-    <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
     <string name="nc_settings_appearance">Aparencia</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
-    <string name="nc_settings_theme_battery_saver">Establecido polo aforrador de batería</string>
+    <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_dark">Escuro</string>
-    <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloquear %1$s co bloqueo de pantalla de Android ou co método biométrico compatíbel</string>
     <string name="nc_settings_screen_lock_timeout_title">Tempo de inactividade para o bloqueo da pantalla</string>
@@ -99,7 +91,6 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_settings_link_previews_title">Amosar as vistas previas das ligazóns</string>
     <string name="nc_settings_link_previews_desc">Permite obter vistas do contido de ligazóns recibidas para servizos compatíbeis</string>
     <string name="nc_locked">Toque para desbloquear</string>
-
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
@@ -112,7 +103,7 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_cancel">Cancelar</string>
 
-    <string name="nc_no_proxy">Sen proxy </string>
+    <string name="nc_no_proxy">Sen proxy</string>
     <string name="nc_username">Nome de usuario</string>
     <string name="nc_password">Contrasinal</string>
     <string name="nc_conversation_link">Ligazón da conversa</string>
@@ -140,19 +131,12 @@ Produciuse un fallo aorecuperar os axustes da sinalización</string>
     <string name="nc_make_call_private">Facer privada a conversa</string>
     <string name="nc_delete_call">Eliminar a conversa</string>
     <string name="nc_delete">Eliminar</string>
-    <string name="nc_delete_conversation_default">Confirme a súa intención de retirar a conversa.</string>
-    <string name="nc_delete_conversation_one2one">Se elimina a conversa, tamén se eliminará
-        para %1$s.</string>
-    <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
-
     <string name="nc_new_conversation">Nova conversa</string>
-    <string name="nc_join_via_link">Xuntarse mediante unha ligazón</string>
-    <string name="nc_join_via_web">Xuntarse medinte a web</string>
+    <string name="nc_join_via_link">Unirse a través dunha ligazón</string>
+    <string name="nc_join_via_web">Unirse a través da web</string>
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Feito</string>
 
     <!-- Permissions -->
@@ -184,11 +168,7 @@ mediante unha ligazón creada especialmente.</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
     <string name="nc_notify_me_never">Non notificar nunca</string>
     <string name="nc_mute_calls">Silenciar as chamadas</string>
-    <string name="nc_mute_calls_desc">As chamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversa importante</string>
-    <string name="nc_important_conversation_desc">As notificacións nesta conversa serán anuladas
-        Axustes de «Non molestar»</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos
@@ -210,7 +190,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
 
     <!-- Moderation -->
-    <string name="nc_demote">Degradar de moderador</string>
+    <string name="nc_demote">Relegar de moderador</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_remove_participant">Retirar participante</string>
 
@@ -251,7 +231,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>
 
     <!-- Empty states -->
-    <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova\n Saúde aos seus amigos e colegas!</string>
+    <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova\n Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_hello">Ola</string>
 
     <!-- Other -->
@@ -275,10 +255,29 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <!-- Lobby -->
 
     <string name="nc_webinar">Seminario web</string>
-    <string name="nc_lobby">Vestíbulo</string>
+    <string name="nc_lobby">Ástrago</string>
     <string name="nc_start_time">Hora de comezo</string>
-    <string name="nc_lobby_waiting">Actualmente estás agardando no vestíbulo.</string>
-    <string name="nc_lobby_waiting_with_date">Actualmente estás agardando no vestíbulo.\n Esta
+    <string name="nc_lobby_waiting">Actualmente está agardando no ástrago.</string>
+    <string name="nc_lobby_waiting_with_date">Actualmente está agardando no ástrago.\n Esta
         xuntanza está programada para %1$s.</string>
-    <string name="nc_manual">Manual</string>
-</resources>
+    <string name="nc_manual">Sen estabelecer</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Sen conexión</string>
+    <string name="nc_bad_response_error">Resposta incorrecta</string>
+    <string name="nc_timeout_error">Límite de tempo</string>
+    <string name="nc_empty_response_error">Resposta baleira</string>
+    <string name="nc_not_defined_error">Produciuse un erro descoñecido</string>
+    <string name="nc_unauthorized_error">Non autorizado.</string>
+
+    <string name="nc_general_settings">Xeral</string>
+    <string name="nc_allow_guests">Permitir convidados</string>
+    <string name="nc_last_moderator_title">Non foi posíbel abandonar a conversa</string>
+    <string name="nc_last_moderator">Debe promover un novo moderador antes de poder abandonar %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Responder</string>
+
+    </resources>

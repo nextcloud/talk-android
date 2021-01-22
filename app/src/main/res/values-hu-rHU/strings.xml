@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Fiók importálása a(z) %1$s alkalmazásból</string>
     <string name="nc_server_import_accounts">Fiókok importálása a(z) %1$s alkalmazásból</string>
     <string name="nc_server_failed_to_import_account">A kiválasztott fiók importálása sikertelen</string>
-    <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
     <string name="nc_get_from_provider">Nincs még saját kiszolgálója?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
 
     <!-- Account verification -->
@@ -67,15 +66,12 @@
     <string name="nc_settings_remove_confirmation">Erősítse meg szándékát, hogy eltávolítja a jelenlegi fiókot.</string>
     <string name="nc_settings_remove_account">Fiók eltávolítása</string>
     <string name="nc_settings_add_account">Új fiók hozzáadása</string>
+    <string name="nc_add">Hozzáadás</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
-    <string name="nc_settings_no_talk_installed">A Talk alkalmazás nincs telepítve azon a kiszolgálón, ahol hitelesíteni szeretne</string>
+    <string name="nc_settings_no_talk_installed">A Beszélgetés alkalmazás nincs telepítve azon a kiszolgálón, ami felé hitelesíteni szeretne</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett, a már létező fiókja lett frissítve</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
-    <string name="nc_settings_notification_sounds">Értesítési hang</string>
-    <string name="nc_settings_call_ringtone">Négyszemközti hívások</string>
-    <string name="nc_settings_other_notifications_ringtone">Egyéb</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
-    <string name="nc_settings_vibrate">Rezgés</string>
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
     <string name="nc_settings_appearance">Megjelenés</string>
     <string name="nc_settings_theme_title">Téma</string>
@@ -84,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">Energiagazdálkodás által beállítva</string>
     <string name="nc_settings_theme_light">Világos</string>
     <string name="nc_settings_theme_dark">Sötét</string>
-    <string name="nc_settings_privacy">Adatvédelem</string>
     <string name="nc_settings_screen_lock_title">Képernyőzár</string>
     <string name="nc_settings_screen_lock_desc">A(z) %1$s zárolása az androidos képernyőzárral, vagy támogatott biometrikus eljárással</string>
     <string name="nc_settings_screen_lock_timeout_title">Képernyő zárolása ennyi tétlenség után</string>
@@ -96,7 +91,6 @@
     <string name="nc_settings_link_previews_title">Hivatkozások előnézetének megjelenítése</string>
     <string name="nc_settings_link_previews_desc">Lehetővé teszi a támogatott szolgáltatásokhoz küldött hivatkozások tartalmának előnézetét</string>
     <string name="nc_locked">Koppintás a feloldáshoz</string>
-
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
     <string name="nc_screen_lock_timeout_60">1 perc</string>
     <string name="nc_screen_lock_timeout_300">5 perc</string>
@@ -137,19 +131,12 @@
     <string name="nc_make_call_private">Beszélgetés priváttá tétele</string>
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete">Törlés</string>
-    <string name="nc_delete_conversation_default">Erősítse meg szándékát, hogy eltávolítja a beszélgetést.</string>
-    <string name="nc_delete_conversation_one2one">Ha törli a beszélgetést, akkor %1$s
-        számára is törölve lesz.</string>
-    <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
-
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Névjegyek kiválasztása</string>
     <string name="nc_contacts_done">Kész</string>
 
     <!-- Permissions -->
@@ -180,11 +167,7 @@
     <string name="nc_notify_me_mention">Értesítsen, ha megemlítik Önt</string>
     <string name="nc_notify_me_never">Sose értesítsen</string>
     <string name="nc_mute_calls">Hívások némítása</string>
-    <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
-    <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a
-        Ne zavarjanak beállításokat</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
@@ -203,6 +186,11 @@
     <string name="nc_push_to_talk_desc">A mikrofon le lesz tiltva, a beszédhez tartsa lenyomva</string>
     <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Lefokozás moderátorról</string>
+    <string name="nc_promote">Kinevezés moderátorrá</string>
+    <string name="nc_remove_participant">Résztvevő eltávolítása</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
@@ -270,5 +258,24 @@
     <string name="nc_lobby_waiting">Jelenleg a váróban van.</string>
     <string name="nc_lobby_waiting_with_date">Jelenleg a váróban van.\n A találkozó
         ekkorra van ütemezve: %1$s.</string>
-    <string name="nc_manual">Kézi</string>
-</resources>
+    <string name="nc_manual">Nincs megadva</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Nincs kapcsolat</string>
+    <string name="nc_bad_response_error">Hibás válasz</string>
+    <string name="nc_timeout_error">Időtúllépés</string>
+    <string name="nc_empty_response_error">Üres válasz</string>
+    <string name="nc_not_defined_error">Ismeretlen hiba</string>
+    <string name="nc_unauthorized_error">Jogosulatlan</string>
+
+    <string name="nc_general_settings">Általános</string>
+    <string name="nc_allow_guests">Vendégek engedélyezése</string>
+    <string name="nc_last_moderator_title">Nem sikerült elhagyni a beszélgetést</string>
+    <string name="nc_last_moderator">Új moderátort kell kineveznie, mielőtt elhagyhatja ezt: %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Másolás</string>
+    <string name="nc_reply">Válasz</string>
+
+    </resources>

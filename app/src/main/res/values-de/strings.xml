@@ -26,32 +26,31 @@
     <string name="nc_server_url">Serveradresse</string>
     <string name="nc_server_not_installed">Bitte beenden Sie Ihre %1$s Installation</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
-    <string name="nc_server_maintenance">Bitte bringen Sie %1$s aus der Wartung</string>
+    <string name="nc_server_maintenance">Bitte den Wartungsmodus von %1$s beenden</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
     <string name="nc_server_import_account_plain">Konto importieren</string>
     <string name="nc_server_import_accounts_plain">Konten importieren</string>
-    <string name="nc_server_import_account">Importieren Sie ein Konto aus der App %1$s</string>
-    <string name="nc_server_import_accounts">Importieren Sie Konten aus der App %1$s</string>
+    <string name="nc_server_import_account">Ein Konto aus der App %1$s importieren</string>
+    <string name="nc_server_import_accounts">Konten aus der App %1$s importieren</string>
     <string name="nc_server_failed_to_import_account">Das Importieren des ausgewählten Kontos ist fehlgeschlagen</string>
-    <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
-    <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Server-Anbieter zu finden</string>
+    <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Anbieter zu finden</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Push-Benachrichtigungen deaktiviert</string>
+    <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
-    <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden, Abbruch</string>
+    <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
-    <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden, Abbruch</string>
+    <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden. Breche ab.</string>
 
     <string name="nc_never">Nie beigetreten</string>
-    <string name="nc_search">Suche</string>
+    <string name="nc_search">Suchen</string>
 
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
-    <string name="nc_certificate_dialog_text">Vertrauen Sie dem bisher unbekannten SSL Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s?</string>
+    <string name="nc_certificate_dialog_text">Soll dem bisher unbekannten SSL-Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s, vertraut werden?</string>
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nein</string>
-    <string name="nc_certificate_error">Ihre SSL Konfiguration hat die Verbindung verhindert</string>
+    <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
 
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
@@ -70,34 +69,28 @@
     <string name="nc_add">Hinzufügen</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
-    <string name="nc_settings_account_updated">Ihr bereits existierendes Konto wurde aktualisiert, anstelle ein Neues hinzuzufügen</string>
-    <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann nicht verändert werden</string>
-    <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>
-    <string name="nc_settings_call_ringtone">Eins-Zu-Eins-Anrufe</string>
-    <string name="nc_settings_other_notifications_ringtone">Andere</string>
+    <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
+    <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann daher nicht verändert werden</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
-    <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_theme_title">Design</string>
     <string name="nc_settings_theme_key">Design</string>
     <string name="nc_settings_theme_follow_system">Systemstandard verwenden</string>
-    <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus setzen</string>
+    <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus gesetzt</string>
     <string name="nc_settings_theme_light">Hell</string>
     <string name="nc_settings_theme_dark">Dunkel</string>
-    <string name="nc_settings_privacy">Datenschutz</string>
     <string name="nc_settings_screen_lock_title">Bildschirmsperre</string>
-    <string name="nc_settings_screen_lock_desc">Sperren Sie %1$s mit Android-Bildschirmsperre oder unterstützter biometrischer Methode. </string>
+    <string name="nc_settings_screen_lock_desc">%1$s sperren mit der Android-Bildschirmsperre oder einer unterstützten biometrischen Methode</string>
     <string name="nc_settings_screen_lock_timeout_title">Zeitüberschreitung der Bildschirm-Inaktivitätsperre</string>
     <string name="nc_none">Keine</string>
     <string name="nc_settings_screen_security_title">Bildschirmsicherheit</string>
     <string name="nc_settings_screen_security_desc">Verhindert Screenshots in der aktuellen Liste und in der App</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
-    <string name="nc_settings_link_previews_title">Zeige Link-Vorschau</string>
+    <string name="nc_settings_link_previews_title">Link-Vorschau zeigen</string>
     <string name="nc_settings_link_previews_desc">Ermöglicht die Vorschau von Inhalten von empfangenen Links für unterstützte Dienste</string>
     <string name="nc_locked">Zum Entsperren antippen</string>
-
     <string name="nc_screen_lock_timeout_30">30 Sekunden</string>
     <string name="nc_screen_lock_timeout_60">1 Minute</string>
     <string name="nc_screen_lock_timeout_300">5 Minuten</string>
@@ -138,19 +131,12 @@
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete">Löschen</string>
-    <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
-    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch
-       entfernt für %1$s.</string>
-    <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung entfernen, so wird diese auch für alle anderen Teilnehmer.</string>
-
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
-    <string name="nc_add_to_favorites">Zu den Favoriten hinzufügen</string>
-    <string name="nc_remove_from_favorites">Von den Favoriten entfernen</string>
+    <string name="nc_add_to_favorites">Zu Favoriten hinzufügen</string>
+    <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Kontakte auswählen</string>
     <string name="nc_contacts_done">Fertig</string>
 
     <!-- Permissions -->
@@ -166,9 +152,9 @@
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
     <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über 
  einen speziellen Link eingeladen werden.</string>
-    <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicke um es erneut zu versuchen</string>
+    <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
-    <string name="nc_offline">Aktuell offline, bitte prüfen Sie die Verbindung</string>
+    <string name="nc_offline">Aktuell offline, bitte die Verbindung prüfen</string>
     <string name="nc_leaving_call">Verlasse Anruf…</string>
 
     <!-- Notification channels -->
@@ -179,16 +165,12 @@
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
     <string name="nc_plain_old_messages">Nachrichten</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
-    <string name="nc_notify_me_mention">Benachrichtigung bei Erwähnung</string>
+    <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>
     <string name="nc_notify_me_never">Nie benachrichtigen</string>
     <string name="nc_mute_calls">Anrufe stummschalten</string>
-    <string name="nc_mute_calls_desc">Eingehende Anrufe werden stummgeschaltet</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
-    <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben
-        die Nicht-Stören Einstellungen</string>
-
     <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Schade, etwas ist schiefgelaufen!</string>
+    <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
         Probieren Sie mit einem Internetbrowser der Unterhaltung beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
@@ -268,15 +250,34 @@
     <string name="nc_select_files">Dateien wählen</string>
     <string name="nc_file_browser_back">Zurück</string>
     <string name="nc_file_browser_refresh">Aktualisieren</string>
-    <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
+    <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
 
     <!-- Lobby -->
 
-    <string name="nc_webinar">Webinar</string>
+    <string name="nc_webinar">Online-Seminar</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
     <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses
-Meeting ist für %1$s geplant.</string>
-    <string name="nc_manual">Anleitung</string>
-</resources>
+  Meeting ist für %1$s geplant.</string>
+    <string name="nc_manual">Nicht eingestellt</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Keine Verbindung</string>
+    <string name="nc_bad_response_error">Fehlerhafte Antwort</string>
+    <string name="nc_timeout_error">Zeitüberschreitung</string>
+    <string name="nc_empty_response_error">Leere Antwort</string>
+    <string name="nc_not_defined_error">Unbekannter Fehler</string>
+    <string name="nc_unauthorized_error">Nicht autorisiert</string>
+
+    <string name="nc_general_settings">Allgemein</string>
+    <string name="nc_allow_guests">Gäste zulassen</string>
+    <string name="nc_last_moderator_title">Unterhaltung konnte nicht verlassen werden</string>
+    <string name="nc_last_moderator">Sie müssen einen neuen Moderator bestimmen, bevor Sie %1$s verlassen können.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopieren</string>
+    <string name="nc_reply">Antworten</string>
+
+    </resources>

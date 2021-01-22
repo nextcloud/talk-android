@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Importeren account van de %1$sapp</string>
     <string name="nc_server_import_accounts">Importeren accounts van de %1$sapp</string>
     <string name="nc_server_failed_to_import_account">Kon het geselecteerde account niet importeren</string>
-    <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
 
@@ -73,11 +72,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
-    <string name="nc_settings_notification_sounds">Meldingengeluiden</string>
-    <string name="nc_settings_call_ringtone">Een-op-een geprekken</string>
-    <string name="nc_settings_other_notifications_ringtone">Overig</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
-    <string name="nc_settings_vibrate">Trillen</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_appearance">Uiterlijk</string>
     <string name="nc_settings_theme_title">Thema</string>
@@ -86,7 +81,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_light">Licht</string>
     <string name="nc_settings_theme_dark">Donker</string>
-    <string name="nc_settings_privacy">Privacy</string>
     <string name="nc_settings_screen_lock_title">Schermvergrendeling</string>
     <string name="nc_settings_screen_lock_desc">Vergrendel %1$s via de Android schermvergendeling of een ondersteunde biometrische methode</string>
     <string name="nc_settings_screen_lock_timeout_title">Schermblokkade inactiviteit time-out</string>
@@ -98,7 +92,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_link_previews_title">Tonen link-voorbeelden</string>
     <string name="nc_settings_link_previews_desc">Staat voorbeeldweergave toe van ontvangen links van ondersteunde diensten</string>
     <string name="nc_locked">Tikken om te deblokkeren</string>
-
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
@@ -114,7 +107,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_no_proxy">geen proxy</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_password">Wachtwoord</string>
-    <string name="nc_conversation_link">Conversatie link</string>
+    <string name="nc_conversation_link">Gesprekslink</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_about">Over</string>
@@ -139,19 +132,12 @@ Kies er eentje van een provider.</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete">Verwijderen</string>
-    <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verlaten.</string>
-    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijderdt, wordt het ook
-        verwijderd voor %1$s.</string>
-    <string name="nc_delete_conversation_more">Als je het gesprek verwijderdt, wordt het ook verwijderd voor alle andere deelnemers.</string>
-
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecteer contacten</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
@@ -183,11 +169,7 @@ via een persoonlijke link.</string>
     <string name="nc_notify_me_mention">Waarschuwen bij vermelding</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
-    <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
-    <string name="nc_important_conversation_desc">Meldingen in dit gesprek vervangen
-        niet storen instellingen</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
@@ -197,7 +179,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_proceed">Verder</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
-    <string name="nc_wrong_link">Conversatie link is niet geldig</string>
+    <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s uitnodiging</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
@@ -280,5 +262,24 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\m Deze
         vergadering is ingepland voor %1$s.</string>
-    <string name="nc_manual">Handmatig</string>
-</resources>
+    <string name="nc_manual">Niet ingesteld</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Geen verbinding</string>
+    <string name="nc_bad_response_error">Fout antwoord</string>
+    <string name="nc_timeout_error">Time-out</string>
+    <string name="nc_empty_response_error">Leeg antwoord</string>
+    <string name="nc_not_defined_error">Onbekende fout</string>
+    <string name="nc_unauthorized_error">Niet toegestaan</string>
+
+    <string name="nc_general_settings">Algemeen</string>
+    <string name="nc_allow_guests">Laat gasten toe</string>
+    <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
+    <string name="nc_last_moderator">Je moet eerst een nieuwe moderator kiezen voordat je het gesprek kan verlaten %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopie</string>
+    <string name="nc_reply">Antwoord</string>
+
+    </resources>

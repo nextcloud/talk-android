@@ -33,11 +33,10 @@
     <string name="nc_server_import_account">Importera konton från %1$s-appen</string>
     <string name="nc_server_import_accounts">Importera konton från %1$s-appen</string>
     <string name="nc_server_failed_to_import_account">Misslyckades att importera valt konto</string>
-    <string name="nc_Server_account_imported">Valt konto är nu importerat och tillgängligt</string>
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
 
     <!-- Account verification -->
-    <string name="nc_push_disabled">Push-meddelanden inaktiverade</string>
+    <string name="nc_push_disabled">Push-aviseringar inaktiverade</string>
     <string name="nc_capabilities_failed">Misslyckades att hämta funktioner, avbryter</string>
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_display_name_not_fetched">Visningsnamn kunde inte hämtas, avbryter</string>
@@ -72,11 +71,7 @@
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_account_scheduled_for_deletion">Kontot är schemalagt för radering och kan inte ändras</string>
-    <string name="nc_settings_notification_sounds">Notifieringsljud</string>
-    <string name="nc_settings_call_ringtone">En-till-en samtal</string>
-    <string name="nc_settings_other_notifications_ringtone">Övrigt</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
-    <string name="nc_settings_vibrate">Vibrera</string>
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
     <string name="nc_settings_appearance">Utseende</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -85,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">Satt av batterisparare</string>
     <string name="nc_settings_theme_light">Ljus</string>
     <string name="nc_settings_theme_dark">Mörk</string>
-    <string name="nc_settings_privacy">Integritet</string>
     <string name="nc_settings_screen_lock_title">Skärmlås</string>
     <string name="nc_settings_screen_lock_desc">Lås %1$s med Android skärmslås eller biometrisk metod</string>
     <string name="nc_settings_screen_lock_timeout_title">Tidsgräns för skärmlås</string>
@@ -97,7 +91,6 @@
     <string name="nc_settings_link_previews_title">Visa förhandsvisning för länkar</string>
     <string name="nc_settings_link_previews_desc">Tillåter förhandsvisningar av innehåll från mottagna länkar för supporterade tjänster</string>
     <string name="nc_locked">Tryck för att låsa upp</string>
-
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minuter</string>
@@ -137,20 +130,13 @@
     <string name="nc_make_call_public">Gör konversationen offentlig</string>
     <string name="nc_make_call_private">Gör samtalet privat</string>
     <string name="nc_delete_call">Ta bort konversation</string>
-    <string name="nc_delete">Radera</string>
-    <string name="nc_delete_conversation_default">Bekräfta att du vill radera konversationen.</string>
-    <string name="nc_delete_conversation_one2one">Om du raderar konversationen, kommer den även att
-        raderas för %1$s.</string>
-    <string name="nc_delete_conversation_more">Om du raderar konversationen, kommer den även att raderas för alla andra deltagare.</string>
-
+    <string name="nc_delete">Ta bort</string>
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_join_via_link">Gå med via länk</string>
     <string name="nc_join_via_web">Gå med via webb</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Välj kontakter</string>
     <string name="nc_contacts_done">Färdig</string>
 
     <!-- Permissions -->
@@ -182,11 +168,7 @@
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>
     <string name="nc_notify_me_never">Meddela aldrig</string>
     <string name="nc_mute_calls">Tysta alla samtal</string>
-    <string name="nc_mute_calls_desc">Inkommande samtal tystas</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
-    <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta
-        Stör inte-inställningar</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
     <string name="nc_failed_signaling_settings">Målservern stöder inte att gå med i offentliga konversationer via mobil-
@@ -237,10 +219,10 @@
     <string name="nc_formatted_message_you">Du: %1$s</string>
 
     <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Inga fler objekt att ladda. Uppdatera för att försöka igen.</string>
-    <string name="nc_endless_disabled">Inga fler objekt att ladda (max nått).</string>
+    <string name="nc_no_more_load_retry">Inga fler objekt att läsa in. Uppdatera för att försöka igen.</string>
+    <string name="nc_endless_disabled">Inga fler objekt att läsa in (max nått).</string>
     <string name="nc_endless_cancel">Avbruten av användaren.</string>
-    <string name="nc_endless_error">Ett fel uppstod när fler objekt laddades in.</string>
+    <string name="nc_endless_error">Ett fel uppstod när fler objekt lästes in.</string>
 
     <!-- Content descriptions -->
     <string name="nc_description_more_menu_one_to_one">Meny för konversation med %1$s</string>
@@ -278,5 +260,24 @@
     <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
     <string name="nc_lobby_waiting_with_date">Du väntar för närvarande i lobbyn.\n Detta
         möte är planerat till %1$s.</string>
-    <string name="nc_manual">Manuell</string>
-</resources>
+    <string name="nc_manual">Inte inställd</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Ingen anslutning</string>
+    <string name="nc_bad_response_error">Felaktigt svar</string>
+    <string name="nc_timeout_error">Timeout</string>
+    <string name="nc_empty_response_error">Tomt svar</string>
+    <string name="nc_not_defined_error">Okänt fel</string>
+    <string name="nc_unauthorized_error">Obehörig</string>
+
+    <string name="nc_general_settings">Allmänt</string>
+    <string name="nc_allow_guests">Tillåt gäster</string>
+    <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
+    <string name="nc_last_moderator">Du måste tilldela en ny moderator innan du kan lämna %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopia</string>
+    <string name="nc_reply">Svara</string>
+
+    </resources>

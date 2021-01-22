@@ -25,15 +25,14 @@
     <!-- Server selection -->
     <string name="nc_server_url">服务器地址</string>
     <string name="nc_server_not_installed">请完成您的 %1$s 安装</string>
-    <string name="nc_server_db_upgrade_needed">请升级您的%1$s数据库</string>
+    <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_maintenance">请将您的 %1$s 退出维护模式</string>
     <string name="nc_server_version">%1$s 仅支持 %2$s 13 及更高版本</string>
-    <string name="nc_server_import_account_plain">导入账户</string>
-    <string name="nc_server_import_accounts_plain">导入账户</string>
+    <string name="nc_server_import_account_plain">导入账号</string>
+    <string name="nc_server_import_accounts_plain">导入账号</string>
     <string name="nc_server_import_account">从 %1$s 应用导入账号</string>
     <string name="nc_server_import_accounts">从 %1$s 应用导入账号</string>
-    <string name="nc_server_failed_to_import_account">选择的账户导入失败</string>
-    <string name="nc_Server_account_imported">选择的账户导入成功并可立即使用</string>
+    <string name="nc_server_failed_to_import_account">选择的账号导入失败</string>
     <string name="nc_get_from_provider">还没有服务器吗？\n点此查看供应商</string>
 
     <!-- Account verification -->
@@ -42,7 +41,7 @@
     <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
-    <string name="nc_display_name_not_stored">无法储存显示名称，终止中</string>
+    <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
 
     <string name="nc_never">从未加入</string>
     <string name="nc_search">搜索</string>
@@ -59,25 +58,21 @@
     <string name="nc_settings_proxy_host_title">代理主机</string>
     <string name="nc_settings_proxy_port_title">代理端口</string>
     <string name="nc_settings_use_credentials_title">使用凭据</string>
-    <string name="nc_settings_switch_account">切换账户</string>
+    <string name="nc_settings_switch_account">在账号之间切换</string>
     <string name="nc_settings_reauthorize">重新认证</string>
     <string name="nc_client_cert_setup">设置客户端证书</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_confirmation">请确认您真要移除当前账号。</string>
-    <string name="nc_settings_remove_account">移除账户</string>
-    <string name="nc_settings_add_account">添加一个新账户</string>
+    <string name="nc_settings_remove_account">移除账号</string>
+    <string name="nc_settings_add_account">添加一个新账号</string>
     <string name="nc_add">新增</string>
-    <string name="nc_settings_wrong_account">仅当前帐户可以重新授权</string>
+    <string name="nc_settings_wrong_account">仅当前账号可以重新授权</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
-    <string name="nc_settings_account_updated">已经更新了您现有的帐户，而不是添加新的帐户</string>
-    <string name="nc_account_scheduled_for_deletion">此账户已计划删除，且无法更改</string>
-    <string name="nc_settings_notification_sounds">通知音效</string>
-    <string name="nc_settings_call_ringtone">一对一通话</string>
-    <string name="nc_settings_other_notifications_ringtone">其他</string>
+    <string name="nc_settings_account_updated">已经更新了您现有的账号，而不是添加新的账号</string>
+    <string name="nc_account_scheduled_for_deletion">此账号已计划删除，且无法更改</string>
     <string name="nc_settings_no_ringtone">无声音</string>
-    <string name="nc_settings_vibrate">震动</string>
-    <string name="nc_settings_vibrate_desc">您的杀机将会震动，除非您的手机已静音</string>
+    <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_appearance">外观</string>
     <string name="nc_settings_theme_title">主题</string>
     <string name="nc_settings_theme_key">主题</string>
@@ -85,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">由电池电源管理决定</string>
     <string name="nc_settings_theme_light">浅色主题</string>
     <string name="nc_settings_theme_dark">深色主题</string>
-    <string name="nc_settings_privacy">隐私</string>
     <string name="nc_settings_screen_lock_title">屏幕锁</string>
     <string name="nc_settings_screen_lock_desc">使用安卓屏幕锁或受支持的生物统计学方法来锁定 %1$s</string>
     <string name="nc_settings_screen_lock_timeout_title">屏幕锁不活动超时时间</string>
@@ -97,7 +91,6 @@
     <string name="nc_settings_link_previews_title">显示链接预览</string>
     <string name="nc_settings_link_previews_desc">允许为受支持的服务提供接收到的链接内容的预览</string>
     <string name="nc_locked">触摸解锁</string>
-
     <string name="nc_screen_lock_timeout_30">30秒</string>
     <string name="nc_screen_lock_timeout_60">1 分钟</string>
     <string name="nc_screen_lock_timeout_300">5 分钟</string>
@@ -122,7 +115,7 @@
     <string name="nc_license_title">许可证</string>
     <string name="nc_license_summary">GNU 通用公共许可证，第3版</string>
 
-    <string name="nc_select_an_account">选择一个账户</string>
+    <string name="nc_select_an_account">选择一个账号</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">发起会话</string>
@@ -138,18 +131,12 @@
     <string name="nc_make_call_private">设置会话为私有</string>
     <string name="nc_delete_call">删除会话</string>
     <string name="nc_delete">删除</string>
-    <string name="nc_delete_conversation_default">请确认您真要移除此会话。</string>
-    <string name="nc_delete_conversation_one2one">如果您删除会话，它也将会从 %1$s 处删除。</string>
-    <string name="nc_delete_conversation_more">如果您删除了此会话，它也将会从所有其他参与者处删除。</string>
-
     <string name="nc_new_conversation">新的会话</string>
     <string name="nc_join_via_link">使用链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
     <string name="nc_add_to_favorites">添加收藏</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">选择联系人</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->
@@ -180,11 +167,7 @@
     <string name="nc_notify_me_mention">当被提及时提醒</string>
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_mute_calls">通话静音</string>
-    <string name="nc_mute_calls_desc">拨入通话将被静音</string>
     <string name="nc_important_conversation">重要会话</string>
-    <string name="nc_important_conversation_desc">此会话中的通知将覆盖
-免打扰设置</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过手机加入到公开会话中。您可以尝试通过浏览器加入会话。</string>
@@ -199,14 +182,14 @@
     <string name="nc_share_text_pass">\n密码： %1$s</string>
 
     <!-- Magical stuff -->
-    <string name="nc_push_to_talk">Push-to-talk</string>
-    <string name="nc_push_to_talk_desc">麦克风已禁用，单击&amp;来使用“随按即说”功能</string>
+    <string name="nc_push_to_talk">按住以说话</string>
+    <string name="nc_push_to_talk_desc">在禁用麦克风的情况下，单击并按住即可使用 “按键发言” 功能</string>
     <string name="nc_configure_cert_auth">选择验证证书</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
 
     <!-- Moderation -->
     <string name="nc_demote">取消主持人资格</string>
-    <string name="nc_promote">提升为主持人</string>
+    <string name="nc_promote">设置为主持人</string>
     <string name="nc_remove_participant">远程参与者</string>
 
     <!-- Chat -->
@@ -217,7 +200,7 @@
     <string name="nc_conversation_menu_video_call">视频通话</string>
     <string name="nc_conversation_menu_conversation_info">会话信息</string>
     <string name="nc_new_messages">未读消息</string>
-    <string name="nc_no_messages_yet">没有新消息</string>
+    <string name="nc_no_messages_yet">暂无消息</string>
     <string name="nc_sent_a_link" formatted="true">%1$s发送一个链接</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s作为附件发送</string>
@@ -248,7 +231,7 @@
     <!-- Empty states -->
     <string name="nc_conversations_empty">加入一场交谈或开始一个新的对话
 向你的朋友和同事打个招呼吧</string>
-    <string name="nc_hello">您好</string>
+    <string name="nc_hello">你好</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">已达到%s字符限制</string>
@@ -276,5 +259,24 @@
     <string name="nc_lobby_waiting">您当前正在休息室等待。</string>
     <string name="nc_lobby_waiting_with_date">您当前正在休息室等待。\n此
 会议预定于%1$s开始。</string>
-    <string name="nc_manual">手册</string>
-</resources>
+    <string name="nc_manual">未设置</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">无连接</string>
+    <string name="nc_bad_response_error">错误的响应</string>
+    <string name="nc_timeout_error">超时</string>
+    <string name="nc_empty_response_error">空的响应</string>
+    <string name="nc_not_defined_error">未知错误</string>
+    <string name="nc_unauthorized_error">未经授权</string>
+
+    <string name="nc_general_settings">通用</string>
+    <string name="nc_allow_guests">允许访客</string>
+    <string name="nc_last_moderator_title">无法离开会话</string>
+    <string name="nc_last_moderator">在您离开%1$s之前您需要选出一位新的主持人。</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">复制</string>
+    <string name="nc_reply">回复</string>
+
+    </resources>

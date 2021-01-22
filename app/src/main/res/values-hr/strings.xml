@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Uvezi račun iz %1$s aplikacije</string>
     <string name="nc_server_import_accounts">Uvezi račune iz %1$s aplikacije</string>
     <string name="nc_server_failed_to_import_account">Uvoz odabranog računa nije uspio</string>
-    <string name="nc_Server_account_imported">Odabrani račun sad je uvezen i dostupan</string>
     <string name="nc_get_from_provider">Nemate poslužitelj?\nKliknite ovdje kako biste ga dobili od davatelja usluge</string>
 
     <!-- Account verification -->
@@ -67,15 +66,12 @@
     <string name="nc_settings_remove_confirmation">Potvrdite namjeru uklanjanja predmetnog računa.</string>
     <string name="nc_settings_remove_account">Izbriši račun</string>
     <string name="nc_settings_add_account">Dodaj novi račun</string>
+    <string name="nc_add">Dodaj</string>
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Talk nije instalirana na poslužitelju s kojim ste se pokušali autentificirati</string>
     <string name="nc_settings_account_updated">Vaš postojeći račun je ažuriran, umjesto dodavanja novog</string>
     <string name="nc_account_scheduled_for_deletion">Račun je zakazan za brisanje i ne može se promijeniti</string>
-    <string name="nc_settings_notification_sounds">Zvukovi obavijesti</string>
-    <string name="nc_settings_call_ringtone">Pozivi jedan na jedan</string>
-    <string name="nc_settings_other_notifications_ringtone">Ostalo</string>
     <string name="nc_settings_no_ringtone">Bez zvuka</string>
-    <string name="nc_settings_vibrate">Vibracija</string>
     <string name="nc_settings_vibrate_desc">Telefon će vibrirati ako nije utišan</string>
     <string name="nc_settings_appearance">Izgled</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -84,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">Postavlja alat za uštedu baterije</string>
     <string name="nc_settings_theme_light">Svijetlo</string>
     <string name="nc_settings_theme_dark">Tamno</string>
-    <string name="nc_settings_privacy">Privatnost</string>
     <string name="nc_settings_screen_lock_title">Zaključavanje zaslona</string>
     <string name="nc_settings_screen_lock_desc">Zaključaj %1$s s pomoću značajke zaključavanja zaslona Android uređaja ili podržanom biometrijskom metodom</string>
     <string name="nc_settings_screen_lock_timeout_title">Istek vremena neaktivnosti zaključavanja zaslona</string>
@@ -96,7 +91,6 @@
     <string name="nc_settings_link_previews_title">Prikaži pretpregled poveznice</string>
     <string name="nc_settings_link_previews_desc">Omogućuje pretpregled sadržaja iz primljenih poveznica za podržane usluge</string>
     <string name="nc_locked">Dodirni za otključavanje</string>
-
     <string name="nc_screen_lock_timeout_30">30 sekundi</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_300">5 minuta</string>
@@ -137,19 +131,12 @@
     <string name="nc_make_call_private">Učini razgovor privatnim</string>
     <string name="nc_delete_call">Izbriši razgovor</string>
     <string name="nc_delete">Izbriši</string>
-    <string name="nc_delete_conversation_default">Potvrdite namjeru uklanjanja razgovora.</string>
-    <string name="nc_delete_conversation_one2one">Ako izbrišete razgovor, također će biti
-            izbrisan za %1$s.</string>
-    <string name="nc_delete_conversation_more">Ako izbrišete razgovor, također će biti izbrisan za sve ostale sudionike.</string>
-
     <string name="nc_new_conversation">Novi razgovor</string>
     <string name="nc_join_via_link">Pridružite se putem poveznice</string>
     <string name="nc_join_via_web">Pridružite se putem weba</string>
     <string name="nc_add_to_favorites">Dodaj u favorite</string>
     <string name="nc_remove_from_favorites">Ukloni iz favorita</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Odaberi kontakte</string>
     <string name="nc_contacts_done">Gotovo</string>
 
     <!-- Permissions -->
@@ -181,11 +168,7 @@
     <string name="nc_notify_me_mention">Obavijesti kada se spomene</string>
     <string name="nc_notify_me_never">Nikad ne šalji obavijesti</string>
     <string name="nc_mute_calls">Utišaj pozive</string>
-    <string name="nc_mute_calls_desc">Dolazni pozivi bit će utišani</string>
     <string name="nc_important_conversation">Važan razgovor</string>
-    <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o
-                postavkama Ne uznemiravaj</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>
     <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih
@@ -205,6 +188,11 @@
     <string name="nc_push_to_talk_desc">Kada je mikrofon onemogućen, kliknite i držite za uporabu značajke Pritisni za govor</string>
     <string name="nc_configure_cert_auth">Odaberi vjerodajnicu za autentifikaciju</string>
     <string name="nc_change_cert_auth">Promijeni vjerodajnicu za autentifikaciju</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Ukloni moderatora</string>
+    <string name="nc_promote">Unaprijedi u moderatora</string>
+    <string name="nc_remove_participant">Ukloni sudionika</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Unesi poruku…</string>
@@ -272,5 +260,24 @@
     <string name="nc_lobby_waiting">Trenutno čekate u predvorju.</string>
     <string name="nc_lobby_waiting_with_date">Trenutno čekate u predvorju.\n Sastanak
         počinje u %1$s.</string>
-    <string name="nc_manual">Ručno</string>
-</resources>
+    <string name="nc_manual">Nije postavljeno</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">Nema veze</string>
+    <string name="nc_bad_response_error">Neispravan odgovor</string>
+    <string name="nc_timeout_error">Istek vremena</string>
+    <string name="nc_empty_response_error">Prazan odgovor</string>
+    <string name="nc_not_defined_error">Nepoznata pogreška</string>
+    <string name="nc_unauthorized_error">Neovlašteno</string>
+
+    <string name="nc_general_settings">Općenito</string>
+    <string name="nc_allow_guests">Dopusti pristup gostima</string>
+    <string name="nc_last_moderator_title">Nije moguće napustiti razgovor</string>
+    <string name="nc_last_moderator">Morate odabrati novog moderatora prije nego što napustite %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_reply">Odgovori</string>
+
+    </resources>

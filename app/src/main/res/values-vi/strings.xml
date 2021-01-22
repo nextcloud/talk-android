@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Bottom Navigation -->
+    <string name="nc_settings">Thiết lập</string>
+
     <!-- Server selection -->
     <string name="nc_server_url">Địa chỉ máy chủ</string>
     <string name="nc_server_not_installed">Hãy hoàn tất cài đặt %1$s của bạn</string>
@@ -30,7 +33,6 @@
     <string name="nc_server_import_account">Thêm tài khoản từ ứng dụng %1$s</string>
     <string name="nc_server_import_accounts">Thêm tài khoản từ ứng dụng %1$s</string>
     <string name="nc_server_failed_to_import_account">Lỗi thêm tài khoản đã chọn</string>
-    <string name="nc_Server_account_imported">Bây giờ chọn tài khoản thêm vào và đang cho phép</string>
     <string name="nc_get_from_provider">Bạn đã có một máy chủ chưa?\nBấm vào đây để tìm từ một nhà cung cấp.</string>
 
     <!-- Account verification -->
@@ -59,16 +61,19 @@
     <string name="nc_settings_reauthorize">Xác thực lại</string>
     <string name="nc_client_cert_setup">Thiết đặt chứng thực client</string>
     <string name="nc_client_cert_change">Thay đổi chứng thực client</string>
+    <string name="nc_settings_remove">Xóa</string>
     <string name="nc_settings_remove_account">Xóa tài khoản</string>
     <string name="nc_settings_add_account">Thêm một tài khoản mới</string>
+    <string name="nc_add">Thêm</string>
     <string name="nc_settings_wrong_account">Chỉ tài khoản hiện tại có thể chứng thực lại</string>
     <string name="nc_settings_account_updated">Bạn đã cập nhật tài khoản đã có, hãy thêm tài khoản mới</string>
     <string name="nc_account_scheduled_for_deletion">Tài khoản được lên lịch xóa và không thể thay đổi</string>
-    <string name="nc_settings_notification_sounds">Âm báo</string>
-    <string name="nc_settings_call_ringtone">Gọi trực tiếp</string>
-    <string name="nc_settings_other_notifications_ringtone">Khác</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
-    <string name="nc_settings_vibrate">Rung</string>
+    <string name="nc_settings_theme_light">Sáng</string>
+    <string name="nc_settings_theme_dark">Tối</string>
+    <string name="nc_none">Không có</string>
+    <string name="nc_cancel">Hủy bỏ</string>
+
     <string name="nc_no_proxy">Không proxy</string>
     <string name="nc_username">Tài khoản</string>
     <string name="nc_password">Mật khẩu</string>
@@ -96,13 +101,12 @@
     <string name="nc_make_call_public">Tạo một cuộc đàm thoại công khai</string>
     <string name="nc_make_call_private">Tạo một cuộc đàm thoại riêng tư</string>
     <string name="nc_delete_call">Xóa đàm thoại</string>
+    <string name="nc_delete">Xóa</string>
     <string name="nc_new_conversation">Tạo đàm thoại mới</string>
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_add_to_favorites">Thêm vào ưa thích</string>
     <string name="nc_remove_from_favorites">Xóa khỏi ưa thích</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Chọn liên hệ</string>
     <string name="nc_contacts_done">Hoàn tất</string>
 
     <!-- Permissions -->
@@ -122,6 +126,7 @@
     <string name="nc_notification_channel_calls">Thông báo các kênh cuộc gọi</string>
     <string name="nc_notification_channel_messages">Kênh thông báo tin nhắn</string>
     <string name="nc_notification_channel_calls_description">Hiển thị cuộc gọi đến</string>
+    <string name="nc_plain_old_messages">Thông điệp</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Thật xin lỗi, một số thứ đang bị sai sót!</string>
     <string name="nc_failed_signaling_settings">Máy chủ đích không hỗ trợ tham gia cuộc Đàm thoại công khai qua thiết bị di động
@@ -141,6 +146,11 @@
     <string name="nc_push_to_talk_desc">Mới Micro bị tắt, hãy bấm và giữ  &amp; để trò chuyện</string>
     <string name="nc_configure_cert_auth">Chọn chứng thực báo mật</string>
     <string name="nc_change_cert_auth">Thay đổi chứng thực bảo mật</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">Hạ uy tín từ người kiểm duyệt</string>
+    <string name="nc_promote">Giới thiệu người kiểm duyệt</string>
+    <string name="nc_remove_participant">Xóa người tham gia</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Nhập một thông điệp...</string>
@@ -162,5 +172,19 @@
     <string name="nc_description_send_message_button">Gửi thông điệp</string>
 
     <string name="nc_hello">Xin chào</string>
+
+    <string name="nc_groups">Nhóm</string>
+    <string name="nc_participants">Người tham gia</string>
+
+    <string name="nc_owner">Chủ</string>
+    <string name="nc_moderator">Kiểm duyệt</string>
+    <string name="nc_user">Người dùng</string>
+    <string name="nc_guest">Khách</string>
+    <string name="nc_file_browser_back">Quay lại</string>
+    <string name="nc_file_browser_refresh">Làm mới</string>
+    <string name="nc_not_defined_error">Lỗi chưa biết</string>
+    <string name="nc_general_settings">Tổng hợp</string>
+    <string name="nc_copy_message">Sao chép</string>
+    <string name="nc_reply">Trả l</string>
 
     </resources>

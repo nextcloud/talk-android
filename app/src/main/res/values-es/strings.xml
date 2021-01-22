@@ -33,7 +33,6 @@
     <string name="nc_server_import_account">Importar cuenta desde la app %1$s</string>
     <string name="nc_server_import_accounts">Importar cuentas desde la app %1$s</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
-    <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y ya está disponible</string>
     <string name="nc_get_from_provider">¿No tienes todavía un servidor?\nClic aquí para conseguir uno de un proveedor</string>
 
     <!-- Account verification -->
@@ -72,11 +71,7 @@
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
-    <string name="nc_settings_notification_sounds">Sonidos de notificación</string>
-    <string name="nc_settings_call_ringtone">Llamadas</string>
-    <string name="nc_settings_other_notifications_ringtone">Otro</string>
-    <string name="nc_settings_no_ringtone">Sonido NO</string>
-    <string name="nc_settings_vibrate">Vibrar</string>
+    <string name="nc_settings_no_ringtone">Sin sonido</string>
     <string name="nc_settings_vibrate_desc">Tu teléfono vibrará a menos que esté silenciado</string>
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -85,7 +80,6 @@
     <string name="nc_settings_theme_battery_saver">Ajustar Ahorro de batería</string>
     <string name="nc_settings_theme_light">Brillante</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
-    <string name="nc_settings_privacy">Privacidad</string>
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloquea %1$s con el bloqueo de pantalla de Android o un método biométrico soportado</string>
     <string name="nc_settings_screen_lock_timeout_title">Tiempo de inactividad para bloqueo de pantalla</string>
@@ -97,7 +91,6 @@
     <string name="nc_settings_link_previews_title">Mostrar previsualización de enlace</string>
     <string name="nc_settings_link_previews_desc">Permite previsualizar el contenido de enlaces recibos para servicios soportados</string>
     <string name="nc_locked">Pulsar para desbloquear</string>
-
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
@@ -138,19 +131,12 @@
     <string name="nc_make_call_private">Hacer privada la conversación</string>
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete">Borrar</string>
-    <string name="nc_delete_conversation_default">Por favor, confirma tu intención de eliminar la conversación</string>
-    <string name="nc_delete_conversation_one2one">SI borras la conversación, también se
-         borrará para %1$s.</string>
-    <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
-
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
     <string name="nc_add_to_favorites">Añadir a favoritos</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Hecho</string>
 
     <!-- Permissions -->
@@ -182,11 +168,7 @@
     <string name="nc_notify_me_mention">Notificar cuando eres mencionado</string>
     <string name="nc_notify_me_never">No notificar nunca</string>
     <string name="nc_mute_calls">Silenciar llamadas</string>
-    <string name="nc_mute_calls_desc">Las llamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversación importante</string>
-    <string name="nc_important_conversation_desc">Las notificaciones en esta conversación no tendrán en cuenta
-          la configuración de No Molestar</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas vía teléfonos móviles.
@@ -278,5 +260,24 @@
     <string name="nc_lobby_waiting">Ahora estás esperando en el recibidor.</string>
     <string name="nc_lobby_waiting_with_date">Ahora estás esperando en el recibidor.\n Esta
         reunión está planificada para %1$s.</string>
-    <string name="nc_manual">Manual</string>
-</resources>
+    <string name="nc_manual">No configurado</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">No hay conexión</string>
+    <string name="nc_bad_response_error">Mala respuesta</string>
+    <string name="nc_timeout_error">Tiempo de espera agotado</string>
+    <string name="nc_empty_response_error">Respuesta vacía</string>
+    <string name="nc_not_defined_error">Error desconocido</string>
+    <string name="nc_unauthorized_error">Desautorizado</string>
+
+    <string name="nc_general_settings">General</string>
+    <string name="nc_allow_guests">Permitir invitados</string>
+    <string name="nc_last_moderator_title">No puedes dejar la conversación</string>
+    <string name="nc_last_moderator">Necesitas establecer a un nuevo moderador antes de salir %1$s</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
+    <string name="nc_copy_message">Copiar</string>
+    <string name="nc_reply">Responder</string>
+
+    </resources>
