@@ -33,6 +33,7 @@
     <string name="nc_server_import_account">Importar cuenta desde la app %1$s</string>
     <string name="nc_server_import_accounts">Importar cuentas desde la app %1$s</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
+    <string name="nc_Server_account_imported">La cuenta selecciónada ha sido importada y está disponible</string>
     <string name="nc_get_from_provider">¿No tienes todavía un servidor?\nClic aquí para conseguir uno de un proveedor</string>
 
     <!-- Account verification -->
@@ -71,7 +72,11 @@
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_account_scheduled_for_deletion">La cuenta está programada para borrado y no se puede operar con ella</string>
+    <string name="nc_settings_notification_sounds">Sonidos de notificación</string>
+    <string name="nc_settings_call_ringtone">Llamadas</string>
+    <string name="nc_settings_other_notifications_ringtone">Otros</string>
     <string name="nc_settings_no_ringtone">Sin sonido</string>
+    <string name="nc_settings_vibrate">Vibración</string>
     <string name="nc_settings_vibrate_desc">Tu teléfono vibrará a menos que esté silenciado</string>
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -80,6 +85,7 @@
     <string name="nc_settings_theme_battery_saver">Ajustar Ahorro de batería</string>
     <string name="nc_settings_theme_light">Brillante</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
+    <string name="nc_settings_privacy">Privacidad</string>
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_lock_desc">Bloquea %1$s con el bloqueo de pantalla de Android o un método biométrico soportado</string>
     <string name="nc_settings_screen_lock_timeout_title">Tiempo de inactividad para bloqueo de pantalla</string>
@@ -91,6 +97,9 @@
     <string name="nc_settings_link_previews_title">Mostrar previsualización de enlace</string>
     <string name="nc_settings_link_previews_desc">Permite previsualizar el contenido de enlaces recibos para servicios soportados</string>
     <string name="nc_locked">Pulsar para desbloquear</string>
+    <string name="nc_settings_read_privacy_desc">Compartir mi estado de lectura y mostar el estado de lectura de otros</string>
+    <string name="nc_settings_read_privacy_title">Estado de lectura</string>
+
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
@@ -131,6 +140,7 @@
     <string name="nc_make_call_private">Hacer privada la conversación</string>
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete">Borrar</string>
+    <string name="nc_delete_conversation_default">Por favor, confirma tu intención de eliminar la conversación.</string>
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>

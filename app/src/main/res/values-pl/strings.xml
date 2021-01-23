@@ -33,6 +33,7 @@
     <string name="nc_server_import_account">Importuj konto z aplikacji %1$s</string>
     <string name="nc_server_import_accounts">Importuj konta z aplikacji %1$s</string>
     <string name="nc_server_failed_to_import_account">Nie udało się zaimportować wybranego konta</string>
+    <string name="nc_Server_account_imported">Wybrane konto jest teraz zaimportowane i dostępne</string>
     <string name="nc_get_from_provider">Nie masz jeszcze serwera?\nKliknij tutaj, aby uzyskać jeden od dostawcy</string>
 
     <!-- Account verification -->
@@ -71,7 +72,11 @@
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_account_scheduled_for_deletion">Konto jest zaznaczone do usunięcia, nie można wprowadzać zmian</string>
+    <string name="nc_settings_notification_sounds">Dźwięki powiadomienia</string>
+    <string name="nc_settings_call_ringtone">Połączenia indywidualne</string>
+    <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
+    <string name="nc_settings_vibrate">Wibracja</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_theme_title">Motyw</string>
@@ -80,6 +85,7 @@
     <string name="nc_settings_theme_battery_saver">Ustawiony według Oszczędzania Baterii</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
+    <string name="nc_settings_privacy">Prywatność</string>
     <string name="nc_settings_screen_lock_title">Blokada ekranu</string>
     <string name="nc_settings_screen_lock_desc">Blokuje %1$s za pomocą blokady ekranu Androida lub obsługiwanej metody biometrycznej</string>
     <string name="nc_settings_screen_lock_timeout_title">Czas bezczynności do blokady ekranu</string>
@@ -91,6 +97,9 @@
     <string name="nc_settings_link_previews_title">Pokaż podgląd linków</string>
     <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków przez obsługiwane usługi</string>
     <string name="nc_locked">Stuknij, aby odblokować</string>
+    <string name="nc_settings_read_privacy_desc">Udostępnij mój status czytania i pokaż innym</string>
+    <string name="nc_settings_read_privacy_title">Czytaj status</string>
+
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -131,12 +140,19 @@
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
+    <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
+    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, zostanie ona również
+        usunięta dla %1$s.</string>
+    <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
+
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_join_via_link">Dołącz przez link</string>
     <string name="nc_join_via_web">Dołącz przez sieć</string>
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Wybierz kontakty</string>
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
@@ -168,7 +184,11 @@
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
     <string name="nc_notify_me_never">Nigdy nie powiadamiaj</string>
     <string name="nc_mute_calls">Wycisz połączenia</string>
+    <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
+    <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują
+        ustawienia \"Nie przeszkadzać\"</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
@@ -280,4 +300,7 @@
     <string name="nc_copy_message">Kopiuj</string>
     <string name="nc_reply">Odpowiedz</string>
 
-    </resources>
+    <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk w książce telefonicznej</string>
+    <string name="nc_settings_phone_book_integration_title">Integracja książki telefonicznej</string>
+    <string name="no_phone_book_integration_due_to_permissions">Brak integracji książki telefonicznej z powodu braku uprawnień</string>
+</resources>

@@ -33,6 +33,7 @@
     <string name="nc_server_import_account">%1$s uygulamasındaki hesabı içe aktar</string>
     <string name="nc_server_import_accounts">%1$s uygulamasındaki hesapları içe aktar</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
+    <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
     <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Listeden bir hizmet sağlayıcısı seçebilirsiniz</string>
 
     <!-- Account verification -->
@@ -71,7 +72,11 @@
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
     <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
     <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
+    <string name="nc_settings_notification_sounds"> Bildirim sesleri</string>
+    <string name="nc_settings_call_ringtone">Bire Bir Görüşmeler</string>
+    <string name="nc_settings_other_notifications_ringtone">Diğer</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
+    <string name="nc_settings_vibrate">Titreşim</string>
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_appearance">Görünüm</string>
     <string name="nc_settings_theme_title">Tema</string>
@@ -80,6 +85,7 @@
     <string name="nc_settings_theme_battery_saver">Pil Koruyucu Tarafından</string>
     <string name="nc_settings_theme_light">Açık</string>
     <string name="nc_settings_theme_dark">Koyu</string>
+    <string name="nc_settings_privacy">Gizlilik</string>
     <string name="nc_settings_screen_lock_title">Ekran kilidi</string>
     <string name="nc_settings_screen_lock_desc">%1$s Android ekran kilidi ya da desteklenen biyometrik yöntem ile kilitlensin</string>
     <string name="nc_settings_screen_lock_timeout_title">Ekran kilidi zaman aşımı süresi</string>
@@ -91,6 +97,9 @@
     <string name="nc_settings_link_previews_title">Bağlantı ön izlemeleri görüntülensin</string>
     <string name="nc_settings_link_previews_desc">Desteklenen aygıtlarda alınan bağlantının içeriğinin ön izlemesini görüntüler</string>
     <string name="nc_locked">Kilidi açmak için dokunun</string>
+    <string name="nc_settings_read_privacy_desc">Okundu durumumu paylaş ve diğerlerinin okundu durumunu görüntüle</string>
+    <string name="nc_settings_read_privacy_title">Okundu durumu</string>
+
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_60">1 dakika</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
@@ -131,12 +140,19 @@
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete">Sil</string>
+    <string name="nc_delete_conversation_default">Lütfen görüşmeyi silmek istediğinizi onaylayın.</string>
+    <string name="nc_delete_conversation_one2one">Görüşmeyi silerseniz
+        %1$s için de silinecek.</string>
+    <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
+
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
     <string name="nc_join_via_web">Web üzerinden katıl</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
@@ -168,7 +184,11 @@
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
     <string name="nc_notify_me_never">Asla bildirilmesin</string>
     <string name="nc_mute_calls">Bildirimleri kapat</string>
+    <string name="nc_mute_calls_desc">Gelen çağrılar sessize alınacak</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
+    <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler
+        Rahatsız Etmeyin ayarlarını değiştirecek</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı
@@ -280,4 +300,7 @@
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_reply">Yanıtla</string>
 
-    </resources>
+    <string name="nc_settings_phone_book_integration_desc">Telefon defterinde kişileri telefon numaralarına göre eşleştirerek Talk kısa yolunu görüntüler</string>
+    <string name="nc_settings_phone_book_integration_title">Telefon defteri bütünleştirmesi</string>
+    <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>
+</resources>
