@@ -141,12 +141,18 @@
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete">Borrar</string>
     <string name="nc_delete_conversation_default">Por favor, confirma tu intención de eliminar la conversación.</string>
+    <string name="nc_delete_conversation_one2one">SI borras la conversación, también se
+         borrará para %1$s.</string>
+    <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
+
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
     <string name="nc_join_via_web">Unirse vía web</string>
     <string name="nc_add_to_favorites">Añadir a favoritos</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_contacts_done">Hecho</string>
 
     <!-- Permissions -->
@@ -178,7 +184,11 @@
     <string name="nc_notify_me_mention">Notificar cuando eres mencionado</string>
     <string name="nc_notify_me_never">No notificar nunca</string>
     <string name="nc_mute_calls">Silenciar llamadas</string>
+    <string name="nc_mute_calls_desc">Las llamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversación importante</string>
+    <string name="nc_important_conversation_desc">Las notificaciones en esta conversación no tendrán en cuenta
+         el ajuste de No Molestar</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Lo sentimos. Algo ha ido mal.</string>
     <string name="nc_failed_signaling_settings">El servidor destino no soporta unirse a conversaciones públicas vía teléfonos móviles.
@@ -290,4 +300,7 @@
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_reply">Responder</string>
 
-    </resources>
+    <string name="nc_settings_phone_book_integration_desc">Haga coincidir los contactos según el número del teléfono para integrar el acceso directo de Talk en la agenda telefónica</string>
+    <string name="nc_settings_phone_book_integration_title">Integración de la agenda telefónica</string>
+    <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a pérdida de permisos</string>
+</resources>

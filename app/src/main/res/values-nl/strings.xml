@@ -72,7 +72,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
+    <string name="nc_settings_notification_sounds">Meldingengeluiden</string>
+    <string name="nc_settings_call_ringtone">Een-op-een geprekken</string>
+    <string name="nc_settings_other_notifications_ringtone">Overig</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
+    <string name="nc_settings_vibrate">Trillen</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_appearance">Uiterlijk</string>
     <string name="nc_settings_theme_title">Thema</string>
@@ -81,6 +85,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_light">Licht</string>
     <string name="nc_settings_theme_dark">Donker</string>
+    <string name="nc_settings_privacy">Privacy</string>
     <string name="nc_settings_screen_lock_title">Schermvergrendeling</string>
     <string name="nc_settings_screen_lock_desc">Vergrendel %1$s via de Android schermvergendeling of een ondersteunde biometrische methode</string>
     <string name="nc_settings_screen_lock_timeout_title">Schermblokkade inactiviteit time-out</string>
@@ -92,6 +97,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_link_previews_title">Tonen link-voorbeelden</string>
     <string name="nc_settings_link_previews_desc">Staat voorbeeldweergave toe van ontvangen links van ondersteunde diensten</string>
     <string name="nc_locked">Tikken om te deblokkeren</string>
+    <string name="nc_settings_read_privacy_desc">Deel mijn lees-status en toon de lees-status van anderen</string>
+    <string name="nc_settings_read_privacy_title">Lees-status</string>
+
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
@@ -132,12 +140,19 @@ Kies er eentje van een provider.</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete">Verwijderen</string>
+    <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
+    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook
+        verwijderd voor %1$s.</string>
+    <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
+
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
     <string name="nc_join_via_web">Deelnemen via web</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Selecteer contactpersoon</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
@@ -169,7 +184,11 @@ via een persoonlijke link.</string>
     <string name="nc_notify_me_mention">Waarschuwen bij vermelding</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
+    <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
+    <string name="nc_important_conversation_desc">Meldingen in dit gesprek vervangen
+        Niet-Storen instellingen</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
@@ -282,4 +301,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_copy_message">Kopie</string>
     <string name="nc_reply">Antwoord</string>
 
+    <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
     </resources>
