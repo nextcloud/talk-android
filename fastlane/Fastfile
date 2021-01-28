@@ -12,7 +12,8 @@ lane :uploadAlphaToPlayStore do |options|
         skip_upload_aab: true,
         skip_upload_changelogs: true,
         skip_upload_metadata: true,
+        skip_upload_screenshots: true,
         track: 'alpha',
-        apk: "~/apks-talk/android-talk-" + options[:version] + ".apk",
+        apk: "/home/androiddaily/apks-talk/android-talk-" + options[:version] + ".apk",
     )
 end
