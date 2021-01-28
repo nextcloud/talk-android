@@ -21,12 +21,9 @@
 package com.nextcloud.talk.components.filebrowser.models.properties;
 
 import android.text.TextUtils;
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
+
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParser;
@@ -34,15 +31,25 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+import at.bitfire.dav4android.Property;
+import at.bitfire.dav4android.PropertyFactory;
+import at.bitfire.dav4android.XmlUtils;
+
 public class OCFavorite implements Property {
     public static final Property.Name NAME = new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_FAVORITE);
 
-    @Getter
-    @Setter
     private boolean ocFavorite;
 
     OCFavorite(boolean isFavorite) {
         ocFavorite = isFavorite;
+    }
+
+    public boolean isOcFavorite() {
+        return this.ocFavorite;
+    }
+
+    public void setOcFavorite(boolean ocFavorite) {
+        this.ocFavorite = ocFavorite;
     }
 
     public static class Factory implements PropertyFactory {

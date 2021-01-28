@@ -23,11 +23,47 @@ package com.nextcloud.talk.models.json.signaling.settings;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
 
-@Data
 @JsonObject
 public class SignalingSettingsOcs extends GenericOCS {
     @JsonField(name = "data")
     Settings settings;
+
+    public SignalingSettingsOcs() {
+    }
+
+    public Settings getSettings() {
+        return this.settings;
+    }
+
+    public void setSettings(Settings settings) {
+        this.settings = settings;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof SignalingSettingsOcs)) return false;
+        final SignalingSettingsOcs other = (SignalingSettingsOcs) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$settings = this.getSettings();
+        final Object other$settings = other.getSettings();
+        if (this$settings == null ? other$settings != null : !this$settings.equals(other$settings)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof SignalingSettingsOcs;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $settings = this.getSettings();
+        result = result * PRIME + ($settings == null ? 43 : $settings.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "SignalingSettingsOcs(settings=" + this.getSettings() + ")";
+    }
 }

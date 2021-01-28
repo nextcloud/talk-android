@@ -22,13 +22,51 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class CallOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "message")
     CallWebSocketMessage callWebSocketMessage;
+
+    public CallOverallWebSocketMessage() {
+    }
+
+    public CallWebSocketMessage getCallWebSocketMessage() {
+        return this.callWebSocketMessage;
+    }
+
+    public void setCallWebSocketMessage(CallWebSocketMessage callWebSocketMessage) {
+        this.callWebSocketMessage = callWebSocketMessage;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof CallOverallWebSocketMessage)) return false;
+        final CallOverallWebSocketMessage other = (CallOverallWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$callWebSocketMessage = this.getCallWebSocketMessage();
+        final Object other$callWebSocketMessage = other.getCallWebSocketMessage();
+        if (this$callWebSocketMessage == null ? other$callWebSocketMessage != null : !this$callWebSocketMessage.equals(other$callWebSocketMessage))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof CallOverallWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $callWebSocketMessage = this.getCallWebSocketMessage();
+        result = result * PRIME + ($callWebSocketMessage == null ? 43 : $callWebSocketMessage.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "CallOverallWebSocketMessage(callWebSocketMessage=" + this.getCallWebSocketMessage() + ")";
+    }
 }

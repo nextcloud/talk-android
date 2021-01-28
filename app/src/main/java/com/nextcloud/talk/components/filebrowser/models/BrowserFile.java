@@ -22,21 +22,26 @@ package com.nextcloud.talk.components.filebrowser.models;
 
 import android.net.Uri;
 import android.text.TextUtils;
+
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
+import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
+import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
+
+import org.parceler.Parcel;
+
+import java.io.File;
+import java.util.List;
+
 import at.bitfire.dav4android.Property;
 import at.bitfire.dav4android.Response;
 import at.bitfire.dav4android.property.DisplayName;
 import at.bitfire.dav4android.property.GetContentType;
 import at.bitfire.dav4android.property.GetLastModified;
 import at.bitfire.dav4android.property.ResourceType;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.components.filebrowser.models.properties.*;
-import lombok.Data;
-import org.parceler.Parcel;
 
-import java.io.File;
-import java.util.List;
-
-@Data
 @JsonObject
 @Parcel
 public class BrowserFile {
@@ -51,6 +56,9 @@ public class BrowserFile {
     public boolean hasPreview;
     public boolean favorite;
     public boolean encrypted;
+
+    public BrowserFile() {
+    }
 
     public static BrowserFile getModelFromResponse(Response response, String remotePath) {
         BrowserFile browserFile = new BrowserFile();
@@ -102,5 +110,142 @@ public class BrowserFile {
         }
 
         return browserFile;
+    }
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public String getMimeType() {
+        return this.mimeType;
+    }
+
+    public long getModifiedTimestamp() {
+        return this.modifiedTimestamp;
+    }
+
+    public long getSize() {
+        return this.size;
+    }
+
+    public boolean isFile() {
+        return this.isFile;
+    }
+
+    public String getRemoteId() {
+        return this.remoteId;
+    }
+
+    public boolean isHasPreview() {
+        return this.hasPreview;
+    }
+
+    public boolean isFavorite() {
+        return this.favorite;
+    }
+
+    public boolean isEncrypted() {
+        return this.encrypted;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    public void setModifiedTimestamp(long modifiedTimestamp) {
+        this.modifiedTimestamp = modifiedTimestamp;
+    }
+
+    public void setSize(long size) {
+        this.size = size;
+    }
+
+    public void setFile(boolean isFile) {
+        this.isFile = isFile;
+    }
+
+    public void setRemoteId(String remoteId) {
+        this.remoteId = remoteId;
+    }
+
+    public void setHasPreview(boolean hasPreview) {
+        this.hasPreview = hasPreview;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public void setEncrypted(boolean encrypted) {
+        this.encrypted = encrypted;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof BrowserFile)) return false;
+        final BrowserFile other = (BrowserFile) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$path = this.getPath();
+        final Object other$path = other.getPath();
+        if (this$path == null ? other$path != null : !this$path.equals(other$path)) return false;
+        final Object this$displayName = this.getDisplayName();
+        final Object other$displayName = other.getDisplayName();
+        if (this$displayName == null ? other$displayName != null : !this$displayName.equals(other$displayName))
+            return false;
+        final Object this$mimeType = this.getMimeType();
+        final Object other$mimeType = other.getMimeType();
+        if (this$mimeType == null ? other$mimeType != null : !this$mimeType.equals(other$mimeType)) return false;
+        if (this.getModifiedTimestamp() != other.getModifiedTimestamp()) return false;
+        if (this.getSize() != other.getSize()) return false;
+        if (this.isFile() != other.isFile()) return false;
+        final Object this$remoteId = this.getRemoteId();
+        final Object other$remoteId = other.getRemoteId();
+        if (this$remoteId == null ? other$remoteId != null : !this$remoteId.equals(other$remoteId)) return false;
+        if (this.isHasPreview() != other.isHasPreview()) return false;
+        if (this.isFavorite() != other.isFavorite()) return false;
+        if (this.isEncrypted() != other.isEncrypted()) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof BrowserFile;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $path = this.getPath();
+        result = result * PRIME + ($path == null ? 43 : $path.hashCode());
+        final Object $displayName = this.getDisplayName();
+        result = result * PRIME + ($displayName == null ? 43 : $displayName.hashCode());
+        final Object $mimeType = this.getMimeType();
+        result = result * PRIME + ($mimeType == null ? 43 : $mimeType.hashCode());
+        final long $modifiedTimestamp = this.getModifiedTimestamp();
+        result = result * PRIME + (int) ($modifiedTimestamp >>> 32 ^ $modifiedTimestamp);
+        final long $size = this.getSize();
+        result = result * PRIME + (int) ($size >>> 32 ^ $size);
+        result = result * PRIME + (this.isFile() ? 79 : 97);
+        final Object $remoteId = this.getRemoteId();
+        result = result * PRIME + ($remoteId == null ? 43 : $remoteId.hashCode());
+        result = result * PRIME + (this.isHasPreview() ? 79 : 97);
+        result = result * PRIME + (this.isFavorite() ? 79 : 97);
+        result = result * PRIME + (this.isEncrypted() ? 79 : 97);
+        return result;
+    }
+
+    public String toString() {
+        return "BrowserFile(path=" + this.getPath() + ", displayName=" + this.getDisplayName() + ", mimeType=" + this.getMimeType() + ", modifiedTimestamp=" + this.getModifiedTimestamp() + ", size=" + this.getSize() + ", isFile=" + this.isFile() + ", remoteId=" + this.getRemoteId() + ", hasPreview=" + this.isHasPreview() + ", favorite=" + this.isFavorite() + ", encrypted=" + this.isEncrypted() + ")";
     }
 }

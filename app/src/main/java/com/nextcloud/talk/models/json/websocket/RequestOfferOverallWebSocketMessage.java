@@ -22,13 +22,51 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class RequestOfferOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "message")
     RequestOfferSignalingMessage requestOfferOverallWebSocketMessage;
+
+    public RequestOfferOverallWebSocketMessage() {
+    }
+
+    public RequestOfferSignalingMessage getRequestOfferOverallWebSocketMessage() {
+        return this.requestOfferOverallWebSocketMessage;
+    }
+
+    public void setRequestOfferOverallWebSocketMessage(RequestOfferSignalingMessage requestOfferOverallWebSocketMessage) {
+        this.requestOfferOverallWebSocketMessage = requestOfferOverallWebSocketMessage;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof RequestOfferOverallWebSocketMessage)) return false;
+        final RequestOfferOverallWebSocketMessage other = (RequestOfferOverallWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$requestOfferOverallWebSocketMessage = this.getRequestOfferOverallWebSocketMessage();
+        final Object other$requestOfferOverallWebSocketMessage = other.getRequestOfferOverallWebSocketMessage();
+        if (this$requestOfferOverallWebSocketMessage == null ? other$requestOfferOverallWebSocketMessage != null : !this$requestOfferOverallWebSocketMessage.equals(other$requestOfferOverallWebSocketMessage))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof RequestOfferOverallWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $requestOfferOverallWebSocketMessage = this.getRequestOfferOverallWebSocketMessage();
+        result = result * PRIME + ($requestOfferOverallWebSocketMessage == null ? 43 : $requestOfferOverallWebSocketMessage.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "RequestOfferOverallWebSocketMessage(requestOfferOverallWebSocketMessage=" + this.getRequestOfferOverallWebSocketMessage() + ")";
+    }
 }

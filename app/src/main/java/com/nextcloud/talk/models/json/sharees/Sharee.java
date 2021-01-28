@@ -22,11 +22,10 @@ package com.nextcloud.talk.models.json.sharees;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class Sharee {
     @JsonField(name = "id")
@@ -37,4 +36,68 @@ public class Sharee {
 
     @JsonField(name = "label")
     String label;
+
+    public Sharee() {
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public Value getValue() {
+        return this.value;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setValue(Value value) {
+        this.value = value;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Sharee)) return false;
+        final Sharee other = (Sharee) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        final Object this$value = this.getValue();
+        final Object other$value = other.getValue();
+        if (this$value == null ? other$value != null : !this$value.equals(other$value)) return false;
+        final Object this$label = this.getLabel();
+        final Object other$label = other.getLabel();
+        if (this$label == null ? other$label != null : !this$label.equals(other$label)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof Sharee;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        final Object $value = this.getValue();
+        result = result * PRIME + ($value == null ? 43 : $value.hashCode());
+        final Object $label = this.getLabel();
+        result = result * PRIME + ($label == null ? 43 : $label.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "Sharee(id=" + this.getId() + ", value=" + this.getValue() + ", label=" + this.getLabel() + ")";
+    }
 }

@@ -21,11 +21,12 @@
 package com.nextcloud.talk.models.database;
 
 import android.os.Parcelable;
+
+import java.io.Serializable;
+
 import io.requery.Entity;
 import io.requery.Key;
 import io.requery.Persistable;
-
-import java.io.Serializable;
 
 @Entity
 public interface ArbitraryStorage extends Parcelable, Persistable, Serializable {

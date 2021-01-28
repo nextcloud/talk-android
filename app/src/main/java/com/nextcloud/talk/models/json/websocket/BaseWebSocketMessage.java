@@ -22,13 +22,50 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class BaseWebSocketMessage {
     @JsonField(name = "type")
     String type;
+
+    public BaseWebSocketMessage() {
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof BaseWebSocketMessage)) return false;
+        final BaseWebSocketMessage other = (BaseWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$type = this.getType();
+        final Object other$type = other.getType();
+        if (this$type == null ? other$type != null : !this$type.equals(other$type)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof BaseWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $type = this.getType();
+        result = result * PRIME + ($type == null ? 43 : $type.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "BaseWebSocketMessage(type=" + this.getType() + ")";
+    }
 }

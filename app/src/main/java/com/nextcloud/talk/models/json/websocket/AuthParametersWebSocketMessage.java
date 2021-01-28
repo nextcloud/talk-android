@@ -22,10 +22,9 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class AuthParametersWebSocketMessage {
@@ -34,4 +33,55 @@ public class AuthParametersWebSocketMessage {
 
     @JsonField(name = "ticket")
     String ticket;
+
+    public AuthParametersWebSocketMessage() {
+    }
+
+    public String getUserid() {
+        return this.userid;
+    }
+
+    public String getTicket() {
+        return this.ticket;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof AuthParametersWebSocketMessage)) return false;
+        final AuthParametersWebSocketMessage other = (AuthParametersWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$userid = this.getUserid();
+        final Object other$userid = other.getUserid();
+        if (this$userid == null ? other$userid != null : !this$userid.equals(other$userid)) return false;
+        final Object this$ticket = this.getTicket();
+        final Object other$ticket = other.getTicket();
+        if (this$ticket == null ? other$ticket != null : !this$ticket.equals(other$ticket)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof AuthParametersWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $userid = this.getUserid();
+        result = result * PRIME + ($userid == null ? 43 : $userid.hashCode());
+        final Object $ticket = this.getTicket();
+        result = result * PRIME + ($ticket == null ? 43 : $ticket.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "AuthParametersWebSocketMessage(userid=" + this.getUserid() + ", ticket=" + this.getTicket() + ")";
+    }
 }

@@ -43,10 +43,8 @@ import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.Nullable;
-import lombok.Data;
 
 @Parcel
-@Data
 @JsonObject
 public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
     @JsonIgnore
@@ -90,6 +88,9 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
+
+    public ChatMessage() {
+    }
 
     private boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
@@ -249,6 +250,245 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     @Override
     public String getSystemMessage() {
         return new EnumSystemMessageTypeConverter().convertToString(getSystemMessageType());
+    }
+
+    public boolean isGrouped() {
+        return this.isGrouped;
+    }
+
+    public boolean isOneToOneConversation() {
+        return this.isOneToOneConversation;
+    }
+
+    public UserEntity getActiveUser() {
+        return this.activeUser;
+    }
+
+    public boolean isLinkPreviewAllowed() {
+        return this.isLinkPreviewAllowed;
+    }
+
+    public int getJsonMessageId() {
+        return this.jsonMessageId;
+    }
+
+    public String getToken() {
+        return this.token;
+    }
+
+    public String getActorType() {
+        return this.actorType;
+    }
+
+    public String getActorId() {
+        return this.actorId;
+    }
+
+    public String getActorDisplayName() {
+        return this.actorDisplayName;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public HashMap<String, HashMap<String, String>> getMessageParameters() {
+        return this.messageParameters;
+    }
+
+    public SystemMessageType getSystemMessageType() {
+        return this.systemMessageType;
+    }
+
+    public boolean isReplyable() {
+        return this.replyable;
+    }
+
+    public ChatMessage getParentMessage() {
+        return this.parentMessage;
+    }
+
+    public Enum<ReadStatus> getReadStatus() {
+        return this.readStatus;
+    }
+
+    public List<MessageType> getMessageTypesToIgnore() {
+        return this.messageTypesToIgnore;
+    }
+
+    public void setGrouped(boolean isGrouped) {
+        this.isGrouped = isGrouped;
+    }
+
+    public void setOneToOneConversation(boolean isOneToOneConversation) {
+        this.isOneToOneConversation = isOneToOneConversation;
+    }
+
+    public void setActiveUser(UserEntity activeUser) {
+        this.activeUser = activeUser;
+    }
+
+    public void setLinkPreviewAllowed(boolean isLinkPreviewAllowed) {
+        this.isLinkPreviewAllowed = isLinkPreviewAllowed;
+    }
+
+    public void setJsonMessageId(int jsonMessageId) {
+        this.jsonMessageId = jsonMessageId;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setActorType(String actorType) {
+        this.actorType = actorType;
+    }
+
+    public void setActorId(String actorId) {
+        this.actorId = actorId;
+    }
+
+    public void setActorDisplayName(String actorDisplayName) {
+        this.actorDisplayName = actorDisplayName;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setMessageParameters(HashMap<String, HashMap<String, String>> messageParameters) {
+        this.messageParameters = messageParameters;
+    }
+
+    public void setSystemMessageType(SystemMessageType systemMessageType) {
+        this.systemMessageType = systemMessageType;
+    }
+
+    public void setReplyable(boolean replyable) {
+        this.replyable = replyable;
+    }
+
+    public void setParentMessage(ChatMessage parentMessage) {
+        this.parentMessage = parentMessage;
+    }
+
+    public void setReadStatus(Enum<ReadStatus> readStatus) {
+        this.readStatus = readStatus;
+    }
+
+    public void setMessageTypesToIgnore(List<MessageType> messageTypesToIgnore) {
+        this.messageTypesToIgnore = messageTypesToIgnore;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof ChatMessage)) return false;
+        final ChatMessage other = (ChatMessage) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (this.isGrouped() != other.isGrouped()) return false;
+        if (this.isOneToOneConversation() != other.isOneToOneConversation()) return false;
+        final Object this$activeUser = this.getActiveUser();
+        final Object other$activeUser = other.getActiveUser();
+        if (this$activeUser == null ? other$activeUser != null : !this$activeUser.equals(other$activeUser))
+            return false;
+        final Object this$selectedIndividualHashMap = this.getSelectedIndividualHashMap();
+        final Object other$selectedIndividualHashMap = other.getSelectedIndividualHashMap();
+        if (this$selectedIndividualHashMap == null ? other$selectedIndividualHashMap != null : !this$selectedIndividualHashMap.equals(other$selectedIndividualHashMap))
+            return false;
+        if (this.isLinkPreviewAllowed() != other.isLinkPreviewAllowed()) return false;
+        if (this.getJsonMessageId() != other.getJsonMessageId()) return false;
+        final Object this$token = this.getToken();
+        final Object other$token = other.getToken();
+        if (this$token == null ? other$token != null : !this$token.equals(other$token)) return false;
+        final Object this$actorType = this.getActorType();
+        final Object other$actorType = other.getActorType();
+        if (this$actorType == null ? other$actorType != null : !this$actorType.equals(other$actorType)) return false;
+        final Object this$actorId = this.getActorId();
+        final Object other$actorId = other.getActorId();
+        if (this$actorId == null ? other$actorId != null : !this$actorId.equals(other$actorId)) return false;
+        final Object this$actorDisplayName = this.getActorDisplayName();
+        final Object other$actorDisplayName = other.getActorDisplayName();
+        if (this$actorDisplayName == null ? other$actorDisplayName != null : !this$actorDisplayName.equals(other$actorDisplayName))
+            return false;
+        if (this.getTimestamp() != other.getTimestamp()) return false;
+        final Object this$message = this.getMessage();
+        final Object other$message = other.getMessage();
+        if (this$message == null ? other$message != null : !this$message.equals(other$message)) return false;
+        final Object this$messageParameters = this.getMessageParameters();
+        final Object other$messageParameters = other.getMessageParameters();
+        if (this$messageParameters == null ? other$messageParameters != null : !this$messageParameters.equals(other$messageParameters))
+            return false;
+        final Object this$systemMessageType = this.getSystemMessageType();
+        final Object other$systemMessageType = other.getSystemMessageType();
+        if (this$systemMessageType == null ? other$systemMessageType != null : !this$systemMessageType.equals(other$systemMessageType))
+            return false;
+        if (this.isReplyable() != other.isReplyable()) return false;
+        final Object this$parentMessage = this.getParentMessage();
+        final Object other$parentMessage = other.getParentMessage();
+        if (this$parentMessage == null ? other$parentMessage != null : !this$parentMessage.equals(other$parentMessage))
+            return false;
+        final Object this$readStatus = this.getReadStatus();
+        final Object other$readStatus = other.getReadStatus();
+        if (this$readStatus == null ? other$readStatus != null : !this$readStatus.equals(other$readStatus))
+            return false;
+        final Object this$messageTypesToIgnore = this.getMessageTypesToIgnore();
+        final Object other$messageTypesToIgnore = other.getMessageTypesToIgnore();
+        if (this$messageTypesToIgnore == null ? other$messageTypesToIgnore != null : !this$messageTypesToIgnore.equals(other$messageTypesToIgnore))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ChatMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + (this.isGrouped() ? 79 : 97);
+        result = result * PRIME + (this.isOneToOneConversation() ? 79 : 97);
+        final Object $activeUser = this.getActiveUser();
+        result = result * PRIME + ($activeUser == null ? 43 : $activeUser.hashCode());
+        final Object $selectedIndividualHashMap = this.getSelectedIndividualHashMap();
+        result = result * PRIME + ($selectedIndividualHashMap == null ? 43 : $selectedIndividualHashMap.hashCode());
+        result = result * PRIME + (this.isLinkPreviewAllowed() ? 79 : 97);
+        result = result * PRIME + this.getJsonMessageId();
+        final Object $token = this.getToken();
+        result = result * PRIME + ($token == null ? 43 : $token.hashCode());
+        final Object $actorType = this.getActorType();
+        result = result * PRIME + ($actorType == null ? 43 : $actorType.hashCode());
+        final Object $actorId = this.getActorId();
+        result = result * PRIME + ($actorId == null ? 43 : $actorId.hashCode());
+        final Object $actorDisplayName = this.getActorDisplayName();
+        result = result * PRIME + ($actorDisplayName == null ? 43 : $actorDisplayName.hashCode());
+        final long $timestamp = this.getTimestamp();
+        result = result * PRIME + (int) ($timestamp >>> 32 ^ $timestamp);
+        final Object $message = this.getMessage();
+        result = result * PRIME + ($message == null ? 43 : $message.hashCode());
+        final Object $messageParameters = this.getMessageParameters();
+        result = result * PRIME + ($messageParameters == null ? 43 : $messageParameters.hashCode());
+        final Object $systemMessageType = this.getSystemMessageType();
+        result = result * PRIME + ($systemMessageType == null ? 43 : $systemMessageType.hashCode());
+        result = result * PRIME + (this.isReplyable() ? 79 : 97);
+        final Object $parentMessage = this.getParentMessage();
+        result = result * PRIME + ($parentMessage == null ? 43 : $parentMessage.hashCode());
+        final Object $readStatus = this.getReadStatus();
+        result = result * PRIME + ($readStatus == null ? 43 : $readStatus.hashCode());
+        final Object $messageTypesToIgnore = this.getMessageTypesToIgnore();
+        result = result * PRIME + ($messageTypesToIgnore == null ? 43 : $messageTypesToIgnore.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ChatMessage(isGrouped=" + this.isGrouped() + ", isOneToOneConversation=" + this.isOneToOneConversation() + ", activeUser=" + this.getActiveUser() + ", selectedIndividualHashMap=" + this.getSelectedIndividualHashMap() + ", isLinkPreviewAllowed=" + this.isLinkPreviewAllowed() + ", jsonMessageId=" + this.getJsonMessageId() + ", token=" + this.getToken() + ", actorType=" + this.getActorType() + ", actorId=" + this.getActorId() + ", actorDisplayName=" + this.getActorDisplayName() + ", timestamp=" + this.getTimestamp() + ", message=" + this.getMessage() + ", messageParameters=" + this.getMessageParameters() + ", systemMessageType=" + this.getSystemMessageType() + ", replyable=" + this.isReplyable() + ", parentMessage=" + this.getParentMessage() + ", readStatus=" + this.getReadStatus() + ", messageTypesToIgnore=" + this.getMessageTypesToIgnore() + ")";
     }
 
     public enum MessageType {

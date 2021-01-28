@@ -22,13 +22,50 @@ package com.nextcloud.talk.models.json.sharees;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class Value {
     @JsonField(name = "shareWith")
     String shareWith;
+
+    public Value() {
+    }
+
+    public String getShareWith() {
+        return this.shareWith;
+    }
+
+    public void setShareWith(String shareWith) {
+        this.shareWith = shareWith;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof Value)) return false;
+        final Value other = (Value) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$shareWith = this.getShareWith();
+        final Object other$shareWith = other.getShareWith();
+        if (this$shareWith == null ? other$shareWith != null : !this$shareWith.equals(other$shareWith)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof Value;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $shareWith = this.getShareWith();
+        result = result * PRIME + ($shareWith == null ? 43 : $shareWith.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "Value(shareWith=" + this.getShareWith() + ")";
+    }
 }

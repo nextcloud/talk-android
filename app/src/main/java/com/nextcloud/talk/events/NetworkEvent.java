@@ -20,10 +20,39 @@
 
 package com.nextcloud.talk.events;
 
-import lombok.Data;
-
-@Data
 public class NetworkEvent {
+    public NetworkConnectionEvent getNetworkConnectionEvent() {
+        return this.networkConnectionEvent;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof NetworkEvent)) return false;
+        final NetworkEvent other = (NetworkEvent) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$networkConnectionEvent = this.getNetworkConnectionEvent();
+        final Object other$networkConnectionEvent = other.getNetworkConnectionEvent();
+        if (this$networkConnectionEvent == null ? other$networkConnectionEvent != null : !this$networkConnectionEvent.equals(other$networkConnectionEvent))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof NetworkEvent;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $networkConnectionEvent = this.getNetworkConnectionEvent();
+        result = result * PRIME + ($networkConnectionEvent == null ? 43 : $networkConnectionEvent.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "NetworkEvent(networkConnectionEvent=" + this.getNetworkConnectionEvent() + ")";
+    }
+
     public enum NetworkConnectionEvent {
         NETWORK_CONNECTED, NETWORK_DISCONNECTED
     }

@@ -197,8 +197,6 @@ dependencies {
     implementation 'org.parceler:parceler-api:1.1.12'
     kapt 'org.parceler:parceler:1.1.12'
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
-    compileOnly 'org.projectlombok:lombok:1.18.10'
-    annotationProcessor "org.projectlombok:lombok:1.18.10"
     implementation 'com.jakewharton:butterknife:10.2.1'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'

@@ -22,11 +22,10 @@ package com.nextcloud.talk.models.json.autocomplete;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class AutocompleteUser {
     @JsonField(name = "id")
@@ -37,4 +36,68 @@ public class AutocompleteUser {
 
     @JsonField(name = "source")
     String source;
+
+    public AutocompleteUser() {
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public String getSource() {
+        return this.source;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof AutocompleteUser)) return false;
+        final AutocompleteUser other = (AutocompleteUser) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) return false;
+        final Object this$label = this.getLabel();
+        final Object other$label = other.getLabel();
+        if (this$label == null ? other$label != null : !this$label.equals(other$label)) return false;
+        final Object this$source = this.getSource();
+        final Object other$source = other.getSource();
+        if (this$source == null ? other$source != null : !this$source.equals(other$source)) return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof AutocompleteUser;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        final Object $label = this.getLabel();
+        result = result * PRIME + ($label == null ? 43 : $label.hashCode());
+        final Object $source = this.getSource();
+        result = result * PRIME + ($source == null ? 43 : $source.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "AutocompleteUser(id=" + this.getId() + ", label=" + this.getLabel() + ", source=" + this.getSource() + ")";
+    }
 }

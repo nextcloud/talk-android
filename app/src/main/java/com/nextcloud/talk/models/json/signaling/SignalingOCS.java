@@ -23,13 +23,50 @@ package com.nextcloud.talk.models.json.signaling;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
 @JsonObject
 public class SignalingOCS extends GenericOCS {
     @JsonField(name = "data")
     List<Signaling> signalings;
+
+    public SignalingOCS() {
+    }
+
+    public List<Signaling> getSignalings() {
+        return this.signalings;
+    }
+
+    public void setSignalings(List<Signaling> signalings) {
+        this.signalings = signalings;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) return true;
+        if (!(o instanceof SignalingOCS)) return false;
+        final SignalingOCS other = (SignalingOCS) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$signalings = this.getSignalings();
+        final Object other$signalings = other.getSignalings();
+        if (this$signalings == null ? other$signalings != null : !this$signalings.equals(other$signalings))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof SignalingOCS;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $signalings = this.getSignalings();
+        result = result * PRIME + ($signalings == null ? 43 : $signalings.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "SignalingOCS(signalings=" + this.getSignalings() + ")";
+    }
 }
