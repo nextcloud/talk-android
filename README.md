@@ -15,6 +15,8 @@ Nextcloud Talk lowers the barrier for communication and lets your team connect a
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
 
+Please note that Notifications won't work with the f-droid version due to missing Google Play Services.      
+
 ## Why is this so awesome?
 Because it is self hosted!!! Audio/video calls and text chat typically require a central server. Some projects go commendably far in trying to ensure they can't see the data, so nobody, not government, advertising company or somebody who broke in the servers, can follow conversations. But the servers still have to mediate every call and text message, allowing them to map out who talks to who and at what time. This 'metadata' [is as useful](https://www.wired.com/2015/03/data-and-goliath-nsa-metadata-spying-your-secrets/), if not more, to track people, than the full content, especially for mass surveillance purposes. Even if the data is not stored by the chat server, the hosting provider or a hacker could simply gather the data.
 
@@ -30,9 +32,24 @@ For more information please review the [guidelines for contributing](https://git
 
 ### Testing
 
-So you would like to contribute by testing? Awesome, we appreciate that very much. Right now our testing
-is conducted through the Google Play Beta channel, so if you'd like to receive the newest dough, sign
-up over at the [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2).
+So you would like to contribute by testing? Awesome, we appreciate that very much. 
+
+To report a bug for the alpha or beta version, just create an issue on github like you would for the stable version and
+ provide the version number. 
+In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com). Please remember that Google Services are necessary to receive push notifications. 
+ 
+#### Beta Channel
+
+Sign up at [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) to get Release
+ Candidates via Google Play.
+
+#### Alpha Channel
+
+To become an alpha tester you have to be signed up for the [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) 
+and additionally you have to join the [Alpha testing Google Group](https://groups.google.com/g/nextcloud-android-talk-alpha-testing). 
+After that you will receive the alpha versions via the Play Store (initially, this might take some minutes after
+ signing up).
+Alpha versions are delivered weekly. Please make sure to remember that these versions might contain bugs and you don't use them in production.
 
 ### Apply a license
 
