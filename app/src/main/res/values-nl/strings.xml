@@ -33,6 +33,7 @@
     <string name="nc_server_import_account">Importeren account van de %1$sapp</string>
     <string name="nc_server_import_accounts">Importeren accounts van de %1$sapp</string>
     <string name="nc_server_failed_to_import_account">Kon het geselecteerde account niet importeren</string>
+    <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
 
@@ -301,5 +302,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_copy_message">Kopie</string>
     <string name="nc_reply">Antwoord</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Combineer contactpersonen gebaseerd op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
-    </resources>
+    <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>
+</resources>
