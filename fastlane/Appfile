@@ -1,0 +1,2 @@
+json_key_file "~/.gradle/fastlane.json"
+package_name "com.nextcloud.talk2"
