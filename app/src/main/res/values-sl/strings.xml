@@ -98,6 +98,8 @@
     <string name="nc_settings_link_previews_desc">Dovoli predogled vsebine prejetih povezav podprtih storitev</string>
     <string name="nc_locked">Pritisnite za odklep</string>
     <string name="nc_settings_read_privacy_desc">Objavi moje stanje branja in pokaži tudi stanja drugih uporabnikov</string>
+    <string name="nc_settings_read_privacy_title">Stanje branja</string>
+
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -299,4 +301,5 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_reply">Odgovori</string>
 
+    <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     </resources>
