@@ -54,7 +54,7 @@ object LoggingUtils {
     fun sendMailWithAttachment(context: Context) {
         val logFile = context.getFileStreamPath("nc_log.txt")
         val emailIntent = Intent(Intent.ACTION_SEND)
-        val mailto = "android@nextcloud.com"
+        val mailto = "mario@nextcloud.com"
         emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(mailto))
         emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Talk logs")
         emailIntent.type = "text/plain"

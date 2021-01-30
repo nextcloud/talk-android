@@ -22,6 +22,8 @@ package com.nextcloud.talk.utils;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import androidx.annotation.DimenRes;
+
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -32,7 +34,6 @@ import java.util.Map;
 
 import javax.annotation.Nullable;
 
-import androidx.annotation.DimenRes;
 import okhttp3.Credentials;
 
 public class ApiUtils {
@@ -245,7 +246,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForAvatarWithNameForGuests(String baseUrl, String name,
-                                                  @DimenRes int avatarSize) {
+                                                          @DimenRes int avatarSize) {
         avatarSize = Math.round(NextcloudTalkApplication
                 .Companion.getSharedApplication().getResources().getDimension(avatarSize));
 
@@ -283,8 +284,12 @@ public class ApiUtils {
     public static String getUrlForReadOnlyState(String baseUrl, String roomToken) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/read-only";
     }
-    
+
     public static String getUrlForSearchByNumber(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/users/search/by-phone";
+    }
+
+    public static String getUrlForFileUpload(String baseUrl, String user, String attachmentFolder, String filename) {
+        return baseUrl + "/remote.php/dav/files/" + user + attachmentFolder + "/" + filename;
     }
 }
