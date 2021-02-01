@@ -300,6 +300,12 @@
     <string name="nc_copy_message">Kopiuj</string>
     <string name="nc_reply">Odpowiedz</string>
 
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Wyślij plik lokalny</string>
+    <string name="nc_upload_from_nextcloud">Wyślij z Nextcloud</string>
+    <string name="nc_upload_failed">Nie udało się wysłać pliku</string>
+    <string name="nc_upload_choose_local_files">Wybierz plik</string>
+
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk w książce telefonicznej</string>
     <string name="nc_settings_phone_book_integration_title">Integracja książki telefonicznej</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji książki telefonicznej z powodu braku uprawnień</string>

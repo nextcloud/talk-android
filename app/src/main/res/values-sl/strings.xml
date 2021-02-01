@@ -301,5 +301,11 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_reply">Odgovori</string>
 
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
+    <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
+    <string name="nc_upload_failed">Pošiljanje datoteke je spodletelo</string>
+    <string name="nc_upload_choose_local_files">Izbor datotek</string>
+
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     </resources>

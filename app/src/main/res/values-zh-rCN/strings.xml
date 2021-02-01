@@ -297,6 +297,12 @@
     <string name="nc_copy_message">复制</string>
     <string name="nc_reply">回复</string>
 
+    <!-- Upload -->
+    <string name="nc_upload_local_file">上传本地文件</string>
+    <string name="nc_upload_from_nextcloud">从 Nextcloud 上传</string>
+    <string name="nc_upload_failed">上传文件失败</string>
+    <string name="nc_upload_choose_local_files">选择文件</string>
+
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，集成 Talk 快捷方式到电话簿。</string>
     <string name="nc_settings_phone_book_integration_title">电话簿集成</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话簿集成</string>

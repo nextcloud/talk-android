@@ -300,6 +300,12 @@
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_reply">Yanıtla</string>
 
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Yerel dosya yükle</string>
+    <string name="nc_upload_from_nextcloud">Nextcloud üzerinden yükle</string>
+    <string name="nc_upload_failed">Dosya yüklenemedi</string>
+    <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
+
     <string name="nc_settings_phone_book_integration_desc">Telefon defterinde kişileri telefon numaralarına göre eşleştirerek Talk kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_title">Telefon defteri bütünleştirmesi</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>

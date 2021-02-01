@@ -72,6 +72,7 @@
     <string name="nc_settings_theme_battery_saver">Nustatytas baterijos taupytojo</string>
     <string name="nc_settings_theme_light">Šviesus</string>
     <string name="nc_settings_theme_dark">Tamsus</string>
+    <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_screen_lock_title">Ekrano užraktas</string>
     <string name="nc_settings_screen_lock_desc">Užrakinti %1$s naudojant Android ekrano užraktą ar palaikomą biometrinį metodą</string>
     <string name="nc_none">Nėra</string>

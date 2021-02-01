@@ -300,6 +300,12 @@
     <string name="nc_copy_message">Copia</string>
     <string name="nc_reply">Rispondi</string>
 
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Carica file locale</string>
+    <string name="nc_upload_from_nextcloud">Carica da Nextcloud</string>
+    <string name="nc_upload_failed">Invio del file fallito</string>
+    <string name="nc_upload_choose_local_files">Scegli i file</string>
+
     <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nella rubrica</string>
     <string name="nc_settings_phone_book_integration_title">Integrazione della rubrica</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione della rubrica a causa di autorizzazioni mancanti</string>
