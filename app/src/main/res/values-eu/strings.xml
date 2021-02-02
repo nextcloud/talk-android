@@ -71,6 +71,7 @@
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
     <string name="nc_account_scheduled_for_deletion">Kontua ezabatzeko programatuta dago eta ezin da harekin operatu</string>
+    <string name="nc_settings_other_notifications_ringtone">Bestelakoa</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_appearance">Itxura</string>
@@ -80,6 +81,7 @@
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_dark">Iluna</string>
+    <string name="nc_settings_privacy">Pribatutasuna</string>
     <string name="nc_settings_screen_lock_title">Pantailaren blokeoa</string>
     <string name="nc_settings_screen_lock_desc">Giltzatu %1$s Androiden pantaila giltzapen edo onartutako metodo biometrikoarekin</string>
     <string name="nc_settings_screen_lock_timeout_title">Jardun gabeko denbora-muga pantaila blokeatzeko</string>
@@ -131,6 +133,8 @@
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
+    <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
+
     <string name="nc_new_conversation">Elkarrizketa berria</string>
     <string name="nc_join_via_link">Sartu esteka baten bidez</string>
     <string name="nc_join_via_web">Sartu web bidez</string>
