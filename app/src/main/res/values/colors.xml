@@ -59,6 +59,9 @@
     <color name="bg_dark_mention_chips">#333333</color>
 
     <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
+    <color name="bg_message_list_incoming_bubble_deleted">#66EFEFEF</color>
+    <color name="bg_message_list_outcoming_bubble">@color/colorPrimary</color>
+    <color name="bg_message_list_outcoming_bubble_deleted">#800082C9</color>
 
     <color name="bg_bottom_sheet">#46ffffff</color>
 </resources>

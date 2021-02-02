@@ -21,6 +21,8 @@ package com.nextcloud.talk.models.json.chat;
 
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
@@ -42,7 +44,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import androidx.annotation.Nullable;
 import lombok.Data;
 
 @Parcel
@@ -59,6 +60,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public Map<String, String> selectedIndividualHashMap;
     @JsonIgnore
     public boolean isLinkPreviewAllowed;
+    @JsonIgnore
+    public boolean isDeleted;
     @JsonField(name = "id")
     public int jsonMessageId;
     @JsonField(name = "token")
@@ -283,6 +286,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         FILE_SHARED,
         LOBBY_NONE,
         LOBBY_NON_MODERATORS,
-        LOBBY_OPEN_TO_EVERYONE
+        LOBBY_OPEN_TO_EVERYONE,
+        PARENT_MESSAGE_DELETED
     }
 }

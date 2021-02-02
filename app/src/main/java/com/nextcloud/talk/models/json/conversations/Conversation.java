@@ -110,8 +110,12 @@ public class Conversation {
     }
 
     public boolean canModerate(UserEntity conversationUser) {
-        return ((Participant.ParticipantType.OWNER.equals(participantType)
-                || Participant.ParticipantType.MODERATOR.equals(participantType)) && !isLockedOneToOne(conversationUser));
+        return (isParticipantOwnerOrModerator() && !isLockedOneToOne(conversationUser));
+    }
+
+    public boolean isParticipantOwnerOrModerator() {
+        return Participant.ParticipantType.OWNER.equals(participantType)
+                || Participant.ParticipantType.MODERATOR.equals(participantType);
     }
 
     public boolean shouldShowLobby(UserEntity conversationUser) {
@@ -121,6 +125,7 @@ public class Conversation {
     public boolean isLobbyViewApplicable(UserEntity conversationUser) {
         return !canModerate(conversationUser) && (getType() == ConversationType.ROOM_GROUP_CALL || getType() == ConversationType.ROOM_PUBLIC_CALL);
     }
+
     public boolean isNameEditable(UserEntity conversationUser) {
         return (canModerate(conversationUser) && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
     }

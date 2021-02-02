@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>
 
@@ -320,6 +323,8 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Copy</string>
     <string name="nc_reply">Reply</string>
+    <string name="nc_delete_message">Delete</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload local file</string>
@@ -327,12 +332,13 @@
     <string name="nc_upload_failed">Failed to upload file</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
 
-    <!-- Non-translatable strings -->
-
-    <string name="path_password_strike_through" translatable="false"
-        tools:override="true">M3.27,4.27L19.74,20.74</string>
+    <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut in phone book</string>
     <string name="nc_settings_phone_book_integration_title">Phone book integration</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone book integration due to missing permissions</string>
+
+    <!-- Non-translatable strings -->
+    <string name="path_password_strike_through" translatable="false"
+        tools:override="true">M3.27,4.27L19.74,20.74</string>
 </resources>
