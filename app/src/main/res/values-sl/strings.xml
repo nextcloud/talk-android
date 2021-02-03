@@ -300,7 +300,6 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_reply">Odgovori</string>
-
     <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
     <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>

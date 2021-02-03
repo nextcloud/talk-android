@@ -299,8 +299,14 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_reply">Responder</string>
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Subir archivo local</string>
+    <string name="nc_upload_from_nextcloud">Subir desde Nextcloud</string>
+    <string name="nc_upload_failed">Error al subir el archivo</string>
+    <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
 
     <string name="nc_settings_phone_book_integration_desc">Haga coincidir los contactos según el número del teléfono para integrar el acceso directo de Talk en la agenda telefónica</string>
     <string name="nc_settings_phone_book_integration_title">Integración de la agenda telefónica</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a pérdida de permisos</string>
-</resources>
+
+    </resources>

@@ -301,7 +301,6 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopie</string>
     <string name="nc_reply">Antwoord</string>
-
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_from_nextcloud">Upload vanuit Nextcloud</string>
@@ -311,4 +310,5 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_settings_phone_book_integration_desc">Combineer contactpersonen gebaseerd op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>
-</resources>
+
+    </resources>
