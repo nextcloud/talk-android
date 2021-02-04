@@ -328,7 +328,7 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload local file</string>
-    <string name="nc_upload_from_nextcloud">Upload from Nextcloud</string>
+    <string name="nc_upload_from_nextcloud">Share from Nextcloud</string>
     <string name="nc_upload_failed">Failed to upload file</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
 
