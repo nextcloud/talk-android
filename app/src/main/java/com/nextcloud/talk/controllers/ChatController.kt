@@ -1395,41 +1395,34 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
         isLeavingForConversation = true
-        if (!isVoiceOnlyCall) {
-            val videoCallIntent = getIntentForCall(false)
-            if (videoCallIntent != null) {
-                startActivity(videoCallIntent)
-            }
-        } else {
-            val voiceCallIntent = getIntentForCall(true)
-            if (voiceCallIntent != null) {
-                startActivity(voiceCallIntent)
-            }
+        val callIntent = getIntentForCall(isVoiceOnlyCall)
+        if (callIntent != null) {
+            startActivity(callIntent)
         }
     }
 
     private fun getIntentForCall(isVoiceOnlyCall: Boolean): Intent? {
-        if (currentConversation != null) {
+        currentConversation?.let {
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             bundle.putString(BundleKeys.KEY_ROOM_ID, roomId)
             bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
+            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, it.displayName)
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
             }
 
-            if (activity != null) {
+            return if (activity != null) {
                 val callIntent = Intent(activity, MagicCallActivity::class.java)
                 callIntent.putExtras(bundle)
-
-                return callIntent
+                callIntent
             } else {
-                return null
+                null
             }
-        } else {
+        } ?:run {
             return null
         }
     }

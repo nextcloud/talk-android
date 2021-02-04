@@ -127,6 +127,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token;
     }
 
+    public static String getRoomV3(String baseUrl, String token) {
+        return baseUrl + ocsApiVersion + "/apps/spreed/api/v3" + "/room/" + token;
+    }
+
     public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {

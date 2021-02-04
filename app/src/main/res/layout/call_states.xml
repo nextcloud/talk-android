@@ -19,25 +19,24 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/connectingRelativeLayoutView"
+    android:id="@+id/callStateRelativeLayoutView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/grey950">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/errorImageView"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_above="@id/connectingTextView"
+        android:layout_above="@id/callStateTextView"
         android:layout_centerHorizontal="true"
         android:src="@drawable/ic_signal_wifi_off_white_24dp"
         android:visibility="gone" />
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/callStateProgressBar"
         android:layout_width="@dimen/item_height"
         android:layout_height="@dimen/item_height"
-        android:layout_above="@id/connectingTextView"
+        android:layout_above="@id/callStateTextView"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -48,7 +47,7 @@
         android:indeterminateTintMode="src_in" />
 
     <TextView
-        android:id="@+id/connectingTextView"
+        android:id="@+id/callStateTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

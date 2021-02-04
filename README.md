@@ -84,5 +84,12 @@ commit automatically with `git commit -s`. You can also use git [aliases](https:
 like `git config --global alias.ci 'commit -s'`. Now you can commit with
 `git ci` and the commit will be signed.
 
+## Credits
+
+### Ringtones
+
+- [Ringtones by Librem](https://soundcloud.com/feandesign/sets/librem-5-sounds)
+- [Telefon-Freiton in Deutschland nach DTAG 1 TR 110-1, Kap. 8.3](https://commons.wikimedia.org/wiki/File:1TR110-1_Kap8.3_Freiton1.ogg)
+
 [dcofile]: https://github.com/nextcloud/talk-android/blob/master/contribute/developer-certificate-of-origin
 [applyalicense]: https://github.com/nextcloud/talk-android/blob/master/contribute/HowToApplyALicense.md

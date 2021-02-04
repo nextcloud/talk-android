@@ -40,9 +40,6 @@ import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicCallActivity : BaseActivity() {

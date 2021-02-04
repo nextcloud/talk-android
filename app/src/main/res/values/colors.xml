@@ -64,4 +64,7 @@
     <color name="bg_message_list_outcoming_bubble_deleted">#800082C9</color>
 
     <color name="bg_bottom_sheet">#46ffffff</color>
+
+    <color name="call_buttons_background">#BF999999</color>
+
 </resources>

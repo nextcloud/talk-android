@@ -70,6 +70,7 @@ import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
@@ -83,6 +84,7 @@ import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
@@ -120,6 +122,9 @@ public class CallNotificationController extends BaseController {
 
     @Inject
     Context context;
+
+    @BindView(R.id.incomingCallVoiceOrVideoTextView)
+    TextView incomingCallVoiceOrVideoTextView;
 
     @BindView(R.id.conversationNameTextView)
     TextView conversationNameTextView;
@@ -197,6 +202,8 @@ public class CallNotificationController extends BaseController {
 
     private void proceedToCall() {
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
+        originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
+        originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
 
         getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
                 .popChangeHandler(new HorizontalChangeHandler())
@@ -253,38 +260,77 @@ public class CallNotificationController extends BaseController {
     }
 
     private void handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(userBeingCalled.getBaseUrl()))
-                .subscribeOn(Schedulers.io())
-                .retry(3)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<RoomsOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposablesList.add(d);
-                    }
+        boolean isConversationApiV3 = userBeingCalled.hasSpreedFeatureCapability("conversation-v3");
+        if(isConversationApiV3) {
+            ncApi.getRoom(credentials, ApiUtils.getRoomV3(userBeingCalled.getBaseUrl(), roomId))
+                    .subscribeOn(Schedulers.io())
+                    .retry(3)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposablesList.add(d);
+                        }
 
-                    @Override
-                    public void onNext(RoomsOverall roomsOverall) {
-                        for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(conversation.getRoomId()) || roomId.equals(conversation.token)) {
-                                currentConversation = conversation;
-                                runAllThings();
-                                break;
+                        @Override
+                        public void onNext(@NotNull RoomOverall roomOverall) {
+                            currentConversation = roomOverall.getOcs().data;
+                            runAllThings();
+
+                            boolean hasCallFlags = userBeingCalled.hasSpreedFeatureCapability("conversation-call-flags");
+                            if (hasCallFlags) {
+                                if (isInCallWithVideo(currentConversation.callFlag)){
+                                    incomingCallVoiceOrVideoTextView.setText(R.string.nc_video_call);
+                                } else {
+                                    incomingCallVoiceOrVideoTextView.setText(R.string.nc_voice_call);
+                                }
                             }
                         }
 
-                    }
+                        @Override
+                        public void onError(Throwable e) {
 
-                    @Override
-                    public void onError(Throwable e) {
+                        }
 
-                    }
+                        @Override
+                        public void onComplete() {
 
-                    @Override
-                    public void onComplete() {
+                        }
+                    });
+        } else {
+            ncApi.getRoom(credentials, ApiUtils.getRoom(userBeingCalled.getBaseUrl(), roomId))
+                    .subscribeOn(Schedulers.io())
+                    .retry(3)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
+                            disposablesList.add(d);
+                        }
 
-                    }
-                });
+                        @SuppressLint("LongLogTag")
+                        @Override
+                        public void onNext(@NotNull RoomOverall roomOverall) {
+                            currentConversation = roomOverall.getOcs().data;
+                            runAllThings();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+    }
+
+    private boolean isInCallWithVideo(int callFlag) {
+        return (Participant.ParticipantFlags.IN_CALL_WITH_VIDEO.getValue() == callFlag
+                || Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue() == callFlag);
     }
 
     private void runAllThings() {
@@ -321,72 +367,13 @@ public class CallNotificationController extends BaseController {
         }
 
         if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
-            String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
-            Uri ringtoneUri;
-
-            if (TextUtils.isEmpty(callRingtonePreferenceString)) {
-                // play default sound
-                ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                        "/raw/librem_by_feandesign_call");
-            } else {
-                try {
-                    RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
-                    ringtoneUri = ringtoneSettings.getRingtoneUri();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to parse ringtone settings");
-                    ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                            "/raw/librem_by_feandesign_call");
-                }
-            }
-
-            if (ringtoneUri != null && getActivity() != null) {
-                mediaPlayer = new MediaPlayer();
-                try {
-                    mediaPlayer.setDataSource(getActivity(), ringtoneUri);
-
-                    mediaPlayer.setLooping(true);
-                    AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
-                            .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
-                    mediaPlayer.setAudioAttributes(audioAttributes);
-
-                    mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
-
-                    mediaPlayer.prepareAsync();
-                } catch (IOException e) {
-                    Log.e(TAG, "Failed to set data source");
-                }
-            }
+            playRingtoneSound();
         }
 
         if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
-            vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-            if (vibrator != null) {
-                long[] vibratePattern = new long[]{0, 400, 800, 600, 800, 800, 800, 1000};
-                int[] amplitudes = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
-
-                VibrationEffect vibrationEffect;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    if (vibrator.hasAmplitudeControl()) {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
-                        //vibrator.vibrate(vibrationEffect);
-                    } else {
-                        vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
-                        //vibrator.vibrate(vibrationEffect);
-                    }
-                } else {
-                    //vibrator.vibrate(vibratePattern, -1);
-                }
-            }
-
-            handler.postDelayed(() -> {
-                if (vibrator != null) {
-                    vibrator.cancel();
-                }
-            }, 10000);
+            vibrate();
         }
     }
-
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
@@ -508,5 +495,72 @@ public class CallNotificationController extends BaseController {
                 disposable.dispose();
             }
         }
+    }
+
+    @SuppressLint("LongLogTag")
+    private void playRingtoneSound() {
+        String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
+        Uri ringtoneUri;
+
+        if (TextUtils.isEmpty(callRingtonePreferenceString)) {
+            // play default sound
+            ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                    "/raw/librem_by_feandesign_call");
+        } else {
+            try {
+                RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
+                ringtoneUri = ringtoneSettings.getRingtoneUri();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to parse ringtone settings");
+                ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
+                        "/raw/librem_by_feandesign_call");
+            }
+        }
+
+        if (ringtoneUri != null && getActivity() != null) {
+            mediaPlayer = new MediaPlayer();
+            try {
+                mediaPlayer.setDataSource(getActivity(), ringtoneUri);
+
+                mediaPlayer.setLooping(true);
+                AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
+                        .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+                mediaPlayer.setAudioAttributes(audioAttributes);
+
+                mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
+
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to set data source");
+            }
+        }
+    }
+
+    private void vibrate() {
+        vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+
+        if (vibrator != null) {
+            long[] vibratePattern = new long[]{0, 400, 800, 600, 800, 800, 800, 1000};
+            int[] amplitudes = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
+
+            VibrationEffect vibrationEffect;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (vibrator.hasAmplitudeControl()) {
+                    vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
+                    //vibrator.vibrate(vibrationEffect);
+                } else {
+                    vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
+                    //vibrator.vibrate(vibrationEffect);
+                }
+            } else {
+                //vibrator.vibrate(vibratePattern, -1);
+            }
+        }
+
+        handler.postDelayed(() -> {
+            if (vibrator != null) {
+                vibrator.cancel();
+            }
+        }, 10000);
     }
 }

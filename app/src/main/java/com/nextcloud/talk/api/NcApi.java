@@ -177,8 +177,10 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
 
+    @FormUrlEncoded
     @POST
-    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url,
+                                        @Field("flags") Integer inCall);
 
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken

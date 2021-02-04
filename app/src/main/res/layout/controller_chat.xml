@@ -20,24 +20,29 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bbb"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     android:animateLayoutChanges="true">
 
     <include layout="@layout/lobby_view"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/callControlToggleChat"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_margin="16dp"
-        app:backgroundImage="@color/nc_grey"
+        android:layout_alignParentEnd="true"
+        app:backgroundImage="@color/call_buttons_background"
         app:placeholderImage="@drawable/ic_call_black_24dp"
         app:roundAsCircle="true"
         android:elevation="10dp"
         android:visibility="gone"
+        tools:visibility="visible"
         />
 
     <ProgressBar
@@ -52,7 +57,8 @@
         android:indeterminate="true"
         android:indeterminateTint="@color/colorPrimary"
         android:indeterminateTintMode="src_in"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <View
         android:id="@+id/separator"
