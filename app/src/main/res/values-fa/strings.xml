@@ -71,9 +71,6 @@
     <string name="nc_settings_no_talk_installed">برنامه Talk روی سروری که قصد اعتبار سنجی در آن را دارید، نصب نشده است</string>
     <string name="nc_settings_account_updated">به جای اضافه کردن حساب جدید، حساب از قبل موجود شما بروز شد</string>
     <string name="nc_account_scheduled_for_deletion">حساب برای حذف برنامه ریزی شده است و قابل تغییر نیست</string>
-    <string name="nc_settings_notification_sounds">صدا</string>
-    <string name="nc_settings_call_ringtone">تماس‌ها</string>
-    <string name="nc_settings_other_notifications_ringtone">اعلان‌ها</string>
     <string name="nc_settings_no_ringtone">بدون صدا</string>
     <string name="nc_settings_vibrate">لرزش</string>
     <string name="nc_settings_vibrate_desc">تلفن لرزش خواهد کرد مگر اینکه در حالت سکوت باشد</string>

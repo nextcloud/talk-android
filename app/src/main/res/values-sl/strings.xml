@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Prišlo je do napake ...</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nastavitve</string>
 
@@ -72,9 +75,6 @@
     <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
-    <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>
-    <string name="nc_settings_call_ringtone">Klici 1 na 1</string>
-    <string name="nc_settings_other_notifications_ringtone">Drugo</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_vibrate">Tresenje</string>
     <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
@@ -300,11 +300,17 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiraj</string>
     <string name="nc_reply">Odgovori</string>
+    <string name="nc_delete_message">Izbriši</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
+
     <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
     <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
     <string name="nc_upload_failed">Pošiljanje datoteke je spodletelo</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Poveži stike po telefonski številki za povezavo imenika s programom Talk</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
+    <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
+
     </resources>

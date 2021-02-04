@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Leider ist etwas schiefgelaufen!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Einstellungen</string>
 
@@ -72,9 +75,6 @@
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann daher nicht verändert werden</string>
-    <string name="nc_settings_notification_sounds">Benachrichtigungstöne</string>
-    <string name="nc_settings_call_ringtone">Eins-Zu-Eins-Anrufe</string>
-    <string name="nc_settings_other_notifications_ringtone">Andere</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
@@ -299,6 +299,9 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopieren</string>
     <string name="nc_reply">Antworten</string>
+    <string name="nc_delete_message">Löschen</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, aber möglicherweise an andere Dienste weitergegeben worden.</string>
+
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_from_nextcloud">Von Nextcloud hochladen</string>

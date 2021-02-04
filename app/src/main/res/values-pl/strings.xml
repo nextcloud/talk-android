@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Przepraszamy, coś poszło nie tak!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Ustawienia</string>
 
@@ -72,9 +75,6 @@
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_account_scheduled_for_deletion">Konto jest zaznaczone do usunięcia, nie można wprowadzać zmian</string>
-    <string name="nc_settings_notification_sounds">Dźwięki powiadomienia</string>
-    <string name="nc_settings_call_ringtone">Połączenia indywidualne</string>
-    <string name="nc_settings_other_notifications_ringtone">Inne</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracja</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
@@ -190,7 +190,7 @@
         ustawienia \"Nie przeszkadzać\"</string>
 
     <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Przepraszam, coś poszło nie tak!</string>
+    <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
         Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
@@ -299,6 +299,9 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiuj</string>
     <string name="nc_reply">Odpowiedz</string>
+    <string name="nc_delete_message">Usuń</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Wiadomość została pomyślnie usunięta, ale mogła przedostać się do innych usług</string>
+
     <!-- Upload -->
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
     <string name="nc_upload_from_nextcloud">Wyślij z Nextcloud</string>

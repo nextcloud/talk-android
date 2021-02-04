@@ -72,9 +72,6 @@
     <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
-    <string name="nc_settings_notification_sounds">Sons de notificación</string>
-    <string name="nc_settings_call_ringtone">Chamadas persoais</string>
-    <string name="nc_settings_other_notifications_ringtone">Outro</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
