@@ -59,7 +59,7 @@
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Διαμεσολαβητής</string>
     <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
-    <string name="nc_settings_proxy_host_title">Ενδιάμεσος Η/Υ</string>
+    <string name="nc_settings_proxy_host_title">Σύστημα διαμεσολαβητή</string>
     <string name="nc_settings_proxy_port_title">Θύρα διαμεσολαβητή</string>
     <string name="nc_settings_use_credentials_title">Χρήση διαπιστευτηρίων</string>
     <string name="nc_settings_switch_account">Εναλλαγή λογαριασμών</string>
@@ -304,7 +304,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Μεταφόρτωση τοπικού αρχείου</string>
-    <string name="nc_upload_from_nextcloud">Μεταφόρτωση από το Nextcloud</string>
     <string name="nc_upload_failed">Αποτυχία μεταφόρτωσης αρχείου</string>
     <string name="nc_upload_choose_local_files">Επιλογή αρχείων</string>
 

@@ -305,7 +305,6 @@ Pozdravite prijatelje in znance.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
-    <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
     <string name="nc_upload_failed">Pošiljanje datoteke je spodletelo</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
 

@@ -75,6 +75,9 @@
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_account_scheduled_for_deletion">Konto jest zaznaczone do usunięcia, nie można wprowadzać zmian</string>
+    <string name="nc_settings_notification_sounds">Dźwięk</string>
+    <string name="nc_settings_call_ringtone">Połączenia</string>
+    <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracja</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
@@ -304,7 +307,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
-    <string name="nc_upload_from_nextcloud">Wyślij z Nextcloud</string>
     <string name="nc_upload_failed">Nie udało się wysłać pliku</string>
     <string name="nc_upload_choose_local_files">Wybierz plik</string>
 

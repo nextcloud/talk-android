@@ -298,7 +298,6 @@
     <string name="nc_reply">Responder</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Subir archivo local</string>
-    <string name="nc_upload_from_nextcloud">Subir desde Nextcloud</string>
     <string name="nc_upload_failed">Error al subir el archivo</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
 

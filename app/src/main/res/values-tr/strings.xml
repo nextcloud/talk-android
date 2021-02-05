@@ -304,7 +304,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
-    <string name="nc_upload_from_nextcloud">Nextcloud üzerinden yükle</string>
     <string name="nc_upload_failed">Dosya yüklenemedi</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
 

@@ -72,6 +72,9 @@
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
+    <string name="nc_settings_notification_sounds">Som</string>
+    <string name="nc_settings_call_ringtone">Chamadas</string>
+    <string name="nc_settings_other_notifications_ringtone">Notificações</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O telefone vai vibrar a menos que esteja silenciado</string>
@@ -296,6 +299,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_reply">Responder</string>
+    <string name="nc_delete_message">Excluir</string>
     <string name="nc_settings_phone_book_integration_desc">Combinar contatos com base no número de telefone para integrar o atalho do Talk na lista de telefones</string>
     <string name="nc_settings_phone_book_integration_title">Integração da lista de telefones</string>
     <string name="no_phone_book_integration_due_to_permissions">Nenhuma integração da lista de telefones devido à falta de permissões</string>

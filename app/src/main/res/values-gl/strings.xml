@@ -298,7 +298,6 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_reply">Responder</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
-    <string name="nc_upload_from_nextcloud">Enviar dende Nextcloud</string>
     <string name="nc_upload_failed">Produciuse un fallo ao enviar o ficheiro</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
 

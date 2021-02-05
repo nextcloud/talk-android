@@ -75,6 +75,9 @@
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann daher nicht verändert werden</string>
+    <string name="nc_settings_notification_sounds">Ton</string>
+    <string name="nc_settings_call_ringtone">Anrufe</string>
+    <string name="nc_settings_other_notifications_ringtone">Benachrichtigungen</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
@@ -304,7 +307,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
-    <string name="nc_upload_from_nextcloud">Von Nextcloud hochladen</string>
     <string name="nc_upload_failed">Fehler beim Hochladen der Datei</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
 

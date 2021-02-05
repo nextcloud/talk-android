@@ -75,6 +75,9 @@
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
     <string name="nc_settings_account_updated">已经更新了您现有的账号，而不是添加新的账号</string>
     <string name="nc_account_scheduled_for_deletion">此账号已计划删除，且无法更改</string>
+    <string name="nc_settings_notification_sounds">声音</string>
+    <string name="nc_settings_call_ringtone">通话</string>
+    <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_vibrate">振动</string>
     <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
@@ -301,7 +304,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">上传本地文件</string>
-    <string name="nc_upload_from_nextcloud">从 Nextcloud 上传</string>
     <string name="nc_upload_failed">上传文件失败</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
 
