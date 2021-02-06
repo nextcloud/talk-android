@@ -307,6 +307,7 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
+    <string name="nc_upload_from_nextcloud">Von Nextcloud teilen</string>
     <string name="nc_upload_failed">Fehler beim Hochladen der Datei</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
 

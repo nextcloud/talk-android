@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Desculpe, algo deu errado! </string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Configurações</string>
 
@@ -300,6 +303,14 @@
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_delete_message">Excluir</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter vazado para outros serviços </string>
+
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Enviar arquivo local </string>
+    <string name="nc_upload_from_nextcloud">Compartilhe do Nextcloud </string>
+    <string name="nc_upload_failed">Falha ao enviar o arquivo </string>
+    <string name="nc_upload_choose_local_files">Escolher os arquivos </string>
+
     <string name="nc_settings_phone_book_integration_desc">Combinar contatos com base no número de telefone para integrar o atalho do Talk na lista de telefones</string>
     <string name="nc_settings_phone_book_integration_title">Integração da lista de telefones</string>
     <string name="no_phone_book_integration_due_to_permissions">Nenhuma integração da lista de telefones devido à falta de permissões</string>

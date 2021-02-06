@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Что-то пошло не так :(</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Параметры</string>
 
@@ -33,6 +36,7 @@
     <string name="nc_server_import_account">Импортировать учётную запись из приложения %1$s </string>
     <string name="nc_server_import_accounts">Импортировать учётные записи из приложения %1$s </string>
     <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
+    <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
 
     <!-- Account verification -->
@@ -71,7 +75,11 @@
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, приложение «Talk» не установлено.</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_account_scheduled_for_deletion">Учётная запись запланирована к удалению и не может быть использована</string>
+    <string name="nc_settings_notification_sounds">Звук</string>
+    <string name="nc_settings_call_ringtone">Вызовы</string>
+    <string name="nc_settings_other_notifications_ringtone">Уведомления</string>
     <string name="nc_settings_no_ringtone">Без звука</string>
+    <string name="nc_settings_vibrate">Вибрация</string>
     <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
     <string name="nc_settings_appearance">Внешний вид</string>
     <string name="nc_settings_theme_title">Оформление</string>
@@ -80,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
     <string name="nc_settings_theme_light">Светлое</string>
     <string name="nc_settings_theme_dark">Тёмное</string>
+    <string name="nc_settings_privacy">Приватность</string>
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_lock_desc">Защищать %1$s с помощью системой блокировки  Android или поддерживаемого биометрического метода</string>
     <string name="nc_settings_screen_lock_timeout_title">Задержка блокирования экрана при бездействии</string>
@@ -131,6 +140,7 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
+    <string name="nc_delete_conversation_default">Пожалуйста, подтвердите удаление обсуждения.</string>
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
@@ -276,4 +286,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Копировать</string>
     <string name="nc_reply">Ответить</string>
+    <string name="nc_upload_failed">Не удалось загрузить файл</string>
+    <string name="nc_upload_choose_local_files">Выберите файлы</string>
+
     </resources>

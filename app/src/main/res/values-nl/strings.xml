@@ -309,6 +309,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
+    <string name="nc_upload_from_nextcloud">Delen vanuit Nextcloud</string>
     <string name="nc_upload_failed">Kon bestand niet uploaden</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
 
