@@ -71,6 +71,7 @@
     <string name="nc_settings_theme_dark">暗色</string>
     <string name="nc_settings_screen_lock_title">螢幕鎖定</string>
     <string name="nc_none">無</string>
+    <string name="nc_settings_screen_security_title">螢幕安全</string>
     <string name="nc_settings_link_previews_title">顯示 連結預覽</string>
     <string name="nc_locked">點擊可解除鎖定</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>

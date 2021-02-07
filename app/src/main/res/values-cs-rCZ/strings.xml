@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Omlouváme se, něco se pokazilo!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nastavení</string>
 
@@ -33,6 +36,7 @@
     <string name="nc_server_import_account">Importovat účet z aplikace %1$s</string>
     <string name="nc_server_import_accounts">Importovat účty z aplikace %1$s</string>
     <string name="nc_server_failed_to_import_account">Zvolený účet se nepodařilo naimportovat</string>
+    <string name="nc_Server_account_imported">Zvolený účet byl importován a je k dispozici</string>
     <string name="nc_get_from_provider">Nemáte ještě server?\nKlepnutím sem ho získejte od poskytovatele</string>
 
     <!-- Account verification -->
@@ -71,7 +75,11 @@
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_account_updated">Namísto přidání nového byl zaktualizován váš stávající účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
+    <string name="nc_settings_notification_sounds">Zvuk</string>
+    <string name="nc_settings_call_ringtone">Volání</string>
+    <string name="nc_settings_other_notifications_ringtone">Upozornění</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
+    <string name="nc_settings_vibrate">Vibrovat</string>
     <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_appearance">Vzhled</string>
     <string name="nc_settings_theme_title">Motiv vzhledu</string>
@@ -80,6 +88,7 @@
     <string name="nc_settings_theme_battery_saver">Nastaveno úsporou akumulátoru</string>
     <string name="nc_settings_theme_light">Světlý</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
+    <string name="nc_settings_privacy">Soukromí</string>
     <string name="nc_settings_screen_lock_title">Zámek obrazovky</string>
     <string name="nc_settings_screen_lock_desc">Uzamknout %1$s pomocí zámku obrazovky Android nebo podporované biometrické metody</string>
     <string name="nc_settings_screen_lock_timeout_title">Časový limit nečinnosti pro zámek obrazovky</string>
@@ -91,6 +100,9 @@
     <string name="nc_settings_link_previews_title">Zobrazovat náhledy odkazů</string>
     <string name="nc_settings_link_previews_desc">U podporovaných služeb umožňuje náhledy obsahu z obdržených odkazů</string>
     <string name="nc_locked">Odemkněte ťuknutím</string>
+    <string name="nc_settings_read_privacy_desc">Sdílet mé oznámení o přečtení a zobrazit oznámení o přečtení ostatních</string>
+    <string name="nc_settings_read_privacy_title">Oznámení o přečtení</string>
+
     <string name="nc_screen_lock_timeout_30">30 sekund</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_300">5 minut</string>
@@ -131,12 +143,19 @@
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_delete">Smazat</string>
+    <string name="nc_delete_conversation_default">Potvrďte, že chcete odebrat tuto konverzaci.</string>
+    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude smazána
+        i pro %1$s.</string>
+    <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
+
     <string name="nc_new_conversation">Nová konverzace</string>
     <string name="nc_join_via_link">Připojit se přes odkaz</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Vybrat kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
@@ -167,7 +186,11 @@
     <string name="nc_notify_me_mention">Upozornit, když vás někdo zmíní</string>
     <string name="nc_notify_me_never">Nikdy neupozorňovat</string>
     <string name="nc_mute_calls">Ztišit hovory</string>
+    <string name="nc_mute_calls_desc">Příchozí hovory budou ztišeny</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
+    <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat
+        režim Nerušit</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
@@ -276,4 +299,17 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Zkopírovat</string>
     <string name="nc_reply">Odpovědět</string>
+    <string name="nc_delete_message">Smazat</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Zpráva úspěšně smazána, ale možná unikla do jiných služeb</string>
+
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Nahrát místní soubor</string>
+    <string name="nc_upload_from_nextcloud">Sdílet z Nextcloudu</string>
+    <string name="nc_upload_failed">Nepodařilo se nahrát soubor</string>
+    <string name="nc_upload_choose_local_files">Vyberte soubory</string>
+
+    <string name="nc_settings_phone_book_integration_desc">Propojit kontakty na základě telefoního čísla k integraci Talk v telefoním seznamu</string>
+    <string name="nc_settings_phone_book_integration_title">Propojení s telefoním seznamem</string>
+    <string name="no_phone_book_integration_due_to_permissions">Bez propojení kontaktů v telefonu z důvodu neudělení oprávnění</string>
+
     </resources>
