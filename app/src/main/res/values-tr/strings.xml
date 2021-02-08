@@ -75,6 +75,9 @@
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
     <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
     <string name="nc_account_scheduled_for_deletion">Hesap silinmek üzere zamanlandı ve üzerinde işlem yapılamaz</string>
+    <string name="nc_settings_notification_sounds">Ses</string>
+    <string name="nc_settings_call_ringtone">Çağrılar</string>
+    <string name="nc_settings_other_notifications_ringtone">Bildirimler</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_vibrate">Titreşim</string>
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
@@ -304,6 +307,7 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
+    <string name="nc_upload_from_nextcloud">Nextcloud üzerinden paylaş</string>
     <string name="nc_upload_failed">Dosya yüklenemedi</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
 

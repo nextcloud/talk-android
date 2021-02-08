@@ -304,6 +304,7 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">上传本地文件</string>
+    <string name="nc_upload_from_nextcloud">从 Nextcloud 共享</string>
     <string name="nc_upload_failed">上传文件失败</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
 

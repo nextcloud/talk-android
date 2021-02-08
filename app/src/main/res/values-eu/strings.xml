@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Sentitzen dugu, zerbait gaizki joan da!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Ezarpenak</string>
 
@@ -33,6 +36,7 @@
     <string name="nc_server_import_account">Inportatu kontua %1$s apptik</string>
     <string name="nc_server_import_accounts">Inportatu kontuak %1$s apptik</string>
     <string name="nc_server_failed_to_import_account">Ezin izan da aukeratutako kontua inportatu</string>
+    <string name="nc_Server_account_imported">Aukeratutako kontua inportatu da eta eskuragarri dago</string>
     <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
 
     <!-- Account verification -->
@@ -71,7 +75,11 @@
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
     <string name="nc_account_scheduled_for_deletion">Kontua ezabatzeko programatuta dago eta ezin da harekin operatu</string>
+    <string name="nc_settings_notification_sounds">Soinua</string>
+    <string name="nc_settings_call_ringtone">Deiak</string>
+    <string name="nc_settings_other_notifications_ringtone">Jakinarazpenak</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
+    <string name="nc_settings_vibrate">Bibratu</string>
     <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_theme_title">Gaia</string>
@@ -92,6 +100,9 @@
     <string name="nc_settings_link_previews_title">Erakutsi esteka aurrebistak</string>
     <string name="nc_settings_link_previews_desc">Jasotako esteka eta onartutako zerbitzuetako edukia aurreikusten onartzen du</string>
     <string name="nc_locked">Sakatu desblokeatzeko</string>
+    <string name="nc_settings_read_privacy_desc">Partekatu nire irakurtze-egoera eta erakutsi besteen irakurtze-egoera</string>
+    <string name="nc_settings_read_privacy_title">Irakurtze egoera</string>
+
     <string name="nc_screen_lock_timeout_30">30 segundu</string>
     <string name="nc_screen_lock_timeout_60">Minutu 1</string>
     <string name="nc_screen_lock_timeout_300">5 minutu</string>
@@ -132,6 +143,9 @@
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
+    <string name="nc_delete_conversation_default">Baieztatu mesedez elkarrizketa kendu nahi duzula.</string>
+    <string name="nc_delete_conversation_one2one">Elkarrizketa ezabatzen baduzu, ezabatu egingo da
+%1$s-rentzat ere.</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
 
     <string name="nc_new_conversation">Elkarrizketa berria</string>
@@ -140,6 +154,8 @@
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Hautatu kontaktuak</string>
     <string name="nc_contacts_done">Egina</string>
 
     <!-- Permissions -->
@@ -171,7 +187,11 @@
     <string name="nc_notify_me_mention">Jakinarazi aipatzen nautenean</string>
     <string name="nc_notify_me_never">Ez jakinarazi inoiz</string>
     <string name="nc_mute_calls">Mututu deiak</string>
+    <string name="nc_mute_calls_desc">Sarrerako deiak isilduko dira</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
+    <string name="nc_important_conversation_desc">Elkarrizketa honen jakinarazpenei entzungor egingo zaie
+Ez Molestatu modua</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du mugikorraren bidez elkarrizketa
@@ -283,4 +303,17 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiatu</string>
     <string name="nc_reply">Erantzun</string>
+    <string name="nc_delete_message">Ezabatu</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
+
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
+    <string name="nc_upload_from_nextcloud">Partekatu Nextcloud bidez</string>
+    <string name="nc_upload_failed">Fitxategia kargatzeak huts egin du</string>
+    <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
+
+    <string name="nc_settings_phone_book_integration_desc">Lotu kontaktuak telefono zenbakian oinarrituta, Talk lasterbideak integratzeko telefono zerrendan</string>
+    <string name="nc_settings_phone_book_integration_title">Telefono zerrendan integratzea</string>
+    <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zerrenda integratu, baimen falta dela eta</string>
+
     </resources>

@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Sentímolo, algo foi mal!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Axustes</string>
 
@@ -72,6 +75,9 @@
     <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
+    <string name="nc_settings_notification_sounds">Son</string>
+    <string name="nc_settings_call_ringtone">Chamadas</string>
+    <string name="nc_settings_other_notifications_ringtone">Notificacións</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
@@ -296,8 +302,12 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_reply">Responder</string>
+    <string name="nc_delete_message">Eliminar</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">A mensaxe foi eliminada correctamente, pero é posíbel que se filtrase a outros servizos</string>
+
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
+    <string name="nc_upload_from_nextcloud">Compartir dende Nextcloud</string>
     <string name="nc_upload_failed">Produciuse un fallo ao enviar o ficheiro</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
 
