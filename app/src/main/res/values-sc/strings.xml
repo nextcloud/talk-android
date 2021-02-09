@@ -54,9 +54,12 @@
     <string name="nc_certificate_dialog_text">Ti fidas de su tzertificadu SSL, disconnotu finas a immoe, frunidu dae %1$s pro %2$s, vàlidu dae %3$s a %4$s?</string>
     <string name="nc_yes">Eja</string>
     <string name="nc_no">No</string>
+    <string name="nc_certificate_error">Sa cunfiguratzione SSL at refudadu sa connessione</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Genia de proxy</string>
+    <string name="nc_settings_proxy_port_title">Ghenna de su proxy</string>
     <string name="nc_settings_use_credentials_title">Imprea credentziales</string>
     <string name="nc_settings_switch_account">Passa a àteros contos</string>
     <string name="nc_settings_reauthorize">Torra a autorizare</string>
@@ -68,6 +71,9 @@
     <string name="nc_settings_add_account">Agiunghe unu contu nou</string>
     <string name="nc_add">Agiunghe</string>
     <string name="nc_settings_wrong_account">Isceti su contu atuale si podet torrare a autorizare</string>
+    <string name="nc_settings_no_talk_installed"> S\'aplicatzione de mutidas no est installada in su serbidore a su chi as proadu a autenticare</string>
+    <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
+    <string name="nc_account_scheduled_for_deletion">Su contu at a èssere cantzelladu e non si podet cambiare</string>
     <string name="nc_settings_notification_sounds">Sonu</string>
     <string name="nc_settings_call_ringtone">Mutidas</string>
     <string name="nc_settings_other_notifications_ringtone">Notìficas</string>
@@ -78,16 +84,22 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
+    <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
     <string name="nc_settings_theme_light">Lughe</string>
     <string name="nc_settings_theme_dark">Oscuridade</string>
     <string name="nc_settings_privacy">Riservadesa</string>
     <string name="nc_settings_screen_lock_title">Blocu de ischermu</string>
+    <string name="nc_settings_screen_lock_desc">Bloca%1$s cun su blocu de ischermu Android o unu mètodu biomèricu suportadu</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tempus de inatividade de su blocu de ischermu</string>
     <string name="nc_none">Perunu</string>
     <string name="nc_settings_screen_security_title">Seguresa ischermu</string>
     <string name="nc_settings_screen_security_desc">Impedit is caturas de ischermu in sa lista reghente e a intro de s\'aplicatzione</string>
     <string name="nc_settings_incognito_keyboard_title">Tastiera in incògnita</string>
+    <string name="nc_settings_incognito_keyboard_desc">Imparat a sa tastiera a disativare s\'imparu personale (chene garantzias)</string>
     <string name="nc_settings_link_previews_title">Ammustra anteprima de is ligòngios</string>
     <string name="nc_settings_link_previews_desc">Permite anteprimas de cuntenutu dae ligòngios retzidos pro servìtzios suportados</string>
+    <string name="nc_locked">Toca pro isblocare</string>
+    <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
     <string name="nc_settings_read_privacy_title">Leghe istadu</string>
 
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
@@ -145,13 +157,20 @@
     <string name="nc_select_contacts">Seletziona cuntatos</string>
     <string name="nc_contacts_done">Fatu</string>
 
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">Pro ativare comunicatzione in vìdeu cunsenti is pemissos de \"Fotocàmera\" in sa cunfiguratzione de sistema.</string>
+    <string name="nc_microphone_permission_permanently_denied">Pro ativare comunicatzione de boghe cunsenti is permissos de \"Micròfonu\" in sa cunfiguratzione de sistema.</string>
     <string name="nc_permissions_settings">Aberi cunfiguratziones</string>
 
     <!-- Call -->
     <string name="nc_connecting_call">Connetende...</string>
     <string name="nc_calling">Tzerriende...</string>
     <string name="nc_incoming_call">Mutida in intrada dae</string>
+    <string name="nc_nick_guest">Òspite</string>
     <string name="nc_public_call">Tzarrada pùblica noa</string>
+    <string name="nc_public_call_explanation">Is tzarradas pùblicas ti faghent invitare a gente dae foras cun unu
+        ligòngiu fatu a posta.</string>
+    <string name="nc_call_timeout">Peruna risposta in 45 segundos, toca pro torrare a proare</string>
     <string name="nc_call_reconnecting">Torrende a connètere...</string>
     <string name="nc_offline">Foras de lìnia, controlla sa connessione tua</string>
     <string name="nc_leaving_call">Lassende sa mutida...</string>
@@ -169,17 +188,26 @@
     <string name="nc_mute_calls">Pone is mutidas a sa muda</string>
     <string name="nc_mute_calls_desc">In mutidas in intrada ant a èssere a sa muda</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
+    <string name="nc_important_conversation_desc">Is notìficas de custa tzarrada ant a èssere ignoradas
+        Cunfiguratzione No istorbare</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
+    <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una tzarrada pùblica cun telèfonos mòbiles.
+        Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_all_ok_operation">AB, fatu!</string>
     <string name="nc_ok">AB</string>
     <string name="nc_call_name">Nùmene tzarrada</string>
     <string name="nc_proceed">Sighi</string>
     <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
     <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
+    <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>
     <string name="nc_share_subject">%1$s invitu</string>
     <string name="nc_share_text_pass">\nCrae: %1$s</string>
 
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">Cumandu de trasmissione</string>
+    <string name="nc_push_to_talk_desc">Cun su micròfonu disativadu, mantene incarcadu&amp;pro impreare su cumandu de trasmissione</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
     <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
 
