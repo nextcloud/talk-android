@@ -56,6 +56,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.core.content.ContextCompat;
@@ -96,9 +97,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 public class DisplayUtils {
 
     private static final String TAG = "DisplayUtils";
@@ -107,7 +105,7 @@ public class DisplayUtils {
         SpannableString spannableString = new SpannableString(string);
         spannableString.setSpan(new ClickableSpan() {
             @Override
-            public void onClick(@Nonnull View widget) {
+            public void onClick(@NonNull View widget) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext().startActivity(browserIntent);
@@ -181,12 +179,12 @@ public class DisplayUtils {
             }
 
             @Override
-            public void onFinalImageSet(String id, @javax.annotation.Nullable Object imageInfo, @javax.annotation.Nullable Animatable animatable) {
+            public void onFinalImageSet(String id, @androidx.annotation.Nullable Object imageInfo, @androidx.annotation.Nullable Animatable animatable) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 
             @Override
-            public void onIntermediateImageSet(String id, @javax.annotation.Nullable Object imageInfo) {
+            public void onIntermediateImageSet(String id, @androidx.annotation.Nullable Object imageInfo) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 
