@@ -110,7 +110,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
 
             PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
-                    .setEnableVideoHwAcceleration(MagicWebRTCUtils.shouldEnableVideoHardwareAcceleration())
                     .createInitializationOptions())
         } catch (e: UnsatisfiedLinkError) {
             Log.w(TAG, e)

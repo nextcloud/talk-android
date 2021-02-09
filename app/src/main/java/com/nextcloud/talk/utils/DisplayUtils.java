@@ -52,16 +52,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import androidx.annotation.ColorInt;
-import androidx.annotation.ColorRes;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.XmlRes;
-import androidx.appcompat.widget.AppCompatDrawableManager;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.emoji.text.EmojiCompat;
-
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
@@ -96,8 +86,16 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.XmlRes;
+import androidx.appcompat.widget.AppCompatDrawableManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.emoji.text.EmojiCompat;
 
 public class DisplayUtils {
 
@@ -107,7 +105,7 @@ public class DisplayUtils {
         SpannableString spannableString = new SpannableString(string);
         spannableString.setSpan(new ClickableSpan() {
             @Override
-            public void onClick(@Nonnull View widget) {
+            public void onClick(@NonNull View widget) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext().startActivity(browserIntent);
@@ -181,12 +179,12 @@ public class DisplayUtils {
             }
 
             @Override
-            public void onFinalImageSet(String id, @javax.annotation.Nullable Object imageInfo, @javax.annotation.Nullable Animatable animatable) {
+            public void onFinalImageSet(String id, @Nullable Object imageInfo, @Nullable Animatable animatable) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 
             @Override
-            public void onIntermediateImageSet(String id, @javax.annotation.Nullable Object imageInfo) {
+            public void onIntermediateImageSet(String id, @Nullable Object imageInfo) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 

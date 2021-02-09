@@ -44,9 +44,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
-
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -82,6 +79,7 @@ import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
@@ -89,9 +87,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -164,8 +165,9 @@ public class CallNotificationController extends BaseController {
         credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
     }
 
+    @NotNull
     @Override
-    protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
+    protected View inflateView(@NotNull LayoutInflater inflater, @NotNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_call_notification, container, false);
     }
 
@@ -210,12 +212,12 @@ public class CallNotificationController extends BaseController {
                 .takeWhile(observable -> !leavingScreen)
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NotNull Disposable d) {
                         disposablesList.add(d);
                     }
 
                     @Override
-                    public void onNext(ParticipantsOverall participantsOverall) {
+                    public void onNext(@NotNull ParticipantsOverall participantsOverall) {
                         boolean hasParticipantsInCall = false;
                         boolean inCallOnDifferentDevice = false;
                         List<Participant> participantList = participantsOverall.getOcs().getData();
@@ -238,7 +240,7 @@ public class CallNotificationController extends BaseController {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NotNull Throwable e) {
 
                     }
 
@@ -259,12 +261,12 @@ public class CallNotificationController extends BaseController {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomsOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NotNull Disposable d) {
                         disposablesList.add(d);
                     }
 
                     @Override
-                    public void onNext(RoomsOverall roomsOverall) {
+                    public void onNext(@NotNull RoomsOverall roomsOverall) {
                         for (Conversation conversation : roomsOverall.getOcs().getData()) {
                             if (roomId.equals(conversation.getRoomId()) || roomId.equals(conversation.token)) {
                                 currentConversation = conversation;
@@ -276,7 +278,7 @@ public class CallNotificationController extends BaseController {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NotNull Throwable e) {
 
                     }
 
