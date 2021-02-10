@@ -146,7 +146,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         WorkManager.getInstance().enqueue(shareWorker)
     }
 
-    private fun getFileName(uri: Uri): String? {
+    private fun getFileName(uri: Uri): String {
         var filename: String? = null
         if (uri.scheme == "content") {
             val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)

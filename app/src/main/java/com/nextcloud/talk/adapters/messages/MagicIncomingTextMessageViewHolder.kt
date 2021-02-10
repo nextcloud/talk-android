@@ -160,7 +160,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
         val resources = itemView.resources
 
-        val bg_bubble_color = if (message.isDeleted) {
+        val bgBubbleColor = if (message.isDeleted) {
             resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
         } else {
             resources.getColor(R.color.bg_message_list_incoming_bubble)
@@ -173,9 +173,9 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bg_bubble_color,
+                bgBubbleColor,
                 resources.getColor(R.color.transparent),
-                bg_bubble_color, bubbleResource
+                bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
 

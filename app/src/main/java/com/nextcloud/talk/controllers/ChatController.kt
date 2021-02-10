@@ -747,7 +747,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
-    override fun getTitle(): String? {
+    override fun getTitle(): String {
         currentConversation?.displayName?.let {
             return EmojiCompat.get().process(it as CharSequence).toString()
         }
