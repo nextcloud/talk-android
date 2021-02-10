@@ -82,7 +82,6 @@
             android:textSize="12sp"
             app:layout_alignSelf="center"
             tools:text="16:08" />
-        />
 
     </com.google.android.flexbox.FlexboxLayout>
 

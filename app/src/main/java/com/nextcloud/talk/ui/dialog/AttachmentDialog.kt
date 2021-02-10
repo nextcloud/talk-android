@@ -46,16 +46,16 @@ class AttachmentDialog(val activity: Activity, var chatController :ChatControlle
     private var unbinder: Unbinder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState);
-        val view = layoutInflater.inflate(R.layout.dialog_attachment, null);
-        setContentView(view);
+        super.onCreate(savedInstanceState)
+        val view = layoutInflater.inflate(R.layout.dialog_attachment, null)
+        setContentView(view)
 
-        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        unbinder = ButterKnife.bind(this, view);
+        unbinder = ButterKnife.bind(this, view)
 
         attachFromLocal?.setOnClickListener {
-            chatController.sendSelectLocalFileIntent();
+            chatController.sendSelectLocalFileIntent()
             dismiss()
         }
         attachFromCloud?.setOnClickListener {

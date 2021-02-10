@@ -107,6 +107,8 @@ import org.webrtc.Camera1Enumerator;
 import org.webrtc.Camera2Enumerator;
 import org.webrtc.CameraEnumerator;
 import org.webrtc.CameraVideoCapturer;
+import org.webrtc.DefaultVideoDecoderFactory;
+import org.webrtc.DefaultVideoEncoderFactory;
 import org.webrtc.EglBase;
 import org.webrtc.IceCandidate;
 import org.webrtc.Logging;
@@ -116,6 +118,7 @@ import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
 import org.webrtc.SessionDescription;
+import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoCapturer;
 import org.webrtc.VideoSource;
@@ -358,10 +361,15 @@ public class CallController extends BaseController {
 
         //Create a new PeerConnectionFactory instance.
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
-        peerConnectionFactory = PeerConnectionFactory.builder().createPeerConnectionFactory();
+        DefaultVideoEncoderFactory defaultVideoEncoderFactory = new DefaultVideoEncoderFactory(
+                rootEglBase.getEglBaseContext(),true,true);
+        DefaultVideoDecoderFactory defaultVideoDecoderFactory = new DefaultVideoDecoderFactory(rootEglBase.getEglBaseContext());
 
-        peerConnectionFactory.setVideoHwAccelerationOptions(rootEglBase.getEglBaseContext(),
-                rootEglBase.getEglBaseContext());
+        peerConnectionFactory = PeerConnectionFactory.builder()
+                .setOptions(options)
+                .setVideoEncoderFactory(defaultVideoEncoderFactory)
+                .setVideoDecoderFactory(defaultVideoDecoderFactory)
+                .createPeerConnectionFactory();
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
@@ -584,13 +592,14 @@ public class CallController extends BaseController {
 
         //Create a VideoSource instance
         if (videoCapturer != null) {
-            videoSource = peerConnectionFactory.createVideoSource(videoCapturer);
-            localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
-            localMediaStream.addTrack(localVideoTrack);
-            localVideoTrack.setEnabled(false);
-            localVideoTrack.addSink(pipVideoView);
+            SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", rootEglBase.getEglBaseContext());
+            videoSource = peerConnectionFactory.createVideoSource(false);
+            videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
         }
-
+        localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
+        localMediaStream.addTrack(localVideoTrack);
+        localVideoTrack.setEnabled(false);
+        localVideoTrack.addSink(pipVideoView);
     }
 
     private void microphoneInitialization() {

@@ -33,9 +33,9 @@ abstract class ButterKnifeController : Controller {
 
     private var unbinder: Unbinder? = null
 
-    constructor() {}
+    constructor()
 
-    constructor(args: Bundle) : super(args) {}
+    constructor(args: Bundle) : super(args)
 
     protected abstract fun inflateView(inflater: LayoutInflater, container: ViewGroup): View
 

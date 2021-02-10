@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
@@ -265,6 +266,7 @@ public class AccountVerificationController extends BaseController {
                         disposables.add(d);
                     }
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onNext(UserEntity userEntity) {
                         internalAccountId = userEntity.getId();
@@ -278,6 +280,7 @@ public class AccountVerificationController extends BaseController {
                         }
                     }
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onError(Throwable e) {
                         progressText.setText(progressText.getText().toString() +
@@ -305,6 +308,7 @@ public class AccountVerificationController extends BaseController {
                         disposables.add(d);
                     }
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onNext(UserProfileOverall userProfileOverall) {
                         String displayName = null;
@@ -329,6 +333,7 @@ public class AccountVerificationController extends BaseController {
                         }
                     }
 
+                    @SuppressLint("SetTextI18n")
                     @Override
                     public void onError(Throwable e) {
                         if (getActivity() != null) {
@@ -351,6 +356,7 @@ public class AccountVerificationController extends BaseController {
         WorkManager.getInstance().enqueue(pushRegistrationWork);
     }
 
+    @SuppressLint("SetTextI18n")
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(EventStatus eventStatus) {
         if (eventStatus.getEventType().equals(EventStatus.EventType.PUSH_REGISTRATION)) {

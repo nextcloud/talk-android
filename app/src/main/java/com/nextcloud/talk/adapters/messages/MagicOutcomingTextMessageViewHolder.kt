@@ -136,23 +136,23 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             realView.isSelected = true
         }
         val resources = sharedApplication!!.resources
-        val bg_bubble_color = if (message.isDeleted) {
+        val bgBubbleColor = if (message.isDeleted) {
             resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
         } else {
             resources.getColor(R.color.bg_message_list_outcoming_bubble)
         }
         if (message.isGrouped) {
             val bubbleDrawable = getMessageSelector(
-                    bg_bubble_color,
+                    bgBubbleColor,
                     resources.getColor(R.color.transparent),
-                    bg_bubble_color,
+                    bgBubbleColor,
                     R.drawable.shape_grouped_outcoming_message)
             ViewCompat.setBackground(bubble, bubbleDrawable)
         } else {
             val bubbleDrawable = getMessageSelector(
-                    bg_bubble_color,
+                    bgBubbleColor,
                     resources.getColor(R.color.transparent),
-                    bg_bubble_color,
+                    bgBubbleColor,
                     R.drawable.shape_outcoming_message)
             ViewCompat.setBackground(bubble, bubbleDrawable)
         }

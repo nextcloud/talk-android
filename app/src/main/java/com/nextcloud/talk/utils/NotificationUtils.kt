@@ -43,7 +43,7 @@ object NotificationUtils {
     val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
     val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
 
-    fun getVibrationEffectForCalls(): LongArray? {
+    fun getVibrationEffectForCalls(): LongArray {
         return longArrayOf(0L, 400L, 800L, 600L, 800L, 800L, 800L, 1000L)
     }
 
