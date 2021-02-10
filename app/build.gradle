@@ -197,7 +197,7 @@ dependencies {
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     compileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor "org.projectlombok:lombok:1.18.10"
-    implementation 'com.jakewharton:butterknife:10.2.1'
+    implementation 'com.jakewharton:butterknife:10.2.3'
     kapt 'com.jakewharton:butterknife-compiler:10.2.1'
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
