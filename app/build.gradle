@@ -191,7 +191,7 @@ dependencies {
     implementation 'io.requery:requery:1.5.1'
     implementation 'io.requery:requery-android:1.5.1'
     implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
-    kapt 'io.requery:requery-processor:1.5.1'
+    kapt 'io.requery:requery-processor:1.6.1'
     implementation 'org.parceler:parceler-api:1.1.12'
     kapt 'org.parceler:parceler:1.1.12'
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
