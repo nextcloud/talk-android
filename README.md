@@ -36,7 +36,7 @@ So you would like to contribute by testing? Awesome, we appreciate that very muc
 
 To report a bug for the alpha or beta version, just create an issue on github like you would for the stable version and
  provide the version number. 
-In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com). Please remember that Google Services are necessary to receive push notifications. 
+In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com/android/talk-alpha/). Please remember that Google Services are necessary to receive push notifications. 
  
 #### Beta Channel
 
