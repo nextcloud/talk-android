@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">發生錯誤了 :(</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
 
@@ -64,14 +67,23 @@
     <string name="nc_add">新增</string>
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
     <string name="nc_account_scheduled_for_deletion">此帳號已經被排定要刪除，也不能被修改。</string>
+    <string name="nc_settings_notification_sounds">聲音 </string>
+    <string name="nc_settings_call_ringtone">通話</string>
+    <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">無聲</string>
+    <string name="nc_settings_vibrate">顫動</string>
     <string name="nc_settings_appearance">外觀</string>
     <string name="nc_settings_theme_title">佈景主題</string>
+    <string name="nc_settings_theme_key">佈景主題</string>
+    <string name="nc_settings_theme_follow_system">使用系統預設</string>
     <string name="nc_settings_theme_light">亮色</string>
     <string name="nc_settings_theme_dark">暗色</string>
+    <string name="nc_settings_privacy">私隱</string>
     <string name="nc_settings_screen_lock_title">螢幕鎖定</string>
+    <string name="nc_settings_screen_lock_timeout_title">屏幕鎖定不活動超時時間</string>
     <string name="nc_none">無</string>
     <string name="nc_settings_screen_security_title">螢幕安全</string>
+    <string name="nc_settings_incognito_keyboard_title">隱身鍵盤</string>
     <string name="nc_settings_link_previews_title">顯示 連結預覽</string>
     <string name="nc_locked">點擊可解除鎖定</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
@@ -117,6 +129,8 @@
     <string name="nc_add_to_favorites">加到我的最愛</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">選擇聯絡人</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->
@@ -126,15 +140,19 @@
 
     <!-- Call -->
     <string name="nc_connecting_call">連線中</string>
+    <string name="nc_calling">連接中...</string>
     <string name="nc_incoming_call">來電中....</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_public_call">新的公開對話</string>
+    <string name="nc_leaving_call">離開通話...</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">來電通知頻道</string>
     <string name="nc_notification_channel_messages">訊息通知頻道</string>
     <string name="nc_notification_channel_calls_description">顯示來電</string>
     <string name="nc_notification_settings">通知設定</string>
+    <string name="nc_plain_old_messages">訊息</string>
     <string name="nc_notify_me_always">總是通知</string>
     <string name="nc_notify_me_never">從不通知</string>
     <string name="nc_mute_calls">靜音來電</string>
@@ -146,12 +164,24 @@
     <string name="nc_proceed">進行</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_wrong_link">對話連結無效</string>
+    <string name="nc_share_subject">%1$s 邀請</string>
+    <string name="nc_share_text_pass">\n密碼：%1$s</string>
+
+    <!-- Magical stuff -->
+    <string name="nc_push_to_talk">一鍵通</string>
+    <!-- Moderation -->
+    <string name="nc_demote">從主持人降級</string>
+    <string name="nc_promote">晉升為主持人</string>
+    <string name="nc_remove_participant">移除參與者</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">輸入訊息</string>
     <string name="nc_date_header_yesterday">昨天</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
+    <string name="nc_conversation_menu_conversation_info">對話資訊</string>
+    <string name="nc_new_messages">未讀郵件</string>
     <string name="nc_no_messages_yet">目前無任何訊息</string>
     <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF.</string>
@@ -175,6 +205,8 @@
 
     <string name="nc_hello">嗨，</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">已達到%s個字符的限制</string>
     <string name="nc_groups">群組</string>
     <string name="nc_participants">參與者</string>
 
@@ -182,14 +214,38 @@
     <string name="nc_moderator">主持人</string>
     <string name="nc_user">使用者</string>
     <string name="nc_guest">訪客</string>
+    <!-- Browser component -->
+    <string name="nc_file_browser">檔案瀏覽器\"</string>
     <string name="nc_select_files">選取檔案</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
+    <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
+
+    <!-- Lobby -->
+
+    <string name="nc_webinar">網絡研討會</string>
+    <string name="nc_lobby">等候室</string>
+    <string name="nc_start_time">開始時間</string>
+    <string name="nc_lobby_waiting">您目前正在等候室等候。</string>
+    <string name="nc_lobby_waiting_with_date">您目前正在等候室等候。\n
+此會議定於%1$s開始。</string>
+    <string name="nc_manual">未定</string>
+
+    <!-- Errors -->
+    <string name="nc_no_connection_error">無連線</string>
+    <string name="nc_timeout_error">逾時</string>
     <string name="nc_not_defined_error">未知的錯誤</string>
     <string name="nc_unauthorized_error">未授權</string>
 
     <string name="nc_general_settings">一般</string>
     <string name="nc_allow_guests">允許訪客</string>
+    <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_copy_message">複製</string>
     <string name="nc_reply">回覆</string>
+    <string name="nc_delete_message">刪除</string>
+    <string name="nc_upload_from_nextcloud">透過 Nextcloud 分享</string>
+    <string name="nc_upload_failed">上傳檔案失敗</string>
+    <string name="nc_upload_choose_local_files">選擇檔案</string>
+
+    <string name="nc_settings_phone_book_integration_title">電話簿整合</string>
     </resources>
