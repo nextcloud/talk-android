@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_common_error_sorry">Prepáčte, niečo sa nepodarilo!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nastavenia</string>
 
