@@ -26,6 +26,7 @@
 
     <color name="bg_default">#222222</color>
     <color name="bg_alt">#222222</color>
+    <color name="nc_darkGreen">#00AA00</color>
 
     <!-- Chat window incoming message text & informational -->
     <color name="nc_incoming_text_default">#D8D8D8</color>

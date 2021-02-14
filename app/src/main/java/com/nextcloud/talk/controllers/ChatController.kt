@@ -28,6 +28,7 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Parcelable
@@ -105,6 +106,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import com.vanniktech.emoji.EmojiPopup
 import com.webianks.library.PopupBubble
+import com.yarolegovich.lovelydialog.LovelyStandardDialog
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -577,28 +579,63 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (requestCode == REQUEST_CODE_CHOOSE_FILE) {
             if (resultCode == RESULT_OK) {
-                uploadFile(data)
+                try {
+                    checkNotNull(intent)
+                    val files: MutableList<String> = ArrayList()
+                    intent.clipData?.let {
+                        for (index in 0 until it.itemCount) {
+                            files.add(it.getItemAt(index).uri.toString())
+                        }
+                    } ?: run {
+                        checkNotNull(intent.data)
+                        intent.data.let {
+                            files.add(intent.data.toString())
+                        }
+                    }
+                    require(files.isNotEmpty())
+
+                    var filenamesWithLinebreaks = "\n"
+                    files.forEach {
+                        var filename = UriUtils.getFileName(Uri.parse(it), context)
+                        filenamesWithLinebreaks += filename + "\n"
+                    }
+
+                    val confirmationQuestion = when(files.size) {
+                        1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
+                            String.format(it, title)
+                        }
+                        else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
+                            String.format(it, title)
+                        }
+                    }
+
+                    LovelyStandardDialog(activity)
+                            .setPositiveButtonColorRes(R.color.nc_darkGreen)
+                            .setTitle(confirmationQuestion)
+                            .setMessage(filenamesWithLinebreaks)
+                            .setPositiveButton(R.string.nc_yes) { v ->
+                                uploadFiles(files)
+                                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_in_progess), Toast
+                                        .LENGTH_LONG).show();
+                            }
+                            .setNegativeButton(R.string.nc_no) {}
+                            .show()
+                } catch (e: IllegalStateException) {
+                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                } catch (e: IllegalArgumentException) {
+                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
+                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                }
             }
         }
     }
 
-    private fun uploadFile(intentData: Intent?) {
+    private fun uploadFiles(files: MutableList<String>) {
         try {
-            checkNotNull(intentData)
-            val files: MutableList<String> = ArrayList()
-            intentData.clipData?.let {
-                for (index in 0 until it.itemCount) {
-                    files.add(it.getItemAt(index).uri.toString())
-                }
-            } ?: run {
-                checkNotNull(intentData.data)
-                intentData.data.let {
-                    files.add(intentData.data.toString())
-                }
-            }
             require(files.isNotEmpty())
             val data: Data = Data.Builder()
                     .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, files.toTypedArray())
@@ -609,9 +646,6 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                     .setInputData(data)
                     .build()
             WorkManager.getInstance().enqueue(uploadWorker)
-        } catch (e: IllegalStateException) {
-            Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
-            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
         } catch (e: IllegalArgumentException) {
             Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -1495,7 +1529,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             menu.findItem(R.id.action_copy_message).isVisible = !(message as ChatMessage).isDeleted
             menu.findItem(R.id.action_reply_to_message).isVisible = (message as ChatMessage).replyable
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
-            if(menu.hasVisibleItems()){
+            if (menu.hasVisibleItems()) {
                 show()
             }
         }
@@ -1515,22 +1549,22 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
-        if(message.systemMessageType != ChatMessage.SystemMessageType.DUMMY) return false
+        if (message.systemMessageType != ChatMessage.SystemMessageType.DUMMY) return false
 
-        if(message.isDeleted) return false
+        if (message.isDeleted) return false
 
         val sixHoursInMillis = 6 * 3600 * 1000
         val isOlderThanSixHours = message.createdAt?.before(Date(System.currentTimeMillis() - sixHoursInMillis)) == true
-        if(isOlderThanSixHours) return false
+        if (isOlderThanSixHours) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
             true
         } else {
             currentConversation!!.isParticipantOwnerOrModerator
         }
-        if(!isUserAllowedByPrivileges) return false
+        if (!isUserAllowedByPrivileges) return false
 
-        if(!conversationUser.hasSpreedFeatureCapability("delete-messages")) return false
+        if (!conversationUser.hasSpreedFeatureCapability("delete-messages")) return false
 
         return true
     }

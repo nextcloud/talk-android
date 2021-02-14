@@ -32,6 +32,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -79,7 +80,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             for (index in sourcefiles.indices) {
                 val sourcefileUri = Uri.parse(sourcefiles[index])
-                var filename = getFileName(sourcefileUri)
+                var filename = UriUtils.getFileName(sourcefileUri, context)
                 val requestBody = createRequestBody(sourcefileUri)
                 uploadFile(currentUser, ncTargetpath, filename, roomToken, requestBody)
             }
@@ -144,29 +145,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .setInputData(data)
                 .build()
         WorkManager.getInstance().enqueue(shareWorker)
-    }
-
-    private fun getFileName(uri: Uri): String {
-        var filename: String? = null
-        if (uri.scheme == "content") {
-            val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    filename = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor?.close()
-            }
-        }
-        if (filename == null) {
-            Log.e(TAG, "failed to get DISPLAY_NAME from uri. using fallback.")
-            filename = uri.path
-            val lastIndexOfSlash = filename!!.lastIndexOf('/')
-            if (lastIndexOfSlash != -1) {
-                filename = filename.substring(lastIndexOfSlash + 1)
-            }
-        }
-        return filename
     }
 
     companion object {
