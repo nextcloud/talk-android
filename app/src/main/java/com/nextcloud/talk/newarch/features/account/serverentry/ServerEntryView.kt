@@ -24,7 +24,7 @@ package com.nextcloud.talk.newarch.features.account.serverentry
 
 import android.os.Bundle
 import android.view.*
-import androidx.core.view.isVisible
+import androidx.core.view.isInvisible
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import com.bluelinelabs.conductor.RouterTransaction
@@ -55,20 +55,21 @@ class ServerEntryView : BaseView() {
         viewModel = viewModelProvider(factory).get(ServerEntryViewModel::class.java)
         val view = super.onCreateView(inflater, container)
 
-        view.serverEntryTextInputEditText.setCompoundDrawablesWithIntrinsicBounds(null, null, resources?.getDrawable(R.drawable.ic_arrow_forward_white_24px), null)
-        view.serverEntryTextInputEditText.compoundDrawables[2].alpha = 99
+        view.serverEntryTextInputLayout.endIconDrawable?.alpha = 99
+        view.host_url_input_helper_text.setText(String.format(resources!!.getString(R.string.nc_server_helper_text), resources?.getString(R.string.nc_server_product_name)))
 
         viewModel.apply {
             checkState.observe(this@ServerEntryView, Observer {
                 when (it.checkState) {
                     ServerEntryCapabilitiesCheckState.WAITING_FOR_INPUT -> {
                         view.serverEntryTextInputLayout.isEnabled = true
-                        view.serverEntryProgressBar.isVisible = false
+                        view.serverEntryProgressBar.isInvisible = true
                     }
                     ServerEntryCapabilitiesCheckState.CHECKING -> {
                         view.serverEntryTextInputLayout.isEnabled = false
                         view.serverEntryTextInputEditText.compoundDrawables[2].alpha = 0
-                        view.serverEntryProgressBar.isVisible = true
+                        view.serverEntryProgressBar.isInvisible = false
+                        view.error_text.isInvisible = true
                     }
                     ServerEntryCapabilitiesCheckState.SERVER_SUPPORTED -> {
                         val bundle = Bundle()
@@ -79,9 +80,9 @@ class ServerEntryView : BaseView() {
                     // Unsupported
                     else -> {
                         view.serverEntryTextInputLayout.isEnabled = true
-                        view.serverEntryProgressBar.isVisible = false
-                        view.serverEntryTextInputLayout.error = resources?.getString(R.string.nc_server_unsupported)
-                        view.serverEntryTextInputEditText.compoundDrawables[2].alpha = 99
+                        view.serverEntryProgressBar.isInvisible = true
+                        view.error_text.isInvisible = false
+                        view.serverEntryTextInputLayout.endIconDrawable?.alpha = 99
                     }
                 }
             })
@@ -91,34 +92,21 @@ class ServerEntryView : BaseView() {
             view.serverEntryTextInputLayout.error = null
 
             if (text.isNullOrBlank()) {
-                view.serverEntryTextInputEditText.compoundDrawables[2].alpha = 99
+                view.serverEntryTextInputLayout.endIconDrawable?.alpha = 99
             } else {
-                view.serverEntryTextInputEditText.compoundDrawables[2].alpha = 255
+                view.serverEntryTextInputLayout.endIconDrawable?.alpha = 255
             }
         }
 
-        view.serverEntryTextInputEditText.setOnTouchListener { v, event ->
-            val drawableLeft = 0
-            val drawableTop = 1
-            val drawableRight = 2
-            val drawableBottom = 3
-
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX >= (view.serverEntryTextInputEditText.right - view.serverEntryTextInputEditText.compoundDrawables[drawableRight].bounds.width())) {
-                    if (view.serverEntryTextInputEditText.compoundDrawables[drawableRight].alpha == 255) {
-                        view.serverEntryTextInputEditText?.text?.let { serverUrl ->
-                            var baseUrl = serverUrl.toString()
-                            if (!serverUrl.startsWith("http://") && !serverUrl.startsWith("https://")) {
-                                baseUrl = "https://$serverUrl"
-                            }
-                            viewModel.fetchCapabilities(baseUrl)
-                            true
-                        }
-                    }
+        view.serverEntryTextInputLayout.setEndIconOnClickListener {
+            view.serverEntryTextInputEditText?.text?.let { serverUrl ->
+                var baseUrl = serverUrl.toString()
+                if (!serverUrl.startsWith("http://") && !serverUrl.startsWith("https://")) {
+                    baseUrl = "https://$serverUrl"
                 }
+                viewModel.fetchCapabilities(baseUrl)
+                true
             }
-
-            false
         }
 
         return view
