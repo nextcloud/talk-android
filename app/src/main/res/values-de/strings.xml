@@ -303,7 +303,7 @@
     <string name="nc_copy_message">Kopieren</string>
     <string name="nc_reply">Antworten</string>
     <string name="nc_delete_message">Löschen</string>
-    <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, aber möglicherweise an andere Dienste weitergegeben worden.</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
