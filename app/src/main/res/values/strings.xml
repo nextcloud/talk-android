@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Yes</string>
+    <string name="nc_no">No</string>
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_dialog_text">Do you trust the until now unknown SSL certificate, issued by %1$s for %2$s, valid from %3$s to %4$s?</string>
-    <string name="nc_yes">Yes</string>
-    <string name="nc_no">No</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
@@ -329,8 +329,11 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload local file</string>
     <string name="nc_upload_from_nextcloud">Share from Nextcloud</string>
-    <string name="nc_upload_failed">Failed to upload file</string>
+    <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
+    <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
+    <string name="nc_upload_in_progess">uploading</string>
 
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
