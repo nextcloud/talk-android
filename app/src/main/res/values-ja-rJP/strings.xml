@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">はい</string>
+    <string name="nc_no">いいえ</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_dialog_text">未確認のSSL証明書を信頼しますか？（ issued by %1$s for %2$s, valid from %3$s to %4$s）</string>
-    <string name="nc_yes">はい</string>
-    <string name="nc_no">いいえ</string>
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
 
     <!-- Settings -->

@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Já</string>
+    <string name="nc_no">Nei</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Stillingar</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">Sannreyna skilríkið</string>
     <string name="nc_certificate_dialog_text">Treystirðu hinu hingað til óþekkta SSL-skilríki, útgefnu af %1$s fyrir %2$s, með gildistíma frá %3$s til %4$s?</string>
-    <string name="nc_yes">Já</string>
-    <string name="nc_no">Nei</string>
     <string name="nc_certificate_error">SSL-uppsetningin þín kom í veg fyrir tengingu</string>
 
     <!-- Settings -->

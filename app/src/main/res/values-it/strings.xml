@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Sì</string>
+    <string name="nc_no">No</string>
     <string name="nc_common_error_sorry">Spiacenti, qualcosa non ha funzionato!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
     <string name="nc_certificate_dialog_text">Ti fidi del certificato SSL fino ad ora sconosciuto, rilasciato da %1$s per %2$s, valido da %3$s a %4$s?</string>
-    <string name="nc_yes">Sì</string>
-    <string name="nc_no">No</string>
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Carica file locale</string>
     <string name="nc_upload_from_nextcloud">Condividi da Nextcloud</string>
-    <string name="nc_upload_failed">Invio del file non riuscito</string>
     <string name="nc_upload_choose_local_files">Scegli i file</string>
-
     <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nella rubrica</string>
     <string name="nc_settings_phone_book_integration_title">Integrazione della rubrica</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione della rubrica a causa di autorizzazioni mancanti</string>

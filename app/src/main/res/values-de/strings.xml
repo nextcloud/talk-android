@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nein</string>
     <string name="nc_common_error_sorry">Leider ist etwas schiefgelaufen!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_dialog_text">Soll dem bisher unbekannten SSL-Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s, vertraut werden?</string>
-    <string name="nc_yes">Ja</string>
-    <string name="nc_no">Nein</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_from_nextcloud">Von Nextcloud teilen</string>
-    <string name="nc_upload_failed">Fehler beim Hochladen der Datei</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
-
     <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
     <string name="nc_settings_phone_book_integration_title">Telefonbuch-Einbindung</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Telefonbuch-Einbindung aufgrund fehlender Berechtigungen</string>

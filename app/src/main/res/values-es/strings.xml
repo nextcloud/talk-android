@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Sí</string>
+    <string name="nc_no">No</string>
     <string name="nc_common_error_sorry">Lo sentimos. Algo ha ido mal.</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Comprobar el certificado</string>
     <string name="nc_certificate_dialog_text">¿Confías en el certificado SSL antes desconocido emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
-    <string name="nc_yes">Sí</string>
-    <string name="nc_no">No</string>
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_upload_from_nextcloud">Compartir desde Nextcloud</string>
-    <string name="nc_upload_failed">Error al subir el archivo</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
-
     <string name="nc_settings_phone_book_integration_desc">Haga coincidir los contactos según el número del teléfono para integrar el acceso directo de Talk en la agenda telefónica</string>
     <string name="nc_settings_phone_book_integration_title">Integración de la agenda telefónica</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a pérdida de permisos</string>

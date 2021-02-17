@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Да</string>
+    <string name="nc_no">Не</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Поставке</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_dialog_text">Да ли верујете, до сада непознатом, SSL сертификату, који је издао %1$s на %2$s, валидним од %3$s до %4$s?</string>
-    <string name="nc_yes">Да</string>
-    <string name="nc_no">Не</string>
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
 
     <!-- Settings -->

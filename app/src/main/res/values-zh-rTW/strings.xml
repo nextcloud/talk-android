@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">是</string>
+    <string name="nc_no">否</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
 
@@ -45,8 +48,6 @@
     <string name="nc_search">搜尋</string>
 
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
-    <string name="nc_yes">是</string>
-    <string name="nc_no">否</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
 
     <!-- Settings -->

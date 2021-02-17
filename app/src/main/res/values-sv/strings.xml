@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nej</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Inställningar</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
     <string name="nc_certificate_dialog_text">Litar du på det tills nu okända SSL-certifikatet, skapad av  %1$s för %2$s, giltig från%3$s till %4$s?</string>
-    <string name="nc_yes">Ja</string>
-    <string name="nc_no">Nej</string>
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
 
     <!-- Settings -->

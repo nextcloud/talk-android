@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">是的</string>
+    <string name="nc_no">不</string>
     <string name="nc_common_error_sorry">抱歉，出问题了！</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">检查证书</string>
     <string name="nc_certificate_dialog_text">您是否信任由 %1$s 颁发给 %2$s，生效时间从 %3$s 至 %4$s的未知证书？</string>
-    <string name="nc_yes">是的</string>
-    <string name="nc_no">不</string>
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
 
     <!-- Settings -->
@@ -305,9 +305,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">上传本地文件</string>
     <string name="nc_upload_from_nextcloud">从 Nextcloud 共享</string>
-    <string name="nc_upload_failed">上传文件失败</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
-
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，集成 Talk 快捷方式到电话簿。</string>
     <string name="nc_settings_phone_book_integration_title">电话簿集成</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话簿集成</string>

@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Tak</string>
+    <string name="nc_no">Nie</string>
     <string name="nc_common_error_sorry">Przepraszamy, coś poszło nie tak!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Sprawdź certyfikat</string>
     <string name="nc_certificate_dialog_text">Czy ufasz dotychczas nieznanemu certyfikatowi SSL, wydanemu przez %1$s dla %2$s, ważnemu od %3$s do %4$s?</string>
-    <string name="nc_yes">Tak</string>
-    <string name="nc_no">Nie</string>
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
     <string name="nc_upload_from_nextcloud">Udostępnij z Nextcloud</string>
-    <string name="nc_upload_failed">Nie udało się wysłać pliku</string>
     <string name="nc_upload_choose_local_files">Wybierz plik</string>
-
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk w książce telefonicznej</string>
     <string name="nc_settings_phone_book_integration_title">Integracja książki telefonicznej</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji książki telefonicznej z powodu braku uprawnień</string>

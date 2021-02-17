@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Áno</string>
+    <string name="nc_no">Nie</string>
     <string name="nc_common_error_sorry">Prepáčte, niečo sa nepodarilo!</string>
 
     <!-- Bottom Navigation -->
@@ -51,8 +53,6 @@
 
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_dialog_text">Dôverujete tomuto doteraz neznámemu SSL certifikátu, vydaného %1$s pre %2$s, platného od %3$s do %4$s ?</string>
-    <string name="nc_yes">Áno</string>
-    <string name="nc_no">Nie</string>
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
 
     <!-- Settings -->

@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">بله</string>
+    <string name="nc_no">نه</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">تنظیمات</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
     <string name="nc_certificate_dialog_text">آیا به گواهی SSL ناشناخته ، صادر شده توسط ، اعتماد دارید %1$s برای %2$s, معتبر از %3$s به %4$s؟</string>
-    <string name="nc_yes">بله</string>
-    <string name="nc_no">نه</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
 
     <!-- Settings -->

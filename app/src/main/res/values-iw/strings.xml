@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">כן</string>
+    <string name="nc_no">לא</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">הגדרות</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">חקירת האישור</string>
     <string name="nc_certificate_dialog_text">האם אתה סומך על אישור ה- SSL הלא ידוע עד כה, שהונפק על ידי %1$s עבור %2$s, תקף מ-%3$sעד %4$s?</string>
-    <string name="nc_yes">כן</string>
-    <string name="nc_no">לא</string>
     <string name="nc_certificate_error">הגדרות ה־SSL שלך מנעו חיבור</string>
 
     <!-- Settings -->

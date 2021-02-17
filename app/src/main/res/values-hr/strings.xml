@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Da</string>
+    <string name="nc_no">Ne</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Postavke</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">Pogledaj vjerodajnicu</string>
     <string name="nc_certificate_dialog_text">Vjerujete li dosad nepoznatoj SSL vjerodajnici koju je izdao %1$s za %2$s i koja vrijedi od %3$s do %4$s?</string>
-    <string name="nc_yes">Da</string>
-    <string name="nc_no">Ne</string>
     <string name="nc_certificate_error">Vezu je onemogućila vaša postavka SSL-a</string>
 
     <!-- Settings -->

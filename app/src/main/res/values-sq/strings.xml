@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Po</string>
+    <string name="nc_no">Jo</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Rregullimet</string>
 
@@ -44,8 +47,6 @@
 
     <string name="nc_certificate_dialog_title">Kontrollo çertifikaten</string>
     <string name="nc_certificate_dialog_text">A e beson deri tani çertifikatën e panjohur deri tani SSL, lëshuar nga %1$spër %2$s, e vlefshme nga %3$s në %4$s?</string>
-    <string name="nc_yes">Po</string>
-    <string name="nc_no">Jo</string>
     <string name="nc_certificate_error">Struktura juaj SSL e ndaloi lidhjen</string>
 
     <!-- Settings -->

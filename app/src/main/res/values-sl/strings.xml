@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Da</string>
+    <string name="nc_no">Ne</string>
     <string name="nc_common_error_sorry">Prišlo je do napake ...</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
-    <string name="nc_yes">Da</string>
-    <string name="nc_no">Ne</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
 
     <!-- Settings -->
@@ -309,9 +309,7 @@ Pozdravite prijatelje in znance.</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
     <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
-    <string name="nc_upload_failed">Pošiljanje datoteke je spodletelo</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
-
     <string name="nc_settings_phone_book_integration_desc">Poveži stike po telefonski številki za povezavo imenika s programom Talk</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>

@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Si</string>
+    <string name="nc_no">Non</string>
     <string name="nc_common_error_sorry">Sentímolo, algo foi mal!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Verificar o certificado</string>
     <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido dende %3$s ata %4$s?</string>
-    <string name="nc_yes">Si</string>
-    <string name="nc_no">Non</string>
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
     <string name="nc_upload_from_nextcloud">Compartir dende Nextcloud</string>
-    <string name="nc_upload_failed">Produciuse un fallo ao enviar o ficheiro</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
-
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na axenda telefónica</string>
     <string name="nc_settings_phone_book_integration_title">Integración da axenda de teléfonos</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración da axenda de teléfonos por mor da falta de permisos</string>

@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nee</string>
     <string name="nc_common_error_sorry">Sorry, er is iets fout gegaan!</string>
 
     <!-- Bottom Navigation -->
@@ -53,8 +55,6 @@ Kies er eentje van een provider.</string>
 
     <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
-    <string name="nc_yes">Ja</string>
-    <string name="nc_no">Nee</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
 
     <!-- Settings -->
@@ -310,9 +310,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_from_nextcloud">Delen vanuit Nextcloud</string>
-    <string name="nc_upload_failed">Kon bestand niet uploaden</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
-
     <string name="nc_settings_phone_book_integration_desc">Combineer contactpersonen gebaseerd op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>

@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Ano</string>
+    <string name="nc_no">Ne</string>
     <string name="nc_common_error_sorry">Omlouváme se, něco se pokazilo!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
     <string name="nc_certificate_dialog_text">Věříte doposud neznámému SSL certifikátu, vydaném %1$s pro %2$s, platnému od %3$s do %4$s?</string>
-    <string name="nc_yes">Ano</string>
-    <string name="nc_no">Ne</string>
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
 
     <!-- Settings -->
@@ -305,9 +305,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Nahrát místní soubor</string>
     <string name="nc_upload_from_nextcloud">Sdílet z Nextcloudu</string>
-    <string name="nc_upload_failed">Nepodařilo se nahrát soubor</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
-
     <string name="nc_settings_phone_book_integration_desc">Propojit kontakty na základě telefoního čísla k integraci Talk v telefoním seznamu</string>
     <string name="nc_settings_phone_book_integration_title">Propojení s telefoním seznamem</string>
     <string name="no_phone_book_integration_due_to_permissions">Bez propojení kontaktů v telefonu z důvodu neudělení oprávnění</string>

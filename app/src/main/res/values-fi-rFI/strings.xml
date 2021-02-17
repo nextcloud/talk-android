@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Kyllä</string>
+    <string name="nc_no">Ei</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Asetukset</string>
 
@@ -39,8 +42,6 @@
     <string name="nc_search">Etsi</string>
 
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
-    <string name="nc_yes">Kyllä</string>
-    <string name="nc_no">Ei</string>
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
 
     <!-- Settings -->

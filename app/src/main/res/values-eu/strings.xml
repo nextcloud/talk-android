@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Bai</string>
+    <string name="nc_no">Ez</string>
     <string name="nc_common_error_sorry">Sentitzen dugu, zerbait gaizki joan da!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_dialog_text">Fio zara %1$s (e)k  %2$s(e)ntzat emandako SSL ziurtagiri ezezagunaz?,  %3$s tik %4$sra baliagarria?</string>
-    <string name="nc_yes">Bai</string>
-    <string name="nc_no">Ez</string>
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
 
     <!-- Settings -->
@@ -309,9 +309,7 @@ Ez Molestatu modua</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_upload_from_nextcloud">Partekatu Nextcloud bidez</string>
-    <string name="nc_upload_failed">Fitxategia kargatzeak huts egin du</string>
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
-
     <string name="nc_settings_phone_book_integration_desc">Lotu kontaktuak telefono zenbakian oinarrituta, Talk lasterbideak integratzeko telefono zerrendan</string>
     <string name="nc_settings_phone_book_integration_title">Telefono zerrendan integratzea</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zerrenda integratu, baimen falta dela eta</string>

@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Sí</string>
+    <string name="nc_no">No</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Paràmetres</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">Verifica el certificat</string>
     <string name="nc_certificate_dialog_text">Us en refieu del certificat SSL desconegut fins ara, emès per %1$s per %2$s, vàlid del %3$s fins el %4$s?</string>
-    <string name="nc_yes">Sí</string>
-    <string name="nc_no">No</string>
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
 
     <!-- Settings -->

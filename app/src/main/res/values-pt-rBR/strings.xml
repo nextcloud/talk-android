@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Sim</string>
+    <string name="nc_no">Não</string>
     <string name="nc_common_error_sorry">Desculpe, algo deu errado! </string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_dialog_text">Quer confiar em um certificado SSL desconhecido, emitido por %1$s para %2$s, válido de %3$s a %4$s?</string>
-    <string name="nc_yes">Sim</string>
-    <string name="nc_no">Não</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar arquivo local </string>
     <string name="nc_upload_from_nextcloud">Compartilhe do Nextcloud </string>
-    <string name="nc_upload_failed">Falha ao enviar o arquivo </string>
     <string name="nc_upload_choose_local_files">Escolher os arquivos </string>
-
     <string name="nc_settings_phone_book_integration_desc">Combinar contatos com base no número de telefone para integrar o atalho do Talk na lista de telefones</string>
     <string name="nc_settings_phone_book_integration_title">Integração da lista de telefones</string>
     <string name="no_phone_book_integration_due_to_permissions">Nenhuma integração da lista de telefones devido à falta de permissões</string>

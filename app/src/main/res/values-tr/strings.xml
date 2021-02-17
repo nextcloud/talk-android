@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Evet</string>
+    <string name="nc_no">Hayır</string>
     <string name="nc_common_error_sorry">Maalesef bir sorun çıktı!</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Sertifikayı denetleyin</string>
     <string name="nc_certificate_dialog_text">Şimdiye kadar bilinmeyen, %1$s tarafından %2$s için yayınlanmış %3$s ile %4$s tarihleri arasında geçerli olan sertifikaya güvenilsin mi?</string>
-    <string name="nc_yes">Evet</string>
-    <string name="nc_no">Hayır</string>
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
 
     <!-- Settings -->
@@ -308,9 +308,7 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
     <string name="nc_upload_from_nextcloud">Nextcloud üzerinden paylaş</string>
-    <string name="nc_upload_failed">Dosya yüklenemedi</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
-
     <string name="nc_settings_phone_book_integration_desc">Telefon defterinde kişileri telefon numaralarına göre eşleştirerek Talk kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_title">Telefon defteri bütünleştirmesi</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>

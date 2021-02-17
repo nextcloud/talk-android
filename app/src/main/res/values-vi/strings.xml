@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Đồng ý</string>
+    <string name="nc_no">Không</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Thiết lập</string>
 
@@ -47,8 +50,6 @@
 
     <string name="nc_certificate_dialog_title">Kiểm tra chứng chỉ</string>
     <string name="nc_certificate_dialog_text">Bạn có tin tưởng vào chứng thực SSL chưa biết này không, phát sinh này bởi %1$s cho %2$s, hiệu lực từ %3$s đến %4$s?</string>
-    <string name="nc_yes">Đồng ý</string>
-    <string name="nc_no">Không</string>
     <string name="nc_certificate_error">Thiết lập SSL của bạn đã ngăn chặn kết nối</string>
 
     <!-- Settings -->

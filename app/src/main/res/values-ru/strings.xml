@@ -20,6 +20,8 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
+    <string name="nc_yes">Да</string>
+    <string name="nc_no">Нет</string>
     <string name="nc_common_error_sorry">Что-то пошло не так :(</string>
 
     <!-- Bottom Navigation -->
@@ -52,8 +54,6 @@
 
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_dialog_text">Доверять неизвестному сертификату SSL: выпущен %1$s для %2$s, действителен с %3$s по %4$s?</string>
-    <string name="nc_yes">Да</string>
-    <string name="nc_no">Нет</string>
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
 
     <!-- Settings -->
@@ -286,7 +286,5 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Копировать</string>
     <string name="nc_reply">Ответить</string>
-    <string name="nc_upload_failed">Не удалось загрузить файл</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
-
     </resources>

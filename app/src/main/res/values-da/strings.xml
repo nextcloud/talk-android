@@ -19,6 +19,9 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Common -->
+    <string name="nc_yes">Ja</string>
+    <string name="nc_no">Nej</string>
     <!-- Bottom Navigation -->
     <string name="nc_settings">Indstillinger</string>
 
@@ -48,8 +51,6 @@
 
     <string name="nc_certificate_dialog_title">Tjek certifikatet</string>
     <string name="nc_certificate_dialog_text">Stoler du på det, indtil nu, ukendte SSL certifikat ,udstedt af %1$s for %2$s,  gyldig fra %3$s til %4$s?</string>
-    <string name="nc_yes">Ja</string>
-    <string name="nc_no">Nej</string>
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
 
     <!-- Settings -->
