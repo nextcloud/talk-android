@@ -38,8 +38,8 @@ android {
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        versionCode 110000005 // 0-50=Alpha / 51-98=RC / 90-99=stable
-        versionName "11.0.0 Alpha 05"
+        versionCode 110000006 // 0-50=Alpha / 51-98=RC / 90-99=stable
+        versionName "11.0.0 Alpha 06"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
