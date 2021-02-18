@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="UnusedAttribute">
+        <ignore regexp="importantForAutofill"/>
+        <ignore regexp="autofillHints"/>
+    </issue>
+
+    <issue id="ExtraTranslation">
+        <ignore path="**/strings.xml"/>
+        <ignore path="**/values-b+en+001/strings.xml"/>
+    </issue>
+
+    <issue id="UnusedResources">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+
+    <issue id="TypographyEllipsis">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+
+    <issue id="Typos">
+        <ignore path="**/values-**/strings.xml" />
+    </issue>
+  
+    <issue id="RestrictedApi" severity="error">
+        <ignore path="build" />
+    </issue>
+
+    <issue id="NewApi" severity="error">
+        <ignore path="build" />
+    </issue>
+</lint>
