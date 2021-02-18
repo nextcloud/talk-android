@@ -305,7 +305,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">上传本地文件</string>
     <string name="nc_upload_from_nextcloud">从 Nextcloud 共享</string>
+    <string name="nc_upload_failed">抱歉，上传失败</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
+    <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>
+    <string name="nc_upload_confirm_send_single">将此文件发送到 %1$s？</string>
+    <string name="nc_upload_in_progess">上传中</string>
+
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，集成 Talk 快捷方式到电话簿。</string>
     <string name="nc_settings_phone_book_integration_title">电话簿集成</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话簿集成</string>

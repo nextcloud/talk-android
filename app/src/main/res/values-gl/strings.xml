@@ -308,7 +308,12 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
     <string name="nc_upload_from_nextcloud">Compartir dende Nextcloud</string>
+    <string name="nc_upload_failed">Sentímolo, produciuse un fallo no envío</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
+    <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
+    <string name="nc_upload_in_progess">enviando</string>
+
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na axenda telefónica</string>
     <string name="nc_settings_phone_book_integration_title">Integración da axenda de teléfonos</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración da axenda de teléfonos por mor da falta de permisos</string>

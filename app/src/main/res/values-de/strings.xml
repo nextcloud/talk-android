@@ -308,7 +308,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_from_nextcloud">Von Nextcloud teilen</string>
+    <string name="nc_upload_failed">Hochladen leider fehlgeschlagen</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
+    <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
+    <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
+    <string name="nc_upload_in_progess">Wird hochgeladen</string>
+
     <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
     <string name="nc_settings_phone_book_integration_title">Telefonbuch-Einbindung</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Telefonbuch-Einbindung aufgrund fehlender Berechtigungen</string>

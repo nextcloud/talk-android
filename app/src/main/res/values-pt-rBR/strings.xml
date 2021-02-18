@@ -308,7 +308,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar arquivo local </string>
     <string name="nc_upload_from_nextcloud">Compartilhe do Nextcloud </string>
+    <string name="nc_upload_failed">Desculpe, falha no envio</string>
     <string name="nc_upload_choose_local_files">Escolher os arquivos </string>
+    <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s</string>
+    <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s</string>
+    <string name="nc_upload_in_progess">enviando</string>
+
     <string name="nc_settings_phone_book_integration_desc">Combinar contatos com base no número de telefone para integrar o atalho do Talk na lista de telefones</string>
     <string name="nc_settings_phone_book_integration_title">Integração da lista de telefones</string>
     <string name="no_phone_book_integration_due_to_permissions">Nenhuma integração da lista de telefones devido à falta de permissões</string>

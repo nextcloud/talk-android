@@ -308,7 +308,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
     <string name="nc_upload_from_nextcloud">Udostępnij z Nextcloud</string>
+    <string name="nc_upload_failed">Wysyłanie nie powiodło się</string>
     <string name="nc_upload_choose_local_files">Wybierz plik</string>
+    <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
+    <string name="nc_upload_in_progess">wysyłanie</string>
+
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk w książce telefonicznej</string>
     <string name="nc_settings_phone_book_integration_title">Integracja książki telefonicznej</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji książki telefonicznej z powodu braku uprawnień</string>

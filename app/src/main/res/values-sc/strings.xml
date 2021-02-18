@@ -86,8 +86,8 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
     <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
-    <string name="nc_settings_theme_light">Lughe</string>
-    <string name="nc_settings_theme_dark">Oscuridade</string>
+    <string name="nc_settings_theme_light">Craru</string>
+    <string name="nc_settings_theme_dark">Iscuru</string>
     <string name="nc_settings_privacy">Riservadesa</string>
     <string name="nc_settings_screen_lock_title">Blocu de ischermu</string>
     <string name="nc_settings_screen_lock_desc">Bloca%1$s cun su blocu de ischermu Android o unu mètodu biomèricu suportadu</string>
