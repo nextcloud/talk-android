@@ -47,7 +47,8 @@
             android:visibility="gone"
             app:backgroundImage="@color/nc_darkGreen"
             app:placeholderImage="@drawable/ic_call_white_24dp"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            tools:visibility="visible"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callControlHangupView"
@@ -66,7 +67,8 @@
             android:visibility="gone"
             app:backgroundImage="@color/nc_darkGreen"
             app:placeholderImage="@drawable/ic_videocam_white_24px"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            tools:visibility="visible"/>
     </LinearLayout>
 
     <RelativeLayout
@@ -75,11 +77,11 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/incomingCallTextView"
+            android:id="@+id/incomingCallVoiceOrVideoTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="@string/nc_incoming_call"
+            android:text="@string/nc_unknown_call"
             android:textAlignment="center"
             android:textColor="@color/controller_call_incomingCallTextView"
             android:textSize="16sp"
@@ -91,13 +93,23 @@
             android:id="@+id/conversationNameTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/incomingCallTextView"
+            android:layout_below="@+id/incomingCallVoiceOrVideoTextView"
             android:layout_marginBottom="16dp"
             android:ellipsize="marquee"
             android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="28sp"
             tools:text="Victor Gregorius Magnus" />
+
+        <TextView
+            android:id="@+id/incomingCallDescriptionTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/nc_call_incoming"
+            android:textAlignment="center"
+            android:textColor="@color/controller_call_incomingCallTextView"
+            android:textSize="16sp"
+            android:layout_below="@+id/conversationNameTextView" />
 
     </RelativeLayout>
 

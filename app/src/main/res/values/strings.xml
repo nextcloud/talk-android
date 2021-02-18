@@ -184,6 +184,11 @@
     <string name="nc_permissions_settings">Open settings</string>
 
     <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk voice call</string>
+    <string name="nc_video_call">Nextcloud Talk video call</string>
+    <string name="nc_unknown_call">Nextcloud Talk call</string>
+    <string name="nc_call_incoming">INCOMING</string>
+    <string name="nc_call_ringing">RINGING</string>
     <string name="nc_connecting_call">Connecting…</string>
     <string name="nc_calling">Calling…</string>
     <string name="nc_incoming_call">Incoming call from</string>
