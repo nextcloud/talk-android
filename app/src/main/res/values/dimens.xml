@@ -24,7 +24,6 @@
 
     <dimen name="item_height">72dp</dimen>
     <dimen name="small_item_height">48dp</dimen>
-    <dimen name="smaller_item_height">24dp</dimen>
     <dimen name="rv_item_view_height">48dp</dimen>
 
     <!-- Custom transition dimensions -->
@@ -39,7 +38,6 @@
     <dimen name="message_bubble_corners_radius">6dp</dimen>
     <dimen name="message_bubble_corners_padding">8dp</dimen>
 
-    <dimen name="minimum_file_preview_size">48dp</dimen>
     <dimen name="maximum_file_preview_size">192dp</dimen>
 
     <dimen name="large_preview_dimension">80dp</dimen>

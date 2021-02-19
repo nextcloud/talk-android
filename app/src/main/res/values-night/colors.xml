@@ -36,7 +36,4 @@
     <color name="bg_message_list_incoming_bubble_deleted">#66484848</color>
 
     <color name="textColorMaxContrast">#8c8c8c</color>
-
-    <color name="emoji_background">#313031</color>
-    <color name="emoji_divider">#15FFFFFF</color>
 </resources>

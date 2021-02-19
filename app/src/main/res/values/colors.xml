@@ -32,9 +32,6 @@
     <color name="conversation_item_header">#000000</color>
     <color name="conversation_unread_bubble">#FFFFFF</color>
 
-    <color name="nc_incoming_text_mention_you">#C98879</color>
-    <color name="nc_incoming_text_mention_others">#37505D</color>
-
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>
     <color name="nc_white_color">@color/per70white</color>
@@ -44,14 +41,10 @@
     <color name="controller_call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
     <color name="textColorMaxContrast">#767676</color>
-    <color name="whiteHalfTransparent">#7Fffffff</color>
 
     <!-- Emoji list in chat window -->
-    <color name="emoji_background">#eceff1</color>
     <color name="emoji_icons">#61000000</color>
-    <color name="emoji_divider">#15000000</color>
 
-    <color name="fg_default">#000000</color>
     <color name="fg_inverse">#FFFFFF</color>
 
     <color name="bg_default">#FFFFFF</color>
