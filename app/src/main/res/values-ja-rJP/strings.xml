@@ -146,7 +146,6 @@
     <string name="nc_microphone_permission_permanently_denied">音声通信を有効にするには、システム設定で「マイク」権限を与えてください。</string>
     <string name="nc_permissions_settings">設定を開く</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">接続中</string>
     <string name="nc_calling">接続中</string>
     <string name="nc_incoming_call">着信コール</string>

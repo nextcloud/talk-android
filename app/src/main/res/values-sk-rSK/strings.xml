@@ -147,7 +147,6 @@
     <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
     <string name="nc_permissions_settings">Otvoriť nastavenia</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Pripája sa...</string>
     <string name="nc_calling">Volá sa...</string>
     <string name="nc_incoming_call">Prichádzajúci hovor od</string>

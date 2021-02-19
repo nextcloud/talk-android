@@ -115,7 +115,6 @@
     <string name="nc_microphone_permission_permanently_denied">Để sử dụng cuộc gọi, hãy vui lòng cấp quyền \"Microphone\" trong cài đặt hệ thống</string>
     <string name="nc_permissions_settings">Mở thiết đặt</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Đang kết nối...</string>
     <string name="nc_incoming_call">Cuộc gọi từ</string>
     <string name="nc_nick_guest">Khách</string>

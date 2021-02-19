@@ -163,7 +163,6 @@
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Verbinde…</string>
     <string name="nc_calling">Rufe an…</string>
     <string name="nc_incoming_call">Eingehender Anruf von</string>

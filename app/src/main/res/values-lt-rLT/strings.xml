@@ -131,7 +131,6 @@
     <string name="nc_microphone_permission_permanently_denied">Norėdami įjungti bendravimą balsu, sistemos nustatymuose suteikite prieigą prie \"Mikrofono\".</string>
     <string name="nc_permissions_settings">Atverti nustatymus</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Jungiamasi…</string>
     <string name="nc_calling">Skambinama…</string>
     <string name="nc_incoming_call">Gaunamasis skambutis nuo</string>

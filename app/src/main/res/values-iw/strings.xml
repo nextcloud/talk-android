@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">כדי להפעיל תקשורת שמע נא להעניק את ההרשאה „מיקרופון” בהגדרות המערכת.</string>
     <string name="nc_permissions_settings">פתיחת הגדרות</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">מתבצעת התחברות…</string>
     <string name="nc_calling">מתבצעת התקשרות…</string>
     <string name="nc_incoming_call">שיחה נכנסת מאת</string>

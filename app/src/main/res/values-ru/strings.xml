@@ -154,7 +154,6 @@
     <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Соединение…</string>
     <string name="nc_calling">Вызов...</string>
     <string name="nc_incoming_call">Входящий вызов от</string>

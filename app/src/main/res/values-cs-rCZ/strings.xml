@@ -163,7 +163,6 @@
     <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
     <string name="nc_permissions_settings">Otevřít nastavení</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Připojování…</string>
     <string name="nc_calling">Volání…</string>
     <string name="nc_incoming_call">Příchozí hovor od</string>

@@ -162,7 +162,6 @@
     <string name="nc_microphone_permission_permanently_denied">为了启用语音通话请在系统设置中允许“麦克风使用权限”</string>
     <string name="nc_permissions_settings">打开设置</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">正在连接...</string>
     <string name="nc_calling">呼叫中 ...</string>
     <string name="nc_incoming_call">来电</string>

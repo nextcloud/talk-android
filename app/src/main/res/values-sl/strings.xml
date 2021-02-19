@@ -163,7 +163,6 @@
     <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
     <string name="nc_permissions_settings">Odpri nastavitve</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
     <string name="nc_calling">Poteka klicanje ...</string>
     <string name="nc_incoming_call">Dohodni klic:</string>

@@ -116,7 +116,6 @@
 
     <string name="nc_permissions_settings">Abrir definições</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">A ligar...</string>
     <string name="nc_incoming_call">Chamada a receber de</string>
     <string name="nc_nick_guest">Convidado</string>

@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">För att aktivera röstkommunikation vänligen bevilja \"Mikrofon\"-tillstånd i systeminställningar.</string>
     <string name="nc_permissions_settings">Öppna inställningar</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Ansluter...</string>
     <string name="nc_calling">Ringer...</string>
     <string name="nc_incoming_call">Inkommande samtal från</string>

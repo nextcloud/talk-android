@@ -164,7 +164,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Verbinden...</string>
     <string name="nc_calling">Oproepen...</string>
     <string name="nc_incoming_call">Inkomend gesprek van</string>
@@ -310,7 +309,12 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_from_nextcloud">Delen vanuit Nextcloud</string>
+    <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
+    <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
+    <string name="nc_upload_in_progess">uploaden</string>
+
     <string name="nc_settings_phone_book_integration_desc">Combineer contactpersonen gebaseerd op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>

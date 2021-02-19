@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">Kako biste omogućili glasovnu komunikaciju, aktivirajte dopuštenje \“Mikrofon\“ u postavkama sustava.</string>
     <string name="nc_permissions_settings">Otvori postavke</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Povezivanje…</string>
     <string name="nc_calling">Pozivanje...</string>
     <string name="nc_incoming_call">Dolazni poziv od</string>

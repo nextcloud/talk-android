@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">Per activar la comunicació de veu, doneu permís al \"Micròfon\" dins de la configuració del sistema.</string>
     <string name="nc_permissions_settings">Obre la configuració</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">S\'està connectant...</string>
     <string name="nc_calling">S\'està trucant...</string>
     <string name="nc_incoming_call">Trucada entrant de</string>

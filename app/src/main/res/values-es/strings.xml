@@ -163,7 +163,6 @@
     <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema.</string>
     <string name="nc_permissions_settings">Abrir configuración</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Conectando...</string>
     <string name="nc_calling">Llamando...</string>
     <string name="nc_incoming_call">Llamada entrante de</string>

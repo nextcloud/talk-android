@@ -163,7 +163,6 @@
     <string name="nc_microphone_permission_permanently_denied">Pro ativare comunicatzione de boghe cunsenti is permissos de \"Micròfonu\" in sa cunfiguratzione de sistema.</string>
     <string name="nc_permissions_settings">Aberi cunfiguratziones</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Connetende...</string>
     <string name="nc_calling">Tzerriende...</string>
     <string name="nc_incoming_call">Mutida in intrada dae</string>

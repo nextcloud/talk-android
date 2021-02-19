@@ -163,7 +163,6 @@ supprimée pour %1$s.</string>
     <string name="nc_microphone_permission_permanently_denied">Pour établir une communication audio, veuillez autoriser l’utilisation du microphone dans les paramètres du système.</string>
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Connexion…</string>
     <string name="nc_calling">Appel en cours…</string>
     <string name="nc_incoming_call">Appel entrant de</string>
@@ -307,4 +306,12 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_upload_from_nextcloud">Partagez depuis Nextcloud</string>
     <string name="nc_upload_failed">Désolé, l\'envoi a échoué</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
+    <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
+    <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
+    <string name="nc_upload_in_progess">Téléchargement</string>
+
+    <string name="nc_settings_phone_book_integration_desc">Correspondance de contacts à l\'aide du numéro de téléphone pour intégrer des raccourcis vers Talk dans le carnet d\'adresses</string>
+    <string name="nc_settings_phone_book_integration_title">Intégration avec le carnet d\'adresses</string>
+    <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+
     </resources>

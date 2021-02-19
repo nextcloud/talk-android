@@ -160,7 +160,6 @@
     <string name="nc_microphone_permission_permanently_denied">Για ενεργοποίηση συνομιλίας με ήχο παρακαλώ επιτρέψτε την πρόσβαση του \"Microphone\" στις ρυθμίσεις συστήματος.</string>
     <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Σύνδεση...</string>
     <string name="nc_calling">Κλήση...</string>
     <string name="nc_incoming_call">Εισερχόμενη κλήση από</string>

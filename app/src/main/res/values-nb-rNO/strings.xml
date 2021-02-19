@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">For å skru på stemmekommunikasjon, innvilg \"Mikrofon\"-tilgang i systeminnstillingene.</string>
     <string name="nc_permissions_settings">Åpne innstillinger</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Kobler til...</string>
     <string name="nc_calling">Ringer...</string>
     <string name="nc_incoming_call">Innkommende samtale fra</string>

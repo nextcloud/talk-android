@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">음성 통화를 하려면 시스템 설정에서 \"마이크\" 권한을 허용하십시오.</string>
     <string name="nc_permissions_settings">설정 열기</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">연결 중...</string>
     <string name="nc_calling">통화 중...</string>
     <string name="nc_incoming_call">수신 통화 대상: </string>

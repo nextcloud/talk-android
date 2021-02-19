@@ -152,7 +152,6 @@
     <string name="nc_microphone_permission_permanently_denied">برای فعال کردن ارتباط صوتی ، لطفاً در \"تنظیمات سیستم\" اجازه استفاه از \"میکروفون\" را قرار دهید.</string>
     <string name="nc_permissions_settings">تنظیمات را باز کنید</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">برقراری ارتباط…</string>
     <string name="nc_calling">در حال تماس...</string>
     <string name="nc_incoming_call">تماس ورودی از</string>

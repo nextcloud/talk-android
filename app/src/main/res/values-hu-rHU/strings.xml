@@ -145,7 +145,6 @@
     <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
-    <!-- Call -->
     <string name="nc_connecting_call">Kapcsolódás…</string>
     <string name="nc_calling">Hívás…</string>
     <string name="nc_incoming_call">Bejövő hívás tőle:</string>
