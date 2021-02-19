@@ -35,21 +35,29 @@ For more information please review the [guidelines for contributing](https://git
 So you would like to contribute by testing? Awesome, we appreciate that very much. 
 
 To report a bug for the alpha or beta version, just create an issue on github like you would for the stable version and
- provide the version number. 
-In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com/android/talk-alpha/). Please remember that Google Services are necessary to receive push notifications. 
+ provide the version number. Please remember that Google Services are necessary to receive push notifications. 
  
-#### Beta Channel
+#### Beta versions (Release Candidates)
 
+##### via Google Play
 Sign up at [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) to get Release
  Candidates via Google Play.
 
-#### Alpha Channel
+##### via github
+You can also get the Release Candidates at [github releases](https://github.com/nextcloud/talk-android/releases).
 
+#### Alpha versions
+
+##### via Google Play
 To become an alpha tester you have to be signed up for the [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) 
 and additionally you have to join the [Alpha testing Google Group](https://groups.google.com/g/nextcloud-android-talk-alpha-testing). 
 After that you will receive the alpha versions via the Play Store (initially, this might take some minutes after
- signing up).
-Alpha versions are delivered weekly. Please make sure to remember that these versions might contain bugs and you don't use them in production.
+ signing up). However, in the Play Store the app will still be named "Nextcloud Talk (Beta)" even if you are an alpha tester, but you will receive the alpha versions.
+If a beta was released that is newer than the alpha version, you will get the beta in the alpha channel.
+ 
+##### via Download page
+In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com/android/talk-alpha/)
+Please make sure to remember that these versions might contain bugs and you don't use them in production.
 
 ### Apply a license
 
@@ -88,8 +96,10 @@ like `git config --global alias.ci 'commit -s'`. Now you can commit with
 
 ### Ringtones
 
-- [Ringtones by Librem](https://soundcloud.com/feandesign/sets/librem-5-sounds)
+- [Ringtones by Librem](https://soundcloud.com/feandesign/sets/librem-5-sounds) 
+  author: [feandesign](https://soundcloud.com/feandesign)
 - [Telefon-Freiton in Deutschland nach DTAG 1 TR 110-1, Kap. 8.3](https://commons.wikimedia.org/wiki/File:1TR110-1_Kap8.3_Freiton1.ogg)
+  author: arvedkrynil
 
 [dcofile]: https://github.com/nextcloud/talk-android/blob/master/contribute/developer-certificate-of-origin
 [applyalicense]: https://github.com/nextcloud/talk-android/blob/master/contribute/HowToApplyALicense.md
