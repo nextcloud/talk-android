@@ -101,7 +101,7 @@
                     android:visibility="invisible"
                     tools:visibility="visible"/>
 
-                <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/call_control_switch_camera"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
