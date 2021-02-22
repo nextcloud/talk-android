@@ -178,7 +178,7 @@ previous_git_email = previous_git_email.strip
 
 # update git user name and email for this script
 system ("git config --local user.name '"  + git_user + "'")
-system ("git config --local user.email '.'") # set email blank
+system ("git config --local user.email 'android@nextcloud.com'")
 system ("git remote rm origin")
 system ("git remote add origin https://" + git_user + ":" + git_token + "@github.com/nextcloud/talk-android")
 
