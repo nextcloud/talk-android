@@ -1,4 +1,4 @@
-## 11.0.0 RC1 (18.02.2021)
+## 11.0.0 (2021-02-23)
 - upload files from local storage
 - delete messages (requires Talk 11.1 on server)
 - UI-improvements for call screens
