@@ -154,6 +154,12 @@
     <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Голосовой вызов Nextcloud Talk</string>
+    <string name="nc_video_call">Видеозвонок Nextcloud Talk</string>
+    <string name="nc_unknown_call">Вызов Nextcloud Talk</string>
+    <string name="nc_call_incoming">Входящий</string>
+    <string name="nc_call_ringing">Звонок</string>
     <string name="nc_connecting_call">Соединение…</string>
     <string name="nc_calling">Вызов...</string>
     <string name="nc_incoming_call">Входящий вызов от</string>
@@ -176,6 +182,7 @@
     <string name="nc_notify_me_mention">Уведомлять при упоминании</string>
     <string name="nc_notify_me_never">Не уведомлять</string>
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
+    <string name="nc_mute_calls_desc">Оповещение о входящих вызовах отключено.</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
@@ -285,5 +292,17 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Копировать</string>
     <string name="nc_reply">Ответить</string>
+    <string name="nc_delete_message">Удалить</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Сообщение удалено, но его содержимое могло быть прочитано другими службами</string>
+
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Передать на сервер локальный файл</string>
+    <string name="nc_upload_from_nextcloud">Опубликовать из Nextcloud</string>
+    <string name="nc_upload_failed">Ошибка передачи на сервер</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
+    <string name="nc_upload_in_progess">передача на сервер</string>
+
+    <string name="nc_settings_phone_book_integration_title">Интеграция с записной книгой</string>
+    <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию с записной книгой</string>
+
     </resources>

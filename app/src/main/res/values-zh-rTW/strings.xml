@@ -184,6 +184,7 @@
     <string name="nc_select_files">選取檔案</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
+    <string name="nc_timeout_error">逾時</string>
     <string name="nc_not_defined_error">未知的錯誤</string>
     <string name="nc_unauthorized_error">未授權</string>
 
@@ -191,4 +192,7 @@
     <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_copy_message">複製</string>
     <string name="nc_reply">回覆</string>
+    <string name="nc_delete_message">刪除</string>
+    <string name="nc_upload_in_progess">正在上傳</string>
+
     </resources>

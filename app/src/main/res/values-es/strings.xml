@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Para permitir la comunicación de voz, concede el permiso de \"Micrófono\" en la configuración del sistema.</string>
     <string name="nc_permissions_settings">Abrir configuración</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Llamada de voz de Nextcloud Talk</string>
+    <string name="nc_video_call">Video llamada de Nextcloud Talk</string>
+    <string name="nc_unknown_call">Llamada de Nextcloud Talk</string>
+    <string name="nc_call_incoming">ENTRANTE</string>
+    <string name="nc_call_ringing">LLAMANDO</string>
     <string name="nc_connecting_call">Conectando...</string>
     <string name="nc_calling">Llamando...</string>
     <string name="nc_incoming_call">Llamada entrante de</string>
@@ -307,7 +313,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_upload_from_nextcloud">Compartir desde Nextcloud</string>
+    <string name="nc_upload_failed">Lo siento, error en la subida</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
+    <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
+    <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
+    <string name="nc_upload_in_progess">subiendo</string>
+
     <string name="nc_settings_phone_book_integration_desc">Haga coincidir los contactos según el número del teléfono para integrar el acceso directo de Talk en la agenda telefónica</string>
     <string name="nc_settings_phone_book_integration_title">Integración de la agenda telefónica</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a pérdida de permisos</string>

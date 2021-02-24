@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
     <string name="nc_permissions_settings">Otevřít nastavení</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk hlasové volání</string>
+    <string name="nc_video_call">Nextcloud Talk video hovor</string>
+    <string name="nc_unknown_call">Nextcloud Talk volání</string>
+    <string name="nc_call_incoming">PŘÍCHOZÍ</string>
+    <string name="nc_call_ringing">ZVONĚNÍ</string>
     <string name="nc_connecting_call">Připojování…</string>
     <string name="nc_calling">Volání…</string>
     <string name="nc_incoming_call">Příchozí hovor od</string>
@@ -304,7 +310,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Nahrát místní soubor</string>
     <string name="nc_upload_from_nextcloud">Sdílet z Nextcloudu</string>
+    <string name="nc_upload_failed">Odesílání se nezdařilo, omlouváme se</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
+    <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
+    <string name="nc_upload_in_progess">nahrávání</string>
+
     <string name="nc_settings_phone_book_integration_desc">Propojit kontakty na základě telefoního čísla k integraci Talk v telefoním seznamu</string>
     <string name="nc_settings_phone_book_integration_title">Propojení s telefoním seznamem</string>
     <string name="no_phone_book_integration_due_to_permissions">Bez propojení kontaktů v telefonu z důvodu neudělení oprávnění</string>

@@ -164,6 +164,12 @@ Kies er eentje van een provider.</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk gesprek</string>
+    <string name="nc_video_call">Nextcloud Talk videogesprek</string>
+    <string name="nc_unknown_call">Nextcloud Talk gesprek</string>
+    <string name="nc_call_incoming">INKOMEND</string>
+    <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_connecting_call">Verbinden...</string>
     <string name="nc_calling">Oproepen...</string>
     <string name="nc_incoming_call">Inkomend gesprek van</string>

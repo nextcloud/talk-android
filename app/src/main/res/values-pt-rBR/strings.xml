@@ -22,7 +22,7 @@
     <!-- Common -->
     <string name="nc_yes">Sim</string>
     <string name="nc_no">Não</string>
-    <string name="nc_common_error_sorry">Desculpe, algo deu errado! </string>
+    <string name="nc_common_error_sorry">Desculpe, algo deu errado!</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Configurações</string>
@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Chamada de voz do Nextcloud Talk</string>
+    <string name="nc_video_call">Chamada de vídeo do Nextcloud Talk</string>
+    <string name="nc_unknown_call">Chamada do Nextcloud Talk</string>
+    <string name="nc_call_incoming">ENTRADA </string>
+    <string name="nc_call_ringing">TOCANDO</string>
     <string name="nc_connecting_call">Conectando...</string>
     <string name="nc_calling">Chamando...</string>
     <string name="nc_incoming_call">Chamada de</string>
@@ -302,15 +308,15 @@
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_delete_message">Excluir</string>
-    <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter vazado para outros serviços </string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
 
     <!-- Upload -->
-    <string name="nc_upload_local_file">Enviar arquivo local </string>
-    <string name="nc_upload_from_nextcloud">Compartilhe do Nextcloud </string>
+    <string name="nc_upload_local_file">Enviar arquivo local</string>
+    <string name="nc_upload_from_nextcloud">Compartilhar do Nextcloud </string>
     <string name="nc_upload_failed">Desculpe, falha no envio</string>
-    <string name="nc_upload_choose_local_files">Escolher os arquivos </string>
-    <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s</string>
-    <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s</string>
+    <string name="nc_upload_choose_local_files">Escolher arquivos</string>
+    <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
     <string name="nc_upload_in_progess">enviando</string>
 
     <string name="nc_settings_phone_book_integration_desc">Combinar contatos com base no número de telefone para integrar o atalho do Talk na lista de telefones</string>

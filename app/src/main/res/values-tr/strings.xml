@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk sesli arama</string>
+    <string name="nc_video_call">Nextcloud Talk görüntülü arama</string>
+    <string name="nc_unknown_call">Nextcloud Talk araması</string>
+    <string name="nc_call_incoming">GELEN</string>
+    <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor…</string>
     <string name="nc_calling">Aranıyor …</string>
     <string name="nc_incoming_call">Gelen görüşme çağrısı</string>
@@ -307,7 +313,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
     <string name="nc_upload_from_nextcloud">Nextcloud üzerinden paylaş</string>
+    <string name="nc_upload_failed">Yüklenemedi</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
+    <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
+    <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
+    <string name="nc_upload_in_progess">yükleniyor</string>
+
     <string name="nc_settings_phone_book_integration_desc">Telefon defterinde kişileri telefon numaralarına göre eşleştirerek Talk kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_title">Telefon defteri bütünleştirmesi</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>

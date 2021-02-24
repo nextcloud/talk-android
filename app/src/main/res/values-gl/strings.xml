@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Para permitir a comunicación por voz, conceda o permiso de «Micrófono» na configuración do sistema.</string>
     <string name="nc_permissions_settings">Abrir os axustes</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Chamada de voz Nextcloud Talk</string>
+    <string name="nc_video_call">Videochamada Nextcloud Talk</string>
+    <string name="nc_unknown_call">Chamada Nextcloud Talk</string>
+    <string name="nc_call_incoming">ENTRANTE</string>
+    <string name="nc_call_ringing">CHAMANDO</string>
     <string name="nc_connecting_call">Conectando…</string>
     <string name="nc_calling">Chamando…</string>
     <string name="nc_incoming_call">Chamada entrante de</string>

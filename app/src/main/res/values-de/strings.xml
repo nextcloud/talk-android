@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk Sprachanruf</string>
+    <string name="nc_video_call">Nextcloud Talk Videoanruf</string>
+    <string name="nc_unknown_call">Nextcloud Talk Anruf</string>
+    <string name="nc_call_incoming">EINGEHEND</string>
+    <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_connecting_call">Verbinde…</string>
     <string name="nc_calling">Rufe an…</string>
     <string name="nc_incoming_call">Eingehender Anruf von</string>

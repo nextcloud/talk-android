@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Chiamata vocale Nextcloud Talk</string>
+    <string name="nc_video_call">Videochiamata Nextcloud Talk</string>
+    <string name="nc_unknown_call">Chiamata Nextcloud Talk</string>
+    <string name="nc_call_incoming">IN ARRIVO</string>
+    <string name="nc_call_ringing">STA SQUILLANDO</string>
     <string name="nc_connecting_call">Connessione in corso…</string>
     <string name="nc_calling">Chiamata in corso...</string>
     <string name="nc_incoming_call">Chiamata in ingresso da</string>

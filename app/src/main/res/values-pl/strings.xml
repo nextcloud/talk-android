@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
     <string name="nc_permissions_settings">Otwórz ustawienia</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Połączenie głosowe Nextcloud Talk</string>
+    <string name="nc_video_call">Połączenie wideo Nextcloud Talk</string>
+    <string name="nc_unknown_call">Połączenie Nextcloud Talk</string>
+    <string name="nc_call_incoming">PRZYCHODZĄCA</string>
+    <string name="nc_call_ringing">DZWONIENIE</string>
     <string name="nc_connecting_call">Łączę…</string>
     <string name="nc_calling">Łączenie…</string>
     <string name="nc_incoming_call">Połączenie przychodzące od </string>
