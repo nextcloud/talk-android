@@ -150,7 +150,7 @@ dependencies {
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "android.arch.work:work-runtime:${workVersion}"
     implementation "android.arch.work:work-rxjava2:${workVersion}"
-    implementation 'com.google.android:flexbox:1.1.0'
+    implementation 'com.google.android:flexbox:2.0.1'
     androidTestImplementation "android.arch.work:work-testing:${workVersion}"
     implementation ('com.gitlab.bitfireAT:dav4jvm:f2078bc846', {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
