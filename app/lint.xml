@@ -29,4 +29,10 @@
     <issue id="NewApi" severity="error">
         <ignore path="build" />
     </issue>
+
+    <issue id="ObsoleteLintCustomCheck" severity="warning">
+        <ignore path="**/jetified-annotation-experimental-1.**/**/lint.jar" />
+        <ignore path="**/butterknife-runtime-10.2.**/**/lint.jar" />
+        <ignore path="**/jetified-conductor-2.**/**/lint.jar" />
+    </issue>
 </lint>
