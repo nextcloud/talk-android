@@ -20,10 +20,10 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
-import at.bitfire.dav4jvm.Property;
-import at.bitfire.dav4jvm.PropertyFactory;
-import at.bitfire.dav4jvm.PropertyRegistry;
-import at.bitfire.dav4jvm.property.*;
+import at.bitfire.dav4android.Property;
+import at.bitfire.dav4android.PropertyFactory;
+import at.bitfire.dav4android.PropertyRegistry;
+import at.bitfire.dav4android.property.*;
 import com.nextcloud.talk.components.filebrowser.models.properties.*;
 
 import java.lang.reflect.Field;
