@@ -21,10 +21,11 @@
 package com.nextcloud.talk.components.filebrowser.models.properties;
 
 import android.text.TextUtils;
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.XmlUtils;
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
