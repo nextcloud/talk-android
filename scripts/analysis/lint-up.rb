@@ -177,8 +177,8 @@ previous_git_email, _ = Open3.capture3('git config user.email')
 previous_git_email = previous_git_email.strip
 
 # update git user name and email for this script
-system ("git config --local user.name '"  + git_user + "'")
-system ("git config --local user.email '.'") # set email blank
+system ("git config --global user.name talk-android-bot")
+system ('git config --global user.email android@nextcloud.com')
 system ("git remote rm origin")
 system ("git remote add origin https://" + git_user + ":" + git_token + "@github.com/nextcloud/talk-android")
 
@@ -192,8 +192,8 @@ system ('git commit -sm "Drone: update Lint results to reflect reduced error/war
 system ('git push origin HEAD:' + git_branch)
 
 # restore previous git user name and email
-system("git config --local user.name '#{previous_git_username}'")
-system("git config --local user.email '#{previous_git_email}'")
+system("git config --global user.name '#{previous_git_username}'")
+system("git config --global user.email '#{previous_git_email}'")
 
 puts "SUCCESS: count was reduced"
 exit 0 # success
