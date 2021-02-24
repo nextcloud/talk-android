@@ -20,9 +20,9 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
-import at.bitfire.dav4jvm.DavResource;
-import at.bitfire.dav4jvm.Response;
-import at.bitfire.dav4jvm.exception.DavException;
+import at.bitfire.dav4android.DavResource;
+import at.bitfire.dav4android.Response;
+import at.bitfire.dav4android.exception.DavException;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;

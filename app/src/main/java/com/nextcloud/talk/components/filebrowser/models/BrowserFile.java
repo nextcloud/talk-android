@@ -22,12 +22,12 @@ package com.nextcloud.talk.components.filebrowser.models;
 
 import android.net.Uri;
 import android.text.TextUtils;
-import at.bitfire.dav4jvm.Property;
-import at.bitfire.dav4jvm.Response;
-import at.bitfire.dav4jvm.property.DisplayName;
-import at.bitfire.dav4jvm.property.GetContentType;
-import at.bitfire.dav4jvm.property.GetLastModified;
-import at.bitfire.dav4jvm.property.ResourceType;
+import at.bitfire.dav4android.Property;
+import at.bitfire.dav4android.Response;
+import at.bitfire.dav4android.property.DisplayName;
+import at.bitfire.dav4android.property.GetContentType;
+import at.bitfire.dav4android.property.GetLastModified;
+import at.bitfire.dav4android.property.ResourceType;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.components.filebrowser.models.properties.*;
 import lombok.Data;
