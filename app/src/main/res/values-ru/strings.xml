@@ -100,6 +100,7 @@
     <string name="nc_settings_link_previews_title">Отображать предпросмотр ссылки</string>
     <string name="nc_settings_link_previews_desc">Позволяет предварительно просматривать контент по полученным ссылкам для поддерживаемых сервисов</string>
     <string name="nc_locked">Коснитесь для разблокирования</string>
+    <string name="nc_settings_read_privacy_desc">Просматривать и показывать отчёт о прочтении сообщений</string>
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_60">1 минута</string>
     <string name="nc_screen_lock_timeout_300">5 минут</string>
@@ -141,12 +142,18 @@
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
     <string name="nc_delete_conversation_default">Пожалуйста, подтвердите удаление обсуждения.</string>
+    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также
+ удалена у %1$s.</string>
+    <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
+
     <string name="nc_new_conversation">Новая беседа</string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
     <string name="nc_join_via_web">Присоединиться через веб</string>
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Выбрать контакты</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->
