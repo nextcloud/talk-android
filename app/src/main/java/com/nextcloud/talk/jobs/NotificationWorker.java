@@ -210,7 +210,7 @@ public class NotificationWorker extends Worker {
 
                         if (notification.getMessageRichParameters() != null &&
                                 notification.getMessageRichParameters().size() > 0) {
-                            decryptedPushMessage.setText(ChatUtils.getParsedMessage(notification.getMessageRich(),
+                            decryptedPushMessage.setText(ChatUtils.Companion.getParsedMessage(notification.getMessageRich(),
                                     notification.getMessageRichParameters()));
                         } else {
                             decryptedPushMessage.setText(notification.getMessage());

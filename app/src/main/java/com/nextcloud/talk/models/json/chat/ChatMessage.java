@@ -155,7 +155,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
 
     @Override
     public String getText() {
-        return ChatUtils.getParsedMessage(getMessage(), getMessageParameters());
+        return ChatUtils.Companion.getParsedMessage(getMessage(), getMessageParameters());
     }
 
     public String getLastMessageDisplayText() {

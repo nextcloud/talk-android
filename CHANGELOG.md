@@ -6,7 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
 ## [Unreleased]
+### Added
 
+### Fixed
+- show links for deck-cards
 
 ## [11.0.0] - 2021-02-23
 ### Added
