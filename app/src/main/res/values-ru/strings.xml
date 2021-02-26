@@ -101,6 +101,8 @@
     <string name="nc_settings_link_previews_desc">Позволяет предварительно просматривать контент по полученным ссылкам для поддерживаемых сервисов</string>
     <string name="nc_locked">Коснитесь для разблокирования</string>
     <string name="nc_settings_read_privacy_desc">Просматривать и показывать отчёт о прочтении сообщений</string>
+    <string name="nc_settings_read_privacy_title">Отчёт о прочтении</string>
+
     <string name="nc_screen_lock_timeout_30">30 секунд</string>
     <string name="nc_screen_lock_timeout_60">1 минута</string>
     <string name="nc_screen_lock_timeout_300">5 минут</string>
@@ -141,7 +143,7 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
-    <string name="nc_delete_conversation_default">Пожалуйста, подтвердите удаление обсуждения.</string>
+    <string name="nc_delete_conversation_default">Подтвердите удаление обсуждения.</string>
     <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также
  удалена у %1$s.</string>
     <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
@@ -307,8 +309,11 @@
     <string name="nc_upload_from_nextcloud">Опубликовать из Nextcloud</string>
     <string name="nc_upload_failed">Ошибка передачи на сервер</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
+    <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
     <string name="nc_upload_in_progess">передача на сервер</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в записной книге</string>
     <string name="nc_settings_phone_book_integration_title">Интеграция с записной книгой</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию с записной книгой</string>
 
