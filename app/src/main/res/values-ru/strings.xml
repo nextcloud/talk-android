@@ -193,6 +193,9 @@
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
     <string name="nc_mute_calls_desc">Оповещение о входящих вызовах отключено.</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
+    <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над 
+настройками режима \"Не беспокоить\" </string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
     <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
