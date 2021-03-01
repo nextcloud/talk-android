@@ -266,8 +266,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun checkIfCallIsActive(signatureVerification: SignatureVerification, decryptedPushMessage: DecryptedPushMessage) {
-        Logging.d(javaClass.simpleName, "checkIfCallIsActive")
-        Logging.d(javaClass.simpleName, "    isServiceInForeground:$isServiceInForeground")
+        Logging.d(TAG, "checkIfCallIsActive")
+        Logging.d(TAG, "    isServiceInForeground:$isServiceInForeground")
 
         val ncApi = retrofit!!.newBuilder().client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
         var hasParticipantsInCall = false
@@ -287,7 +287,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     override fun onNext(participantsOverall: ParticipantsOverall) {
                         val participantList: List<Participant> = participantsOverall.ocs.data
 
-                        Logging.d(javaClass.simpleName, "    participantList=$participantList")
+                        Logging.d(TAG, "    participantList=$participantList")
 
                         hasParticipantsInCall = participantList.isNotEmpty()
                         if (!hasParticipantsInCall) {
@@ -310,11 +310,15 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     }
 
                     override fun onError(e: Throwable) {
-                        Logging.d(javaClass.simpleName, "   checkIfCallIsActive-onError")
+                        Logging.d(TAG, "   checkIfCallIsActive-onError")
                     }
                     override fun onComplete() {
-                        Logging.d(javaClass.simpleName, "   checkIfCallIsActive-onComplete")
+                        Logging.d(TAG, "   checkIfCallIsActive-onComplete")
                     }
                 })
+    }
+
+    companion object {
+        private val TAG = "MagicFirebaseMessagingService"
     }
 }
