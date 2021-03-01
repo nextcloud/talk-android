@@ -22,6 +22,7 @@ package com.nextcloud.talk.activities
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
@@ -39,6 +40,7 @@ import com.nextcloud.talk.controllers.CallController
 import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.events.ConfigurationChangeEvent
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -57,6 +59,7 @@ class MagicCallActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -74,10 +77,14 @@ class MagicCallActivity : BaseActivity() {
 
         if (!router!!.hasRootController()) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+                Log.d(TAG, "call CallNotificationController with BundleKeys.KEY_FROM_NOTIFICATION_START_CALL")
+
                 router!!.setRoot(RouterTransaction.with(CallNotificationController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler()))
             } else {
+                Log.d(TAG, "call CallNotificationController")
+
                 router!!.setRoot(RouterTransaction.with(CallController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler()))
