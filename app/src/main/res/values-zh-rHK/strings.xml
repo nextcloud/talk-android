@@ -44,16 +44,16 @@
     <!-- Account verification -->
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
-    <string name="nc_external_server_failed">獲取網絡設置失敗</string>
+    <string name="nc_external_server_failed">擷取網絡設定失敗</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
-    <string name="nc_nextcloud_talk_app_not_installed">此伺服器並未安裝%1$s應用，操作中斷。</string>
+    <string name="nc_nextcloud_talk_app_not_installed">此伺服器並未安裝%1$s應用程式，操作中斷。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
 
     <string name="nc_never">從未加入</string>
     <string name="nc_search">搜尋</string>
 
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
-    <string name="nc_certificate_dialog_text">您是否信任由%1$s提交給%2$s，有效時間為%3$s至%4$s的不詳證書？</string>
+    <string name="nc_certificate_dialog_text">您是否信任 %1$s 為 %2$s 發行的，有效期從 %3$s 到 %4$s，迄今不詳的SSL證書？</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
 
     <!-- Settings -->
@@ -62,19 +62,19 @@
     <string name="nc_settings_proxy_host_title">proxy代理主機</string>
     <string name="nc_settings_proxy_port_title">proxy連接埠</string>
     <string name="nc_settings_use_credentials_title">使用身份驗證</string>
-    <string name="nc_settings_switch_account">切換帳號</string>
+    <string name="nc_settings_switch_account">切換賬號</string>
     <string name="nc_settings_reauthorize">重新授權</string>
     <string name="nc_client_cert_setup">設置客戶端證書</string>
     <string name="nc_client_cert_change">更改客戶端證書</string>
     <string name="nc_settings_remove">移除</string>
-    <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的帳號</string>
-    <string name="nc_settings_remove_account">移除帳號</string>
-    <string name="nc_settings_add_account">新增一個帳號</string>
+    <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的賬號</string>
+    <string name="nc_settings_remove_account">移除賬號</string>
+    <string name="nc_settings_add_account">新增一個賬號</string>
     <string name="nc_add">新增</string>
-    <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
+    <string name="nc_settings_wrong_account">只有特定賬號可以被重新授權</string>
     <string name="nc_settings_no_talk_installed">您進行身份驗證的伺服器上未安裝 Talk 應用程式</string>
     <string name="nc_settings_account_updated">已經更新了您現有的帳戶，而不是添加新的帳戶</string>
-    <string name="nc_account_scheduled_for_deletion">此帳號已經被排定要刪除，也不能被修改。</string>
+    <string name="nc_account_scheduled_for_deletion">此賬號已經被排定要刪除，也不能被修改。</string>
     <string name="nc_settings_notification_sounds">聲音 </string>
     <string name="nc_settings_call_ringtone">通話</string>
     <string name="nc_settings_other_notifications_ringtone">通知</string>
@@ -116,18 +116,18 @@
     <string name="nc_cancel">取消</string>
 
     <string name="nc_no_proxy">無proxy代理</string>
-    <string name="nc_username">使用者</string>
+    <string name="nc_username">用戶名稱</string>
     <string name="nc_password">密碼</string>
     <string name="nc_conversation_link">對話的連結</string>
     <string name="nc_new_password">新密碼</string>
     <string name="nc_wrong_password">密碼錯誤</string>
     <string name="nc_about">關於</string>
-    <string name="nc_privacy">隱私全條款</string>
+    <string name="nc_privacy">私隱條款</string>
     <string name="nc_get_source_code">取得原始碼</string>
     <string name="nc_license_title">授權</string>
-    <string name="nc_license_summary">GNU產生公開授權，第3版</string>
+    <string name="nc_license_summary">GNU General Public License, 第3版</string>
 
-    <string name="nc_select_an_account">選擇一個帳號</string>
+    <string name="nc_select_an_account">選擇一個賬號</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">新對話</string>
@@ -135,7 +135,7 @@
     <string name="nc_leave">結束對話</string>
     <string name="nc_rename">重新命名對話</string>
     <string name="nc_set_password">設定密碼</string>
-    <string name="nc_change_password">變更密碼</string>
+    <string name="nc_change_password">更改密碼</string>
     <string name="nc_clear_password">清除密碼</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_share_link_via">透過以下方式分享連結</string>
@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_permissions_settings">開啟設定</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk 語音通話</string>
+    <string name="nc_video_call">Nextcloud Talk 視像通話</string>
+    <string name="nc_unknown_call">Nextcloud Talk 通話</string>
+    <string name="nc_call_incoming">來電</string>
+    <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_connecting_call">連線中</string>
     <string name="nc_calling">連接中...</string>
     <string name="nc_incoming_call">來電中....</string>
@@ -182,7 +188,7 @@
     <string name="nc_notification_channel_calls_description">顯示來電</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_plain_old_messages">訊息</string>
-    <string name="nc_notify_me_always">總是通知</string>
+    <string name="nc_notify_me_always">一律通知</string>
     <string name="nc_notify_me_mention">提及時通知</string>
     <string name="nc_notify_me_never">從不通知</string>
     <string name="nc_mute_calls">靜音來電</string>
@@ -201,7 +207,7 @@
     <string name="nc_proceed">進行</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_wrong_link">對話連結無效</string>
-    <string name="nc_share_text">加入對話於 %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>
     <string name="nc_share_subject">%1$s 邀請</string>
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
 
@@ -263,7 +269,7 @@
 
     <string name="nc_owner">擁有者</string>
     <string name="nc_moderator">主持人</string>
-    <string name="nc_user">使用者</string>
+    <string name="nc_user">用戶</string>
     <string name="nc_guest">訪客</string>
     <string name="nc_following_link">用戶關注公共連結</string>
 
@@ -307,7 +313,12 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">上傳本地文件</string>
     <string name="nc_upload_from_nextcloud">透過 Nextcloud 分享</string>
+    <string name="nc_upload_failed">對不起，上傳失敗</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
+    <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
+    <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
+    <string name="nc_upload_in_progess">上傳中</string>
+
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_title">電話簿整合</string>
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話簿</string>
