@@ -293,6 +293,7 @@ public class CallController extends BaseController {
 
     public CallController(Bundle args) {
         super(args);
+        Log.d(TAG, "CallController");
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
@@ -348,6 +349,7 @@ public class CallController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+        Log.d(TAG, "onViewBound");
 
         microphoneControlButton.setOnTouchListener(new MicrophoneButtonTouchListener());
         videoOnClickListener = new VideoClickListener();
@@ -1349,6 +1351,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        Log.d(TAG, "onMessageEvent-WebSocketCommunicationEvent");
+
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
                 if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
@@ -1784,6 +1788,7 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
+        Log.d(TAG, "onMessageEvent-ConfigurationChangeEvent");
         powerManagerUtils.setOrientation(Objects.requireNonNull(getResources()).getConfiguration().orientation);
 
 
@@ -1814,6 +1819,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
+        Log.d(TAG, "onMessageEvent-PeerConnectionEvent");
+
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
                 .PEER_CLOSED)) {
             endPeerConnection(peerConnectionEvent.getSessionId(), peerConnectionEvent.getVideoStreamType().equals("screen"));
@@ -1893,6 +1900,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
+        Log.d(TAG, "onMessageEvent-MediaStreamEvent");
+
         if (mediaStreamEvent.getMediaStream() != null) {
             setupVideoStreamForLayout(mediaStreamEvent.getMediaStream(), mediaStreamEvent.getSession(),
                     mediaStreamEvent.getMediaStream().videoTracks != null
@@ -1904,6 +1913,9 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
+        Log.d(TAG, "onMessageEvent-SessionDescriptionSendEvent");
+//        Log.d(TAG, "  sessionDescriptionSend:" + sessionDescriptionSend);
+
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
         ncMessageWrapper.setSessionId(callSession);
@@ -2450,6 +2462,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
+        Log.d(TAG, "onMessageEvent-NetworkEvent");
+
         if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED)) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);

@@ -133,6 +133,7 @@ public class NotificationWorker extends Worker {
 
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        Log.d(TAG, "NotificationWorker");
     }
 
     private void showNotificationForCallWithNoPing(Intent intent) {
@@ -603,8 +604,10 @@ public class NotificationWorker extends Worker {
 
                             boolean startACall = decryptedPushMessage.getType().equals("call") || !hasChatSupport;
                             if (startACall) {
+                                Log.d(TAG, "call MagicCallActivity (startACall was true)");
                                 intent = new Intent(context, MagicCallActivity.class);
                             } else {
+                                Log.d(TAG, "call MainActivity (startACall was false)");
                                 intent = new Intent(context, MainActivity.class);
                             }
 
@@ -659,7 +662,7 @@ public class NotificationWorker extends Worker {
                 Log.d(TAG, "Invalid private key " + e1.getLocalizedMessage());
             }
         } catch (Exception exception) {
-            Log.d(TAG, "Something went very wrong " + exception.getLocalizedMessage());
+            Log.e(TAG, "Something went very wrong " + exception);
         }
         return Result.success();
     }
