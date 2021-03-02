@@ -1152,44 +1152,41 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
-        callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
+        Log.d(TAG, "joinRoomAndCall");
+        Log.d(TAG, "   baseUrl= " + baseUrl);
+        Log.d(TAG, "   roomToken= " + roomToken);
 
-        if (TextUtils.isEmpty(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
-                    roomToken), conversationPassword)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(3)
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
+        ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
+                roomToken), conversationPassword)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
+                .subscribe(new Observer<RoomOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onNext(RoomOverall roomOverall) {
-                            callSession = roomOverall.getOcs().getData().getSessionId();
-                            ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
-                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
-                            ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
-                            callOrJoinRoomViaWebSocket();
-                        }
+                    @Override
+                    public void onNext(RoomOverall roomOverall) {
+                        callSession = roomOverall.getOcs().getData().getSessionId();
+                        ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
+                        callOrJoinRoomViaWebSocket();
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
+                    @Override
+                    public void onError(Throwable e) {
 
-                        }
+                    }
 
-                        @Override
-                        public void onComplete() {
+                    @Override
+                    public void onComplete() {
 
-                        }
-                    });
-        } else {
-            // we are in a room and start a call -> same session needs to be used
-            callOrJoinRoomViaWebSocket();
-        }
+                    }
+                });
     }
 
     private void callOrJoinRoomViaWebSocket() {
@@ -1546,6 +1543,10 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
+                        if (!TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+                            webSocketClient.joinRoomWithRoomTokenAndSession("", callSession);
+                        }
+
                         if (isMultiSession) {
                             if (shutDownView && getActivity() != null) {
                                 getActivity().finish();
