@@ -759,11 +759,8 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onDetach(view: View) {
         super.onDetach(view)
+        ApplicationWideCurrentRoomHolder.getInstance().clear()
 
-        if (!isLeavingForConversation) {
-            // current room is still "active", we need the info
-            ApplicationWideCurrentRoomHolder.getInstance().clear()
-        }
         eventBus?.unregister(this)
 
         if (activity != null) {
