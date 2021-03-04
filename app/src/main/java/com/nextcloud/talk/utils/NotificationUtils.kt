@@ -33,6 +33,7 @@ import android.service.notification.StatusBarNotification
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import org.webrtc.Logging
 import java.util.*
 
 object NotificationUtils {
@@ -117,6 +118,9 @@ object NotificationUtils {
     }
 
     fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long) {
+        Logging.d(javaClass.simpleName, "cancelExistingNotificationWithId. conversationUser.id:" +
+                conversationUser.id + " notificationId: " + notificationId)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
                 context != null) {
 
@@ -124,8 +128,18 @@ object NotificationUtils {
 
             val statusBarNotifications = notificationManager.activeNotifications
             var notification: Notification?
+
+            Logging.d(javaClass.simpleName, "statusBarNotifications:" + statusBarNotifications.size)
+
+
             for (statusBarNotification in statusBarNotifications) {
                 notification = statusBarNotification.notification
+
+                Logging.d(javaClass.simpleName, "notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID): " +
+                        notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID))
+
+                Logging.d(javaClass.simpleName, "notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID): " +
+                        notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID))
 
                 if (notification != null && !notification.extras.isEmpty) {
                     if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) && notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
@@ -162,6 +176,9 @@ object NotificationUtils {
 
     fun cancelExistingNotificationsForRoom(context: Context?, conversationUser: UserEntity,
                                            roomTokenOrId: String) {
+        Logging.d(javaClass.simpleName, "cancelExistingNotificationsForRoom. conversationUser.id:" +
+                conversationUser.id + " roomTokenOrId: " + roomTokenOrId)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
                 context != null) {
 
@@ -169,8 +186,14 @@ object NotificationUtils {
 
             val statusBarNotifications = notificationManager.activeNotifications
             var notification: Notification?
+
+            Logging.d(javaClass.simpleName, "statusBarNotifications:" + statusBarNotifications.size)
+
             for (statusBarNotification in statusBarNotifications) {
                 notification = statusBarNotification.notification
+
+                Logging.d(javaClass.simpleName, "notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID): " +
+                        notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID))
 
                 if (notification != null && !notification.extras.isEmpty) {
                     if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) && roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
