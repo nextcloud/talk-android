@@ -922,6 +922,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         }
 
                         if (magicWebSocketInstance != null && currentConversation != null) {
+                            // TODO: does this make sense??? why is joinRoom called? and why is roomToken empty???
                             magicWebSocketInstance?.joinRoomWithRoomTokenAndSession("",
                                     currentConversation?.sessionId)
                         }

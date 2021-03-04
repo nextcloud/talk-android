@@ -21,6 +21,7 @@ package com.nextcloud.talk.utils;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.DimenRes;
 import androidx.annotation.Nullable;
@@ -40,6 +41,8 @@ public class ApiUtils {
     private static String spreedApiVersion = "/apps/spreed/api/v1";
 
     private static String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
+
+    private static final String TAG = "ApiUtils";
 
     public static String getUserAgent() {
         return userAgent + BuildConfig.VERSION_NAME;
@@ -124,6 +127,9 @@ public class ApiUtils {
     }
 
     public static String getRoom(String baseUrl, String token) {
+        if(token == null || token.isEmpty()){
+            Log.e(TAG, "token was null or empty for getRoom!!!! is that okay?!? !!!!!!!!!!!!!!!!!!");
+        }
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token;
     }
 
