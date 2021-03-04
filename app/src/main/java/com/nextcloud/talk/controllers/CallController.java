@@ -1156,8 +1156,15 @@ public class CallController extends BaseController {
         Log.d(TAG, "   baseUrl= " + baseUrl);
         Log.d(TAG, "   roomToken= " + roomToken);
 
-        ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
-                roomToken), conversationPassword)
+        String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
+        Log.d(TAG, "   url" + url);
+
+
+        Log.d(TAG,
+                "just for interest: magicPeerConnectionWrapperList.size(): " + magicPeerConnectionWrapperList.size());
+
+
+        ncApi.joinRoom(credentials, url, conversationPassword)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
@@ -1170,6 +1177,8 @@ public class CallController extends BaseController {
                     @Override
                     public void onNext(RoomOverall roomOverall) {
                         callSession = roomOverall.getOcs().getData().getSessionId();
+                        Log.d("CallController", "   callSession: " + callSession.substring(0,6));
+
                         ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                         ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
@@ -1179,12 +1188,12 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "joinRoom onError", e);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Log.d(TAG, "joinRoom onComplete");
                     }
                 });
     }
@@ -1348,7 +1357,7 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
-        Log.d(TAG, "onMessageEvent-WebSocketCommunicationEvent");
+//        Log.d(TAG, "onMessageEvent-WebSocketCommunicationEvent");
 
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
@@ -1477,6 +1486,8 @@ public class CallController extends BaseController {
     }
 
     private void hangup(boolean shutDownView) {
+        Log.d(TAG, "hangup");
+
         stopCallingSound();
         dispose(null);
 
@@ -1524,6 +1535,9 @@ public class CallController extends BaseController {
             }
         }
 
+        Log.d(TAG, "magicPeerConnectionWrapperList has " + magicPeerConnectionWrapperList.size() + " sessions that " +
+                "will be closed");
+
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
             endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId(), false);
         }
@@ -1532,6 +1546,7 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
+        Log.d(TAG, "hangupNetworkCalls (leaveCall)");
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1571,7 +1586,14 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
+        Log.d(TAG, "leaveRoom");
+        Log.d(TAG, "   baseUrl= " + baseUrl);
+        Log.d(TAG, "   roomToken= " + roomToken);
+
+        String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
+        Log.d(TAG, "   url" + url);
+
+        ncApi.leaveRoom(credentials, url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1589,12 +1611,12 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "leaveRoom onError", e);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Log.e(TAG, "leaveRoom onComplete");
                     }
                 });
     }
@@ -1753,6 +1775,8 @@ public class CallController extends BaseController {
     }
 
     private void endPeerConnection(String sessionId, boolean justScreen) {
+        Log.d(TAG, "endPeerConnection for sessionId: " + sessionId.substring(0,6));
+
         List<MagicPeerConnectionWrapper> magicPeerConnectionWrappers;
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         if (!(magicPeerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()
@@ -1820,7 +1844,7 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
-        Log.d(TAG, "onMessageEvent-PeerConnectionEvent");
+//        Log.d(TAG, "onMessageEvent-PeerConnectionEvent");
 
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
                 .PEER_CLOSED)) {
@@ -1914,8 +1938,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
-        Log.d(TAG, "onMessageEvent-SessionDescriptionSendEvent");
-//        Log.d(TAG, "  sessionDescriptionSend:" + sessionDescriptionSend);
+        Log.d(TAG,
+                "onMessageEvent-SessionDescriptionSendEvent. sessionDescriptionSend.getPeerId(): " + sessionDescriptionSend.getPeerId().substring(0,6));
 
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
