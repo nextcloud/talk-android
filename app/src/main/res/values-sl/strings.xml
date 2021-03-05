@@ -163,6 +163,12 @@
     <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
     <string name="nc_permissions_settings">Odpri nastavitve</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Glasovni klic Nextcloud Talk</string>
+    <string name="nc_video_call">Video klic Nextcloud Talk</string>
+    <string name="nc_unknown_call">Klic Nextcloud Talk</string>
+    <string name="nc_call_incoming">DOHODNI</string>
+    <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
     <string name="nc_calling">Poteka klicanje ...</string>
     <string name="nc_incoming_call">Dohodni klic:</string>
@@ -308,6 +314,7 @@ Pozdravite prijatelje in znance.</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
     <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
+    <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_settings_phone_book_integration_desc">Poveži stike po telefonski številki za povezavo imenika s programom Talk</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
