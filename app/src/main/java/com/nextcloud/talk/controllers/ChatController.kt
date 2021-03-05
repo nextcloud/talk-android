@@ -703,6 +703,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+        Log.d(javaClass.simpleName, "onAttach")
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability("mention-flag") ?: false && activity != null) {
@@ -759,6 +760,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onDetach(view: View) {
         super.onDetach(view)
+        Log.d(javaClass.simpleName, "onDetach")
         ApplicationWideCurrentRoomHolder.getInstance().clear()
 
         eventBus?.unregister(this)
@@ -840,53 +842,58 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun joinRoomWithPassword() {
+        Log.d(javaClass.simpleName, "joinRoomWithPassword")
 
         if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
                 currentConversation?.sessionId == "0") {
-            ncApi?.joinRoom(credentials,
-                    ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken), roomPassword)
-                    ?.subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.retry(3)
-                    ?.subscribe(object : Observer<RoomOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                            disposableList.add(d)
+
+            var url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken);
+
+            ncApi?.joinRoom(credentials, url, roomPassword)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.retry(3)
+                ?.subscribe(object : Observer<RoomOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposableList.add(d)
+                    }
+
+                    override fun onNext(roomOverall: RoomOverall) {
+                        inConversation = true
+                        currentConversation?.sessionId = roomOverall.ocs.data.sessionId
+                        Log.d(javaClass.simpleName, "  new sessionID is " + currentConversation?.sessionId)
+
+
+                        ApplicationWideCurrentRoomHolder.getInstance().session =
+                                currentConversation?.sessionId
+                        startPing()
+
+                        setupWebsocket()
+                        checkLobbyState()
+
+                        if (isFirstMessagesProcessing) {
+                            pullChatMessages(0)
+                        } else {
+                            pullChatMessages(1, 0)
                         }
 
-                        override fun onNext(roomOverall: RoomOverall) {
-                            inConversation = true
-                            currentConversation?.sessionId = roomOverall.ocs.data.sessionId
-
-                            ApplicationWideCurrentRoomHolder.getInstance().session =
-                                    currentConversation?.sessionId
-                            startPing()
-
-                            setupWebsocket()
-                            checkLobbyState()
-
-                            if (isFirstMessagesProcessing) {
-                                pullChatMessages(0)
-                            } else {
-                                pullChatMessages(1, 0)
-                            }
-
-                            if (magicWebSocketInstance != null) {
-                                magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(roomToken, currentConversation?.sessionId)
-                            }
-                            if (startCallFromNotification != null && startCallFromNotification ?: false) {
-                                startCallFromNotification = false
-                                startACall(voiceOnly)
-                            }
+                        if (magicWebSocketInstance != null) {
+                            magicWebSocketInstance?.joinRoomWithRoomTokenAndSession(roomToken, currentConversation?.sessionId)
                         }
-
-                        override fun onError(e: Throwable) {
-
+                        if (startCallFromNotification != null && startCallFromNotification ?: false) {
+                            startCallFromNotification = false
+                            startACall(voiceOnly)
                         }
+                    }
 
-                        override fun onComplete() {
+                    override fun onError(e: Throwable) {
 
-                        }
-                    })
+                    }
+
+                    override fun onComplete() {
+
+                    }
+                })
         } else {
             inConversation = true
             ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation?.sessionId
@@ -904,9 +911,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun leaveRoom() {
+        Log.d(TAG, "leaveRoom")
+        if(roomToken.isNullOrEmpty()){
+            Log.e(TAG, "roomToken was empty!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+        }
+
         ncApi?.leaveRoom(credentials,
-                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl,
-                        roomToken))
+                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<GenericOverall> {
