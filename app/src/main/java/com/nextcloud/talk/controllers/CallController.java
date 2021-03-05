@@ -293,7 +293,7 @@ public class CallController extends BaseController {
 
     public CallController(Bundle args) {
         super(args);
-        Log.d(TAG, "CallController");
+        Log.d(TAG, "CallController created!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
@@ -1017,6 +1017,7 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
+        Log.d(TAG, "fetchSignalingSettings");
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
@@ -1041,8 +1042,11 @@ public class CallController extends BaseController {
                                 externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
                                 externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
                                 hasExternalSignalingServer = true;
+                                Log.d(TAG, "   hasExternalSignalingServer = true");
+
                             } else {
                                 hasExternalSignalingServer = false;
+                                Log.d(TAG, "   hasExternalSignalingServer = false");
                             }
 
                             if (!conversationUser.getUserId().equals("?")) {
@@ -1060,6 +1064,8 @@ public class CallController extends BaseController {
                                 for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
                                      i++) {
                                     iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
+                                    Log.d(TAG, "   add STUN server " + iceServer.getUrl());
+
                                     if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
                                             .getCredential())) {
                                         iceServers.add(new PeerConnection.IceServer(iceServer.getUrl()));
@@ -1075,6 +1081,8 @@ public class CallController extends BaseController {
                                      i++) {
                                     iceServer = signalingSettingsOverall.getOcs().getSettings().getTurnServers().get(i);
                                     for (int j = 0; j < iceServer.getUrls().size(); j++) {
+                                        Log.d(TAG, "   add TURN server " + iceServer.getUrls().get(j));
+
                                         if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
                                                 .getCredential())) {
                                             iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
@@ -1151,54 +1159,65 @@ public class CallController extends BaseController {
                 });
     }
 
+
+
     private void joinRoomAndCall() {
-        Log.d(TAG, "joinRoomAndCall");
-        Log.d(TAG, "   baseUrl= " + baseUrl);
-        Log.d(TAG, "   roomToken= " + roomToken);
+        Log.d(TAG, "joinRoomAndCall !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-        String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
-        Log.d(TAG, "   url" + url);
+        callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
+        Log.d(TAG, "   callSession from ApplicationWideCurrentRoomHolder is: " + callSession);
+
+        if (TextUtils.isEmpty(callSession)) {
+            Log.d(TAG, "   baseUrl= " + baseUrl);
+            Log.d(TAG, "   roomToken= " + roomToken);
+
+            String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
+            Log.d(TAG, "   url= " + url);
 
 
-        Log.d(TAG,
-                "just for interest: magicPeerConnectionWrapperList.size(): " + magicPeerConnectionWrapperList.size());
+            Log.d(TAG,
+                    "   just for interest: magicPeerConnectionWrapperList.size(): " + magicPeerConnectionWrapperList.size());
 
 
-        ncApi.joinRoom(credentials, url, conversationPassword)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(3)
-                .subscribe(new Observer<RoomOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
+            ncApi.joinRoom(credentials, url, conversationPassword)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(3)
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onNext(RoomOverall roomOverall) {
-                        callSession = roomOverall.getOcs().getData().getSessionId();
-                        Log.d("CallController", "   callSession: " + callSession.substring(0,6));
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            callSession = roomOverall.getOcs().getData().getSessionId();
+                            Log.d(TAG, "   new callSession by joinRoom= " + callSession);
+                            ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
+                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
+                            ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
+                            callOrJoinRoomViaWebSocket();
+                        }
 
-                        ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
-                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
-                        callOrJoinRoomViaWebSocket();
-                    }
+                        @Override
+                        public void onError(Throwable e) {
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.e(TAG, "joinRoom onError", e);
-                    }
+                        }
 
-                    @Override
-                    public void onComplete() {
-                        Log.d(TAG, "joinRoom onComplete");
-                    }
-                });
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        } else {
+            // we are in a room and start a call -> same session needs to be used
+            callOrJoinRoomViaWebSocket();
+        }
     }
 
     private void callOrJoinRoomViaWebSocket() {
+        Log.d(TAG, "callOrJoinRoomViaWebSocket");
         if (hasExternalSignalingServer) {
             webSocketClient.joinRoomWithRoomTokenAndSession(roomToken, callSession);
         } else {
@@ -1207,6 +1226,7 @@ public class CallController extends BaseController {
     }
 
     private void performCall() {
+        Log.d(TAG, "performCall");
         Integer inCallFlag;
         if (isVoiceOnlyCall) {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO.getValue();
@@ -1329,6 +1349,7 @@ public class CallController extends BaseController {
     }
 
     private void setupAndInitiateWebSocketsConnection() {
+        Log.d(TAG, "setupAndInitiateWebSocketsConnection");
         if (webSocketConnectionHelper == null) {
             webSocketConnectionHelper = new WebSocketConnectionHelper();
         }
@@ -1589,6 +1610,9 @@ public class CallController extends BaseController {
         Log.d(TAG, "leaveRoom");
         Log.d(TAG, "   baseUrl= " + baseUrl);
         Log.d(TAG, "   roomToken= " + roomToken);
+        if(roomToken.isEmpty()){
+            Log.e(TAG,"roomToken was empty!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+        }
 
         String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
         Log.d(TAG, "   url" + url);
@@ -1775,7 +1799,7 @@ public class CallController extends BaseController {
     }
 
     private void endPeerConnection(String sessionId, boolean justScreen) {
-        Log.d(TAG, "endPeerConnection for sessionId: " + sessionId.substring(0,6));
+        Log.d(TAG, "endPeerConnection for sessionId: " + sessionId);
 
         List<MagicPeerConnectionWrapper> magicPeerConnectionWrappers;
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
@@ -1938,8 +1962,10 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
-        Log.d(TAG,
-                "onMessageEvent-SessionDescriptionSendEvent. sessionDescriptionSend.getPeerId(): " + sessionDescriptionSend.getPeerId().substring(0,6));
+        Log.d(TAG, "onMessageEvent-SessionDescriptionSendEvent.");
+        Log.d(TAG, "  sessionDescriptionSend.getPeerId(): " + sessionDescriptionSend.getPeerId());
+        Log.d(TAG, "  callSession: " + callSession);
+
 
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");

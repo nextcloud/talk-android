@@ -203,7 +203,6 @@ public class CallNotificationController extends BaseController {
     private void proceedToCall() {
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
-        originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
 
         getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
                 .popChangeHandler(new HorizontalChangeHandler())

@@ -157,7 +157,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         if (webSocket == internalWebSocket) {
-            Log.d(TAG, "Receiving : " + webSocket.toString() + " " + text);
+            Log.d(TAG, "onMessage. Receiving : " + webSocket.toString() + " " + text);
             LoggingUtils.INSTANCE.writeLogEntryToFile(context,
                     "WebSocket " + webSocket.hashCode() + " receiving: " + text);
 
@@ -329,6 +329,13 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public void joinRoomWithRoomTokenAndSession(String roomToken, String normalBackendSession) {
+        Log.d(TAG, "joinRoomWithRoomTokenAndSession");
+
+        Log.d(TAG, "  currentRoomToken: " + currentRoomToken);
+        Log.d(TAG, "  passed roomToken is: " + roomToken);
+
+        Log.d(TAG, "  normalBackendSession: " + normalBackendSession);
+
         try {
             String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
             if (!connected || reconnecting) {
