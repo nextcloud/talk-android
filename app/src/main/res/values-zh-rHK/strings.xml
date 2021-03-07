@@ -98,7 +98,7 @@
     <string name="nc_settings_incognito_keyboard_title">隱身鍵盤</string>
     <string name="nc_settings_incognito_keyboard_desc">指示鍵盤禁用個性化學習（無保證）</string>
     <string name="nc_settings_link_previews_title">顯示 連結預覽</string>
-    <string name="nc_settings_link_previews_desc">允許為受支持的服務提供接收到的鏈接內容的預覽</string>
+    <string name="nc_settings_link_previews_desc">允許為受支持的服務提供接收到的連結內容的預覽</string>
     <string name="nc_locked">點擊可解除鎖定</string>
     <string name="nc_settings_read_privacy_desc">分享我的閱讀狀態並顯示其他人的閱讀狀態</string>
     <string name="nc_settings_read_privacy_title">閱讀狀態</string>
