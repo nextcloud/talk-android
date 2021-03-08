@@ -224,8 +224,8 @@
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">輸入訊息</string>
-    <string name="nc_date_header_yesterday">昨天</string>
-    <string name="nc_date_header_today">今天</string>
+    <string name="nc_date_header_yesterday">昨日</string>
+    <string name="nc_date_header_today">今日</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
