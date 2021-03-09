@@ -229,6 +229,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/user";
     }
 
+    public static String getUrlForUserData(String baseUrl, String userId) {
+        return baseUrl + ocsApiVersion + "/cloud/users/" + userId;
+    }
+
     public static String getUrlForUserSettings(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/settings/user";
     }

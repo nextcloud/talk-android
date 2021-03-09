@@ -37,4 +37,7 @@ public class UserProfileData {
 
     @JsonField(name = "id")
     String userId;
+
+    @JsonField(name = "phone")
+    String phone;
 }
