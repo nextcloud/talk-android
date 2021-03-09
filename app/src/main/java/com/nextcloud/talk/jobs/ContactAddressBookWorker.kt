@@ -366,19 +366,21 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             }
         }
 
-        fun checkPermission(controller: Controller, context: Context) {
+        fun checkPermission(controller: Controller, context: Context): Boolean {
             if (ContextCompat.checkSelfPermission(context,
                             Manifest.permission.WRITE_CONTACTS) != PackageManager.PERMISSION_GRANTED ||
                     ContextCompat.checkSelfPermission(context,
                             Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
                 controller.requestPermissions(arrayOf(Manifest.permission.WRITE_CONTACTS,
                         Manifest.permission.READ_CONTACTS), REQUEST_PERMISSION)
+                return false
             } else {
                 WorkManager
                         .getInstance()
                         .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
                                 .setInputData(Data.Builder().putBoolean(KEY_FORCE, true).build())
                                 .build())
+                return true
             }
         }
     }

@@ -227,6 +227,16 @@ public interface NcApi {
     @GET
     Observable<UserProfileOverall> getUserProfile(@Header("Authorization") String authorization, @Url String url);
 
+
+    @GET
+    Observable<UserProfileOverall> getUserData(@Header("Authorization") String authorization, @Url String url);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setUserData(@Header("Authorization") String authorization, @Url String url,
+                                                  @Field("key") String key, @Field("value") String value);
+
+
     /*
         Server URL is: baseUrl + /status.php
      */
