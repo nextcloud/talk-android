@@ -309,7 +309,7 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
-    <string name="nc_upload_from_nextcloud">Sdílet z Nextcloudu</string>
+    <string name="nc_upload_from_nextcloud">Sdílet z Nextcloud</string>
     <string name="nc_upload_failed">Odesílání se nezdařilo, omlouváme se</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>

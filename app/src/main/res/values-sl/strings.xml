@@ -316,6 +316,8 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
+    <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
     <string name="nc_settings_phone_book_integration_desc">Poveži stike po telefonski številki za povezavo imenika s programom Talk</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
