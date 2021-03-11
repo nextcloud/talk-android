@@ -7,6 +7,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
 ## [Unreleased]
 ### Added
+- add ability to enter own phone number when address book sync is enabled
 
 ### Fixed
 - show links for deck-cards

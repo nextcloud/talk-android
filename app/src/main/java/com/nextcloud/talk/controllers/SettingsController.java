@@ -24,20 +24,37 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.KeyguardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.security.KeyChain;
+import android.text.Editable;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Checkable;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -48,6 +65,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
@@ -58,6 +76,7 @@ import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
+import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -90,12 +109,6 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.emoji.widget.EmojiTextView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -160,7 +173,7 @@ public class SettingsController extends BaseController {
     @BindView(R.id.settings_screen_lock_timeout)
     MaterialChoicePreference screenLockTimeoutChoicePreference;
     @BindView(R.id.settings_phone_book_integration)
-    MaterialSwitchPreference phoneBookIntegretationPreference;
+    MaterialSwitchPreference phoneBookIntegrationPreference;
     @BindView(R.id.settings_read_privacy)
     MaterialSwitchPreference readPrivacyPreference;
 
@@ -313,11 +326,11 @@ public class SettingsController extends BaseController {
                     SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
                     .popChangeHandler(new VerticalChangeHandler()));
         });
-        
+
         if (userUtils.getCurrentUser().isPhoneBookIntegrationAvailable()) {
-            phoneBookIntegretationPreference.setVisibility(View.VISIBLE);
+            phoneBookIntegrationPreference.setVisibility(View.VISIBLE);
         } else {
-            phoneBookIntegretationPreference.setVisibility(View.GONE);
+            phoneBookIntegrationPreference.setVisibility(View.GONE);
         }
 
         String host = null;
@@ -464,7 +477,7 @@ public class SettingsController extends BaseController {
         }
 
         ((Checkable) linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
-        ((Checkable) phoneBookIntegretationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
+        ((Checkable) phoneBookIntegrationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeyguardManager keyguardManager = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
@@ -741,20 +754,20 @@ public class SettingsController extends BaseController {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-       if (requestCode == ContactAddressBookWorker.REQUEST_PERMISSION && 
-               grantResults.length > 0 && 
-               grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-           WorkManager
-                   .getInstance()
-                   .enqueue(new OneTimeWorkRequest.Builder(ContactAddressBookWorker.class).build());
-       } else {
-           appPreferences.setPhoneBookIntegration(false);
-           ((Checkable) phoneBookIntegretationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
-           Snackbar.make(getView(), 
-                   context.getResources().getString(R.string.no_phone_book_integration_due_to_permissions), 
-                   Snackbar.LENGTH_LONG)
-                   .show();
-       }
+        if (requestCode == ContactAddressBookWorker.REQUEST_PERMISSION &&
+                grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            WorkManager
+                    .getInstance()
+                    .enqueue(new OneTimeWorkRequest.Builder(ContactAddressBookWorker.class).build());
+            checkForPhoneNumber();
+        } else {
+            appPreferences.setPhoneBookIntegration(false);
+            ((Checkable) phoneBookIntegrationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
+            Toast.makeText(context, context.getResources().getString(
+                    R.string.no_phone_book_integration_due_to_permissions),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
     private class ScreenLockTimeoutListener implements OnPreferenceValueChangedListener<String> {
@@ -847,22 +860,150 @@ public class SettingsController extends BaseController {
             NextcloudTalkApplication.Companion.setAppTheme(newValue);
         }
     }
-    
+
     private class PhoneBookIntegrationChangeListener implements OnPreferenceValueChangedListener<Boolean> {
         private final Controller controller;
-        
+
         public PhoneBookIntegrationChangeListener(Controller controller) {
             this.controller = controller;
         }
-        
+
         @Override
         public void onChanged(Boolean newValue) {
             if (newValue) {
-                ContactAddressBookWorker.Companion.checkPermission(controller, context);
+                if(ContactAddressBookWorker.Companion.checkPermission(controller, context)){
+                    checkForPhoneNumber();
+                }
             }
         }
     }
-    
+
+    private void checkForPhoneNumber() {
+        ncApi.getUserData(
+                ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                ApiUtils.getUrlForUserProfile(currentUser.getBaseUrl())
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<UserProfileOverall>() {
+
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull UserProfileOverall userProfileOverall) {
+                        if (userProfileOverall.getOcs().getData().getPhone().isEmpty()) {
+                            askForPhoneNumber();
+                        } else {
+                            Log.d(TAG, "phone number already set");
+                        }
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void askForPhoneNumber() {
+        final LinearLayout phoneNumberLayoutWrapper = new LinearLayout(getActivity());
+        phoneNumberLayoutWrapper.setOrientation(LinearLayout.VERTICAL);
+        phoneNumberLayoutWrapper.setPadding(50, 0, 50, 0);
+
+        final TextInputLayout phoneNumberInputLayout = new TextInputLayout(getActivity());
+        final EditText phoneNumberField = new EditText(getActivity());
+
+        phoneNumberInputLayout.setHelperTextColor(ColorStateList.valueOf(getResources().getColor(R.color.nc_darkRed)));
+        phoneNumberField.setInputType(InputType.TYPE_CLASS_PHONE);
+        phoneNumberField.setText("+");
+        phoneNumberField.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                phoneNumberInputLayout.setHelperText("");
+            }
+        });
+
+        phoneNumberInputLayout.addView(phoneNumberField);
+        phoneNumberLayoutWrapper.addView(phoneNumberInputLayout);
+
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.nc_settings_phone_book_integration_phone_number_dialog_title)
+                .setMessage(R.string.nc_settings_phone_book_integration_phone_number_dialog_description)
+                .setView(phoneNumberLayoutWrapper)
+                .setPositiveButton(context.getResources().getString(R.string.nc_common_set), null)
+                .setNegativeButton(context.getResources().getString(R.string.nc_common_skip), null)
+                .create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialogInterface) {
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        setPhoneNumber(phoneNumberInputLayout, dialog);
+                    }
+                });
+            }
+        });
+        dialog.show();
+    }
+
+    private void setPhoneNumber(TextInputLayout textInputLayout, AlertDialog dialog) {
+        String phoneNumber = textInputLayout.getEditText().getText().toString();
+
+        ncApi.setUserData(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                ApiUtils.getUrlForUserData(currentUser.getBaseUrl(), currentUser.getUserId()), "phone", phoneNumber
+        ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
+                        int statusCode = genericOverall.ocs.meta.statusCode;
+                        if (statusCode == 200) {
+                            dialog.dismiss();
+                            Toast.makeText(context, context.getResources().getString(
+                                    R.string.nc_settings_phone_book_integration_phone_number_dialog_success),
+                                    Toast.LENGTH_LONG).show();
+                        } else {
+                            textInputLayout.setHelperText(context.getResources().getString(
+                                    R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid));
+                            Log.d(TAG, "failed to set phoneNumber. statusCode=" + statusCode);
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        textInputLayout.setHelperText(context.getResources().getString(
+                                R.string.nc_settings_phone_book_integration_phone_number_dialog_invalid));
+                        Log.e(TAG, "setPhoneNumber error", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+    }
+
     private class ReadPrivacyChangeListener implements OnPreferenceValueChangedListener<Boolean> {
         @Override
         public void onChanged(Boolean newValue) {
