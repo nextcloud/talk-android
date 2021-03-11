@@ -29,39 +29,68 @@
 
     <!-- Server selection -->
     <string name="nc_server_url">عنوان الخادم</string>
+    <string name="nc_server_not_installed">الرجاء إنهاء %1$s التثبيت الخاص بك</string>
+    <string name="nc_server_db_upgrade_needed">الرجاء ترقية %1$s قاعدة البيانات الخاصة بك </string>
+    <string name="nc_server_maintenance">الرجاء إخراج %1$sمن الصيانة</string>
+    <string name="nc_server_version">%1$s يعمل فقط مع %2$s 13 وأكثر</string>
     <string name="nc_server_import_account_plain">استيراد حساب</string>
     <string name="nc_server_import_accounts_plain">استيراد حسابات</string>
+    <string name="nc_server_import_account">استيراد الحساب من تطبيق %1$s</string>
+    <string name="nc_server_import_accounts">استيراد الحسابات من تطبيق %1$s</string>
+    <string name="nc_server_failed_to_import_account">فشل في استيراد حساب محدد</string>
+    <string name="nc_Server_account_imported">تم استيراد الحساب المحدد وهو متاح الآن </string>
     <string name="nc_get_from_provider">ليس لديك خادم حتى الآن ؟\nإضغط هنا للحصول على واحد من أحد المزودين</string>
 
+    <string name="nc_never">عدم الانضمام</string>
     <string name="nc_search">البحث</string>
 
+    <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <!-- Settings -->
     <string name="nc_settings_proxy_title">وكيل البروكسي</string>
     <string name="nc_settings_proxy_type_title">نوع البروكسي</string>
     <string name="nc_settings_proxy_host_title">مضيف البروكسي</string>
     <string name="nc_settings_proxy_port_title">منفذ البروكسي</string>
+    <string name="nc_settings_use_credentials_title">استخدم بيانات الاعتماد</string>
     <string name="nc_settings_switch_account">تبديل بين الحسابات</string>
+    <string name="nc_settings_reauthorize">إعادة تفويض</string>
+    <string name="nc_client_cert_setup">تعيين شهادة العميل</string>
+    <string name="nc_client_cert_change">تغيير شهادة العميل</string>
     <string name="nc_settings_remove">حذف</string>
+    <string name="nc_settings_remove_confirmation">يرجى تأكيد رغبتك لإزالة الحساب الحالي.</string>
     <string name="nc_settings_remove_account">حذف حساب</string>
     <string name="nc_settings_add_account">إضافة حساب جديد</string>
     <string name="nc_add">إضافة</string>
+    <string name="nc_settings_wrong_account">يمكن إعادة تفويض الحساب الجاري فقط </string>
     <string name="nc_settings_no_talk_installed">تطبيق التحدث غير مثبت على الخادم الذي تريد المصادقة إليه.</string>
+    <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>
+    <string name="nc_account_scheduled_for_deletion">تمت جدولة الحساب للحذف ، ولا يمكن تغييره</string>
     <string name="nc_settings_notification_sounds">صوت</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
     <string name="nc_settings_other_notifications_ringtone">الإشعارات</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
+    <string name="nc_settings_vibrate">اهتزاز</string>
+    <string name="nc_settings_vibrate_desc">سيهتز الهاتف ما لم يتم وضعه على الصامت</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_theme_title">المظهر</string>
     <string name="nc_settings_theme_key">المظهر</string>
+    <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
+    <string name="nc_settings_theme_battery_saver">تم تعيينه بواسطة موفر شحن البطارية</string>
     <string name="nc_settings_theme_light">فاتح</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_privacy">الخصوصية</string>
     <string name="nc_settings_screen_lock_title">قفل الشاشة</string>
+    <string name="nc_settings_screen_lock_timeout_title">انتهت مهلة قفل الشاشة </string>
     <string name="nc_none">لا شيء</string>
     <string name="nc_settings_screen_security_title">أمان الشاشة</string>
+    <string name="nc_settings_screen_security_desc">يمنع اخذ لقطات الشاشة في القائمة الأخيرة وداخل التطبيق</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
+    <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_link_previews_title">اظهر معاينات الروابط</string>
+    <string name="nc_settings_link_previews_desc">يسمح بمعاينات المحتوى من الروابط المستلمة للخدمات المدعومة </string>
     <string name="nc_locked">انقر لفك القفل</string>
+    <string name="nc_settings_read_privacy_desc">شارك حالتي و أظهر الحالة للآخرين</string>
+    <string name="nc_settings_read_privacy_title">قراءة الحالة</string>
+
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>
     <string name="nc_screen_lock_timeout_60">دقيقة</string>
     <string name="nc_screen_lock_timeout_300">5 دقائق</string>
@@ -71,10 +100,11 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
 
+    <string name="nc_biometric_unlock">فتح قفل %1$s</string>
     <string name="nc_cancel">إلغاء</string>
 
     <string name="nc_no_proxy">بدون بروكسي</string>
-    <string name="nc_username">إسم المستخدم</string>
+    <string name="nc_username">اسم المستخدم</string>
     <string name="nc_password">كلمة السر</string>
     <string name="nc_conversation_link">رابط المحادثة</string>
     <string name="nc_new_password">كلمة سرية جديدة</string>
@@ -83,6 +113,8 @@
     <string name="nc_privacy">الخصوصية</string>
     <string name="nc_get_source_code">الحصول على الشفرة المصدرية</string>
     <string name="nc_license_title"> الرخصة</string>
+    <string name="nc_license_summary">رخصة جنو العمومية العامة ، الإصدار 3</string>
+
     <string name="nc_select_an_account">اختيار حساب</string>
 
     <!-- Conversation menu -->
@@ -92,11 +124,19 @@
     <string name="nc_rename">إعادة تسمية المحادثة</string>
     <string name="nc_set_password">إدخِل كلمة سرية</string>
     <string name="nc_change_password">تعديل الكلمة السرية</string>
+    <string name="nc_clear_password">مسح كلمة المرور</string>
     <string name="nc_share_link">مشاركة الرابط</string>
     <string name="nc_share_link_via">شارك الرابط عبر</string>
+    <string name="nc_make_call_public">اجعل المحادثة عامة</string>
+    <string name="nc_make_call_private">اجعل المحادثة خاصة </string>
     <string name="nc_delete_call">احذف المحادثة</string>
     <string name="nc_delete">حذف </string>
+    <string name="nc_delete_conversation_default">من فضلك قم بالتأكيد على رغبتك بازالة المحادثة.</string>
+    <string name="nc_delete_conversation_one2one">إذا قمت بحذف المحادثة، سوف تحذف أيضا لدى %1$s.</string>
+    <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
+
     <string name="nc_new_conversation">محادثة جديدة</string>
+    <string name="nc_join_via_link">انضم عن طريق الرابط</string>
     <string name="nc_join_via_web">الانضمام عبر الويب</string>
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
@@ -105,29 +145,65 @@
     <string name="nc_select_contacts">اختر مراسِلين</string>
     <string name="nc_contacts_done">تم</string>
 
+    <!-- Permissions -->
+    <string name="nc_camera_permission_permanently_denied">لتمكين اتصال الفيديو ، يرجى منح وصول \"الكاميرا\" في إعدادات النظام.</string>
+    <string name="nc_microphone_permission_permanently_denied">لتمكين الاتصال الصوتي ، يرجى منح وصول \"الميكروفون\" في إعدادات النظام.</string>
     <string name="nc_permissions_settings">فتح الإعدادات</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">نكست كلاود مكالمة صوتية</string>
+    <string name="nc_video_call">نكست كلاود مكالمة فيديو</string>
+    <string name="nc_unknown_call">مكالمة نكست كلاود </string>
+    <string name="nc_call_incoming">واردة</string>
+    <string name="nc_call_ringing">يرن </string>
     <string name="nc_connecting_call">جارٍ الاتصال…</string>
     <string name="nc_calling">جاري الاتصال...</string>
     <string name="nc_incoming_call">مكالمة واردة مِن</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_public_call">محادثة عمومية جديدة</string>
+    <string name="nc_public_call_explanation">المحادثات العامة تمكنك من إضافة أشخاص من الخارج عبر رابط معد خصيصًا</string>
+    <string name="nc_call_timeout">لا يوجد رد خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
+    <string name="nc_call_reconnecting">إعادة الاتصال...</string>
+    <string name="nc_offline">غير متصل حاليًا، من فضلك التأكد من الاتصال بالانترنت</string>
     <string name="nc_leaving_call">مغادرة المكالمة</string>
 
+    <!-- Notification channels -->
+    <string name="nc_notification_channel">قناة إشعار %1$s في %2$s </string>
+    <string name="nc_notification_channel_calls">قناة إشعار المكالمات</string>
+    <string name="nc_notification_channel_messages">قناة إشعار الرسائل</string>
     <string name="nc_notification_channel_calls_description">عرض المكالمات الواردة</string>
     <string name="nc_notification_settings">إعدادات الإشعار</string>
     <string name="nc_plain_old_messages">الرسائل</string>
+    <string name="nc_notify_me_always">أخبرني دومًا </string>
+    <string name="nc_notify_me_mention">أخبرني عند منشن</string>
+    <string name="nc_notify_me_never">لا تخبرني مطلقًا</string>
     <string name="nc_mute_calls">كتم المكالمات</string>
+    <string name="nc_mute_calls_desc">سوف تكون المكالمات الواردة على الوضع الصامت</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
+    <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة سيتم تجاوزها. إعدادات الرجاء عدم الإزعاج</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
+    <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_all_ok_operation">تم!</string>
     <string name="nc_ok">موافق</string>
     <string name="nc_call_name">اسم المحادثة</string>
     <string name="nc_proceed">مواصلة</string>
+    <string name="nc_call_name_is_same">الاسم الذي أدخلته مطابق لاسم آخر </string>
+    <string name="nc_wrong_link">رابط المحادثة غير صالح</string>
+    <string name="nc_share_text">انضم للمحادثة في %1$s /index.php/call/ %2$s</string>
+    <string name="nc_share_subject">%1$s دعوة</string>
+    <string name="nc_share_text_pass"> /كلمة المرور: %1$s</string>
+
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">اضغط للتحدث</string>
     <string name="nc_push_to_talk_desc">في وضعية تعطل المايكرفون، علق على الزر &amp; لاستخدام اضغط للتحدث</string>
+    <string name="nc_configure_cert_auth">اختر شهادة المصادقة</string>
+    <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
+
+    <!-- Moderation -->
+    <string name="nc_demote">تخفيض رتبة مشرف</string>
+    <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_remove_participant">حذف مشارك</string>
 
     <!-- Chat -->
@@ -137,13 +213,16 @@
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_conversation_info">بيانات المحادثة</string>
+    <string name="nc_new_messages">رسائل غير مقروءة</string>
     <string name="nc_no_messages_yet">ليس لديك رسائل بعد</string>
     <string name="nc_sent_a_link" formatted="true">%1$sارسل رابط.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s ارسل GIF.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$sارسل مرفق.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$sارسل مقطع صوتي.</string>
     <string name="nc_sent_a_video" formatted="true">%1$sارسل فيديو.</string>
     <string name="nc_sent_an_image" formatted="true">%1$sارسل صوره.</string>
     <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">لقد قمت بإرسال رابط.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">لقد قمت بارسال GIF.</string>
     <string name="nc_sent_an_attachment_you">لقد قمت بإرسال مرفق.</string>
     <string name="nc_sent_an_audio_you">لقد قمت بإرسال مقطع صوتي.</string>
     <string name="nc_sent_a_video_you">لقد قمت بإرسال فيديو.</string>
@@ -151,11 +230,24 @@
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">أنت: %1$s</string>
 
+    <!-- Contacts endless loading -->
+    <string name="nc_no_more_load_retry">لايمكن تحميل المزيد من العناصر. قم بالتحديث لإعادة المحاولة.</string>
+    <string name="nc_endless_disabled">لا يمكن تحميل المزيد من العناصر (وصلت إلى أقصى حد).</string>
     <string name="nc_endless_cancel">ألغي مِن طرف المستخدم.</string>
+    <string name="nc_endless_error">حدث خلل أثناء تحميل مزيد من العناصر.</string>
+
+    <!-- Content descriptions -->
+    <string name="nc_description_more_menu_one_to_one">قائمة للمحادثة مع %1$s</string>
+    <string name="nc_description_more_menu_public">قائمة للمحادثة الجماعية مع %1$s</string>
+    <string name="nc_description_more_menu_group">قائمة للمحادثة العامة مع %1$s</string>
     <string name="nc_description_send_message_button">أرسل رسالة</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">انضم إلى المحادثة أو ابدأ محادثة جديدة وقل مرحبا لاصدقاءك وزملاءك!</string>
     <string name="nc_hello">أهلا</string>
 
+    <!-- Other -->
+    <string name="nc_limit_hit">%sتم الوصول إلى عدد الاحرف المسموح به</string>
     <string name="nc_groups">الفِرَق</string>
     <string name="nc_participants">المشارِكون</string>
 
@@ -163,27 +255,56 @@
     <string name="nc_moderator">مشرِف</string>
     <string name="nc_user">مستخدم</string>
     <string name="nc_guest">ضيف</string>
+    <string name="nc_following_link">المستخدم يتابع رابط عام</string>
+
+    <!-- Browser component -->
+    <string name="nc_file_browser">متصفح الملف</string>
     <string name="nc_select_files">اختر الملفات</string>
     <string name="nc_file_browser_back">العودة</string>
     <string name="nc_file_browser_refresh">تحديث</string>
+    <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
+
     <!-- Lobby -->
 
     <string name="nc_webinar">ويبنار</string>
+    <string name="nc_lobby">ساحة الانتظار</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_lobby_waiting">أنت حاليا في انتظار الاستقبال</string>
+    <string name="nc_lobby_waiting_with_date">أنت حاليًا في ساحة الانتظار.
+الاجتماع مجدول في %1$s.</string>
+    <string name="nc_manual">غير معيّن</string>
+
     <!-- Errors -->
     <string name="nc_no_connection_error">لا يتوفر اتصال</string>
+    <string name="nc_bad_response_error">استجابة غير جيدة</string>
+    <string name="nc_timeout_error">انتهى الوقت</string>
+    <string name="nc_empty_response_error">استجابة فارغة</string>
     <string name="nc_not_defined_error">خطأ غير معروف</string>
     <string name="nc_unauthorized_error">غير مصرح</string>
 
     <string name="nc_general_settings">العامة</string>
+    <string name="nc_allow_guests">السماح للضيوف</string>
+    <string name="nc_last_moderator_title">تعذر مغادرة المحادثة </string>
+    <string name="nc_last_moderator">يجب عليك ترقية مشرف لاحد المشاركين قبل مغادرة %1$s.</string>
+
+    <!-- Chat -->
+    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">أنسخ</string>
     <string name="nc_reply">رد</string>
     <string name="nc_delete_message">حذف </string>
+    <string name="nc_delete_message_leaked_to_matterbridge">تم حذف الرسالة بنجاح، لكن من الممكن أن تم تسريبها لخدمات أخرى</string>
+
+    <!-- Upload -->
+    <string name="nc_upload_local_file">رفع الملف المحلي</string>
+    <string name="nc_upload_from_nextcloud">مشاركة من نكست كلاود</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
     <string name="nc_upload_in_progess">جاري الرفع...</string>
+
+    <string name="nc_settings_phone_book_integration_desc">قم بمطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصار التحدث في دفتر الهاتف</string>
+    <string name="nc_settings_phone_book_integration_title">ارتباط دفتر الهاتف</string>
+    <string name="no_phone_book_integration_due_to_permissions">لا يوجد ارتباط بدفتر الهاتف بسبب الصلاحيات المفقودة</string>
 
     </resources>
