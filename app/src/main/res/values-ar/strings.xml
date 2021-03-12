@@ -41,10 +41,21 @@
     <string name="nc_Server_account_imported">تم استيراد الحساب المحدد وهو متاح الآن </string>
     <string name="nc_get_from_provider">ليس لديك خادم حتى الآن ؟\nإضغط هنا للحصول على واحد من أحد المزودين</string>
 
+    <!-- Account verification -->
+    <string name="nc_push_disabled">الإشعارات معطلة</string>
+    <string name="nc_capabilities_failed">فشل في جلب الإمكانيات، جارِ إلالغاء</string>
+    <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
+    <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
+    <string name="nc_nextcloud_talk_app_not_installed">تطبيق %1$s غير مثبت على الخادم، جارِ الإلغاء</string>
+    <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
+
     <string name="nc_never">عدم الانضمام</string>
     <string name="nc_search">البحث</string>
 
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
+    <string name="nc_certificate_dialog_text">هل تثق في شهادة SSL غير المعروفة حتى الآن ، الصادرة من%1$sإلى %2$s  ، الصالحة %3$s إلى%4$s؟</string>
+    <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
+
     <!-- Settings -->
     <string name="nc_settings_proxy_title">وكيل البروكسي</string>
     <string name="nc_settings_proxy_type_title">نوع البروكسي</string>
@@ -74,11 +85,12 @@
     <string name="nc_settings_theme_title">المظهر</string>
     <string name="nc_settings_theme_key">المظهر</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
-    <string name="nc_settings_theme_battery_saver">تم تعيينه بواسطة موفر شحن البطارية</string>
+    <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_light">فاتح</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_privacy">الخصوصية</string>
     <string name="nc_settings_screen_lock_title">قفل الشاشة</string>
+    <string name="nc_settings_screen_lock_desc">اقفل %1$s بقفل شاشة أندرويد أو باستخدام القياسات الحيوية</string>
     <string name="nc_settings_screen_lock_timeout_title">انتهت مهلة قفل الشاشة </string>
     <string name="nc_none">لا شيء</string>
     <string name="nc_settings_screen_security_title">أمان الشاشة</string>
@@ -112,7 +124,7 @@
     <string name="nc_about">عن</string>
     <string name="nc_privacy">الخصوصية</string>
     <string name="nc_get_source_code">الحصول على الشفرة المصدرية</string>
-    <string name="nc_license_title"> الرخصة</string>
+    <string name="nc_license_title">الرخصة</string>
     <string name="nc_license_summary">رخصة جنو العمومية العامة ، الإصدار 3</string>
 
     <string name="nc_select_an_account">اختيار حساب</string>
@@ -122,7 +134,7 @@
     <string name="nc_configure_room">ضبط المحادثة</string>
     <string name="nc_leave">غادر المحادثة</string>
     <string name="nc_rename">إعادة تسمية المحادثة</string>
-    <string name="nc_set_password">إدخِل كلمة سرية</string>
+    <string name="nc_set_password">ادخل كلمة سرية</string>
     <string name="nc_change_password">تعديل الكلمة السرية</string>
     <string name="nc_clear_password">مسح كلمة المرور</string>
     <string name="nc_share_link">مشاركة الرابط</string>
@@ -162,7 +174,7 @@
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_public_call">محادثة عمومية جديدة</string>
     <string name="nc_public_call_explanation">المحادثات العامة تمكنك من إضافة أشخاص من الخارج عبر رابط معد خصيصًا</string>
-    <string name="nc_call_timeout">لا يوجد رد خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
+    <string name="nc_call_timeout">لا يوجد استجابة خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
     <string name="nc_call_reconnecting">إعادة الاتصال...</string>
     <string name="nc_offline">غير متصل حاليًا، من فضلك التأكد من الاتصال بالانترنت</string>
     <string name="nc_leaving_call">مغادرة المكالمة</string>
@@ -208,7 +220,7 @@
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">ادخل رسالة</string>
-    <string name="nc_date_header_yesterday">البارحة</string>
+    <string name="nc_date_header_yesterday">أمس</string>
     <string name="nc_date_header_today">اليوم</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
