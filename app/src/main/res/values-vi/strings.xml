@@ -20,10 +20,12 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Common -->
-    <string name="nc_yes">Đồng ý</string>
+    <string name="nc_yes">Có</string>
     <string name="nc_no">Không</string>
+    <string name="nc_common_skip">Bỏ qua</string>
+    <string name="nc_common_set">Đặt</string>
     <!-- Bottom Navigation -->
-    <string name="nc_settings">Thiết lập</string>
+    <string name="nc_settings">Cài đặt</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Địa chỉ máy chủ</string>
@@ -35,7 +37,7 @@
     <string name="nc_server_import_accounts_plain">Thêm tài khoản</string>
     <string name="nc_server_import_account">Thêm tài khoản từ ứng dụng %1$s</string>
     <string name="nc_server_import_accounts">Thêm tài khoản từ ứng dụng %1$s</string>
-    <string name="nc_server_failed_to_import_account">Lỗi thêm tài khoản đã chọn</string>
+    <string name="nc_server_failed_to_import_account">Nhập tài khoản đã chọn thất bại</string>
     <string name="nc_get_from_provider">Bạn đã có một máy chủ chưa?\nBấm vào đây để tìm từ một nhà cung cấp.</string>
 
     <!-- Account verification -->
@@ -46,7 +48,7 @@
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
 
     <string name="nc_never">Chưa bao giờ tham gia</string>
-    <string name="nc_search">Tìm</string>
+    <string name="nc_search">Tìm kiếm</string>
 
     <string name="nc_certificate_dialog_title">Kiểm tra chứng chỉ</string>
     <string name="nc_certificate_dialog_text">Bạn có tin tưởng vào chứng thực SSL chưa biết này không, phát sinh này bởi %1$s cho %2$s, hiệu lực từ %3$s đến %4$s?</string>
@@ -69,10 +71,22 @@
     <string name="nc_settings_wrong_account">Chỉ tài khoản hiện tại có thể chứng thực lại</string>
     <string name="nc_settings_account_updated">Bạn đã cập nhật tài khoản đã có, hãy thêm tài khoản mới</string>
     <string name="nc_account_scheduled_for_deletion">Tài khoản được lên lịch xóa và không thể thay đổi</string>
+    <string name="nc_settings_notification_sounds">Âm thanh</string>
+    <string name="nc_settings_call_ringtone">Cuộc gọi</string>
+    <string name="nc_settings_other_notifications_ringtone">Thông báo</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
+    <string name="nc_settings_vibrate">Rung</string>
+    <string name="nc_settings_appearance">Ngoại hình</string>
+    <string name="nc_settings_theme_title">Chủ đề</string>
+    <string name="nc_settings_theme_key">chủ đề</string>
+    <string name="nc_settings_theme_follow_system">Sử dụng mặc định hệ thống</string>
     <string name="nc_settings_theme_light">Sáng</string>
     <string name="nc_settings_theme_dark">Tối</string>
+    <string name="nc_settings_privacy">Riêng tư</string>
+    <string name="nc_settings_screen_lock_title">Khoá màn hình</string>
     <string name="nc_none">Không có</string>
+    <string name="nc_locked">Nhấn để mở khoá</string>
+    <string name="nc_biometric_unlock">Mở khoá %1$s</string>
     <string name="nc_cancel">Hủy bỏ</string>
 
     <string name="nc_no_proxy">Không proxy</string>
@@ -104,6 +118,7 @@
     <string name="nc_delete_call">Xóa đàm thoại</string>
     <string name="nc_delete">Xóa</string>
     <string name="nc_new_conversation">Tạo đàm thoại mới</string>
+    <string name="nc_join_via_link">Tham gia bằng một liên kết</string>
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_add_to_favorites">Thêm vào ưa thích</string>
     <string name="nc_remove_from_favorites">Xóa khỏi ưa thích</string>

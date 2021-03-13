@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">Tak</string>
     <string name="nc_no">Nie</string>
+    <string name="nc_common_skip">Pomiń</string>
+    <string name="nc_common_set">Ustaw</string>
     <string name="nc_common_error_sorry">Przepraszamy, coś poszło nie tak!</string>
 
     <!-- Bottom Navigation -->
@@ -321,6 +323,11 @@
 
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk w książce telefonicznej</string>
     <string name="nc_settings_phone_book_integration_title">Integracja książki telefonicznej</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numer telefonu</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić numer telefonu,
+ inni użytkownicy będą mogli go znaleźć</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numer telefonu ustawiony pomyślnie</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji książki telefonicznej z powodu braku uprawnień</string>
 
     </resources>

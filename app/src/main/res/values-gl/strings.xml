@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">Si</string>
     <string name="nc_no">Non</string>
+    <string name="nc_common_skip">Omitir</string>
+    <string name="nc_common_set">Estabelecer</string>
     <string name="nc_common_error_sorry">Sentímolo, algo foi mal!</string>
 
     <!-- Bottom Navigation -->
@@ -321,6 +323,11 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na axenda telefónica</string>
     <string name="nc_settings_phone_book_integration_title">Integración da axenda de teléfonos</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de teléfono</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode establecer o seu número de teléfono para
+        que outros usuarios poidan atopalo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración da axenda de teléfonos por mor da falta de permisos</string>
 
     </resources>

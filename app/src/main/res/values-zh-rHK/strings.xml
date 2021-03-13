@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">是</string>
     <string name="nc_no">否</string>
+    <string name="nc_common_skip">略過</string>
+    <string name="nc_common_set">設定</string>
     <string name="nc_common_error_sorry">發生錯誤了 :(</string>
 
     <!-- Bottom Navigation -->
@@ -321,6 +323,11 @@
 
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_title">電話簿整合</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話號碼</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">設置您的電話號碼，以便
+       其他用戶可以找到您</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話號碼無效</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">電話號碼設置成功</string>
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話簿</string>
 
     </resources>

@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">Ano</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_common_skip">Přeskočit</string>
+    <string name="nc_common_set">Nastavit</string>
     <string name="nc_common_error_sorry">Omlouváme se, něco se pokazilo!</string>
 
     <!-- Bottom Navigation -->
@@ -318,6 +320,11 @@
 
     <string name="nc_settings_phone_book_integration_desc">Propojit kontakty na základě telefoního čísla k integraci Talk v telefoním seznamu</string>
     <string name="nc_settings_phone_book_integration_title">Propojení s telefoním seznamem</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonní číslo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Můžete si nastavit své telefonní číslo
+        a tak vás budou moci ostatní uživatelé najít</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neplatné telefonní číslo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nastavení telefonního čísla úspěšné</string>
     <string name="no_phone_book_integration_due_to_permissions">Bez propojení kontaktů v telefonu z důvodu neudělení oprávnění</string>
 
     </resources>
