@@ -22,6 +22,7 @@
     <!-- Common -->
     <string name="nc_yes">Sì</string>
     <string name="nc_no">No</string>
+    <string name="nc_common_skip">Salta</string>
     <string name="nc_common_error_sorry">Spiacenti, qualcosa non ha funzionato!</string>
 
     <!-- Bottom Navigation -->

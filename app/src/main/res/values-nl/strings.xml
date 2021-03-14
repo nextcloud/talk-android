@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">Ja</string>
     <string name="nc_no">Nee</string>
+    <string name="nc_common_skip">Overslaan</string>
+    <string name="nc_common_set">Instellen</string>
     <string name="nc_common_error_sorry">Sorry, er is iets fout gegaan!</string>
 
     <!-- Bottom Navigation -->
@@ -323,6 +325,11 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <string name="nc_settings_phone_book_integration_desc">Combineer contactpersonen gebaseerd op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefoonnummer</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Je kunt je telefoonnummer instellen zodat
+      andere gebruikers je kunnen vinden</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ongeldig telefoonnummer</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefoonnummer succesvol ingesteld</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>
 
     </resources>
