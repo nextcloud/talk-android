@@ -325,9 +325,9 @@
     <string name="nc_settings_phone_book_integration_title">Telefon defteri bütünleştirmesi</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefon numarası</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Telefon numaranızı ayarlayarak
-    diğer kullanıcıların sizi bulmasını sağlarsınız</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Geçersiz telefon numarası</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefon numarası ayarlama başarılı</string>
+        diğer kullanıcıların sizi bulmasını sağlayabilirsiniz</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefon numarası geçersiz</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefon numarası ayarlandı</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>
 
     </resources>
