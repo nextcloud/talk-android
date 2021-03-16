@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">Da</string>
     <string name="nc_no">Ne</string>
+    <string name="nc_common_skip">Preskoči</string>
+    <string name="nc_common_set">Nastavi</string>
     <string name="nc_common_error_sorry">Prišlo je do napake ...</string>
 
     <!-- Bottom Navigation -->
@@ -318,8 +320,13 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
+    <string name="nc_upload_in_progess">pošiljanje</string>
+
     <string name="nc_settings_phone_book_integration_desc">Poveži stike po telefonski številki za povezavo imenika s programom Talk</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonska številka je uspešno nastavljena</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
 
     </resources>
