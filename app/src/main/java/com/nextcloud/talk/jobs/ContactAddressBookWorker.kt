@@ -86,7 +86,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             }
         }
 
-        AccountManager.get(context).addAccountExplicitly(Account(ACCOUNT_NAME, ACCOUNT_TYPE), "", null)
+        if(AccountManager.get(context).getAccountsByType(ACCOUNT_TYPE).isEmpty()){
+            AccountManager.get(context).addAccountExplicitly(Account(ACCOUNT_NAME, ACCOUNT_TYPE), "", null)
+        }
 
         // collect all contacts with phone number
         val contactsWithNumbers = collectPhoneNumbers()
@@ -319,9 +321,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 try {
                     context.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
                 } catch (e: OperationApplicationException) {
-                    e.printStackTrace()
+                    Log.e(javaClass.simpleName, "", e)
                 } catch (e: RemoteException) {
-                    e.printStackTrace()
+                    Log.e(javaClass.simpleName, "", e)
                 }
             }
 
