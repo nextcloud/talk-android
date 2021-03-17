@@ -253,7 +253,7 @@ dependencies {
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.9.0'
+    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
 }
 
