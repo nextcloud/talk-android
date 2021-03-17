@@ -22,6 +22,8 @@
     <!-- Common -->
     <string name="nc_yes">Sim</string>
     <string name="nc_no">Não</string>
+    <string name="nc_common_skip">Ignorar</string>
+    <string name="nc_common_set">Definir</string>
     <string name="nc_common_error_sorry">Desculpe, algo deu errado!</string>
 
     <!-- Bottom Navigation -->
@@ -321,6 +323,11 @@
 
     <string name="nc_settings_phone_book_integration_desc">Combinar contatos com base no número de telefone para integrar o atalho do Talk na lista de telefones</string>
     <string name="nc_settings_phone_book_integration_title">Integração da lista de telefones</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número do telefone</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que
+outros usuários possam lhe encontrar</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de telefone definido com sucesso</string>
     <string name="no_phone_book_integration_due_to_permissions">Nenhuma integração da lista de telefones devido à falta de permissões</string>
 
     </resources>
