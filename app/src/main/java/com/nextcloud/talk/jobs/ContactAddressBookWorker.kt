@@ -86,45 +86,45 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             }
         }
 
-        AccountManager.get(context).addAccountExplicitly(Account(ACCOUNT_NAME, ACCOUNT_TYPE), "", null)
+        if(AccountManager.get(context).getAccountsByType(ACCOUNT_TYPE).isEmpty()){
+            AccountManager.get(context).addAccountExplicitly(Account(ACCOUNT_NAME, ACCOUNT_TYPE), "", null)
+        }
 
         // collect all contacts with phone number
         val contactsWithNumbers = collectPhoneNumbers()
 
-        val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0].country
+        if(contactsWithNumbers.isNotEmpty()){
+            val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0].country
 
-        val map = mutableMapOf<String, Any>()
-        map["location"] = currentLocale
-        map["search"] = contactsWithNumbers
+            val map = mutableMapOf<String, Any>()
+            map["location"] = currentLocale
+            map["search"] = contactsWithNumbers
 
-        val json = Gson().toJson(map)
+            val json = Gson().toJson(map)
 
-        ncApi.searchContactsByPhoneNumber(
-                ApiUtils.getCredentials(currentUser.username, currentUser.token),
-                ApiUtils.getUrlForSearchByNumber(currentUser.baseUrl),
-                RequestBody.create(MediaType.parse("application/json"), json))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<ContactsByNumberOverall> {
-                    override fun onComplete() {
-                    }
+            ncApi.searchContactsByPhoneNumber(
+                    ApiUtils.getCredentials(currentUser.username, currentUser.token),
+                    ApiUtils.getUrlForSearchByNumber(currentUser.baseUrl),
+                    RequestBody.create(MediaType.parse("application/json"), json))
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<ContactsByNumberOverall> {
+                        override fun onComplete() {
+                        }
 
-                    override fun onSubscribe(d: Disposable) {
-                    }
+                        override fun onSubscribe(d: Disposable) {
+                        }
 
-                    override fun onNext(foundContacts: ContactsByNumberOverall) {
-                        Log.d(javaClass.simpleName, "next")
+                        override fun onNext(foundContacts: ContactsByNumberOverall) {
+                            up(foundContacts)
+                        }
 
-                        // todo update
-                        up(foundContacts)
-                    }
+                        override fun onError(e: Throwable) {
+                            Log.e(javaClass.simpleName, "Failed to searchContactsByPhoneNumber", e)
+                        }
 
-                    override fun onError(e: Throwable) {
-                        // TODO error handling
-                        Log.d(javaClass.simpleName, "error")
-                    }
-
-                })
+                    })
+        }
 
         // store timestamp 
         appPreferences.setPhoneBookIntegrationLastRun(System.currentTimeMillis())
@@ -321,9 +321,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 try {
                     context.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
                 } catch (e: OperationApplicationException) {
-                    e.printStackTrace()
+                    Log.e(javaClass.simpleName, "", e)
                 } catch (e: RemoteException) {
-                    e.printStackTrace()
+                    Log.e(javaClass.simpleName, "", e)
                 }
             }
 
