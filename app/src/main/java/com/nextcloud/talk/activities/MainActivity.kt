@@ -171,8 +171,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
             when (intent.type) {
                 "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
-                    val user = userId.split("@")[0]
-                    val baseUrl = userId.split("@")[1]
+                    val user = userId.substringBeforeLast("@")
+                    val baseUrl = userId.substringAfterLast("@")
                     if (userUtils.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
