@@ -81,11 +81,9 @@ open class ConversationPresenter(context: Context, onElementClick: ((Page, Holde
                     }
 
                     if (conversation.unreadMention || conversation.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) {
-                        holder.itemView.dialogUnreadBubble!!.background =
-                                context.getDrawable(R.drawable.bubble_circle_unread_mention)
+                        holder.itemView.dialogUnreadBubble!!.setChipBackgroundColorResource(R.color.colorPrimary)
                     } else {
-                        holder.itemView.dialogUnreadBubble!!.background =
-                                context.getDrawable(R.drawable.bubble_circle_unread)
+                        holder.itemView.dialogUnreadBubble!!.setChipBackgroundColorResource(R.color.grey_600)
                     }
                 } else {
                     holder.itemView.dialogUnreadBubble!!.visibility = View.GONE
