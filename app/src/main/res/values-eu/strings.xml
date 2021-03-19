@@ -325,6 +325,9 @@ Ez Molestatu modua</string>
     <string name="nc_settings_phone_book_integration_desc">Lotu kontaktuak telefono zenbakian oinarrituta, Talk lasterbideak integratzeko telefono zerrendan</string>
     <string name="nc_settings_phone_book_integration_title">Telefono zerrendan integratzea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu
+           beste erabiltzaile batzuek aurkitu ahal izango zaituzte</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono zenbakia ondo ezarri da</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zerrenda integratu, baimen falta dela eta</string>
 
