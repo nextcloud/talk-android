@@ -355,4 +355,6 @@
     <string name="nc_look_and_feel">Appearance &amp; Sounds</string>
     <string name="nc_settings_calls_sound">Calls sound</string>
     <string name="nc_settings_notifications_sound">Notifications sound</string>
+    <string name="protected_conversation">protected conversation</string>
+    <string name="favorite_conversation">favorite conversation</string>
 </resources>

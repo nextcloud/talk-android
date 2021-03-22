@@ -25,12 +25,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:paddingTop="@dimen/margin_between_elements"
-    android:paddingBottom="@dimen/margin_between_elements"
     android:paddingLeft="@dimen/double_margin_between_elements"
-    android:paddingRight="@dimen/double_margin_between_elements">
+    android:paddingTop="@dimen/margin_between_elements"
+    android:paddingRight="@dimen/double_margin_between_elements"
+    android:paddingBottom="@dimen/margin_between_elements">
 
     <FrameLayout
         android:id="@+id/dialogAvatarFrameLayout"
@@ -43,6 +43,7 @@
             android:id="@id/dialogAvatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:contentDescription="@null"
             android:scaleType="centerCrop"
             tools:src="@tools:sample/avatars[0]" />
 
@@ -51,6 +52,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="bottom|end"
+            android:contentDescription="@string/protected_conversation"
             android:src="@drawable/ic_lock_grey600_24px" />
 
         <ImageView
@@ -58,6 +60,7 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="top|end"
+            android:contentDescription="@string/favorite_conversation"
             android:src="@drawable/ic_star_black_24dp"
             app:tint="@color/favorite_icon_tint"
             app:tintMode="src_in" />
