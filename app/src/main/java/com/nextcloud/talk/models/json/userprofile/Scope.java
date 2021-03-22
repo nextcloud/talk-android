@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * @author Tobias Kaminsky
+ * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.interfaces
+package com.nextcloud.talk.models.json.userprofile;
 
-interface SelectionInterface {
-    fun toggleBrowserItemSelection(path: String)
+public enum Scope {
+    PRIVATE("v2-private"),
+    LOCAL("v2-local"),
+    FEDERATED("v2-federated"),
+    PUBLISHED("v2-published");
 
-    fun isPathSelected(path: String): Boolean
+    private final String name;
 
-    fun shouldOnlySelectOneImageFile(): Boolean
+    Scope(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

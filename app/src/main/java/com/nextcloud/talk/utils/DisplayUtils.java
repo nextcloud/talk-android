@@ -68,6 +68,7 @@ import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.RotationOptions;
 import com.facebook.imagepipeline.core.ImagePipeline;
@@ -97,9 +98,27 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.XmlRes;
+import androidx.appcompat.widget.AppCompatDrawableManager;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.emoji.text.EmojiCompat;
+
 public class DisplayUtils {
 
     private static final String TAG = "DisplayUtils";
+
+    private static final int INDEX_LUMINATION = 2;
+    private static final double MAX_LIGHTNESS = 0.92;
+
+    private static final String TWITTER_HANDLE_PREFIX = "@";
+    private static final String HTTP_PROTOCOL = "http://";
+    private static final String HTTPS_PROTOCOL = "https://";
 
     public static void setClickableString(String string, String url, TextView textView) {
         SpannableString spannableString = new SpannableString(string);
@@ -411,4 +430,85 @@ public class DisplayUtils {
                 return false;
         }
     }
+
+    public static void applyColorToNavigationBar(Window window, @ColorInt int color) {
+        window.setNavigationBarColor(color);
+    }
+
+    /**
+     * Theme search view
+     *
+     * @param searchView searchView to be changed
+     * @param context    the app's context
+     */
+    public static void themeSearchView(SearchView searchView, Context context) {
+        // hacky as no default way is provided
+        SearchView.SearchAutoComplete editText = searchView.findViewById(R.id.search_src_text);
+        editText.setTextSize(16);
+        editText.setHintTextColor(context.getResources().getColor(R.color.fontSecondaryAppbar));
+    }
+
+    /**
+     * beautifies a given URL by removing any http/https protocol prefix.
+     *
+     * @param url to be beautified url
+     * @return beautified url
+     */
+    public static String beautifyURL(@Nullable String url) {
+        if (TextUtils.isEmpty(url)) {
+            return "";
+        }
+
+        if (url.length() >= 7 && HTTP_PROTOCOL.equalsIgnoreCase(url.substring(0, 7))) {
+            return url.substring(HTTP_PROTOCOL.length()).trim();
+        }
+
+        if (url.length() >= 8 && HTTPS_PROTOCOL.equalsIgnoreCase(url.substring(0, 8))) {
+            return url.substring(HTTPS_PROTOCOL.length()).trim();
+        }
+
+        return url.trim();
+    }
+
+    /**
+     * beautifies a given twitter handle by prefixing it with an @ in case it is missing.
+     *
+     * @param handle to be beautified twitter handle
+     * @return beautified twitter handle
+     */
+    public static String beautifyTwitterHandle(@Nullable String handle) {
+        if (handle != null) {
+            String trimmedHandle = handle.trim();
+
+            if (TextUtils.isEmpty(trimmedHandle)) {
+                return "";
+            }
+
+            if (trimmedHandle.startsWith(TWITTER_HANDLE_PREFIX)) {
+                return trimmedHandle;
+            } else {
+                return TWITTER_HANDLE_PREFIX + trimmedHandle;
+            }
+        } else {
+            return "";
+        }
+    }
+    
+    public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView) {
+        String avatarId;
+        if (!TextUtils.isEmpty(user.getUserId())) {
+            avatarId = user.getUserId();
+        } else {
+            avatarId = user.getUsername();
+        }
+
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                .setOldController(avatarImageView.getController())
+                .setAutoPlayAnimations(true)
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(user.getBaseUrl(),
+                        avatarId, R.dimen.avatar_size_big), null))
+                .build();
+        avatarImageView.setController(draweeController);
+    }
 }
+

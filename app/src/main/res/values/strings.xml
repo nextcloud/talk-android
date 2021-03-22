@@ -357,6 +357,38 @@
     <string name="no_phone_book_integration_due_to_permissions">No phone book integration due to missing permissions</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
+   
+    <string name="avatar">Avatar</string>
+    <string name="account_icon">Account icon</string>
+    <string name="userinfo_no_info_headline">No personal info set</string>
+    <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
+    <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
+    <string name="user_info_phone">Phone number</string>
+    <string name="user_info_email">E-mail</string>
+    <string name="user_info_address">Address</string>
+    <string name="user_info_website">Website</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Full name</string>
+    <string name="file_list_folder">folder</string>
+    <string name="file_list_loading">Loading…</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
+    <string name="choose_avatar_from_cloud">Choose avatar from cloud</string>
+    <string name="delete_avatar">Delete avatar</string>
+    <string name="scope_private_title">Private</string>
+    <string name="scope_private_description">Don\'t show via public link</string>
+    <string name="lock_symbol">Lock symbol</string>
+    <string name="scope_local_title">Local</string>
+    <string name="scope_local_description">Don\'t synchronize to servers</string>
+    <string name="scope_federated_title">Federated</string>
+    <string name="scope_federated_description">Only synchronize to trusted servers</string>
+    <string name="scope_published_title">Published</string>
+    <string name="scope_published_description">Synchronize to trusted serves and the global and public address book</string>
+    <string name="scope_toggle">Scope toggle</string>
+    
+    <!-- App Bar -->
+    <string name="appbar_search_in">Search in %s</string>
 
     <!-- Non-translatable strings -->
     <string name="path_password_strike_through" translatable="false"

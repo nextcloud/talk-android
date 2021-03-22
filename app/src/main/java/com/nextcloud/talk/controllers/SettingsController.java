@@ -45,26 +45,16 @@ import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.view.ViewCompat;
-import androidx.emoji.widget.EmojiTextView;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
 import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
@@ -109,6 +99,13 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.ViewCompat;
+import androidx.emoji.widget.EmojiTextView;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -138,6 +135,8 @@ public class SettingsController extends BaseController {
     MaterialStandardPreference sourceCodeButton;
     @BindView(R.id.settings_version)
     MaterialStandardPreference versionInfo;
+    @BindView(R.id.avatarContainer)
+    RelativeLayout avatarContainer;
     @BindView(R.id.avatar_image)
     SimpleDraweeView avatarImageView;
     @BindView(R.id.display_name_text)
@@ -562,7 +561,7 @@ public class SettingsController extends BaseController {
                 displayNameTextView.setText(currentUser.getDisplayName());
             }
 
-            loadAvatarImage();
+            DisplayUtils.loadAvatarImage(currentUser, avatarImageView);
 
             profileQueryDisposable = ncApi.getUserProfile(credentials,
                     ApiUtils.getUrlForUserProfile(currentUser.getBaseUrl()))
@@ -660,23 +659,12 @@ public class SettingsController extends BaseController {
                 messageView.setVisibility(View.GONE);
             }
         }
-    }
 
-    private void loadAvatarImage() {
-        String avatarId;
-        if (!TextUtils.isEmpty(currentUser.getUserId())) {
-            avatarId = currentUser.getUserId();
-        } else {
-            avatarId = currentUser.getUsername();
-        }
-
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(avatarImageView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                        avatarId, R.dimen.avatar_size_big), null))
-                .build();
-        avatarImageView.setController(draweeController);
+        avatarContainer.setOnClickListener(v ->
+                getRouter()
+                        .pushController((RouterTransaction.with(new ProfileController())
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler()))));
     }
 
     @Override

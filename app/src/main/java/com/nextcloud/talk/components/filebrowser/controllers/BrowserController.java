@@ -23,15 +23,13 @@ package com.nextcloud.talk.components.filebrowser.controllers;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.view.*;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -43,27 +41,39 @@ import com.nextcloud.talk.components.filebrowser.operations.DavListing;
 import com.nextcloud.talk.components.filebrowser.operations.ListingAbstractClass;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.interfaces.SelectionInterface;
-import com.nextcloud.talk.jobs.ShareOperationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+
+import org.jetbrains.annotations.NotNull;
+import org.parceler.Parcel;
+import org.parceler.Parcels;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import okhttp3.OkHttpClient;
-import org.parceler.Parcel;
-import org.parceler.Parcels;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.util.*;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class BrowserController extends BaseController implements ListingInterface,
+public abstract class BrowserController extends BaseController implements ListingInterface,
         FlexibleAdapter.OnItemClickListener, SelectionInterface {
-    private final Set<String> selectedPaths;
+    protected final Set<String> selectedPaths;
     @Inject
     UserUtils userUtils;
     @BindView(R.id.recycler_view)
@@ -88,8 +98,7 @@ public class BrowserController extends BaseController implements ListingInterfac
     private ListingAbstractClass listingAbstractClass;
     private BrowserType browserType;
     private String currentPath;
-    private UserEntity activeUser;
-    private String roomToken;
+    protected UserEntity activeUser;
 
     public BrowserController(Bundle args) {
         super(args);
@@ -97,7 +106,6 @@ public class BrowserController extends BaseController implements ListingInterfac
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
         browserType = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_BROWSER_TYPE()));
         activeUser = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY()));
-        roomToken = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
 
         currentPath = "/";
         if (BrowserType.DAV_BROWSER.equals(browserType)) {
@@ -109,6 +117,7 @@ public class BrowserController extends BaseController implements ListingInterfac
         selectedPaths = Collections.synchronizedSet(new TreeSet<>());
     }
 
+    @NotNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_browser, container, false);
@@ -125,38 +134,10 @@ public class BrowserController extends BaseController implements ListingInterfac
         prepareViews();
     }
 
-    private void onFileSelectionDone() {
-        synchronized (selectedPaths) {
-            Iterator<String> iterator = selectedPaths.iterator();
-
-            List<String> paths = new ArrayList<>();
-            Data data;
-            OneTimeWorkRequest shareWorker;
-
-            while (iterator.hasNext()) {
-                String path = iterator.next();
-                paths.add(path);
-                iterator.remove();
-                if (paths.size() == 10 || !iterator.hasNext()) {
-                    data = new Data.Builder()
-                            .putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), activeUser.getId())
-                            .putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomToken)
-                            .putStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS(), paths.toArray(new String[0]))
-                            .build();
-                    shareWorker = new OneTimeWorkRequest.Builder(ShareOperationWorker.class)
-                            .setInputData(data)
-                            .build();
-                    WorkManager.getInstance().enqueue(shareWorker);
-                    paths = new ArrayList<>();
-                }
-            }
-        }
-
-        getRouter().popCurrentController();
-    }
+    abstract void onFileSelectionDone();
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_share_files, menu);
         filesSelectionDoneMenuItem = menu.findItem(R.id.files_selection_done);
@@ -315,7 +296,7 @@ public class BrowserController extends BaseController implements ListingInterfac
 
     @SuppressLint("RestrictedApi")
     @Override
-    public void toggleBrowserItemSelection(String path) {
+    public void toggleBrowserItemSelection(@NonNull String path) {
         if (selectedPaths.contains(path) || shouldPathBeSelectedDueToParent(path)) {
             checkAndRemoveAnySelectedParents(path);
         } else {
@@ -327,9 +308,12 @@ public class BrowserController extends BaseController implements ListingInterfac
     }
 
     @Override
-    public boolean isPathSelected(String path) {
+    public boolean isPathSelected(@NonNull String path) {
         return (selectedPaths.contains(path) || shouldPathBeSelectedDueToParent(path));
     }
+
+    @Override
+    abstract public boolean shouldOnlySelectOneImageFile();
 
     @Parcel
     public enum BrowserType {
