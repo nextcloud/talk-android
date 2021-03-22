@@ -280,9 +280,11 @@ public class CallNotificationController extends BaseController {
                             boolean hasCallFlags = userBeingCalled.hasSpreedFeatureCapability("conversation-call-flags");
                             if (hasCallFlags) {
                                 if (isInCallWithVideo(currentConversation.callFlag)){
-                                    incomingCallVoiceOrVideoTextView.setText(R.string.nc_video_call);
+                                    incomingCallVoiceOrVideoTextView.setText(String.format(getResources().getString(R.string.nc_call_video),
+                                            getResources().getString(R.string.nc_app_name)));
                                 } else {
-                                    incomingCallVoiceOrVideoTextView.setText(R.string.nc_voice_call);
+                                    incomingCallVoiceOrVideoTextView.setText(String.format(getResources().getString(R.string.nc_call_voice),
+                                            getResources().getString(R.string.nc_app_name)));
                                 }
                             }
                         }
@@ -343,10 +345,16 @@ public class CallNotificationController extends BaseController {
         showAnswerControls();
     }
 
-    @SuppressLint("LongLogTag")
+    @SuppressLint({"LongLogTag"})
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+
+        String callDescriptionWithoutTypeInfo =
+                String.format(getResources().getString(R.string.nc_call_unknown), getResources().getString(R.string.nc_app_name));
+
+
+        incomingCallVoiceOrVideoTextView.setText(callDescriptionWithoutTypeInfo);
 
         renderScript = RenderScript.create(getActivity());
 
@@ -395,7 +403,6 @@ public class CallNotificationController extends BaseController {
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         eventBus.register(this);
-
     }
 
     private void loadAvatar() {
