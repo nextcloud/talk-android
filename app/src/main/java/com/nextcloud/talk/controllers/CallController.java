@@ -2174,7 +2174,7 @@ public class CallController extends BaseController {
                         }
                         callConversationNameTextView.setText(conversationName);
 
-                        callVoiceOrVideoTextView.setText(isVoiceOnlyCall ? R.string.nc_voice_call : R.string.nc_video_call);
+                        callVoiceOrVideoTextView.setText(getDescriptionForCallType());
 
                         if (callStateView.getVisibility() != View.VISIBLE) {
                             callStateView.setVisibility(View.VISIBLE);
@@ -2197,7 +2197,7 @@ public class CallController extends BaseController {
                     handler.post(() -> {
                         hangup(false);
                         callStateTextView.setText(R.string.nc_call_timeout);
-                        callVoiceOrVideoTextView.setText(isVoiceOnlyCall ? R.string.nc_voice_call : R.string.nc_video_call);
+                        callVoiceOrVideoTextView.setText(getDescriptionForCallType());
                         if (callStateView.getVisibility() != View.VISIBLE) {
                             callStateView.setVisibility(View.VISIBLE);
                         }
@@ -2221,7 +2221,7 @@ public class CallController extends BaseController {
                     handler.post(() -> {
                         playCallingSound();
                         callStateTextView.setText(R.string.nc_call_reconnecting);
-                        callVoiceOrVideoTextView.setText(isVoiceOnlyCall ? R.string.nc_voice_call : R.string.nc_video_call);
+                        callVoiceOrVideoTextView.setText(getDescriptionForCallType());
                         if (callStateView.getVisibility() != View.VISIBLE) {
                             callStateView.setVisibility(View.VISIBLE);
                         }
@@ -2240,7 +2240,7 @@ public class CallController extends BaseController {
                 case JOINED:
                     handler.postDelayed(() -> setCallState(CallStatus.CALLING_TIMEOUT), 45000);
                     handler.post(() -> {
-                        callVoiceOrVideoTextView.setText(isVoiceOnlyCall ? R.string.nc_voice_call : R.string.nc_video_call);
+                        callVoiceOrVideoTextView.setText(getDescriptionForCallType());
                         if (callStateView != null) {
                             if (isIncomingCallFromNotification) {
                                 callStateTextView.setText(R.string.nc_call_incoming);
@@ -2274,7 +2274,7 @@ public class CallController extends BaseController {
                 case IN_CONVERSATION:
                     handler.post(() -> {
                         stopCallingSound();
-                        callVoiceOrVideoTextView.setText(isVoiceOnlyCall ? R.string.nc_voice_call : R.string.nc_video_call);
+                        callVoiceOrVideoTextView.setText(getDescriptionForCallType());
 
                         if (!isVoiceOnlyCall) {
                             callInfosLinearLayout.setVisibility(View.GONE);
@@ -2346,7 +2346,7 @@ public class CallController extends BaseController {
                     handler.post(() -> {
                         if (!isDestroyed() && !isBeingDestroyed()) {
                             stopCallingSound();
-                            callVoiceOrVideoTextView.setText(isVoiceOnlyCall ? R.string.nc_voice_call : R.string.nc_video_call);
+                            callVoiceOrVideoTextView.setText(getDescriptionForCallType());
                             callStateTextView.setText(R.string.nc_leaving_call);
                             callStateView.setVisibility(View.VISIBLE);
                             remoteRenderersLayout.setVisibility(View.INVISIBLE);
@@ -2357,6 +2357,17 @@ public class CallController extends BaseController {
                     break;
                 default:
             }
+        }
+    }
+
+    private String getDescriptionForCallType() {
+        String appName = getResources().getString(R.string.nc_app_name);
+        if (isVoiceOnlyCall){
+            return String.format(getResources().getString(R.string.nc_call_voice),
+                    getResources().getString(R.string.nc_app_name));
+        } else {
+            return String.format(getResources().getString(R.string.nc_call_video),
+                    getResources().getString(R.string.nc_app_name));
         }
     }
 
