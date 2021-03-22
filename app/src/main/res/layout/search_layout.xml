@@ -26,12 +26,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/searchCardView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="12dp"
-        android:background="@color/transparent"
+        android:background="@color/appbar"
         app:cardPreventCornerOverlap="true"
         android:clipToPadding="true"
         android:layout_marginBottom="-4dp"
@@ -148,5 +148,5 @@
             </FrameLayout>
         </RelativeLayout>
 
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </merge>

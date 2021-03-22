@@ -23,11 +23,14 @@
 package com.nextcloud.talk.newarch.features.conversationsList
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import coil.api.load
 import coil.transform.CircleCropTransformation
@@ -73,17 +76,33 @@ open class ConversationPresenter(context: Context, onElementClick: ((Page, Holde
 
                 if (conversation.unreadMessages > 0) {
                     holder.itemView.dialogUnreadBubble!!.visibility = View.VISIBLE
-                    if (conversation.unreadMessages < 100) {
+                    holder.itemView.dialogName.setTypeface(
+                            holder.itemView.dialogName.getTypeface(),
+                            Typeface.BOLD
+                    )
+                    holder.itemView.dialogDate.setTypeface(
+                            holder.itemView.dialogDate.getTypeface(),
+                            Typeface.BOLD
+                    )
+                    holder.itemView.dialogLastMessage.setTypeface(
+                            holder.itemView.dialogLastMessage.getTypeface(),
+                            Typeface.BOLD
+                    )
+                    if (conversation.unreadMessages < 1000) {
                         holder.itemView.dialogUnreadBubble!!.text = conversation.unreadMessages.toLong()
                                 .toString()
                     } else {
-                        holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_99_plus)
+                        holder.itemView.dialogUnreadBubble!!.text = context.getString(R.string.nc_999_plus)
                     }
 
                     if (conversation.unreadMention || conversation.type == Conversation.ConversationType.ONE_TO_ONE_CONVERSATION) {
                         holder.itemView.dialogUnreadBubble!!.setChipBackgroundColorResource(R.color.colorPrimary)
+                        holder.itemView.dialogUnreadBubble!!.setTextColor(Color.WHITE)
                     } else {
-                        holder.itemView.dialogUnreadBubble!!.setChipBackgroundColorResource(R.color.grey_600)
+                        holder.itemView.dialogUnreadBubble!!.setChipBackgroundColorResource(R.color.conversation_unread_bubble)
+                        holder.itemView.dialogUnreadBubble!!.setTextColor(
+                                ContextCompat.getColor(context, R.color.conversation_unread_bubble_text)
+                        )
                     }
                 } else {
                     holder.itemView.dialogUnreadBubble!!.visibility = View.GONE

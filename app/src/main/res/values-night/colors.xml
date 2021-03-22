@@ -29,15 +29,19 @@
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>
 
-    <color name="conversation_item_header">#9FBDCC</color>
-    <!--<color name="conversation_item_header">#CFCFCF</color>-->
+    <color name="appbar">#1E1E1E</color>
 
-    <color name="bg_default">#222222</color>
-    <color name="bg_alt">#222222</color>
+    <!-- Name of person or group for the chat conversation -->
+    <color name="conversation_item_header">#E3E3E3</color>
+    <color name="conversation_unread_bubble">#373737</color>
+    <color name="conversation_unread_bubble_text">#D8D8D8</color>
+
+    <color name="bg_default">#121212</color>
+    <color name="bg_alt">#121212</color>
     <color name="bg_inverse">@color/grey950</color>
 
     <color name="fg_default">#FFFFFF</color>
-    <color name="fg_inverse">#222222</color>
+    <color name="fg_inverse">#121212</color>
     <color name="fg_chat_message_sent">@color/fg_default</color>
 
     <!-- Chat window incoming message text & informational -->
@@ -46,7 +50,7 @@
     <color name="nc_chip_mention_you_background">#0083C9</color>
     <color name="nc_chip_mention_others_background">#6F6F6F</color>
     <color name="nc_grey">@android:color/holo_purple</color>
-    <color name="bg_bottom_sheet">#222222</color>
+    <color name="bg_bottom_sheet">#121212</color>
     <color name="bg_selected_participant_clear_icon">#EFEFEF</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
     <color name="bg_message_list_outcoming_bubble">#003F62</color>

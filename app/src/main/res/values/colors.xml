@@ -27,16 +27,20 @@
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">#007CC2</color>
 
+    <color name="appbar">@android:color/white</color>
+    <color name="fontAppbar">#A5A5A5</color>
+
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
     <!-- Text color of received messages -->
     <color name="nc_incoming_text_default">#37505D</color>
 
     <!-- Name of person or group for the chat conversation -->
-    <color name="conversation_item_header">#37505D</color>
+    <color name="conversation_item_header">#333333</color>
     <color name="conversation_date">@color/warm_grey_two</color>
     <color name="conversation_last_message">@color/warm_grey_four</color>
-    <color name="conversation_unread_bubble">#FFFFFF</color>
+    <color name="conversation_unread_bubble">#DBDBDB</color>
+    <color name="conversation_unread_bubble_text">#222222</color>
 
     <color name="nc_incoming_text_mention_you">#C98879</color>
     <color name="nc_incoming_text_mention_others">#37505D</color>

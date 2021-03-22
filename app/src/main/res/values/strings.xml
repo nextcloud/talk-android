@@ -337,7 +337,7 @@
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
 
     <!-- Chat -->
-    <string name="nc_99_plus">99+</string>
+    <string name="nc_999_plus" translatable="false">999+</string>
     <string name="nc_copy_message">Copy</string>
     <string name="nc_reply">Reply</string>
 
