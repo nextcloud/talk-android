@@ -20,8 +20,6 @@
  */
 package com.nextcloud.talk.api;
 
-import androidx.annotation.Nullable;
-
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverall;
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage;
@@ -37,14 +35,18 @@ import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
 import java.util.List;
 import java.util.Map;
 
+import androidx.annotation.Nullable;
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -53,8 +55,10 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import retrofit2.http.Url;
@@ -373,4 +377,21 @@ public interface NcApi {
     @DELETE
     Observable<ChatOverallSingleMessage> deleteChatMessage(@Header("Authorization") String authorization,
                                                            @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> deleteAvatar(@Header("Authorization") String authorization, @Url String url);
+
+    @Multipart
+    @POST
+    Observable<GenericOverall> uploadAvatar(@Header("Authorization") String authorization,
+                                            @Url String url,
+                                            @Part MultipartBody.Part attachment);
+
+    @GET
+    Observable<UserProfileFieldsOverall> getEditableUserProfileFields(@Header("Authorization") String authorization,
+                                                                      @Url String url);
+
+    @GET
+    Call<ResponseBody> downloadResizedImage(@Header("Authorization") String authorization,
+                                            @Url String url);
 }

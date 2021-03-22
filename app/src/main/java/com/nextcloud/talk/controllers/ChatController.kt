@@ -72,6 +72,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
+import com.nextcloud.talk.components.filebrowser.controllers.BrowserForSharingController
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
@@ -667,7 +668,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         bundle.putParcelable(BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType))
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserEntity>(conversationUser))
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-        router.pushController(RouterTransaction.with(BrowserController(bundle))
+        router.pushController(RouterTransaction.with(BrowserForSharingController(bundle))
                 .pushChangeHandler(VerticalChangeHandler())
                 .popChangeHandler(VerticalChangeHandler()))
     }
