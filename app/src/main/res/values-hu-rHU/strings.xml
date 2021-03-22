@@ -22,6 +22,10 @@
     <!-- Common -->
     <string name="nc_yes">Igen</string>
     <string name="nc_no">Nem</string>
+    <string name="nc_common_skip">Kihagyás</string>
+    <string name="nc_common_set">Beállítás</string>
+    <string name="nc_common_error_sorry">Valami hiba történt!</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">Beállítások</string>
 
@@ -36,6 +40,7 @@
     <string name="nc_server_import_account">Fiók importálása a(z) %1$s alkalmazásból</string>
     <string name="nc_server_import_accounts">Fiókok importálása a(z) %1$s alkalmazásból</string>
     <string name="nc_server_failed_to_import_account">A kiválasztott fiók importálása sikertelen</string>
+    <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
     <string name="nc_get_from_provider">Nincs még saját kiszolgálója?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
 
     <!-- Account verification -->
@@ -72,7 +77,11 @@
     <string name="nc_settings_no_talk_installed">A Beszélgetés alkalmazás nincs telepítve azon a kiszolgálón, ami felé hitelesíteni szeretne</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett, a már létező fiókja lett frissítve</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
+    <string name="nc_settings_notification_sounds">Hang</string>
+    <string name="nc_settings_call_ringtone">Hívások</string>
+    <string name="nc_settings_other_notifications_ringtone">Értesítések</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
+    <string name="nc_settings_vibrate">Rezgés</string>
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
     <string name="nc_settings_appearance">Megjelenés</string>
     <string name="nc_settings_theme_title">Téma</string>
@@ -81,6 +90,7 @@
     <string name="nc_settings_theme_battery_saver">Energiagazdálkodás által beállítva</string>
     <string name="nc_settings_theme_light">Világos</string>
     <string name="nc_settings_theme_dark">Sötét</string>
+    <string name="nc_settings_privacy">Adatvédelem</string>
     <string name="nc_settings_screen_lock_title">Képernyőzár</string>
     <string name="nc_settings_screen_lock_desc">A(z) %1$s zárolása az androidos képernyőzárral, vagy támogatott biometrikus eljárással</string>
     <string name="nc_settings_screen_lock_timeout_title">Képernyő zárolása ennyi tétlenség után</string>
@@ -92,6 +102,9 @@
     <string name="nc_settings_link_previews_title">Hivatkozások előnézetének megjelenítése</string>
     <string name="nc_settings_link_previews_desc">Lehetővé teszi a támogatott szolgáltatásokhoz küldött hivatkozások tartalmának előnézetét</string>
     <string name="nc_locked">Koppintás a feloldáshoz</string>
+    <string name="nc_settings_read_privacy_desc">Oszd meg az olvasási állapotomat, és mutasd meg mások olvasási állapotát</string>
+    <string name="nc_settings_read_privacy_title">Olvasási állapot</string>
+
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
     <string name="nc_screen_lock_timeout_60">1 perc</string>
     <string name="nc_screen_lock_timeout_300">5 perc</string>
@@ -132,12 +145,19 @@
     <string name="nc_make_call_private">Beszélgetés priváttá tétele</string>
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete">Törlés</string>
+    <string name="nc_delete_conversation_default">Erősítse meg szándékát, hogy eltávolítja a beszélgetést.</string>
+    <string name="nc_delete_conversation_one2one">Ha törli a beszélgetést, akkor %1$s
+        számára is törölve lesz.</string>
+    <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
+
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">Névjegyek kiválasztása</string>
     <string name="nc_contacts_done">Kész</string>
 
     <!-- Permissions -->
@@ -145,6 +165,12 @@
     <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
+    <!-- Call -->
+    <string name="nc_voice_call">Nextcloud Talk hanghívás</string>
+    <string name="nc_video_call">Nextcloud Talk videóhívás</string>
+    <string name="nc_unknown_call">Nextcloud Talk hívás</string>
+    <string name="nc_call_incoming">BEJÖVŐ</string>
+    <string name="nc_call_ringing">CSENG</string>
     <string name="nc_connecting_call">Kapcsolódás…</string>
     <string name="nc_calling">Hívás…</string>
     <string name="nc_incoming_call">Bejövő hívás tőle:</string>
@@ -167,7 +193,11 @@
     <string name="nc_notify_me_mention">Értesítsen, ha megemlítik Önt</string>
     <string name="nc_notify_me_never">Sose értesítsen</string>
     <string name="nc_mute_calls">Hívások némítása</string>
+    <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
+    <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a
+        Ne zavarjanak beállításokat</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
@@ -277,4 +307,24 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Másolás</string>
     <string name="nc_reply">Válasz</string>
+    <string name="nc_delete_message">Törlés</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Az üzenet törlése sikeresen megtörtént, de lehet, hogy az már megjelent más szolgáltatásokon</string>
+
+    <!-- Upload -->
+    <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
+    <string name="nc_upload_from_nextcloud">Ossza meg a Nextcloudon keresztül</string>
+    <string name="nc_upload_failed">A feltöltés sikertelen</string>
+    <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
+    <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
+    <string name="nc_upload_confirm_send_single">Ennek a fájlnak küldése ide: %1$s</string>
+    <string name="nc_upload_in_progess">feltöltés</string>
+
+    <string name="nc_settings_phone_book_integration_desc">A névjegyek párosítása telefonszám alapján, a Talk telefonkönyvbe integrálásához</string>
+    <string name="nc_settings_phone_book_integration_title">Telefonkönyv integráció</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonszám</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja a telefonszámát, így a a többi felhasználó megtalálhatja Önt</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">A telefonszám formátuma hibás</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
+    <string name="no_phone_book_integration_due_to_permissions">Hiányzó engedélyek miatt nincs telefonkönyv-integráció</string>
+
     </resources>

@@ -24,7 +24,7 @@
     <string name="nc_no">否</string>
     <string name="nc_common_skip">略過</string>
     <string name="nc_common_set">設定</string>
-    <string name="nc_common_error_sorry">發生錯誤了 :(</string>
+    <string name="nc_common_error_sorry">發生錯誤了 ：(</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
@@ -127,7 +127,7 @@
     <string name="nc_privacy">私隱條款</string>
     <string name="nc_get_source_code">取得原始碼</string>
     <string name="nc_license_title">授權</string>
-    <string name="nc_license_summary">GNU General Public License, 第3版</string>
+    <string name="nc_license_summary">GNU General Public License， 第3版</string>
 
     <string name="nc_select_an_account">選擇一個賬號</string>
 
@@ -172,8 +172,8 @@
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_connecting_call">連線中</string>
-    <string name="nc_calling">連接中...</string>
-    <string name="nc_incoming_call">來電中....</string>
+    <string name="nc_calling">連接中。。。</string>
+    <string name="nc_incoming_call">來電中。。。。</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_public_call">新的公開對話</string>
     <string name="nc_public_call_explanation">公開對話讓您可通過特製的連結
@@ -181,7 +181,7 @@
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_offline">當前離線，請檢查您的連接</string>
-    <string name="nc_leaving_call">離開通話...</string>
+    <string name="nc_leaving_call">離開通話。。。</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
@@ -200,7 +200,7 @@
         請勿打擾設置</string>
 
     <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
+    <string name="nc_failed_to_perform_operation">發生錯誤了 ：(</string>
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。
          您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_all_ok_operation">完成</string>
@@ -209,7 +209,7 @@
     <string name="nc_proceed">進行</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_wrong_link">對話連結無效</string>
-    <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>
+    <string name="nc_share_text">加入於 %1$s/index。php/call/%2$s 的對話</string>
     <string name="nc_share_subject">%1$s 邀請</string>
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
 
@@ -234,7 +234,7 @@
     <string name="nc_new_messages">未讀郵件</string>
     <string name="nc_no_messages_yet">目前無任何訊息</string>
     <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
-    <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF.</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF。</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s 傳送一個附件</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s 傳送一個聲音檔</string>
     <string name="nc_sent_a_video" formatted="true">%1$s 傳送一個影片</string>
@@ -246,7 +246,7 @@
     <string name="nc_sent_a_video_you">您傳送了一個影片</string>
     <string name="nc_sent_an_image_you">你傳送了一張圖片</string>
     <!-- When translating to German, please use non-formal variant -->
-    <string name="nc_formatted_message_you">你: %1$s</string>
+    <string name="nc_formatted_message_you">你： %1$s</string>
 
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">沒有更多要加載的項目。刷新以重試。</string>
