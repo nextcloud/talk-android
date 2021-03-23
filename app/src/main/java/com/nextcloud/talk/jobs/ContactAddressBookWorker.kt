@@ -38,6 +38,8 @@ import androidx.work.*
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Controller
 import com.google.gson.Gson
+import com.nextcloud.talk.BuildConfig
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -52,7 +54,6 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import javax.inject.Inject
-import com.nextcloud.talk.R
 
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -68,10 +69,18 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     @Inject
     lateinit var appPreferences: AppPreferences
 
+    private lateinit var accountName: String
+    private lateinit var accountType: String
+
     override fun doWork(): Result {
         sharedApplication!!.componentApplication.inject(this)
 
         val currentUser = userUtils.currentUser
+
+        accountName = context.getString(R.string.nc_app_name)
+        accountType = BuildConfig.APPLICATION_ID
+        Log.d(TAG, "accountName: " + accountName)
+        Log.d(TAG, "accountType: " + accountType)
 
         if (currentUser == null) {
             Log.e(javaClass.simpleName, "No current user!")
@@ -86,8 +95,10 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             }
         }
 
-        if(AccountManager.get(context).getAccountsByType(ACCOUNT_TYPE).isEmpty()){
-            AccountManager.get(context).addAccountExplicitly(Account(ACCOUNT_NAME, ACCOUNT_TYPE), "", null)
+        if(AccountManager.get(context).getAccountsByType(accountType).isEmpty()){
+            AccountManager.get(context).addAccountExplicitly(Account(accountName, accountType), "", null)
+        } else {
+            Log.d(TAG, "Account already exists")
         }
 
         // collect all contacts with phone number
@@ -182,12 +193,12 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     private fun up(foundContacts: ContactsByNumberOverall) {
         val map = foundContacts.ocs.map
         
-        // Delete all old associations (those that are associated on phone, but not in server response) 
+        // Delete all old associations (those that are associated on phone, but not in server response)
         val rawContactUri = ContactsContract.Data.CONTENT_URI
                 .buildUpon()
                 .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
-                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, "Nextcloud Talk")
-                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.nextcloud.talk2")
+                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
                 .appendQueryParameter(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat")
                 .build()
 
@@ -224,7 +235,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             for (contact in foundContacts.ocs.map) {
                 val lookupKey = contact.key
                 val cloudId = contact.value
-                
+
                 update(lookupKey, cloudId)
             }
         }
@@ -292,8 +303,8 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
 
                 ops.add(ContentProviderOperation
                         .newInsert(rawContactsUri)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, ACCOUNT_NAME)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, ACCOUNT_TYPE)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
                         .withValue(ContactsContract.RawContacts.AGGREGATION_MODE,
                                 ContactsContract.RawContacts.AGGREGATION_MODE_DEFAULT)
                         .withValue(ContactsContract.RawContacts.SYNC2, cloudId)
@@ -337,8 +348,8 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         val rawContactUri = ContactsContract.RawContacts.CONTENT_URI
                 .buildUpon()
                 .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
-                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, "Nextcloud Talk")
-                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, "com.nextcloud.talk2")
+                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
                 .build()
 
 
@@ -350,8 +361,6 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         const val TAG = "ContactAddressBook"
         const val REQUEST_PERMISSION = 231
         const val KEY_FORCE = "KEY_FORCE"
-        const val ACCOUNT_TYPE = "com.nextcloud.talk2"
-        const val ACCOUNT_NAME = "Nextcloud Talk"
 
         fun run(context: Context) {
             if (ContextCompat.checkSelfPermission(context,
