@@ -28,9 +28,9 @@
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
     android:paddingLeft="@dimen/double_margin_between_elements"
-    android:paddingTop="@dimen/margin_between_elements"
+    android:paddingTop="12dp"
     android:paddingRight="@dimen/double_margin_between_elements"
-    android:paddingBottom="@dimen/margin_between_elements">
+    android:paddingBottom="12dp">
 
     <FrameLayout
         android:id="@+id/dialogAvatarFrameLayout"
@@ -72,7 +72,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/dialogName"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
         android:layout_toStartOf="@+id/dialogUnreadBubble"
         android:layout_toEndOf="@id/dialogAvatarFrameLayout"
         android:ellipsize="end"
@@ -92,7 +92,7 @@
         android:layout_below="@+id/dialogName"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="7dp"
         android:gravity="top"
         android:lines="1"
         android:textAppearance="@style/ChipUnreadMessagesTextAppearance"
@@ -111,6 +111,7 @@
         android:layout_alignTop="@id/dialogAvatarFrameLayout"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginTop="3dp"
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/conversation_date"
@@ -122,6 +123,7 @@
         android:layout_width="16sp"
         android:layout_height="16sp"
         android:layout_alignBottom="@id/dialogName"
+        android:layout_marginTop="3dp"
         android:layout_marginEnd="8dp"
         android:layout_toEndOf="@+id/dialogAvatarFrameLayout"
         android:indeterminateTint="@color/colorPrimary"
@@ -132,6 +134,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/dialogAvatarFrameLayout"
+        android:layout_marginTop="3dp"
         android:layout_toStartOf="@id/dialogDate"
         android:layout_toEndOf="@id/actionProgressBar"
         android:ellipsize="end"
