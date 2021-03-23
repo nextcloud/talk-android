@@ -79,8 +79,6 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
 
         accountName = context.getString(R.string.nc_app_name)
         accountType = BuildConfig.APPLICATION_ID
-        Log.d(TAG, "accountName: " + accountName)
-        Log.d(TAG, "accountType: " + accountType)
 
         if (currentUser == null) {
             Log.e(javaClass.simpleName, "No current user!")
