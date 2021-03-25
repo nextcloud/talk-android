@@ -2,10 +2,12 @@
 <!--
   ~ Nextcloud Talk application
   ~
-  ~ @author Mario Danic
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ @author Andy Scherzinger
   ~ @author Daniel Bailey
+  ~ @author Mario Danic
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2019 Daniel Bailey <db@grappleIT.co.uk>
+  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,16 +24,19 @@
   -->
 
 <resources>
-    <color name="conversation_item_header">#ffffff</color>
+    <color name="conversation_item_header">#deffffff</color>
 
-    <color name="bg_default">#222222</color>
-    <color name="bg_alt">#222222</color>
+    <color name="bg_default">#121212</color>
+    <color name="bg_alt">#121212</color>
     <color name="nc_darkGreen">#00AA00</color>
+
+    <color name="conversation_unread_bubble">#373737</color>
+    <color name="conversation_unread_bubble_text">#D8D8D8</color>
 
     <!-- Chat window incoming message text & informational -->
     <color name="nc_incoming_text_default">#D8D8D8</color>
     <color name="nc_grey">@android:color/holo_purple</color>
-    <color name="bg_bottom_sheet">#222222</color>
+    <color name="bg_bottom_sheet">#121212</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
     <color name="bg_message_list_incoming_bubble_deleted">#66484848</color>
 
