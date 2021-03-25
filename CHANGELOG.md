@@ -9,11 +9,14 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 ### Added
 
 ### Changed
-- improve conversation list design wand dark/light theming
+- improve conversation list design and dark/light theming
 
 ### Fixed
 - @ in username is allowed for phonebook sync
 - avoid sync when phonebook is empty
+- avoid creation of multiple "chat via"-links in phonebook
+- delete "chat via"-link from phonebook if phone number was deleted on server
+- remove all "chat via"-links from phonebook when sync is disabled
 
 ## [11.1.0] - 2021-03-12
 ### Added
