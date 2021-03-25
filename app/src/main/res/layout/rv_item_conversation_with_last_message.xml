@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -51,17 +53,19 @@
 
             <ImageView
                 android:id="@+id/passwordProtectedRoomImageView"
-                android:layout_width="@dimen/margin_between_elements"
-                android:layout_height="@dimen/margin_between_elements"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_gravity="bottom|end"
                 android:background="@drawable/shape_lock_bubble" />
 
             <ImageView
                 android:id="@+id/favoriteConversationImageView"
-                android:layout_width="@dimen/margin_between_elements"
-                android:layout_height="@dimen/margin_between_elements"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:layout_gravity="top|end"
-                android:background="@drawable/shape_favorite_bubble" />
+                android:src="@drawable/ic_star_black_24dp"
+                app:tint="@color/favorite_icon_tint"
+                app:tintMode="src_in"/>
 
         </FrameLayout>
 
@@ -69,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dialogName"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout">
 
             <androidx.emoji.widget.EmojiTextView
@@ -78,28 +82,31 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@id/dialogUnreadBubble"
-                android:layout_toEndOf="@id/dialogLastMessageUserAvatar"
                 android:ellipsize="end"
                 android:gravity="top"
                 android:lines="1"
                 android:singleLine="true"
                 android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp"
                 tools:text="This is the last message\nof an incredibly long two line  conversation text" />
 
-            <TextView
-                android:id="@id/dialogUnreadBubble"
+            <com.google.android.material.chip.Chip
+                android:id="@+id/dialogUnreadBubble"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="18dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/bubble_circle_unread"
-                android:gravity="center"
+                android:gravity="top"
                 android:lines="1"
-                android:textAlignment="center"
-                android:textColor="@color/conversation_unread_bubble"
-                android:textSize="12sp"
-                tools:background="@drawable/bubble_circle_unread"
-                tools:text="99+" />
+                android:textAppearance="@style/ChipUnreadMessagesTextAppearance"
+                android:textColor="@color/conversation_unread_bubble_text"
+                app:chipBackgroundColor="@color/conversation_unread_bubble"
+                app:chipEndPadding="-1dp"
+                app:chipMinTouchTargetSize="0dp"
+                app:chipStartPadding="-3dp"
+                app:ensureMinTouchTargetSize="false"
+                tools:text="999+" />
 
         </RelativeLayout>
 
@@ -108,9 +115,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/textColorMaxContrast" />
+            android:textSize="14sp"
+            android:textColor="@color/textColorMaxContrast"
+            tools:text="yesterday"/>
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/dialogName"
@@ -119,6 +129,7 @@
             android:layout_alignTop="@id/dialogAvatarFrameLayout"
             android:layout_toStartOf="@id/dialogDate"
             android:layout_toEndOf="@id/dialogAvatarFrameLayout"
+            android:layout_marginTop="2dp"
             android:ellipsize="end"
             android:includeFontPadding="false"
             android:maxLines="1"
