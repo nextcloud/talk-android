@@ -3,6 +3,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -17,120 +19,129 @@
   ~
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  ~
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/rv_item_view_height"
-    android:layout_margin="@dimen/double_margin_between_elements"
-    android:animateLayoutChanges="true">
+    android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:paddingLeft="@dimen/double_margin_between_elements"
+    android:paddingTop="12dp"
+    android:paddingRight="@dimen/double_margin_between_elements"
+    android:paddingBottom="12dp">
 
-        <FrameLayout
-            android:id="@+id/dialogAvatarFrameLayout"
+    <FrameLayout
+        android:id="@+id/dialogAvatarFrameLayout"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/double_margin_between_elements">
+
+        <ImageView
+            android:id="@id/dialogAvatar"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_centerVertical="true"
-            android:layout_marginEnd="@dimen/margin_between_elements">
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/avatars[0]" />
 
-            <ImageView
-                android:id="@id/dialogAvatar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:scaleType="centerCrop"
-                tools:src="@tools:sample/avatars[0]"/>
+        <ImageView
+            android:id="@+id/passwordProtectedRoomImageView"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="@string/protected_conversation"
+            android:src="@drawable/ic_lock_grey600_24px" />
 
-            <ImageView
-                android:id="@+id/passwordProtectedRoomImageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="bottom|end"
-                android:src="@drawable/ic_lock_grey600_24px" />
+        <ImageView
+            android:id="@+id/favoriteConversationImageView"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="top|end"
+            android:contentDescription="@string/favorite_conversation"
+            android:src="@drawable/ic_star_black_24dp"
+            app:tint="@color/favorite_icon_tint"
+            app:tintMode="src_in" />
 
-            <ImageView
-                android:id="@+id/favoriteConversationImageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="top|end"
-                android:src="@drawable/ic_star_black_24dp"
-                android:tint="@color/favorite_icon_tint"
-                android:tintMode="src_in"/>
+    </FrameLayout>
 
-        </FrameLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/dialogName"
-            android:layout_marginTop="8dp"
-            android:layout_toEndOf="@id/dialogAvatarFrameLayout">
-
-            <androidx.emoji.widget.EmojiTextView
-                android:id="@id/dialogLastMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/dialogUnreadBubble"
-                android:ellipsize="end"
-                android:gravity="top"
-                android:lines="1"
-                android:singleLine="true"
-                android:textColor="@color/conversation_last_message"
-                tools:text="This is the last message\nof an incredibly long two line  conversation text" />
-
-            <TextView
-                android:id="@id/dialogUnreadBubble"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="8dp"
-                android:background="@drawable/bubble_circle_unread"
-                android:gravity="center_vertical"
-                android:layout_centerInParent="true"
-                android:lines="1"
-                android:textAlignment="center"
-                android:textColor="@color/conversation_unread_bubble"
-                android:textSize="10sp"
-                tools:background="@drawable/bubble_circle_unread"
-                tools:text="99+"
-                />
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@id/dialogDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:textColor="@color/conversation_date" />
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@id/dialogLastMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dialogName"
+        android:layout_marginTop="5dp"
+        android:layout_toStartOf="@+id/dialogUnreadBubble"
+        android:layout_toEndOf="@id/dialogAvatarFrameLayout"
+        android:ellipsize="end"
+        android:gravity="top"
+        android:lines="1"
+        android:singleLine="true"
+        android:textColor="@color/conversation_last_message"
+        android:textSize="14sp"
+        tools:text="This is the last message\nof an incredibly long two line conversation text" />
 
 
-        <ProgressBar
-            android:layout_width="16sp"
-            android:layout_height="16sp"
-            android:id="@+id/actionProgressBar"
-            android:layout_alignBottom="@id/dialogName"
-            android:layout_marginEnd="8dp"
-            android:layout_toEndOf="@+id/dialogAvatarFrameLayout"
-            android:indeterminateTint="@color/colorPrimary"
-            android:visibility="gone"
-            />
+    <com.google.android.material.chip.Chip
+        android:id="@+id/dialogUnreadBubble"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="18dp"
+        android:layout_below="@+id/dialogName"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="7dp"
+        android:gravity="top"
+        android:lines="1"
+        android:textAppearance="@style/ChipUnreadMessagesTextAppearance"
+        android:textColor="@color/conversation_unread_bubble_text"
+        app:chipBackgroundColor="@color/conversation_unread_bubble"
+        app:chipEndPadding="-1dp"
+        app:chipMinTouchTargetSize="0dp"
+        app:chipStartPadding="-3dp"
+        app:ensureMinTouchTargetSize="false"
+        tools:text="99+" />
 
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@id/dialogName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@id/dialogAvatarFrameLayout"
-            android:layout_toStartOf="@id/dialogDate"
-            android:layout_toEndOf="@id/actionProgressBar"
-            android:ellipsize="end"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:textColor="@color/conversation_item_header"
-            android:textSize="16sp"
-            tools:text="Best conversation" />
+    <TextView
+        android:id="@id/dialogDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/dialogAvatarFrameLayout"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginTop="3dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="@color/conversation_date"
+        android:textSize="14sp"
+        tools:text="@string/nc_date_header_yesterday" />
+
+    <ProgressBar
+        android:id="@+id/actionProgressBar"
+        android:layout_width="16sp"
+        android:layout_height="16sp"
+        android:layout_alignBottom="@id/dialogName"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toEndOf="@+id/dialogAvatarFrameLayout"
+        android:indeterminateTint="@color/colorPrimary"
+        android:visibility="gone" />
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@id/dialogName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/dialogAvatarFrameLayout"
+        android:layout_marginTop="3dp"
+        android:layout_toStartOf="@id/dialogDate"
+        android:layout_toEndOf="@id/actionProgressBar"
+        android:ellipsize="end"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:textColor="@color/conversation_item_header"
+        android:textSize="16sp"
+        tools:text="Best conversation" />
 
 </RelativeLayout>

@@ -51,6 +51,11 @@
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
+    <style name="ChipUnreadMessagesTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
     <style name="appActionBarStyle" parent="@style/Widget.MaterialComponents.ActionBar.Solid">
         <item name="android:colorPrimary">@color/fg_inverse</item>
         <item name="android:textColor">@color/fg_inverse</item>
