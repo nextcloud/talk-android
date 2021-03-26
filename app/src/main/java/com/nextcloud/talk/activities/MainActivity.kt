@@ -176,7 +176,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     if (userUtils.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
-                        Snackbar.make(container, "Account not found", Snackbar.LENGTH_LONG).show()
+                        Snackbar.make(container, R.string.nc_phone_book_integration_account_not_found, Snackbar
+                                .LENGTH_LONG).show()
                     }
                 }
             }

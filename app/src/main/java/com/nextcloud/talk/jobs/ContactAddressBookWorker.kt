@@ -30,7 +30,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.RemoteException
 import android.provider.ContactsContract
-import android.provider.ContactsContract.CommonDataKinds.Phone.NUMBER
 import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.os.ConfigurationCompat
@@ -84,6 +83,13 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             Log.e(javaClass.simpleName, "No current user!")
             return Result.failure()
         }
+
+        val deleteAll = inputData.getBoolean(DELETE_ALL, false)
+        if(deleteAll){
+            deleteAllLinkedAccounts()
+            return Result.success()
+        }
+
         // Check if run already at the date
         val force = inputData.getBoolean(KEY_FORCE, false)
         if (!force) {
@@ -99,15 +105,14 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             Log.d(TAG, "Account already exists")
         }
 
-        // collect all contacts with phone number
-        val contactsWithNumbers = collectPhoneNumbers()
+        val deviceContactsWithNumbers = collectContactsWithPhoneNumbersFromDevice()
 
-        if(contactsWithNumbers.isNotEmpty()){
+        if(deviceContactsWithNumbers.isNotEmpty()){
             val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0].country
 
             val map = mutableMapOf<String, Any>()
             map["location"] = currentLocale
-            map["search"] = contactsWithNumbers
+            map["search"] = deviceContactsWithNumbers
 
             val json = Gson().toJson(map)
 
@@ -125,13 +130,14 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                         }
 
                         override fun onNext(foundContacts: ContactsByNumberOverall) {
-                            up(foundContacts)
+                            val contactsWithAssociatedPhoneNumbers = foundContacts.ocs.map
+                            deleteLinkedAccounts(contactsWithAssociatedPhoneNumbers)
+                            createLinkedAccounts(contactsWithAssociatedPhoneNumbers)
                         }
 
                         override fun onError(e: Throwable) {
                             Log.e(javaClass.simpleName, "Failed to searchContactsByPhoneNumber", e)
                         }
-
                     })
         }
 
@@ -141,8 +147,8 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         return Result.success()
     }
 
-    private fun collectPhoneNumbers(): MutableMap<String, List<String>> {
-        val result: MutableMap<String, List<String>> = mutableMapOf()
+    private fun collectContactsWithPhoneNumbersFromDevice(): MutableMap<String, List<String>> {
+        val deviceContactsWithNumbers: MutableMap<String, List<String>> = mutableMapOf()
 
         val contactCursor = context.contentResolver.query(
                 ContactsContract.Contacts.CONTENT_URI,
@@ -156,42 +162,32 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             if (contactCursor.count > 0) {
                 contactCursor.moveToFirst()
                 for (i in 0 until contactCursor.count) {
-                    val numbers: MutableList<String> = mutableListOf()
-
                     val id = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID))
                     val lookup = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
-
-                    val phonesCursor = context.contentResolver.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id,
-                            null,
-                            null)
-
-                    if (phonesCursor != null) {
-                        while (phonesCursor.moveToNext()) {
-                            numbers.add(phonesCursor.getString(phonesCursor.getColumnIndex(NUMBER)))
-                        }
-
-                        result[lookup] = numbers
-
-                        phonesCursor.close()
-                    }
-
+                    deviceContactsWithNumbers[lookup] = getPhoneNumbersFromDeviceContact(id)
                     contactCursor.moveToNext()
                 }
             }
-
             contactCursor.close()
         }
-
-        return result
+        Log.d(TAG, "collected contacts with phonenumbers: " + deviceContactsWithNumbers.size)
+        return deviceContactsWithNumbers
     }
 
-    private fun up(foundContacts: ContactsByNumberOverall) {
-        val map = foundContacts.ocs.map
-        
-        // Delete all old associations (those that are associated on phone, but not in server response)
+    private fun deleteLinkedAccounts(contactsWithAssociatedPhoneNumbers: Map<String, String>?) {
+        Log.d(TAG, "deleteLinkedAccount")
+        fun deleteLinkedAccount(id: String) {
+            val rawContactUri = ContactsContract.RawContacts.CONTENT_URI
+                    .buildUpon()
+                    .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
+                    .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                    .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
+                    .build()
+            val count = context.contentResolver.delete(rawContactUri, ContactsContract.RawContacts.CONTACT_ID + " " +
+                    "LIKE \"" + id + "\"", null)
+            Log.d(TAG, "deleted $count linked accounts for id $id")
+        }
+
         val rawContactUri = ContactsContract.Data.CONTENT_URI
                 .buildUpon()
                 .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
@@ -200,7 +196,6 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 .appendQueryParameter(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat")
                 .build()
 
-        // get all raw contacts
         val rawContactsCursor = context.contentResolver.query(
                 rawContactUri,
                 null,
@@ -212,153 +207,195 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         if (rawContactsCursor != null) {
             if (rawContactsCursor.count > 0) {
                 while (rawContactsCursor.moveToNext()) {
-                    val id = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.RawContacts._ID))
-                    val sync1 = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Data.SYNC1))
                     val lookupKey = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY))
-                    Log.d("Contact", "Found associated: $id")
+                    val contactId = rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID))
 
-                    if (map == null || !map.containsKey(lookupKey)) {
-                        if (sync1 != null) {
-                            deleteAssociation(sync1)
-                        }
+                    if (contactsWithAssociatedPhoneNumbers == null || !contactsWithAssociatedPhoneNumbers.containsKey(lookupKey)) {
+                        deleteLinkedAccount(contactId)
                     }
                 }
+            } else {
+                Log.d(TAG, "no contacts with linked Talk Accounts found. Nothing to delete...")
             }
-
             rawContactsCursor.close()
-        }
-
-        // update / change found
-        if (map != null && map.isNotEmpty()) {
-            for (contact in foundContacts.ocs.map) {
-                val lookupKey = contact.key
-                val cloudId = contact.value
-
-                update(lookupKey, cloudId)
-            }
         }
     }
 
-    private fun update(uniqueId: String, cloudId: String) {
-        val lookupUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, uniqueId)
-        val lookupContactUri = ContactsContract.Contacts.lookupContact(context.contentResolver, lookupUri)
-        val contactCursor = context.contentResolver.query(
-                lookupContactUri,
+    private fun createLinkedAccounts(contactsWithAssociatedPhoneNumbers: Map<String, String>?) {
+        fun hasLinkedAccount(id: String) : Boolean {
+            var hasLinkedAccount = false
+            val where = ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + " = ?"
+            val params = arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, id)
+
+            val rawContactUri = ContactsContract.Data.CONTENT_URI
+                    .buildUpon()
+                    .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
+                    .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                    .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
+                    .appendQueryParameter(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat")
+                    .build()
+
+            val rawContactsCursor = context.contentResolver.query(
+                    rawContactUri,
+                    null,
+                    where,
+                    params,
+                    null
+            )
+
+            if (rawContactsCursor != null) {
+                if (rawContactsCursor.count > 0) {
+                    hasLinkedAccount = true
+                    Log.d(TAG, "contact with id $id already has a linked account")
+                } else {
+                    hasLinkedAccount = false
+                }
+                rawContactsCursor.close()
+            }
+            return hasLinkedAccount
+        }
+
+        fun createLinkedAccount(lookupKey: String, cloudId: String) {
+            val lookupUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, lookupKey)
+            val lookupContactUri = ContactsContract.Contacts.lookupContact(context.contentResolver, lookupUri)
+            val contactCursor = context.contentResolver.query(
+                    lookupContactUri,
+                    null,
+                    null,
+                    null,
+                    null)
+
+            if (contactCursor != null) {
+                if (contactCursor.count > 0) {
+                    contactCursor.moveToFirst()
+
+                    val id = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID))
+                    if(hasLinkedAccount(id)){
+                        return
+                    }
+
+                    val numbers = getPhoneNumbersFromDeviceContact(id)
+                    val displayName = getDisplayNameFromDeviceContact(id)
+
+                    if (displayName == null) {
+                        return
+                    }
+
+                    val ops = ArrayList<ContentProviderOperation>()
+                    val rawContactsUri = ContactsContract.RawContacts.CONTENT_URI.buildUpon().build()
+                    val dataUri = ContactsContract.Data.CONTENT_URI.buildUpon().build()
+
+                    ops.add(ContentProviderOperation
+                            .newInsert(rawContactsUri)
+                            .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                            .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
+                            .withValue(ContactsContract.RawContacts.AGGREGATION_MODE,
+                                    ContactsContract.RawContacts.AGGREGATION_MODE_DEFAULT)
+                            .withValue(ContactsContract.RawContacts.SYNC2, cloudId)
+                            .build())
+                    ops.add(ContentProviderOperation
+                            .newInsert(dataUri)
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                            .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER, numbers[0])
+                            .build())
+                    ops.add(ContentProviderOperation
+                            .newInsert(dataUri)
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                            .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                            .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName)
+                            .build())
+                    ops.add(ContentProviderOperation
+                            .newInsert(dataUri)
+                            .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
+                            .withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat")
+                            .withValue(ContactsContract.Data.DATA1, cloudId)
+                            .withValue(ContactsContract.Data.DATA2, String.format(context.resources.getString(R
+                                    .string.nc_phone_book_integration_chat_via), accountName))
+                            .build())
+
+                    try {
+                        context.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
+                    } catch (e: OperationApplicationException) {
+                        Log.e(javaClass.simpleName, "", e)
+                    } catch (e: RemoteException) {
+                        Log.e(javaClass.simpleName, "", e)
+                    }
+
+                    Log.d(TAG, "added new entry for contact $displayName (cloudId: $cloudId | lookupKey: $lookupKey" +
+                            " | id: $id)")
+                }
+                contactCursor.close()
+            }
+        }
+
+        if (contactsWithAssociatedPhoneNumbers != null && contactsWithAssociatedPhoneNumbers.isNotEmpty()) {
+            for (contact in contactsWithAssociatedPhoneNumbers) {
+                val lookupKey = contact.key
+                val cloudId = contact.value
+                createLinkedAccount(lookupKey, cloudId)
+            }
+        } else {
+            Log.d(TAG, "no contacts with linked Talk Accounts found. No linked accounts created.")
+        }
+    }
+
+    private fun getDisplayNameFromDeviceContact(id: String?): String? {
+        var displayName:String? = null
+        val whereName = ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + " = ?"
+        val whereNameParams = arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, id)
+        val nameCursor = context.contentResolver.query(
+                ContactsContract.Data.CONTENT_URI,
                 null,
+                whereName,
+                whereNameParams,
+                ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME)
+        if (nameCursor != null) {
+            while (nameCursor.moveToNext()) {
+                displayName = nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME))
+            }
+            nameCursor.close()
+        }
+        return displayName
+    }
+
+    private fun getPhoneNumbersFromDeviceContact(id: String?): MutableList<String> {
+        val numbers = mutableListOf<String>()
+        val phonesNumbersCursor = context.contentResolver.query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
                 null,
+                ContactsContract.Data.CONTACT_ID + " = " + id,
                 null,
                 null)
 
-        if (contactCursor != null) {
-            if (contactCursor.count > 0) {
-                contactCursor.moveToFirst()
-
-                val id = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID))
-
-                val phonesCursor = context.contentResolver.query(
-                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                        null,
-                        ContactsContract.Data.CONTACT_ID + " = " + id,
-                        null,
-                        null)
-
-                val numbers = mutableListOf<String>()
-                if (phonesCursor != null) {
-                    while (phonesCursor.moveToNext()) {
-                        numbers.add(phonesCursor.getString(phonesCursor.getColumnIndex(NUMBER)))
-                    }
-
-                    phonesCursor.close()
-                }
-
-                var displayName: String? = null
-
-                val whereName = ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + " = ?"
-                val whereNameParams = arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, id)
-                val nameCursor = context.contentResolver.query(
-                        ContactsContract.Data.CONTENT_URI,
-                        null,
-                        whereName,
-                        whereNameParams,
-                        ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME)
-                if (nameCursor != null) {
-                    while (nameCursor.moveToNext()) {
-                        displayName = nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME))
-                    }
-                    nameCursor.close()
-                }
-
-                if (displayName == null) {
-                    return
-                }
-
-                // update entries
-                val ops = ArrayList<ContentProviderOperation>()
-                val rawContactsUri = ContactsContract.RawContacts.CONTENT_URI.buildUpon()
-                        .build()
-                val dataUri = ContactsContract.Data.CONTENT_URI.buildUpon()
-                        .build()
-
-                ops.add(ContentProviderOperation
-                        .newInsert(rawContactsUri)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
-                        .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
-                        .withValue(ContactsContract.RawContacts.AGGREGATION_MODE,
-                                ContactsContract.RawContacts.AGGREGATION_MODE_DEFAULT)
-                        .withValue(ContactsContract.RawContacts.SYNC2, cloudId)
-                        .build())
-                ops.add(ContentProviderOperation
-                        .newInsert(dataUri)
-                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
-                        .withValue(NUMBER, numbers[0])
-                        .build())
-                ops.add(ContentProviderOperation
-                        .newInsert(dataUri)
-                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(ContactsContract.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
-                        .withValue(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, displayName)
-                        .build())
-                ops.add(ContentProviderOperation
-                        .newInsert(dataUri)
-                        .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, 0)
-                        .withValue(ContactsContract.Data.MIMETYPE, "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat")
-                        .withValue(ContactsContract.Data.DATA1, cloudId)
-                        .withValue(ContactsContract.Data.DATA2, "Chat via " + context.resources.getString(R.string.nc_app_name))
-                        .build())
-
-                try {
-                    context.contentResolver.applyBatch(ContactsContract.AUTHORITY, ops)
-                } catch (e: OperationApplicationException) {
-                    Log.e(javaClass.simpleName, "", e)
-                } catch (e: RemoteException) {
-                    Log.e(javaClass.simpleName, "", e)
-                }
+        if (phonesNumbersCursor != null) {
+            while (phonesNumbersCursor.moveToNext()) {
+                numbers.add(phonesNumbersCursor.getString(phonesNumbersCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)))
             }
-
-            contactCursor.close()
+            phonesNumbersCursor.close()
         }
+        if(numbers.size > 0){
+            Log.d(TAG, "Found ${numbers.size} phone numbers for contact with id $id")
+        }
+        return numbers
     }
 
-    private fun deleteAssociation(id: String) {
-        Log.d("Contact", "Delete associated: $id")
-
+    fun deleteAllLinkedAccounts() {
         val rawContactUri = ContactsContract.RawContacts.CONTENT_URI
                 .buildUpon()
                 .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
                 .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
                 .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
                 .build()
-
-
-        val count = context.contentResolver.delete(rawContactUri, ContactsContract.RawContacts.SYNC2 + " LIKE \"" + id + "\"", null)
-        Log.d("Contact", "deleted $count for id $id")
+        context.contentResolver.delete(rawContactUri, null, null)
+        Log.d(TAG, "deleted all linked accounts")
     }
 
     companion object {
         const val TAG = "ContactAddressBook"
         const val REQUEST_PERMISSION = 231
         const val KEY_FORCE = "KEY_FORCE"
+        const val DELETE_ALL = "DELETE_ALL"
 
         fun run(context: Context) {
             if (ContextCompat.checkSelfPermission(context,
@@ -389,6 +426,14 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                                 .build())
                 return true
             }
+        }
+
+        fun deleteAll() {
+                WorkManager
+                        .getInstance()
+                        .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
+                                .setInputData(Data.Builder().putBoolean(DELETE_ALL, true).build())
+                                .build())
         }
     }
 }
