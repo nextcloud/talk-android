@@ -8,6 +8,9 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 ## [UNRELEASED]
 ### Added
 
+### Changed
+- improve conversation list design wand dark/light theming
+
 ### Fixed
 - @ in username is allowed for phonebook sync
 - avoid sync when phonebook is empty

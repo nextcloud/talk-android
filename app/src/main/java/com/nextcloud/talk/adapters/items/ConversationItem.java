@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,6 +23,8 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -30,14 +34,15 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.emoji.widget.EmojiTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import com.amulyakhare.textdrawable.TextDrawable;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.chip.Chip;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -113,17 +118,32 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
 
         if (conversation.getUnreadMessages() > 0) {
+            holder.dialogName.setTypeface(
+                    holder.dialogName.getTypeface(),
+                    Typeface.BOLD
+            );
+            holder.dialogDate.setTypeface(
+                    holder.dialogDate.getTypeface(),
+                    Typeface.BOLD
+            );
+            holder.dialogLastMessage.setTypeface(
+                    holder.dialogLastMessage.getTypeface(),
+                    Typeface.BOLD
+            );
             holder.dialogUnreadBubble.setVisibility(View.VISIBLE);
-            if (conversation.getUnreadMessages() < 100) {
+            if (conversation.getUnreadMessages() < 1000) {
                 holder.dialogUnreadBubble.setText(Long.toString(conversation.getUnreadMessages()));
             } else {
-                holder.dialogUnreadBubble.setText("99+");
+                holder.dialogUnreadBubble.setText(R.string.tooManyUnreadMessages);
             }
 
             if (conversation.isUnreadMention() || conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                holder.dialogUnreadBubble.setBackground(context.getDrawable(R.drawable.bubble_circle_unread_mention));
+                holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
+                holder.dialogUnreadBubble.setTextColor(Color.WHITE);
             } else {
-                holder.dialogUnreadBubble.setBackground(context.getDrawable(R.drawable.bubble_circle_unread));
+                holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.conversation_unread_bubble);
+                holder.dialogUnreadBubble.setTextColor(
+                        ContextCompat.getColor(context, R.color.conversation_unread_bubble_text));
             }
         } else {
             holder.dialogUnreadBubble.setVisibility(View.GONE);
@@ -254,7 +274,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         @BindView(R.id.dialogLastMessage)
         EmojiTextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
-        TextView dialogUnreadBubble;
+        Chip dialogUnreadBubble;
         @BindView(R.id.passwordProtectedRoomImageView)
         ImageView passwordProtectedRoomImageView;
         @BindView(R.id.favoriteConversationImageView)

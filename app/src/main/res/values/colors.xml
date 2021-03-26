@@ -3,6 +3,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -30,7 +32,8 @@
 
     <!-- Name of person or group for the chat conversation -->
     <color name="conversation_item_header">#000000</color>
-    <color name="conversation_unread_bubble">#FFFFFF</color>
+    <color name="conversation_unread_bubble">#DBDBDB</color>
+    <color name="conversation_unread_bubble_text">#222222</color>
 
     <color name="nc_darkRed">#D32F2F</color>
     <color name="nc_darkGreen">#006400</color>
@@ -59,5 +62,5 @@
     <color name="bg_bottom_sheet">#46ffffff</color>
 
     <color name="call_buttons_background">#BF999999</color>
-
+    <color name="favorite_icon_tint">#FFCC00</color>
 </resources>
