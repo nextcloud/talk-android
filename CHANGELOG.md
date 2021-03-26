@@ -5,7 +5,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
-## [Unreleased]
+## [UNRELEASED]
+### Added
+
+### Fixed
+- @ in username is allowed for phonebook sync
+- avoid sync when phonebook is empty
+
+## [11.1.0] - 2021-03-12
 ### Added
 - add ability to enter own phone number when address book sync is enabled
 
