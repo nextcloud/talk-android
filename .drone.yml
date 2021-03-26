@@ -9,7 +9,7 @@ steps:
 
 trigger:
   branch:
-    - master
+    - v11.x
   event:
     - pull_request
     - push
@@ -26,7 +26,7 @@ steps:
 
 trigger:
   branch:
-    - master
+    - v11.x
   event:
    - push
    - pull_request
@@ -75,11 +75,11 @@ steps:
     status:
       - failure
     branch:
-      - master
+      - v11.x
 
 trigger:
   branch:
-    - master
+    - v11.x
   event:
     - push
     - pull_request
