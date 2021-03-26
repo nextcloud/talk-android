@@ -9,7 +9,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 ### Added
 
 ### Changed
-- improve conversation list design and dark/light theming
+- improve conversation list design and dark/light theming (@AndyScherzinger)
 
 ### Fixed
 - @ in username is allowed for phonebook sync
@@ -17,6 +17,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 - avoid creation of multiple "chat via"-links in phonebook
 - delete "chat via"-link from phonebook if phone number was deleted on server
 - remove all "chat via"-links from phonebook when sync is disabled
+- fix to show avatars for incoming pictures in group chats (@starypatyk)
 
 ## [11.1.0] - 2021-03-12
 ### Added
