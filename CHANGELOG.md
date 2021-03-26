@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
 ## [UNRELEASED]
+### Changed
+- improve conversation list design wand dark/light theming
+
 ### Fixed
 - @ in username is allowed for phonebook sync
 - avoid sync when phonebook is empty
