@@ -869,11 +869,13 @@ public class SettingsController extends BaseController {
         }
 
         @Override
-        public void onChanged(Boolean newValue) {
-            if (newValue) {
+        public void onChanged(Boolean isEnabled) {
+            if (isEnabled) {
                 if(ContactAddressBookWorker.Companion.checkPermission(controller, context)){
                     checkForPhoneNumber();
                 }
+            } else {
+                ContactAddressBookWorker.Companion.deleteAll();
             }
         }
     }
