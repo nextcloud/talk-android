@@ -8,7 +8,7 @@
 #6: DRONE_BUILD_NUMBER
 #7: PULL_REQUEST_NUMBER
 
-stableBranch="master"
+stableBranch="v11.x"
 
 ruby scripts/analysis/lint-up.rb $1 $2 $3
 lintValue=$?
