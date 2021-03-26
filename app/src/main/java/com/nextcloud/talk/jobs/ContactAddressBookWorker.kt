@@ -83,6 +83,13 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             Log.e(javaClass.simpleName, "No current user!")
             return Result.failure()
         }
+
+        val deleteAll = inputData.getBoolean(DELETE_ALL, false)
+        if(deleteAll){
+            deleteAllLinkedAccounts()
+            return Result.success()
+        }
+
         // Check if run already at the date
         val force = inputData.getBoolean(KEY_FORCE, false)
         if (!force) {
@@ -373,10 +380,22 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         return numbers
     }
 
+    fun deleteAllLinkedAccounts() {
+        val rawContactUri = ContactsContract.RawContacts.CONTENT_URI
+                .buildUpon()
+                .appendQueryParameter(ContactsContract.CALLER_IS_SYNCADAPTER, "true")
+                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_NAME, accountName)
+                .appendQueryParameter(ContactsContract.RawContacts.ACCOUNT_TYPE, accountType)
+                .build()
+        context.contentResolver.delete(rawContactUri, null, null)
+        Log.d(TAG, "deleted all linked accounts")
+    }
+
     companion object {
         const val TAG = "ContactAddressBook"
         const val REQUEST_PERMISSION = 231
         const val KEY_FORCE = "KEY_FORCE"
+        const val DELETE_ALL = "DELETE_ALL"
 
         fun run(context: Context) {
             if (ContextCompat.checkSelfPermission(context,
@@ -407,6 +426,14 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                                 .build())
                 return true
             }
+        }
+
+        fun deleteAll() {
+                WorkManager
+                        .getInstance()
+                        .enqueue(OneTimeWorkRequest.Builder(ContactAddressBookWorker::class.java)
+                                .setInputData(Data.Builder().putBoolean(DELETE_ALL, true).build())
+                                .build())
         }
     }
 }
