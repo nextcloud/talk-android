@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -163,10 +165,6 @@
     <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Голосовой вызов Nextcloud Talk</string>
-    <string name="nc_video_call">Видеозвонок Nextcloud Talk</string>
-    <string name="nc_unknown_call">Вызов Nextcloud Talk</string>
     <string name="nc_call_incoming">Входящий</string>
     <string name="nc_call_ringing">Звонок</string>
     <string name="nc_connecting_call">Соединение…</string>
@@ -319,5 +317,4 @@
     <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в записной книге</string>
     <string name="nc_settings_phone_book_integration_title">Интеграция с записной книгой</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию с записной книгой</string>
-
     </resources>

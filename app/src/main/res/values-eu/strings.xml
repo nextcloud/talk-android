@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -165,10 +167,6 @@
     <string name="nc_microphone_permission_permanently_denied">Ahots komunikazioa gaitu nahi baduzu eman \"Mikrofonoa\" baimena sistemaren ezarpenetan.</string>
     <string name="nc_permissions_settings">Ireki ezarpenak</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk ahots-deia</string>
-    <string name="nc_video_call">Nextcloud Talk bideo-deia</string>
-    <string name="nc_unknown_call">Nextcloud Talk deia</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_ringing">DEITZEN</string>
     <string name="nc_connecting_call">Konektatzen…</string>
@@ -330,5 +328,4 @@ Ez Molestatu modua</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono zenbakia ondo ezarri da</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zerrenda integratu, baimen falta dela eta</string>
-
     </resources>

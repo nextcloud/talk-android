@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -164,10 +166,6 @@
     <string name="nc_microphone_permission_permanently_denied">为了启用语音通话请在系统设置中允许“麦克风使用权限”</string>
     <string name="nc_permissions_settings">打开设置</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk 语音通话</string>
-    <string name="nc_video_call">Nextcloud Talk 视频通话</string>
-    <string name="nc_unknown_call">Nextcloud Talk 通话</string>
     <string name="nc_call_incoming">来电</string>
     <string name="nc_call_ringing">响铃</string>
     <string name="nc_connecting_call">正在连接...</string>
@@ -325,5 +323,4 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">无效电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">成功设置电话号码</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话簿集成</string>
-
     </resources>

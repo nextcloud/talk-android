@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -313,5 +315,4 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_settings_phone_book_integration_desc">Correspondance de contacts à l\'aide du numéro de téléphone pour intégrer des raccourcis vers Talk dans le carnet d\'adresses</string>
     <string name="nc_settings_phone_book_integration_title">Intégration avec le carnet d\'adresses</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
-
     </resources>

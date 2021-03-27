@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -165,10 +167,6 @@
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk Sprachanruf</string>
-    <string name="nc_video_call">Nextcloud Talk Videoanruf</string>
-    <string name="nc_unknown_call">Nextcloud Talk Anruf</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_connecting_call">Verbinde…</string>
@@ -329,5 +327,4 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ungültige Telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummerneingabe erfolgreich</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Telefonbuch-Einbindung aufgrund fehlender Berechtigungen</string>
-
     </resources>

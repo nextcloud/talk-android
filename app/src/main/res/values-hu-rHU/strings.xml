@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -165,10 +167,6 @@
     <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk hanghívás</string>
-    <string name="nc_video_call">Nextcloud Talk videóhívás</string>
-    <string name="nc_unknown_call">Nextcloud Talk hívás</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_ringing">CSENG</string>
     <string name="nc_connecting_call">Kapcsolódás…</string>
@@ -326,5 +324,4 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">A telefonszám formátuma hibás</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
     <string name="no_phone_book_integration_due_to_permissions">Hiányzó engedélyek miatt nincs telefonkönyv-integráció</string>
-
     </resources>

@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -165,10 +167,6 @@
     <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_permissions_settings">Abrir as configurações</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Chamada de voz do Nextcloud Talk</string>
-    <string name="nc_video_call">Chamada de vídeo do Nextcloud Talk</string>
-    <string name="nc_unknown_call">Chamada do Nextcloud Talk</string>
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_ringing">TOCANDO</string>
     <string name="nc_connecting_call">Conectando...</string>
@@ -329,5 +327,4 @@ outros usuários possam lhe encontrar</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de telefone definido com sucesso</string>
     <string name="no_phone_book_integration_due_to_permissions">Nenhuma integração da lista de telefones devido à falta de permissões</string>
-
     </resources>

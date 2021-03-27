@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -162,10 +164,6 @@
     <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
     <string name="nc_permissions_settings">Otvoriť nastavenia</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk hlasový hovor</string>
-    <string name="nc_video_call">Nextcloud Talk video hovor</string>
-    <string name="nc_unknown_call">Nextcloud Talk hovor</string>
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_ringing">ZVONÍ</string>
     <string name="nc_connecting_call">Pripája sa...</string>

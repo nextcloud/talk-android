@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -141,10 +143,6 @@
 
     <string name="nc_permissions_settings">Avaa asetukset</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk -äänipuhelu</string>
-    <string name="nc_video_call">Nextcloud Talk -videopuhelu</string>
-    <string name="nc_unknown_call">Nextcloud Talk -puhelu</string>
     <string name="nc_call_incoming">SAAPUVA</string>
     <string name="nc_call_ringing">SOITETAAN</string>
     <string name="nc_connecting_call">Yhdistetään…</string>
@@ -276,5 +274,4 @@
 
     <string name="nc_settings_phone_book_integration_title">Puhelinluettelo-integraatio</string>
     <string name="no_phone_book_integration_due_to_permissions">Ei puhelinluettelon integraatiota puuttuvien käyttöoikeuksien takia</string>
-
     </resources>

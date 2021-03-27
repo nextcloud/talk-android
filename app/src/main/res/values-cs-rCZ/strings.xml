@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -165,10 +167,6 @@
     <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
     <string name="nc_permissions_settings">Otevřít nastavení</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">Nextcloud Talk hlasové volání</string>
-    <string name="nc_video_call">Nextcloud Talk video hovor</string>
-    <string name="nc_unknown_call">Nextcloud Talk volání</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_ringing">ZVONĚNÍ</string>
     <string name="nc_connecting_call">Připojování…</string>
@@ -326,5 +324,4 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neplatné telefonní číslo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nastavení telefonního čísla úspěšné</string>
     <string name="no_phone_book_integration_due_to_permissions">Bez propojení kontaktů v telefonu z důvodu neudělení oprávnění</string>
-
     </resources>

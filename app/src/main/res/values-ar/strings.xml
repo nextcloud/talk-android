@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -162,10 +164,6 @@
     <string name="nc_microphone_permission_permanently_denied">لتمكين الاتصال الصوتي ، يرجى منح وصول \"الميكروفون\" في إعدادات النظام.</string>
     <string name="nc_permissions_settings">فتح الإعدادات</string>
 
-    <!-- Call -->
-    <string name="nc_voice_call">نكست كلاود مكالمة صوتية</string>
-    <string name="nc_video_call">نكست كلاود مكالمة فيديو</string>
-    <string name="nc_unknown_call">مكالمة نكست كلاود </string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_ringing">يرن </string>
     <string name="nc_connecting_call">جارٍ الاتصال…</string>
@@ -318,5 +316,4 @@
     <string name="nc_settings_phone_book_integration_desc">قم بمطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصار التحدث في دفتر الهاتف</string>
     <string name="nc_settings_phone_book_integration_title">ارتباط دفتر الهاتف</string>
     <string name="no_phone_book_integration_due_to_permissions">لا يوجد ارتباط بدفتر الهاتف بسبب الصلاحيات المفقودة</string>
-
     </resources>
