@@ -167,6 +167,10 @@
     <string name="nc_microphone_permission_permanently_denied">Pro zapnutí hlasové komunikace udělte v nastavení systému oprávnění „Mikrofon“ .</string>
     <string name="nc_permissions_settings">Otevřít nastavení</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s hlasový hovor</string>
+    <string name="nc_call_video">%s video hovor</string>
+    <string name="nc_call_unknown">%s hovor</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_ringing">ZVONĚNÍ</string>
     <string name="nc_connecting_call">Připojování…</string>
@@ -324,4 +328,7 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neplatné telefonní číslo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nastavení telefonního čísla úspěšné</string>
     <string name="no_phone_book_integration_due_to_permissions">Bez propojení kontaktů v telefonu z důvodu neudělení oprávnění</string>
+    <string name="nc_phone_book_integration_chat_via">Rozhovor prostřednictvím %s</string>
+    <string name="nc_phone_book_integration_account_not_found">Účet nenalezen</string>
+
     </resources>
