@@ -30,6 +30,7 @@
     <dimen name="margin_between_elements">8dp</dimen>
     <dimen name="double_margin_between_elements">16dp</dimen>
     <dimen name="avatar_size">40dp</dimen>
+    <dimen name="avatar_size_app_bar">30dp</dimen>
     <dimen name="avatar_size_big">96dp</dimen>
     <dimen name="avatar_size_very_big">@dimen/avatar_fetching_size_very_big</dimen>
     <dimen name="avatar_fetching_size_very_big">180dp</dimen>
@@ -42,4 +43,5 @@
 
     <dimen name="large_preview_dimension">80dp</dimen>
     <dimen name="corner_radius">16dp</dimen>
+    <dimen name="button_corner_radius">24dp</dimen>
 </resources>

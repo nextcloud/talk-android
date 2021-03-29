@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *

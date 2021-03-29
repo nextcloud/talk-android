@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ /*
+  ~  * Nextcloud Talk application
+  ~  *
+  ~  * @author Mario Danic
+  ~  * @author Andy Scherzinger
+  ~  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~  * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
+  ~  *
+  ~  * This program is free software: you can redistribute it and/or modify
+  ~  * it under the terms of the GNU General Public License as published by
+  ~  * the Free Software Foundation, either version 3 of the License, or
+  ~  * at your option) any later version.
+  ~  *
+  ~  * This program is distributed in the hope that it will be useful,
+  ~  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  * GNU General Public License for more details.
+  ~  *
+  ~  * You should have received a copy of the GNU General Public License
+  ~  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~  */
+  -->
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/home_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="1dp"
+        android:visibility="gone"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp"
+        tools:visibility="visible">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/menu_button"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="3dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="5dp"
+                android:contentDescription="@string/nc_action_open_main_menu"
+                android:visibility="gone"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_menu"
+                app:iconTint="@color/fontAppbar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/search_text"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="13dp"
+                android:layout_marginEnd="18dp"
+                android:ellipsize="end"
+                android:gravity="start|center_vertical"
+                android:lines="1"
+                android:textColor="@color/fontSecondaryAppbar"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/menu_button"
+                app:layout_constraintRight_toLeftOf="@id/rightContainer"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Search in Nextcloud" />
+
+            <FrameLayout
+                android:id="@+id/rightContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:minWidth="48dp"
+                android:layout_centerVertical="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/switch_account_button"
+                    style="@style/Widget.AppTheme.Button.IconButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:transitionName="userAvatar.transitionTag"
+                    app:cornerRadius="@dimen/button_corner_radius"
+                    app:iconSize="@dimen/avatar_size_app_bar"
+                    tools:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/searchProgressBar"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="4dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:indeterminateTint="@color/colorPrimary"
+                    android:scaleType="fitCenter"
+                    android:visibility="gone" />
+
+            </FrameLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</merge>

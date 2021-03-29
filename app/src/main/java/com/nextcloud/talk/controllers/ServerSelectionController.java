@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
@@ -44,6 +45,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -54,6 +56,10 @@ import java.security.cert.CertificateException;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+
+import org.jetbrains.annotations.NotNull;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -90,6 +96,7 @@ public class ServerSelectionController extends BaseController {
 
     private Disposable statusQueryDisposable;
 
+    @NotNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_server_selection, container, false);
@@ -354,6 +361,11 @@ public class ServerSelectionController extends BaseController {
             ApplicationWideMessageHolder.getInstance().setMessageType(null);
         }
 
+        if (getActivity() != null && getResources() != null) {
+            DisplayUtils.applyColorToStatusBar(getActivity(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+            DisplayUtils.applyColorToNavigationBar(getActivity().getWindow(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+        }
+
         setCertTextView();
     }
 
@@ -394,5 +406,8 @@ public class ServerSelectionController extends BaseController {
         statusQueryDisposable = null;
     }
 
-
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.EMPTY;
+    }
 }

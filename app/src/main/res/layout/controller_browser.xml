@@ -39,6 +39,8 @@
         android:layout_width="match_parent"
         android:layout_height="64dp"
         android:background="@color/bg_default"
+        app:itemTextColor="@color/fg_default"
+        app:itemIconTint="@color/fg_default"
         app:menu="@menu/file_browser_path" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -47,6 +49,8 @@
         android:layout_height="64dp"
         android:layout_alignParentBottom="true"
         android:background="@color/bg_default"
+        app:itemTextColor="@color/fg_default"
+        app:itemIconTint="@color/fg_default"
         app:menu="@menu/file_browser_bottom" />
 
     <include

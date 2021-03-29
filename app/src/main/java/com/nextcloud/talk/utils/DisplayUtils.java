@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 package com.nextcloud.talk.utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -49,7 +50,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
@@ -58,10 +62,14 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatDrawableManager;
+import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
+import androidx.viewpager.widget.ViewPager;
 
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
@@ -393,6 +401,48 @@ public class DisplayUtils {
                         new int[]{selectedColor, pressedColor, normalColor}
                 ));
         return drawable;
+    }
+
+    public static void applyColorToNavigationBar(Window window, @ColorInt int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                View decor = window.getDecorView();
+                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
+                    int systemUiFlags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        systemUiFlags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR |
+                        WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
+                    }
+                    decor.setSystemUiVisibility(systemUiFlags);
+                } else {
+                    decor.setSystemUiVisibility(0);
+                }
+                window.setNavigationBarColor(color);
+            }
+        }
+    }
+
+    public static void applyColorToStatusBar(Activity activity, @ColorInt int color) {
+        Window window = activity.getWindow();
+        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(color);
+        }
+    }
+
+    /**
+     * Theme search view
+     *
+     * @param searchView searchView to be changed
+     * @param context    the app's context
+     */
+    public static void themeSearchView(SearchView searchView, Context context) {
+        // hacky as no default way is provided
+        int fontColor = context.getResources().getColor(R.color.fontAppbar);
+        SearchView.SearchAutoComplete editText = searchView.findViewById(R.id.search_src_text);
+        editText.setTextSize(16);
+        editText.setHintTextColor(context.getResources().getColor(R.color.fontSecondaryAppbar));
     }
 
     public static boolean isDarkModeActive(Context context, AppPreferences prefs) {
