@@ -376,14 +376,14 @@
     <string name="choose_avatar_from_cloud">Choose avatar from cloud</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="scope_private_title">Private</string>
-    <string name="scope_private_description">Don\'t show via public link</string>
+    <string name="scope_private_description">Only visible to people matched via phone number integration through Talk on mobile</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="scope_local_title">Local</string>
-    <string name="scope_local_description">Don\'t synchronize to servers</string>
+    <string name="scope_local_description">Only visible to people on this instance and guests</string>
     <string name="scope_federated_title">Federated</string>
     <string name="scope_federated_description">Only synchronize to trusted servers</string>
     <string name="scope_published_title">Published</string>
-    <string name="scope_published_description">Synchronize to trusted serves and the global and public address book</string>
+    <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
     <string name="scope_toggle">Scope toggle</string>
     
     <!-- App Bar -->
