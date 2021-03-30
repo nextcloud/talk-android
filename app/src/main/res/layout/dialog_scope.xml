@@ -38,7 +38,7 @@
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
             android:contentDescription="@string/lock_symbol"
-            app:srcCompat="@drawable/ic_password" />
+            app:srcCompat="@drawable/ic_call_black_24dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
