@@ -71,6 +71,7 @@ import okhttp3.OkHttpClient
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.webrtc.Logging
 import retrofit2.Retrofit
 import java.io.IOException
 import java.net.CookieManager
@@ -107,17 +108,20 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onCreate() {
         super.onCreate()
+        Logging.d(TAG, "onCreate")
         sharedApplication!!.componentApplication.inject(this)
         eventBus?.register(this)
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(event: CallNotificationClick) {
+        Logging.d(TAG, "onMessageEvent")
         isServiceInForeground = false
         stopForeground(true)
     }
 
     override fun onDestroy() {
+        Logging.d(TAG, "onDestroy")
         isServiceInForeground = false
         eventBus?.unregister(this)
         stopForeground(true)
@@ -127,6 +131,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
+        Logging.d(TAG, "onNewToken")
         sharedApplication!!.componentApplication.inject(this)
         appPreferences!!.pushToken = token
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
@@ -135,6 +140,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
     @SuppressLint("LongLogTag")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        Logging.d(TAG, "onMessageReceived(RemoteMessage)")
         sharedApplication!!.componentApplication.inject(this)
         if (!remoteMessage.data["subject"].isNullOrEmpty() && !remoteMessage.data["signature"].isNullOrEmpty()) {
             decryptMessage(remoteMessage.data["subject"]!!, remoteMessage.data["signature"]!!)
@@ -142,6 +148,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     private fun decryptMessage(subject: String, signature: String) {
+        Logging.d(TAG, "decryptMessage")
         try {
             val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
             val base64DecodedSignature = Base64.decode(signature, Base64.DEFAULT)
@@ -156,13 +163,18 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     val decryptedSubject = cipher.doFinal(base64DecodedSubject)
                     decryptedPushMessage = LoganSquare.parse(String(decryptedSubject),
                             DecryptedPushMessage::class.java)
+                    Logging.d(TAG, "    decryptedPushMessage: " + decryptedPushMessage.toString())
                     decryptedPushMessage?.apply {
                         timestamp = System.currentTimeMillis()
                         if (delete) {
-                            cancelExistingNotificationWithId(applicationContext, signatureVerification!!.userEntity, notificationId)
+                            Logging.d(TAG, "    delete=true")
+                            NotificationUtils.cancelExistingNotificationWithId(applicationContext, signatureVerification!!.userEntity, notificationId)
                         } else if (deleteAll) {
-                            cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
+                            Logging.d(TAG, "    deleteAll=true")
+                            NotificationUtils.cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
                         } else if (type == "call") {
+                            Logging.d(TAG, "    type=call")
+
                             val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
                             val bundle = Bundle()
                             bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage!!.id)
@@ -189,12 +201,17 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                 }
                             }
 
-                            val notificationChannelId = NotificationUtils.getNotificationChannelId(applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls), applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls_description), true,
-                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!, audioAttributesBuilder.build(), null, false)
+                            val notificationChannelId = NotificationUtils.getNotificationChannelId(
+                                    applicationContext.resources.getString(R.string.nc_notification_channel_calls),
+                                    applicationContext.resources.getString(R.string.nc_notification_channel_calls_description),
+                                    true,
+                                    NotificationManagerCompat.IMPORTANCE_HIGH,
+                                    soundUri!!,
+                                    audioAttributesBuilder.build(),
+                                    null,
+                                    false)
 
-                            createNotificationChannel(applicationContext!!,
+                            NotificationUtils.createNotificationChannel(applicationContext!!,
                                     notificationChannelId, applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls), applicationContext.resources
                                     .getString(R.string.nc_notification_channel_calls_description), true,
@@ -221,8 +238,12 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             notification.flags = notification.flags or Notification.FLAG_INSISTENT
                             isServiceInForeground = true
                             checkIfCallIsActive(signatureVerification!!, decryptedPushMessage!!)
+                            Logging.d(TAG, "    executing startForeground. " +
+                                    "timestamp=" + decryptedPushMessage!!.timestamp.toInt() + " notification=" + notification)
                             startForeground(decryptedPushMessage!!.timestamp.toInt(), notification)
                         } else {
+                            Logging.d(TAG, "    else....(none of delete/deleteAll/call)")
+
                             val messageData = Data.Builder()
                                     .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
                                     .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, signature)
@@ -233,18 +254,21 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }
             } catch (e1: NoSuchAlgorithmException) {
-                Log.d(NotificationWorker.TAG, "No proper algorithm to decrypt the message " + e1.localizedMessage)
+                Log.e(TAG, "No proper algorithm to decrypt the message " + e1.localizedMessage)
             } catch (e1: NoSuchPaddingException) {
-                Log.d(NotificationWorker.TAG, "No proper padding to decrypt the message " + e1.localizedMessage)
+                Log.e(TAG, "No proper padding to decrypt the message " + e1.localizedMessage)
             } catch (e1: InvalidKeyException) {
-                Log.d(NotificationWorker.TAG, "Invalid private key " + e1.localizedMessage)
+                Log.e(TAG, "Invalid private key " + e1.localizedMessage)
             }
         } catch (exception: Exception) {
-            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage)
+            Log.e(TAG, "Something went very wrong " + exception.localizedMessage)
         }
     }
 
     private fun checkIfCallIsActive(signatureVerification: SignatureVerification, decryptedPushMessage: DecryptedPushMessage) {
+        Logging.d(TAG, "checkIfCallIsActive")
+        Logging.d(TAG, "    isServiceInForeground:$isServiceInForeground")
+
         val ncApi = retrofit!!.newBuilder().client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
         var hasParticipantsInCall = false
         var inCallOnDifferentDevice = false
@@ -262,6 +286,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
                     override fun onNext(participantsOverall: ParticipantsOverall) {
                         val participantList: List<Participant> = participantsOverall.ocs.data
+                        Logging.d(TAG, "    participantList=$participantList")
+
                         hasParticipantsInCall = participantList.isNotEmpty()
                         if (!hasParticipantsInCall) {
                             for (participant in participantList) {
@@ -282,9 +308,16 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                         }
                     }
 
-                    override fun onError(e: Throwable) {}
+                    override fun onError(e: Throwable) {
+                        Logging.d(TAG, "   checkIfCallIsActive-onError")
+                    }
                     override fun onComplete() {
+                        Logging.d(TAG, "   checkIfCallIsActive-onComplete")
                     }
                 })
+    }
+
+    companion object {
+        private val TAG = "MagicFirebaseMessagingService"
     }
 }

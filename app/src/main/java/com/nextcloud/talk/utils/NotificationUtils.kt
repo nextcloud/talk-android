@@ -33,6 +33,7 @@ import android.service.notification.StatusBarNotification
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import org.webrtc.Logging
 import java.util.*
 
 object NotificationUtils {
@@ -48,17 +49,31 @@ object NotificationUtils {
     }
 
     fun getNotificationChannelId(channelName: String,
-                                 channelDescription: String, enableLights: Boolean,
-                                 importance: Int, sound: Uri, audioAttributes: AudioAttributes, vibrationPattern: LongArray?, bypassDnd: Boolean): String {
+                                 channelDescription: String,
+                                 enableLights: Boolean,
+                                 importance: Int,
+                                 sound: Uri,
+                                 audioAttributes: AudioAttributes,
+                                 vibrationPattern: LongArray?,
+                                 bypassDnd: Boolean): String {
         return Objects.hash(channelName, channelDescription, enableLights, importance, sound, audioAttributes, vibrationPattern, bypassDnd).toString()
     }
 
     @TargetApi(Build.VERSION_CODES.O)
     fun createNotificationChannel(context: Context,
-                                  channelId: String, channelName: String,
-                                  channelDescription: String, enableLights: Boolean,
-                                  importance: Int, sound: Uri, audioAttributes: AudioAttributes,
-                                  vibrationPattern: LongArray?, bypassDnd: Boolean = false) {
+                                  channelId: String,
+                                  channelName: String,
+                                  channelDescription: String,
+                                  enableLights: Boolean,
+                                  importance: Int,
+                                  sound: Uri,
+                                  audioAttributes: AudioAttributes,
+                                  vibrationPattern: LongArray?,
+                                  bypassDnd: Boolean = false) {
+
+        Logging.d(javaClass.simpleName, "createNotificationChannel.")
+        Logging.d(javaClass.simpleName, "  channelId:$channelId")
+        Logging.d(javaClass.simpleName, "  channelName:$channelName")
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -97,6 +112,8 @@ object NotificationUtils {
     }
 
     fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
+        Logging.d(javaClass.simpleName, "cancelAllNotificationsForAccount.")
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L && context != null) {
 
             val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -117,6 +134,8 @@ object NotificationUtils {
     }
 
     fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long) {
+        Logging.d(javaClass.simpleName, "cancelExistingNotificationWithId. notificationId=$notificationId")
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
                 context != null) {
 

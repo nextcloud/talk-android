@@ -703,6 +703,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+        Log.d(javaClass.simpleName, "onAttach")
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability("mention-flag") ?: false && activity != null) {
@@ -759,7 +760,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-
+        Log.d(javaClass.simpleName, "onDetach")
         if (!isLeavingForConversation) {
             // current room is still "active", we need the info
             ApplicationWideCurrentRoomHolder.getInstance().clear()
@@ -843,11 +844,13 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun joinRoomWithPassword() {
+        Log.d(javaClass.simpleName, "joinRoomWithPassword")
 
         if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
                 currentConversation?.sessionId == "0") {
-            ncApi?.joinRoom(credentials,
-                    ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken), roomPassword)
+            var url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken);
+
+            ncApi?.joinRoom(credentials, url, roomPassword)
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.retry(3)
@@ -859,6 +862,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         override fun onNext(roomOverall: RoomOverall) {
                             inConversation = true
                             currentConversation?.sessionId = roomOverall.ocs.data.sessionId
+                            Log.d(javaClass.simpleName, "  new sessionID is " + currentConversation?.sessionId)
 
                             ApplicationWideCurrentRoomHolder.getInstance().session =
                                     currentConversation?.sessionId
@@ -907,6 +911,11 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun leaveRoom() {
+        Log.d(TAG, "leaveRoom")
+        if(roomToken.isNullOrEmpty()){
+            Log.e(TAG, "roomToken was empty!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1")
+        }
+
         ncApi?.leaveRoom(credentials,
                 ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl,
                         roomToken))
@@ -925,6 +934,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                         }
 
                         if (magicWebSocketInstance != null && currentConversation != null) {
+                            // TODO: does this make sense??? why is joinRoom called? and why is roomToken empty???
                             magicWebSocketInstance?.joinRoomWithRoomTokenAndSession("",
                                     currentConversation?.sessionId)
                         }

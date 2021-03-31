@@ -293,6 +293,7 @@ public class CallController extends BaseController {
 
     public CallController(Bundle args) {
         super(args);
+        Log.d(TAG, "CallController created!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
@@ -348,6 +349,7 @@ public class CallController extends BaseController {
     @Override
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
+        Log.d(TAG, "onViewBound");
 
         microphoneControlButton.setOnTouchListener(new MicrophoneButtonTouchListener());
         videoOnClickListener = new VideoClickListener();
@@ -1015,6 +1017,7 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
+        Log.d(TAG, "fetchSignalingSettings");
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
@@ -1039,8 +1042,10 @@ public class CallController extends BaseController {
                                 externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
                                 externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
                                 hasExternalSignalingServer = true;
+                                Log.d(TAG, "   hasExternalSignalingServer = true");
                             } else {
                                 hasExternalSignalingServer = false;
+                                Log.d(TAG, "   hasExternalSignalingServer = false");
                             }
 
                             if (!conversationUser.getUserId().equals("?")) {
@@ -1058,6 +1063,8 @@ public class CallController extends BaseController {
                                 for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
                                      i++) {
                                     iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
+                                    Log.d(TAG, "   add STUN server " + iceServer.getUrl());
+
                                     if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
                                             .getCredential())) {
                                         iceServers.add(new PeerConnection.IceServer(iceServer.getUrl()));
@@ -1073,6 +1080,8 @@ public class CallController extends BaseController {
                                      i++) {
                                     iceServer = signalingSettingsOverall.getOcs().getSettings().getTurnServers().get(i);
                                     for (int j = 0; j < iceServer.getUrls().size(); j++) {
+                                        Log.d(TAG, "   add TURN server " + iceServer.getUrls().get(j));
+
                                         if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
                                                 .getCredential())) {
                                             iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
@@ -1150,11 +1159,17 @@ public class CallController extends BaseController {
     }
 
     private void joinRoomAndCall() {
+        Log.d(TAG, "joinRoomAndCall");
+        Log.d(TAG, "   baseUrl= " + baseUrl);
+        Log.d(TAG, "   roomToken= " + roomToken);
+
+        String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
+        Log.d(TAG, "   url" + url);
+
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
         if (TextUtils.isEmpty(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
-                    roomToken), conversationPassword)
+            ncApi.joinRoom(credentials, url, conversationPassword)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -1167,6 +1182,8 @@ public class CallController extends BaseController {
                         @Override
                         public void onNext(RoomOverall roomOverall) {
                             callSession = roomOverall.getOcs().getData().getSessionId();
+                            Log.d(TAG, "   new callSession by joinRoom= " + callSession);
+
                             ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                             ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                             ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
@@ -1176,12 +1193,12 @@ public class CallController extends BaseController {
 
                         @Override
                         public void onError(Throwable e) {
-
+                            Log.e(TAG, "joinRoom onError", e);
                         }
 
                         @Override
                         public void onComplete() {
-
+                            Log.d(TAG, "joinRoom onComplete");
                         }
                     });
         } else {
@@ -1191,6 +1208,7 @@ public class CallController extends BaseController {
     }
 
     private void callOrJoinRoomViaWebSocket() {
+        Log.d(TAG, "callOrJoinRoomViaWebSocket");
         if (hasExternalSignalingServer) {
             webSocketClient.joinRoomWithRoomTokenAndSession(roomToken, callSession);
         } else {
@@ -1199,6 +1217,7 @@ public class CallController extends BaseController {
     }
 
     private void performCall() {
+        Log.d(TAG, "performCall");
         Integer inCallFlag;
         if (isVoiceOnlyCall) {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO.getValue();
@@ -1321,6 +1340,7 @@ public class CallController extends BaseController {
     }
 
     private void setupAndInitiateWebSocketsConnection() {
+        Log.d(TAG, "setupAndInitiateWebSocketsConnection");
         if (webSocketConnectionHelper == null) {
             webSocketConnectionHelper = new WebSocketConnectionHelper();
         }
@@ -1349,6 +1369,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
+        Log.d(TAG, "onMessageEvent-WebSocketCommunicationEvent");
+
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
                 if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
@@ -1476,6 +1498,8 @@ public class CallController extends BaseController {
     }
 
     private void hangup(boolean shutDownView) {
+        Log.d(TAG, "hangup");
+
         stopCallingSound();
         dispose(null);
 
@@ -1523,6 +1547,9 @@ public class CallController extends BaseController {
             }
         }
 
+        Log.d(TAG, "magicPeerConnectionWrapperList has " + magicPeerConnectionWrapperList.size() + " sessions that " +
+                "will be closed");
+
         for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
             endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId(), false);
         }
@@ -1531,6 +1558,7 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
+        Log.d(TAG, "hangupNetworkCalls (leaveCall)");
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1566,7 +1594,17 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
+        Log.d(TAG, "leaveRoom");
+        Log.d(TAG, "   baseUrl= " + baseUrl);
+        Log.d(TAG, "   roomToken= " + roomToken);
+        if(roomToken.isEmpty()){
+            Log.e(TAG,"roomToken was empty!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1");
+        }
+
+        String url = ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken);
+        Log.d(TAG, "   url" + url);
+
+        ncApi.leaveRoom(credentials, url)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1584,12 +1622,12 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e(TAG, "leaveRoom onError", e);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        Log.e(TAG, "leaveRoom onComplete");
                     }
                 });
     }
@@ -1748,6 +1786,8 @@ public class CallController extends BaseController {
     }
 
     private void endPeerConnection(String sessionId, boolean justScreen) {
+        Log.d(TAG, "endPeerConnection for sessionId: " + sessionId);
+
         List<MagicPeerConnectionWrapper> magicPeerConnectionWrappers;
         MagicPeerConnectionWrapper magicPeerConnectionWrapper;
         if (!(magicPeerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()
@@ -1784,6 +1824,7 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
+        Log.d(TAG, "onMessageEvent-ConfigurationChangeEvent");
         powerManagerUtils.setOrientation(Objects.requireNonNull(getResources()).getConfiguration().orientation);
 
 
@@ -1814,6 +1855,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
+        Log.d(TAG, "onMessageEvent-PeerConnectionEvent");
+
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
                 .PEER_CLOSED)) {
             endPeerConnection(peerConnectionEvent.getSessionId(), peerConnectionEvent.getVideoStreamType().equals("screen"));
@@ -1893,6 +1936,8 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
+        Log.d(TAG, "onMessageEvent-MediaStreamEvent");
+
         if (mediaStreamEvent.getMediaStream() != null) {
             setupVideoStreamForLayout(mediaStreamEvent.getMediaStream(), mediaStreamEvent.getSession(),
                     mediaStreamEvent.getMediaStream().videoTracks != null
@@ -1904,6 +1949,10 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(SessionDescriptionSendEvent sessionDescriptionSend) throws IOException {
+        Log.d(TAG, "onMessageEvent-SessionDescriptionSendEvent.");
+        Log.d(TAG, "  sessionDescriptionSend.getPeerId(): " + sessionDescriptionSend.getPeerId());
+        Log.d(TAG, "  callSession: " + callSession);
+
         NCMessageWrapper ncMessageWrapper = new NCMessageWrapper();
         ncMessageWrapper.setEv("message");
         ncMessageWrapper.setSessionId(callSession);
@@ -2450,6 +2499,7 @@ public class CallController extends BaseController {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
+        Log.d(TAG, "onMessageEvent-NetworkEvent");
         if (networkEvent.getNetworkConnectionEvent().equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED)) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
