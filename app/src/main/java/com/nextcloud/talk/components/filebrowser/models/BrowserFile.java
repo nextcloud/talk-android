@@ -51,6 +51,8 @@ public class BrowserFile {
     public boolean hasPreview;
     public boolean favorite;
     public boolean encrypted;
+    public String permissions;
+    private boolean isAllowedToReShare = false;
 
     public static BrowserFile getModelFromResponse(Response response, String remotePath) {
         BrowserFile browserFile = new BrowserFile();
@@ -95,6 +97,14 @@ public class BrowserFile {
             if (property instanceof NCEncrypted) {
                 browserFile.setEncrypted(((NCEncrypted) property).isNcEncrypted());
             }
+
+            if (property instanceof NCPermission) {
+                browserFile.setPermissions(((NCPermission) property).getNcPermission());
+            }
+        }
+
+        if(browserFile.getPermissions().contains("R")){
+            browserFile.isAllowedToReShare = true;
         }
 
         if (TextUtils.isEmpty(browserFile.getMimeType()) && !browserFile.isFile()) {
