@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,15 +104,19 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ViewHolder holder, int position, List<Object> payloads) {
         holder.fileIconImageView.setController(null);
-
-        if (browserFile.isEncrypted()) {
-            holder.fileEncryptedImageView.setVisibility(View.VISIBLE);
+        if (!browserFile.isAllowedToReShare() || browserFile.isEncrypted()) {
             holder.itemView.setEnabled(false);
             holder.itemView.setAlpha(0.38f);
         } else {
-            holder.fileEncryptedImageView.setVisibility(View.GONE);
             holder.itemView.setEnabled(true);
             holder.itemView.setAlpha(1.0f);
+        }
+
+        if (browserFile.isEncrypted()) {
+            holder.fileEncryptedImageView.setVisibility(View.VISIBLE);
+
+        } else {
+            holder.fileEncryptedImageView.setVisibility(View.GONE);
         }
 
         if (browserFile.isFavorite()) {
@@ -146,7 +152,11 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
             holder.selectFileCheckbox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (((CheckBox) v).isChecked() != isSelected()) {
+                    if (!browserFile.isAllowedToReShare()) {
+                        ((CheckBox) v).setChecked(false);
+                        Toast.makeText(context, context.getResources().getString(R.string.nc_file_browser_reshare_forbidden),
+                                Toast.LENGTH_LONG).show();
+                    } else if (((CheckBox) v).isChecked() != isSelected()) {
                         setSelected(((CheckBox) v).isChecked());
                         selectionInterface.toggleBrowserItemSelection(browserFile.getPath());
                     }

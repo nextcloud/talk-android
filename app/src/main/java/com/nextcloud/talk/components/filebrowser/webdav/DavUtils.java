@@ -68,7 +68,7 @@ public class DavUtils {
         propSet.add(GetETag.NAME);
         propSet.add(ResourceType.NAME);
 
-        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_NAME_PERMISSIONS));
+        propSet.add(NCPermission.NAME);
         propSet.add(OCId.NAME);
         propSet.add(OCSize.NAME);
         propSet.add(OCFavorite.NAME);
@@ -97,6 +97,7 @@ public class DavUtils {
             reflectionMap.put(NCEncrypted.NAME, new NCEncrypted.Factory());
             reflectionMap.put(OCFavorite.NAME, new OCFavorite.Factory());
             reflectionMap.put(OCSize.NAME, new OCSize.Factory());
+            reflectionMap.put(NCPermission.NAME, new NCPermission.Factory());
 
             factories.set(propertyRegistry, reflectionMap);
         } catch (NoSuchFieldException e) {

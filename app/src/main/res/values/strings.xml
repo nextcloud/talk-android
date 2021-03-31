@@ -304,6 +304,7 @@
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_file_browser_refresh">Refresh</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">You are not allowed to re-share this file</string>
 
     <!-- Lobby -->
 
