@@ -167,6 +167,10 @@
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_permissions_settings">Ayarları aç</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s sesli görüşme</string>
+    <string name="nc_call_video">%s görüntülü görüşme</string>
+    <string name="nc_call_unknown">%s çağrı</string>
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_connecting_call">Bağlantı kuruluyor…</string>
@@ -327,4 +331,7 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefon numarası geçersiz</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefon numarası ayarlandı</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>
+    <string name="nc_phone_book_integration_chat_via">%s ile sohbet</string>
+    <string name="nc_phone_book_integration_account_not_found">Hesap bulunamadı</string>
+
     </resources>

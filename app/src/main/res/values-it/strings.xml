@@ -25,6 +25,7 @@
     <string name="nc_yes">Sì</string>
     <string name="nc_no">No</string>
     <string name="nc_common_skip">Salta</string>
+    <string name="nc_common_set">Imposta</string>
     <string name="nc_common_error_sorry">Spiacenti, qualcosa non ha funzionato!</string>
 
     <!-- Bottom Navigation -->
@@ -166,6 +167,10 @@
     <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s chiamata vocale</string>
+    <string name="nc_call_video">%s videochiamata</string>
+    <string name="nc_call_unknown">%s chiamata</string>
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_ringing">STA SQUILLANDO</string>
     <string name="nc_connecting_call">Connessione in corso…</string>
@@ -320,5 +325,13 @@
 
     <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nella rubrica</string>
     <string name="nc_settings_phone_book_integration_title">Integrazione della rubrica</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numero di telefono</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puoi impostare il tuo numero di telefono in
+        modo che gli altri utenti ti trovino</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Numero di telefono non valido</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numero di telefono impostato correttamente</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione della rubrica a causa di autorizzazioni mancanti</string>
+    <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
+    <string name="nc_phone_book_integration_account_not_found">Account non trovato</string>
+
     </resources>
