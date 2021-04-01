@@ -326,4 +326,7 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonska številka je uspešno nastavljena</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
+    <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
+    <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
+
     </resources>

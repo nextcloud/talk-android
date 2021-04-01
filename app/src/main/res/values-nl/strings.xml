@@ -168,6 +168,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s gesprek</string>
+    <string name="nc_call_video">%s videogesprek</string>
+    <string name="nc_call_unknown">%s oproep</string>
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_connecting_call">Verbinden...</string>
@@ -329,4 +333,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ongeldig telefoonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefoonnummer succesvol ingesteld</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>
+    <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
+    <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
+
     </resources>
