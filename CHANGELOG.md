@@ -10,6 +10,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 - open files inside app (jpg, .png, .gif, .mp3, .mp4, .mov, .wav, .txt, .md)
     - other data types are opened with external apps if they are able to handle it
 - edit profile information and privacy settings
+- add grid view for calls, make own video movable
 
 ### Changed
 - improve conversation list design and dark/light theming (@AndyScherzinger)
