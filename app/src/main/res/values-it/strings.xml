@@ -331,7 +331,7 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Numero di telefono non valido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numero di telefono impostato correttamente</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione della rubrica a causa di autorizzazioni mancanti</string>
-    <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
+    <string name="nc_phone_book_integration_chat_via">Chat tramite %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account non trovato</string>
 
     </resources>
