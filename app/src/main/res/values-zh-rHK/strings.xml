@@ -174,8 +174,8 @@
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_connecting_call">連線中</string>
-    <string name="nc_calling">連接中。。。</string>
-    <string name="nc_incoming_call">來電中。。。。</string>
+    <string name="nc_calling">連接中...</string>
+    <string name="nc_incoming_call">來電中...。</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_public_call">新的公開對話</string>
     <string name="nc_public_call_explanation">公開對話讓您可通過特製的連結
@@ -183,7 +183,7 @@
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_offline">當前離線，請檢查您的連接</string>
-    <string name="nc_leaving_call">離開通話。。。</string>
+    <string name="nc_leaving_call">離開通話...</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
