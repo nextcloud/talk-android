@@ -21,9 +21,7 @@
 package com.nextcloud.talk.jobs
 
 import android.content.Context
-import android.database.Cursor
 import android.net.Uri
-import android.provider.OpenableColumns
 import android.util.Log
 import androidx.work.*
 import autodagger.AutoInjector
@@ -45,6 +43,8 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Response
+import java.io.File
+import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.*
 import javax.inject.Inject
@@ -80,9 +80,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
             for (index in sourcefiles.indices) {
                 val sourcefileUri = Uri.parse(sourcefiles[index])
-                var filename = UriUtils.getFileName(sourcefileUri, context)
+                val filename = UriUtils.getFileName(sourcefileUri, context)
                 val requestBody = createRequestBody(sourcefileUri)
-                uploadFile(currentUser, ncTargetpath, filename, roomToken, requestBody)
+                uploadFile(currentUser, ncTargetpath, filename, roomToken, requestBody, sourcefileUri)
             }
         } catch (e: IllegalStateException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -107,7 +107,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return requestBody
     }
 
-    private fun uploadFile(currentUser: UserEntity, ncTargetpath: String?, filename: String?, roomToken: String?, requestBody: RequestBody?) {
+    private fun uploadFile(currentUser: UserEntity, ncTargetpath: String?, filename: String, roomToken: String?,
+                           requestBody: RequestBody?, sourcefileUri: Uri) {
         ncApi.uploadFile(
                 ApiUtils.getCredentials(currentUser.username, currentUser.token),
                 ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetpath, filename),
@@ -128,8 +129,21 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
                     override fun onComplete() {
                         shareFile(roomToken, currentUser, ncTargetpath, filename)
+                        copyFileToCache(sourcefileUri, filename)
                     }
                 })
+    }
+
+    private fun copyFileToCache(sourceFileUri: Uri, filename: String) {
+        val cachedFile = File(context.cacheDir, filename)
+        val outputStream = FileOutputStream(cachedFile)
+        val inputStream: InputStream = context.contentResolver.openInputStream(sourceFileUri)!!
+
+        inputStream.use { input ->
+            outputStream.use { output ->
+                input.copyTo(output)
+            }
+        }
     }
 
     private fun shareFile(roomToken: String?, currentUser: UserEntity, ncTargetpath: String?, filename: String?) {
