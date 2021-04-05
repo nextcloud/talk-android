@@ -42,7 +42,7 @@ object UriUtils {
             }
         }
         if (filename == null) {
-            Log.e(UploadAndShareFilesWorker.TAG, "failed to get DISPLAY_NAME from uri. using fallback.")
+            Log.e("UriUtils", "failed to get DISPLAY_NAME from uri. using fallback.")
             filename = uri.path
             val lastIndexOfSlash = filename!!.lastIndexOf('/')
             if (lastIndexOfSlash != -1) {

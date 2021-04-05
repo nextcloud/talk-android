@@ -2,7 +2,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Marcel Hibbe
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -40,17 +42,28 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@id/image"
+        <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="fitCenter"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true"
             app:layout_alignSelf="flex_start"
-            app:actualImageScaleType="fitCenter"
-            tools:src="@tools:sample/backgrounds/scenic"/>
+            android:adjustViewBounds="true">
+
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@id/image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="fitCenter"
+                tools:src="@drawable/ic_call_black_24dp" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </FrameLayout>
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/messageText"
@@ -63,7 +76,8 @@
             android:textSize="12sp"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
-            app:layout_wrapBefore="true" />
+            app:layout_wrapBefore="true"
+            tools:text="Message" />
 
         <TextView
             android:id="@id/messageTime"
@@ -72,7 +86,8 @@
             android:layout_alignParentEnd="true"
             android:layout_marginStart="8dp"
             android:textColor="@color/warm_grey_four"
-            app:layout_alignSelf="center" />
+            app:layout_alignSelf="center"
+            tools:text="12:34:56" />
     </com.google.android.flexbox.FlexboxLayout>
 
 </RelativeLayout>

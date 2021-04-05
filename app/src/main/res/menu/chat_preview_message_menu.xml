@@ -1,8 +1,8 @@
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
-  ~ @author Mario Danic
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ @author Tobias Kaminski
+  ~ Copyright (C) 2021 Tobias Kaminski <tobias@kaminsky.me>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -18,11 +18,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<paths>
-    <files-path
-        name="files"
-        path="/" />
-    <cache-path
-        name="cachedFiles"
-        path="/" />
-</paths>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/openInFiles"
+        android:title="@string/open_in_files_app" />
+</menu>

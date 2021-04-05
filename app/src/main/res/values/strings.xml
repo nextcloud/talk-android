@@ -332,6 +332,10 @@
     <string name="nc_delete_message">Delete</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
 
+    <string name="share">Share</string>
+    <string name="send_to">Send to</string>
+    <string name="open_in_files_app">Open in Files app</string>
+
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload local file</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
@@ -381,7 +385,7 @@
     <string name="scope_published_title">Published</string>
     <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
     <string name="scope_toggle">Scope toggle</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Search in %s</string>
 
