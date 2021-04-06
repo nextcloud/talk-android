@@ -33,7 +33,7 @@ import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
 import com.nextcloud.talk.controllers.ChatController
 
 
-class AttachmentDialog(val activity: Activity, var chatController :ChatController) : BottomSheetDialog(activity) {
+class AttachmentDialog(val activity: Activity, var chatController: ChatController) : BottomSheetDialog(activity) {
 
     @BindView(R.id.txt_attach_file_from_local)
     @JvmField
@@ -49,10 +49,12 @@ class AttachmentDialog(val activity: Activity, var chatController :ChatControlle
         super.onCreate(savedInstanceState)
         val view = layoutInflater.inflate(R.layout.dialog_attachment, null)
         setContentView(view)
-
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-
         unbinder = ButterKnife.bind(this, view)
+
+        attachFromCloud?.text = chatController.resources?.let {
+            String.format(it.getString(R.string.nc_upload_from_cloud), it.getString(R.string.nc_server_product_name))
+        }
 
         attachFromLocal?.setOnClickListener {
             chatController.sendSelectLocalFileIntent()
