@@ -207,4 +207,19 @@ public interface User extends Parcelable, Persistable, Serializable {
         }
         return "/Talk";
     }
+
+    default String getServerName() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                if (capabilities != null && capabilities.getThemingCapability() != null) {
+                    return capabilities.getThemingCapability().getName();
+                }
+            } catch (IOException e) {
+                Log.e("User.java", "Failed to get server name", e);
+            }
+        }
+        return "";
+    }
 }

@@ -52,8 +52,12 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         unbinder = ButterKnife.bind(this, view)
 
+        var serverName = chatController.conversationUser?.serverName
         attachFromCloud?.text = chatController.resources?.let {
-            String.format(it.getString(R.string.nc_upload_from_cloud), it.getString(R.string.nc_server_product_name))
+            if(serverName.isNullOrEmpty()){
+                serverName = it.getString(R.string.nc_server_product_name)
+            }
+            String.format(it.getString(R.string.nc_upload_from_cloud), serverName)
         }
 
         attachFromLocal?.setOnClickListener {
