@@ -29,6 +29,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.BitmapDrawable;
@@ -67,6 +68,7 @@ import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
 import androidx.viewpager.widget.ViewPager;
@@ -108,6 +110,9 @@ import java.util.regex.Pattern;
 public class DisplayUtils {
 
     private static final String TAG = "DisplayUtils";
+
+    private static final int INDEX_LUMINATION = 2;
+    private static final double MAX_LIGHTNESS = 0.92;
 
     public static void setClickableString(String string, String url, TextView textView) {
         SpannableString spannableString = new SpannableString(string);
@@ -403,32 +408,57 @@ public class DisplayUtils {
         return drawable;
     }
 
-    public static void applyColorToNavigationBar(Window window, @ColorInt int color) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    /**
+     * Sets the color of the status bar to {@code color}.
+     *
+     * @param activity activity
+     * @param color    the color
+     */
+    public static void applyColorToStatusBar(Activity activity, @ColorInt int color) {
+        Window window = activity.getWindow();
+        boolean isLightTheme = lightTheme(color);
+        if (window != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 View decor = window.getDecorView();
-                if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-                    int systemUiFlags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-
+                if (isLightTheme) {
+                    int systemUiFlagLightStatusBar;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        systemUiFlags = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR |
-                        WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
+                        systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                    } else {
+                        systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                     }
-                    decor.setSystemUiVisibility(systemUiFlags);
+                    decor.setSystemUiVisibility(systemUiFlagLightStatusBar);
                 } else {
                     decor.setSystemUiVisibility(0);
                 }
-                window.setNavigationBarColor(color);
+                window.setStatusBarColor(color);
+            } else if (isLightTheme) {
+                window.setStatusBarColor(Color.BLACK);
             }
         }
     }
 
-    public static void applyColorToStatusBar(Activity activity, @ColorInt int color) {
-        Window window = activity.getWindow();
-        if (window != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(color);
-        }
+    /**
+     * Tests if light color is set
+     *
+     * @param color the color
+     * @return true if primaryColor is lighter than MAX_LIGHTNESS
+     */
+    public static boolean lightTheme(int color) {
+        float[] hsl = colorToHSL(color);
+
+        return hsl[INDEX_LUMINATION] >= MAX_LIGHTNESS;
+    }
+
+    private static float[] colorToHSL(int color) {
+        float[] hsl = new float[3];
+        ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl);
+
+        return hsl;
+    }
+
+    public static void applyColorToNavigationBar(Window window, @ColorInt int color) {
+        window.setNavigationBarColor(color);
     }
 
     /**

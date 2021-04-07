@@ -36,6 +36,7 @@
         <item name="actionBarPopupTheme">@style/appActionBarPopupMenu</item>
         <item name="searchViewStyle">@style/SearchView</item>
         <item name="textInputStyle">@style/TextInputLayout</item>
+        <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
 
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">

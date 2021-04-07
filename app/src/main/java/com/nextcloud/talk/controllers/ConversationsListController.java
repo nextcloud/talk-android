@@ -332,7 +332,7 @@ public class ConversationsListController extends BaseController implements Searc
                 if (getResources() != null) {
                     DisplayUtils.applyColorToStatusBar(
                             activity,
-                            ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
+                            ResourcesCompat.getColor(getResources(), R.color.appbar, null)
                     );
                 }
             });
@@ -344,7 +344,7 @@ public class ConversationsListController extends BaseController implements Searc
                 if (activity != null && getResources() != null) {
                     DisplayUtils.applyColorToStatusBar(
                             activity,
-                            ResourcesCompat.getColor(getResources(), R.color.appbar, null)
+                            ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
                     );
                 }
             } else {
@@ -370,6 +370,12 @@ public class ConversationsListController extends BaseController implements Searc
                     );
                     activity.toolbar.setVisibility(View.GONE);
                     activity.searchCardView.setVisibility(View.VISIBLE);
+                    if (getResources() != null) {
+                        DisplayUtils.applyColorToStatusBar(
+                                activity,
+                                ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
+                        );
+                    }
                 }
                 SmoothScrollLinearLayoutManager layoutManager =
                         (SmoothScrollLinearLayoutManager) recyclerView.getLayoutManager();
