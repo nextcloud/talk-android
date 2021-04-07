@@ -245,8 +245,10 @@ public class ProfileController extends BaseController {
 
                             @Override
                             public void onNext(@NotNull GenericOverall genericOverall) {
-                                DisplayUtils.loadAvatarImage(currentUser,
-                                        getActivity().findViewById(R.id.avatar_image));
+                                DisplayUtils.loadAvatarImage(
+                                        currentUser,
+                                        getActivity().findViewById(R.id.avatar_image),
+                                        true);
                             }
 
                             @Override
@@ -300,7 +302,7 @@ public class ProfileController extends BaseController {
                 .findViewById(R.id.userinfo_baseurl))
                 .setText(Uri.parse(currentUser.getBaseUrl()).getHost());
 
-        DisplayUtils.loadAvatarImage(currentUser, getActivity().findViewById(R.id.avatar_image));
+        DisplayUtils.loadAvatarImage(currentUser, getActivity().findViewById(R.id.avatar_image), false);
 
         if (!TextUtils.isEmpty(userInfo.getDisplayName())) {
             ((TextView) getActivity().findViewById(R.id.userinfo_fullName)).setText(userInfo.getDisplayName());
@@ -591,7 +593,7 @@ public class ProfileController extends BaseController {
 
                     @Override
                     public void onNext(@NotNull GenericOverall genericOverall) {
-                        DisplayUtils.loadAvatarImage(currentUser, getActivity().findViewById(R.id.avatar_image));
+                        DisplayUtils.loadAvatarImage(currentUser, getActivity().findViewById(R.id.avatar_image), true);
                     }
 
                     @Override
