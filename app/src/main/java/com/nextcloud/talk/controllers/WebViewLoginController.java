@@ -37,6 +37,7 @@ import android.webkit.*;
 import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
@@ -50,6 +51,7 @@ import com.nextcloud.talk.events.CertificateEvent;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.models.LoginData;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -453,6 +455,16 @@ public class WebViewLoginController extends BaseController {
     }
 
     @Override
+    protected void onAttach(@NonNull View view) {
+        super.onAttach(view);
+
+        if (getActivity() != null && getResources() != null) {
+            DisplayUtils.applyColorToStatusBar(getActivity(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+            DisplayUtils.applyColorToNavigationBar(getActivity().getWindow(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         dispose();
@@ -464,5 +476,10 @@ public class WebViewLoginController extends BaseController {
         if (getActivity() != null) {
             getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
         }
+    }
+
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.EMPTY;
     }
 }
