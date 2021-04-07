@@ -533,7 +533,7 @@ public class DisplayUtils {
             return "";
         }
     }
-    
+
     public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
         String avatarId;
         if (!TextUtils.isEmpty(user.getUserId())) {
@@ -542,9 +542,10 @@ public class DisplayUtils {
             avatarId = user.getUsername();
         }
 
+        String avatarString = ApiUtils.getUrlForAvatarWithName(user.getBaseUrl(), avatarId, R.dimen.avatar_size_big);
+
         // clear cache
         if (deleteCache) {
-            String avatarString = ApiUtils.getUrlForAvatarWithName(user.getBaseUrl(), avatarId, R.dimen.avatar_size_big);
             Uri avatarUri = Uri.parse(avatarString);
 
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
