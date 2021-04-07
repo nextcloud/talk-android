@@ -107,6 +107,8 @@ import retrofit2.Retrofit;
 @AutoInjector(NextcloudTalkApplication.class)
 public class NotificationWorker extends Worker {
     public static final String TAG = "NotificationWorker";
+    private static final String CHAT = "chat";
+    private static final String ROOM = "room";
 
     @Inject
     AppPreferences appPreferences;
@@ -274,7 +276,7 @@ public class NotificationWorker extends Worker {
 
         smallIcon = R.drawable.ic_logo;
 
-        if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+        if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
             category = Notification.CATEGORY_MESSAGE;
         } else {
             category = Notification.CATEGORY_CALL;
@@ -289,7 +291,7 @@ public class NotificationWorker extends Worker {
                 break;
             default:
                 // assuming one2one
-                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+                if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_comment);
                 } else {
                     largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_call_black_24dp);
@@ -339,7 +341,7 @@ public class NotificationWorker extends Worker {
                     Long.toString(crc32.getValue()),
                     groupName);*/
 
-            if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+            if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                         (AudioAttributes.CONTENT_TYPE_SONIFICATION);
                 audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
@@ -517,7 +519,7 @@ public class NotificationWorker extends Worker {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                         (AudioAttributes.CONTENT_TYPE_SONIFICATION);
 
-                if (decryptedPushMessage.getType().equals("chat") || decryptedPushMessage.getType().equals("room")) {
+                if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
                 } else {
                     audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST);

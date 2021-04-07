@@ -318,7 +318,6 @@ public class DisplayUtils {
         return chip;
     }
 
-
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
                                                             String id, String label, String type,
                                                             UserEntity conversationUser,
@@ -355,7 +354,6 @@ public class DisplayUtils {
         }
 
         return spannableString;
-
     }
 
     public static Spannable searchAndColor(Spannable text, String searchText, @ColorInt int color) {
@@ -469,26 +467,8 @@ public class DisplayUtils {
      */
     public static void themeSearchView(SearchView searchView, Context context) {
         // hacky as no default way is provided
-        int fontColor = context.getResources().getColor(R.color.fontAppbar);
         SearchView.SearchAutoComplete editText = searchView.findViewById(R.id.search_src_text);
         editText.setTextSize(16);
         editText.setHintTextColor(context.getResources().getColor(R.color.fontSecondaryAppbar));
-    }
-
-    public static boolean isDarkModeActive(Context context, AppPreferences prefs) {
-        if (prefs.getTheme().equals("night_yes")) {
-            return true;
-        }
-
-        int currentNightMode =
-                context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        switch (currentNightMode) {
-            case Configuration.UI_MODE_NIGHT_NO:
-                return false;
-            case Configuration.UI_MODE_NIGHT_YES:
-                return true;
-            default:
-                return false;
-        }
     }
 }
