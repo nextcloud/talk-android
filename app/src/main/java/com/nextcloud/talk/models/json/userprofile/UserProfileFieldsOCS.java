@@ -29,7 +29,9 @@ import org.parceler.Parcel;
 import java.util.ArrayList;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Parcel
 @Data
 @JsonObject
