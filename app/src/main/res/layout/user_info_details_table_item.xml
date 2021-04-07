@@ -38,7 +38,7 @@
 
     <EditText
         android:id="@+id/user_info_edit_text"
-        android:layout_width="259dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/user_info_icon_horizontal_margin"
         android:layout_marginEnd="@dimen/standard_margin"
@@ -51,8 +51,8 @@
         app:layout_constraintEnd_toStartOf="@id/scope"
         app:layout_constraintStart_toEndOf="@id/icon"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="+49 123 456 789 12"
-        tools:ignore="LabelFor" />
+        tools:ignore="LabelFor"
+        tools:text="+49 123 456 789 12" />
 
     <ImageView
         android:id="@+id/scope"
