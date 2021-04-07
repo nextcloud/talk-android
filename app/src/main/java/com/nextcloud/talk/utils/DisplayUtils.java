@@ -534,7 +534,7 @@ public class DisplayUtils {
         }
     }
     
-    public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView) {
+    public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
         String avatarId;
         if (!TextUtils.isEmpty(user.getUserId())) {
             avatarId = user.getUserId();
@@ -542,11 +542,21 @@ public class DisplayUtils {
             avatarId = user.getUsername();
         }
 
+        // clear cache
+        if (deleteCache) {
+            String avatarString = ApiUtils.getUrlForAvatarWithName(user.getBaseUrl(), avatarId, R.dimen.avatar_size_big);
+            Uri avatarUri = Uri.parse(avatarString);
+
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            imagePipeline.evictFromMemoryCache(avatarUri);
+            imagePipeline.evictFromDiskCache(avatarUri);
+            imagePipeline.evictFromCache(avatarUri);
+        }
+
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(avatarImageView.getController())
                 .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(user.getBaseUrl(),
-                        avatarId, R.dimen.avatar_size_big), null))
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString, null))
                 .build();
         avatarImageView.setController(draweeController);
     }
