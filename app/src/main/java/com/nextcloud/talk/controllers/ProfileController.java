@@ -523,6 +523,7 @@ public class ProfileController extends BaseController {
         });
     }
 
+    @SuppressWarnings({"IOI_USE_OF_FILE_STREAM_CONSTRUCTORS"}) // only possible with API26
     private void saveBitmapAndPassToImagePicker(Bitmap bitmap) {
         File file = null;
         try {
