@@ -28,13 +28,6 @@
 	      android:icon="@drawable/ic_search_white_24dp"
 	      app:showAsAction="collapseActionView|always"
 	      android:animateLayoutChanges="true"
-	      app:actionViewClass="androidx.appcompat.widget.SearchView"
-        />
-
-	<item android:id="@+id/action_settings"
-		android:title="@string/nc_settings"
-		android:icon="@drawable/ic_settings_white_24dp"
-		app:showAsAction="ifRoom"/>
-
+	      app:actionViewClass="androidx.appcompat.widget.SearchView" />
 
 </menu>

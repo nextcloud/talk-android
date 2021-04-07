@@ -4,7 +4,7 @@
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -26,15 +26,16 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorPrimary</item>
-        <item name="android:windowBackground">@color/bg_default</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
         <item name="android:textColor">@color/nc_incoming_text_default</item>
         <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
-        <item name="actionBarStyle">@style/appActionBarStyle</item>
+        <item name="actionBarPopupTheme">@style/appActionBarPopupMenu</item>
+        <item name="searchViewStyle">@style/SearchView</item>
+        <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
 
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
@@ -54,29 +55,38 @@
         <item name="android:textColor">@color/textColorOnPrimaryBackground</item>
     </style>
 
-    <style name="ChipMentionTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">@color/colorPrimary</item>
-    </style>
-
     <style name="ChipUnreadMessagesTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="appActionBarStyle" parent="@style/Widget.MaterialComponents.ActionBar.Solid">
-        <item name="android:colorPrimary">@color/fg_inverse</item>
-        <item name="android:textColor">@color/fg_inverse</item>
-    </style>
-
-    <style name="Toolbar_TextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:colorPrimary">@color/fg_inverse</item>
-        <item name="android:textColor">@color/fg_inverse</item>
-    </style>
-
     <style name="appActionBarPopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:colorPrimary">@color/fg_inverse</item>
-        <item name="android:background">@color/bg_alt</item>
-        <item name="android:textColor">@color/nc_incoming_text_default</item>
+        <item name="android:textColorSecondary">@color/fontAppbar</item>
+        <item name="android:background">@color/appbar</item>
+        <item name="android:textColor">@color/conversation_item_header</item>
+        <item name="iconTint">@color/fontAppbar</item>
     </style>
 
+    <style name="SearchView" parent="Widget.AppCompat.SearchView">
+        <!-- Close button icon -->
+        <item name="closeIcon">@drawable/ic_close_search</item>
+        <!-- Search button icon -->
+        <item name="searchIcon">@drawable/ic_search_grey</item>
+        <!-- Layout for query suggestion rows // unused for now, staying with the standard layout -->
+        <!--<item name="suggestionRowLayout">...</item>-->
+        <item name="submitBackground">@color/appbar</item>
+        <item name="queryBackground">@color/appbar</item>
+        <item name="searchHintIcon">@null</item>
+    </style>
+
+    <style name="Widget.AppTheme.Button.IconButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="android:minWidth">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">0dp</item>
+    </style>
 </resources>

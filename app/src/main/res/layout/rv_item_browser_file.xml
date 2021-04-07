@@ -43,7 +43,7 @@
         android:layout_below="@id/file_icon"
         android:layout_alignEnd="@id/file_icon"
         android:src="@drawable/ic_star_black_24dp"
-        android:tint="@color/grey_600" />
+        app:tint="@color/grey_600" />
 
     <ImageView
         android:id="@+id/fileEncryptedImageView"

@@ -27,6 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:fitsSystemWindows="true"
         tools:context=".activities.MagicCallActivity">
 
     <LinearLayout
@@ -71,7 +72,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:text="@string/nc_voice_call"/>
+                    tools:text="Voice Call"/>
 
                 <TextView
                     android:id="@+id/callConversationNameTextView"
@@ -101,7 +102,7 @@
                     android:visibility="invisible"
                     tools:visibility="visible"/>
 
-                <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <com.facebook.drawee.view.SimpleDraweeView
                     android:id="@+id/call_control_switch_camera"
                     android:layout_width="40dp"
                     android:layout_height="40dp"

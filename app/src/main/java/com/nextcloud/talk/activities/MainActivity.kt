@@ -38,12 +38,20 @@ import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.textview.MaterialTextView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.*
+import com.nextcloud.talk.controllers.CallNotificationController
+import com.nextcloud.talk.controllers.ConversationsListController
+import com.nextcloud.talk.controllers.LockedController
+import com.nextcloud.talk.controllers.ServerSelectionController
+import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.utils.ApiUtils
@@ -69,8 +77,16 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
 
+    @BindView(R.id.appBar)
+    lateinit var appBar: AppBarLayout
     @BindView(R.id.toolbar)
     lateinit var toolbar: MaterialToolbar
+    @BindView(R.id.home_toolbar)
+    lateinit var searchCardView: MaterialCardView
+    @BindView(R.id.search_text)
+    lateinit var searchInputText: MaterialTextView
+    @BindView(R.id.switch_account_button)
+    lateinit var settingsButton: MaterialButton
     @BindView(R.id.controller_container)
     lateinit var container: ViewGroup
 

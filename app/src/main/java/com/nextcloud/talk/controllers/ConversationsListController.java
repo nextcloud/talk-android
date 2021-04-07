@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
- * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
+ * Copyright (C) 2017-2020 Mario Danic (mario@lovelyhq.com)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +22,7 @@
 
 package com.nextcloud.talk.controllers;
 
+import android.animation.AnimatorInflater;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -27,8 +30,10 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +43,19 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+import androidx.core.view.MenuItemCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -52,10 +70,12 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
+import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.adapters.items.ConversationItem;
 import com.nextcloud.talk.api.NcApi;
@@ -95,17 +115,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SearchView;
-import androidx.core.graphics.drawable.RoundedBitmapDrawable;
-import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
-import androidx.core.view.MenuItemCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import eu.davidea.fastscroller.FastScroller;
@@ -214,9 +223,16 @@ public class ConversationsListController extends BaseController implements Searc
         prepareViews();
     }
 
-    private void loadUserAvatar(MenuItem menuItem) {
+    private void loadUserAvatar(MaterialButton button) {
         if (getActivity() != null) {
-            int avatarSize = (int) DisplayUtils.convertDpToPixel(menuItem.getIcon().getIntrinsicHeight(), getActivity());
+            int avatarSize;
+
+            if (getResources() != null) {
+                avatarSize = getResources().getDimensionPixelSize(R.dimen.avatar_size_app_bar);
+            } else {
+                avatarSize = (int) DisplayUtils.convertDpToPixel(30.0f, context);
+            }
+
             ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
                     currentUser.getUserId(), avatarSize), currentUser);
 
@@ -229,13 +245,15 @@ public class ConversationsListController extends BaseController implements Searc
                         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                         roundedBitmapDrawable.setCircular(true);
                         roundedBitmapDrawable.setAntiAlias(true);
-                        menuItem.setIcon(roundedBitmapDrawable);
+                        button.setIcon(roundedBitmapDrawable);
                     }
                 }
 
                 @Override
                 protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                    menuItem.setIcon(R.drawable.ic_settings_white_24dp);
+                    if (getResources() != null) {
+                        button.setIcon(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_settings_white_24dp, null));
+                    }
                 }
             }, UiThreadImmediateExecutorService.getInstance());
         }
@@ -251,6 +269,9 @@ public class ConversationsListController extends BaseController implements Searc
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
+            if (getActivity() != null && getActivity() instanceof MainActivity) {
+                loadUserAvatar(((MainActivity) getActivity()).settingsButton);
+            }
             fetchData(false);
         }
     }
@@ -266,6 +287,7 @@ public class ConversationsListController extends BaseController implements Searc
             SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
             if (searchItem != null) {
                 searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+                DisplayUtils.themeSearchView(searchView, context);
                 searchView.setMaxWidth(Integer.MAX_VALUE);
                 searchView.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER);
                 int imeOptions = EditorInfo.IME_ACTION_DONE | EditorInfo.IME_FLAG_NO_FULLSCREEN;
@@ -273,7 +295,7 @@ public class ConversationsListController extends BaseController implements Searc
                     imeOptions |= EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING;
                 }
                 searchView.setImeOptions(imeOptions);
-                searchView.setQueryHint(getResources().getString(R.string.nc_search));
+                searchView.setQueryHint(getSearchHint());
                 if (searchManager != null) {
                     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
                 }
@@ -283,22 +305,7 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                ArrayList<String> names = new ArrayList<>();
-                names.add("userAvatar.transitionTag");
-                getRouter().pushController((RouterTransaction.with(new SettingsController())
-                        .pushChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names), new VerticalChangeHandler()))
-                        .popChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names), new VerticalChangeHandler()))));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_conversation_plus_filter, menu);
         searchItem = menu.findItem(R.id.action_search);
@@ -306,16 +313,93 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
         super.onPrepareOptionsMenu(menu);
+
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+
+        MainActivity activity = (MainActivity) getActivity();
+
         searchItem.setVisible(callItems.size() > 0);
         if (adapter.hasFilter()) {
-            searchItem.expandActionView();
+            showSearchView(activity, searchView, searchItem);
             searchView.setQuery(adapter.getFilter(String.class), false);
         }
 
-        MenuItem menuItem = menu.findItem(R.id.action_settings);
-        loadUserAvatar(menuItem);
+        if (activity != null) {
+            activity.getSearchInputText().setOnClickListener(v -> {
+                showSearchView(activity, searchView, searchItem);
+                if (getResources() != null) {
+                    DisplayUtils.applyColorToStatusBar(
+                            activity,
+                            ResourcesCompat.getColor(getResources(), R.color.appbar, null)
+                    );
+                }
+            });
+        }
+
+        searchView.setOnCloseListener(() -> {
+            if (TextUtils.isEmpty(searchView.getQuery().toString())) {
+                searchView.onActionViewCollapsed();
+                if (activity != null && getResources() != null) {
+                    DisplayUtils.applyColorToStatusBar(
+                            activity,
+                            ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
+                    );
+                }
+            } else {
+                searchView.post(() -> searchView.setQuery("", true));
+            }
+            return true;
+        });
+
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                searchView.onActionViewCollapsed();
+                MainActivity activity = (MainActivity) getActivity();
+                if (activity != null) {
+                    activity.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
+                            activity.appBar.getContext(),
+                            R.animator.appbar_elevation_off)
+                    );
+                    activity.toolbar.setVisibility(View.GONE);
+                    activity.searchCardView.setVisibility(View.VISIBLE);
+                    if (getResources() != null) {
+                        DisplayUtils.applyColorToStatusBar(
+                                activity,
+                                ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
+                        );
+                    }
+                }
+                SmoothScrollLinearLayoutManager layoutManager =
+                        (SmoothScrollLinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager!=null) {
+                    layoutManager.scrollToPositionWithOffset(0, 0);
+                }
+                return true;
+            }
+        });
+    }
+
+    protected void showSearchOrToolbar() {
+        if (TextUtils.isEmpty(searchQuery)) {
+            super.showSearchOrToolbar();
+        }
+    }
+
+    public void showSearchView(MainActivity activity, SearchView searchView, MenuItem searchItem) {
+        activity.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
+                activity.appBar.getContext(),
+                R.animator.appbar_elevation_on));
+        activity.toolbar.setVisibility(View.VISIBLE);
+        activity.searchCardView.setVisibility(View.GONE);
+        searchItem.expandActionView();
     }
 
     private void fetchData(boolean fromBottomSheet) {
@@ -385,19 +469,11 @@ public class ConversationsListController extends BaseController implements Searc
 
                     adapter.updateDataSet(callItems, false);
 
-                    if (searchItem != null) {
-                        searchItem.setVisible(callItems.size() > 0);
-                    }
-
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
                 }, throwable -> {
-                    if (searchItem != null) {
-                        searchItem.setVisible(false);
-                    }
-
                     if (throwable instanceof HttpException) {
                         HttpException exception = (HttpException) throwable;
                         switch (exception.code()) {
@@ -436,7 +512,6 @@ public class ConversationsListController extends BaseController implements Searc
 
                     isRefreshing = false;
                 });
-
     }
 
     private void prepareViews() {
@@ -472,6 +547,20 @@ public class ConversationsListController extends BaseController implements Searc
             }
             return displayName;
         });
+
+        if (getActivity() != null && getActivity() instanceof MainActivity) {
+            MainActivity activity = (MainActivity) getActivity();
+
+            if (activity.settingsButton != null) {
+                activity.settingsButton.setOnClickListener(v -> {
+                    ArrayList<String> names = new ArrayList<>();
+                    names.add("userAvatar.transitionTag");
+                    getRouter().pushController((RouterTransaction.with(new SettingsController())
+                            .pushChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names), new VerticalChangeHandler()))
+                            .popChangeHandler(new TransitionChangeHandlerCompat(new SharedElementTransition(names), new VerticalChangeHandler()))));
+                });
+            }
+        }
     }
 
     private void showNewConversationsScreen() {
@@ -490,7 +579,6 @@ public class ConversationsListController extends BaseController implements Searc
                 roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
             roomsQueryDisposable.dispose();
             roomsQueryDisposable = null;
-
         }
     }
 
@@ -508,7 +596,9 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     public void onRestoreViewState(@NonNull View view, @NonNull Bundle savedViewState) {
         super.onRestoreViewState(view, savedViewState);
-        searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
+        if (savedViewState.containsKey(KEY_SEARCH_QUERY)) {
+            searchQuery = savedViewState.getString(KEY_SEARCH_QUERY, "");
+        }
         if (LovelySaveStateHandler.wasDialogOnScreen(savedViewState)) {
             //Dialog won't be restarted automatically, so we need to call this method.
             //Each dialog knows how to restore its state
@@ -525,7 +615,6 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     public boolean onQueryTextChange(String newText) {
         if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
-
             if (!TextUtils.isEmpty(searchQuery)) {
                 adapter.setFilter(searchQuery);
                 searchQuery = "";
@@ -602,7 +691,6 @@ public class ConversationsListController extends BaseController implements Searc
         bottomSheet.show();
     }
 
-
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_app_name);
@@ -623,7 +711,6 @@ public class ConversationsListController extends BaseController implements Searc
             } else {
                 conversation = ((CallItem) clickedItem).getModel();
             }
-
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
@@ -752,5 +839,10 @@ public class ConversationsListController extends BaseController implements Searc
                 break;
         }
 
+    }
+
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.SEARCH_BAR;
     }
 }
