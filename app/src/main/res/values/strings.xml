@@ -337,7 +337,7 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload local file</string>
-    <string name="nc_upload_from_nextcloud">Share from Nextcloud</string>
+    <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>

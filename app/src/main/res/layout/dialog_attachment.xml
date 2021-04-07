@@ -39,7 +39,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="15dp"
-        android:text="@string/nc_upload_from_nextcloud"
         android:textSize="20sp" />
 
 </LinearLayout>
