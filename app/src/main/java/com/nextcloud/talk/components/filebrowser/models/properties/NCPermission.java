@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * @author Marcel Hibbe
+ * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +25,8 @@ package com.nextcloud.talk.components.filebrowser.models.properties;
 import android.text.TextUtils;
 import android.util.Log;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParser;
@@ -36,15 +34,21 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-public class NCPreview implements Property {
-    public static final Property.Name NAME = new Property.Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_HAS_PREVIEW);
+import at.bitfire.dav4android.Property;
+import at.bitfire.dav4android.PropertyFactory;
+import at.bitfire.dav4android.XmlUtils;
+import lombok.Getter;
+import lombok.Setter;
+
+public class NCPermission implements Property {
+    public static final Name NAME = new Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_PERMISSIONS);
 
     @Getter
     @Setter
-    private boolean ncPreview;
+    private String ncPermission;
 
-    private NCPreview(boolean hasPreview) {
-        ncPreview = hasPreview;
+    private NCPermission(String p) {
+        ncPermission = p;
     }
 
     public static class Factory implements PropertyFactory {
@@ -55,18 +59,18 @@ public class NCPreview implements Property {
             try {
                 String text = XmlUtils.INSTANCE.readText(xmlPullParser);
                 if (!TextUtils.isEmpty(text)) {
-                    return new NCPreview(Boolean.parseBoolean(text));
+                    return new NCPermission(text);
                 }
             } catch (IOException | XmlPullParserException e) {
-                Log.e("NCPreview", "failed to create property", e);
+                Log.e("NCPermission", "failed to create property", e);
             }
 
-            return new OCFavorite(false);
+            return new NCPermission("");
         }
 
         @NotNull
         @Override
-        public Property.Name getName() {
+        public Name getName() {
             return NAME;
         }
     }

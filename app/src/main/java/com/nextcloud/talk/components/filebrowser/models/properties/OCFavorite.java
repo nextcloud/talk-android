@@ -21,6 +21,8 @@
 package com.nextcloud.talk.components.filebrowser.models.properties;
 
 import android.text.TextUtils;
+import android.util.Log;
+
 import at.bitfire.dav4android.Property;
 import at.bitfire.dav4android.PropertyFactory;
 import at.bitfire.dav4android.XmlUtils;
@@ -55,10 +57,8 @@ public class OCFavorite implements Property {
                 if (!TextUtils.isEmpty(text)) {
                     return new OCFavorite(Boolean.parseBoolean(text));
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
+            } catch (IOException | XmlPullParserException e) {
+                Log.e("OCFavorite", "failed to create property", e);
             }
 
             return new OCFavorite(false);
