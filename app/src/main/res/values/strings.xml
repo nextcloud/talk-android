@@ -168,8 +168,7 @@
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_conversation_default">Please confirm your intent to remove the conversation.</string>
-    <string name="nc_delete_conversation_one2one">If you delete the conversation, it will also be
-        deleted for %1$s.</string>
+    <string name="nc_delete_conversation_one2one">If you delete the conversation, it will also be deleted for %1$s.</string>
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
 
     <string name="nc_new_conversation">New conversation</string>
@@ -198,8 +197,7 @@
     <string name="nc_incoming_call">Incoming call from</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call">New public conversation</string>
-    <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a
-        specially crafted link.</string>
+    <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
     <string name="nc_call_reconnecting">Reconnecting…</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
@@ -218,13 +216,11 @@
     <string name="nc_mute_calls">Mute calls</string>
     <string name="nc_mute_calls_desc">Incoming calls will be silenced</string>
     <string name="nc_important_conversation">Important conversation</string>
-    <string name="nc_important_conversation_desc">Notifications in this conversation will override
-        Do Not Disturb settings</string>
+    <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
-    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile
-        phones. You may attempt to join the conversation via web browser.</string>
+    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Conversation name</string>
@@ -347,12 +343,10 @@
 
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
-    <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk
-        shortcut into system contacts app</string>
+    <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
     <string name="nc_settings_phone_book_integration_title">Phone number integration</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Phone number</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so
-        other users will be able to find you</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so other users will be able to find you</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Invalid phone number</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Phone number set successfully</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
@@ -392,7 +386,6 @@
     <string name="appbar_search_in">Search in %s</string>
 
     <!-- Non-translatable strings -->
-    <string name="path_password_strike_through" translatable="false"
-        tools:override="true">M3.27,4.27L19.74,20.74</string>
+    <string name="path_password_strike_through" translatable="false" tools:override="true">M3.27,4.27L19.74,20.74</string>
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
 </resources>

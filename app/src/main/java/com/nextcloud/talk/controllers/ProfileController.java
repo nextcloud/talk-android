@@ -111,6 +111,7 @@ public class ProfileController extends BaseController {
     private UserEntity currentUser;
     private boolean edit = false;
     private RecyclerView recyclerView;
+    private UserInfoAdapter adapter;
     private UserProfileData userInfo;
     private ArrayList<String> editableFields = new ArrayList<>();
 
@@ -143,6 +144,12 @@ public class ProfileController extends BaseController {
         super.onPrepareOptionsMenu(menu);
 
         menu.findItem(R.id.edit).setVisible(editableFields.size() > 0);
+
+        if (edit) {
+            menu.findItem(R.id.edit).setTitle(R.string.save);
+        } else {
+            menu.findItem(R.id.edit).setTitle(R.string.edit);
+        }
     }
 
     @Override
@@ -158,12 +165,16 @@ public class ProfileController extends BaseController {
                 if (edit) {
                     item.setTitle(R.string.save);
 
+                    getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
+                    getActivity().findViewById(R.id.userinfo_list).setVisibility(View.VISIBLE);
+
                     if (currentUser.isAvatarEndpointAvailable()) {
                         // TODO later avatar can also be checked via user fields, for now it is in Talk capability
                         getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.VISIBLE);
                     }
 
-                    ncApi.getEditableUserProfileFields(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                    ncApi.getEditableUserProfileFields(
+                            ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                             ApiUtils.getUrlForUserFields(currentUser.getBaseUrl()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -175,7 +186,7 @@ public class ProfileController extends BaseController {
                                 @Override
                                 public void onNext(@NotNull UserProfileFieldsOverall userProfileFieldsOverall) {
                                     editableFields = userProfileFieldsOverall.getOcs().getData();
-                                    recyclerView.getAdapter().notifyDataSetChanged();
+                                    adapter.notifyDataSetChanged();
                                 }
 
                                 @Override
@@ -191,9 +202,14 @@ public class ProfileController extends BaseController {
                 } else {
                     item.setTitle(R.string.edit);
                     getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.INVISIBLE);
+
+                    if (adapter.filteredDisplayList.size() == 0) {
+                        getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
+                        getActivity().findViewById(R.id.userinfo_list).setVisibility(View.GONE);
+                    }
                 }
 
-                recyclerView.getAdapter().notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
 
                 return true;
 
@@ -207,9 +223,8 @@ public class ProfileController extends BaseController {
         super.onAttach(view);
 
         recyclerView = getActivity().findViewById(R.id.userinfo_list);
-        recyclerView.setAdapter(new UserInfoAdapter(null,
-                getActivity().getResources().getColor(R.color.colorPrimary),
-                this));
+        adapter = new UserInfoAdapter(null, getActivity().getResources().getColor(R.color.colorPrimary), this);
+        recyclerView.setAdapter(adapter);
         recyclerView.setItemViewCacheSize(20);
 
         currentUser = userUtils.getCurrentUser();
@@ -291,7 +306,12 @@ public class ProfileController extends BaseController {
             ((TextView) getActivity().findViewById(R.id.userinfo_fullName)).setText(userInfo.getDisplayName());
         }
 
-        if (TextUtils.isEmpty(userInfo.getPhone()) &&
+        getActivity().findViewById(R.id.loading_content).setVisibility(View.VISIBLE);
+
+        adapter.setData(createUserInfoDetails(userInfo));
+
+        if (TextUtils.isEmpty(userInfo.getDisplayName()) &&
+                TextUtils.isEmpty(userInfo.getPhone()) &&
                 TextUtils.isEmpty(userInfo.getEmail()) &&
                 TextUtils.isEmpty(userInfo.getAddress()) &&
                 TextUtils.isEmpty(userInfo.getTwitter()) &&
@@ -305,14 +325,7 @@ public class ProfileController extends BaseController {
                     getActivity().getString(R.string.userinfo_no_info_headline),
                     getActivity().getString(R.string.userinfo_no_info_text), R.drawable.ic_user);
         } else {
-            getActivity().findViewById(R.id.loading_content).setVisibility(View.VISIBLE);
             getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
-
-            RecyclerView recyclerView = getActivity().findViewById(R.id.userinfo_list);
-            if (recyclerView.getAdapter() instanceof UserInfoAdapter) {
-                UserInfoAdapter adapter = ((UserInfoAdapter) recyclerView.getAdapter());
-                adapter.setData(createUserInfoDetails(userInfo));
-            }
 
             getActivity().findViewById(R.id.loading_content).setVisibility(View.GONE);
             getActivity().findViewById(R.id.userinfo_list).setVisibility(View.VISIBLE);
@@ -334,7 +347,7 @@ public class ProfileController extends BaseController {
                             editableFields = userProfileFieldsOverall.getOcs().getData();
 
                             getActivity().invalidateOptionsMenu();
-                            recyclerView.getAdapter().notifyDataSetChanged();
+                            adapter.notifyDataSetChanged();
                         }
 
                         @Override
@@ -414,9 +427,7 @@ public class ProfileController extends BaseController {
     }
 
     private void save() {
-        UserInfoAdapter adapter = (UserInfoAdapter) recyclerView.getAdapter();
-
-        for (UserInfoDetailsItem item : adapter.mDisplayList) {
+        for (UserInfoDetailsItem item : adapter.displayList) {
             // Text
             if (!item.text.equals(userInfo.getValueByField(item.field))) {
                 String credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
@@ -460,6 +471,8 @@ public class ProfileController extends BaseController {
             if (item.scope != userInfo.getScopeByField(item.field)) {
                 saveScope(item, userInfo);
             }
+
+            adapter.updateFilteredList();
         }
     }
 
@@ -643,7 +656,8 @@ public class ProfileController extends BaseController {
     }
 
     public static class UserInfoAdapter extends RecyclerView.Adapter<UserInfoAdapter.ViewHolder> {
-        protected List<UserInfoDetailsItem> mDisplayList;
+        protected List<UserInfoDetailsItem> displayList;
+        protected List<UserInfoDetailsItem> filteredDisplayList = new LinkedList<>();
         @ColorInt
         protected int mTintColor;
         private final ProfileController controller;
@@ -667,14 +681,29 @@ public class ProfileController extends BaseController {
         public UserInfoAdapter(List<UserInfoDetailsItem> displayList,
                                @ColorInt int tintColor,
                                ProfileController controller) {
-            mDisplayList = displayList == null ? new LinkedList<>() : displayList;
+            this.displayList = displayList == null ? new LinkedList<>() : displayList;
             mTintColor = tintColor;
             this.controller = controller;
         }
 
         public void setData(List<UserInfoDetailsItem> displayList) {
-            mDisplayList = displayList == null ? new LinkedList<>() : displayList;
+            this.displayList = displayList == null ? new LinkedList<>() : displayList;
+
+            updateFilteredList();
+
             notifyDataSetChanged();
+        }
+
+        public void updateFilteredList() {
+            filteredDisplayList.clear();
+
+            if (displayList != null) {
+                for (UserInfoDetailsItem item : displayList) {
+                    if (!TextUtils.isEmpty(item.text)) {
+                        filteredDisplayList.add(item);
+                    }
+                }
+            }
         }
 
         @NonNull
@@ -687,7 +716,14 @@ public class ProfileController extends BaseController {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            UserInfoDetailsItem item = mDisplayList.get(position);
+            UserInfoDetailsItem item;
+
+            if (controller.edit) {
+                item = displayList.get(position);
+            } else {
+                item = filteredDisplayList.get(position);
+            }
+
 
             if (item.scope == null) {
                 holder.scope.setVisibility(View.GONE);
@@ -719,7 +755,11 @@ public class ProfileController extends BaseController {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    mDisplayList.get(holder.getAdapterPosition()).text = holder.text.getText().toString();
+                    if (controller.edit) {
+                        displayList.get(holder.getAdapterPosition()).text = holder.text.getText().toString();
+                    } else {
+                        filteredDisplayList.get(holder.getAdapterPosition()).text = holder.text.getText().toString();
+                    }
                 }
 
                 @Override
@@ -764,11 +804,15 @@ public class ProfileController extends BaseController {
 
         @Override
         public int getItemCount() {
-            return mDisplayList.size();
+            if (controller.edit) {
+                return displayList.size();
+            } else {
+                return filteredDisplayList.size();
+            }
         }
 
         public void updateScope(int position, Scope scope) {
-            mDisplayList.get(position).scope = scope;
+            displayList.get(position).scope = scope;
             notifyDataSetChanged();
         }
     }
