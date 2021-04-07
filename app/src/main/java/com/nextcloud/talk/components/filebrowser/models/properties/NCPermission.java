@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * @author Marcel Hibbe
+ * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +23,7 @@
 package com.nextcloud.talk.components.filebrowser.models.properties;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
 
@@ -58,10 +61,8 @@ public class NCPermission implements Property {
                 if (!TextUtils.isEmpty(text)) {
                     return new NCPermission(text);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (XmlPullParserException e) {
-                e.printStackTrace();
+            } catch (IOException | XmlPullParserException e) {
+                Log.e("NCPermission", "failed to create property", e);
             }
 
             return new NCPermission("");
