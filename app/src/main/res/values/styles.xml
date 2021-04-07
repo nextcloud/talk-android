@@ -27,7 +27,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
         <item name="android:textColor">@color/nc_incoming_text_default</item>
@@ -35,7 +35,6 @@
         <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionBarPopupTheme">@style/appActionBarPopupMenu</item>
         <item name="searchViewStyle">@style/SearchView</item>
-        <item name="textInputStyle">@style/TextInputLayout</item>
         <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
 
@@ -56,28 +55,9 @@
         <item name="android:textColor">@color/textColorOnPrimaryBackground</item>
     </style>
 
-    <style name="ChipMentionTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>
-
     <style name="ChipUnreadMessagesTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
-    </style>
-
-    <style name="appActionBarStyle" parent="@style/Widget.MaterialComponents.ActionBar.Solid">
-        <item name="colorControlNormal">@color/fontAppbar</item>
-        <item name="android:colorPrimary">@color/appbar</item>
-        <item name="android:colorAccent">@color/appbar</item>
-        <item name="android:textColor">@color/fontAppbar</item>
-        <item name="android:textColorSecondary">@color/fontAppbar</item>
-        <item name="searchViewStyle">@style/SearchView</item>
-    </style>
-
-    <style name="Toolbar_TextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:colorPrimary">@color/fontAppbar</item>
-        <item name="android:textColor">@color/fontAppbar</item>
-        <item name="android:textColorPrimary">@color/fontAppbar</item>
     </style>
 
     <style name="appActionBarPopupMenu" parent="@style/Widget.AppCompat.PopupMenu.Overflow">
@@ -100,11 +80,6 @@
         <item name="searchHintIcon">@null</item>
     </style>
 
-    <style name="circleImageView" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">50%</item>
-    </style>
-
     <style name="Widget.AppTheme.Button.IconButton" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="android:minWidth">0dp</item>
         <item name="android:insetLeft">0dp</item>
@@ -113,48 +88,5 @@
         <item name="android:insetBottom">0dp</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">0dp</item>
-    </style>
-
-    <style name="TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
-        <item name="colorControlActivated">@color/fg_default</item>
-        <item name="colorControlHighlight">@color/fg_default</item>
-        <item name="boxBackgroundColor">@color/bg_default</item>
-        <item name="hintTextColor">@color/fg_default</item>
-        <item name="helperTextTextColor">@color/fg_default</item>
-        <item name="boxStrokeColor">@color/fg_default</item>
-    </style>
-
-    <style name="Widget.App.Login.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="colorControlActivated">@color/white</item>
-        <item name="colorControlHighlight">@color/white</item>
-        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Login.TextInputLayout</item>
-        <item name="shapeAppearance">@style/ShapeAppearance.MaterialComponents.SmallComponent</item>
-        <item name="hintTextColor">@color/white</item>
-        <item name="helperTextTextColor">@color/white</item>
-    </style>
-
-    <style name="ThemeOverlay.App.Login.TextInputLayout" parent="">
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorOnSurface">@color/white</item>
-        <item name="colorError">@color/nc_darkRed</item>
-        <item name="textAppearanceSubtitle1">@style/TextAppearance.MaterialComponents.Subtitle1</item>
-        <item name="textAppearanceCaption">@style/TextAppearance.MaterialComponents.Caption</item>
-        <item name="editTextStyle">@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox</item>
-    </style>
-
-    <style name="TextInputLayoutLogin" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxStrokeColor">@color/white</item>
-        <item name="boxStrokeErrorColor">@color/white</item>
-        <item name="hintTextAppearance">@style/HintTextLogin</item>
-        <item name="errorTextAppearance">@style/HintTextLogin</item>
-        <item name="android:colorPrimary">@color/white</item>
-        <!-- Theme attributes -->
-        <item name="android:textColorHint">#80FFFFFF</item>
-        <item name="colorControlNormal">@color/white</item>
-        <item name="colorControlActivated">@color/white</item>
-    </style>
-
-    <style name="HintTextLogin" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/white</item>
     </style>
 </resources>

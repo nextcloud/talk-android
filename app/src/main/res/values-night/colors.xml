@@ -24,12 +24,9 @@
   -->
 
 <resources>
-    <bool name="is_night">true</bool>
-    <bool name="status_bar_light">false</bool>
-
     <color name="colorPrimary">#0082C9</color>
     <color name="colorPrimaryDark">#006AA3</color>
-    <color name="colorAccent">#007CC2</color>
+    <color name="colorAccent">@color/colorPrimary</color>
 
     <!-- App bar -->
     <color name="appbar">#1E1E1E</color>
@@ -38,13 +35,10 @@
     <color name="conversation_item_header">#deffffff</color>
 
     <color name="bg_default">#121212</color>
-    <color name="bg_alt">#121212</color>
     <color name="bg_inverse">@color/grey950</color>
 
     <color name="fg_default">#FFFFFF</color>
     <color name="fg_inverse">#121212</color>
-    <color name="fg_contrast">#717171</color>
-    <color name="fg_chat_message_sent">@color/fg_default</color>
 
     <color name="nc_darkGreen">#00AA00</color>
 
