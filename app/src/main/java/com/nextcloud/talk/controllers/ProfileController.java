@@ -462,6 +462,13 @@ public class ProfileController extends BaseController {
                             @Override
                             public void onError(@NotNull Throwable e) {
                                 item.text = userInfo.getValueByField(item.field);
+                                Toast.makeText(getApplicationContext(),
+                                        String.format(getResources().getString(R.string.failed_to_save),
+                                                item.text,
+                                                item.field),
+                                        Toast.LENGTH_LONG).show();
+                                adapter.updateFilteredList();
+                                adapter.notifyDataSetChanged();
                                 Log.e(TAG, "Failed to saved: " + item.text + " as " + item.field, e);
                             }
 
