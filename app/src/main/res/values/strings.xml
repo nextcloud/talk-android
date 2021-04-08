@@ -388,4 +388,5 @@
     <string name="path_password_strike_through" translatable="false" tools:override="true">M3.27,4.27L19.74,20.74</string>
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
     <string name="nc_action_open_main_menu">Open main menu</string>
+    <string name="failed_to_save">Failed to save %1$s as %2$s</string>
 </resources>
