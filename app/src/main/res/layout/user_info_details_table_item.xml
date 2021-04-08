@@ -40,7 +40,7 @@
         android:id="@+id/user_info_edit_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_double_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         android:autofillHints="none"
         android:ellipsize="end"

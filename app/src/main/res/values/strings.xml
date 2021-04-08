@@ -389,4 +389,5 @@
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
     <string name="nc_action_open_main_menu">Open main menu</string>
     <string name="failed_to_save">Failed to save %1$s</string>
+    <string name="selected_list_item">selected</string>
 </resources>

@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -19,22 +21,25 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/joinConversationViaLinkRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/double_margin_between_elements"
+    android:layout_marginStart="@dimen/standard_margin"
+    android:layout_marginTop="@dimen/standard_half_margin"
+    android:layout_marginEnd="@dimen/standard_margin"
+    android:layout_marginBottom="@dimen/standard_half_margin"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/joinConversationViaLinkImageView"
-        android:layout_width="@dimen/small_item_height"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/standard_margin"
         android:contentDescription="@null"
         android:src="@drawable/ic_public_black_24px"
-        android:tint="@color/colorPrimary" />
+        app:tint="@color/colorPrimary" />
 
     <TextView
         android:layout_width="match_parent"
@@ -44,7 +49,6 @@
         android:ellipsize="middle"
         android:singleLine="true"
         android:text="@string/nc_join_via_link"
-        android:textAppearance="?android:attr/textAppearanceListItem"
-        tools:text="@string/nc_join_via_link" />
+        android:textAppearance="@style/ListItem" />
 
 </RelativeLayout>
