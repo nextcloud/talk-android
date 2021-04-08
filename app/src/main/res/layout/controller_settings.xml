@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017 Mario Danic
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -28,7 +30,9 @@
         android:id="@+id/message_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp">
 
         <TextView
             android:id="@+id/message_text"
@@ -40,7 +44,9 @@
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:animateLayoutChanges="true">
+        android:animateLayoutChanges="true"
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp">
 
         <RelativeLayout
             android:id="@+id/avatarContainer"
@@ -118,8 +124,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_settings_appearance"
-        apc:mpc_title_color="@color/textColorMaxContrast">
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp"
+        apc:mpc_title="@string/nc_settings_appearance">
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_theme"
@@ -138,8 +145,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_settings_notification_sounds"
-        apc:mpc_title_color="@color/textColorMaxContrast">
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp"
+        apc:mpc_title="@string/nc_settings_notification_sounds">
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_call_sound"
@@ -170,8 +178,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_settings_privacy"
-        apc:mpc_title_color="@color/textColorMaxContrast">
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp"
+        apc:mpc_title="@string/nc_settings_privacy">
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_screen_lock_timeout"
@@ -218,7 +227,7 @@
             apc:mp_key="@string/nc_settings_link_previews_key"
             apc:mp_summary="@string/nc_settings_link_previews_desc"
             apc:mp_title="@string/nc_settings_link_previews_title" />
-        
+
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_phone_book_integration"
             android:layout_width="match_parent"
@@ -227,7 +236,7 @@
             apc:mp_key="@string/nc_settings_phone_book_integration_key"
             apc:mp_summary="@string/nc_settings_phone_book_integration_desc"
             apc:mp_title="@string/nc_settings_phone_book_integration_title" />
-        
+
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_read_privacy"
             android:layout_width="match_parent"
@@ -241,8 +250,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_settings_proxy_title"
-        apc:mpc_title_color="@color/textColorMaxContrast">
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp"
+        apc:mpc_title="@string/nc_settings_proxy_title">
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_proxy_choice"
@@ -252,7 +262,7 @@
             apc:mp_entry_descriptions="@array/proxy_type_descriptions"
             apc:mp_key="@string/nc_settings_proxy_type_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_settings_proxy_type_title"></com.yarolegovich.mp.MaterialChoicePreference>
+            apc:mp_title="@string/nc_settings_proxy_type_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
             android:id="@+id/settings_proxy_host_edit"
@@ -302,8 +312,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_about"
-        apc:mpc_title_color="@color/textColorMaxContrast">
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp"
+        apc:mpc_title="@string/nc_about">
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_privacy"
@@ -315,21 +326,21 @@
             android:id="@+id/settings_source_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_title="@string/nc_get_source_code"></com.yarolegovich.mp.MaterialStandardPreference>
+            apc:mp_title="@string/nc_get_source_code" />
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_licence"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_summary="@string/nc_license_summary"
-            apc:mp_title="@string/nc_license_title"></com.yarolegovich.mp.MaterialStandardPreference>
+            apc:mp_title="@string/nc_license_title" />
 
         <com.yarolegovich.mp.MaterialStandardPreference
             android:id="@+id/settings_version"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_summary="v0.1"
-            apc:mp_title="@string/nc_app_name"></com.yarolegovich.mp.MaterialStandardPreference>
+            apc:mp_title="@string/nc_app_name" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

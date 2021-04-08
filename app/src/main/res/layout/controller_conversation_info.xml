@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -21,6 +23,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -51,7 +54,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:visibility="gone">
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -80,7 +85,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conversation_info_name"
-                android:visibility="gone">
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/favoriteConversationAction"
@@ -100,8 +107,10 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/webinar_settings"
                 android:visibility="gone"
-                apc:mpc_title="@string/nc_participants"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
                 apc:mpc_action="@string/nc_add"
+                apc:mpc_title="@string/nc_participants"
                 apc:mpc_title_color="@color/textColorMaxContrast"
                 tools:ignore="UnknownIdInLayout">
 
@@ -118,7 +127,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/participants_list_category"
-                android:visibility="gone">
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/leaveConversationAction"
