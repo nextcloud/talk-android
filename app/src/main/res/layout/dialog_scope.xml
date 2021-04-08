@@ -2,7 +2,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Tobias Kaminsky
+  ~ @author Andy Scherzinger
   ~ Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,43 +24,51 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/bg_bottom_sheet"
     android:orientation="vertical"
-    android:paddingTop="8dp"
-    android:paddingBottom="8dp">
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingTop="@dimen/standard_half_padding"
+    android:paddingEnd="@dimen/standard_padding"
+    android:paddingBottom="@dimen/standard_half_padding">
 
     <LinearLayout
         android:id="@+id/scope_private"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
             android:contentDescription="@string/lock_symbol"
-            app:srcCompat="@drawable/ic_call_black_24dp" />
+            app:srcCompat="@drawable/ic_call" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="0dp"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
+
                 android:text="@string/scope_private_title"
+                android:textColor="@color/conversation_item_header"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
-                android:text="@string/scope_private_description" />
+                android:text="@string/scope_private_description"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -68,36 +78,38 @@
         android:id="@+id/scope_local"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
             android:contentDescription="@string/lock_symbol"
             app:srcCompat="@drawable/ic_password" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="0dp"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
                 android:text="@string/scope_local_title"
+                android:textColor="@color/conversation_item_header"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
-                android:text="@string/scope_local_description" />
+                android:text="@string/scope_local_description"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -107,36 +119,38 @@
         android:id="@+id/scope_federated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
             android:contentDescription="@string/lock_symbol"
             app:srcCompat="@drawable/ic_contacts" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="0dp"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
                 android:text="@string/scope_federated_title"
+                android:textColor="@color/conversation_item_header"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
-                android:text="@string/scope_federated_description" />
+                android:text="@string/scope_federated_description"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
@@ -146,36 +160,38 @@
         android:id="@+id/scope_published"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="center_vertical"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="top"
             android:contentDescription="@string/lock_symbol"
             app:srcCompat="@drawable/ic_link" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="0dp"
             android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
                 android:text="@string/scope_published_title"
+                android:textColor="@color/conversation_item_header"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
-                android:paddingEnd="@dimen/standard_half_padding"
-                android:text="@string/scope_published_description" />
+                android:text="@string/scope_published_description"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp" />
 
         </LinearLayout>
 
