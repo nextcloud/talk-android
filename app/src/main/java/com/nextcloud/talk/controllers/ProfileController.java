@@ -104,6 +104,8 @@ import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ProfileController extends BaseController {
+    private static final String TAG = ProfileController.class.getSimpleName();
+
     @Inject
     NcApi ncApi;
 
@@ -450,7 +452,7 @@ public class ProfileController extends BaseController {
 
                             @Override
                             public void onNext(@NotNull GenericOverall userProfileOverall) {
-                                Log.d("ProfileController", "Successfully saved: " + item.text + " as " + item.field);
+                                Log.d(TAG, "Successfully saved: " + item.text + " as " + item.field);
 
                                 if (item.field == Field.DISPLAYNAME) {
                                     ((TextView) getActivity().findViewById(R.id.userinfo_fullName)).setText(item.text);
@@ -460,7 +462,7 @@ public class ProfileController extends BaseController {
                             @Override
                             public void onError(@NotNull Throwable e) {
                                 item.text = userInfo.getValueByField(item.field);
-                                Log.e("ProfileController", "Failed to saved: " + item.text + " as " + item.field);
+                                Log.e(TAG, "Failed to saved: " + item.text + " as " + item.field, e);
                             }
 
                             @Override
@@ -537,10 +539,10 @@ public class ProfileController extends BaseController {
             try (FileOutputStream out = new FileOutputStream(file)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error compressing bitmap", e);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error creating temporary avatar image", e);
         }
 
         if (file == null) {
@@ -626,13 +628,13 @@ public class ProfileController extends BaseController {
 
                     @Override
                     public void onNext(@NotNull GenericOverall userProfileOverall) {
-                        Log.d("ProfileController", "Successfully saved: " + item.scope + " as " + item.field);
+                        Log.d(TAG, "Successfully saved: " + item.scope + " as " + item.field);
                     }
 
                     @Override
                     public void onError(@NotNull Throwable e) {
                         item.scope = userInfo.getScopeByField(item.field);
-                        Log.e("ProfileController", "Failed to saved: " + item.scope + " as " + item.field);
+                        Log.e(TAG, "Failed to saved: " + item.scope + " as " + item.field, e);
                     }
 
                     @Override
