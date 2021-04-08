@@ -253,9 +253,7 @@
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_browser_refresh">Освежи</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_lobby">Лоби</string>
     <string name="nc_start_time">Време почетка</string>

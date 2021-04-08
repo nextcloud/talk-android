@@ -277,9 +277,7 @@
     <string name="nc_file_browser_back">Vissza</string>
     <string name="nc_file_browser_refresh">Frissítés</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinár</string>
     <string name="nc_lobby">Váró</string>
     <string name="nc_start_time">Kezdési idő</string>
@@ -310,7 +308,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
-    <string name="nc_upload_from_nextcloud">Ossza meg a Nextcloudon keresztül</string>
     <string name="nc_upload_failed">A feltöltés sikertelen</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>

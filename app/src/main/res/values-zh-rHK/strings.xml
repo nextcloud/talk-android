@@ -283,9 +283,7 @@
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">網絡研討會</string>
     <string name="nc_lobby">等候室</string>
     <string name="nc_start_time">開始時間</string>
@@ -316,7 +314,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">上傳本地文件</string>
-    <string name="nc_upload_from_nextcloud">透過 Nextcloud 分享</string>
     <string name="nc_upload_failed">對不起，上傳失敗</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>

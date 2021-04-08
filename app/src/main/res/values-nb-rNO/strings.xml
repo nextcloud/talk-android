@@ -252,9 +252,7 @@ telefoner. Du kan prøve å delta i samtalen via nettleseren.</string>
     <string name="nc_file_browser_back">Tilbake</string>
     <string name="nc_file_browser_refresh">Oppdater</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Start tidspunkt</string>

@@ -285,9 +285,7 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_file_browser_refresh">Verversen</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Begintijd</string>
@@ -318,7 +316,6 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
-    <string name="nc_upload_from_nextcloud">Delen vanuit Nextcloud</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
     <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>

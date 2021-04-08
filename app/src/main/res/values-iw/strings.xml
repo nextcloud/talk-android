@@ -253,9 +253,7 @@
     <string name="nc_file_browser_back">חזרה</string>
     <string name="nc_file_browser_refresh">רענון</string>
     <string name="nc_last_modified">%1$s | שינוי אחרון: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">סמינר מקוון</string>
     <string name="nc_lobby">לובי</string>
     <string name="nc_start_time">מועד התחלה</string>

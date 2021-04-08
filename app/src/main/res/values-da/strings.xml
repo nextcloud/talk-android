@@ -253,9 +253,7 @@ telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_file_browser_back">Tilbage</string>
     <string name="nc_file_browser_refresh">Opdater</string>
     <string name="nc_last_modified">%1$s| Sidst ændret: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Start tid</string>

@@ -280,9 +280,7 @@
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">刷新</string>
     <string name="nc_last_modified">%1$s 我上一次更改： %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">网络研讨会</string>
     <string name="nc_lobby">休息室</string>
     <string name="nc_start_time">开始时间</string>
@@ -313,7 +311,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">上传本地文件</string>
-    <string name="nc_upload_from_nextcloud">从 Nextcloud 共享</string>
     <string name="nc_upload_failed">抱歉，上传失败</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>

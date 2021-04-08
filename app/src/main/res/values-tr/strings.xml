@@ -283,9 +283,7 @@
     <string name="nc_file_browser_back">Geri</string>
     <string name="nc_file_browser_refresh">Yenile</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Web sunumu</string>
     <string name="nc_lobby">Giriş</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
@@ -316,7 +314,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
-    <string name="nc_upload_from_nextcloud">Nextcloud üzerinden paylaş</string>
     <string name="nc_upload_failed">Yüklenemedi</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>

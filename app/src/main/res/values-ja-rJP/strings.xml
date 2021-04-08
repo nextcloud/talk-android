@@ -253,9 +253,7 @@ Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_file_browser_refresh">更新</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">ウェビナー</string>
     <string name="nc_lobby">ロビー</string>
     <string name="nc_start_time">開始時刻</string>

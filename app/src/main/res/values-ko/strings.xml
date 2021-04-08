@@ -252,9 +252,7 @@
     <string name="nc_file_browser_back">뒤로</string>
     <string name="nc_file_browser_refresh">새로 고침</string>
     <string name="nc_last_modified">%1$s | 최종 수정: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">로비</string>
     <string name="nc_start_time">시작 시간</string>

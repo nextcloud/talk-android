@@ -272,9 +272,7 @@
     <string name="nc_file_browser_back">Späť</string>
     <string name="nc_file_browser_refresh">Obnoviť</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinár</string>
     <string name="nc_lobby">Miestnosť</string>
     <string name="nc_start_time">Čas začiatku</string>

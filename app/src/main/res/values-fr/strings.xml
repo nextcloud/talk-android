@@ -272,9 +272,7 @@ Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_file_browser_back">Retour</string>
     <string name="nc_file_browser_refresh">Actualiser</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinaire</string>
     <string name="nc_lobby">Salle d\'attente</string>
     <string name="nc_start_time">Heure de début</string>
@@ -305,7 +303,6 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Envoyer un fichier local</string>
-    <string name="nc_upload_from_nextcloud">Partagez depuis Nextcloud</string>
     <string name="nc_upload_failed">Désolé, l\'envoi a échoué</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>

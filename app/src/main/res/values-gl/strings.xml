@@ -279,9 +279,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_file_browser_refresh">Actualizar</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_lobby">Ástrago</string>
     <string name="nc_start_time">Hora de comezo</string>
@@ -312,7 +310,6 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
-    <string name="nc_upload_from_nextcloud">Compartir dende Nextcloud</string>
     <string name="nc_upload_failed">Sentímolo, produciuse un fallo no envío</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>

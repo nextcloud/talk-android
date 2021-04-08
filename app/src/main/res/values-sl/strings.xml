@@ -280,9 +280,7 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_file_browser_back">Nazaj</string>
     <string name="nc_file_browser_refresh">Osveži</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Spletinar</string>
     <string name="nc_lobby">Spletna čakalnica</string>
     <string name="nc_start_time">Čas začetka</string>
@@ -313,7 +311,6 @@ Pozdravite prijatelje in znance.</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
-    <string name="nc_upload_from_nextcloud">Pošlji iz oblaka Nextcloud</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>

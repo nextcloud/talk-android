@@ -27,7 +27,7 @@
     <string name="nc_common_error_sorry">Ddoe at àpidu un\'errore!</string>
 
     <!-- Bottom Navigation -->
-    <string name="nc_settings">Cunfiguratziones</string>
+    <string name="nc_settings">Impostatziones</string>
 
     <!-- Server selection -->
     <string name="nc_server_url">Indiritzu serbidore</string>
@@ -99,7 +99,7 @@
     <string name="nc_settings_screen_security_desc">Impedit is caturas de ischermu in sa lista reghente e a intro de s\'aplicatzione</string>
     <string name="nc_settings_incognito_keyboard_title">Tastiera in incògnita</string>
     <string name="nc_settings_incognito_keyboard_desc">Imparat a sa tastiera a disativare s\'imparu personale (chene garantzias)</string>
-    <string name="nc_settings_link_previews_title">Ammustra anteprima de is ligòngios</string>
+    <string name="nc_settings_link_previews_title">Mustra anteprima de is ligòngios</string>
     <string name="nc_settings_link_previews_desc">Permite anteprimas de cuntenutu dae ligòngios retzidos pro servìtzios suportados</string>
     <string name="nc_locked">Toca pro isblocare</string>
     <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
@@ -137,7 +137,7 @@
     <string name="nc_leave">Lassa tzarrada</string>
     <string name="nc_rename">Torra a numenare sa tzarrada</string>
     <string name="nc_set_password">Imposta una crae</string>
-    <string name="nc_change_password">Modìfica crae</string>
+    <string name="nc_change_password">Càmbia crae</string>
     <string name="nc_clear_password">Isbòida crae</string>
     <string name="nc_share_link">Cumpartzi ligòngiu</string>
     <string name="nc_share_link_via">Cumpartzi ligòngiu tràmite</string>
@@ -163,7 +163,7 @@
     <!-- Permissions -->
     <string name="nc_camera_permission_permanently_denied">Pro ativare comunicatzione in vìdeu cunsenti is pemissos de \"Fotocàmera\" in sa cunfiguratzione de sistema.</string>
     <string name="nc_microphone_permission_permanently_denied">Pro ativare comunicatzione de boghe cunsenti is permissos de \"Micròfonu\" in sa cunfiguratzione de sistema.</string>
-    <string name="nc_permissions_settings">Aberi cunfiguratziones</string>
+    <string name="nc_permissions_settings">Aberi impostatziones</string>
 
     <string name="nc_connecting_call">Connetende...</string>
     <string name="nc_calling">Tzerriende...</string>
@@ -181,8 +181,8 @@
     <string name="nc_notification_channel">%1$s in %2$s canale de notìfica</string>
     <string name="nc_notification_channel_calls">Canale de notìfica de mutidas</string>
     <string name="nc_notification_channel_messages">Canale de notìfica de messàgios</string>
-    <string name="nc_notification_channel_calls_description">Ammustra mutidas in intrada</string>
-    <string name="nc_notification_settings">Cuunfiguratziones de notìfica</string>
+    <string name="nc_notification_channel_calls_description">Mustra mutidas in intrada</string>
+    <string name="nc_notification_settings">Impostatziones de notìfica</string>
     <string name="nc_plain_old_messages">Messàgios</string>
     <string name="nc_notify_me_always">Notificare semper</string>
     <string name="nc_notify_me_mention">Notificare cando mentovadu</string>
@@ -262,7 +262,6 @@
     <string name="nc_owner">Mere</string>
     <string name="nc_file_browser_back">A coa</string>
     <!-- Lobby -->
-
     <string name="nc_webinar">Seminàriu in lìnia</string>
     <string name="nc_start_time">Ora de cumintzu</string>
     <!-- Errors -->
@@ -279,6 +278,5 @@
     <string name="nc_delete_message">Cantzella</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Càrriga documentu locale</string>
-    <string name="nc_upload_from_nextcloud">Cumpartzi dae Nextcloud</string>
     <string name="nc_upload_choose_local_files">Sèbera documentos</string>
     </resources>

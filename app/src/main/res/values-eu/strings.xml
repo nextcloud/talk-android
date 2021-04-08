@@ -280,9 +280,7 @@ Ez Molestatu modua</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_browser_refresh">Freskatu</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_lobby">Sarrera</string>
     <string name="nc_start_time">Hasiera-ordua</string>
@@ -313,7 +311,6 @@ Ez Molestatu modua</string>
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
-    <string name="nc_upload_from_nextcloud">Partekatu Nextcloud bidez</string>
     <string name="nc_upload_failed">Sentitzen dugu, kargatzeak huts egin du.</string>
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>

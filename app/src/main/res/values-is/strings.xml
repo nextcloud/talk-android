@@ -234,7 +234,6 @@
     <string name="nc_file_browser_back">Til baka</string>
     <string name="nc_file_browser_refresh">Endurlesa</string>
     <string name="nc_last_modified">%1$s | Síðast breytt: %2$s</string>
-
     <string name="nc_start_time">Upphafstími</string>
     <!-- Errors -->
     <string name="nc_no_connection_error">Engin tenging</string>

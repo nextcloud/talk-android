@@ -238,9 +238,7 @@
     <string name="nc_file_browser_back">Takaisin</string>
     <string name="nc_file_browser_refresh">Päivitä</string>
     <string name="nc_last_modified">%1$s | Viimeksi muokattu: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinaari</string>
     <string name="nc_lobby">Aula</string>
     <string name="nc_start_time">Aloitusaika</string>
@@ -267,7 +265,6 @@
     <string name="nc_delete_message">Poista</string>
     <!-- Upload -->
     <string name="nc_upload_local_file">Lähetä paikallinen tiedosto</string>
-    <string name="nc_upload_from_nextcloud">Jaa Nextcloudista</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
     <string name="nc_upload_in_progess">lähetetään</string>

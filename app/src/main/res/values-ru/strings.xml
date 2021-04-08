@@ -275,9 +275,7 @@
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_browser_refresh">Обновить</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_lobby">Лобби</string>
     <string name="nc_start_time">Время начала</string>
@@ -307,7 +305,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Передать на сервер локальный файл</string>
-    <string name="nc_upload_from_nextcloud">Опубликовать из Nextcloud</string>
     <string name="nc_upload_failed">Ошибка передачи на сервер</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>

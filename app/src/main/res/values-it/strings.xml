@@ -283,9 +283,7 @@
     <string name="nc_file_browser_back">Indietro</string>
     <string name="nc_file_browser_refresh">Aggiorna</string>
     <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Ingresso</string>
     <string name="nc_start_time">Ora di inizio</string>
@@ -316,7 +314,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Carica file locale</string>
-    <string name="nc_upload_from_nextcloud">Condividi da Nextcloud</string>
     <string name="nc_upload_failed">Spiacenti, caricamento non riuscito</string>
     <string name="nc_upload_choose_local_files">Scegli i file</string>
     <string name="nc_upload_confirm_send_multiple">Inviare questi file a %1$s?</string>

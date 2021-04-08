@@ -220,9 +220,7 @@
     <string name="nc_file_browser_back">Atgal</string>
     <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Internetinis seminaras</string>
     <string name="nc_lobby">Laukimo salė</string>
     <string name="nc_start_time">Pradžios laikas</string>

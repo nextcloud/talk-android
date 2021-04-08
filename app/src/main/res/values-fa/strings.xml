@@ -261,9 +261,7 @@
     <string name="nc_file_browser_back">بازگشت</string>
     <string name="nc_file_browser_refresh">تازه‌سازی</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">وبینار</string>
     <string name="nc_lobby">لابی</string>
     <string name="nc_start_time">زمان شروع</string>

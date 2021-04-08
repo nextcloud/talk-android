@@ -272,9 +272,7 @@
     <string name="nc_file_browser_back">Πίσω</string>
     <string name="nc_file_browser_refresh">Ανανέωση</string>
     <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Αναμονή</string>
     <string name="nc_start_time">Ώρα έναρξης</string>

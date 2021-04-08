@@ -24,6 +24,8 @@
     <!-- Common -->
     <string name="nc_yes">نعم</string>
     <string name="nc_no">لا</string>
+    <string name="nc_common_skip">تخطى</string>
+    <string name="nc_common_set">تعيين</string>
     <string name="nc_common_error_sorry">حدث خطأ ما!</string>
 
     <!-- Bottom Navigation -->
@@ -106,7 +108,7 @@
     <string name="nc_settings_read_privacy_title">قراءة الحالة</string>
 
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>
-    <string name="nc_screen_lock_timeout_60">دقيقة</string>
+    <string name="nc_screen_lock_timeout_60">1 دقيقة</string>
     <string name="nc_screen_lock_timeout_300">5 دقائق</string>
     <string name="nc_screen_lock_timeout_600">10 دقائق</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
@@ -136,7 +138,7 @@
     <string name="nc_configure_room">ضبط المحادثة</string>
     <string name="nc_leave">غادر المحادثة</string>
     <string name="nc_rename">إعادة تسمية المحادثة</string>
-    <string name="nc_set_password">ادخل كلمة سرية</string>
+    <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_change_password">تعديل الكلمة السرية</string>
     <string name="nc_clear_password">مسح كلمة المرور</string>
     <string name="nc_share_link">مشاركة الرابط</string>
@@ -164,6 +166,10 @@
     <string name="nc_microphone_permission_permanently_denied">لتمكين الاتصال الصوتي ، يرجى منح وصول \"الميكروفون\" في إعدادات النظام.</string>
     <string name="nc_permissions_settings">فتح الإعدادات</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s اتصال صوتي</string>
+    <string name="nc_call_video">%s اتصال فيديو</string>
+    <string name="nc_call_unknown">%s اتصال</string>
     <string name="nc_call_incoming">واردة</string>
     <string name="nc_call_ringing">يرن </string>
     <string name="nc_connecting_call">جارٍ الاتصال…</string>
@@ -273,9 +279,7 @@
     <string name="nc_file_browser_back">العودة</string>
     <string name="nc_file_browser_refresh">تحديث</string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
-
     <!-- Lobby -->
-
     <string name="nc_webinar">ويبنار</string>
     <string name="nc_lobby">ساحة الانتظار</string>
     <string name="nc_start_time">وقت البدء</string>
@@ -306,7 +310,6 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">رفع الملف المحلي</string>
-    <string name="nc_upload_from_nextcloud">مشاركة من نكست كلاود</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
@@ -315,5 +318,12 @@
 
     <string name="nc_settings_phone_book_integration_desc">قم بمطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصار التحدث في دفتر الهاتف</string>
     <string name="nc_settings_phone_book_integration_title">ارتباط دفتر الهاتف</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">رقم الهاتف</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">بإمكانك تعيين رقم هاتفك حتى يتمكن المستخدمون الآخرون من العثور عليك</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">رقم الهاتف غير صحيح </string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">تم تعيين رقم الهاتف بنجاح </string>
     <string name="no_phone_book_integration_due_to_permissions">لا يوجد ارتباط بدفتر الهاتف بسبب الصلاحيات المفقودة</string>
+    <string name="nc_phone_book_integration_chat_via">المحادثة عبر %s</string>
+    <string name="nc_phone_book_integration_account_not_found">الحساب غير موجود </string>
+
     </resources>
