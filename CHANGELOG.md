@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
 ## [UNRELEASED]
+### Added
+- edit profile information and privacy settings
+
 ### Changed
 - improve conversation list design wand dark/light theming
 
@@ -31,4 +34,3 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 - delete messages (requires Talk 11.1 on server)
 - UI-improvements for call screens
 - new ringtone for outgoing calls
-
