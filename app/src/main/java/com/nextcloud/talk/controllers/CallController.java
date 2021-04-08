@@ -2363,11 +2363,9 @@ public class CallController extends BaseController {
     private String getDescriptionForCallType() {
         String appName = getResources().getString(R.string.nc_app_name);
         if (isVoiceOnlyCall){
-            return String.format(getResources().getString(R.string.nc_call_voice),
-                    getResources().getString(R.string.nc_app_name));
+            return String.format(getResources().getString(R.string.nc_call_voice), appName);
         } else {
-            return String.format(getResources().getString(R.string.nc_call_video),
-                    getResources().getString(R.string.nc_app_name));
+            return String.format(getResources().getString(R.string.nc_call_video), appName);
         }
     }
 

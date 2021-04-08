@@ -28,7 +28,7 @@ import org.parceler.Parcel;
 @Parcel
 @Data
 @JsonObject
-class ThemingCapability {
+public class ThemingCapability {
     @JsonField(name = "name")
     String name;
 
