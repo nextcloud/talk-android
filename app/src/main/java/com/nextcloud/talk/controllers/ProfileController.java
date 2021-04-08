@@ -83,6 +83,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -776,7 +777,12 @@ public class ProfileController extends BaseController {
 
             if (!TextUtils.isEmpty(item.text) || controller.edit) {
                 holder.container.setVisibility(View.VISIBLE);
-                holder.text.setTextColor(Color.BLACK);
+                if (controller.getActivity() != null) {
+                    holder.text.setTextColor(ContextCompat.getColor(
+                            controller.getActivity(),
+                            R.color.conversation_item_header)
+                    );
+                }
 
                 if (controller.edit &&
                         controller.editableFields.contains(item.field.toString().toLowerCase(Locale.ROOT))) {
