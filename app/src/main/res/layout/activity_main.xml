@@ -50,7 +50,6 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/appbar"
             android:theme="?attr/actionBarPopupTheme"
-            app:contentInsetStartWithNavigation="16dp"
             app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
             app:navigationIconTint="@color/fontAppbar"
             app:popupTheme="@style/appActionBarPopupMenu"
