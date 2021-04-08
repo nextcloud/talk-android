@@ -297,6 +297,11 @@ public class ProfileController extends BaseController {
                 });
     }
 
+    @Override
+    protected String getTitle() {
+        return getResources().getString(R.string.nc_profile_personal_info_title);
+    }
+
     private void showUserProfile() {
         if (getActivity() == null) {
             return;
