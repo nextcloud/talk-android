@@ -464,7 +464,6 @@ public class ProfileController extends BaseController {
                                 item.text = userInfo.getValueByField(item.field);
                                 Toast.makeText(getApplicationContext(),
                                         String.format(getResources().getString(R.string.failed_to_save),
-                                                item.text,
                                                 item.field),
                                         Toast.LENGTH_LONG).show();
                                 adapter.updateFilteredList();
