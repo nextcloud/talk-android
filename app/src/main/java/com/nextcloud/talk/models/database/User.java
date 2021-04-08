@@ -222,4 +222,37 @@ public interface User extends Parcelable, Persistable, Serializable {
         }
         return "";
     }
+
+    // TODO later avatar can also be checked via user fields, for now it is in Talk capability
+    default boolean isAvatarEndpointAvailable() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                return (capabilities != null &&
+                        capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getFeatures() != null &&
+                        capabilities.getSpreedCapability().getFeatures().contains("temp-user-avatar-api"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    default boolean canEditScopes() {
+        if (getCapabilities() != null) {
+            Capabilities capabilities;
+            try {
+                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                return (capabilities != null &&
+                        capabilities.getProvisioningCapability() != null &&
+                        capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() != null &&
+                        capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() > 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
 }

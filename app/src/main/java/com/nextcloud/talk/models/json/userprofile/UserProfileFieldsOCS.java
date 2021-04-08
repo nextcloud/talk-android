@@ -2,8 +2,8 @@
  *
  *   Nextcloud Talk application
  *
- *   @author Mario Danic
- *   Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ *   @author Tobias Kaminsky
+ *   Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,24 +18,24 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.dagger.modules;
+package com.nextcloud.talk.models.json.userprofile;
 
-import android.content.Context;
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.generic.GenericOCS;
 
-import androidx.annotation.NonNull;
-import dagger.Module;
-import dagger.Provides;
+import org.parceler.Parcel;
 
-@Module
-public class ContextModule {
-    private final Context context;
+import java.util.ArrayList;
 
-    public ContextModule(@NonNull final Context context) {
-        this.context = context;
-    }
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-    @Provides
-    public Context provideContext() {
-        return context;
-    }
+@EqualsAndHashCode(callSuper = true)
+@Parcel
+@Data
+@JsonObject
+public class UserProfileFieldsOCS extends GenericOCS {
+    @JsonField(name = "data")
+    ArrayList<String> data;
 }

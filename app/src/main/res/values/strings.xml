@@ -168,8 +168,7 @@
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_conversation_default">Please confirm your intent to remove the conversation.</string>
-    <string name="nc_delete_conversation_one2one">If you delete the conversation, it will also be
-        deleted for %1$s.</string>
+    <string name="nc_delete_conversation_one2one">If you delete the conversation, it will also be deleted for %1$s.</string>
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
 
     <string name="nc_new_conversation">New conversation</string>
@@ -198,8 +197,7 @@
     <string name="nc_incoming_call">Incoming call from</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call">New public conversation</string>
-    <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a
-        specially crafted link.</string>
+    <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
     <string name="nc_call_reconnecting">Reconnecting…</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
@@ -218,13 +216,11 @@
     <string name="nc_mute_calls">Mute calls</string>
     <string name="nc_mute_calls_desc">Incoming calls will be silenced</string>
     <string name="nc_important_conversation">Important conversation</string>
-    <string name="nc_important_conversation_desc">Notifications in this conversation will override
-        Do Not Disturb settings</string>
+    <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, something went wrong!</string>
-    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile
-        phones. You may attempt to join the conversation via web browser.</string>
+    <string name="nc_failed_signaling_settings">Target server does not support joining public conversations via mobile phones. You may attempt to join the conversation via web browser.</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Conversation name</string>
@@ -347,19 +343,51 @@
 
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
-    <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut in phone book</string>
-    <string name="nc_settings_phone_book_integration_title">Phone book integration</string>
+    <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
+    <string name="nc_settings_phone_book_integration_title">Phone number integration</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Phone number</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so
-        other users will be able to find you</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">You can set your phone number so other users will be able to find you</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Invalid phone number</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Phone number set successfully</string>
-    <string name="no_phone_book_integration_due_to_permissions">No phone book integration due to missing permissions</string>
+    <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
+   
+    <string name="avatar">Avatar</string>
+    <string name="account_icon">Account icon</string>
+    <string name="userinfo_no_info_headline">No personal info set</string>
+    <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
+    <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
+    <string name="user_info_phone">Phone number</string>
+    <string name="user_info_email">E-mail</string>
+    <string name="user_info_address">Address</string>
+    <string name="user_info_website">Website</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Full name</string>
+    <string name="file_list_folder">folder</string>
+    <string name="file_list_loading">Loading…</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
+    <string name="choose_avatar_from_cloud">Choose avatar from cloud</string>
+    <string name="delete_avatar">Delete avatar</string>
+    <string name="scope_private_title">Private</string>
+    <string name="scope_private_description">Only visible to people matched via phone number integration through Talk on mobile</string>
+    <string name="lock_symbol">Lock symbol</string>
+    <string name="scope_local_title">Local</string>
+    <string name="scope_local_description">Only visible to people on this instance and guests</string>
+    <string name="scope_federated_title">Federated</string>
+    <string name="scope_federated_description">Only synchronize to trusted servers</string>
+    <string name="scope_published_title">Published</string>
+    <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
+    <string name="scope_toggle">Scope toggle</string>
+    
+    <!-- App Bar -->
+    <string name="appbar_search_in">Search in %s</string>
 
     <!-- Non-translatable strings -->
-    <string name="path_password_strike_through" translatable="false"
-        tools:override="true">M3.27,4.27L19.74,20.74</string>
+    <string name="path_password_strike_through" translatable="false" tools:override="true">M3.27,4.27L19.74,20.74</string>
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
+    <string name="nc_action_open_main_menu">Open main menu</string>
+    <string name="failed_to_save">Failed to save %1$s</string>
 </resources>

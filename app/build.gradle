@@ -62,6 +62,7 @@ android {
         lintOptions {
             disable 'InvalidPackage'
             disable 'MissingTranslation'
+            disable 'VectorPath'
         }
 
         javaCompileOptions {
@@ -239,6 +240,10 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:lifecycle:3.1.0'
 
     implementation 'com.google.code.gson:gson:2.8.6'
+
+    //implementation 'com.github.dhaval2404:imagepicker:1.8'
+    implementation 'com.github.tobiaskaminsky:ImagePicker:extraFile-SNAPSHOT'
+    implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:3.0.0'

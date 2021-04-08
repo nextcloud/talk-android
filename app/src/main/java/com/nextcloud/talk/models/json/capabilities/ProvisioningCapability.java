@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * @author Tobias Kaminsky
+ * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.interfaces
+package com.nextcloud.talk.models.json.capabilities;
 
-interface SelectionInterface {
-    fun toggleBrowserItemSelection(path: String)
+import com.bluelinelabs.logansquare.annotation.JsonField;
+import com.bluelinelabs.logansquare.annotation.JsonObject;
 
-    fun isPathSelected(path: String): Boolean
+import org.parceler.Parcel;
 
-    fun shouldOnlySelectOneImageFile(): Boolean
+import lombok.Data;
+
+@Parcel
+@Data
+@JsonObject
+public class ProvisioningCapability {
+    @JsonField(name = "AccountPropertyScopesVersion")
+    Integer accountPropertyScopesVersion;
 }

@@ -22,9 +22,6 @@ package com.nextcloud.talk.utils;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import androidx.annotation.DimenRes;
-import androidx.annotation.Nullable;
-
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -33,6 +30,8 @@ import com.nextcloud.talk.models.RetrofitBucket;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.DimenRes;
+import androidx.annotation.Nullable;
 import okhttp3.Credentials;
 
 public class ApiUtils {
@@ -302,5 +301,13 @@ public class ApiUtils {
 
     public static String getUrlForMessageDeletion(String baseUrl, String token, String messageId) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token + "/" + messageId;
+    }
+
+    public static String getUrlForTempAvatar(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/apps/spreed/temp-user-avatar";
+    }
+
+    public static String getUrlForUserFields(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/cloud/user/fields";
     }
 }
