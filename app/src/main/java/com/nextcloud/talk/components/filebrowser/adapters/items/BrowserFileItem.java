@@ -43,14 +43,19 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DateUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
-import javax.inject.Inject;
-import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHolder> implements IFilterable<String> {
@@ -123,6 +128,16 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
             holder.fileFavoriteImageView.setVisibility(View.VISIBLE);
         } else {
             holder.fileFavoriteImageView.setVisibility(View.GONE);
+        }
+
+        if (selectionInterface.shouldOnlySelectOneImageFile()) {
+            if (browserFile.isFile && browserFile.mimeType.startsWith("image/")) {
+                holder.selectFileCheckbox.setVisibility(View.VISIBLE);
+            } else {
+                holder.selectFileCheckbox.setVisibility(View.GONE);
+            }
+        } else {
+            holder.selectFileCheckbox.setVisibility(View.VISIBLE);
         }
 
         holder.fileIconImageView.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFile.getMimeType())));
