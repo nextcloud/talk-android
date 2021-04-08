@@ -34,11 +34,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
-import androidx.emoji.widget.EmojiTextView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -50,15 +45,20 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
+import androidx.core.content.ContextCompat;
+import androidx.emoji.widget.EmojiTextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
         IFilterable<String> {
@@ -146,6 +146,19 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         ContextCompat.getColor(context, R.color.conversation_unread_bubble_text));
             }
         } else {
+            holder.dialogName.setTypeface(
+                    holder.dialogName.getTypeface(),
+                    Typeface.NORMAL
+            );
+            holder.dialogDate.setTypeface(
+                    holder.dialogDate.getTypeface(),
+                    Typeface.NORMAL
+            );
+            holder.dialogLastMessage.setTypeface(
+                    holder.dialogLastMessage.getTypeface(),
+                    Typeface.NORMAL
+            );
+
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
