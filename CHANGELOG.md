@@ -7,6 +7,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
 ## [UNRELEASED]
 ### Added
+- edit profile information and privacy settings
 
 ### Changed
 - improve conversation list design and dark/light theming (@AndyScherzinger)
