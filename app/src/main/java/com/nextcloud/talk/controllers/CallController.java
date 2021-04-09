@@ -1655,6 +1655,8 @@ public class CallController extends BaseController {
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSesssions = new HashSet<>();
 
+        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
+
         for (HashMap<String, Object> participant : users) {
             if (!participant.get("sessionId").equals(callSession)) {
                 Object inCallObject = participant.get("inCall");
@@ -1692,8 +1694,6 @@ public class CallController extends BaseController {
         if (newSessions.size() > 0 && !hasMCU) {
             getPeersForCall();
         }
-
-        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
 
         for (String sessionId : newSessions) {
             getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", hasMCU && sessionId.equals(webSocketClient.getSessionId()));
