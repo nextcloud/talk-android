@@ -54,4 +54,5 @@
     <dimen name="standard_padding">16dp</dimen>
     <dimen name="standard_half_padding">8dp</dimen>
     <dimen name="standard_half_margin">8dp</dimen>
+    <dimen name="default_login_width">400dp</dimen>
 </resources>
