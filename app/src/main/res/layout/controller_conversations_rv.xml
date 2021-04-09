@@ -25,42 +25,68 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in" />
+    <LinearLayout
+        android:id="@+id/loading_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
+
+        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
+
+        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
+
+        <include layout="@layout/rv_item_conversation_with_last_message_shimmer" />
+
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/emptyLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <ImageView
-            android:id="@+id/noConversationsImageView"
-            android:layout_width="72dp"
+            android:id="@+id/empty_list_icon"
+            android:layout_width="match_parent"
             android:layout_height="72dp"
-            android:layout_centerInParent="true"
+            android:contentDescription="@string/nc_app_name"
             android:src="@drawable/ic_logo"
-            android:tint="@color/colorPrimary" />
+            app:tint="#989898" />
 
         <TextView
-            android:id="@+id/sendHiTextView"
+            android:id="@+id/empty_list_view_headline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/noConversationsImageView"
-            android:layout_margin="8dp"
+            android:layout_below="@id/empty_list_icon"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingTop="@dimen/standard_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
             android:text="@string/nc_conversations_empty"
             android:textAlignment="center"
-            android:textSize="20sp" />
+            android:textColor="@color/conversation_item_header"
+            android:textSize="22sp" />
+
+        <TextView
+            android:id="@+id/empty_list_view_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/empty_list_view_headline"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:paddingTop="@dimen/standard_half_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
+            android:text="@string/nc_conversations_empty_details"
+            android:textAlignment="center"
+            android:textColor="@color/textColorMaxContrast"
+            android:textSize="16sp" />
     </RelativeLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
