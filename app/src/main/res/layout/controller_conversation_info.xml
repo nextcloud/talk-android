@@ -23,7 +23,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:card_view="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -56,7 +55,8 @@
                 android:animateLayoutChanges="true"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp">
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -68,7 +68,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/avatar_image"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_between_elements" />
+                        android:layout_marginTop="@dimen/margin_between_elements"
+                        tools:text="Jane Doe" />
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/avatar_image"
@@ -87,7 +88,8 @@
                 android:layout_below="@id/conversation_info_name"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp">
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/favoriteConversationAction"
@@ -129,7 +131,8 @@
                 android:layout_below="@id/participants_list_category"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
-                apc:cardElevation="0dp">
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/leaveConversationAction"
@@ -154,14 +157,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/otherRoomOptions"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible" />
 
             <include
                 layout="@layout/webinar_info_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/notification_settings"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
