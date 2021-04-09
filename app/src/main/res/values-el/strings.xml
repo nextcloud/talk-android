@@ -143,8 +143,6 @@
     <string name="nc_delete_call">Διαγραφή συνομιλίας</string>
     <string name="nc_delete">Διαγραφή</string>
     <string name="nc_delete_conversation_default">Παρακαλώ επιβεβαιώστε την πρόθεσή σας να αφαιρέσετε τη συνομιλία.</string>
-    <string name="nc_delete_conversation_one2one">Εάν διαγράψετε τη συνομιλία, θα διαγραφεί
-        επίσης για %1$s.</string>
     <string name="nc_delete_conversation_more">Αν διαγράψετε την συνομιλία, θα διαγραφεί επίσης για όλους τους υπόλοιπους συμμετέχοντες.</string>
 
     <string name="nc_new_conversation">Νέα συνομιλία</string>
@@ -167,8 +165,6 @@
     <string name="nc_incoming_call">Εισερχόμενη κλήση από</string>
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
-    <string name="nc_public_call_explanation">Η δημόσια συζήτηση σας επιτρέπει να προσκαλέσετε άτομα μέσω 
-ειδίκού συνδέσμου.</string>
     <string name="nc_call_timeout">Πέρασαν 45 δεύτερα, δοκιμάστε ξανά</string>
     <string name="nc_call_reconnecting">Επανασύνδεση...</string>
     <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
@@ -187,13 +183,8 @@
     <string name="nc_mute_calls">Σίγαση κλήσεων</string>
     <string name="nc_mute_calls_desc">Οι εισερχόμενες κλήσεις θα τεθούν σε σίγαση</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
-    <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν
-        τις ρυθμίσεις Μην ενοχλείτε</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
-    <string name="nc_failed_signaling_settings">Ο υπόψη διακομιστής δεν υποστηρίζει την σύνδεση στις δημόσιες συζητήσεις από κινητά 
-τηλέφωνα. Προσπαθήστε να συνδεθείτε μέσω φυλλομετρητή.</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
@@ -304,6 +295,4 @@
     <!-- Upload -->
     <string name="nc_upload_local_file">Μεταφόρτωση τοπικού αρχείου</string>
     <string name="nc_upload_choose_local_files">Επιλογή αρχείων</string>
-    <string name="nc_settings_phone_book_integration_title">Ενσωμάτωση τηλεφωνικού καταλόγου </string>
-    <string name="no_phone_book_integration_due_to_permissions">Αδύνατη η ενσωμάτωση τηλεφωνικού καταλόγου λόγω έλλειψης δικαιωμάτων</string>
     </resources>

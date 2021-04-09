@@ -148,7 +148,6 @@
     <string name="nc_delete_call">احذف المحادثة</string>
     <string name="nc_delete">حذف </string>
     <string name="nc_delete_conversation_default">من فضلك قم بالتأكيد على رغبتك بازالة المحادثة.</string>
-    <string name="nc_delete_conversation_one2one">إذا قمت بحذف المحادثة، سوف تحذف أيضا لدى %1$s.</string>
     <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
 
     <string name="nc_new_conversation">محادثة جديدة</string>
@@ -177,7 +176,6 @@
     <string name="nc_incoming_call">مكالمة واردة مِن</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_public_call">محادثة عمومية جديدة</string>
-    <string name="nc_public_call_explanation">المحادثات العامة تمكنك من إضافة أشخاص من الخارج عبر رابط معد خصيصًا</string>
     <string name="nc_call_timeout">لا يوجد استجابة خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
     <string name="nc_call_reconnecting">إعادة الاتصال...</string>
     <string name="nc_offline">غير متصل حاليًا، من فضلك التأكد من الاتصال بالانترنت</string>
@@ -196,11 +194,8 @@
     <string name="nc_mute_calls">كتم المكالمات</string>
     <string name="nc_mute_calls_desc">سوف تكون المكالمات الواردة على الوضع الصامت</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
-    <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة سيتم تجاوزها. إعدادات الرجاء عدم الإزعاج</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
-    <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_all_ok_operation">تم!</string>
     <string name="nc_ok">موافق</string>
     <string name="nc_call_name">اسم المحادثة</string>
@@ -316,14 +311,10 @@
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
     <string name="nc_upload_in_progess">جاري الرفع...</string>
 
-    <string name="nc_settings_phone_book_integration_desc">قم بمطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصار التحدث في دفتر الهاتف</string>
-    <string name="nc_settings_phone_book_integration_title">ارتباط دفتر الهاتف</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">رقم الهاتف</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">بإمكانك تعيين رقم هاتفك حتى يتمكن المستخدمون الآخرون من العثور عليك</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">رقم الهاتف غير صحيح </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">تم تعيين رقم الهاتف بنجاح </string>
-    <string name="no_phone_book_integration_due_to_permissions">لا يوجد ارتباط بدفتر الهاتف بسبب الصلاحيات المفقودة</string>
     <string name="nc_phone_book_integration_chat_via">المحادثة عبر %s</string>
     <string name="nc_phone_book_integration_account_not_found">الحساب غير موجود </string>
-
+   
     </resources>

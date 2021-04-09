@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
-    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch
-       entfernt für %1$s.</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
 
     <string name="nc_new_conversation">Neue Unterhaltung</string>
@@ -178,8 +176,6 @@
     <string name="nc_incoming_call">Eingehender Anruf von</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
-    <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über 
- einen speziellen Link eingeladen werden.</string>
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_offline">Aktuell offline, bitte die Verbindung prüfen</string>
@@ -198,13 +194,8 @@
     <string name="nc_mute_calls">Anrufe stummschalten</string>
     <string name="nc_mute_calls_desc">Eingehende Anrufe werden stummgeschaltet</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
-    <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben
-        Nicht-Stören-Einstellungen</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
-    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt nicht das Beitreten in öffentliche Unterhaltungen durch Mobiltelefone.
-        Probieren Sie mit einem Internetbrowser der Unterhaltung beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -283,6 +274,8 @@
     <string name="nc_file_browser_back">Zurück</string>
     <string name="nc_file_browser_refresh">Aktualisieren</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Sie dürfen diese Datei nicht weiterteilen</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Online-Seminar</string>
     <string name="nc_lobby">Lobby</string>
@@ -314,21 +307,21 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
+    <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
     <string name="nc_upload_failed">Hochladen leider fehlgeschlagen</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
     <string name="nc_upload_in_progess">Wird hochgeladen</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
-    <string name="nc_settings_phone_book_integration_title">Telefonbuch-Einbindung</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonnummer</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Sie können Ihre Telefonnummer so
-        einstellen, dass andere Benutzer Sie finden können</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ungültige Telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummerneingabe erfolgreich</string>
-    <string name="no_phone_book_integration_due_to_permissions">Keine Telefonbuch-Einbindung aufgrund fehlender Berechtigungen</string>
     <string name="nc_phone_book_integration_chat_via">Chatten über %s</string>
     <string name="nc_phone_book_integration_account_not_found">Konto nicht gefunden</string>
+   
+    <!-- App Bar -->
+    <string name="appbar_search_in">Suche in %s</string>
 
+    <string name="nc_action_open_main_menu">Hauptmenü öffnen</string>
     </resources>

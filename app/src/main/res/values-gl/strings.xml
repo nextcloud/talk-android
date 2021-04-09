@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Eliminar a conversa</string>
     <string name="nc_delete">Eliminar</string>
     <string name="nc_delete_conversation_default">Confirme a súa intención de retirar a conversa.</string>
-    <string name="nc_delete_conversation_one2one">Se elimina a conversa, tamén se eliminará
-        para %1$s.</string>
     <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
@@ -174,8 +172,6 @@
     <string name="nc_incoming_call">Chamada entrante de</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_public_call">Nova conversa pública</string>
-    <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fora
-mediante unha ligazón creada especialmente.</string>
     <string name="nc_call_timeout">Se non hai resposta en 45 segundos, toque para tentalo de novo</string>
     <string name="nc_call_reconnecting">Volvendo conectar…</string>
     <string name="nc_offline">Non ten conexión, verifique a súa conectividade</string>
@@ -194,13 +190,8 @@ mediante unha ligazón creada especialmente.</string>
     <string name="nc_mute_calls">Silenciar as chamadas</string>
     <string name="nc_mute_calls_desc">As chamadas entrantes serán silenciadas</string>
     <string name="nc_important_conversation">Conversa importante</string>
-    <string name="nc_important_conversation_desc">As notificacións nesta conversa serán anuladas
-        Axustes de «Non molestar»</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
-    <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos
-móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_all_ok_operation">Conforme, todo feito!</string>
     <string name="nc_ok">Aceptar</string>
     <string name="nc_call_name">Nome da conversa</string>
@@ -316,12 +307,7 @@ móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
     <string name="nc_upload_in_progess">enviando</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na axenda telefónica</string>
-    <string name="nc_settings_phone_book_integration_title">Integración da axenda de teléfonos</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de teléfono</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode establecer o seu número de teléfono para
-        que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
-    <string name="no_phone_book_integration_due_to_permissions">Non hai integración da axenda de teléfonos por mor da falta de permisos</string>
     </resources>

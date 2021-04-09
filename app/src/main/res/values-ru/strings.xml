@@ -146,8 +146,6 @@
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
     <string name="nc_delete_conversation_default">Подтвердите удаление обсуждения.</string>
-    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также
- удалена у %1$s.</string>
     <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
 
     <string name="nc_new_conversation">Новая беседа</string>
@@ -172,7 +170,6 @@
     <string name="nc_incoming_call">Входящий вызов от</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_public_call">Начать открытую беседу</string>
-    <string name="nc_public_call_explanation">Открытые беседы позволяют приглашать участников при помощи специальной ссылки.</string>
     <string name="nc_call_timeout">Нет ответа в течение 45 секунд, нажмите, чтобы повторить попытку</string>
     <string name="nc_call_reconnecting">Переподключение...</string>
     <string name="nc_offline">Нет подключения к сети, пожалуйста, проверьте ваше соединение</string>
@@ -191,12 +188,8 @@
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
     <string name="nc_mute_calls_desc">Оповещение о входящих вызовах отключено.</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
-    <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над 
-настройками режима \"Не беспокоить\" </string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
-    <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте войти присоединиться к беседе используя браузер на ПК.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
     <string name="nc_call_name">Наименование беседы</string>
@@ -311,7 +304,4 @@
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
     <string name="nc_upload_in_progess">передача на сервер</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в записной книге</string>
-    <string name="nc_settings_phone_book_integration_title">Интеграция с записной книгой</string>
-    <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию с записной книгой</string>
     </resources>

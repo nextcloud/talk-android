@@ -152,8 +152,6 @@
     <string name="nc_incoming_call">שיחה נכנסת מאת</string>
     <string name="nc_nick_guest">אורח/ת</string>
     <string name="nc_public_call">דיון ציבורי חדש</string>
-    <string name="nc_public_call_explanation">שיחות פומביות מאפשרות לך להזמין אנשים מבחוץ דרך
-קישור בעל מבנה מיוחד.</string>
     <string name="nc_call_timeout">אין תגובה תוך 45 שניות, יש לגעת כדי לנסות שוב</string>
     <string name="nc_call_reconnecting">התחברות מחדש…</string>
     <string name="nc_offline">אין חיבור כרגע, נא לבדוק את הקישוריות שלך</string>
@@ -173,8 +171,6 @@
     <string name="nc_important_conversation">דיון חשוב</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
-    <string name="nc_failed_signaling_settings">שרת היעד אינו תומך בהצטרפות לדיונים ציבוריים דרך טלפונים ניידים. יש לך
-        אפשרות להצטרף לדיון דרך דפדפן במחשב.</string>
     <string name="nc_all_ok_operation">סבבה, הכול בוצע!</string>
     <string name="nc_ok">אישור</string>
     <string name="nc_call_name">שם הדיון</string>

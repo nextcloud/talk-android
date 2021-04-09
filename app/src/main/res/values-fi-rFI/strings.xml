@@ -269,6 +269,4 @@
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
     <string name="nc_upload_in_progess">lähetetään</string>
 
-    <string name="nc_settings_phone_book_integration_title">Puhelinluettelo-integraatio</string>
-    <string name="no_phone_book_integration_due_to_permissions">Ei puhelinluettelon integraatiota puuttuvien käyttöoikeuksien takia</string>
     </resources>

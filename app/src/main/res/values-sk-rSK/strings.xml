@@ -145,8 +145,6 @@
     <string name="nc_delete_call">Zmazať rozhovor</string>
     <string name="nc_delete">Zmazať</string>
     <string name="nc_delete_conversation_default">Potvrďte prosím, že naozaj chcete zmazať rozhovor</string>
-    <string name="nc_delete_conversation_one2one">Ak zmažete tento rozhovor, ibude takisto
-        zmazaný pre %1$s.</string>
     <string name="nc_delete_conversation_more">Ak zmažete rozhovor, bude takisto zmazaný pre všetkých ostatných zúčastnených</string>
 
     <string name="nc_new_conversation">Nový rozhovor</string>
@@ -171,8 +169,6 @@
     <string name="nc_incoming_call">Prichádzajúci hovor od</string>
     <string name="nc_nick_guest">Hosť</string>
     <string name="nc_public_call">Nový verejný rozhovor</string>
-    <string name="nc_public_call_explanation">Verejné rozhovory Vám umožňujú pozvať ľudí z vonku cez špeciálne
- vytvorený odkaz.</string>
     <string name="nc_call_timeout">Žiadna odpoveď počas 45 sekúnd, ťuknite a skúste znova</string>
     <string name="nc_call_reconnecting">Opätovné pripájanie...</string>
     <string name="nc_offline">Práve ste odpojený. Prosím, skontrolujte vaše pripojenie.</string>
@@ -192,8 +188,6 @@
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
-    <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil 
-         Môžete sa pokúsiť pripojiť na rozhovor cez webový prehliadač.</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Názov rozhovoru</string>

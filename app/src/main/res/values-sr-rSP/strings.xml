@@ -152,8 +152,6 @@
     <string name="nc_incoming_call">Dolazni poziv od</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_public_call">Novi javni razgovor</string>
-    <string name="nc_public_call_explanation">Javni razgovori Vam dozvoljavaju da pozovete ljude spolja kroz
-        specijalno napravljenu vezu za njih.</string>
     <string name="nc_call_timeout">Nema odgovora u 45 sekundi, pritisnite da probate ponovo</string>
     <string name="nc_call_reconnecting">Ponovo se povezujem…</string>
     <string name="nc_offline">Trenutno van mreže, proverite da li imate internet</string>
@@ -173,8 +171,6 @@
     <string name="nc_important_conversation">Bitan razgovor</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Izvinjavamo se, nešto je pošlo naopako!</string>
-    <string name="nc_failed_signaling_settings">Odredišni server ne podržava pridruživanje javnim sobama preko mobilnog telefona.
-        Možete probati da se pridružite razgovoru preko veb čitača.</string>
     <string name="nc_all_ok_operation">U redu, sve gotovo!</string>
     <string name="nc_ok">U redu</string>
     <string name="nc_call_name">Naziv razgovora</string>

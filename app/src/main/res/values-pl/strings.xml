@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
     <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
-    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, zostanie ona również
-        usunięta dla %1$s.</string>
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
 
     <string name="nc_new_conversation">Nowa rozmowa</string>
@@ -178,8 +176,6 @@
     <string name="nc_incoming_call">Połączenie przychodzące od </string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
-    <string name="nc_public_call_explanation">Rozmowy publiczne pozwalają zapraszać ludzi z zewnątrz 
-        poprzez specjalnie przygotowany link.</string>
     <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, stuknij aby spróbować ponownie</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
@@ -198,13 +194,8 @@
     <string name="nc_mute_calls">Wycisz połączenia</string>
     <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
-    <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują
-        ustawienia \"Nie przeszkadzać\"</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>
-    <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe.
-        Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
@@ -283,6 +274,8 @@
     <string name="nc_file_browser_back">Wstecz</string>
     <string name="nc_file_browser_refresh">Odśwież</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Nie możesz ponownie udostępnić tego pliku</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Poczekalnia</string>
@@ -314,21 +307,21 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
+    <string name="nc_upload_from_cloud">Udostępnij z %1$s</string>
     <string name="nc_upload_failed">Wysyłanie nie powiodło się</string>
     <string name="nc_upload_choose_local_files">Wybierz plik</string>
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
     <string name="nc_upload_in_progess">wysyłanie</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk w książce telefonicznej</string>
-    <string name="nc_settings_phone_book_integration_title">Integracja książki telefonicznej</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numer telefonu</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić numer telefonu,
- inni użytkownicy będą mogli go znaleźć</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numer telefonu ustawiony pomyślnie</string>
-    <string name="no_phone_book_integration_due_to_permissions">Brak integracji książki telefonicznej z powodu braku uprawnień</string>
     <string name="nc_phone_book_integration_chat_via">Rozmawiaj przez %s</string>
     <string name="nc_phone_book_integration_account_not_found">Nie znaleziono konta</string>
+   
+    <!-- App Bar -->
+    <string name="appbar_search_in">Szukaj w %s</string>
 
+    <string name="nc_action_open_main_menu">Otwórz menu główne</string>
     </resources>

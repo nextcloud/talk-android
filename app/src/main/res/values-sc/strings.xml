@@ -146,8 +146,6 @@
     <string name="nc_delete_call">Cantzella tzarrada</string>
     <string name="nc_delete">Cantzella</string>
     <string name="nc_delete_conversation_default">Cunfirma s\'intentzione tua de nde bogare sa tzarrada.</string>
-    <string name="nc_delete_conversation_one2one">Si cantzellas sa tzarrada, at a èssere cantzellada
-        puru pro %1$s.</string>
     <string name="nc_delete_conversation_more">Si cantzellas sa tzarrada, at a èssere cantzellada puru pro su restu de partetzipantes.</string>
 
     <string name="nc_new_conversation">Tzarrada noa</string>
@@ -170,8 +168,6 @@
     <string name="nc_incoming_call">Mutida in intrada dae</string>
     <string name="nc_nick_guest">Òspite</string>
     <string name="nc_public_call">Tzarrada pùblica noa</string>
-    <string name="nc_public_call_explanation">Is tzarradas pùblicas ti faghent invitare a gente dae foras cun unu
-        ligòngiu fatu a posta.</string>
     <string name="nc_call_timeout">Peruna risposta in 45 segundos, toca pro torrare a proare</string>
     <string name="nc_call_reconnecting">Torrende a connètere...</string>
     <string name="nc_offline">Foras de lìnia, controlla sa connessione tua</string>
@@ -190,13 +186,8 @@
     <string name="nc_mute_calls">Pone is mutidas a sa muda</string>
     <string name="nc_mute_calls_desc">In mutidas in intrada ant a èssere a sa muda</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
-    <string name="nc_important_conversation_desc">Is notìficas de custa tzarrada ant a èssere ignoradas
-        Cunfiguratzione No istorbare</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
-    <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una tzarrada pùblica cun telèfonos mòbiles.
-        Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_all_ok_operation">AB, fatu!</string>
     <string name="nc_ok">AB</string>
     <string name="nc_call_name">Nùmene tzarrada</string>

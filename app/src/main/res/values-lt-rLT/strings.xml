@@ -138,8 +138,6 @@
     <string name="nc_incoming_call">Gaunamasis skambutis nuo</string>
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_public_call">Naujas viešas pokalbis</string>
-    <string name="nc_public_call_explanation">Vieši pokalbiai leidžia jums pakviesti žmones iš išorės per specialiai
-        sukurtą nuorodą.</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_offline">Šiuo metu atsijungta nuo interneto, patikrinkite savo ryšį</string>
@@ -155,8 +153,6 @@
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Atleiskite, kažkas nutiko!</string>
-    <string name="nc_failed_signaling_settings">Paskirties serveris nepalaiko prisijungimą prie viešų pokalbių per mobiliuosius
-        telefonus. Galite bandyti prisijungti prie pokalbio per saityno naršyklę.</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_ok">Gerai</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>

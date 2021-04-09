@@ -136,7 +136,6 @@
     <string name="nc_delete_call">مکالمه را حذف کنید</string>
     <string name="nc_delete">حذف</string>
     <string name="nc_delete_conversation_default">لطفاً قصد خود را برای حذف این مکالمه تأیید کنید.</string>
-    <string name="nc_delete_conversation_one2one">اگر مکالمه رو حذف کنید، مکالمه همچنین برای %$1s نیز حذف می‌شود</string>
     <string name="nc_delete_conversation_more">اگر این مکالمه را حذف کنید ، برای سایر شرکت کنندگان نیز حذف خواهد شد.</string>
 
     <string name="nc_new_conversation">مکالمه جدید</string>
@@ -159,7 +158,6 @@
     <string name="nc_incoming_call">تماس ورودی از</string>
     <string name="nc_nick_guest">مهمان</string>
     <string name="nc_public_call">مکالمه عمومی جدید</string>
-    <string name="nc_public_call_explanation">مکالمات عمومی به شما امکان می دهد تا از طریق پیوندی خاص و ساخته شده، افراد را از خارج دعوت کنید.</string>
     <string name="nc_call_timeout">در  ۴۵ ثانیه پاسخی وجود نداشت ، برای آزمایش دوباره ضربه بزنید</string>
     <string name="nc_call_reconnecting">اتصال مجدد...</string>
     <string name="nc_offline">در حال حاضر آفلاین است ، لطفا اتصال خود را بررسی کنید</string>
@@ -178,11 +176,8 @@
     <string name="nc_mute_calls">بی‌صدا کردن تماسها</string>
     <string name="nc_mute_calls_desc">تماسهای ورودی نادیده گرفته می شوند</string>
     <string name="nc_important_conversation">گفتگوی مهم</string>
-    <string name="nc_important_conversation_desc">تماس ها و اعلان های پیام حتی در حالت عدم مزاحمت نشان داده می شوند (تنظیمات  پیکربندی سیستم را درحالت \"مجاز فقط قطع شدن‌های اولویت‌دار \"را دنبال کنید)</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
-    <string name="nc_failed_signaling_settings">سرور هدف پیوستن به مکالمات عمومی از طریق تلفن‌های همراه را پشتیبانی نمی‌کند. می‌توانید پیوستن به مکالمه عمومی را از طریق مرورگر وب انجام دهید.</string>
     <string name="nc_all_ok_operation">خوب ، همه انجام شد!</string>
     <string name="nc_ok">تایید</string>
     <string name="nc_call_name">نام مکالمه</string>

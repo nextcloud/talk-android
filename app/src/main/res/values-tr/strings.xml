@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete">Sil</string>
     <string name="nc_delete_conversation_default">Lütfen görüşmeyi silmek istediğinizi onaylayın.</string>
-    <string name="nc_delete_conversation_one2one">Görüşmeyi silerseniz
-        %1$s için de silinecek.</string>
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
 
     <string name="nc_new_conversation">Yeni görüşme</string>
@@ -178,8 +176,6 @@
     <string name="nc_incoming_call">Gelen görüşme çağrısı</string>
     <string name="nc_nick_guest">Konuk</string>
     <string name="nc_public_call">Herkese açık görüşme ekle</string>
-    <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı
-        ile katılabilir.</string>
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_offline">Şu anda çevrimdışı, lütfen bağlantınızı denetleyin</string>
@@ -198,13 +194,8 @@
     <string name="nc_mute_calls">Bildirimleri kapat</string>
     <string name="nc_mute_calls_desc">Gelen çağrılar sessize alınacak</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
-    <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler
-        Rahatsız Etmeyin ayarlarını değiştirecek</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
-    <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı
-        desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_ok">Tamam</string>
     <string name="nc_call_name">Görüşme adı</string>
@@ -320,15 +311,10 @@
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_in_progess">yükleniyor</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Telefon defterinde kişileri telefon numaralarına göre eşleştirerek Talk kısa yolunu görüntüler</string>
-    <string name="nc_settings_phone_book_integration_title">Telefon defteri bütünleştirmesi</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefon numarası</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Telefon numaranızı ayarlayarak
-        diğer kullanıcıların sizi bulmasını sağlayabilirsiniz</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefon numarası geçersiz</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefon numarası ayarlandı</string>
-    <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon defteri bütünleştirmesi yok</string>
     <string name="nc_phone_book_integration_chat_via">%s ile sohbet</string>
     <string name="nc_phone_book_integration_account_not_found">Hesap bulunamadı</string>
-
+   
     </resources>

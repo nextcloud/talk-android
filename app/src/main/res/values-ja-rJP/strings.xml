@@ -153,7 +153,6 @@
     <string name="nc_incoming_call">着信コール</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_public_call">新規公開会話</string>
-    <string name="nc_public_call_explanation">公開会話を使用すると、特別なリンクを介して外部からユーザーを招待できます。</string>
     <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
     <string name="nc_call_reconnecting">再接続中...</string>
     <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
@@ -173,8 +172,6 @@
     <string name="nc_important_conversation">重要な会議</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
-    <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。
-Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">会話名</string>

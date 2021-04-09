@@ -143,8 +143,6 @@
     <string name="nc_incoming_call">Innhringing símtals frá</string>
     <string name="nc_nick_guest">Gestur</string>
     <string name="nc_public_call">Nýtt opinbert samtal</string>
-    <string name="nc_public_call_explanation">Opinber samtöl gera þér kleift að bjóða fólki utan kerfisins með
-        sérstaklega útbúnum tenglum.</string>
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s á %2$s tilkynningarásinni</string>
     <string name="nc_notification_channel_calls">Rás fyrir tilkynningar um samtöl</string>
@@ -158,8 +156,6 @@
     <string name="nc_mute_calls">Þagga samtöl</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Því miður, eitthvað fór úrskeiðis!</string>
-    <string name="nc_failed_signaling_settings">Valinn þjónn styður ekki þáttöku í opinberum samtölum í gegnum farsíma.
-Þú gætir reynt að taka þátt í samtalinu í gegnum vefviðmótið í vafra.</string>
     <string name="nc_all_ok_operation">Í lagi, allt klárt!</string>
     <string name="nc_ok">Í lagi</string>
     <string name="nc_call_name">Heiti samtals</string>

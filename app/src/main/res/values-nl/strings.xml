@@ -149,8 +149,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete">Verwijderen</string>
     <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
-    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook
-        verwijderd voor %1$s.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
 
     <string name="nc_new_conversation">Nieuw gesprek</string>
@@ -179,8 +177,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_incoming_call">Inkomend gesprek van</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Nieuw openbaar gesprek</string>
-    <string name="nc_public_call_explanation">Met openbare gesprekken kun je mensen zonder account uitnodigen
-via een persoonlijke link.</string>
     <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
@@ -199,13 +195,8 @@ via een persoonlijke link.</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
     <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
-    <string name="nc_important_conversation_desc">Meldingen in dit gesprek vervangen
-        Niet-Storen instellingen</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
-    <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons.
-Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_all_ok_operation">OK, alles in orde!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Gespreksnaam</string>
@@ -322,15 +313,10 @@ Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
     <string name="nc_upload_in_progess">uploaden</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Combineer contactpersonen gebaseerd op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
-    <string name="nc_settings_phone_book_integration_title">Telefoonboek-integratie</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefoonnummer</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Je kunt je telefoonnummer instellen zodat
-      andere gebruikers je kunnen vinden</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ongeldig telefoonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefoonnummer succesvol ingesteld</string>
-    <string name="no_phone_book_integration_due_to_permissions">Geen telefoonboekintegratie wegens ontbrekende permissies</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
-
+   
     </resources>

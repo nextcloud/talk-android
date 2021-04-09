@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
     <string name="nc_delete_conversation_default">Baieztatu mesedez elkarrizketa kendu nahi duzula.</string>
-    <string name="nc_delete_conversation_one2one">Elkarrizketa ezabatzen baduzu, ezabatu egingo da
-%1$s-rentzat ere.</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
 
     <string name="nc_new_conversation">Elkarrizketa berria</string>
@@ -174,8 +172,6 @@
     <string name="nc_incoming_call">Honen sarrerako deia</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_public_call">Elkarrizketa publiko berria</string>
-    <string name="nc_public_call_explanation">Elkarrizketa publikoak bereziki sortutako esteka baten bidez kanpoko
-        jendea gonbidatzen uzten dizute.</string>
     <string name="nc_call_timeout">Ez da erantzunik egon 45 segundutan, sakatu berriro saiatzeko</string>
     <string name="nc_call_reconnecting">Berriro konektatzen...</string>
     <string name="nc_offline">Lineaz kanpo zaude momentu honetan, mesedez egiaztatu zure konexioa</string>
@@ -194,14 +190,8 @@
     <string name="nc_mute_calls">Mututu deiak</string>
     <string name="nc_mute_calls_desc">Sarrerako deiak isilduko dira</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
-    <string name="nc_important_conversation_desc">Elkarrizketa honen jakinarazpenei entzungor egingo zaie
-Ez Molestatu modua</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
-    <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du mugikorraren bidez elkarrizketa
-        publikoetara elkartzea onartzen phones. Elkarrizketara web
-        nabigatzaile baten bidez elkartzen saiatu zaitezke.</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
     <string name="nc_ok">Ados</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
@@ -317,12 +307,7 @@ Ez Molestatu modua</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
     <string name="nc_upload_in_progess">igotzen</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Lotu kontaktuak telefono zenbakian oinarrituta, Talk lasterbideak integratzeko telefono zerrendan</string>
-    <string name="nc_settings_phone_book_integration_title">Telefono zerrendan integratzea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu
-           beste erabiltzaile batzuek aurkitu ahal izango zaituzte</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono zenbakia ondo ezarri da</string>
-    <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zerrenda integratu, baimen falta dela eta</string>
     </resources>

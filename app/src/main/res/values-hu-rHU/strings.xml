@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete">Törlés</string>
     <string name="nc_delete_conversation_default">Erősítse meg szándékát, hogy eltávolítja a beszélgetést.</string>
-    <string name="nc_delete_conversation_one2one">Ha törli a beszélgetést, akkor %1$s
-        számára is törölve lesz.</string>
     <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
 
     <string name="nc_new_conversation">Új beszélgetés</string>
@@ -174,7 +172,6 @@
     <string name="nc_incoming_call">Bejövő hívás tőle:</string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_public_call">Új nyilvános beszélgetés</string>
-    <string name="nc_public_call_explanation">A nyilvános beszélgetések lehetővé teszik, hogy egy speciálisan előállított hivatkozással külső embereket hívjon meg a beszélgetésbe.</string>
     <string name="nc_call_timeout">Nincs válasz 45 másodpercen belül, koppintson az újrapróbálkozáshoz</string>
     <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
     <string name="nc_offline">Jelenleg offline, ellenőrizze a kapcsolatát</string>
@@ -193,12 +190,8 @@
     <string name="nc_mute_calls">Hívások némítása</string>
     <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
-    <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a
-        Ne zavarjanak beállításokat</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
-    <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Beszélgetésnév</string>
@@ -314,11 +307,7 @@
     <string name="nc_upload_confirm_send_single">Ennek a fájlnak küldése ide: %1$s</string>
     <string name="nc_upload_in_progess">feltöltés</string>
 
-    <string name="nc_settings_phone_book_integration_desc">A névjegyek párosítása telefonszám alapján, a Talk telefonkönyvbe integrálásához</string>
-    <string name="nc_settings_phone_book_integration_title">Telefonkönyv integráció</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonszám</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja a telefonszámát, így a a többi felhasználó megtalálhatja Önt</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">A telefonszám formátuma hibás</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
-    <string name="no_phone_book_integration_due_to_permissions">Hiányzó engedélyek miatt nincs telefonkönyv-integráció</string>
     </resources>

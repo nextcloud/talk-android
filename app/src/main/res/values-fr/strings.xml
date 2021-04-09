@@ -146,8 +146,6 @@
     <string name="nc_delete_call">Supprimer la conversation</string>
     <string name="nc_delete">Supprimer</string>
     <string name="nc_delete_conversation_default">Veuillez confirmer votre volonté de supprimer la conversation.</string>
-    <string name="nc_delete_conversation_one2one">Si vous supprimez la conversation, elle sera aussi
-supprimée pour %1$s.</string>
     <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
 
     <string name="nc_new_conversation">Nouvelle conversation</string>
@@ -170,8 +168,6 @@ supprimée pour %1$s.</string>
     <string name="nc_incoming_call">Appel entrant de</string>
     <string name="nc_nick_guest">Invité</string>
     <string name="nc_public_call">Nouvelle conversation public</string>
-    <string name="nc_public_call_explanation">Les conversations publiques vous permettent d\'inviter des personnes extérieures
-grâce à un lien spécialement créé.</string>
     <string name="nc_call_timeout">Aucune réponse depuis 45 secondes, appuyez pour essayer à nouveau</string>
     <string name="nc_call_reconnecting">Reconnexion en cours…</string>
     <string name="nc_offline">Actuellement hors-ligne, veuillez vérifier votre connexion</string>
@@ -192,8 +188,6 @@ grâce à un lien spécialement créé.</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Désolé, quelque chose s\'est mal passé !</string>
-    <string name="nc_failed_signaling_settings">Le serveur cible ne supporte pas l\'accès aux conversations publiques depuis un téléphone mobile.
-Veuillez essayer de rejoindre la conversation depuis un navigateur web.</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nom de la conversation</string>
@@ -309,7 +303,4 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
     <string name="nc_upload_in_progess">Téléchargement</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Correspondance de contacts à l\'aide du numéro de téléphone pour intégrer des raccourcis vers Talk dans le carnet d\'adresses</string>
-    <string name="nc_settings_phone_book_integration_title">Intégration avec le carnet d\'adresses</string>
-    <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     </resources>

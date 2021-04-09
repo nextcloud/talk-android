@@ -152,8 +152,6 @@
     <string name="nc_incoming_call">Trucada entrant de</string>
     <string name="nc_nick_guest">Convidat</string>
     <string name="nc_public_call">Nova conversa pública</string>
-    <string name="nc_public_call_explanation">Les converses públiques us permeten convidar gent de fora a través d’un
-enllaç especialment dissenyat.</string>
     <string name="nc_call_timeout">Han passat 45 segons i no hi ha hagut cap resposta, feu un toc per tornar-ho a provar</string>
     <string name="nc_call_reconnecting">S\'està reconnectant...</string>
     <string name="nc_offline">Actualment fora de línia, si us plau comproveu la vostra connectivitat</string>
@@ -173,8 +171,6 @@ enllaç especialment dissenyat.</string>
     <string name="nc_important_conversation">Conversa important</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
-    <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons
-mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
     <string name="nc_ok">D\'acord</string>
     <string name="nc_call_name">Nom de la conversa</string>

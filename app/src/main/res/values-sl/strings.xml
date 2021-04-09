@@ -148,8 +148,6 @@
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete">Izbriši</string>
     <string name="nc_delete_conversation_default">Potrdite zahtevo, da želite odstraniti pogovor.</string>
-    <string name="nc_delete_conversation_one2one">Če izbrišete pogovor, bo ta izbrisan
-        tudi za %1$s.</string>
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
 
     <string name="nc_new_conversation">Nov pogovor</string>
@@ -174,8 +172,6 @@
     <string name="nc_incoming_call">Dohodni klic:</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_public_call">Nov javni pogovor</string>
-    <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor vsakogar, ki pozna ustvarjeno
-        enkratno povezavo.</string>
     <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
@@ -194,13 +190,8 @@
     <string name="nc_mute_calls">Utišaj klice</string>
     <string name="nc_mute_calls_desc">Dohodni klici bodo utišani</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
-    <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru bo onemogočil
-        nastavitev Ne moti</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
-    <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih
-        telefonov. Poskusite se povezati prek splentega brskalnika.</string>
     <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
     <string name="nc_ok">V redu</string>
     <string name="nc_call_name">Naslov pogovora</string>
@@ -280,6 +271,8 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_file_browser_back">Nazaj</string>
     <string name="nc_file_browser_refresh">Osveži</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Nadaljnje omogočanje uporabi te datoteke ni dovoljeno</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Spletinar</string>
     <string name="nc_lobby">Spletna čakalnica</string>
@@ -317,13 +310,14 @@ Pozdravite prijatelje in znance.</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
     <string name="nc_upload_in_progess">pošiljanje</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Poveži stike po telefonski številki za povezavo imenika s programom Talk</string>
-    <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonska številka je uspešno nastavljena</string>
-    <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
     <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
+   
+    <!-- App Bar -->
+    <string name="appbar_search_in">Poišči v %s</string>
 
+    <string name="nc_action_open_main_menu">Odpri glavni meni</string>
     </resources>

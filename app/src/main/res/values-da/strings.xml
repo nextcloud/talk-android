@@ -152,8 +152,6 @@
     <string name="nc_incoming_call">Opkald fra</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
-    <string name="nc_public_call_explanation">Offentlige samtaler lader dig invitere folk udefra gennem et
-speciel lavet link.</string>
     <string name="nc_call_timeout">Intet respons i 45 sekunder, rør skærmen for at forsøge igen</string>
     <string name="nc_call_reconnecting">Forbinder igen...</string>
     <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
@@ -173,8 +171,6 @@ speciel lavet link.</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
-    <string name="nc_failed_signaling_settings">Serveren understøtter ikke deltagelse i offentlige samtaler over mobil
-telefoner. Du kan forsøge at deltage i samtalen over en web browser.</string>
     <string name="nc_all_ok_operation">OK, alt er klar!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Samtalenavn</string>

@@ -148,8 +148,6 @@
     <string name="nc_delete_call">刪除對話</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_conversation_default">請確認是否要清除目前的對話。</string>
-    <string name="nc_delete_conversation_one2one">如果您刪除對話，它也將會
-        從 %1$s 處刪除。</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
 
     <string name="nc_new_conversation">新對話</string>
@@ -178,8 +176,6 @@
     <string name="nc_incoming_call">來電中...。</string>
     <string name="nc_nick_guest">訪客</string>
     <string name="nc_public_call">新的公開對話</string>
-    <string name="nc_public_call_explanation">公開對話讓您可通過特製的連結
-        邀請外部人士。</string>
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_offline">當前離線，請檢查您的連接</string>
@@ -198,13 +194,8 @@
     <string name="nc_mute_calls">靜音來電</string>
     <string name="nc_mute_calls_desc">來電將被靜音</string>
     <string name="nc_important_conversation">重要對話</string>
-    <string name="nc_important_conversation_desc">此對話中的通告將覆蓋
-        請勿打擾設置</string>
-
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">發生錯誤了 ：(</string>
-    <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。
-         您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_all_ok_operation">完成</string>
     <string name="nc_ok">確定</string>
     <string name="nc_call_name">對話名稱</string>
@@ -283,6 +274,8 @@
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">您無權重新分享此檔案</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">網絡研討會</string>
     <string name="nc_lobby">等候室</string>
@@ -314,21 +307,21 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">上傳本地文件</string>
+    <string name="nc_upload_from_cloud">分享來自 %1$s</string>
     <string name="nc_upload_failed">對不起，上傳失敗</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
     <string name="nc_upload_in_progess">上傳中</string>
 
-    <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
-    <string name="nc_settings_phone_book_integration_title">電話簿整合</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話號碼</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">設置您的電話號碼，以便
-       其他用戶可以找到您</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話號碼無效</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">電話號碼設置成功</string>
-    <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話簿</string>
     <string name="nc_phone_book_integration_chat_via">透過 %s 聊天</string>
     <string name="nc_phone_book_integration_account_not_found">找不到賬戶</string>
+   
+    <!-- App Bar -->
+    <string name="appbar_search_in">%s內搜尋</string>
 
+    <string name="nc_action_open_main_menu">打開主選項單</string>
     </resources>
