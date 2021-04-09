@@ -358,7 +358,7 @@
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="user_info_phone">Phone number</string>
-    <string name="user_info_email">E-mail</string>
+    <string name="user_info_email">Email</string>
     <string name="user_info_address">Address</string>
     <string name="user_info_website">Website</string>
     <string name="user_info_twitter">Twitter</string>
