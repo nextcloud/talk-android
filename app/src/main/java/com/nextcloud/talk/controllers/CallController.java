@@ -1707,7 +1707,7 @@ public class CallController extends BaseController {
         }
 
         for (String sessionId : newSessions) {
-            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", hasMCU && sessionId.equals(webSocketClient.getSessionId()));
+            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
         }
 
         if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
