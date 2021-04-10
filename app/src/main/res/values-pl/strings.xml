@@ -148,6 +148,7 @@
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
     <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
+    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla %1$s.</string>
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
 
     <string name="nc_new_conversation">Nowa rozmowa</string>
@@ -176,6 +177,7 @@
     <string name="nc_incoming_call">Połączenie przychodzące od </string>
     <string name="nc_nick_guest">Gość</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
+    <string name="nc_public_call_explanation">Rozmowy publiczne pozwalają zapraszać ludzi z zewnątrz poprzez specjalnie przygotowany link.</string>
     <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, stuknij aby spróbować ponownie</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
@@ -194,8 +196,11 @@
     <string name="nc_mute_calls">Wycisz połączenia</string>
     <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
+    <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>
+    <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe. Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
@@ -314,14 +319,48 @@
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
     <string name="nc_upload_in_progess">wysyłanie</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk z aplikacją kontaktów systemowych</string>
+    <string name="nc_settings_phone_book_integration_title">Integracja numeru telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numer telefonu</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić numer telefonu, inni użytkownicy będą mogli go znaleźć</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numer telefonu ustawiony pomyślnie</string>
+    <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
     <string name="nc_phone_book_integration_chat_via">Rozmawiaj przez %s</string>
     <string name="nc_phone_book_integration_account_not_found">Nie znaleziono konta</string>
    
+    <string name="avatar">Awatar</string>
+    <string name="account_icon">Ikona konta</string>
+    <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
+    <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
+    <string name="userinfo_error_text">Nie udało się pobrać osobistych informacji o użytkowniku.</string>
+    <string name="user_info_phone">Numer telefonu</string>
+    <string name="user_info_email">E-mail</string>
+    <string name="user_info_address">Adres</string>
+    <string name="user_info_website">Strona WWW</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Pełna nazwa</string>
+    <string name="file_list_folder">katalog</string>
+    <string name="file_list_loading">Ładowanie…</string>
+    <string name="edit">Edytuj</string>
+    <string name="save">Zapisz</string>
+    <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
+    <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
+    <string name="delete_avatar">Usuń awatar</string>
+    <string name="scope_private_title">Prywatny</string>
+    <string name="scope_private_description">Widoczne tylko dla osób dopasowanych poprzez integrację numeru telefonu za pomocą Talk na telefonie komórkowym</string>
+    <string name="lock_symbol">Symbol zamknięcia</string>
+    <string name="scope_local_title">Lokalny</string>
+    <string name="scope_local_description">Widoczne tylko dla osób w tej instancji i gości</string>
+    <string name="scope_federated_title">Sfederowane</string>
+    <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
+    <string name="scope_published_title">Opublikowane</string>
+    <string name="scope_published_description">Synchronizuj z zaufanymi serwerami oraz globalną i publiczną książką adresową</string>
+    <string name="scope_toggle">Przełącznik zakresu</string>
+    
     <!-- App Bar -->
     <string name="appbar_search_in">Szukaj w %s</string>
 
     <string name="nc_action_open_main_menu">Otwórz menu główne</string>
-    </resources>
+    <string name="failed_to_save">Nie udało się zapisać %1$s</string>
+</resources>

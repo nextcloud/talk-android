@@ -148,6 +148,7 @@
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
+    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch für %1$s entfernt.</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
 
     <string name="nc_new_conversation">Neue Unterhaltung</string>
@@ -176,6 +177,7 @@
     <string name="nc_incoming_call">Eingehender Anruf von</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
+    <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über einen speziellen Link eingeladen werden.</string>
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_offline">Aktuell offline, bitte die Verbindung prüfen</string>
@@ -194,8 +196,11 @@
     <string name="nc_mute_calls">Anrufe stummschalten</string>
     <string name="nc_mute_calls_desc">Eingehende Anrufe werden stummgeschaltet</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
+    <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
+    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht öffentlichen Unterhaltungen mit Mobiltelefonen beizutreten. Sie können versuchen der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -314,14 +319,48 @@
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
     <string name="nc_upload_in_progess">Wird hochgeladen</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
+    <string name="nc_settings_phone_book_integration_title">Rufnummernintegration</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonnummer</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Sie können Ihre Telefonnummer so einstellen, dass andere Benutzer Sie finden können.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ungültige Telefonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummerneingabe erfolgreich</string>
+    <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="nc_phone_book_integration_chat_via">Chatten über %s</string>
     <string name="nc_phone_book_integration_account_not_found">Konto nicht gefunden</string>
    
+    <string name="avatar">Avatar</string>
+    <string name="account_icon">Konto-Icon</string>
+    <string name="userinfo_no_info_headline">Keine persönlichen Infos eingestellt</string>
+    <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
+    <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
+    <string name="user_info_phone">Telefonnummer</string>
+    <string name="user_info_email">E-Mail</string>
+    <string name="user_info_address">Adresse</string>
+    <string name="user_info_website">Internetseite</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Vollständiger Name</string>
+    <string name="file_list_folder">Ordner</string>
+    <string name="file_list_loading">Lade …</string>
+    <string name="edit">Bearbeiten</string>
+    <string name="save">Speichern</string>
+    <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
+    <string name="choose_avatar_from_cloud">Avatar aus der Cloud auswählen</string>
+    <string name="delete_avatar">Avatar löschen</string>
+    <string name="scope_private_title">Privat</string>
+    <string name="scope_private_description">Nur sichtbar für Personen, die über Rufnummernintegration von Talk on mobile abgeglichen wurden.</string>
+    <string name="lock_symbol">Schloss-Symbol</string>
+    <string name="scope_local_title">Lokal</string>
+    <string name="scope_local_description">Nur für Personen dieser Instanz und Gäste sichtbar</string>
+    <string name="scope_federated_title">Federated</string>
+    <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
+    <string name="scope_published_title">Veröffentlicht</string>
+    <string name="scope_published_description">Mit vertrauenswürdigen Servern und dem globalen sowie öffentlichen Adressbuch synchronisieren</string>
+    <string name="scope_toggle">Bereich umschalten</string>
+    
     <!-- App Bar -->
     <string name="appbar_search_in">Suche in %s</string>
 
     <string name="nc_action_open_main_menu">Hauptmenü öffnen</string>
-    </resources>
+    <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
+</resources>

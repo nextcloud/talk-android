@@ -148,6 +148,7 @@
     <string name="nc_delete_call">Excluir conversa</string>
     <string name="nc_delete">Excluir</string>
     <string name="nc_delete_conversation_default">Confirme sua intensão de remover a conversa.</string>
+    <string name="nc_delete_conversation_one2one">Se você excluir a conversa, ela também será excluída por %1$s.</string>
     <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para todos os outros participantes.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
@@ -176,6 +177,7 @@
     <string name="nc_incoming_call">Chamada de</string>
     <string name="nc_nick_guest">Convidado</string>
     <string name="nc_public_call">Nova conversa pública</string>
+    <string name="nc_public_call_explanation">As conversas públicas permitem que você convide pessoas de fora por meio de um link especialmente criado.</string>
     <string name="nc_call_timeout">45 segundos sem resposta, toque para retentar</string>
     <string name="nc_call_reconnecting">Reconectando...</string>
     <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
@@ -194,8 +196,11 @@
     <string name="nc_mute_calls">Silenciar chamadas</string>
     <string name="nc_mute_calls_desc">Chamadas recebidas serão silenciadas</string>
     <string name="nc_important_conversation">Conversa importante</string>
+    <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão as configurações de Não perturbe</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
+    <string name="nc_failed_signaling_settings">O servidor de destino não oferece suporte para ingressar em conversas públicas por meio de telefones celulares. Você pode tentar entrar na conversa por meio do navegador da web.</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome de conversação</string>
@@ -314,14 +319,48 @@
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
     <string name="nc_upload_in_progess">enviando</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
+    <string name="nc_settings_phone_book_integration_title">Integração de número de telefone</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número do telefone</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que outros usuários possam encontrar você</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Número de telefone definido com sucesso</string>
+    <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="nc_phone_book_integration_chat_via">Bate-papo via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Conta não encontrada</string>
    
+    <string name="avatar">Avatar</string>
+    <string name="account_icon">Ícone de conta</string>
+    <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
+    <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
+    <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
+    <string name="user_info_phone">Número do Telefone</string>
+    <string name="user_info_email">E-mail</string>
+    <string name="user_info_address">Endereço</string>
+    <string name="user_info_website">Website</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Nome completo</string>
+    <string name="file_list_folder">pasta</string>
+    <string name="file_list_loading">Carregando...</string>
+    <string name="edit">Editar</string>
+    <string name="save">Salvar</string>
+    <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
+    <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
+    <string name="delete_avatar">Excluir avatar</string>
+    <string name="scope_private_title">Privado</string>
+    <string name="scope_private_description">Visível apenas para pessoas que se correspondem por integração do número de telefone por meio do Bate Papo no celular</string>
+    <string name="lock_symbol">Símbolo de cadeado</string>
+    <string name="scope_local_title">Local</string>
+    <string name="scope_local_description">Visível apenas para pessoas nesta instância e convidados</string>
+    <string name="scope_federated_title">Federada</string>
+    <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis </string>
+    <string name="scope_published_title">Publicado</string>
+    <string name="scope_published_description">Sincronize com servidores confiáveis ​​e com o catálogo de endereço público e global</string>
+    <string name="scope_toggle">Alternância de escopo</string>
+    
     <!-- App Bar -->
     <string name="appbar_search_in">Procurar em 1%s</string>
 
     <string name="nc_action_open_main_menu">Abrir menu principal</string>
-    </resources>
+    <string name="failed_to_save">Falha ao salvar %1$s</string>
+</resources>
