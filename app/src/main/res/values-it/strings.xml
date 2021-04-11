@@ -320,6 +320,18 @@
     <string name="nc_phone_book_integration_chat_via">Chat tramite %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account non trovato</string>
    
+    <string name="avatar">Avatar</string>
+    <string name="account_icon">Icona dell\'account</string>
+    <string name="user_info_phone">Numero di telefono</string>
+    <string name="user_info_email">Posta elettronica</string>
+    <string name="user_info_address">Indirizzo</string>
+    <string name="user_info_website">Sito web</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Nome completo</string>
+    <string name="file_list_folder">cartella</string>
+    <string name="file_list_loading">Caricamento...</string>
+    <string name="edit">Modifica</string>
+    <string name="save">Salva</string>
     <!-- App Bar -->
     <string name="appbar_search_in">Cerca in %s</string>
 
