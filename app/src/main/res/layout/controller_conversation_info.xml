@@ -103,7 +103,7 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
+            <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -111,9 +111,17 @@
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
-                apc:mpc_action="@string/nc_add"
                 apc:mpc_title="@string/nc_participants"
-                tools:ignore="UnknownIdInLayout">
+                tools:ignore="UnknownIdInLayout"
+                tools:visibility="visible">
+
+                <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/addParticipantsAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    apc:mp_icon="@drawable/ic_account_plus"
+                    apc:mp_icon_tint="@color/grey_600"
+                    apc:mp_title="@string/nc_participants_add" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
@@ -121,7 +129,7 @@
                     android:layout_height="wrap_content"
                     tools:listitem="@layout/rv_item_contact" />
 
-            </com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink>
+            </com.yarolegovich.mp.MaterialPreferenceCategory>
 
             <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/ownOptions"
@@ -157,7 +165,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/otherRoomOptions"
                 android:visibility="gone"
-                tools:visibility="visible" />
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/webinar_info_item"
