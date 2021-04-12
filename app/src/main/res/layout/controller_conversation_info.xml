@@ -113,7 +113,6 @@
                 apc:cardElevation="0dp"
                 apc:mpc_action="@string/nc_add"
                 apc:mpc_title="@string/nc_participants"
-                apc:mpc_title_color="@color/textColorMaxContrast"
                 tools:ignore="UnknownIdInLayout">
 
                 <androidx.recyclerview.widget.RecyclerView
