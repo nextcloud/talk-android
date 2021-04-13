@@ -334,7 +334,6 @@
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="userinfo_error_text">Nepodařilo se získat osobní údaje uživatele.</string>
     <string name="user_info_phone">Telefonní číslo</string>
-    <string name="user_info_email">E-mail</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_website">Webová stránka</string>
     <string name="user_info_twitter">Twitter</string>

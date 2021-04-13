@@ -84,7 +84,7 @@
     <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_vibrate">Wibracja</string>
-    <string name="nc_settings_vibrate_desc">Telefon będzie wibrować, pod warunkiem że nie zostanie wyciszony</string>
+    <string name="nc_settings_vibrate_desc">Telefon będzie wibrować pod warunkiem, że nie zostanie wyciszony</string>
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_theme_title">Motyw</string>
     <string name="nc_settings_theme_key">motyw</string>
@@ -335,7 +335,6 @@
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="userinfo_error_text">Nie udało się pobrać osobistych informacji o użytkowniku.</string>
     <string name="user_info_phone">Numer telefonu</string>
-    <string name="user_info_email">E-mail</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_website">Strona WWW</string>
     <string name="user_info_twitter">Twitter</string>
@@ -347,10 +346,10 @@
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
     <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
     <string name="delete_avatar">Usuń awatar</string>
-    <string name="scope_private_title">Prywatny</string>
+    <string name="scope_private_title">Prywatne</string>
     <string name="scope_private_description">Widoczne tylko dla osób dopasowanych poprzez integrację numeru telefonu za pomocą Talk na telefonie komórkowym</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
-    <string name="scope_local_title">Lokalny</string>
+    <string name="scope_local_title">Lokalne</string>
     <string name="scope_local_description">Widoczne tylko dla osób w tej instancji i gości</string>
     <string name="scope_federated_title">Sfederowane</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>

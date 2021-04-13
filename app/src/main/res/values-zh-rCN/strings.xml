@@ -336,7 +336,6 @@
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
     <string name="userinfo_error_text">未能检索个人用户信息</string>
     <string name="user_info_phone">电话号码  </string>
-    <string name="user_info_email">电子邮箱 </string>
     <string name="user_info_address">地址</string>
     <string name="user_info_website">网站</string>
     <string name="user_info_twitter">推特账户</string>

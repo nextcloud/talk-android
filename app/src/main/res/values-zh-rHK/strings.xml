@@ -335,7 +335,6 @@
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
     <string name="userinfo_error_text">無法檢索個人用戶資訊。</string>
     <string name="user_info_phone">電話號碼</string>
-    <string name="user_info_email">電郵地址</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_website">網站</string>
     <string name="user_info_twitter">Twitter</string>

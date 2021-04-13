@@ -335,7 +335,6 @@
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="user_info_phone">Telefonnummer</string>
-    <string name="user_info_email">E-Mail</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_website">Internetseite</string>
     <string name="user_info_twitter">Twitter</string>

@@ -335,7 +335,6 @@
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
     <string name="userinfo_error_text">Kullanıcının kişisel bilgileri alınamadı</string>
     <string name="user_info_phone">Telefon numarası</string>
-    <string name="user_info_email">E-posta</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_website">Web sitesi</string>
     <string name="user_info_twitter">Twitter</string>

@@ -148,6 +148,7 @@
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete">Törlés</string>
     <string name="nc_delete_conversation_default">Erősítse meg szándékát, hogy eltávolítja a beszélgetést.</string>
+    <string name="nc_delete_conversation_one2one">Ha törli a beszélgetést, akkor %1$s számára is törölve lesz.</string>
     <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
 
     <string name="nc_new_conversation">Új beszélgetés</string>
@@ -165,6 +166,10 @@
     <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s hanghívás</string>
+    <string name="nc_call_video">%s videohívás</string>
+    <string name="nc_call_unknown">%s hívás</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_ringing">CSENG</string>
     <string name="nc_connecting_call">Kapcsolódás…</string>
@@ -172,6 +177,7 @@
     <string name="nc_incoming_call">Bejövő hívás tőle:</string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_public_call">Új nyilvános beszélgetés</string>
+    <string name="nc_public_call_explanation">A nyilvános beszélgetések lehetővé teszik, hogy egy speciálisan előállított hivatkozással külső embereket hívjon meg.</string>
     <string name="nc_call_timeout">Nincs válasz 45 másodpercen belül, koppintson az újrapróbálkozáshoz</string>
     <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
     <string name="nc_offline">Jelenleg offline, ellenőrizze a kapcsolatát</string>
@@ -190,8 +196,11 @@
     <string name="nc_mute_calls">Hívások némítása</string>
     <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
+    <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
+    <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Beszélgetésnév</string>
@@ -270,6 +279,8 @@
     <string name="nc_file_browser_back">Vissza</string>
     <string name="nc_file_browser_refresh">Frissítés</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Nincs jogosultsága ennek a fájlnak az újramegosztására</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Webinár</string>
     <string name="nc_lobby">Váró</string>
@@ -301,13 +312,54 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
+    <string name="nc_upload_from_cloud">Megosztotta: %s</string>
     <string name="nc_upload_failed">A feltöltés sikertelen</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
     <string name="nc_upload_confirm_send_single">Ennek a fájlnak küldése ide: %1$s</string>
     <string name="nc_upload_in_progess">feltöltés</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Párosítsa a névjegyeket telefonszám alapján, hogy integrálja a Beszélgetéseket a rendszer Névjegyek alkalmazásba</string>
+    <string name="nc_settings_phone_book_integration_title">Telefonszám integráció</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonszám</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja telefonszámát, hogy a többi felhasználó megtalálja Önt</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">A telefonszám formátuma hibás</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
-    </resources>
+    <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>
+    <string name="nc_phone_book_integration_chat_via">Csevegés %s segítségével</string>
+    <string name="nc_phone_book_integration_account_not_found">A fiók nem található</string>
+   
+    <string name="avatar">Avatár</string>
+    <string name="account_icon">Fiók ikon</string>
+    <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
+    <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
+    <string name="userinfo_error_text">Nem sikerült beolvasni a személyes felhasználói adatokat.</string>
+    <string name="user_info_phone">Telefonszám</string>
+    <string name="user_info_address">Cím</string>
+    <string name="user_info_website">Weboldal</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Teljes név</string>
+    <string name="file_list_folder">mappa</string>
+    <string name="file_list_loading">Betöltés…</string>
+    <string name="edit">Szerkesztés</string>
+    <string name="save">Mentés</string>
+    <string name="upload_new_avatar_from_device">Töltsön fel új avatart az eszközről</string>
+    <string name="choose_avatar_from_cloud">Válassza ki az avatart a felhőből</string>
+    <string name="delete_avatar">Avatár törlése</string>
+    <string name="scope_private_title">Privát</string>
+    <string name="scope_private_description">Csak azok láthatják, akiknek a mobileszközön keresztül történő telefonszám integrációja történt</string>
+    <string name="lock_symbol">Zár szimbólum</string>
+    <string name="scope_local_title">Helyi</string>
+    <string name="scope_local_description">Csak az ilyen példányban lévő személyek és a vendégek láthatják</string>
+    <string name="scope_federated_title">Egyesített</string>
+    <string name="scope_federated_description">Csak megbízható kiszolgálókkal szinkronizáljon</string>
+    <string name="scope_published_title">Közzétett</string>
+    <string name="scope_published_description">Szinkronizáljon megbízható kiszolgálókkal, valamint a globális és nyilvános címjegyzékkel</string>
+    <string name="scope_toggle">Hatókör váltása</string>
+    
+    <!-- App Bar -->
+    <string name="appbar_search_in">Keresés itt: %s</string>
+
+    <string name="nc_action_open_main_menu">Főmenü megnyitása</string>
+    <string name="failed_to_save">Sikertelen mentés: %1$s</string>
+</resources>
