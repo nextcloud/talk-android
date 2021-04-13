@@ -134,6 +134,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     private val conversationToken: String?
     private val conversationUser: UserEntity?
+    private val hasAvatarSpacing: Boolean
     private val credentials: String?
     private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
@@ -163,6 +164,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
         conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
         conversationToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
+        hasAvatarSpacing = args.getBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, false);
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token)
     }
 
@@ -386,7 +388,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     override fun getTitle(): String? {
-        return resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        return if (hasAvatarSpacing) {
+            " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        } else {
+            resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+        }
     }
 
     private fun getListOfParticipants() {

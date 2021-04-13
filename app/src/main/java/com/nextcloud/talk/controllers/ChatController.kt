@@ -333,9 +333,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
     }
 
     private fun loadAvatarForStatusBar() {
-        if (currentConversation != null && currentConversation?.type != null &&
-                currentConversation?.type == Conversation.ConversationType
-                        .ROOM_TYPE_ONE_TO_ONE_CALL && activity != null && conversationVoiceCallMenuItem != null) {
+        if (inOneToOneCall() && activity != null && conversationVoiceCallMenuItem != null) {
             val avatarSize = DisplayUtils.convertDpToPixel(conversationVoiceCallMenuItem?.icon!!
                     .intrinsicWidth.toFloat(), activity).toInt()
 
@@ -359,6 +357,10 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
             }, UiThreadImmediateExecutorService.getInstance())
         }
     }
+
+    private fun inOneToOneCall() = currentConversation != null && currentConversation?.type != null &&
+            currentConversation?.type == Conversation.ConversationType
+            .ROOM_TYPE_ONE_TO_ONE_CALL
 
     override fun onViewBound(view: View) {
         actionBar?.show()
@@ -677,6 +679,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, inOneToOneCall());
         router.pushController(RouterTransaction.with(ConversationInfoController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler()))
@@ -784,7 +787,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
     override fun getTitle(): String {
         currentConversation?.displayName?.let {
-            return EmojiCompat.get().process(it as CharSequence).toString()
+            return " " + EmojiCompat.get().process(it as CharSequence).toString()
         }
 
         return ""
