@@ -148,6 +148,7 @@
     <string name="nc_delete_call">删除会话</string>
     <string name="nc_delete">删除</string>
     <string name="nc_delete_conversation_default">请确认你移除此会话的意图</string>
+    <string name="nc_delete_conversation_one2one">如果你删除了会话，它也会从%1$s 处被删除。</string>
     <string name="nc_delete_conversation_more">如果你删除了该会话，它也会被从其他所有与会者那里删除。</string>
 
     <string name="nc_new_conversation">新的会话</string>
@@ -176,6 +177,7 @@
     <string name="nc_incoming_call">来电</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_public_call">新的公共会话</string>
+    <string name="nc_public_call_explanation">公共对话可以让你通过一个特别制作的链接邀请外面的人。</string>
     <string name="nc_call_timeout">45秒内无响应，点击以重试</string>
     <string name="nc_call_reconnecting">重新连接 ...</string>
     <string name="nc_offline">当前离线，请检查您的连接</string>
@@ -194,8 +196,11 @@
     <string name="nc_mute_calls">通话静音</string>
     <string name="nc_mute_calls_desc">来电将被静音</string>
     <string name="nc_important_conversation">重要会话</string>
+    <string name="nc_important_conversation_desc">此会话中的通知将覆盖免打扰设置</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
+    <string name="nc_failed_signaling_settings">目标服务器不支持通过移动电话加入公共对话。你可以尝试通过浏览器加入对话。</string>
     <string name="nc_all_ok_operation">OK，已完成！</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">会话名称</string>
@@ -275,6 +280,8 @@
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">刷新</string>
     <string name="nc_last_modified">%1$s 我上一次更改： %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">你不被允许重新共享此文件</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">网络研讨会</string>
     <string name="nc_lobby">休息室</string>
@@ -306,16 +313,54 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">上传本地文件</string>
+    <string name="nc_upload_from_cloud">分享来源：%1$s</string>
     <string name="nc_upload_failed">抱歉，上传失败</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">将此文件发送到 %1$s？</string>
     <string name="nc_upload_in_progess">上传中</string>
 
+    <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成 Talk 快捷方式到系统联系人应用</string>
+    <string name="nc_settings_phone_book_integration_title">电话号码集成 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">电话号码 </string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">你可以设置你的电话号码，这样其他用户能够找到你 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">无效电话号码</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">成功设置电话号码</string>
+    <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
     <string name="nc_phone_book_integration_chat_via">通过 %s 聊天</string>
     <string name="nc_phone_book_integration_account_not_found">未找到账户</string>
    
-    </resources>
+    <string name="avatar">头像</string>
+    <string name="account_icon">账户图标</string>
+    <string name="userinfo_no_info_headline">未设置个人信息</string>
+    <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
+    <string name="userinfo_error_text">未能检索个人用户信息</string>
+    <string name="user_info_phone">电话号码  </string>
+    <string name="user_info_address">地址</string>
+    <string name="user_info_website">网站</string>
+    <string name="user_info_twitter">推特账户</string>
+    <string name="user_info_displayname">全名</string>
+    <string name="file_list_folder">文件夹</string>
+    <string name="file_list_loading">加载中…</string>
+    <string name="edit">编辑</string>
+    <string name="save">保存</string>
+    <string name="upload_new_avatar_from_device">从设备上传新头像</string>
+    <string name="choose_avatar_from_cloud">从云端选择头像</string>
+    <string name="delete_avatar">删除头像</string>
+    <string name="scope_private_title">私有</string>
+    <string name="scope_private_description">只对通过手机上 Talk 应用的电话号码整合功能匹配的人可见 </string>
+    <string name="lock_symbol">锁定头像</string>
+    <string name="scope_local_title">本地</string>
+    <string name="scope_local_description">仅对该实例用户和来宾可见 </string>
+    <string name="scope_federated_title">联合云 </string>
+    <string name="scope_federated_description">只同步到受信任的服务器 </string>
+    <string name="scope_published_title">已发布</string>
+    <string name="scope_published_description">同步到受信任的服务器、全局和公共地址簿</string>
+    <string name="scope_toggle">范围切换</string>
+    
+    <!-- App Bar -->
+    <string name="appbar_search_in">搜索位置 %s</string>
+
+    <string name="nc_action_open_main_menu">打开主菜单</string>
+    <string name="failed_to_save">未能保存 %1$s</string>
+</resources>

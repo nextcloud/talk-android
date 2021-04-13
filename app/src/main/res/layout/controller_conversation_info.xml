@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -51,7 +53,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
-                android:visibility="gone">
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -63,7 +68,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/avatar_image"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/margin_between_elements" />
+                        android:layout_marginTop="@dimen/margin_between_elements"
+                        tools:text="Jane Doe" />
 
                     <com.facebook.drawee.view.SimpleDraweeView
                         android:id="@+id/avatar_image"
@@ -80,7 +86,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conversation_info_name"
-                android:visibility="gone">
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/favoriteConversationAction"
@@ -94,16 +103,25 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
+            <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/webinar_settings"
                 android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
                 apc:mpc_title="@string/nc_participants"
-                apc:mpc_action="@string/nc_add"
-                apc:mpc_title_color="@color/textColorMaxContrast"
-                tools:ignore="UnknownIdInLayout">
+                tools:ignore="UnknownIdInLayout"
+                tools:visibility="visible">
+
+                <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/addParticipantsAction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    apc:mp_icon="@drawable/ic_account_plus"
+                    apc:mp_icon_tint="@color/grey_600"
+                    apc:mp_title="@string/nc_participants_add" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
@@ -111,14 +129,17 @@
                     android:layout_height="wrap_content"
                     tools:listitem="@layout/rv_item_contact" />
 
-            </com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink>
+            </com.yarolegovich.mp.MaterialPreferenceCategory>
 
             <com.yarolegovich.mp.MaterialPreferenceCategory
                 android:id="@+id/ownOptions"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/participants_list_category"
-                android:visibility="gone">
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/leaveConversationAction"
@@ -143,14 +164,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/otherRoomOptions"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="gone" />
 
             <include
                 layout="@layout/webinar_info_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/notification_settings"
-                android:visibility="gone" />
+                android:visibility="gone"
+                tools:visibility="visible" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

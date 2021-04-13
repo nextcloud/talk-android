@@ -307,7 +307,32 @@
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
     <string name="nc_upload_in_progess">igotzen</string>
 
+    <string name="nc_settings_phone_book_integration_title">Telefono zenbaki integrazioa</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu beste erabiltzaile batzuek aurkitu ahal izateko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefono zenbakia ondo ezarri da</string>
+    <string name="avatar">Avatarra</string>
+    <string name="account_icon">Kontuaren ikonoa</string>
+    <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
+    <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
+    <string name="user_info_phone">Telefono zenbakia</string>
+    <string name="user_info_address">Helbidea</string>
+    <string name="user_info_website">Webgunea</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Izen osoa</string>
+    <string name="file_list_folder">karpeta</string>
+    <string name="file_list_loading">Kargatzen…</string>
+    <string name="edit">Editatu</string>
+    <string name="save">Gorde</string>
+    <string name="scope_private_title">Pribatua</string>
+    <string name="scope_local_title">Lokala</string>
+    <string name="scope_local_description">Soilik instantzia honetako erabiltzaile eta gonbidatuentzat ikusgai</string>
+    <string name="scope_federated_title">Federatua</string>
+    <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
+    <string name="scope_published_title">Argitaratuta</string>
+    <string name="scope_published_description">Sinkronizatu zerbitzari fidagarriekin eta helbide liburu publiko eta globalarekin</string>
+    <!-- App Bar -->
+    <string name="appbar_search_in">Bilatu %s(e)n</string>
+
     </resources>

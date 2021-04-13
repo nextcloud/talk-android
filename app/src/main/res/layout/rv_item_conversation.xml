@@ -4,7 +4,7 @@
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
   ~ Copyright (C) 2017 Mario Danic
-  ~ Copyright (C) 2017 Andy Scherzinger
+  ~ Copyright (C) 2017-2021 Andy Scherzinger
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -23,9 +23,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="64dp"
-    android:layout_margin="8dp">
-
+    android:layout_height="72dp"
+    android:layout_margin="@dimen/standard_margin">
 
     <FrameLayout
         android:id="@+id/frame_layout"
@@ -59,7 +58,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/margin_between_elements"
+        android:layout_marginStart="@dimen/standard_margin"
         android:background="?android:attr/selectableItemBackground"
         android:scaleType="center"
         android:src="@drawable/ic_more_horiz_black_24dp" />

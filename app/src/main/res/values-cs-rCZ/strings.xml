@@ -148,6 +148,7 @@
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_delete">Smazat</string>
     <string name="nc_delete_conversation_default">Potvrďte, že chcete odebrat tuto konverzaci.</string>
+    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také smazána pro %1$s.</string>
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
 
     <string name="nc_new_conversation">Nová konverzace</string>
@@ -176,6 +177,7 @@
     <string name="nc_incoming_call">Příchozí hovor od</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
+    <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím k tomu vytvořeného odkazu.</string>
     <string name="nc_call_timeout">Žádná odezva po 45 sekundách, ťukněte, pokud chcete zkusit znovu</string>
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
@@ -194,8 +196,11 @@
     <string name="nc_mute_calls">Ztišit hovory</string>
     <string name="nc_mute_calls_desc">Příchozí hovory budou ztišeny</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
+    <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
+    <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Název konverzace</string>
@@ -313,14 +318,47 @@
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
     <string name="nc_upload_in_progess">nahrávání</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Najít kontakty se stejným telefonním číslem a přidat zkratku Talk do systémové aplikace pro kontakty</string>
+    <string name="nc_settings_phone_book_integration_title">Propojení telefonních čísel</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonní číslo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Můžete si nastavit své telefonní číslo a tak vás budou moci ostatní uživatelé najít</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neplatné telefonní číslo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nastavení telefonního čísla úspěšné</string>
+    <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="nc_phone_book_integration_chat_via">Rozhovor prostřednictvím %s</string>
     <string name="nc_phone_book_integration_account_not_found">Účet nenalezen</string>
    
+    <string name="avatar">Profilový obrázek</string>
+    <string name="account_icon">Ikona účtu</string>
+    <string name="userinfo_no_info_headline">Osobní údaje nejsou nastaveny</string>
+    <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
+    <string name="userinfo_error_text">Nepodařilo se získat osobní údaje uživatele.</string>
+    <string name="user_info_phone">Telefonní číslo</string>
+    <string name="user_info_address">Adresa</string>
+    <string name="user_info_website">Webová stránka</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Celé jméno</string>
+    <string name="file_list_folder">složka</string>
+    <string name="file_list_loading">Načítání…</string>
+    <string name="edit">Upravit</string>
+    <string name="save">Uložit</string>
+    <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
+    <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
+    <string name="delete_avatar">Vymazat profilový obrázek</string>
+    <string name="scope_private_title">Soukromé</string>
+    <string name="scope_private_description">Viditelné pouze lidem, se kterými nalezena shoda začleněním přes telefonní číslo prostřednictvím Talk na mobilním telefonu</string>
+    <string name="lock_symbol">Uzamknout symbol</string>
+    <string name="scope_local_title">Místní</string>
+    <string name="scope_local_description">Viditelné pouze lidem na této instanci a hostům</string>
+    <string name="scope_federated_title">Federované</string>
+    <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
+    <string name="scope_published_title">Zveřejněno</string>
+    <string name="scope_published_description">Synchronizovat s důvěryhodnými servery a globálním a veřejným adresářem kontaktů</string>
+    <string name="scope_toggle">Přepnout pohled</string>
+    
     <!-- App Bar -->
     <string name="appbar_search_in">Hledat v %s</string>
 
     <string name="nc_action_open_main_menu">Otevřít hlavní nabídku</string>
-    </resources>
+    <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
+</resources>

@@ -44,7 +44,8 @@
     </style>
 
     <style name="ListItem" parent="BottomSheet.ListItem.TextAppearance">
-        <item name="android:textColor">@color/nc_incoming_text_default</item>
+        <item name="android:textColor">@color/conversation_item_header</item>
+        <item name="android:textSize">16sp</item>
     </style>
 
     <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
