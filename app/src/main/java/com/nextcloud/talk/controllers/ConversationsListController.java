@@ -30,10 +30,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -41,7 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
@@ -155,8 +153,8 @@ public class ConversationsListController extends BaseController implements Searc
     @BindView(R.id.swipeRefreshLayoutView)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    @BindView(R.id.progressBar)
-    ProgressBar progressBarView;
+    @BindView(R.id.loading_content)
+    LinearLayout loadingContent;
 
     @BindView(R.id.emptyLayout)
     RelativeLayout emptyLayoutView;
@@ -216,7 +214,7 @@ public class ConversationsListController extends BaseController implements Searc
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
         } else {
-            progressBarView.setVisibility(View.GONE);
+            loadingContent.setVisibility(View.GONE);
         }
 
         adapter.addListener(this);
@@ -416,7 +414,7 @@ public class ConversationsListController extends BaseController implements Searc
 
                     if (adapterWasNull) {
                         adapterWasNull = false;
-                        progressBarView.setVisibility(View.GONE);
+                        loadingContent.setVisibility(View.GONE);
                     }
 
                     if (roomsOverall.getOcs().getData().size() > 0) {
