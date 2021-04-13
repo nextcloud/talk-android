@@ -26,6 +26,7 @@
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">@color/colorPrimary</color>
     <color name="textColorOnPrimaryBackground">#ffffff</color> <!-- white/black depending on primary color -->
+    <color name="nc_login_text_color">#B3FFFFFF</color>
 
     <!-- App bar -->
     <color name="appbar">@android:color/white</color>

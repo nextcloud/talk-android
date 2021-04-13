@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger
   ~ Copyright (C) 2017 Mario Danic
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -18,94 +20,162 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center"
     android:background="@color/colorPrimary"
-    android:fitsSystemWindows="true">
+    android:fillViewport="true"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/image_logo"
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="92dp"
-        android:layout_marginBottom="36dp"
-        app:srcCompat="@drawable/ic_logo" />
-
-    <!-- Server selection window should be ignorant of theme colour
-        thus colors are set statically -->
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="@dimen/small_item_height"
-        android:layout_height="@dimen/small_item_height"
-        android:layout_below="@id/text_field_boxes"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:indeterminate="true"
-        android:indeterminateTint="@android:color/white"
-        android:indeterminateTintMode="src_in"
-        android:keepScreenOn="true"
-        android:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/helper_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/progress_bar"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="56dp"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:lines="2"
-        android:text="@string/nc_get_from_provider"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:alpha="0.5"
-        android:textColor="@color/textColorOnPrimaryBackground" />
-
-    <TextView
-        android:id="@+id/cert_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/helper_text_view"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:lines="2"
-        android:text="@string/nc_configure_cert_auth"
-        android:textAlignment="center"
-        android:textAllCaps="true"
-        android:alpha="0.5"
-        android:textColor="@color/textColorOnPrimaryBackground" />
-
-    <studio.carbonylgroup.textfieldboxes.TextFieldBoxes
-        android:id="@+id/text_field_boxes"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/image_logo"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        app:errorColor="@android:color/white"
-        app:helperText=" "
-        app:labelText="@string/nc_server_url"
-        app:panelBackgroundColor="@color/colorPrimary"
-        app:primaryColor="@android:color/white"
-        app:secondaryColor="@android:color/white">
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/standard_padding">
 
-        <studio.carbonylgroup.textfieldboxes.ExtendedEditText
-            android:id="@+id/extended_edit_text"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/image_logo"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_marginBottom="@dimen/standard_margin"
+            android:contentDescription="@string/nc_app_name"
+            android:scaleType="fitXY"
+            app:srcCompat="@drawable/ic_logo" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:inputType="textUri"
-            android:singleLine="true"
-            android:textColor="@color/fg_inverse" />
+            android:gravity="center"
+            android:maxWidth="@dimen/default_login_width"
+            android:minWidth="@dimen/default_login_width"
+            android:orientation="vertical"
+            android:padding="@dimen/standard_half_padding">
 
-    </studio.carbonylgroup.textfieldboxes.TextFieldBoxes>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/serverEntryTextInputLayout"
+                style="@style/Widget.App.Login.TextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/nc_server_url"
+                android:theme="@style/TextInputLayoutLogin"
+                app:endIconContentDescription="@string/nc_server_connect"
+                app:endIconDrawable="@drawable/ic_arrow_forward_white_24px"
+                app:endIconMode="custom"
+                app:endIconTint="@color/white">
 
-</RelativeLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/serverEntryTextInputEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="top"
+                    android:importantForAutofill="no"
+                    android:inputType="textUri|textNoSuggestions"
+                    android:lines="1"
+                    android:minLines="1"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="55dp"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/white"
+                    android:textColorHint="#80FFFFFF">
+
+                    <requestFocus />
+
+                </com.google.android.material.textfield.TextInputEditText>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/host_url_input_helper_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingMultiplier="1.2"
+                android:paddingStart="16dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="8dp"
+                android:paddingBottom="2dp"
+                android:text="@string/nc_server_helper_text"
+                android:textColor="@color/nc_login_text_color" />
+
+            <LinearLayout
+                android:id="@+id/serverEntryProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="2dp"
+                android:visibility="invisible"
+                tools:visibility="visible">
+
+                <ProgressBar
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="end|center_vertical"
+                    android:indeterminateTint="@color/white" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="center_vertical"
+                    android:lineSpacingMultiplier="1.2"
+                    android:lines="2"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="8dp"
+                    android:text="@string/nc_server_testing_connection"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/error_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="5dp"
+                android:ellipsize="end"
+                android:gravity="center_vertical"
+                android:lineSpacingMultiplier="1.2"
+                android:lines="2"
+                android:paddingStart="16dp"
+                android:paddingEnd="8dp"
+                android:text="@string/nc_server_unsupported"
+                android:textColor="@color/white"
+                android:visibility="invisible"
+                app:drawableStartCompat="@android:drawable/stat_sys_warning"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/helper_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="58dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:lineSpacingMultiplier="1.2"
+                android:lines="2"
+                android:text="@string/nc_get_from_provider"
+                android:textAlignment="center"
+                android:textColor="@color/nc_login_text_color" />
+
+            <TextView
+                android:id="@+id/cert_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:lineSpacingMultiplier="1.2"
+                android:lines="2"
+                android:text="@string/nc_configure_cert_auth"
+                android:textAlignment="center"
+                android:textColor="@color/nc_login_text_color" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

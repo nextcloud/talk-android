@@ -3,6 +3,7 @@
  *
  * @author Andy Scherzinger
  * @author Mario Danic
+ * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,18 +28,18 @@ import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.security.KeyChain;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -66,20 +67,22 @@ import butterknife.OnClick;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import studio.carbonylgroup.textfieldboxes.ExtendedEditText;
-import studio.carbonylgroup.textfieldboxes.TextFieldBoxes;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ServerSelectionController extends BaseController {
 
     public static final String TAG = "ServerSelectionController";
 
-    @BindView(R.id.extended_edit_text)
-    ExtendedEditText serverEntry;
-    @BindView(R.id.text_field_boxes)
-    TextFieldBoxes textFieldBoxes;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
+    @BindView(R.id.serverEntryTextInputLayout)
+    TextInputLayout serverEntryTextInputLayout;
+    @BindView(R.id.serverEntryTextInputEditText)
+    TextInputEditText serverEntryTextInputEditText;
+    @BindView(R.id.serverEntryProgressBar)
+    LinearLayout progressBar;
+    @BindView(R.id.error_text)
+    TextView errorText;
+    @BindView(R.id.host_url_input_helper_text)
+    TextView hostUrlInputHelperText;
     @BindView(R.id.helper_text_view)
     TextView providersTextView;
     @BindView(R.id.cert_text_view)
@@ -131,12 +134,12 @@ public class ServerSelectionController extends BaseController {
             getActionBar().hide();
         }
 
-        textFieldBoxes.getEndIconImageButton().setBackgroundDrawable(getResources().getDrawable(R.drawable
-                .ic_arrow_forward_white_24px));
-        textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
-        textFieldBoxes.getEndIconImageButton().setEnabled(false);
-        textFieldBoxes.getEndIconImageButton().setVisibility(View.VISIBLE);
-        textFieldBoxes.getEndIconImageButton().setOnClickListener(view1 -> checkServerAndProceed());
+        hostUrlInputHelperText.setText(String.format(
+                getResources().getString(R.string.nc_server_helper_text),
+                getResources().getString(R.string.nc_server_product_name))
+        );
+
+        serverEntryTextInputLayout.setEndIconOnClickListener(view1 -> checkServerAndProceed());
 
         if (getResources().getBoolean(R.bool.hide_auth_cert)) {
             certTextView.setVisibility(View.GONE);
@@ -192,35 +195,14 @@ public class ServerSelectionController extends BaseController {
             }
         }
 
-        serverEntry.requestFocus();
+        serverEntryTextInputEditText.requestFocus();
         
         if (!TextUtils.isEmpty(getResources().getString(R.string.weblogin_url))) {
-            serverEntry.setText(getResources().getString(R.string.weblogin_url));
+            serverEntryTextInputEditText.setText(getResources().getString(R.string.weblogin_url));
             checkServerAndProceed();
         }
 
-        serverEntry.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                if (!textFieldBoxes.isOnError() && !TextUtils.isEmpty(serverEntry.getText())) {
-                    toggleProceedButton(true);
-                } else {
-                    toggleProceedButton(false);
-                }
-            }
-        });
-
-        serverEntry.setOnEditorActionListener((textView, i, keyEvent) -> {
+        serverEntryTextInputEditText.setOnEditorActionListener((textView, i, keyEvent) -> {
             if (i == EditorInfo.IME_ACTION_DONE) {
                 checkServerAndProceed();
             }
@@ -229,23 +211,13 @@ public class ServerSelectionController extends BaseController {
         });
     }
 
-    private void toggleProceedButton(boolean show) {
-        textFieldBoxes.getEndIconImageButton().setEnabled(show);
-
-        if (show) {
-            textFieldBoxes.getEndIconImageButton().setAlpha(1f);
-        } else {
-            textFieldBoxes.getEndIconImageButton().setAlpha(0.5f);
-        }
-    }
-
     private void checkServerAndProceed() {
         dispose();
 
-        String url = serverEntry.getText().toString().trim();
+        String url = serverEntryTextInputEditText.getText().toString().trim();
 
-        serverEntry.setEnabled(false);
-        progressBar.setVisibility(View.VISIBLE);
+        serverEntryTextInputEditText.setEnabled(false);
+        showProgressBar();
         if (providersTextView.getVisibility() != View.INVISIBLE) {
             providersTextView.setVisibility(View.INVISIBLE);
             certTextView.setVisibility(View.INVISIBLE);
@@ -283,27 +255,21 @@ public class ServerSelectionController extends BaseController {
                                 .pushChangeHandler(new HorizontalChangeHandler())
                                 .popChangeHandler(new HorizontalChangeHandler()));
                     } else if (!status.isInstalled()) {
-                        textFieldBoxes.setError(String.format(
-                                getResources().getString(R.string.nc_server_not_installed), productName),
-                                true);
-                        toggleProceedButton(false);
+                        setErrorText(String.format(
+                                getResources().getString(R.string.nc_server_not_installed), productName));
                     } else if (status.isNeedsUpgrade()) {
-                        textFieldBoxes.setError(String.format(getResources().
+                        setErrorText(String.format(getResources().
                                         getString(R.string.nc_server_db_upgrade_needed),
-                                productName), true);
-                        toggleProceedButton(false);
+                                productName));
                     } else if (status.isMaintenance()) {
-                        textFieldBoxes.setError(String.format(getResources().
+                        setErrorText(String.format(getResources().
                                         getString(R.string.nc_server_maintenance),
-                                productName),
-                                true);
-                        toggleProceedButton(false);
+                                productName));
                     } else if (!status.getVersion().startsWith("13.")) {
-                        textFieldBoxes.setError(String.format(getResources().
+                        setErrorText(String.format(getResources().
                                         getString(R.string.nc_server_version),
-                                getResources().getString(R.string.nc_app_name)
-                                , productName), true);
-                        toggleProceedButton(false);
+                                getResources().getString(R.string.nc_app_name),
+                                productName));
                     }
 
                 }, throwable -> {
@@ -311,27 +277,26 @@ public class ServerSelectionController extends BaseController {
                         checkServer(queryUrl.replace("https://", "http://"), false);
                     } else {
                         if (throwable.getLocalizedMessage() != null) {
-                            textFieldBoxes.setError(throwable.getLocalizedMessage(), true);
+                            setErrorText(throwable.getLocalizedMessage());
                         } else if (throwable.getCause() instanceof CertificateException) {
-                            textFieldBoxes.setError(getResources().getString(R.string.nc_certificate_error),
-                                    false);
+                            setErrorText(getResources().getString(R.string.nc_certificate_error));
+                        } else {
+                            hideProgressBar();
                         }
 
-                        if (serverEntry != null) {
-                            serverEntry.setEnabled(true);
+                        if (serverEntryTextInputEditText != null) {
+                            serverEntryTextInputEditText.setEnabled(true);
                         }
 
-                        progressBar.setVisibility(View.INVISIBLE);
                         if (providersTextView.getVisibility() != View.INVISIBLE) {
                             providersTextView.setVisibility(View.VISIBLE);
                             certTextView.setVisibility(View.VISIBLE);
                         }
-                        toggleProceedButton(false);
 
                         dispose();
                     }
                 }, () -> {
-                    progressBar.setVisibility(View.INVISIBLE);
+                    hideProgressBar();
                     if (providersTextView.getVisibility() != View.INVISIBLE) {
                         providersTextView.setVisibility(View.VISIBLE);
                         certTextView.setVisibility(View.VISIBLE);
@@ -340,23 +305,36 @@ public class ServerSelectionController extends BaseController {
                 });
     }
 
+    private void setErrorText(String text) {
+        errorText.setText(text);
+        errorText.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        errorText.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideProgressBar() {
+        errorText.setVisibility(View.GONE);
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
         if (ApplicationWideMessageHolder.getInstance().getMessageType() != null) {
             if (ApplicationWideMessageHolder.getInstance().getMessageType()
                     .equals(ApplicationWideMessageHolder.MessageType.ACCOUNT_SCHEDULED_FOR_DELETION)) {
-                textFieldBoxes.setError(getResources().getString(R.string.nc_account_scheduled_for_deletion),
-                        false);
+                setErrorText(getResources().getString(R.string.nc_account_scheduled_for_deletion));
                 ApplicationWideMessageHolder.getInstance().setMessageType(null);
             } else if (ApplicationWideMessageHolder.getInstance().getMessageType()
                     .equals(ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK)) {
-                textFieldBoxes.setError(getResources().getString(R.string.nc_settings_no_talk_installed),
-                        false);
+                setErrorText(getResources().getString(R.string.nc_settings_no_talk_installed));
             } else if (ApplicationWideMessageHolder.getInstance().getMessageType()
                     .equals(ApplicationWideMessageHolder.MessageType.FAILED_TO_IMPORT_ACCOUNT)) {
-                textFieldBoxes.setError(getResources().getString(R.string.nc_server_failed_to_import_account),
-                        false);
+                setErrorText(getResources().getString(R.string.nc_server_failed_to_import_account));
             }
             ApplicationWideMessageHolder.getInstance().setMessageType(null);
         }
@@ -378,8 +356,7 @@ public class ServerSelectionController extends BaseController {
                     certTextView.setText(R.string.nc_configure_cert_auth);
                 }
 
-                textFieldBoxes.setError("", true);
-                toggleProceedButton(true);
+                hideProgressBar();
             });
         }
     }
