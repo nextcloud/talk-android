@@ -24,7 +24,6 @@
 
     <dimen name="item_height">72dp</dimen>
     <dimen name="small_item_height">48dp</dimen>
-    <dimen name="rv_item_view_height">48dp</dimen>
 
     <!-- Custom transition dimensions -->
     <dimen name="margin_between_elements">8dp</dimen>

@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -20,18 +22,19 @@
 
 <com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/webinar_settings"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
 
     <com.yarolegovich.mp.MaterialPreferenceCategory
         android:id="@+id/conversation_info_webinar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        apc:mpc_title="@string/nc_webinar"
-        apc:mpc_title_color="@color/colorPrimary">
+        apc:cardBackgroundColor="@color/bg_default"
+        apc:cardElevation="0dp"
+        apc:mpc_title="@string/nc_webinar">
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/conversation_info_lobby"
@@ -51,7 +54,8 @@
             apc:mp_icon="@drawable/ic_timer_black_24dp"
             apc:mp_icon_tint="@color/grey_600"
             apc:mp_summary="@string/nc_manual"
-            apc:mp_title="@string/nc_start_time" />
+            apc:mp_title="@string/nc_start_time"
+            tools:visibility="visible" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

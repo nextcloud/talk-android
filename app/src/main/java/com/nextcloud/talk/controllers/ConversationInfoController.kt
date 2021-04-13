@@ -30,7 +30,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.RecyclerView
@@ -70,10 +69,13 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
-import com.nextcloud.talk.utils.ui.MaterialPreferenceCategoryWithRightLink
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
-import com.yarolegovich.mp.*
+import com.yarolegovich.mp.MaterialChoicePreference
+import com.yarolegovich.mp.MaterialPreferenceCategory
+import com.yarolegovich.mp.MaterialPreferenceScreen
+import com.yarolegovich.mp.MaterialStandardPreference
+import com.yarolegovich.mp.MaterialSwitchPreference
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -110,7 +112,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     @BindView(R.id.display_name_text)
     lateinit var conversationDisplayName: EmojiTextView
     @BindView(R.id.participants_list_category)
-    lateinit var participantsListCategory: MaterialPreferenceCategoryWithRightLink
+    lateinit var participantsListCategory: MaterialPreferenceCategory
+    @BindView(R.id.addParticipantsAction)
+    lateinit var addParticipantsAction: MaterialStandardPreference;
     @BindView(R.id.recycler_view)
     lateinit var recyclerView: RecyclerView
     @BindView(R.id.deleteConversationAction)
@@ -121,9 +125,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     lateinit var ownOptionsCategory: MaterialPreferenceCategory
     @BindView(R.id.muteCalls)
     lateinit var muteCalls: MaterialSwitchPreference
-    @BindView(R.id.mpc_action)
-    lateinit var actionTextView: TextView;
-
     @set:Inject
     lateinit var ncApi: NcApi
     @set:Inject
@@ -200,7 +201,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             saveStateHandler = LovelySaveStateHandler()
         }
 
-        actionTextView.visibility = View.GONE
+        addParticipantsAction.visibility = View.GONE
     }
 
     private fun setupWebinaryView() {
@@ -350,24 +351,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             recyclerView.adapter = adapter
 
             adapter!!.addListener(this)
-            actionTextView.setOnClickListener {
-                val bundle = Bundle()
-                val existingParticipantsId = arrayListOf<String>()
-
-                recyclerViewItems.forEach {
-                    val userItem = it as UserItem
-                    existingParticipantsId.add(userItem.model.userId)
-                }
-
-                bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true);
-                bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
-                bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
-
-                getRouter().pushController((RouterTransaction.with(ContactsController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())));
-
-            }
         }
     }
 
@@ -430,6 +413,25 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     }
 
+    @OnClick(R.id.addParticipantsAction)
+    internal fun addParticipants() {
+        val bundle = Bundle()
+        val existingParticipantsId = arrayListOf<String>()
+
+        recyclerViewItems.forEach {
+            val userItem = it as UserItem
+            existingParticipantsId.add(userItem.model.userId)
+        }
+
+        bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true);
+        bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
+        bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
+
+        getRouter().pushController((RouterTransaction.with(ContactsController(bundle))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())))
+    }
+
     @OnClick(R.id.leaveConversationAction)
     internal fun leaveConversation() {
         workerData?.let {
@@ -475,9 +477,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                         val conversationCopy = conversation
 
                         if (conversationCopy!!.canModerate(conversationUser)) {
-                            actionTextView.visibility = View.VISIBLE
+                            addParticipantsAction.visibility = View.VISIBLE
                         } else {
-                            actionTextView.visibility = View.GONE
+                            addParticipantsAction.visibility = View.GONE
                         }
 
                         if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
