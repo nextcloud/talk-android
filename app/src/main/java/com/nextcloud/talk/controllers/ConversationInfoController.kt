@@ -685,6 +685,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 
+    /**
+     * Comparator for participants, sorts by online-status, moderator-status and display name.
+     */
     class UserItemComparator : Comparator<UserItem> {
         override fun compare(left: UserItem, right: UserItem): Int {
             if (left.isOnline && !right.isOnline) {
