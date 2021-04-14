@@ -33,13 +33,18 @@
     <color name="fontAppbar">#666666</color>
     <color name="fontSecondaryAppbar">#A5A5A5</color>
 
+    <!-- general text colors -->
+    <color name="high_emphasis_text">#de000000</color>
+    <color name="medium_emphasis_text">#99000000</color>
+    <color name="low_emphasis_text">#61000000</color>
+
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
     <!-- Text color of received messages -->
     <color name="nc_incoming_text_default">#37505D</color>
 
     <!-- Name of person or group for the chat conversation -->
-    <color name="conversation_item_header">#000000</color>
+    <color name="conversation_item_header">@color/high_emphasis_text</color>
     <color name="conversation_unread_bubble">#DBDBDB</color>
     <color name="conversation_unread_bubble_text">#222222</color>
 

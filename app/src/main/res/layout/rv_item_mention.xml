@@ -58,8 +58,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="@color/textColorMaxContrast"
-            android:textSize="16sp"
+            android:textAppearance="?android:attr/textAppearanceListItem"
             tools:text="Call item text" />
 
         <androidx.emoji.widget.EmojiTextView
@@ -68,8 +67,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="@color/nc_incoming_text_default"
-            android:textSize="12sp"
+            android:textColor="@color/textColorMaxContrast"
             tools:text="A week ago" />
 
     </LinearLayout>

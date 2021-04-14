@@ -31,6 +31,9 @@
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
         <item name="android:textColor">@color/conversation_item_header</item>
+        <item name="android:textColorPrimary">@color/high_emphasis_text</item>
+        <item name="android:textColorSecondary">@color/medium_emphasis_text</item>
+        <item name="android:textColorTertiary">@color/low_emphasis_text</item>
         <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionBarPopupTheme">@style/appActionBarPopupMenu</item>
@@ -44,7 +47,7 @@
     </style>
 
     <style name="ListItem" parent="BottomSheet.ListItem.TextAppearance">
-        <item name="android:textColor">@color/conversation_item_header</item>
+        <item name="android:textColor">@color/high_emphasis_text</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -65,7 +68,7 @@
         <item name="android:colorPrimary">@color/fg_inverse</item>
         <item name="android:textColorSecondary">@color/fontAppbar</item>
         <item name="android:background">@color/appbar</item>
-        <item name="android:textColor">@color/conversation_item_header</item>
+        <item name="android:textColor">@color/high_emphasis_text</item>
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 

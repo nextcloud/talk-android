@@ -127,7 +127,7 @@
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    tools:listitem="@layout/rv_item_contact" />
+                    tools:listitem="@layout/rv_item_conversation_info_participant" />
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 

@@ -37,7 +37,8 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:transitionName="userAvatar.transitionTag"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            tools:src="@tools:sample/avatars[0]" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/userinfo_fullName"
@@ -47,7 +48,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/margin_between_elements"
             android:ellipsize="end"
-            android:textColor="@color/nc_incoming_text_default"
             tools:text="John Doe" />
 
         <TextView
@@ -59,7 +59,6 @@
             android:layout_margin="4dp"
             android:ellipsize="end"
             android:lines="2"
-            android:textColor="@color/nc_incoming_text_default"
             tools:text="john@nextcloud.com" />
 
         <LinearLayout
