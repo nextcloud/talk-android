@@ -26,6 +26,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.emoji.widget.EmojiTextView;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -40,11 +44,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import androidx.annotation.Nullable;
-
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -269,7 +268,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         this.header = header;
     }
 
-
     static class UserItemViewHolder extends FlexibleViewHolder {
 
         @BindView(R.id.name_text)
@@ -297,6 +295,4 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             ButterKnife.bind(this, view);
         }
     }
-
-
 }

@@ -78,7 +78,6 @@ import com.yarolegovich.mp.MaterialStandardPreference
 import com.yarolegovich.mp.MaterialSwitchPreference
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -142,8 +141,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: Conversation? = null
 
-    private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
-    private var recyclerViewItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var adapter: FlexibleAdapter<UserItem>? = null
+    private var recyclerViewItems: MutableList<UserItem> = ArrayList()
 
     private var saveStateHandler: LovelySaveStateHandler? = null
 
@@ -376,6 +375,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             }
         }
 
+        Collections.sort(recyclerViewItems, UserItemComparator())
 
         if (ownUserItem != null) {
             recyclerViewItems.add(0, ownUserItem)
@@ -683,5 +683,21 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     companion object {
 
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
+    }
+
+    class UserItemComparator : Comparator<UserItem> {
+        override fun compare(left: UserItem, right: UserItem): Int {
+            if (left.isOnline && !right.isOnline) {
+                return -1
+            } else if (!left.isOnline && right.isOnline) {
+                return 1
+            }
+            if (Participant.ParticipantType.MODERATOR == left.model.type && Participant.ParticipantType.MODERATOR != right.model.type) {
+                return -1
+            } else if (Participant.ParticipantType.MODERATOR != left.model.type && Participant.ParticipantType.MODERATOR == right.model.type) {
+                return 1
+            }
+            return left.model.displayName.compareTo(right.model.displayName)
+        }
     }
 }
