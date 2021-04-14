@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">伺服器位址</string>
     <string name="nc_server_not_installed">請將%1$s完整安裝</string>
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s資料庫</string>
     <string name="nc_server_maintenance">請維護您的%1$s</string>
@@ -178,7 +176,6 @@
 
     <string name="nc_groups">群組</string>
     <string name="nc_participants">參與者</string>
-
     <string name="nc_owner">擁有者</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_user">使用者</string>

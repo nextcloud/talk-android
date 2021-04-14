@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Einstellungen</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Serveradresse</string>
     <string name="nc_server_not_installed">Bitte beenden Sie Ihre %1$s Installation</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
     <string name="nc_server_maintenance">Bitte den Wartungsmodus von %1$s beenden</string>
@@ -258,16 +256,12 @@
     <string name="nc_description_more_menu_group">Menü für die öffentliche Unterhaltung %1$s</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei \noder starten Sie eine neue</string>
-    <string name="nc_conversations_empty_details">Sagen Sie Hallo zu Ihren Freunden und Kollegen!</string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s-Zeichen-Limit wurde erreicht</string>
     <string name="nc_groups">Gruppen</string>
     <string name="nc_participants">Teilnehmer</string>
-
     <string name="nc_owner">Besitzer</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Benutzer</string>
@@ -336,6 +330,7 @@
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="user_info_phone">Telefonnummer</string>
+    <string name="user_info_email">E-Mail</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_website">Internetseite</string>
     <string name="user_info_twitter">Twitter</string>
@@ -363,4 +358,4 @@
 
     <string name="nc_action_open_main_menu">Hauptmenü öffnen</string>
     <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
-</resources>
+    </resources>

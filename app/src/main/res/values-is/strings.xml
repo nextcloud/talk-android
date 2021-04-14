@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Stillingar</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Vistfang þjóns</string>
     <string name="nc_server_not_installed">Kláraðu uppsetninguna þína á %1$s</string>
     <string name="nc_server_db_upgrade_needed">Uppfærðu %1$s gagnagrunninn þinn</string>
     <string name="nc_server_maintenance">Endilega taktu %1$s úr viðhaldsham</string>
@@ -213,13 +211,10 @@
     <string name="nc_description_more_menu_group">Valmynd fyrir opinbert samtal %1$s</string>
     <string name="nc_description_send_message_button">Senda skilaboð</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Taktu þátt í samtali eða byrjaðu nýtt samtal\n Heilsaðu vinum þínum og vinnufélögum!</string>
     <string name="nc_hello">Halló</string>
 
     <string name="nc_groups">Hópar</string>
     <string name="nc_participants">Þátttakendur</string>
-
     <string name="nc_owner">Eigandi</string>
     <string name="nc_moderator">Umsjónarmaður</string>
     <string name="nc_user">Notandi</string>

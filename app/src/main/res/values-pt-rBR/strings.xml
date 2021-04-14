@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Configurações</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Endereço do servidor</string>
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
@@ -258,15 +256,12 @@
     <string name="nc_description_more_menu_group">Menu para conversa pública %1$s</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Participe de uma conversa ou comece uma nova\n Diga oi para seus amigos e colegas!</string>
     <string name="nc_hello">Olá</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
-
     <string name="nc_owner">Proprietário</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_user">Usuário</string>
@@ -335,6 +330,7 @@
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="user_info_phone">Número do Telefone</string>
+    <string name="user_info_email">E-mail</string>
     <string name="user_info_address">Endereço</string>
     <string name="user_info_website">Website</string>
     <string name="user_info_twitter">Twitter</string>
@@ -362,4 +358,4 @@
 
     <string name="nc_action_open_main_menu">Abrir menu principal</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
-</resources>
+    </resources>

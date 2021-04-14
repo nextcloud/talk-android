@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">伺服器地址</string>
     <string name="nc_server_not_installed">請將%1$s完整安裝</string>
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s數據庫</string>
     <string name="nc_server_maintenance">撤銷您的%1$s退出維護模式</string>
@@ -258,15 +256,12 @@
     <string name="nc_description_more_menu_group">與 %1$s 公開對話的菜單</string>
     <string name="nc_description_send_message_button">傳送訊息</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">加入對話或開始新的對話\n與您的朋友和同事打招呼！</string>
     <string name="nc_hello">嗨，</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
     <string name="nc_groups">群組</string>
     <string name="nc_participants">參與者</string>
-
     <string name="nc_owner">擁有者</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_user">用戶</string>
@@ -335,6 +330,7 @@
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
     <string name="userinfo_error_text">無法檢索個人用戶資訊。</string>
     <string name="user_info_phone">電話號碼</string>
+    <string name="user_info_email">電郵地址</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_website">網站</string>
     <string name="user_info_twitter">Twitter</string>
@@ -362,4 +358,4 @@
 
     <string name="nc_action_open_main_menu">打開主選項單</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
-</resources>
+    </resources>

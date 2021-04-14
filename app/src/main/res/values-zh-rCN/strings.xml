@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">设置</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">服务器地址</string>
     <string name="nc_server_not_installed">请完成您的 %1$s 安装</string>
     <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_maintenance">请将您的 %1$s 退出维护模式</string>
@@ -258,16 +256,12 @@
     <string name="nc_description_more_menu_group">公共讨论菜单%1$s</string>
     <string name="nc_description_send_message_button">发送消息</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">加入一场交谈或开始一个新的对话
-向你的朋友和同事打个招呼吧</string>
     <string name="nc_hello">你好</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">已达到%s字符限制</string>
     <string name="nc_groups">群组</string>
     <string name="nc_participants">参与者</string>
-
     <string name="nc_owner">拥有者</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_user">用户</string>
@@ -336,6 +330,7 @@
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
     <string name="userinfo_error_text">未能检索个人用户信息</string>
     <string name="user_info_phone">电话号码  </string>
+    <string name="user_info_email">电子邮件</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_website">网站</string>
     <string name="user_info_twitter">推特账户</string>
@@ -363,4 +358,4 @@
 
     <string name="nc_action_open_main_menu">打开主菜单</string>
     <string name="failed_to_save">未能保存 %1$s</string>
-</resources>
+    </resources>

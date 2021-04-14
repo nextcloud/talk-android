@@ -29,8 +29,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Параметры</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Адрес сервера</string>
     <string name="nc_server_not_installed">Завершите установку %1$s</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
@@ -247,15 +245,12 @@
     <string name="nc_description_more_menu_group">Меню для общей беседы %1$s</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое\n Поприветствуйте своих друзей или коллег. </string>
     <string name="nc_hello">Привет</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_participants">Участники</string>
-
     <string name="nc_owner">Владелец</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_user">Пользователь</string>

@@ -29,8 +29,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Configuración</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Dirección del servidor</string>
     <string name="nc_server_not_installed">Por favor, finaliza la instalación de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_maintenance">Por favor pon %1$s fuera de mantenimiento</string>
@@ -247,15 +245,12 @@
     <string name="nc_description_more_menu_group">Menú para la conversación pública %1$s</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Únete a una conversación o empieza una nueva\n Di hola a tus amigos y colegas.</string>
     <string name="nc_hello">Hola</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Se ha alcanzado el límite de %s carácteres</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
-
     <string name="nc_owner">Propietario</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_user">Usuario</string>

@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Paràmetres</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Adreça del servidor</string>
     <string name="nc_server_not_installed">Si us plau, acabeu la vostra instal·lació %1$s</string>
     <string name="nc_server_db_upgrade_needed">Si us plau, actualitzeu la vostra base de dades %1$s</string>
     <string name="nc_server_maintenance">Si us plau, porteu el vostre %1$s cap a manteniment</string>
@@ -228,15 +226,12 @@
     <string name="nc_description_more_menu_group">Menú per converses públiques %1$s</string>
     <string name="nc_description_send_message_button">Envia un missatge</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Afegiu-vos a una conversa on inicieu-ne una de nova\n Digueu hola als vostres amics i companys!</string>
     <string name="nc_hello">Hola</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">S\'ha arribat al límit de %s caràcters </string>
     <string name="nc_groups">Grups</string>
     <string name="nc_participants">Participants</string>
-
     <string name="nc_owner">Propietari</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_user">Usuari</string>

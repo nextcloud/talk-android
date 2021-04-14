@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Поставке</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Адреса сервера</string>
     <string name="nc_server_not_installed">Довршите своју %1$s инсталацију</string>
     <string name="nc_server_db_upgrade_needed">Ажурирајте своју %1$s базу</string>
     <string name="nc_server_maintenance">Прекините %1$s режим одржавања</string>
@@ -228,15 +226,12 @@
     <string name="nc_description_more_menu_group">Мени јавног разговора %1$s</string>
     <string name="nc_description_send_message_button">Пошаљи поруку</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Придружи се разговору или започни нови\n Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_hello">Здраво</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Достигнут је лимит од %s карактера</string>
     <string name="nc_groups">Групе</string>
     <string name="nc_participants">Учесници</string>
-
     <string name="nc_owner">Власник</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_user">Корисник</string>

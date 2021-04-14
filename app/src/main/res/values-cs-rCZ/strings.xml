@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nastavení</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Adresa serveru</string>
     <string name="nc_server_not_installed">Dokončete instalaci %1$s</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
     <string name="nc_server_maintenance">Přepněte svůj %1$s zpět z režimu údržby</string>
@@ -258,15 +256,12 @@
     <string name="nc_description_more_menu_group">Nabídka pro veřejnou konverzaci %1$s</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Připojte se ke konverzaci nebo začněte novou\n Pozdravte své přátele a kolegy!</string>
     <string name="nc_hello">Zdravím</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">byl dosažen limit %s znaků</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_participants">Účastníci</string>
-
     <string name="nc_owner">Vlastník</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_user">Uživatel</string>
@@ -361,4 +356,4 @@
 
     <string name="nc_action_open_main_menu">Otevřít hlavní nabídku</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
-</resources>
+    </resources>

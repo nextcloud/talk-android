@@ -29,8 +29,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Impostatziones</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Indiritzu serbidore</string>
     <string name="nc_server_not_installed">Agabba %1$s s\'installatzione tua</string>
     <string name="nc_server_db_upgrade_needed">Agiorna %1$s sa base de datos tua</string>
     <string name="nc_server_maintenance">Porta su %1$s tuo a sa mantenidura</string>
@@ -249,7 +247,6 @@
     <string name="nc_limit_hit">%s lìmite de caràteres lòmpidu</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Partetzipantes</string>
-
     <string name="nc_owner">Mere</string>
     <string name="nc_file_browser_back">A coa</string>
     <!-- Lobby -->

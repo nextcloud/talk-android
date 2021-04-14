@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Ustawienia</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Adres serwera</string>
     <string name="nc_server_not_installed">Zakończ instalację %1$s</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>
     <string name="nc_server_maintenance">Przeprowadź %1$s konserwację do końca</string>
@@ -258,15 +256,12 @@
     <string name="nc_description_more_menu_group">Menu dla rozmów publicznych %1$s</string>
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową\n Przywitaj się z przyjaciółmi i kolegami!</string>
     <string name="nc_hello">Cześć</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Osiągnięto limit %s znaków</string>
     <string name="nc_groups">Grupy</string>
     <string name="nc_participants">Uczestnicy</string>
-
     <string name="nc_owner">Właściciel</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Użytkownik</string>
@@ -335,6 +330,7 @@
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="userinfo_error_text">Nie udało się pobrać osobistych informacji o użytkowniku.</string>
     <string name="user_info_phone">Numer telefonu</string>
+    <string name="user_info_email">E-mail</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_website">Strona WWW</string>
     <string name="user_info_twitter">Twitter</string>
@@ -362,4 +358,4 @@
 
     <string name="nc_action_open_main_menu">Otwórz menu główne</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
-</resources>
+    </resources>

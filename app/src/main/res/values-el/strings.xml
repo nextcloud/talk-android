@@ -29,8 +29,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Ρυθμίσεις</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Διεύθυνση διακομιστή</string>
     <string name="nc_server_not_installed">Παρακαλούμε ολοκληρώστε την %1$s εγκατάσταση</string>
     <string name="nc_server_db_upgrade_needed">Παρακαλούμε αναβαθμίστε την %1$s βάση δεδομένων σας</string>
     <string name="nc_server_maintenance">Παρακαλώ θέστε τον %1$sεκτος συντήρησης</string>
@@ -242,15 +240,12 @@
     <string name="nc_description_more_menu_group">Μενού δημόσιας συνομιλίας %1$s</string>
     <string name="nc_description_send_message_button">Αποστολή μηνύματος</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Συμμετοχή σε συνομιλία ή έναρξη νέας \n Πείτε γειά στους φίλους σας και συναδέλφους!</string>
     <string name="nc_hello">Γεια σας</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>
     <string name="nc_groups">Ομάδες</string>
     <string name="nc_participants">Συμμετέχοντες</string>
-
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_moderator">Συντονιστής</string>
     <string name="nc_user">Χρήστης</string>

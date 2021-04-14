@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nustatymai</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Serverio adresas</string>
     <string name="nc_server_not_installed">Užbaikite savo %1$s diegimą</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_maintenance">Išjunkite savo %1$s techninės priežiūros veikseną</string>
@@ -200,15 +198,12 @@
 
     <string name="nc_description_send_message_button">Siųsti žinutę</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Prisijunkite arba pradėkite naują pokalbį\n Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_hello">Sveiki</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Pasiekta %s simbolių riba</string>
     <string name="nc_groups">Grupės</string>
     <string name="nc_participants">Dalyviai</string>
-
     <string name="nc_owner">Savininkas</string>
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_user">Naudotojas</string>

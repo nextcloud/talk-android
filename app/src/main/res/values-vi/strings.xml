@@ -29,8 +29,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Cài đặt</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Địa chỉ máy chủ</string>
     <string name="nc_server_not_installed">Hãy hoàn tất cài đặt %1$s của bạn</string>
     <string name="nc_server_db_upgrade_needed">Xin hãy nâng cấp %1$s dữ liệu của bạn</string>
     <string name="nc_server_maintenance">Xin hãy báo cho %1$s đội bảo trì của bạn</string>
@@ -188,7 +186,6 @@
 
     <string name="nc_groups">Nhóm</string>
     <string name="nc_participants">Người tham gia</string>
-
     <string name="nc_owner">Chủ</string>
     <string name="nc_moderator">Kiểm duyệt</string>
     <string name="nc_user">Người dùng</string>

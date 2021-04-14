@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Instellingen</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Serveradres</string>
     <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
@@ -254,8 +252,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_description_more_menu_group">Menu voor openbaar gesprek %1$s</string>
     <string name="nc_description_send_message_button">Verstuur bericht</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Doe mee met een discussie, of start een nieuwe\n Zeg hallo tegen je vrienden en collega\'s! </string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
@@ -263,7 +259,6 @@ Kies er eentje van een provider.</string>
 %stekens limiet bereikt</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_participants">Deelnemers</string>
-
     <string name="nc_owner">Eigenaar</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Gebruiker</string>

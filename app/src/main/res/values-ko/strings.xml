@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">설정</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">서버 주소</string>
     <string name="nc_server_not_installed">%1$s 설치를 완료하십시오</string>
     <string name="nc_server_db_upgrade_needed">%1$s 데이터베이스를 업그레이드하십시오</string>
     <string name="nc_server_maintenance">%1$s의 관리 모드를 종료하십시오</string>
@@ -228,16 +226,12 @@
     <string name="nc_description_more_menu_group">%1$s 공적 대화를 위한 메뉴</string>
     <string name="nc_description_send_message_button">메시지 보내기</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">대화에 참여하거나 새로운 대화를 만드시오
-안녕 친구들!</string>
     <string name="nc_hello">안녕하세요</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s 문자 제한에 도달됨</string>
     <string name="nc_groups">그룹</string>
     <string name="nc_participants">참가자</string>
-
     <string name="nc_owner">Owner</string>
     <string name="nc_moderator">중재자</string>
     <string name="nc_user">사용자</string>

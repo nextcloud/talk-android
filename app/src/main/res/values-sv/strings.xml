@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Inställningar</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Serveradress</string>
     <string name="nc_server_not_installed">Vänligen slutför din %1$s-installation</string>
     <string name="nc_server_db_upgrade_needed">Vänligen uppgradera din %1$s-databas</string>
     <string name="nc_server_maintenance">Vänligen inaktivera underhållningsläge för din %1$s </string>
@@ -228,15 +226,12 @@
     <string name="nc_description_more_menu_group">Meny för publik konversation %1$s</string>
     <string name="nc_description_send_message_button">Skicka meddelande</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Gå med i en konversation eller starta en ny\n Säg hej till dina vänner och kollegor!</string>
     <string name="nc_hello">Hej</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_participants">Deltagare</string>
-
     <string name="nc_owner">Ägare</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Användare</string>

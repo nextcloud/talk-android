@@ -27,8 +27,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">تنظیمات</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">آدرس سرور</string>
     <string name="nc_server_not_installed">لطفا نصب %1$s را  به پایان برسانید.</string>
     <string name="nc_server_db_upgrade_needed">لطفا پایگاه داده %1$s خود را ارتقا دهید</string>
     <string name="nc_server_maintenance">Please bring your %1$s out of maintenance</string>
@@ -235,15 +233,12 @@
     <string name="nc_description_more_menu_group">منوی مکالمه عمومی %1$s</string>
     <string name="nc_description_send_message_button">فرستادن پیام</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">به یک گفتگو بپیوندید یا یک جلسه جدید را شروع کنید \n با سلام به دوستان و همکاران خود سلام کنید!</string>
     <string name="nc_hello">سلام</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%sحد کاراکترها زده شده است</string>
     <string name="nc_groups">گروه ها</string>
     <string name="nc_participants">شركت كنندگان</string>
-
     <string name="nc_owner">مالک</string>
     <string name="nc_moderator">مدیر</string>
     <string name="nc_user">کاربر</string>

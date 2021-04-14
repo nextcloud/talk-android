@@ -31,8 +31,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">الإعدادات</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">عنوان الخادم</string>
     <string name="nc_server_not_installed">الرجاء إنهاء %1$s التثبيت الخاص بك</string>
     <string name="nc_server_db_upgrade_needed">الرجاء ترقية %1$s قاعدة البيانات الخاصة بك </string>
     <string name="nc_server_maintenance">الرجاء إخراج %1$sمن الصيانة</string>
@@ -253,15 +251,12 @@
     <string name="nc_description_more_menu_group">قائمة للمحادثة العامة مع %1$s</string>
     <string name="nc_description_send_message_button">أرسل رسالة</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">انضم إلى المحادثة أو ابدأ محادثة جديدة وقل مرحبا لاصدقاءك وزملاءك!</string>
     <string name="nc_hello">أهلا</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%sتم الوصول إلى عدد الاحرف المسموح به</string>
     <string name="nc_groups">الفِرَق</string>
     <string name="nc_participants">المشارِكون</string>
-
     <string name="nc_owner">المالك</string>
     <string name="nc_moderator">مشرِف</string>
     <string name="nc_user">مستخدم</string>

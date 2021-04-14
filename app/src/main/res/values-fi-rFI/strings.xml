@@ -29,8 +29,6 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Asetukset</string>
 
-    <!-- Server selection -->
-    <string name="nc_server_url">Palvelimen osoite</string>
     <string name="nc_server_not_installed">Viimeistele %1$s-asennuksesi</string>
     <string name="nc_server_db_upgrade_needed">Päivitä %1$s-tietokantasi</string>
     <string name="nc_server_maintenance">Poista %1$s huoltotilasta</string>
@@ -219,15 +217,12 @@
 
     <string name="nc_description_send_message_button">Lähetä viesti</string>
 
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi keskustelu\n Sano hei ystävillesi ja työkavereillesi!</string>
     <string name="nc_hello">Hei</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s merkin raja tuli täyteen</string>
     <string name="nc_groups">Ryhmät</string>
     <string name="nc_participants">Osallistujat</string>
-
     <string name="nc_owner">Omistaja</string>
     <string name="nc_moderator">Moderaattori</string>
     <string name="nc_user">Käyttäjä</string>
