@@ -39,7 +39,7 @@
     <EditText
         android:id="@+id/user_info_edit_text"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_marginStart="@dimen/standard_double_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         android:autofillHints="none"
@@ -56,9 +56,10 @@
 
     <ImageView
         android:id="@+id/scope"
-        android:layout_width="@dimen/iconized_single_line_item_icon_size"
-        android:layout_height="@dimen/iconized_single_line_item_icon_size"
-        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="12dp"
+        android:layout_marginEnd="4dp"
         android:contentDescription="@string/scope_toggle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
