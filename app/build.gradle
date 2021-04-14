@@ -127,6 +127,7 @@ android {
 
 ext {
     daggerVersion = "2.34.1"
+    powermockVersion = "2.0.9"
     workVersion = "1.0.1"
 }
 
@@ -248,9 +249,9 @@ dependencies {
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'org.mockito:mockito-core:3.0.0'
-    testImplementation 'org.powermock:powermock-core:2.0.9'
-    testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
-    testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
+    testImplementation "org.powermock:powermock-core:${powermockVersion}"
+    testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
+    testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
 
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
         exclude group: 'com.android.support', module: 'support-annotations'
