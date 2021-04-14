@@ -30,7 +30,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:panelFullBackground">@color/colorPrimary</item>
         <item name="android:itemBackground">@color/nc_outcoming_text_default</item>
-        <item name="android:textColor">@color/nc_incoming_text_default</item>
+        <item name="android:textColor">@color/conversation_item_header</item>
         <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
         <item name="actionBarPopupTheme">@style/appActionBarPopupMenu</item>
