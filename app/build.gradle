@@ -181,7 +181,7 @@ dependencies {
     implementation 'com.github.aurae.retrofit2:converter-logansquare:1.4.1'
 
     implementation 'com.google.dagger:dagger:2.24'
-    kapt 'com.google.dagger:dagger-compiler:2.24'
+    kapt 'com.google.dagger:dagger-compiler:2.34.1'
     implementation 'com.github.lukaspili.autodagger2:autodagger2:1.1'
     kapt 'com.github.lukaspili.autodagger2:autodagger2-compiler:1.1'
     compileOnly 'javax.annotation:jsr250-api:1.0'
