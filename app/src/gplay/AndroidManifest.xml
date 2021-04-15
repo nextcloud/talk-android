@@ -30,7 +30,7 @@
         android:label="@string/nc_app_name"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.Launcher"
         tools:replace="label, icon, theme, name, allowBackup"
         tools:ignore="UnusedAttribute, ExportedService">
 

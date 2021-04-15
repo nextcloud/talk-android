@@ -103,7 +103,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // Set the default theme to replace the launch screen theme.
+        setTheme(R.style.AppTheme)
         setContentView(R.layout.activity_main)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
