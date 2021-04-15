@@ -73,7 +73,8 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:textAppearance="?android:attr/textAppearanceListItem"
-            tools:text="Call item text" />
+            android:textColor="@color/conversation_item_header"
+            tools:text="Jane Doe" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/secondary_text"
@@ -81,8 +82,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textColor="@color/textColorMaxContrast"
-            tools:text="A week ago" />
+            android:textColor="?android:attr/textColorSecondary"
+            tools:text="Moderator" />
 
     </LinearLayout>
 

@@ -95,6 +95,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/nc_settings"
                     android:scaleType="fitCenter"
                     android:transitionName="userAvatar.transitionTag"
                     app:cornerRadius="@dimen/button_corner_radius"

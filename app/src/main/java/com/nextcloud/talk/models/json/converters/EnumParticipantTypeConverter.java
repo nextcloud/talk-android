@@ -37,10 +37,11 @@ public class EnumParticipantTypeConverter extends IntBasedTypeConverter<Particip
                 return Participant.ParticipantType.GUEST;
             case 5:
                 return Participant.ParticipantType.USER_FOLLOWING_LINK;
+            case 6:
+                return Participant.ParticipantType.GUEST_MODERATOR;
             default:
                 return Participant.ParticipantType.DUMMY;
         }
-
     }
 
     @Override
@@ -58,6 +59,8 @@ public class EnumParticipantTypeConverter extends IntBasedTypeConverter<Particip
                 return 4;
             case USER_FOLLOWING_LINK:
                 return 5;
+            case GUEST_MODERATOR:
+                return 6;
             default:
                 return 0;
         }

@@ -26,6 +26,10 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.emoji.widget.EmojiTextView;
+
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -40,9 +44,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import androidx.annotation.Nullable;
-
-import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -121,16 +122,18 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         }
 
         if (!isOnline) {
-            if (holder.contactMentionId != null) {
-                holder.contactMentionId.setAlpha(0.38f);
-            }
-            holder.contactDisplayName.setAlpha(0.38f);
+            holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(
+                    holder.contactDisplayName.getContext().getResources(),
+                    R.color.medium_emphasis_text,
+                    null)
+            );
             holder.simpleDraweeView.setAlpha(0.38f);
         } else {
-            if (holder.contactMentionId != null) {
-                holder.contactMentionId.setAlpha(1.0f);
-            }
-            holder.contactDisplayName.setAlpha(1.0f);
+            holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(
+                    holder.contactDisplayName.getContext().getResources(),
+                    R.color.high_emphasis_text,
+                    null)
+            );
             holder.simpleDraweeView.setAlpha(1.0f);
         }
 
@@ -243,7 +246,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
                 if (!holder.contactMentionId.getText().equals(userType)) {
                     holder.contactMentionId.setText(userType);
-                    holder.contactMentionId.setTextColor(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getColor(R.color.textColorMaxContrast));
                 }
             }
         }
@@ -265,7 +267,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     public void setHeader(GenericTextHeaderItem header) {
         this.header = header;
     }
-
 
     static class UserItemViewHolder extends FlexibleViewHolder {
 
@@ -294,6 +295,4 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             ButterKnife.bind(this, view);
         }
     }
-
-
 }

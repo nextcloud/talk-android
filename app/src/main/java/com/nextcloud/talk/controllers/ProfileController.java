@@ -809,7 +809,7 @@ public class ProfileController extends BaseController {
                             this,
                             item.field,
                             holder.getAdapterPosition()).show());
-                    holder.scope.setAlpha(1.0f);
+                    holder.scope.setAlpha(0.87f); // active - high emphasis
                 } else {
                     holder.text.setEnabled(false);
                     holder.text.setFocusableInTouchMode(false);
@@ -817,7 +817,7 @@ public class ProfileController extends BaseController {
                     holder.text.setCursorVisible(false);
                     holder.text.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
                     holder.scope.setOnClickListener(null);
-                    holder.scope.setAlpha(0.4f);
+                    holder.scope.setAlpha(0.6f); // inactive - medium emphasis
                 }
             } else {
                 holder.container.setVisibility(View.GONE);

@@ -92,6 +92,7 @@
                 android:layout_height="18dp"
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="8dp"
+                android:clickable="false"
                 android:gravity="top"
                 android:lines="1"
                 android:textAppearance="@style/ChipUnreadMessagesTextAppearance"

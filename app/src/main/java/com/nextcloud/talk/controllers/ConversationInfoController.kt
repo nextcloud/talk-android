@@ -78,7 +78,6 @@ import com.yarolegovich.mp.MaterialStandardPreference
 import com.yarolegovich.mp.MaterialSwitchPreference
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -88,6 +87,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -142,8 +142,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: Conversation? = null
 
-    private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
-    private var recyclerViewItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var adapter: FlexibleAdapter<UserItem>? = null
+    private var recyclerViewItems: MutableList<UserItem> = ArrayList()
 
     private var saveStateHandler: LovelySaveStateHandler? = null
 
@@ -376,6 +376,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             }
         }
 
+        Collections.sort(recyclerViewItems, UserItemComparator())
 
         if (ownUserItem != null) {
             recyclerViewItems.add(0, ownUserItem)
@@ -683,5 +684,33 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     companion object {
 
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
+    }
+
+    /**
+     * Comparator for participants, sorts by online-status, moderator-status and display name.
+     */
+    class UserItemComparator : Comparator<UserItem> {
+        override fun compare(left: UserItem, right: UserItem): Int {
+            if (left.isOnline && !right.isOnline) {
+                return -1
+            } else if (!left.isOnline && right.isOnline) {
+                return 1
+            }
+
+            val moderatorTypes = ArrayList<Participant.ParticipantType>()
+            moderatorTypes.add(Participant.ParticipantType.MODERATOR)
+            moderatorTypes.add(Participant.ParticipantType.OWNER)
+            moderatorTypes.add(Participant.ParticipantType.GUEST_MODERATOR)
+
+            if (moderatorTypes.contains(left.model.type) && !moderatorTypes.contains(right.model.type)) {
+                return -1
+            } else if (!moderatorTypes.contains(left.model.type) && moderatorTypes.contains(right.model.type)) {
+                return 1
+            }
+
+            return left.model.displayName.toLowerCase(Locale.ROOT).compareTo(
+                    right.model.displayName.toLowerCase(Locale.ROOT)
+            )
+        }
     }
 }
