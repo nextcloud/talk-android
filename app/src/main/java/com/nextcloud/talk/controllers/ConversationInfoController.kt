@@ -87,6 +87,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -695,12 +696,20 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             } else if (!left.isOnline && right.isOnline) {
                 return 1
             }
-            if (Participant.ParticipantType.MODERATOR == left.model.type && Participant.ParticipantType.MODERATOR != right.model.type) {
+
+            val moderatorTypes = ArrayList<Participant.ParticipantType>()
+            moderatorTypes.add(Participant.ParticipantType.MODERATOR)
+            moderatorTypes.add(Participant.ParticipantType.OWNER)
+
+            if (moderatorTypes.contains(left.model.type) && !moderatorTypes.contains(right.model.type)) {
                 return -1
-            } else if (Participant.ParticipantType.MODERATOR != left.model.type && Participant.ParticipantType.MODERATOR == right.model.type) {
+            } else if (!moderatorTypes.contains(left.model.type) && moderatorTypes.contains(right.model.type)) {
                 return 1
             }
-            return left.model.displayName.compareTo(right.model.displayName)
+
+            return left.model.displayName.toLowerCase(Locale.ROOT).compareTo(
+                    right.model.displayName.toLowerCase(Locale.ROOT)
+            )
         }
     }
 }
