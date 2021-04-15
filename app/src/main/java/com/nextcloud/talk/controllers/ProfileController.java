@@ -817,7 +817,7 @@ public class ProfileController extends BaseController {
                     holder.text.setCursorVisible(false);
                     holder.text.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
                     holder.scope.setOnClickListener(null);
-                    holder.scope.setAlpha(0.6f); // incative - medium emphasis
+                    holder.scope.setAlpha(0.6f); // inactive - medium emphasis
                 }
             } else {
                 holder.container.setVisibility(View.GONE);
