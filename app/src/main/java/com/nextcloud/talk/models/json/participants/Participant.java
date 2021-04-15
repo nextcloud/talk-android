@@ -84,7 +84,8 @@ public class Participant {
         MODERATOR,
         USER,
         GUEST,
-        USER_FOLLOWING_LINK
+        USER_FOLLOWING_LINK,
+        GUEST_MODERATOR
     }
 
     public enum ParticipantFlags {

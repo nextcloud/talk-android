@@ -700,6 +700,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             val moderatorTypes = ArrayList<Participant.ParticipantType>()
             moderatorTypes.add(Participant.ParticipantType.MODERATOR)
             moderatorTypes.add(Participant.ParticipantType.OWNER)
+            moderatorTypes.add(Participant.ParticipantType.GUEST_MODERATOR)
 
             if (moderatorTypes.contains(left.model.type) && !moderatorTypes.contains(right.model.type)) {
                 return -1

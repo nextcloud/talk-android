@@ -103,6 +103,7 @@ public class Conversation {
 
     public boolean isGuest() {
         return (Participant.ParticipantType.GUEST.equals(participantType) ||
+                Participant.ParticipantType.GUEST_MODERATOR.equals(participantType) ||
                 Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participantType));
     }
 
@@ -116,8 +117,9 @@ public class Conversation {
     }
 
     public boolean isParticipantOwnerOrModerator() {
-        return Participant.ParticipantType.OWNER.equals(participantType)
-                || Participant.ParticipantType.MODERATOR.equals(participantType);
+        return (Participant.ParticipantType.OWNER.equals(participantType) ||
+                Participant.ParticipantType.GUEST_MODERATOR.equals(participantType) ||
+                Participant.ParticipantType.MODERATOR.equals(participantType));
     }
 
     public boolean shouldShowLobby(UserEntity conversationUser) {
