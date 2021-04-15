@@ -31,6 +31,13 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Configurações</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Testar configuração do servidor</string>
+    <string name="nc_server_helper_text">O link para sua %1$s interface web quando você abre no navegador.</string>
+    <string name="nc_server_testing_connection">Testando conexão</string>
+    <string name="nc_server_unsupported">O servidor não tem o aplicativo Talk suportado instalado</string>
+
+    <string name="nc_server_url">Endereço do servidor https://...</string>
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_maintenance">Coloque sua %1$s em manutenção</string>
@@ -130,6 +137,8 @@
     <string name="nc_license_summary">GNU General Public License, Versão 3</string>
 
     <string name="nc_select_an_account">Selecionar uma conta</string>
+
+    <string name="nc_profile_personal_info_title">Informação Pessoal</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Iniciar uma conversa</string>
@@ -256,12 +265,17 @@
     <string name="nc_description_more_menu_group">Menu para conversa pública %1$s</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Junte-se a uma conversa ou inicie uma nova</string>
+    <string name="nc_conversations_empty_details">Diga olá para seus amigos e colegas!</string>
     <string name="nc_hello">Olá</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
+    <string name="nc_participants_add">Adicionar participantes</string>
+
     <string name="nc_owner">Proprietário</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_user">Usuário</string>
@@ -358,4 +372,5 @@
 
     <string name="nc_action_open_main_menu">Abrir menu principal</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
-    </resources>
+    <string name="selected_list_item">selecionado</string>
+</resources>

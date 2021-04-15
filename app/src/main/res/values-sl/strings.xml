@@ -31,6 +31,13 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nastavitve</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Preizkusi povezavo s strežnikom</string>
+    <string name="nc_server_helper_text">Povezava do spletnega vmesnika %1$s, ki se odpre v brskalniku.</string>
+    <string name="nc_server_testing_connection">Preizkušanje povezave</string>
+    <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
+
+    <string name="nc_server_url">Naslov strežnika: https://</string>
     <string name="nc_server_not_installed">Dokončajte namestitev %1$s</string>
     <string name="nc_server_db_upgrade_needed">Posodobite podatkovno zbirko %1$s</string>
     <string name="nc_server_maintenance">Končajte vzdrževalni način na %1$s.</string>
@@ -131,6 +138,8 @@
 
     <string name="nc_select_an_account">Izbor računa</string>
 
+    <string name="nc_profile_personal_info_title">Osebni podatki</string>
+
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Začni pogovor</string>
     <string name="nc_configure_room">Nastavitev pogovora</string>
@@ -146,6 +155,7 @@
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete">Izbriši</string>
     <string name="nc_delete_conversation_default">Potrdite zahtevo, da želite odstraniti pogovor.</string>
+    <string name="nc_delete_conversation_one2one">Če izbrišete pogovor, bo ta izbrisan tudi za račun %1$s.</string>
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
 
     <string name="nc_new_conversation">Nov pogovor</string>
@@ -163,6 +173,10 @@
     <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
     <string name="nc_permissions_settings">Odpri nastavitve</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">Glasovni klic %s</string>
+    <string name="nc_call_video">Glasovni klic %s</string>
+    <string name="nc_call_unknown">Klic %s</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
@@ -170,6 +184,7 @@
     <string name="nc_incoming_call">Dohodni klic:</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_public_call">Nov javni pogovor</string>
+    <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor z vsemi, ki poznajo ustvarjeno enkratno povezavo.</string>
     <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
@@ -188,8 +203,11 @@
     <string name="nc_mute_calls">Utišaj klice</string>
     <string name="nc_mute_calls_desc">Dohodni klici bodo utišani</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
+    <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
+    <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih telefonov. Poskusite se povezati prek spletnega brskalnika.</string>
     <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
     <string name="nc_ok">V redu</string>
     <string name="nc_call_name">Naslov pogovora</string>
@@ -247,12 +265,17 @@
     <string name="nc_description_more_menu_group">Meni za javen pogovor %1$s</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
+    <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
     <string name="nc_hello">Pozdravljeni</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_participants">Udeleženci</string>
+    <string name="nc_participants_add">Dodaj udeležence</string>
+
     <string name="nc_owner">Lastnik</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Uporabnik</string>
@@ -304,14 +327,44 @@
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
     <string name="nc_upload_in_progess">pošiljanje</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
+    <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Nastavite telefonsko številko, da vas bodo drugi uporabniki lahko našli.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonska številka je uspešno nastavljena</string>
+    <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
     <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
    
+    <string name="avatar">Podoba</string>
+    <string name="account_icon">Ikona računa</string>
+    <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
+    <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>
+    <string name="userinfo_error_text">Pridobivanje uporabniških podrobnosti je spodletelo.</string>
+    <string name="user_info_phone">Telefonska številka</string>
+    <string name="user_info_email">Elektronsko sporočilo</string>
+    <string name="user_info_address">Naslov</string>
+    <string name="user_info_website">Spletna stran</string>
+    <string name="user_info_twitter">Račun Twitter</string>
+    <string name="user_info_displayname">Polno ime</string>
+    <string name="file_list_folder">mapa</string>
+    <string name="file_list_loading">Poteka nalaganje …</string>
+    <string name="edit">Uredi</string>
+    <string name="save">Shrani</string>
+    <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
+    <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
+    <string name="delete_avatar">Izbriši podobo</string>
+    <string name="scope_private_title">Zasebno</string>
+    <string name="scope_private_description">Vidno le uporabnikom povezanimi s programom Talk prek telefonske številke.</string>
+    <string name="scope_local_title">Krajevno</string>
+    <string name="scope_federated_title">Zvezno</string>
+    <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
+    <string name="scope_published_title">Objavljeno</string>
     <!-- App Bar -->
     <string name="appbar_search_in">Poišči v %s</string>
 
     <string name="nc_action_open_main_menu">Odpri glavni meni</string>
-    </resources>
+    <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
+    <string name="selected_list_item">izbrano</string>
+</resources>

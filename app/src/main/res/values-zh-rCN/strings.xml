@@ -31,6 +31,13 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">设置</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">测试服务端连接 </string>
+    <string name="nc_server_helper_text">当你在浏览器中打开 %1$s web 界面时显示的链接</string>
+    <string name="nc_server_testing_connection">测试连接中</string>
+    <string name="nc_server_unsupported">服务器没有安装受支持的 Talk 应用程序</string>
+
+    <string name="nc_server_url">服务器地址 https://…</string>
     <string name="nc_server_not_installed">请完成您的 %1$s 安装</string>
     <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_maintenance">请将您的 %1$s 退出维护模式</string>
@@ -130,6 +137,8 @@
     <string name="nc_license_summary">GNU 通用公共许可证，第3版</string>
 
     <string name="nc_select_an_account">选择一个账号</string>
+
+    <string name="nc_profile_personal_info_title">个人信息</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">发起会话</string>
@@ -256,12 +265,17 @@
     <string name="nc_description_more_menu_group">公共讨论菜单%1$s</string>
     <string name="nc_description_send_message_button">发送消息</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">加入一个对话或开始一个新的对话</string>
+    <string name="nc_conversations_empty_details">跟你的朋友和同事打个招呼！</string>
     <string name="nc_hello">你好</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">已达到%s字符限制</string>
     <string name="nc_groups">群组</string>
     <string name="nc_participants">参与者</string>
+    <string name="nc_participants_add">添加参与者 </string>
+
     <string name="nc_owner">拥有者</string>
     <string name="nc_moderator">主持人</string>
     <string name="nc_user">用户</string>
@@ -358,4 +372,5 @@
 
     <string name="nc_action_open_main_menu">打开主菜单</string>
     <string name="failed_to_save">未能保存 %1$s</string>
-    </resources>
+    <string name="selected_list_item">已选中</string>
+</resources>

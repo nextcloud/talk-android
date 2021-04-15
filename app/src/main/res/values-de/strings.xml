@@ -31,6 +31,13 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Einstellungen</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Prüfe Verbindung zum Server</string>
+    <string name="nc_server_helper_text">Der Link zu Ihrer %1$s Webschnittstelle, wenn Sie diesen im Browser öffnen.</string>
+    <string name="nc_server_testing_connection">Teste Verbindung </string>
+    <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
+
+    <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_not_installed">Bitte beenden Sie Ihre %1$s Installation</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
     <string name="nc_server_maintenance">Bitte den Wartungsmodus von %1$s beenden</string>
@@ -131,6 +138,8 @@
 
     <string name="nc_select_an_account">Konto auswählen</string>
 
+    <string name="nc_profile_personal_info_title">Persönliche Informationen</string>
+
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Starte eine Unterhaltung</string>
     <string name="nc_configure_room">Unterhaltung einrichten</string>
@@ -198,7 +207,7 @@
 
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
-    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht öffentlichen Unterhaltungen mit Mobiltelefonen beizutreten. Sie können versuchen der Unterhaltung mit einem Internetbrowser beizutreten.</string>
+    <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -211,7 +220,7 @@
 
     <!-- Magical stuff -->
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
-    <string name="nc_push_to_talk_desc">Bei stummgeschaltetem Mikrofon drücken&amp;halten Sie die Sprechtaste um zu senden (Funkgerät-Modus)</string>
+    <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
 
@@ -256,12 +265,17 @@
     <string name="nc_description_more_menu_group">Menü für die öffentliche Unterhaltung %1$s</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
+    <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s-Zeichen-Limit wurde erreicht</string>
     <string name="nc_groups">Gruppen</string>
     <string name="nc_participants">Teilnehmer</string>
+    <string name="nc_participants_add">Teilnehmer hinzufügen</string>
+
     <string name="nc_owner">Besitzer</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Benutzer</string>
@@ -326,9 +340,9 @@
    
     <string name="avatar">Avatar</string>
     <string name="account_icon">Konto-Icon</string>
-    <string name="userinfo_no_info_headline">Keine persönlichen Infos eingestellt</string>
+    <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
-    <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
+    <string name="userinfo_error_text">Fehler beim Laden der persönlichen Nutzerinformationen.</string>
     <string name="user_info_phone">Telefonnummer</string>
     <string name="user_info_email">E-Mail</string>
     <string name="user_info_address">Adresse</string>
@@ -336,18 +350,18 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_displayname">Vollständiger Name</string>
     <string name="file_list_folder">Ordner</string>
-    <string name="file_list_loading">Lade …</string>
+    <string name="file_list_loading">Lade…</string>
     <string name="edit">Bearbeiten</string>
     <string name="save">Speichern</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
     <string name="choose_avatar_from_cloud">Avatar aus der Cloud auswählen</string>
     <string name="delete_avatar">Avatar löschen</string>
     <string name="scope_private_title">Privat</string>
-    <string name="scope_private_description">Nur sichtbar für Personen, die über Rufnummernintegration von Talk on mobile abgeglichen wurden.</string>
+    <string name="scope_private_description">Nur sichtbar für Personen, die über die Rufnummernintegration von Talk auf Mobiltelefonen abgeglichen wurden.</string>
     <string name="lock_symbol">Schloss-Symbol</string>
     <string name="scope_local_title">Lokal</string>
     <string name="scope_local_description">Nur für Personen dieser Instanz und Gäste sichtbar</string>
-    <string name="scope_federated_title">Federated</string>
+    <string name="scope_federated_title">Föderiert</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_published_title">Veröffentlicht</string>
     <string name="scope_published_description">Mit vertrauenswürdigen Servern und dem globalen sowie öffentlichen Adressbuch synchronisieren</string>
@@ -358,4 +372,5 @@
 
     <string name="nc_action_open_main_menu">Hauptmenü öffnen</string>
     <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
-    </resources>
+    <string name="selected_list_item">ausgewählt</string>
+</resources>
