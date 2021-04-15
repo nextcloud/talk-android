@@ -48,6 +48,8 @@
     <color name="conversation_unread_bubble">#373737</color>
     <color name="conversation_unread_bubble_text">#D8D8D8</color>
 
+    <color name="controller_chat_separator">#484848</color>
+
     <!-- Chat window incoming message text & informational -->
     <color name="nc_incoming_text_default">#D8D8D8</color>
     <color name="nc_grey">@android:color/holo_purple</color>

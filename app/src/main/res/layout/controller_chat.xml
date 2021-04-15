@@ -66,8 +66,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_above="@+id/messageInputView"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:background="@color/controller_chat_separator" />
 
     <com.stfalcon.chatkit.messages.MessageInput
@@ -132,6 +130,7 @@
         android:layout_above="@+id/separator"
         android:layout_centerHorizontal="true"
         android:layout_margin="16dp"
+        android:paddingStart="0dp"
         android:paddingEnd="8dp"
         app:pb_backgroundColor="@color/colorPrimary"
         app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
