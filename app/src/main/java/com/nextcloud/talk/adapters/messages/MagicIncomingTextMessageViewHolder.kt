@@ -79,10 +79,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
     var quotedChatMessageView: RelativeLayout? = null
 
     @JvmField
-    @BindView(R.id.quotedUserAvatar)
-    var quotedUserAvatar: ImageView? = null
-
-    @JvmField
     @BindView(R.id.quotedMessageAuthor)
     var quotedUserName: EmojiTextView? = null
 
@@ -93,10 +89,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
     @JvmField
     @BindView(R.id.quotedMessage)
     var quotedMessage: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessageTime)
-    var quotedMessageTime: TextView? = null
 
     @JvmField
     @BindView(R.id.quoteColoredView)
@@ -236,10 +228,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         if (!message.isDeleted && message.parentMessage != null) {
             var parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
-            quotedUserAvatar?.load(parentChatMessage.user.avatar) {
-                addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
-                transformations(CircleCropTransformation())
-            }
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 quotedMessagePreview?.load(it) {
@@ -254,8 +242,6 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
             quotedUserName?.setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
-            quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
-            quotedMessageTime?.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
             quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)
             quotedChatMessageView?.visibility = View.VISIBLE
         } else {

@@ -66,10 +66,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     var quotedChatMessageView: RelativeLayout? = null
 
     @JvmField
-    @BindView(R.id.quotedUserAvatar)
-    var quotedUserAvatar: ImageView? = null
-
-    @JvmField
     @BindView(R.id.quotedMessageAuthor)
     var quotedUserName: EmojiTextView? = null
 
@@ -80,10 +76,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @JvmField
     @BindView(R.id.quotedMessage)
     var quotedMessage: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessageTime)
-    var quotedMessageTime: TextView? = null
 
     @JvmField
     @BindView(R.id.quoteColoredView)
@@ -165,10 +157,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         if (!message.isDeleted && message.parentMessage != null) {
             var parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
-            quotedUserAvatar?.load(parentChatMessage.user.avatar) {
-                transformations(CircleCropTransformation())
-                addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
-            }
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 quotedMessagePreview?.load(it) {
@@ -183,8 +171,6 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             quotedMessage?.setTextColor(context!!.resources.getColor(R.color.nc_outcoming_text_default))
             quotedUserName?.setTextColor(context!!.resources.getColor(R.color.nc_grey))
 
-            quotedMessageTime?.text = DateFormatter.format(parentChatMessage.createdAt, DateFormatter.Template.TIME)
-            quotedMessageTime?.setTextColor(context!!.resources.getColor(R.color.white60))
             quoteColoredView?.setBackgroundResource(R.color.white)
 
             quotedChatMessageView?.visibility = View.VISIBLE
