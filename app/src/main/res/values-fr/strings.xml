@@ -24,11 +24,15 @@
     <!-- Common -->
     <string name="nc_yes">Oui</string>
     <string name="nc_no">Non</string>
+    <string name="nc_common_skip">Ignorer</string>
     <string name="nc_common_error_sorry">Désolé, quelque chose s’est mal passé !</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Paramètres</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Test de la connexion au serveur</string>
+    <string name="nc_server_testing_connection">Tester la connexion</string>
     <string name="nc_server_not_installed">Veuillez terminer votre installation de %1$s</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_maintenance">S’il vous plaît, désactivez la maintenance de %1$s</string>

@@ -361,7 +361,7 @@
     <string name="lock_symbol">Schloss-Symbol</string>
     <string name="scope_local_title">Lokal</string>
     <string name="scope_local_description">Nur für Personen dieser Instanz und Gäste sichtbar</string>
-    <string name="scope_federated_title">Föderiert</string>
+    <string name="scope_federated_title">Federated</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_published_title">Veröffentlicht</string>
     <string name="scope_published_description">Mit vertrauenswürdigen Servern und dem globalen sowie öffentlichen Adressbuch synchronisieren</string>

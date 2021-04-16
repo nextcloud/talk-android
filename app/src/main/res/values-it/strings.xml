@@ -31,6 +31,13 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Impostazioni</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Prova di connessione al server</string>
+    <string name="nc_server_helper_text">Il collegamento alla tua interfaccia web di %1$s quando la apri nel browser.</string>
+    <string name="nc_server_testing_connection">Prova di connessione</string>
+    <string name="nc_server_unsupported">Sul server non è installata un\'applicazione Talk supportata </string>
+
+    <string name="nc_server_url">Indirizzo server https://…</string>
     <string name="nc_server_not_installed">Termina l\'installazione di %1$s</string>
     <string name="nc_server_db_upgrade_needed">Aggiorna il tuo database %1$s</string>
     <string name="nc_server_maintenance">Esci dalla manutenzione di %1$s</string>
@@ -130,6 +137,8 @@
     <string name="nc_license_summary">GNU General Public License, versione 3</string>
 
     <string name="nc_select_an_account">Seleziona account</string>
+
+    <string name="nc_profile_personal_info_title">Informazioni personali</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Inizia una conversazione</string>
@@ -256,12 +265,17 @@
     <string name="nc_description_more_menu_group">Menu per conversazione pubblica %1$s</string>
     <string name="nc_description_send_message_button">Invia messaggio</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Unisciti a una conversazione o iniziane una nuova</string>
+    <string name="nc_conversations_empty_details">Saluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_hello">Ciao</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Il limite di %s caratteri è stato raggiunto</string>
     <string name="nc_groups">Gruppi</string>
     <string name="nc_participants">Partecipanti</string>
+    <string name="nc_participants_add">Aggiungi partecipanti</string>
+
     <string name="nc_owner">Proprietario</string>
     <string name="nc_moderator">Moderatore</string>
     <string name="nc_user">Utente</string>
@@ -314,7 +328,7 @@
     <string name="nc_upload_confirm_send_single">Inviare questo file a %1$s?</string>
     <string name="nc_upload_in_progess">caricamento</string>
 
-    <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nell\'app contatti di sistema</string>
+    <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nell\'applicazione dei contatti di sistema</string>
     <string name="nc_settings_phone_book_integration_title">Integrazione numero di telefono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numero di telefono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puoi impostare il tuo numero di telefono in modo che gli altri utenti ti trovino</string>
@@ -330,6 +344,7 @@
     <string name="userinfo_no_info_text">Aggiungi nome, immagine e dettagli di contatto sulla tua pagina di profilo.</string>
     <string name="userinfo_error_text">Impossibile ottenere le informazioni personali dell\'utente.</string>
     <string name="user_info_phone">Numero di telefono</string>
+    <string name="user_info_email">Posta elettronica</string>
     <string name="user_info_address">Indirizzo</string>
     <string name="user_info_website">Sito web</string>
     <string name="user_info_twitter">Twitter</string>
@@ -357,4 +372,5 @@
 
     <string name="nc_action_open_main_menu">Apri menu principale</string>
     <string name="failed_to_save">Salvataggio di %1$s fallito</string>
-    </resources>
+    <string name="selected_list_item">selezionati</string>
+</resources>
