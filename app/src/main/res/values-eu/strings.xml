@@ -31,6 +31,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Ezarpenak</string>
 
+    <string name="nc_server_url">Zerbitzariaren helbidea https://…</string>
     <string name="nc_server_not_installed">Mesedez bukatu zure %1$s instalazioa</string>
     <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
     <string name="nc_server_maintenance">Jarri mesedez %1$s mantenutik kanpo</string>
@@ -247,6 +248,8 @@
     <string name="nc_description_more_menu_group">%1$s elkarrizketa publikoaren menua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_hello">Kaixo</string>
 
     <!-- Other -->

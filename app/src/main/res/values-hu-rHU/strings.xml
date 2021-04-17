@@ -33,11 +33,11 @@
 
     <!-- Server selection -->
     <string name="nc_server_connect">Kiszolgálókapcsolat tesztelése</string>
-    <string name="nc_server_helper_text">A %1$s webes felületre mutató link, amikor megnyitja a böngészőben.</string>
+    <string name="nc_server_helper_text">A %1$s webes felületére mutató hivatkozás, amikor megnyitja a böngészőben.</string>
     <string name="nc_server_testing_connection">Kapcsolat ellenőrzése</string>
     <string name="nc_server_unsupported">A kiszolgálón nincs támogatott Beszélgetés alkalmazás telepítve</string>
 
-    <string name="nc_server_url">Szerver címe https://...</string>
+    <string name="nc_server_url">Kiszolgálócím https://…</string>
     <string name="nc_server_not_installed">Fejezze be a(z) %1$s telepítését</string>
     <string name="nc_server_db_upgrade_needed">Frissítse a(z) %1$s adatbázisát</string>
     <string name="nc_server_maintenance">Hozza ki a(z) %1$s kiszolgálóját karbantartási módból</string>
@@ -109,7 +109,7 @@
     <string name="nc_settings_link_previews_title">Hivatkozások előnézetének megjelenítése</string>
     <string name="nc_settings_link_previews_desc">Lehetővé teszi a támogatott szolgáltatásokhoz küldött hivatkozások tartalmának előnézetét</string>
     <string name="nc_locked">Koppintás a feloldáshoz</string>
-    <string name="nc_settings_read_privacy_desc">Oszd meg az olvasási állapotomat, és mutasd meg mások olvasási állapotát</string>
+    <string name="nc_settings_read_privacy_desc">Saját olvasási állapot megosztása, és a mások olvasási állapotának megjelenítése</string>
     <string name="nc_settings_read_privacy_title">Olvasási állapot</string>
 
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
@@ -178,7 +178,7 @@
     <string name="nc_call_video">%s videohívás</string>
     <string name="nc_call_unknown">%s hívás</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
-    <string name="nc_call_ringing">CSENG</string>
+    <string name="nc_call_ringing">CSENGETÉS</string>
     <string name="nc_connecting_call">Kapcsolódás…</string>
     <string name="nc_calling">Hívás…</string>
     <string name="nc_incoming_call">Bejövő hívás tőle:</string>
@@ -321,24 +321,24 @@
 
     <!-- Upload -->
     <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
-    <string name="nc_upload_from_cloud">Megosztotta: %s</string>
+    <string name="nc_upload_from_cloud">Megosztás innen: %1$s</string>
     <string name="nc_upload_failed">A feltöltés sikertelen</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
-    <string name="nc_upload_confirm_send_single">Ennek a fájlnak küldése ide: %1$s</string>
+    <string name="nc_upload_confirm_send_single">Ezen fájl küldése ide: %1$s</string>
     <string name="nc_upload_in_progess">feltöltés</string>
 
     <string name="nc_settings_phone_book_integration_desc">Párosítsa a névjegyeket telefonszám alapján, hogy integrálja a Beszélgetéseket a rendszer Névjegyek alkalmazásba</string>
     <string name="nc_settings_phone_book_integration_title">Telefonszám integráció</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonszám</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja telefonszámát, hogy a többi felhasználó megtalálja Önt</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">A telefonszám formátuma hibás</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Érvénytelen telefonszám-formátum</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonszám beállítása sikeresen megtörtént</string>
     <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>
     <string name="nc_phone_book_integration_chat_via">Csevegés %s segítségével</string>
     <string name="nc_phone_book_integration_account_not_found">A fiók nem található</string>
    
-    <string name="avatar">Avatár</string>
+    <string name="avatar">Profilkép</string>
     <string name="account_icon">Fiók ikon</string>
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
@@ -353,18 +353,18 @@
     <string name="file_list_loading">Betöltés…</string>
     <string name="edit">Szerkesztés</string>
     <string name="save">Mentés</string>
-    <string name="upload_new_avatar_from_device">Töltsön fel új avatart az eszközről</string>
-    <string name="choose_avatar_from_cloud">Válassza ki az avatart a felhőből</string>
-    <string name="delete_avatar">Avatár törlése</string>
+    <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
+    <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
+    <string name="delete_avatar">Profilkép törlése</string>
     <string name="scope_private_title">Privát</string>
-    <string name="scope_private_description">Csak azok láthatják, akiknek a mobileszközön keresztül történő telefonszám integrációja történt</string>
+    <string name="scope_private_description">Csak a mobilos Beszélgetés alkalmazáson keresztüli telefonszám integrációval egyeztetett emberek láthatják</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="scope_local_title">Helyi</string>
-    <string name="scope_local_description">Csak az ilyen példányban lévő személyek és a vendégek láthatják</string>
-    <string name="scope_federated_title">Egyesített</string>
-    <string name="scope_federated_description">Csak megbízható kiszolgálókkal szinkronizáljon</string>
+    <string name="scope_local_description">Csak az ezen a példányon lévő személyek és a vendégek láthatják</string>
+    <string name="scope_federated_title">Föderált</string>
+    <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
     <string name="scope_published_title">Közzétett</string>
-    <string name="scope_published_description">Szinkronizáljon megbízható kiszolgálókkal, valamint a globális és nyilvános címjegyzékkel</string>
+    <string name="scope_published_description">Szinkronizálás a megbízható kiszolgálókkal, valamint a globális és nyilvános címjegyzékkel</string>
     <string name="scope_toggle">Hatókör váltása</string>
     
     <!-- App Bar -->
@@ -372,5 +372,5 @@
 
     <string name="nc_action_open_main_menu">Főmenü megnyitása</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
-    <string name="selected_list_item">Kiválasztott</string>
+    <string name="selected_list_item">kiválasztott</string>
 </resources>

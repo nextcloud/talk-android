@@ -357,10 +357,15 @@
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="scope_private_title">Zasebno</string>
     <string name="scope_private_description">Vidno le uporabnikom povezanimi s programom Talk prek telefonske številke.</string>
+    <string name="lock_symbol">Simbol zaklepa</string>
     <string name="scope_local_title">Krajevno</string>
+    <string name="scope_local_description">Vidno le krajevnim uporabnikom in povezanim gostom</string>
     <string name="scope_federated_title">Zvezno</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
     <string name="scope_published_title">Objavljeno</string>
+    <string name="scope_published_description">Usklajuj z varnimi strežniki in splošnimi in javnimi imeniki</string>
+    <string name="scope_toggle">Preklop obsega</string>
+    
     <!-- App Bar -->
     <string name="appbar_search_in">Poišči v %s</string>
 
