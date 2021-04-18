@@ -31,6 +31,13 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Nastavení</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Vyzkoušet připojení k serveru</string>
+    <string name="nc_server_helper_text">Odkaz k vašemu %1$s webovému rozhraní k otevření v internetovém prohlížeči.</string>
+    <string name="nc_server_testing_connection">Zkouší se připojení</string>
+    <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná verze aplikace Talk</string>
+
+    <string name="nc_server_url">Adresa serveru https://…</string>
     <string name="nc_server_not_installed">Dokončete instalaci %1$s</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
     <string name="nc_server_maintenance">Přepněte svůj %1$s zpět z režimu údržby</string>
@@ -130,6 +137,8 @@
     <string name="nc_license_summary">GNU General Public License, verze 3</string>
 
     <string name="nc_select_an_account">Vyberte účet</string>
+
+    <string name="nc_profile_personal_info_title">Osobní údaje</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Začněte konverzaci</string>
@@ -256,12 +265,17 @@
     <string name="nc_description_more_menu_group">Nabídka pro veřejnou konverzaci %1$s</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Připojte se ke konverzaci, nebo začněte novou</string>
+    <string name="nc_conversations_empty_details">Pozdravte své přátele a kolegy!</string>
     <string name="nc_hello">Zdravím</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">byl dosažen limit %s znaků</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_participants">Účastníci</string>
+    <string name="nc_participants_add">Přidat účastníky</string>
+
     <string name="nc_owner">Vlastník</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_user">Uživatel</string>
@@ -329,6 +343,7 @@
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="userinfo_error_text">Nepodařilo se získat osobní údaje uživatele.</string>
     <string name="user_info_phone">Telefonní číslo</string>
+    <string name="user_info_email">Email</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_website">Webová stránka</string>
     <string name="user_info_twitter">Twitter</string>
@@ -356,4 +371,5 @@
 
     <string name="nc_action_open_main_menu">Otevřít hlavní nabídku</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
-    </resources>
+    <string name="selected_list_item">vybraný</string>
+</resources>

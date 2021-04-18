@@ -33,7 +33,7 @@
 
     <!-- Server selection -->
     <string name="nc_server_connect">Prüfe Verbindung zum Server</string>
-    <string name="nc_server_helper_text">Der Link zu Ihrer %1$s Webschnittstelle, wenn Sie diesen im Browser öffnen.</string>
+    <string name="nc_server_helper_text">Der Link zu Ihrer %1$s Webseite, wenn Sie diese im Browser öffnen.</string>
     <string name="nc_server_testing_connection">Teste Verbindung </string>
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
 
