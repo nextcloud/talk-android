@@ -242,7 +242,12 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
             quotedUserName?.setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
-            quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)
+            if(parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
+                quoteColoredView?.setBackgroundResource(R.color.colorPrimary)
+            } else {
+                quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)
+            }
+
             quotedChatMessageView?.visibility = View.VISIBLE
         } else {
             quotedChatMessageView?.visibility = View.GONE
