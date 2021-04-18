@@ -19,9 +19,10 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/double_margin_between_elements"
     android:background="@color/bg_default">
 
@@ -38,17 +39,18 @@
 
     <ImageView
         android:id="@+id/fileFavoriteImageView"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_below="@id/file_icon"
         android:layout_alignEnd="@id/file_icon"
+        android:contentDescription="@string/starred"
         android:src="@drawable/ic_star_black_24dp"
-        app:tint="@color/grey_600" />
+        app:tint="@color/favorite_icon_tint" />
 
     <ImageView
         android:id="@+id/fileEncryptedImageView"
-        android:layout_width="8dp"
-        android:layout_height="8dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_below="@id/file_icon"
         android:layout_alignStart="@+id/file_icon"
         android:src="@drawable/ic_lock_grey600_24px" />
@@ -66,7 +68,9 @@
         android:marqueeRepeatLimit="1"
         android:paddingBottom="6dp"
         android:singleLine="true"
-        android:textSize="12sp" />
+        android:textColor="@color/textColorMaxContrast"
+        android:textSize="12sp"
+        tools:text="3 minutes ago" />
 
     <TextView
         android:id="@+id/filename_text_view"
@@ -80,7 +84,9 @@
         android:marqueeRepeatLimit="1"
         android:paddingTop="6dp"
         android:singleLine="true"
-        android:textSize="16sp" />
+        android:textColor="@color/conversation_item_header"
+        android:textSize="@dimen/two_line_primary_text_size"
+        tools:text="filename.md" />
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/file_icon"

@@ -51,16 +51,18 @@
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="bottom|end"
-                android:background="@drawable/shape_lock_bubble" />
+                android:background="@drawable/shape_lock_bubble"
+                android:contentDescription="@string/password_protected" />
 
             <ImageView
                 android:id="@+id/favoriteConversationImageView"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_gravity="top|end"
+                android:contentDescription="@string/starred"
                 android:src="@drawable/ic_star_black_24dp"
                 app:tint="@color/favorite_icon_tint"
-                app:tintMode="src_in"/>
+                app:tintMode="src_in" />
 
         </FrameLayout>
 

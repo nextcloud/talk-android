@@ -361,7 +361,10 @@
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
-   
+
+    <string name="starred">Favorite</string>
+    <string name="password_protected">Password protected</string>
+
     <string name="avatar">Avatar</string>
     <string name="account_icon">Account icon</string>
     <string name="userinfo_no_info_headline">No personal info set</string>
