@@ -223,7 +223,7 @@ dependencies {
     implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
     implementation  group: 'joda-time', name: 'joda-time', version: '2.10.3'
     implementation 'io.coil-kt:coil:0.9.1'
-    implementation("io.coil-kt:coil-gif:0.9.1")
+    implementation("io.coil-kt:coil-gif:1.2.0")
     implementation("io.coil-kt:coil-svg:0.9.1")
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
