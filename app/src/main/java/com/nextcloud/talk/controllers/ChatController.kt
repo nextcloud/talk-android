@@ -1459,16 +1459,10 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.maxLines = 2
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.ellipsize = TextUtils.TruncateAt.END
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.text = it.text
-                            messageInputView?.findViewById<TextView>(R.id.quotedMessageTime)?.text = DateFormatter.format(it.createdAt, DateFormatter.Template.TIME)
                             messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text = it.actorDisplayName
                                     ?: context!!.getText(R.string.nc_nick_guest)
 
                             conversationUser?.let { currentUser ->
-
-                                messageInputView?.findViewById<ImageView>(R.id.quotedUserAvatar)?.load(it.user.avatar) {
-                                    addHeader("Authorization", credentials!!)
-                                    transformations(CircleCropTransformation())
-                                }
 
                                 chatMessage.imageUrl?.let { previewImageUrl ->
                                     messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.VISIBLE

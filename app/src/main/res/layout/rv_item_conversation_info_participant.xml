@@ -38,7 +38,8 @@
             android:layout_height="12dp"
             android:layout_gravity="bottom|end"
             android:background="@drawable/shape_lock_bubble"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/videoCallImageView"
@@ -46,7 +47,8 @@
             android:layout_height="12dp"
             android:layout_gravity="top|end"
             android:background="@drawable/shape_favorite_bubble"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:visibility="visible" />
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/simple_drawee_view"

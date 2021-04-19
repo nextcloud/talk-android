@@ -21,33 +21,32 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="72dp"
+    android:layout_height="wrap_content"
     android:layout_margin="@dimen/standard_margin">
 
     <FrameLayout
         android:id="@+id/frame_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/small_item_height"
+        android:layout_height="@dimen/small_item_height"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/margin_between_elements">
 
         <ImageView
             android:id="@+id/password_protected_image_view"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
             android:layout_gravity="bottom|end"
-            android:layout_marginEnd="6dp"
-            android:layout_marginBottom="6dp"
+            android:contentDescription="@string/password_protected"
             android:src="@drawable/ic_lock_white_24px"
             android:visibility="visible" />
 
-        <com.facebook.drawee.view.SimpleDraweeView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/avatar_image"
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"
-            android:layout_margin="@dimen/margin_between_elements"
             app:roundAsCircle="true" />
 
     </FrameLayout>
@@ -55,7 +54,7 @@
     <ImageButton
         android:id="@+id/more_menu"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/small_item_height"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/standard_margin"
@@ -78,7 +77,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="@color/conversation_item_header"
+            android:textSize="@dimen/two_line_primary_text_size"
             tools:text="Call item text" />
 
         <androidx.emoji.widget.EmojiTextView
@@ -86,7 +86,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:textColor="?android:attr/textColorSecondary"
+            android:textColor="@color/textColorMaxContrast"
+            android:textSize="14sp"
             tools:text="A week ago" />
 
     </LinearLayout>

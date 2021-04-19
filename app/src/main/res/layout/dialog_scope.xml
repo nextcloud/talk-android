@@ -65,7 +65,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_half_padding"
                 android:text="@string/scope_private_description"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp" />

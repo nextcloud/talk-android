@@ -1,4 +1,25 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2020 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,36 +35,27 @@
         android:layout_alignBottom="@id/flexboxQuoted"
         android:layout_alignParentStart="true"
         android:layout_marginEnd="4dp"
-        android:background="@color/colorPrimary"></View>
-
-    <ImageView
-        android:id="@+id/quotedUserAvatar"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="4dp"
-        android:layout_toEndOf="@id/quoteColoredView"
-        tools:src="@tools:sample/avatars[0]" />
+        android:background="@color/colorPrimary" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/quotedMessageAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/quotedUserAvatar"
+        android:layout_alignParentTop="true"
         android:layout_marginEnd="8dp"
-        android:layout_toEndOf="@id/quotedUserAvatar"
+        android:layout_toEndOf="@id/quoteColoredView"
         android:ellipsize="end"
         android:textSize="12sp"
-        tools:text="Mario" />
+        tools:text="Jane Doe" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@+id/flexboxQuoted"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/quotedUserAvatar"
-        android:layout_alignStart="@id/quotedUserAvatar"
-        android:layout_toStartOf="@id/cancelReplyButton"
+        android:layout_below="@id/quotedMessageAuthor"
+        android:layout_alignStart="@id/quotedMessageAuthor"
         android:layout_marginTop="4dp"
+        android:layout_toStartOf="@id/cancelReplyButton"
         android:orientation="vertical"
         app:alignContent="stretch"
         app:alignItems="stretch"
@@ -55,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
@@ -66,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/quotedMessageImage"
-            android:layout_alignStart="@id/quotedUserAvatar"
+            android:layout_alignStart="@id/quotedMessageAuthor"
             android:lineSpacingMultiplier="1.2"
             android:textSize="14sp"
             app:layout_alignSelf="flex_start"
@@ -74,27 +87,20 @@
             app:layout_wrapBefore="true"
             tools:text="Hello, this is me!" />
 
-        <TextView
-            android:id="@+id/quotedMessageTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="12sp"
-            app:layout_alignSelf="center"
-            tools:text="16:08" />
-
     </com.google.android.flexbox.FlexboxLayout>
 
     <ImageButton
+        android:id="@+id/cancelReplyButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
         android:background="@drawable/ic_cancel_black_24dp"
         android:backgroundTint="@color/grey_600"
-        android:id="@+id/cancelReplyButton"/>
+        android:contentDescription="@string/nc_message_quote_cancel_reply"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </RelativeLayout>
