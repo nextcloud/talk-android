@@ -35,7 +35,7 @@ import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
-import coil.api.load
+import coil.load
 import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
