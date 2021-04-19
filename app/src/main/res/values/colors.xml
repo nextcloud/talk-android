@@ -32,6 +32,7 @@
     <color name="appbar">@android:color/white</color>
     <color name="fontAppbar">#666666</color>
     <color name="fontSecondaryAppbar">#A5A5A5</color>
+    <color name="refresh_spinner_background">#ffffff</color>
 
     <!-- general text colors -->
     <color name="high_emphasis_text">#de000000</color>

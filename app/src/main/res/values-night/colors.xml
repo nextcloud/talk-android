@@ -31,6 +31,7 @@
     <!-- App bar -->
     <color name="appbar">#1E1E1E</color>
     <color name="fontAppbar">#FFFFFF</color>
+    <color name="refresh_spinner_background">#222222</color>
 
     <!-- general text colors -->
     <color name="high_emphasis_text">#deffffff</color>
