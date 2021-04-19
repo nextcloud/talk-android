@@ -346,7 +346,7 @@
     <string name="user_info_phone">Telefonnummer</string>
     <string name="user_info_email">E-Mail</string>
     <string name="user_info_address">Adresse</string>
-    <string name="user_info_website">Internetseite</string>
+    <string name="user_info_website">Webseite</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_displayname">Vollständiger Name</string>
     <string name="file_list_folder">Ordner</string>
