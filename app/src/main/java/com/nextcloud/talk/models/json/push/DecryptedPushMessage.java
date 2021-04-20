@@ -44,11 +44,17 @@ public class DecryptedPushMessage {
     @JsonField(name = "nid")
     public long notificationId;
 
+    @JsonField(name = "nids")
+    public long[] notificationIds;
+
     @JsonField(name = "delete")
     public boolean delete;
 
     @JsonField(name = "delete-all")
     public boolean deleteAll;
+
+    @JsonField(name = "delete-multiple")
+    public boolean deleteMultiple;
 
     @JsonIgnore
     public NotificationUser notificationUser;

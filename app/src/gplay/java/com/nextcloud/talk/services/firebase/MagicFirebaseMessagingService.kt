@@ -169,6 +169,10 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             )
                         } else if (deleteAll) {
                             cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
+                        } else if (deleteMultiple) {
+                            notificationIds.forEach {
+                                cancelExistingNotificationWithId(applicationContext, signatureVerification!!.userEntity, it)
+                            }
                         } else if (type == "call") {
                             val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
                             val bundle = Bundle()
