@@ -336,7 +336,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
     <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
-   
+
     <string name="avatar">Podoba</string>
     <string name="account_icon">Ikona računa</string>
     <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>

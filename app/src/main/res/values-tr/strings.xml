@@ -337,7 +337,7 @@
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="nc_phone_book_integration_chat_via">%s ile sohbet</string>
     <string name="nc_phone_book_integration_account_not_found">Hesap bulunamadı</string>
-   
+
     <string name="avatar">Avatar</string>
     <string name="account_icon">Hesap simgesi</string>
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>

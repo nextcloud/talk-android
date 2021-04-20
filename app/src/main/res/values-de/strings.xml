@@ -337,7 +337,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="nc_phone_book_integration_chat_via">Chatten über %s</string>
     <string name="nc_phone_book_integration_account_not_found">Konto nicht gefunden</string>
-   
+
     <string name="avatar">Avatar</string>
     <string name="account_icon">Konto-Icon</string>
     <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>

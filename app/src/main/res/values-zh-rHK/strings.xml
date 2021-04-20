@@ -337,7 +337,7 @@
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
     <string name="nc_phone_book_integration_chat_via">透過 %s 聊天</string>
     <string name="nc_phone_book_integration_account_not_found">找不到賬戶</string>
-   
+
     <string name="avatar">頭像</string>
     <string name="account_icon">賬戶圖示</string>
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
