@@ -255,7 +255,7 @@ dependencies {
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
     testImplementation 'junit:junit:4.13'
-    testImplementation 'org.mockito:mockito-core:3.0.0'
+    testImplementation 'org.mockito:mockito-core:3.8.0'
     testImplementation "org.powermock:powermock-core:${powermockVersion}"
     testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
     testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
