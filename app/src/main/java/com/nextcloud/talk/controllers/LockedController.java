@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -45,6 +47,8 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.inject.Inject;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -57,6 +61,7 @@ public class LockedController extends BaseController {
     @Inject
     AppPreferences appPreferences;
 
+    @NotNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_locked, container, false);
