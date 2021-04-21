@@ -34,12 +34,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.biometric.BiometricPrompt;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import autodagger.AutoInjector;
 import butterknife.OnClick;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
@@ -64,20 +66,21 @@ public class LockedController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        if (getActionBar() != null) {
-            getActionBar().hide();
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        if (getActivity() != null && getResources() != null) {
+            DisplayUtils.applyColorToStatusBar(getActivity(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+            DisplayUtils.applyColorToNavigationBar(getActivity().getWindow(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+        }
         checkIfWeAreSecure();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @OnClick(R.id.unlockTextView)
+    @OnClick(R.id.unlockContainer)
     void unlock() {
         checkIfWeAreSecure();
     }
@@ -166,5 +169,9 @@ public class LockedController extends BaseController {
                 Log.d(TAG, "Authorization failed");
             }
         }
+    }
+
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.EMPTY;
     }
 }
