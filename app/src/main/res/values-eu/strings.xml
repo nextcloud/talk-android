@@ -331,6 +331,7 @@
     <string name="nc_phone_book_integration_chat_via">Txateatu %s bidez</string>
     <string name="nc_phone_book_integration_account_not_found">Ez da kontua aurkitu</string>
 
+    <string name="starred">Gogokoa</string>
     <string name="avatar">Avatarra</string>
     <string name="account_icon">Kontuaren ikonoa</string>
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>

@@ -164,7 +164,7 @@
     <string name="nc_connecting_call">Connetende...</string>
     <string name="nc_calling">Tzerriende...</string>
     <string name="nc_incoming_call">Mutida in intrada dae</string>
-    <string name="nc_nick_guest">Òspite</string>
+    <string name="nc_nick_guest">Persone invitada</string>
     <string name="nc_public_call">Tzarrada pùblica noa</string>
     <string name="nc_call_timeout">Peruna risposta in 45 segundos, toca pro torrare a proare</string>
     <string name="nc_call_reconnecting">Torrende a connètere...</string>
@@ -265,6 +265,6 @@
     <string name="nc_reply">Risponde</string>
     <string name="nc_delete_message">Cantzella</string>
     <!-- Upload -->
-    <string name="nc_upload_local_file">Càrriga documentu locale</string>
+    <string name="nc_upload_local_file">Càrriga archìviu locale</string>
     <string name="nc_upload_choose_local_files">Sèbera documentos</string>
     </resources>
