@@ -126,6 +126,7 @@ android {
 }
 
 ext {
+    coilKtVersion = "0.9.1"
     daggerVersion = "2.34.1"
     powermockVersion = "2.0.9"
     workVersion = "2.3.0"
@@ -223,9 +224,9 @@ dependencies {
     implementation 'com.github.mario.fresco:animated-gif:111'
     implementation 'com.github.mario.fresco:imagepipeline-okhttp3:111'
     implementation  group: 'joda-time', name: 'joda-time', version: '2.10.3'
-    implementation 'io.coil-kt:coil:0.9.1'
-    implementation("io.coil-kt:coil-gif:0.9.1")
-    implementation("io.coil-kt:coil-svg:0.9.1")
+    implementation "io.coil-kt:coil:${coilKtVersion}"
+    implementation("io.coil-kt:coil-gif:${coilKtVersion}")
+    implementation("io.coil-kt:coil-svg:${coilKtVersion}")
     implementation 'com.github.natario1:Autocomplete:v1.1.0'
 
     implementation 'com.github.cotechde.hwsecurity:hwsecurity-fido:2.4.5'
