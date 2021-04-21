@@ -209,7 +209,7 @@ dependencies {
     implementation 'org.webrtc:google-webrtc:1.0.32006'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'
-    implementation 'com.yarolegovich:lovelyinput:1.0.9'
+    implementation 'com.yarolegovich:lovelyinput:1.1.6'
     implementation 'com.yarolegovich:mp:1.0.9'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
     implementation 'org.apache.commons:commons-lang3:3.11'
