@@ -21,6 +21,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 - remove all "chat via"-links from phonebook when sync is disabled
 - fix to show avatars for incoming pictures in group chats (@starypatyk)
 - do not allow selecting files in files browser that are not allowed to be reshared
+- fix to show all file previews
 
 ## [11.1.0] - 2021-03-12
 ### Added
