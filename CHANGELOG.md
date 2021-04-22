@@ -25,6 +25,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 - fix to show avatars for incoming pictures in group chats (@starypatyk)
 - do not allow selecting files in files browser that are not allowed to be reshared
 - fix to show all file previews
+- don't keep screen enabled in chat view
 
 ## [11.1.0] - 2021-03-12
 ### Added
