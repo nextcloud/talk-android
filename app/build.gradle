@@ -23,6 +23,11 @@ apply plugin: 'kotlin-android'
 apply plugin: 'findbugs'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'io.gitlab.arturbosch.detekt'
+
+configurations {
+    ktlint
+}
 
 def taskRequest = getGradle().getStartParameter().getTaskRequests().toString()
 if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskRequest.contains("lint")) {
@@ -172,6 +177,7 @@ dependencies {
     implementation ('com.gitlab.bitfireAT:dav4jvm:f2078bc846', {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
+    ktlint "com.pinterest:ktlint:0.41.0"
     implementation 'org.conscrypt:conscrypt-android:2.5.1'
 
 
@@ -281,6 +287,30 @@ dependencies {
     })
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
     findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "--reporter=plain", "--reporter=plain,output=${buildDir}/ktlint.txt,src/**/*.kt"
+}
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.pinterest.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
+}
+
+detekt {
+    reports {
+        xml {
+            enabled = false
+        }
+    }
+    config = files("../detekt.yml")
+    input = files("src/")
 }
 
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
