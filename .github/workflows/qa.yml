@@ -27,3 +27,10 @@ jobs:
                     ./gradlew assembleQaDebug
                     $(find /usr/local/lib/android/sdk/build-tools/*/apksigner | sort | tail -n1) sign  --ks-pass pass:$KS_PASS --key-pass pass:$KEY_PASS --ks-key-alias key0 --ks scripts/QA_keystore.jks build/outputs/apk/qa/debug/qa-debug-*.apk
                     sudo scripts/uploadArtifact.sh $LOG_USERNAME $LOG_PASSWORD ${{github.event.number}} ${{github.event.number}} ${{ secrets.GITHUB_TOKEN }}
+            -   name: Archive apk
+                uses: actions/upload-artifact@v2
+                if: ${{ always() }}
+                with:
+                    name: Nextcloud-APK
+                    path: build/outputs/apk/**/**/qa*.apk
+                    retention-days: 5
