@@ -32,5 +32,5 @@ jobs:
                 if: ${{ always() }}
                 with:
                     name: Nextcloud-APK
-                    path: build/outputs/apk/**/**/qa*.apk
+                    path: app/build/outputs/apk/**/**/qa*.apk
                     retention-days: 5
