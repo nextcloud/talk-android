@@ -58,11 +58,13 @@
             app:layout_alignSelf="flex_start"
             android:adjustViewBounds="true">
 
+            <!-- SimpleDraweeView does not support wrap_content for layout_width or layout_height attributes! -->
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@id/image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="fitCenter"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="fitStart"
+                app:roundedCornerRadius="6dp"
                 tools:src="@drawable/ic_call_black_24dp" />
 
             <ProgressBar
