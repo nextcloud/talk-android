@@ -250,6 +250,7 @@
     <string name="nc_sent_an_audio_you">您傳送了一個聲音檔</string>
     <string name="nc_sent_a_video_you">您傳送了一個影片</string>
     <string name="nc_sent_an_image_you">你傳送了一張圖片</string>
+    <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">你： %1$s</string>
 
@@ -337,6 +338,9 @@
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
     <string name="nc_phone_book_integration_chat_via">透過 %s 聊天</string>
     <string name="nc_phone_book_integration_account_not_found">找不到賬戶</string>
+
+    <string name="starred">我的最愛</string>
+    <string name="password_protected">密碼保護</string>
 
     <string name="avatar">頭像</string>
     <string name="account_icon">賬戶圖示</string>

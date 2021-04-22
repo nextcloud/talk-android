@@ -250,6 +250,7 @@
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
     <string name="nc_sent_a_video_you">Odeslali jste video.</string>
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
+    <string name="nc_message_quote_cancel_reply">Zrušit odpověď</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vy: %1$s</string>
 
@@ -336,6 +337,9 @@
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="nc_phone_book_integration_chat_via">Rozhovor prostřednictvím %s</string>
     <string name="nc_phone_book_integration_account_not_found">Účet nenalezen</string>
+
+    <string name="starred">Oblíbené</string>
+    <string name="password_protected">Chráněno heslem</string>
 
     <string name="avatar">Profilový obrázek</string>
     <string name="account_icon">Ikona účtu</string>
