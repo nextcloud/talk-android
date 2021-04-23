@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -435,8 +437,7 @@ class ChatController(args: Bundle) : BaseController(args), MessagesListAdapter
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     if (newMessagesCount != 0 && layoutManager != null) {
-                        if (layoutManager!!.findFirstCompletelyVisibleItemPosition() <
-                                newMessagesCount) {
+                        if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
 
                             if (popupBubble != null && popupBubble!!.isShown) {

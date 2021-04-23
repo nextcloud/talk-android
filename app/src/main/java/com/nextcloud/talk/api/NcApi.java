@@ -3,7 +3,9 @@
  *   Nextcloud Talk application
  *
  *   @author Mario Danic
+ *   @author Marcel Hibbe
  *   Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ *   Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -373,6 +375,10 @@ public interface NcApi {
     Observable<Response<GenericOverall>> uploadFile(@Header("Authorization") String authorization,
                                                     @Url String url,
                                                     @Body RequestBody body);
+
+    @GET
+    Call<ResponseBody> downloadFile(@Header("Authorization") String authorization,
+                                    @Url String url);
 
     @DELETE
     Observable<ChatOverallSingleMessage> deleteChatMessage(@Header("Authorization") String authorization,

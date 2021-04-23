@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
-  ~ @author Mario Danic
-  ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ @author Tobias Kaminski
+  ~ Copyright (C) 2021 Tobias Kaminski <tobias@kaminsky.me>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -19,15 +18,8 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="16dp"
-    android:height="16dp"
-    android:viewportWidth="16"
-    android:viewportHeight="16">
-
-    <path
-        android:fillColor="#0082c9"
-        android:pathData="M1.46,2 C1.21,2,1,2.21,1,2.46 L1,13.54 C1,13.798,1.202,14,1.46,14 L14.54,14
-C14.798,14,15,13.798,15,13.54 L15,4.462 C15,4.212,14.79,3.999,14.54,3.999
-L8,3.999 L6,2 L1.46,2 Z M2,5 L14,5 L14,13 L2,13 L2,5 Z" />
-</vector>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/share"
+        android:title="@string/share" />
+</menu>
