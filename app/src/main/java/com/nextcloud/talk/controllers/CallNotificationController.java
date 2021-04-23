@@ -258,23 +258,27 @@ public class CallNotificationController extends BaseController {
     }
 
     private void handleFromNotification() {
-        boolean isConversationApiV3 = userBeingCalled.hasSpreedFeatureCapability("conversation-v3");
-        if (isConversationApiV3) {
-            ncApi.getRoom(credentials, ApiUtils.getRoomV3(userBeingCalled.getBaseUrl(), roomId))
-                    .subscribeOn(Schedulers.io())
-                    .retry(3)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            disposablesList.add(d);
-                        }
+        Integer apiVersion = ApiUtils.getApiVersion(userBeingCalled, "conversation", new int[] {4, 3, 1});
+        if (apiVersion == null) {
+            return;
+        }
 
-                        @Override
-                        public void onNext(@NotNull RoomOverall roomOverall) {
-                            currentConversation = roomOverall.getOcs().data;
-                            runAllThings();
+        ncApi.getRoom(credentials, ApiUtils.getRoom(apiVersion, userBeingCalled.getBaseUrl(), roomId))
+                .subscribeOn(Schedulers.io())
+                .retry(3)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<RoomOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+                        disposablesList.add(d);
+                    }
 
+                    @Override
+                    public void onNext(@NotNull RoomOverall roomOverall) {
+                        currentConversation = roomOverall.getOcs().data;
+                        runAllThings();
+
+                        if (apiVersion >= 3) {
                             boolean hasCallFlags = userBeingCalled.hasSpreedFeatureCapability("conversation-call-flags");
                             if (hasCallFlags) {
                                 if (isInCallWithVideo(currentConversation.callFlag)) {
@@ -286,46 +290,19 @@ public class CallNotificationController extends BaseController {
                                 }
                             }
                         }
+                    }
 
-                        @Override
-                        public void onError(Throwable e) {
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
 
-                        }
+                    @Override
+                    public void onComplete() {
 
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        } else {
-            ncApi.getRoom(credentials, ApiUtils.getRoom(userBeingCalled.getBaseUrl(), roomId))
-                    .subscribeOn(Schedulers.io())
-                    .retry(3)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            disposablesList.add(d);
-                        }
-
-                        @SuppressLint("LongLogTag")
-                        @Override
-                        public void onNext(@NotNull RoomOverall roomOverall) {
-                            currentConversation = roomOverall.getOcs().data;
-                            runAllThings();
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        }
+                    }
+                });
     }
 
     private boolean isInCallWithVideo(int callFlag) {

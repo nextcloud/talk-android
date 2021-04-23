@@ -26,6 +26,7 @@ import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,7 @@ import okhttp3.Credentials;
 public class ApiUtils {
     private static String ocsApiVersion = "/ocs/v2.php";
     private static String spreedApiVersion = "/apps/spreed/api/v1";
+    private static String spreedApiBase = ocsApiVersion + "/apps/spreed/api/v";
 
     private static String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
 
@@ -122,12 +124,30 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
     }
 
+    /**
+     * @deprecated Please specify the api version you want to use via
+     * {@link ApiUtils#getRoom(int, String, String)} instead.
+     */
+    @Deprecated
     public static String getRoom(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token;
+        return getRoom(1, baseUrl, token);
     }
 
-    public static String getRoomV3(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + "/apps/spreed/api/v3" + "/room/" + token;
+    public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
+        for (int version : versions) {
+            if (capabilities.hasSpreedFeatureCapability(apiName + "-v" + version)) {
+                return version;
+            }
+        }
+        return null;
+    }
+
+    protected static String getApi(int version, String baseUrl) {
+        return baseUrl + spreedApiBase + version;
+    }
+
+    public static String getRoom(int version, String baseUrl, String token) {
+        return getApi(version, baseUrl) + "/room/" + token;
     }
 
     public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType,
