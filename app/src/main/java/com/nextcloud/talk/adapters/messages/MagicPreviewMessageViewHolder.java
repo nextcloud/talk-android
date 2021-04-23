@@ -66,6 +66,9 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
+
+import org.jetbrains.annotations.NotNull;
+
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -305,6 +308,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         popupMenu.show();
     }
 
+    @SuppressLint("LongLogTag")
     private void downloadFileToCache(String baseUrl,
                                      String userId,
                                      String attachmentFolder,
@@ -320,7 +324,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         try {
             for (WorkInfo workInfo : workers.get()) {
                 if (workInfo.getState() == WorkInfo.State.RUNNING || workInfo.getState() == WorkInfo.State.ENQUEUED) {
-                    Log.d("Download", "Download worker for " + fileId + " is already running or scheduled");
+                    Log.d(TAG, "Download worker for " + fileId + " is already running or " +
+                            "scheduled");
                     return;
                 }
             }
@@ -377,6 +382,9 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 messageText.setText(fileName);
                 progressBar.setVisibility(View.GONE);
                 break;
+            default:
+                Log.e(TAG, "workInfo state not handled");
+                break;
         }
     }
 
@@ -422,12 +430,16 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                     }
 
                     @Override
-                    public void onSuccess(ReadFilesystemOperation readFilesystemOperation) {
+                    public void onSuccess(@NotNull ReadFilesystemOperation readFilesystemOperation) {
                         DavResponse davResponse = readFilesystemOperation.readRemotePath();
                         if (davResponse.data != null) {
                             List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.data;
                             if (!browserFileList.isEmpty()) {
-                                new Handler(context.getMainLooper()).post(() -> image.getHierarchy().setPlaceholderImage(context.getDrawable(DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFileList.get(0).mimeType))));
+                                new Handler(context.getMainLooper()).post(() -> {
+                                    int resourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFileList.get(0).mimeType);
+                                    Drawable drawable = ContextCompat.getDrawable(context, resourceId);
+                                    image.getHierarchy().setPlaceholderImage(drawable);
+                                });
                             }
                         }
                     }
