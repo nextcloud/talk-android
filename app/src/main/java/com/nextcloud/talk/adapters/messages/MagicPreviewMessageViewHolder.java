@@ -383,7 +383,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 progressBar.setVisibility(View.GONE);
                 break;
             default:
-                Log.e(TAG, "workInfo state not handled");
+                // do nothing
                 break;
         }
     }
