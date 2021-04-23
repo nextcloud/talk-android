@@ -54,7 +54,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.OnClick
-import coil.api.load
+import coil.load
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler

@@ -110,7 +110,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         } catch (e: UnsatisfiedLinkError) {
             Log.w(TAG, e)
         }
-
     }
 
     //endregion
@@ -132,7 +131,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
         componentApplication.inject(this)
 
-        Coil.setDefaultImageLoader(::buildDefaultImageLoader)
+        Coil.setImageLoader(buildDefaultImageLoader())
         setAppTheme(appPreferences.theme)
         super.onCreate()
 
@@ -196,19 +195,19 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
     }
 
     private fun buildDefaultImageLoader(): ImageLoader {
-        return ImageLoader(applicationContext) {
-            availableMemoryPercentage(0.5) // Use 50% of the application's available memory.
-            crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
-            componentRegistry {
-                if (SDK_INT >= P) {
-                    add(ImageDecoderDecoder())
-                } else {
-                    add(GifDecoder())
+        return ImageLoader.Builder(applicationContext)
+                .availableMemoryPercentage(0.5) // Use 50% of the application's available memory.
+                .crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
+                .componentRegistry {
+                    if (SDK_INT >= P) {
+                        add(ImageDecoderDecoder(applicationContext))
+                    } else {
+                        add(GifDecoder())
+                    }
+                    add(SvgDecoder(applicationContext))
                 }
-                add(SvgDecoder(applicationContext))
-            }
-            okHttpClient(okHttpClient)
-        }
+                .okHttpClient(okHttpClient)
+                .build()
     }
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
