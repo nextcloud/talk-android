@@ -367,11 +367,11 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_published_description">Sincronizar con servidores de confianza y con la libreta de direcciones global y pública</string>
     <string name="scope_toggle">Alternar vista</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Buscar en %s</string>
 
     <string name="nc_action_open_main_menu">Abrir menú principal</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
     <string name="selected_list_item">seleccionado</string>
-</resources>
+    </resources>

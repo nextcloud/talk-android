@@ -369,11 +369,11 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_published_description">Usklajuj z varnimi strežniki in splošnimi in javnimi imeniki</string>
     <string name="scope_toggle">Preklop obsega</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Poišči v %s</string>
 
     <string name="nc_action_open_main_menu">Odpri glavni meni</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
     <string name="selected_list_item">izbrano</string>
-</resources>
+    </resources>

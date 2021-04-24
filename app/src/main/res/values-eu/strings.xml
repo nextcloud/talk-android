@@ -284,6 +284,8 @@
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_browser_refresh">Freskatu</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Ez zaude fitxategi hau birpartekatzeko baimenduta</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_lobby">Sarrera</string>
@@ -360,11 +362,11 @@
     <string name="scope_published_title">Argitaratuta</string>
     <string name="scope_published_description">Sinkronizatu zerbitzari fidagarriekin eta helbide liburu publiko eta globalarekin</string>
     <string name="scope_toggle">Irismen etengailua</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Bilatu %s(e)n</string>
 
     <string name="nc_action_open_main_menu">Ireki menu nagusia</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="selected_list_item">hautatuta</string>
-</resources>
+    </resources>

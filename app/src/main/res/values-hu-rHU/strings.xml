@@ -366,11 +366,11 @@
     <string name="scope_published_title">Közzétett</string>
     <string name="scope_published_description">Szinkronizálás a megbízható kiszolgálókkal, valamint a globális és nyilvános címjegyzékkel</string>
     <string name="scope_toggle">Hatókör váltása</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Keresés itt: %s</string>
 
     <string name="nc_action_open_main_menu">Főmenü megnyitása</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
     <string name="selected_list_item">kiválasztott</string>
-</resources>
+    </resources>

@@ -370,11 +370,11 @@
     <string name="scope_published_title">Veröffentlicht</string>
     <string name="scope_published_description">Mit vertrauenswürdigen Servern und dem globalen sowie öffentlichen Adressbuch synchronisieren</string>
     <string name="scope_toggle">Bereich umschalten</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Suche in %s</string>
 
     <string name="nc_action_open_main_menu">Hauptmenü öffnen</string>
     <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
     <string name="selected_list_item">ausgewählt</string>
-</resources>
+    </resources>

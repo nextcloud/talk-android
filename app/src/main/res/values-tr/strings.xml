@@ -370,11 +370,11 @@
     <string name="scope_published_title">Yayınlanmış</string>
     <string name="scope_published_description">Genel ve herkese açık adres defteri ile ve güvenilen sunucularla eşitlensin</string>
     <string name="scope_toggle">Ölçeği değiştir</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">%s içinde arama</string>
 
     <string name="nc_action_open_main_menu">Ana menüyü aç</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
     <string name="selected_list_item">seçilmiş</string>
-</resources>
+    </resources>

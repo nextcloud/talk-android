@@ -370,11 +370,11 @@
     <string name="scope_published_title">已发布</string>
     <string name="scope_published_description">同步到受信任的服务器、全局和公共地址簿</string>
     <string name="scope_toggle">范围切换</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">搜索位置 %s</string>
 
     <string name="nc_action_open_main_menu">打开主菜单</string>
     <string name="failed_to_save">未能保存 %1$s</string>
     <string name="selected_list_item">已选中</string>
-</resources>
+    </resources>

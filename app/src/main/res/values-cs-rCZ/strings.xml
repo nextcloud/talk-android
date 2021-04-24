@@ -369,11 +369,11 @@
     <string name="scope_published_title">Zveřejněno</string>
     <string name="scope_published_description">Synchronizovat s důvěryhodnými servery a globálním a veřejným adresářem kontaktů</string>
     <string name="scope_toggle">Přepnout pohled</string>
-    
+
     <!-- App Bar -->
     <string name="appbar_search_in">Hledat v %s</string>
 
     <string name="nc_action_open_main_menu">Otevřít hlavní nabídku</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
     <string name="selected_list_item">vybraný</string>
-</resources>
+    </resources>
