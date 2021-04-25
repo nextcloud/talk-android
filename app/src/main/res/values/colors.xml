@@ -42,7 +42,7 @@
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
     <!-- Text color of received messages -->
-    <color name="nc_incoming_text_default">#37505D</color>
+    <color name="nc_incoming_text_default">@color/high_emphasis_text</color>
 
     <!-- Name of person or group for the chat conversation -->
     <color name="conversation_item_header">@color/high_emphasis_text</color>
