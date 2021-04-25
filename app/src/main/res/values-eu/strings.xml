@@ -112,7 +112,7 @@
     <string name="nc_settings_read_privacy_desc">Partekatu nire irakurtze-egoera eta erakutsi besteen irakurtze-egoera</string>
     <string name="nc_settings_read_privacy_title">Irakurtze egoera</string>
 
-    <string name="nc_screen_lock_timeout_30">30 segundu</string>
+    <string name="nc_screen_lock_timeout_30">30 segundo</string>
     <string name="nc_screen_lock_timeout_60">Minutu 1</string>
     <string name="nc_screen_lock_timeout_300">5 minutu</string>
     <string name="nc_screen_lock_timeout_600">10 minutu</string>

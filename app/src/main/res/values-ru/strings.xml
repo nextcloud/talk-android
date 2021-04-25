@@ -24,11 +24,20 @@
     <!-- Common -->
     <string name="nc_yes">Да</string>
     <string name="nc_no">Нет</string>
+    <string name="nc_common_skip">Пропустить</string>
+    <string name="nc_common_set">Установить</string>
     <string name="nc_common_error_sorry">Что-то пошло не так :(</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Параметры</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Проверить соединение с сервером</string>
+    <string name="nc_server_helper_text">Ссылка на ваш %1$s веб-интерфейс, когда вы открываете его в браузере.</string>
+    <string name="nc_server_testing_connection">Проверка соединения</string>
+    <string name="nc_server_unsupported">На сервере не установлено приложение «Конференции»</string>
+
+    <string name="nc_server_url">Адрес сервера https://…</string>
     <string name="nc_server_not_installed">Завершите установку %1$s</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_maintenance">Сервер %1$s находится в режиме обслуживания</string>
@@ -129,6 +138,8 @@
 
     <string name="nc_select_an_account">Выберите учётную запись</string>
 
+    <string name="nc_profile_personal_info_title">Личная информация</string>
+
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Начать беседу</string>
     <string name="nc_configure_room">Настроить беседу</string>
@@ -144,6 +155,7 @@
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
     <string name="nc_delete_conversation_default">Подтвердите удаление обсуждения.</string>
+    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также удалена у %1$s.</string>
     <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
 
     <string name="nc_new_conversation">Новая беседа</string>
@@ -161,6 +173,10 @@
     <string name="nc_microphone_permission_permanently_denied">Для выполнения вызова требуется получение дополнительных системных разрешений. Разрешите приложению доступ к микрофону  в системных настройках.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s голосовой вызов</string>
+    <string name="nc_call_video">%s видеозвонок</string>
+    <string name="nc_call_unknown">%s звонок</string>
     <string name="nc_call_incoming">Входящий</string>
     <string name="nc_call_ringing">Звонок</string>
     <string name="nc_connecting_call">Соединение…</string>
@@ -168,6 +184,7 @@
     <string name="nc_incoming_call">Входящий вызов от</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_public_call">Начать открытую беседу</string>
+    <string name="nc_public_call_explanation">Открытые беседы позволяют приглашать участников при помощи специальной ссылки.</string>
     <string name="nc_call_timeout">Нет ответа в течение 45 секунд, нажмите, чтобы повторить попытку</string>
     <string name="nc_call_reconnecting">Переподключение...</string>
     <string name="nc_offline">Нет подключения к сети, пожалуйста, проверьте ваше соединение</string>
@@ -186,8 +203,11 @@
     <string name="nc_mute_calls">Не уведомлять о вызовах</string>
     <string name="nc_mute_calls_desc">Оповещение о входящих вызовах отключено.</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
+    <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Что-то пошло не так :(</string>
+    <string name="nc_failed_signaling_settings">Сервер не поддерживает вход в открытые беседы с мобильных устройств. Попробуйте присоединиться к беседе используя веб-браузер.</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
     <string name="nc_ok">ОК</string>
     <string name="nc_call_name">Наименование беседы</string>
@@ -230,6 +250,7 @@
     <string name="nc_sent_an_audio_you">Вы отправили аудиофайл.</string>
     <string name="nc_sent_a_video_you">Вы отправили файл видео.</string>
     <string name="nc_sent_an_image_you">Вы отправили изображение.</string>
+    <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Вы: %1$s</string>
 
@@ -245,12 +266,17 @@
     <string name="nc_description_more_menu_group">Меню для общей беседы %1$s</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое</string>
+    <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_hello">Привет</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_participants">Участники</string>
+    <string name="nc_participants_add">Добавить участников</string>
+
     <string name="nc_owner">Владелец</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_user">Пользователь</string>
@@ -263,6 +289,8 @@
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_browser_refresh">Обновить</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Вам не разрешено делиться этим файлом повторно</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_lobby">Лобби</string>
@@ -291,12 +319,66 @@
     <string name="nc_delete_message">Удалить</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Сообщение удалено, но его содержимое могло быть прочитано другими службами</string>
 
+    <string name="share">Поделиться</string>
+    <string name="send_to">Отправить в</string>
+    <string name="open_in_files_app">Открыть в приложении Файлы</string>
+
     <!-- Upload -->
     <string name="nc_upload_local_file">Передать на сервер локальный файл</string>
+    <string name="nc_upload_from_cloud">Поделиться с %1$s</string>
     <string name="nc_upload_failed">Ошибка передачи на сервер</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
     <string name="nc_upload_in_progess">передача на сервер</string>
 
-    </resources>
+    <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в приложение системных контактов</string>
+    <string name="nc_settings_phone_book_integration_title">Интеграция номера телефона</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Номер телефона</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Вы можете указать свой номер телефона, чтобы другие пользователи могли вас найти</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неправильный номер телефона</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Номер телефона успешно установлен</string>
+    <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
+    <string name="nc_phone_book_integration_chat_via">Чат через %s</string>
+    <string name="nc_phone_book_integration_account_not_found">Учётная запись не найдена</string>
+
+    <string name="starred">Избранное</string>
+    <string name="password_protected">Защищено паролем</string>
+
+    <string name="avatar">Аватар</string>
+    <string name="account_icon">Значок учётной записи</string>
+    <string name="userinfo_no_info_headline">Личная информация не указана</string>
+    <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
+    <string name="userinfo_error_text">Не удалось получить личную информации о пользователе</string>
+    <string name="user_info_phone">Номер телефона</string>
+    <string name="user_info_email">Эл. почта</string>
+    <string name="user_info_address">Адрес</string>
+    <string name="user_info_website">Сайт</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Полное имя</string>
+    <string name="file_list_folder">каталог</string>
+    <string name="file_list_loading">Загрузка…</string>
+    <string name="edit">Редактировать</string>
+    <string name="save">Сохранить</string>
+    <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
+    <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>
+    <string name="delete_avatar">Удалить аватар</string>
+    <string name="scope_private_title">Закрытый</string>
+    <string name="scope_private_description">Видно только людям, сопоставленным с помощью интеграции номера телефона через приложение «Конференции» на мобильном телефоне </string>
+    <string name="lock_symbol">Символ блокировки</string>
+    <string name="scope_local_title">Локально</string>
+    <string name="scope_local_description">Видно только людям на этом сервере и гостям</string>
+    <string name="scope_federated_title">Федеративный доступ</string>
+    <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>
+    <string name="scope_published_title">Опубликовано</string>
+    <string name="scope_published_description">Выполнять синхронизацию с доверенными серверами и глобальной и открытой адресной книгой</string>
+    <string name="scope_toggle">Переключить область видимости</string>
+
+    <!-- App Bar -->
+    <string name="appbar_search_in">Искать в %s</string>
+
+    <string name="nc_action_open_main_menu">Открыть главное меню</string>
+    <string name="failed_to_save">Не удалось сохранить %1$s</string>
+    <string name="selected_list_item">выбрано</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
+</resources>
