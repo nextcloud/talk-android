@@ -25,12 +25,5 @@ jobs:
                     sed -i "/qa/,/\}/ s/versionCode .*/versionCode ${{github.event.number}} /" build.gradle
                     sed -i "/qa/,/\}/ s/versionName .*/versionName \"${{github.event.number}}\"/" build.gradle
                     ./gradlew assembleQaDebug
-                    $(find /usr/local/lib/android/sdk/build-tools/*/apksigner | sort | tail -n1) sign  --ks-pass pass:$KS_PASS --key-pass pass:$KEY_PASS --ks-key-alias key0 --ks scripts/QA_keystore.jks build/outputs/apk/qa/debug/qa-debug-*.apk
+                    $(find /usr/local/lib/android/sdk/build-tools/*/apksigner | sort | tail -n1) sign  --ks-pass pass:$KS_PASS --key-pass pass:$KEY_PASS --ks-key-alias key0 --ks scripts/QA_keystore.jks app/build/outputs/apk/qa/debug/app-qa-*.apk
                     sudo scripts/uploadArtifact.sh $LOG_USERNAME $LOG_PASSWORD ${{github.event.number}} ${{github.event.number}} ${{ secrets.GITHUB_TOKEN }}
-            -   name: Archive apk
-                uses: actions/upload-artifact@v2
-                if: ${{ always() }}
-                with:
-                    name: Nextcloud-APK
-                    path: app/build/outputs/apk/**/**/qa*.apk
-                    retention-days: 5
