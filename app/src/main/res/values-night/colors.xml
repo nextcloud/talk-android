@@ -31,6 +31,7 @@
     <!-- App bar -->
     <color name="appbar">#1E1E1E</color>
     <color name="fontAppbar">#FFFFFF</color>
+    <color name="refresh_spinner_background">#222222</color>
 
     <!-- general text colors -->
     <color name="high_emphasis_text">#deffffff</color>
@@ -51,11 +52,14 @@
     <color name="controller_chat_separator">#484848</color>
 
     <!-- Chat window incoming message text & informational -->
-    <color name="nc_incoming_text_default">#D8D8D8</color>
     <color name="nc_grey">@android:color/holo_purple</color>
     <color name="bg_bottom_sheet">#121212</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
     <color name="bg_message_list_incoming_bubble_deleted">#66484848</color>
 
     <color name="textColorMaxContrast">#8c8c8c</color>
+
+    <!-- shimmer element colors -->
+    <color name="nc_shimmer_default_color">#4B4B4B</color>
+    <color name="nc_shimmer_darker_color">#282828</color>
 </resources>

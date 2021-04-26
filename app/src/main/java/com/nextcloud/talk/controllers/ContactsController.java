@@ -643,6 +643,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
+        swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
 
         fastScroller.addOnScrollStateChangeListener(this);
         adapter.setFastScroller(fastScroller);

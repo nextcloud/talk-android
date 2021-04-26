@@ -28,13 +28,15 @@
         android:layout_height="@dimen/iconized_single_line_item_icon_size"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/standard_margin"
-        app:corners="100" />
+        app:corners="100"
+        app:custom_color="@color/nc_shimmer_default_color" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/standard_margin"
-        android:layout_marginEnd="@dimen/standard_margin" />
+        android:layout_marginEnd="@dimen/standard_margin"
+        app:custom_color="@color/nc_shimmer_default_color" />
 
 </LinearLayout>

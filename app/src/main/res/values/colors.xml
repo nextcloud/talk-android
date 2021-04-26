@@ -32,6 +32,7 @@
     <color name="appbar">@android:color/white</color>
     <color name="fontAppbar">#666666</color>
     <color name="fontSecondaryAppbar">#A5A5A5</color>
+    <color name="refresh_spinner_background">#ffffff</color>
 
     <!-- general text colors -->
     <color name="high_emphasis_text">#de000000</color>
@@ -41,7 +42,7 @@
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
     <!-- Text color of received messages -->
-    <color name="nc_incoming_text_default">#37505D</color>
+    <color name="nc_incoming_text_default">@color/high_emphasis_text</color>
 
     <!-- Name of person or group for the chat conversation -->
     <color name="conversation_item_header">@color/high_emphasis_text</color>
@@ -76,4 +77,8 @@
 
     <color name="call_buttons_background">#BF999999</color>
     <color name="favorite_icon_tint">#FFCC00</color>
+
+    <!-- shimmer element colors -->
+    <color name="nc_shimmer_default_color">#D7D7D7</color>
+    <color name="nc_shimmer_darker_color">#B4B4B4</color>
 </resources>

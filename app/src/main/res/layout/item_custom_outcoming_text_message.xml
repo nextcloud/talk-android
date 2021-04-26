@@ -20,6 +20,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
@@ -47,7 +48,8 @@
             android:layout_alignWithParentIfMissing="true"
             android:lineSpacingMultiplier="1.2"
             android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="true" />
+            android:textIsSelectable="true"
+            tools:text="Talk to ayou later!" />
 
         <TextView
             android:id="@id/messageTime"
@@ -55,7 +57,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
-            app:layout_alignSelf="center" />
+            app:layout_alignSelf="center"
+            tools:text="10:35" />
 
         <ImageView
             android:id="@+id/checkMark"

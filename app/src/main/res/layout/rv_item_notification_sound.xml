@@ -21,7 +21,6 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -32,35 +31,17 @@
     android:animateLayoutChanges="true"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/checkedImageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/standard_margin"
-        android:contentDescription="@string/selected_list_item"
-        android:src="@drawable/ic_check_black_24dp"
-        app:tint="@color/colorPrimary" />
-
-    <TextView
+    <com.google.android.material.radiobutton.MaterialRadioButton
         android:id="@+id/notificationNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toStartOf="@id/checkedImageView"
-        android:layout_toEndOf="@id/simpleDraweeView"
+        android:clickable="false"
         android:ellipsize="end"
         android:lines="1"
+        android:paddingStart="24dp"
+        android:paddingEnd="0dp"
         android:textAppearance="@style/ListItem"
         tools:text="Ringy Gone" />
-
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/simpleDraweeView"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/standard_margin"
-        app:roundAsCircle="true" />
 
 </RelativeLayout>

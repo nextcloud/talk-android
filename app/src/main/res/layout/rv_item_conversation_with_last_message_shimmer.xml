@@ -32,7 +32,8 @@
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/double_margin_between_elements"
         android:contentDescription="@null"
-        app:corners="100" />
+        app:corners="100"
+        app:custom_color="@color/nc_shimmer_default_color" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,12 +46,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="128dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            app:custom_color="@color/nc_shimmer_default_color" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp" />
+            android:layout_marginTop="6dp"
+            app:custom_color="@color/nc_shimmer_darker_color" />
 
     </LinearLayout>
 
