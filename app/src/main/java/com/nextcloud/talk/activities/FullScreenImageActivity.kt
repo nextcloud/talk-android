@@ -94,6 +94,11 @@ class FullScreenImageActivity : AppCompatActivity() {
             toggleFullscreen()
         }
 
+        // Enable enlarging the image more than default 3x maximumScale.
+        // Medium scale adapted to make double-tap behaviour more consistent.
+        photoView.maximumScale = 6.0f
+        photoView.mediumScale = 2.45f
+
         val fileName = intent.getStringExtra("FILE_NAME")
         val isGif = intent.getBooleanExtra("IS_GIF", false)
 
