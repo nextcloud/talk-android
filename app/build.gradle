@@ -209,12 +209,12 @@ dependencies {
     implementation 'org.webrtc:google-webrtc:1.0.32006'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     implementation 'com.yarolegovich:lovely-dialog:1.1.0'
-    implementation 'com.yarolegovich:lovelyinput:1.0.9'
+    implementation 'com.yarolegovich:lovelyinput:1.1.6'
     implementation 'com.yarolegovich:mp:1.0.9'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
     implementation 'org.apache.commons:commons-lang3:3.11'
     implementation 'com.github.wooplr:Spotlight:1.3'
-    implementation 'com.google.code.findbugs:jsr305:2.0.1'
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation('com.github.mario:chatkit:c6a61767291ddb212a2f4f792a2b6aaf295e69a5', {
         exclude group: 'com.facebook.fresco'
     })
