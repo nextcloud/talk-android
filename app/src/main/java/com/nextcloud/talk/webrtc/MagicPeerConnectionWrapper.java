@@ -329,7 +329,6 @@ public class MagicPeerConnectionWrapper {
     }
 
     private class MagicPeerConnectionObserver implements PeerConnection.Observer {
-        private final String TAG = "MagicPeerConnectionObserver";
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
@@ -425,7 +424,7 @@ public class MagicPeerConnectionWrapper {
     }
 
     private class MagicSdpObserver implements SdpObserver {
-        private final String TAG = "MagicSdpObserver";
+        private static final String TAG = "MagicSdpObserver";
 
         @Override
         public void onCreateFailure(String s) {
