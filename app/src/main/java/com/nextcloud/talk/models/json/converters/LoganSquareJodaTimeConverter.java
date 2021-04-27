@@ -31,6 +31,7 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 
 public class LoganSquareJodaTimeConverter implements TypeConverter<DateTime> {
+    private static final String TAG = LoganSquareJodaTimeConverter.class.getSimpleName();
 
     @Override
     public DateTime parse(JsonParser jsonParser) throws IOException {
@@ -41,7 +42,7 @@ public class LoganSquareJodaTimeConverter implements TypeConverter<DateTime> {
         try {
             return DateTime.parse(dateString);
         } catch (final RuntimeException exception) {
-            Log.e("NC", exception.getLocalizedMessage());
+            Log.e(TAG, exception.getLocalizedMessage(), exception);
         }
         return null;
     }
