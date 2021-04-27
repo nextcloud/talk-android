@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,14 +36,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.biometric.BiometricPrompt;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import autodagger.AutoInjector;
 import butterknife.OnClick;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.util.concurrent.Executor;
@@ -55,6 +61,7 @@ public class LockedController extends BaseController {
     @Inject
     AppPreferences appPreferences;
 
+    @NotNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_locked, container, false);
@@ -64,20 +71,21 @@ public class LockedController extends BaseController {
     protected void onViewBound(@NonNull View view) {
         super.onViewBound(view);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        if (getActionBar() != null) {
-            getActionBar().hide();
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+        if (getActivity() != null && getResources() != null) {
+            DisplayUtils.applyColorToStatusBar(getActivity(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+            DisplayUtils.applyColorToNavigationBar(getActivity().getWindow(), ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null));
+        }
         checkIfWeAreSecure();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    @OnClick(R.id.unlockTextView)
+    @OnClick(R.id.unlockContainer)
     void unlock() {
         checkIfWeAreSecure();
     }
@@ -166,5 +174,9 @@ public class LockedController extends BaseController {
                 Log.d(TAG, "Authorization failed");
             }
         }
+    }
+
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.EMPTY;
     }
 }

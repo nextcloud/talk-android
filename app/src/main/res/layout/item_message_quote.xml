@@ -45,6 +45,7 @@
         android:layout_marginEnd="8dp"
         android:layout_toEndOf="@id/quoteColoredView"
         android:ellipsize="end"
+        android:textColor="@color/textColorMaxContrast"
         android:textSize="12sp"
         tools:text="Jane Doe" />
 

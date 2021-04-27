@@ -52,7 +52,6 @@
     <color name="controller_chat_separator">#484848</color>
 
     <!-- Chat window incoming message text & informational -->
-    <color name="nc_grey">@android:color/holo_purple</color>
     <color name="bg_bottom_sheet">#121212</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>
     <color name="bg_message_list_incoming_bubble_deleted">#66484848</color>
