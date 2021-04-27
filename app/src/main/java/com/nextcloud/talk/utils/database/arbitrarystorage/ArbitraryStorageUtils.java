@@ -22,6 +22,8 @@ package com.nextcloud.talk.utils.database.arbitrarystorage;
 import androidx.annotation.Nullable;
 import com.nextcloud.talk.models.database.ArbitraryStorage;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
+
+import hu.akarnokd.rxjava3.bridge.RxJavaBridge;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.requery.Persistable;
@@ -44,7 +46,7 @@ public class ArbitraryStorageUtils {
         arbitraryStorageEntity.setValue(value);
         arbitraryStorageEntity.setObject(object);
 
-        dataStore.upsert(arbitraryStorageEntity)
+        RxJavaBridge.toV3Single(dataStore.upsert(arbitraryStorageEntity))
                 .toObservable()
                 .subscribeOn(Schedulers.io())
                 .subscribe();
@@ -62,7 +64,8 @@ public class ArbitraryStorageUtils {
     public Observable deleteAllEntriesForAccountIdentifier(long accountIdentifier) {
         ReactiveScalar<Integer> deleteResult = dataStore.delete(ArbitraryStorage.class).where(ArbitraryStorageEntity.ACCOUNT_IDENTIFIER.eq(accountIdentifier)).get();
 
-        return deleteResult.single().toObservable()
+        return RxJavaBridge.toV3Single(deleteResult.single())
+                .toObservable()
                 .subscribeOn(Schedulers.io());
     }
 }

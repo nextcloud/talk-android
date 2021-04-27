@@ -28,6 +28,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import java.util.List;
 
 import androidx.annotation.Nullable;
+import hu.akarnokd.rxjava3.bridge.RxJavaBridge;
 import io.reactivex.rxjava3.core.Completable;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -76,7 +77,7 @@ public class UserUtils {
         UserEntity userEntity;
         if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
             userEntity.setCurrent(true);
-            dataStore.update(userEntity).blockingGet();
+            RxJavaBridge.toV3Single(dataStore.update(userEntity)).blockingGet();
             return userEntity;
         }
 
@@ -96,7 +97,7 @@ public class UserUtils {
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
-        return dataStore.delete(user)
+        return RxJavaBridge.toV3Completable(dataStore.delete(user))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
 
@@ -107,7 +108,7 @@ public class UserUtils {
 
         UserEntity user = (UserEntity) findUserQueryResult.firstOrNull();
 
-        return dataStore.delete(user)
+        return RxJavaBridge.toV3Completable(dataStore.delete(user))
                 .subscribeOn(Schedulers.io());
 
     }
@@ -133,7 +134,7 @@ public class UserUtils {
         for (Object object : findUserQueryResult) {
             UserEntity userEntity = (UserEntity) object;
             userEntity.setCurrent(false);
-            dataStore.update(userEntity).blockingGet();
+            RxJavaBridge.toV3Single(dataStore.update(userEntity)).blockingGet();
         }
     }
 
@@ -174,13 +175,13 @@ public class UserUtils {
         if ((userEntity = (UserEntity) findUserQueryResult.firstOrNull()) != null) {
             userEntity.setScheduledForDeletion(true);
             userEntity.setCurrent(false);
-            dataStore.update(userEntity).blockingGet();
+            RxJavaBridge.toV3Single(dataStore.update(userEntity)).blockingGet();
         }
 
         return getAnyUserAndSetAsActive() != null;
     }
 
-    public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token,
+    public Observable createOrUpdateUser(@Nullable String username, @Nullable String token,
                                                      @Nullable String serverUrl,
                                                      @Nullable String displayName,
                                                      @Nullable String pushConfigurationState,
@@ -267,7 +268,7 @@ public class UserUtils {
             }
         }
 
-        return dataStore.upsert(user)
+        return RxJavaBridge.toV3Single(dataStore.upsert(user))
                 .toObservable()
                 .subscribeOn(Schedulers.io());
     }

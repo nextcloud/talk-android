@@ -228,8 +228,13 @@ dependencies {
     compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
     // Android only
     implementation 'org.greenrobot:eventbus:3.2.0'
+
+    // needed to bridge requery's RxJava2 Objects to RxJava3
+    implementation "com.github.akarnokd:rxjava3-bridge:3.0.0"
+
     implementation 'io.requery:requery:1.6.1'
     implementation 'io.requery:requery-android:1.6.1'
+
     implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
     kapt 'io.requery:requery-processor:1.6.1'
     implementation "org.parceler:parceler-api:$parcelerVersion"
