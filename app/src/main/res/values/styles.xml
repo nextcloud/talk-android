@@ -42,6 +42,10 @@
         <item name="android:navigationBarColor">@color/bg_default</item>
     </style>
 
+    <style name="CallTheme" parent="AppTheme">
+        <item name="android:navigationBarColor">@color/grey950</item>
+    </style>
+
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/nc_darkRed</item>
         <item name="android:textSize">12sp</item>
