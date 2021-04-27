@@ -59,7 +59,7 @@
         android:paddingBottom="56dp"
         android:text="@string/nc_locked"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="@color/textColorOnPrimaryBackground"
         android:textSize="22sp" />
 
 </LinearLayout>
