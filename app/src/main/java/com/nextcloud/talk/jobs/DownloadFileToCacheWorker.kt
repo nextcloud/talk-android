@@ -33,13 +33,16 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.ResponseBody
-import java.io.*
+import java.io.BufferedInputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.io.OutputStream
 import javax.inject.Inject
-
 
 @AutoInjector(NextcloudTalkApplication::class)
 class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerParameters) :
-        Worker(context, workerParameters) {
+    Worker(context, workerParameters) {
 
     private var totalFileSize: Int = -1
 
@@ -86,8 +89,9 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
 
     private fun downloadFile(currentUser: UserEntity, url: String, fileName: String): Result {
         val downloadCall = ncApi.downloadFile(
-                ApiUtils.getCredentials(currentUser.username, currentUser.token),
-                url)
+            ApiUtils.getCredentials(currentUser.username, currentUser.token),
+            url
+        )
 
         return executeDownload(downloadCall.execute().body(), fileName)
     }
@@ -152,6 +156,5 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         const val KEY_FILE_SIZE = "KEY_FILE_SIZE"
         const val PROGRESS = "PROGRESS"
         const val SUCCESS = "SUCCESS"
-
     }
 }

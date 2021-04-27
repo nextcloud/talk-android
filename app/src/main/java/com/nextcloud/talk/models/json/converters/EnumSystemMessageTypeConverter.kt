@@ -22,11 +22,28 @@ package com.nextcloud.talk.models.json.converters
 
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.chat.ChatMessage
-
-import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.*
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_LEFT
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_STARTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_CREATED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_RENAMED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DUMMY
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.FILE_SHARED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUESTS_ALLOWED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUESTS_DISALLOWED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.LOBBY_NONE
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.LOBBY_OPEN_TO_EVERYONE
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERATOR_DEMOTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERATOR_PROMOTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PARENT_MESSAGE_DELETED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_REMOVED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_SET
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_REMOVED
 
 /*
-
     conversation_created - {actor} created the conversation
     conversation_renamed - {actor} renamed the conversation from "foo" to "bar"
     call_joined - {actor} joined the call
@@ -40,7 +57,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.*
     user_removed - {actor} removed {user} from the conversation
     moderator_promoted - {actor} promoted {user} to moderator
     moderator_demoted - {actor} demoted {user} from moderator
-
  */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
     override fun getFromString(string: String): ChatMessage.SystemMessageType {

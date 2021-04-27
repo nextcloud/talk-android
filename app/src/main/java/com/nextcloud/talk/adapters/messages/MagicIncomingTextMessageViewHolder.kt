@@ -39,7 +39,6 @@ import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.amulyakhare.textdrawable.TextDrawable
 import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
@@ -51,7 +50,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
-import com.stfalcon.chatkit.utils.DateFormatter
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -104,8 +102,8 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
 
     init {
         ButterKnife.bind(
-                this,
-                itemView
+            this,
+            itemView
         )
     }
 
@@ -131,13 +129,13 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
                 messageUserAvatarView?.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else if (message.actorType == "bots") {
                 val drawable = TextDrawable.builder()
-                        .beginConfig()
-                        .bold()
-                        .endConfig()
-                        .buildRound(
-                                ">",
-                                context!!.resources.getColor(R.color.black)
-                        )
+                    .beginConfig()
+                    .bold()
+                    .endConfig()
+                    .buildRound(
+                        ">",
+                        context!!.resources.getColor(R.color.black)
+                    )
                 messageUserAvatarView!!.visibility = View.VISIBLE
                 messageUserAvatarView?.setImageDrawable(drawable)
             }
@@ -165,9 +163,9 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                resources.getColor(R.color.transparent),
-                bgBubbleColor, bubbleResource
+            bgBubbleColor,
+            resources.getColor(R.color.transparent),
+            bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
 
@@ -187,23 +185,23 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
                     if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
                         if (individualHashMap["id"] == message.activeUser!!.userId) {
                             messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                    messageText!!.context,
-                                    messageString,
-                                    individualHashMap["id"]!!,
-                                    individualHashMap["name"]!!,
-                                    individualHashMap["type"]!!,
-                                    message.activeUser!!,
-                                    R.xml.chip_you
+                                messageText!!.context,
+                                messageString,
+                                individualHashMap["id"]!!,
+                                individualHashMap["name"]!!,
+                                individualHashMap["type"]!!,
+                                message.activeUser!!,
+                                R.xml.chip_you
                             )
                         } else {
                             messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                    messageText!!.context,
-                                    messageString,
-                                    individualHashMap["id"]!!,
-                                    individualHashMap["name"]!!,
-                                    individualHashMap["type"]!!,
-                                    message.activeUser!!,
-                                    R.xml.chip_others
+                                messageText!!.context,
+                                messageString,
+                                individualHashMap["id"]!!,
+                                individualHashMap["name"]!!,
+                                individualHashMap["type"]!!,
+                                message.activeUser!!,
+                                R.xml.chip_others
                             )
                         }
                     } else if (individualHashMap["type"] == "file") {
@@ -231,18 +229,21 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 quotedMessagePreview?.load(it) {
-                    addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
+                    addHeader(
+                        "Authorization",
+                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                    )
                 }
             } ?: run {
                 quotedMessagePreview?.visibility = View.GONE
             }
             quotedUserName?.text = parentChatMessage.actorDisplayName
-                    ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context!!.getText(R.string.nc_nick_guest)
             quotedMessage?.text = parentChatMessage.text
 
             quotedUserName?.setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
-            if(parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
+            if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
                 quoteColoredView?.setBackgroundResource(R.color.colorPrimary)
             } else {
                 quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)

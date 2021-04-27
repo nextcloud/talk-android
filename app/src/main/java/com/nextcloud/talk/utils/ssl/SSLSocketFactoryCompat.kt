@@ -13,11 +13,17 @@ import java.io.IOException
 import java.net.InetAddress
 import java.net.Socket
 import java.security.GeneralSecurityException
-import java.util.*
-import javax.net.ssl.*
+import java.util.LinkedList
+import javax.net.ssl.KeyManager
+import javax.net.ssl.SSLContext
+import javax.net.ssl.SSLSocket
+import javax.net.ssl.SSLSocketFactory
+import javax.net.ssl.X509TrustManager
 
-class SSLSocketFactoryCompat(keyManager: KeyManager?,
-                             trustManager: X509TrustManager) : SSLSocketFactory() {
+class SSLSocketFactoryCompat(
+    keyManager: KeyManager?,
+    trustManager: X509TrustManager
+) : SSLSocketFactory() {
 
     private var delegate: SSLSocketFactory
 
@@ -50,24 +56,24 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?,
 
                         /* set up reasonable cipher suites */
                         val knownCiphers = arrayOf<String>(
-                                // TLS 1.2
-                                "TLS_RSA_WITH_AES_256_GCM_SHA384",
-                                "TLS_RSA_WITH_AES_128_GCM_SHA256",
-                                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-                                "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-                                "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-                                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-                                "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-                                // maximum interoperability
-                                "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
-                                "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
-                                "TLS_RSA_WITH_AES_128_CBC_SHA",
-                                // additionally
-                                "TLS_RSA_WITH_AES_256_CBC_SHA",
-                                "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
-                                "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-                                "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
-                                "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
+                            // TLS 1.2
+                            "TLS_RSA_WITH_AES_256_GCM_SHA384",
+                            "TLS_RSA_WITH_AES_128_GCM_SHA256",
+                            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+                            "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+                            "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+                            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+                            "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+                            // maximum interoperability
+                            "TLS_RSA_WITH_3DES_EDE_CBC_SHA",
+                            "SSL_RSA_WITH_3DES_EDE_CBC_SHA",
+                            "TLS_RSA_WITH_AES_128_CBC_SHA",
+                            // additionally
+                            "TLS_RSA_WITH_AES_256_CBC_SHA",
+                            "TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA",
+                            "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+                            "TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA",
+                            "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA"
                         )
                         val availableCiphers = socket.supportedCipherSuites
 
@@ -89,31 +95,31 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?,
                 } catch (e: IOException) {
                     // Exception is to be ignored
                 } finally {
-                    socket?.close()     // doesn't implement Closeable on all supported Android versions
+                    socket?.close() // doesn't implement Closeable on all supported Android versions
                 }
             }
         }
     }
 
-
     init {
         try {
             val sslContext = SSLContext.getInstance("TLS")
             sslContext.init(
-                    if (keyManager != null) arrayOf(keyManager) else null,
-                    arrayOf(trustManager),
-                    null)
+                if (keyManager != null) arrayOf(keyManager) else null,
+                arrayOf(trustManager),
+                null
+            )
             delegate = sslContext.socketFactory
         } catch (e: GeneralSecurityException) {
-            throw IllegalStateException()      // system has no TLS
+            throw IllegalStateException() // system has no TLS
         }
     }
 
     override fun getDefaultCipherSuites(): Array<String>? = cipherSuites
-            ?: delegate.defaultCipherSuites
+        ?: delegate.defaultCipherSuites
 
     override fun getSupportedCipherSuites(): Array<String>? = cipherSuites
-            ?: delegate.supportedCipherSuites
+        ?: delegate.supportedCipherSuites
 
     override fun createSocket(s: Socket, host: String, port: Int, autoClose: Boolean): Socket {
         val ssl = delegate.createSocket(s, host, port, autoClose)
@@ -150,10 +156,8 @@ class SSLSocketFactoryCompat(keyManager: KeyManager?,
         return ssl
     }
 
-
     private fun upgradeTLS(ssl: SSLSocket) {
         protocols?.let { ssl.enabledProtocols = it }
         cipherSuites?.let { ssl.enabledCipherSuites = it }
     }
-
 }

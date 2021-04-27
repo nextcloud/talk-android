@@ -20,12 +20,10 @@
 
 package com.nextcloud.talk.receivers
 
-import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
@@ -34,7 +32,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
-
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -50,16 +47,20 @@ class PackageReplacedReceiver : BroadcastReceiver() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         if (intent != null && intent.action != null &&
-                intent.action == "android.intent.action.MY_PACKAGE_REPLACED") {
+            intent.action == "android.intent.action.MY_PACKAGE_REPLACED"
+        ) {
             try {
                 val packageInfo = context.packageManager.getPackageInfo(context.packageName, 0)
                 if (packageInfo.versionCode > 43 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val notificationManager = context.getSystemService(Context
-                            .NOTIFICATION_SERVICE) as NotificationManager
+                    val notificationManager = context.getSystemService(
+                        Context
+                            .NOTIFICATION_SERVICE
+                    ) as NotificationManager
 
                     if (!appPreferences.isNotificationChannelUpgradedToV2) {
-                        for (notificationChannelGroup in notificationManager
-                                .notificationChannelGroups) {
+                        for (
+                            notificationChannelGroup in notificationManager.notificationChannelGroups
+                        ) {
                             notificationManager.deleteNotificationChannelGroup(notificationChannelGroup.id)
                         }
 
@@ -80,7 +81,6 @@ class PackageReplacedReceiver : BroadcastReceiver() {
             } catch (e: PackageManager.NameNotFoundException) {
                 Log.e(TAG, "Failed to fetch package info")
             }
-
         }
     }
 

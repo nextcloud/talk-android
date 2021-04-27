@@ -34,7 +34,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import io.noties.markwon.Markwon
 import java.io.File
 
-
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenTextViewerActivity : AppCompatActivity() {
 
@@ -48,9 +47,11 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.share) {
-            val shareUri = FileProvider.getUriForFile(this,
-                    BuildConfig.APPLICATION_ID,
-                    File(path))
+            val shareUri = FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID,
+                File(path)
+            )
 
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -71,8 +72,7 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_full_screen_text)
         setSupportActionBar(findViewById(R.id.textview_toolbar))
-        supportActionBar?.setDisplayShowTitleEnabled(false);
-
+        supportActionBar?.setDisplayShowTitleEnabled(false)
         textView = findViewById(R.id.text_view)
 
         val fileName = intent.getStringExtra("FILE_NAME")
@@ -81,13 +81,12 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         var text = readFile(path)
 
         if (isMarkdown) {
-            val markwon = Markwon.create(applicationContext);
-            markwon.setMarkdown(textView, text);
+            val markwon = Markwon.create(applicationContext)
+            markwon.setMarkdown(textView, text)
         } else {
             textView.text = text
         }
     }
 
     private fun readFile(fileName: String) = File(fileName).inputStream().readBytes().toString(Charsets.UTF_8)
-
 }

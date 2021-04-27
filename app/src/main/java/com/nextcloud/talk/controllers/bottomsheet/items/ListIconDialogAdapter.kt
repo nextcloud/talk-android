@@ -23,7 +23,6 @@ package com.nextcloud.talk.controllers.bottomsheet.items
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.WhichButton
@@ -34,14 +33,14 @@ import com.afollestad.materialdialogs.internal.rtl.RtlTextView
 import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utils.MDUtil.inflate
 import com.afollestad.materialdialogs.utils.MDUtil.maybeSetTextColor
-import com.google.android.material.textview.MaterialTextView
 import com.nextcloud.talk.R
 
 private const val KEY_ACTIVATED_INDEX = "activated_index"
 
 internal class ListItemViewHolder(
-        itemView: View,
-        private val adapter: ListIconDialogAdapter<*>) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    itemView: View,
+    private val adapter: ListIconDialogAdapter<*>
+) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
     init {
         itemView.setOnClickListener(this)
     }
@@ -53,11 +52,12 @@ internal class ListItemViewHolder(
 }
 
 internal class ListIconDialogAdapter<IT : ListItemWithImage>(
-        private var dialog: MaterialDialog,
-        private var items: List<IT>,
-        disabledItems: IntArray?,
-        private var waitForPositiveButton: Boolean,
-        private var selection: ListItemListener<IT>) : RecyclerView.Adapter<ListItemViewHolder>(), DialogAdapter<IT, ListItemListener<IT>> {
+    private var dialog: MaterialDialog,
+    private var items: List<IT>,
+    disabledItems: IntArray?,
+    private var waitForPositiveButton: Boolean,
+    private var selection: ListItemListener<IT>
+) : RecyclerView.Adapter<ListItemViewHolder>(), DialogAdapter<IT, ListItemListener<IT>> {
 
     private var disabledIndices: IntArray = disabledItems ?: IntArray(0)
 
@@ -81,12 +81,13 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
     }
 
     override fun onCreateViewHolder(
-            parent: ViewGroup,
-            viewType: Int): ListItemViewHolder {
+        parent: ViewGroup,
+        viewType: Int
+    ): ListItemViewHolder {
         val listItemView: View = parent.inflate(dialog.windowContext, R.layout.menu_item_sheet)
         val viewHolder = ListItemViewHolder(
-                itemView = listItemView,
-                adapter = this
+            itemView = listItemView,
+            adapter = this
         )
         viewHolder.titleView.maybeSetTextColor(dialog.windowContext, R.attr.md_color_content)
         return viewHolder
@@ -95,8 +96,9 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
     override fun getItemCount() = items.size
 
     override fun onBindViewHolder(
-            holder: ListItemViewHolder,
-            position: Int) {
+        holder: ListItemViewHolder,
+        position: Int
+    ) {
         holder.itemView.isEnabled = !disabledIndices.contains(position)
         val currentItem = items[position]
 
@@ -121,8 +123,9 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
     }
 
     override fun replaceItems(
-            items: List<IT>,
-            listener: ListItemListener<IT>) {
+        items: List<IT>,
+        listener: ListItemListener<IT>
+    ) {
         this.items = items
         if (listener != null) {
             this.selection = listener

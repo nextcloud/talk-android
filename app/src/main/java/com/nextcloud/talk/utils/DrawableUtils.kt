@@ -21,11 +21,9 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.R
-
 import java.util.HashMap
 
 object DrawableUtils {
-
 
     fun getDrawableResourceIdForMimeType(mimetype: String): Int {
         var localMimetype = mimetype
@@ -55,15 +53,20 @@ object DrawableUtils {
         drawableMap["application/vnd.google-earth.kmz"] = R.drawable.ic_mimetype_location
         drawableMap["application/vnd.ms-excel"] = R.drawable.ic_mimetype_x_office_spreadsheet
         drawableMap["application/vnd.ms-excel.addin.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_spreadsheet
-        drawableMap["application/vnd.ms-excel.sheet.binary.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_spreadsheet
+        drawableMap["application/vnd.ms-excel.sheet.binary.macroEnabled.12"] =
+            R.drawable.ic_mimetype_x_office_spreadsheet
         drawableMap["application/vnd.ms-excel.sheet.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_spreadsheet
         drawableMap["application/vnd.ms-excel.template.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_spreadsheet
         drawableMap["application/vnd.ms-fontobject"] = R.drawable.ic_mimetype_image
         drawableMap["application/vnd.ms-powerpoint"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.ms-powerpoint.addin.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.ms-powerpoint.presentation.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.ms-powerpoint.slideshow.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.ms-powerpoint.template.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.ms-powerpoint.addin.macroEnabled.12"] =
+            R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.ms-powerpoint.presentation.macroEnabled.12"] =
+            R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.ms-powerpoint.slideshow.macroEnabled.12"] =
+            R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.ms-powerpoint.template.macroEnabled.12"] =
+            R.drawable.ic_mimetype_x_office_presentation
         drawableMap["application/vnd.ms-visio.drawing.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.ms-visio.drawing"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.ms-visio.stencil.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_document
@@ -72,20 +75,29 @@ object DrawableUtils {
         drawableMap["application/vnd.ms-visio.template"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.ms-word.template.macroEnabled.12"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.oasis.opendocument.presentation"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.oasis.opendocument.presentation-template"] = R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.oasis.opendocument.presentation-template"] =
+            R.drawable.ic_mimetype_x_office_presentation
         drawableMap["application/vnd.oasis.opendocument.spreadsheet"] = R.drawable.ic_mimetype_x_office_spreadsheet
-        drawableMap["application/vnd.oasis.opendocument.spreadsheet-template"] = R.drawable.ic_mimetype_x_office_spreadsheet
+        drawableMap["application/vnd.oasis.opendocument.spreadsheet-template"] =
+            R.drawable.ic_mimetype_x_office_spreadsheet
         drawableMap["application/vnd.oasis.opendocument.text"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.oasis.opendocument.text-master"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.oasis.opendocument.text-template"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.oasis.opendocument.text-web"] = R.drawable.ic_mimetype_x_office_document
-        drawableMap["application/vnd.openxmlformats-officedocument.presentationml.presentation"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.openxmlformats-officedocument.presentationml.slideshow"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.openxmlformats-officedocument.presentationml.template"] = R.drawable.ic_mimetype_x_office_presentation
-        drawableMap["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] = R.drawable.ic_mimetype_x_office_spreadsheet
-        drawableMap["application/vnd.openxmlformats-officedocument.spreadsheetml.template"] = R.drawable.ic_mimetype_x_office_spreadsheet
-        drawableMap["application/vnd.openxmlformats-officedocument.wordprocessingml.document"] = R.drawable.ic_mimetype_x_office_document
-        drawableMap["application/vnd.openxmlformats-officedocument.wordprocessingml.template"] = R.drawable.ic_mimetype_x_office_document
+        drawableMap["application/vnd.openxmlformats-officedocument.presentationml.presentation"] =
+            R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.openxmlformats-officedocument.presentationml.slideshow"] =
+            R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.openxmlformats-officedocument.presentationml.template"] =
+            R.drawable.ic_mimetype_x_office_presentation
+        drawableMap["application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"] =
+            R.drawable.ic_mimetype_x_office_spreadsheet
+        drawableMap["application/vnd.openxmlformats-officedocument.spreadsheetml.template"] =
+            R.drawable.ic_mimetype_x_office_spreadsheet
+        drawableMap["application/vnd.openxmlformats-officedocument.wordprocessingml.document"] =
+            R.drawable.ic_mimetype_x_office_document
+        drawableMap["application/vnd.openxmlformats-officedocument.wordprocessingml.template"] =
+            R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.visio"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.wordperfect"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/x-7z-compressed"] = R.drawable.ic_mimetype_package_x_generic

@@ -79,23 +79,31 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @BindView(R.id.appBar)
     lateinit var appBar: AppBarLayout
+
     @BindView(R.id.toolbar)
     lateinit var toolbar: MaterialToolbar
+
     @BindView(R.id.home_toolbar)
     lateinit var searchCardView: MaterialCardView
+
     @BindView(R.id.search_text)
     lateinit var searchInputText: MaterialTextView
+
     @BindView(R.id.switch_account_button)
     lateinit var settingsButton: MaterialButton
+
     @BindView(R.id.controller_container)
     lateinit var container: ViewGroup
 
     @Inject
     lateinit var userUtils: UserUtils
+
     @Inject
     lateinit var dataStore: ReactiveEntityStore<Persistable>
+
     @Inject
     lateinit var sqlCipherDatabaseSource: SqlCipherDatabaseSource
+
     @Inject
     lateinit var ncApi: NcApi
 
@@ -124,39 +132,53 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (!router!!.hasRootController()) {
-                router!!.setRoot(RouterTransaction.with(ConversationsListController())
+                router!!.setRoot(
+                    RouterTransaction.with(ConversationsListController())
                         .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
+                        .popChangeHandler(HorizontalChangeHandler())
+                )
             }
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
                 if (userUtils.anyUserExists()) {
-                    router!!.setRoot(RouterTransaction.with(ConversationsListController())
+                    router!!.setRoot(
+                        RouterTransaction.with(ConversationsListController())
                             .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()))
+                            .popChangeHandler(HorizontalChangeHandler())
+                    )
                 } else {
                     if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
-                        router!!.pushController(RouterTransaction.with(
-                                WebViewLoginController(resources.getString(R.string.weblogin_url), false))
+                        router!!.pushController(
+                            RouterTransaction.with(
+                                WebViewLoginController(resources.getString(R.string.weblogin_url), false)
+                            )
                                 .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler()))
+                                .popChangeHandler(HorizontalChangeHandler())
+                        )
                     } else {
-                        router!!.setRoot(RouterTransaction.with(ServerSelectionController())
+                        router!!.setRoot(
+                            RouterTransaction.with(ServerSelectionController())
                                 .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler()))
+                                .popChangeHandler(HorizontalChangeHandler())
+                        )
                     }
                 }
             } else {
                 if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
-                    router!!.pushController(RouterTransaction.with(
-                            WebViewLoginController(resources.getString(R.string.weblogin_url), false))
+                    router!!.pushController(
+                        RouterTransaction.with(
+                            WebViewLoginController(resources.getString(R.string.weblogin_url), false)
+                        )
                             .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()))
+                            .popChangeHandler(HorizontalChangeHandler())
+                    )
                 } else {
-                    router!!.setRoot(RouterTransaction.with(ServerSelectionController())
+                    router!!.setRoot(
+                        RouterTransaction.with(ServerSelectionController())
                             .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler()))
+                            .popChangeHandler(HorizontalChangeHandler())
+                    )
                 }
             }
         }
@@ -167,7 +189,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkIfWeAreSecure()
         }
-        
+
         handleActionFromContact(intent)
     }
 
@@ -182,7 +204,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     // userId @ server
                     userId = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
                 }
-                
+
                 cursor.close()
             }
 
@@ -193,65 +215,82 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     if (userUtils.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
-                        Snackbar.make(container, R.string.nc_phone_book_integration_account_not_found, Snackbar
-                                .LENGTH_LONG).show()
+                        Snackbar.make(
+                            container, R.string.nc_phone_book_integration_account_not_found,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
         }
     }
-    
+
     private fun startConversation(userId: String) {
         val roomType = "1"
         val currentUser = userUtils.currentUser ?: return
 
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.baseUrl, roomType,
-                userId, null)
-        ncApi.createRoom(credentials,
-                retrofitBucket.url, retrofitBucket.queryMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {}
-                    override fun onNext(roomOverall: RoomOverall) {
-                        val conversationIntent = Intent(context, MagicCallActivity::class.java)
-                        val bundle = Bundle()
-                        bundle.putParcelable(KEY_USER_ENTITY, currentUser)
-                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
-                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
-                        if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                            ncApi.getRoom(credentials,
-                                    ApiUtils.getRoom(currentUser.baseUrl,
-                                            roomOverall.ocs.data.token))
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(object : Observer<RoomOverall> {
-                                        override fun onSubscribe(d: Disposable) {}
-                                        override fun onNext(roomOverall: RoomOverall) {
-                                            bundle.putParcelable(KEY_ACTIVE_CONVERSATION,
-                                                    Parcels.wrap(roomOverall.ocs.data))
-                                            remapChatController(router!!, currentUser.id,
-                                                    roomOverall.ocs.data.token, bundle, true)
-                                        }
+        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+            currentUser.baseUrl, roomType,
+            userId, null
+        )
+        ncApi.createRoom(
+            credentials,
+            retrofitBucket.url, retrofitBucket.queryMap
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<RoomOverall> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(roomOverall: RoomOverall) {
+                    val conversationIntent = Intent(context, MagicCallActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putParcelable(KEY_USER_ENTITY, currentUser)
+                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
+                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
+                    if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                        ncApi.getRoom(
+                            credentials,
+                            ApiUtils.getRoom(
+                                currentUser.baseUrl,
+                                roomOverall.ocs.data.token
+                            )
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<RoomOverall> {
+                                override fun onSubscribe(d: Disposable) {}
+                                override fun onNext(roomOverall: RoomOverall) {
+                                    bundle.putParcelable(
+                                        KEY_ACTIVE_CONVERSATION,
+                                        Parcels.wrap(roomOverall.ocs.data)
+                                    )
+                                    remapChatController(
+                                        router!!, currentUser.id,
+                                        roomOverall.ocs.data.token, bundle, true
+                                    )
+                                }
 
-                                        override fun onError(e: Throwable) {}
-                                        override fun onComplete() {}
-                                    })
-                        } else {
-                            conversationIntent.putExtras(bundle)
-                            startActivity(conversationIntent)
-                            Handler().postDelayed({
+                                override fun onError(e: Throwable) {}
+                                override fun onComplete() {}
+                            })
+                    } else {
+                        conversationIntent.putExtras(bundle)
+                        startActivity(conversationIntent)
+                        Handler().postDelayed(
+                            {
                                 if (!isDestroyed) {
                                     router!!.popCurrentController()
                                 }
-                            }, 100)
-                        }
+                            },
+                            100
+                        )
                     }
+                }
 
-                    override fun onError(e: Throwable) {}
-                    override fun onComplete() {}
-                })
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {}
+            })
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -260,15 +299,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (keyguardManager.isKeyguardSecure && appPreferences.isScreenLocked) {
             if (!SecurityUtils.checkIfWeAreAuthenticated(appPreferences.screenLockTimeout)) {
                 if (router != null && router!!.getControllerWithTag(LockedController.TAG) == null) {
-                    router!!.pushController(RouterTransaction.with(LockedController())
+                    router!!.pushController(
+                        RouterTransaction.with(LockedController())
                             .pushChangeHandler(VerticalChangeHandler())
                             .popChangeHandler(VerticalChangeHandler())
-                            .tag(LockedController.TAG))
+                            .tag(LockedController.TAG)
+                    )
                 }
             }
         }
     }
-
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -277,12 +317,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                router!!.pushController(RouterTransaction.with(CallNotificationController(intent.extras))
+                router!!.pushController(
+                    RouterTransaction.with(CallNotificationController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
+                        .popChangeHandler(HorizontalChangeHandler())
+                )
             } else {
-                ConductorRemapping.remapChatController(router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                        intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false)
+                ConductorRemapping.remapChatController(
+                    router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                    intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false
+                )
             }
         }
     }

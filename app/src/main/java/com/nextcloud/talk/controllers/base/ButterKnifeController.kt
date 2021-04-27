@@ -53,5 +53,4 @@ abstract class ButterKnifeController : Controller {
         unbinder!!.unbind()
         unbinder = null
     }
-
 }

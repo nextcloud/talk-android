@@ -25,7 +25,7 @@ package com.nextcloud.talk.models.json.chat
 class ChatUtils {
     companion object {
         fun getParsedMessage(message: String?, messageParameters: HashMap<String?, HashMap<String?, String?>>?):
-                String? {
+            String? {
             var resultMessage = message
             if (messageParameters != null && messageParameters.size > 0) {
                 for (key in messageParameters.keys) {
@@ -46,4 +46,3 @@ class ChatUtils {
         }
     }
 }
-

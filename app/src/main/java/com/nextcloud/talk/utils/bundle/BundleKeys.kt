@@ -21,8 +21,8 @@
 package com.nextcloud.talk.utils.bundle
 
 object BundleKeys {
-    val KEY_SELECTED_USERS = "KEY_SELECTED_USERS";
-    val KEY_SELECTED_GROUPS = "KEY_SELECTED_GROUPS";
+    val KEY_SELECTED_USERS = "KEY_SELECTED_USERS"
+    val KEY_SELECTED_GROUPS = "KEY_SELECTED_GROUPS"
     val KEY_USERNAME = "KEY_USERNAME"
     val KEY_TOKEN = "KEY_TOKEN"
     val KEY_BASE_URL = "KEY_BASE_URL"

@@ -20,6 +20,4 @@
 
 package com.nextcloud.talk.events
 
-class CallNotificationClick {
-
-}
+class CallNotificationClick
