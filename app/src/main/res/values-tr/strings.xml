@@ -324,7 +324,6 @@
     <string name="send_to">Şuraya gönder</string>
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
     <string name="nc_upload_from_cloud">%1$s üzerinden paylaş</string>
     <string name="nc_upload_failed">Yüklenemedi</string>

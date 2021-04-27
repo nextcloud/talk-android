@@ -300,7 +300,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_message">verwijderen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>

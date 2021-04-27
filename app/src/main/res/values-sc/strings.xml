@@ -264,7 +264,6 @@
     <string name="nc_copy_message">Còpia</string>
     <string name="nc_reply">Risponde</string>
     <string name="nc_delete_message">Cantzella</string>
-    <!-- Upload -->
     <string name="nc_upload_local_file">Càrriga archìviu locale</string>
     <string name="nc_upload_choose_local_files">Sèbera documentos</string>
     </resources>

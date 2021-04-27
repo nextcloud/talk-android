@@ -258,7 +258,6 @@
     <string name="nc_copy_message">Kopioi</string>
     <string name="nc_reply">Vastaa</string>
     <string name="nc_delete_message">Poista</string>
-    <!-- Upload -->
     <string name="nc_upload_local_file">Lähetä paikallinen tiedosto</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>

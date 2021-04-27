@@ -319,7 +319,6 @@
     <string name="nc_delete_message">Törlés</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Az üzenet törlése sikeresen megtörtént, de lehet, hogy az már megjelent más szolgáltatásokon</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
     <string name="nc_upload_from_cloud">Megosztás innen: %1$s</string>
     <string name="nc_upload_failed">A feltöltés sikertelen</string>

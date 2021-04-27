@@ -298,7 +298,6 @@
     <string name="nc_delete_message">حذف </string>
     <string name="nc_delete_message_leaked_to_matterbridge">تم حذف الرسالة بنجاح، لكن من الممكن أن تم تسريبها لخدمات أخرى</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">رفع الملف المحلي</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>

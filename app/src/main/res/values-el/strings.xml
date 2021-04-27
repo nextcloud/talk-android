@@ -287,7 +287,6 @@
     <string name="nc_delete_message">Διαγραφή</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Το μήνυμα διαγράφηκε με επιτυχία, αλλά ενδέχεται να έχει διαρρεύσει σε άλλες υπηρεσίες</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Μεταφόρτωση τοπικού αρχείου</string>
     <string name="nc_upload_choose_local_files">Επιλογή αρχείων</string>
     </resources>

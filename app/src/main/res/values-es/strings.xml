@@ -319,7 +319,6 @@
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensaje borrado con éxito, pero puede haber sido filtrado a otros servicios</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_upload_from_cloud">Compartido por %1$s</string>
     <string name="nc_upload_failed">Lo siento, error en la subida</string>

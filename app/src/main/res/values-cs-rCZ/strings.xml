@@ -323,7 +323,6 @@
     <string name="send_to">Odeslat k</string>
     <string name="open_in_files_app">Otevřít v aplikaci pro soubory</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
     <string name="nc_upload_from_cloud">Sdílení od %1$s</string>
     <string name="nc_upload_failed">Odesílání se nezdařilo, omlouváme se</string>

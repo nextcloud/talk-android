@@ -320,7 +320,6 @@
     <string name="nc_delete_message">Excluir</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Enviar arquivo local</string>
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
     <string name="nc_upload_failed">Desculpe, falha no envio</string>

@@ -323,7 +323,6 @@
     <string name="send_to">Отправить в</string>
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Передать на сервер локальный файл</string>
     <string name="nc_upload_from_cloud">Поделиться с %1$s</string>
     <string name="nc_upload_failed">Ошибка передачи на сервер</string>

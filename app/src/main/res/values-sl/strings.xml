@@ -320,7 +320,6 @@
     <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>

@@ -294,7 +294,6 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_delete_message">Supprimer</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message supprimé avec succès, mais il pourrait avoir été divulgué à d’autres services</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Envoyer un fichier local</string>
     <string name="nc_upload_failed">Désolé, l\'envoi a échoué</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>

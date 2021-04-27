@@ -324,7 +324,6 @@
     <string name="send_to">傳送到</string>
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">上傳本地文件</string>
     <string name="nc_upload_from_cloud">分享來自 %1$s</string>
     <string name="nc_upload_failed">對不起，上傳失敗</string>

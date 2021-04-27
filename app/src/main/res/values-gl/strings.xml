@@ -294,7 +294,6 @@
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">A mensaxe foi eliminada correctamente, pero é posíbel que se filtrase a outros servizos</string>
 
-    <!-- Upload -->
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
     <string name="nc_upload_failed">Sentímolo, produciuse un fallo no envío</string>
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>

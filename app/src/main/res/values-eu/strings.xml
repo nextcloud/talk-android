@@ -315,7 +315,7 @@
     <string name="nc_delete_message">Ezabatu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
 
-    <!-- Upload -->
+    <string name="share">Partekatu</string>
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
     <string name="nc_upload_failed">Sentitzen dugu, kargatzeak huts egin du.</string>
