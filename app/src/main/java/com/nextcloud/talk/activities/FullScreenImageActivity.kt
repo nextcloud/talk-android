@@ -38,7 +38,6 @@ import pl.droidsonroids.gif.GifDrawable
 import pl.droidsonroids.gif.GifImageView
 import java.io.File
 
-
 class FullScreenImageActivity : AppCompatActivity() {
 
     private lateinit var path: String
@@ -55,9 +54,11 @@ class FullScreenImageActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.share) {
-            val shareUri = FileProvider.getUriForFile(this,
-                    BuildConfig.APPLICATION_ID,
-                    File(path))
+            val shareUri = FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID,
+                File(path)
+            )
 
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -78,19 +79,19 @@ class FullScreenImageActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_full_screen_image)
         setSupportActionBar(findViewById(R.id.imageview_toolbar))
-        supportActionBar?.setDisplayShowTitleEnabled(false);
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         imageWrapperView = findViewById(R.id.image_wrapper_view)
         photoView = findViewById(R.id.photo_view)
         gifView = findViewById(R.id.gif_view)
 
-        photoView.setOnPhotoTapListener{ view, x, y ->
+        photoView.setOnPhotoTapListener { view, x, y ->
             toggleFullscreen()
         }
-        photoView.setOnOutsidePhotoTapListener{
+        photoView.setOnOutsidePhotoTapListener {
             toggleFullscreen()
         }
-        gifView.setOnClickListener{
+        gifView.setOnClickListener {
             toggleFullscreen()
         }
 
@@ -115,29 +116,33 @@ class FullScreenImageActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleFullscreen(){
-        showFullscreen = !showFullscreen;
-        if (showFullscreen){
+    private fun toggleFullscreen() {
+        showFullscreen = !showFullscreen
+        if (showFullscreen) {
             hideSystemUI()
             supportActionBar?.hide()
-        } else{
+        } else {
             showSystemUI()
             supportActionBar?.show()
         }
     }
 
     private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_IMMERSIVE
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+            )
     }
 
     private fun showSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            )
     }
 }

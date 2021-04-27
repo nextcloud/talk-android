@@ -36,7 +36,6 @@ import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -48,8 +47,7 @@ import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
 import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
-import com.stfalcon.chatkit.utils.DateFormatter
-import java.util.*
+import java.util.HashMap
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -57,6 +55,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @JvmField
     @BindView(R.id.messageText)
     var messageText: EmojiTextView? = null
+
     @JvmField
     @BindView(R.id.messageTime)
     var messageTimeView: TextView? = null
@@ -104,20 +103,26 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             for (key in messageParameters.keys) {
                 val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
                 if (individualHashMap != null) {
-                    if (individualHashMap["type"] == "user" || (individualHashMap["type"]
-                                    == "guest") || individualHashMap["type"] == "call") {
-                        messageString = searchAndReplaceWithMentionSpan(messageText!!.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser,
-                                R.xml.chip_others)
+                    if (individualHashMap["type"] == "user" || (
+                        individualHashMap["type"] == "guest"
+                        ) || individualHashMap["type"] == "call"
+                    ) {
+                        messageString = searchAndReplaceWithMentionSpan(
+                            messageText!!.context,
+                            messageString,
+                            individualHashMap["id"]!!,
+                            individualHashMap["name"]!!,
+                            individualHashMap["type"]!!,
+                            message.activeUser,
+                            R.xml.chip_others
+                        )
                     } else if (individualHashMap["type"] == "file") {
-                        realView.setOnClickListener(View.OnClickListener { v: View? ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context!!.startActivity(browserIntent)
-                        })
+                        realView.setOnClickListener(
+                            View.OnClickListener { v: View? ->
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                                context!!.startActivity(browserIntent)
+                            }
+                        )
                     }
                 }
             }
@@ -135,17 +140,19 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         }
         if (message.isGrouped) {
             val bubbleDrawable = getMessageSelector(
-                    bgBubbleColor,
-                    resources.getColor(R.color.transparent),
-                    bgBubbleColor,
-                    R.drawable.shape_grouped_outcoming_message)
+                bgBubbleColor,
+                resources.getColor(R.color.transparent),
+                bgBubbleColor,
+                R.drawable.shape_grouped_outcoming_message
+            )
             ViewCompat.setBackground(bubble, bubbleDrawable)
         } else {
             val bubbleDrawable = getMessageSelector(
-                    bgBubbleColor,
-                    resources.getColor(R.color.transparent),
-                    bgBubbleColor,
-                    R.drawable.shape_outcoming_message)
+                bgBubbleColor,
+                resources.getColor(R.color.transparent),
+                bgBubbleColor,
+                R.drawable.shape_outcoming_message
+            )
             ViewCompat.setBackground(bubble, bubbleDrawable)
         }
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
@@ -160,13 +167,16 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
                 quotedMessagePreview?.load(it) {
-                    addHeader("Authorization", ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token))
+                    addHeader(
+                        "Authorization",
+                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                    )
                 }
             } ?: run {
                 quotedMessagePreview?.visibility = View.GONE
             }
             quotedUserName?.text = parentChatMessage.actorDisplayName
-                    ?: context!!.getText(R.string.nc_nick_guest)
+                ?: context!!.getText(R.string.nc_nick_guest)
             quotedMessage?.text = parentChatMessage.text
             quotedMessage?.setTextColor(context!!.resources.getColor(R.color.nc_outcoming_text_default))
             quotedUserName?.setTextColor(context!!.resources.getColor(R.color.nc_grey))

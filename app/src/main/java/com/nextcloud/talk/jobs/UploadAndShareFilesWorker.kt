@@ -23,7 +23,11 @@ package com.nextcloud.talk.jobs
 import android.content.Context
 import android.net.Uri
 import android.util.Log
-import androidx.work.*
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -46,13 +50,12 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.util.*
+import java.util.ArrayList
 import javax.inject.Inject
-
 
 @AutoInjector(NextcloudTalkApplication::class)
 class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerParameters) :
-        Worker(context, workerParameters) {
+    Worker(context, workerParameters) {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -107,31 +110,37 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return requestBody
     }
 
-    private fun uploadFile(currentUser: UserEntity, ncTargetpath: String?, filename: String, roomToken: String?,
-                           requestBody: RequestBody?, sourcefileUri: Uri) {
+    private fun uploadFile(
+        currentUser: UserEntity,
+        ncTargetpath: String?,
+        filename: String,
+        roomToken: String?,
+        requestBody: RequestBody?,
+        sourcefileUri: Uri
+    ) {
         ncApi.uploadFile(
-                ApiUtils.getCredentials(currentUser.username, currentUser.token),
-                ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetpath, filename),
-                requestBody
+            ApiUtils.getCredentials(currentUser.username, currentUser.token),
+            ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetpath, filename),
+            requestBody
         )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<Response<GenericOverall>> {
-                    override fun onSubscribe(d: Disposable) {
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Response<GenericOverall>> {
+                override fun onSubscribe(d: Disposable) {
+                }
 
-                    override fun onNext(t: Response<GenericOverall>) {
-                    }
+                override fun onNext(t: Response<GenericOverall>) {
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "failed to upload file $filename")
-                    }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "failed to upload file $filename")
+                }
 
-                    override fun onComplete() {
-                        shareFile(roomToken, currentUser, ncTargetpath, filename)
-                        copyFileToCache(sourcefileUri, filename)
-                    }
-                })
+                override fun onComplete() {
+                    shareFile(roomToken, currentUser, ncTargetpath, filename)
+                    copyFileToCache(sourcefileUri, filename)
+                }
+            })
     }
 
     private fun copyFileToCache(sourceFileUri: Uri, filename: String) {
@@ -151,13 +160,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         paths.add("$ncTargetpath/$filename")
 
         val data = Data.Builder()
-                .putLong(KEY_INTERNAL_USER_ID, currentUser.id)
-                .putString(KEY_ROOM_TOKEN, roomToken)
-                .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
-                .build()
+            .putLong(KEY_INTERNAL_USER_ID, currentUser.id)
+            .putString(KEY_ROOM_TOKEN, roomToken)
+            .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
+            .build()
         val shareWorker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
-                .setInputData(data)
-                .build()
+            .setInputData(data)
+            .build()
         WorkManager.getInstance().enqueue(shareWorker)
     }
 

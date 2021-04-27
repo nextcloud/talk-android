@@ -76,8 +76,11 @@ open class BaseActivity : AppCompatActivity() {
         }
     }
 
-    fun showCertificateDialog(cert: X509Certificate, magicTrustManager: MagicTrustManager,
-                              sslErrorHandler: SslErrorHandler?) {
+    fun showCertificateDialog(
+        cert: X509Certificate,
+        magicTrustManager: MagicTrustManager,
+        sslErrorHandler: SslErrorHandler?
+    ) {
         val formatter = DateFormat.getDateInstance(DateFormat.LONG)
         val validFrom = formatter.format(cert.notBefore)
         val validUntil = formatter.format(cert.notAfter)
@@ -101,30 +104,30 @@ open class BaseActivity : AppCompatActivity() {
                 issuedFor = cert.subjectDN.name
             }
 
-            @SuppressLint("StringFormatMatches") val dialogText = String.format(resources
+            @SuppressLint("StringFormatMatches") val dialogText = String.format(
+                resources
                     .getString(R.string.nc_certificate_dialog_text),
-                    issuedBy, issuedFor, validFrom, validUntil)
+                issuedBy, issuedFor, validFrom, validUntil
+            )
 
             LovelyStandardDialog(this)
-                    .setTopColorRes(R.color.nc_darkRed)
-                    .setNegativeButtonColorRes(R.color.nc_darkRed)
-                    .setPositiveButtonColorRes(R.color.colorPrimary)
-                    .setIcon(R.drawable.ic_security_white_24dp)
-                    .setTitle(R.string.nc_certificate_dialog_title)
-                    .setMessage(dialogText)
-                    .setPositiveButton(R.string.nc_yes) { v ->
-                        magicTrustManager.addCertInTrustStore(cert)
-                        sslErrorHandler?.proceed()
-                    }
-                    .setNegativeButton(R.string.nc_no) { view1 ->
-                        sslErrorHandler?.cancel()
-                    }
-                    .show()
-
+                .setTopColorRes(R.color.nc_darkRed)
+                .setNegativeButtonColorRes(R.color.nc_darkRed)
+                .setPositiveButtonColorRes(R.color.colorPrimary)
+                .setIcon(R.drawable.ic_security_white_24dp)
+                .setTitle(R.string.nc_certificate_dialog_title)
+                .setMessage(dialogText)
+                .setPositiveButton(R.string.nc_yes) { v ->
+                    magicTrustManager.addCertInTrustStore(cert)
+                    sslErrorHandler?.proceed()
+                }
+                .setNegativeButton(R.string.nc_no) { view1 ->
+                    sslErrorHandler?.cancel()
+                }
+                .show()
         } catch (e: CertificateParsingException) {
             Log.d(TAG, "Failed to parse the certificate")
         }
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

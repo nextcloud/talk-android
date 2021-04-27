@@ -48,7 +48,7 @@ class MagicCallActivity : BaseActivity() {
 
     @BindView(R.id.controller_container)
     lateinit var container: ViewGroup
-    
+
     @BindView(R.id.chatControllerView)
     lateinit var chatContainer: ViewGroup
 
@@ -60,10 +60,12 @@ class MagicCallActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN or
+        window.addFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN or
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON or
                 WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD or WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED or
-                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+                WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+        )
         window.decorView.systemUiVisibility = systemUiVisibility
 
         setContentView(R.layout.activity_magic_call)
@@ -74,26 +76,32 @@ class MagicCallActivity : BaseActivity() {
 
         if (!router!!.hasRootController()) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                router!!.setRoot(RouterTransaction.with(CallNotificationController(intent.extras))
+                router!!.setRoot(
+                    RouterTransaction.with(CallNotificationController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
+                        .popChangeHandler(HorizontalChangeHandler())
+                )
             } else {
-                router!!.setRoot(RouterTransaction.with(CallController(intent.extras))
+                router!!.setRoot(
+                    RouterTransaction.with(CallController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler()))
+                        .popChangeHandler(HorizontalChangeHandler())
+                )
             }
         }
 
         val extras = intent.extras ?: Bundle()
         extras.putBoolean("showToggleChat", true)
-        
+
         chatController = ChatController(extras)
         chatRouter = Conductor.attachRouter(this, chatContainer, savedInstanceState)
-        chatRouter!!.setRoot(RouterTransaction.with(chatController)
+        chatRouter!!.setRoot(
+            RouterTransaction.with(chatController)
                 .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler()))
+                .popChangeHandler(HorizontalChangeHandler())
+        )
     }
-    
+
     fun showChat() {
         chatContainer.visibility = View.VISIBLE
         container.visibility = View.GONE

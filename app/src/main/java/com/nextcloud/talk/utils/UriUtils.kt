@@ -25,7 +25,6 @@ import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 
 object UriUtils {
 
@@ -51,5 +50,4 @@ object UriUtils {
         }
         return filename
     }
-
 }

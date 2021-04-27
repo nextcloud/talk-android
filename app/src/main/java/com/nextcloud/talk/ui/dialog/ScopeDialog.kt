@@ -30,12 +30,13 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ProfileController
 import com.nextcloud.talk.models.json.userprofile.Scope
 
-
-class ScopeDialog(con: Context,
-                  private val userInfoAdapter: ProfileController.UserInfoAdapter,
-                  private val field: ProfileController.Field,
-                  private val position: Int) :
-        BottomSheetDialog(con) {
+class ScopeDialog(
+    con: Context,
+    private val userInfoAdapter: ProfileController.UserInfoAdapter,
+    private val field: ProfileController.Field,
+    private val position: Int
+) :
+    BottomSheetDialog(con) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val view = layoutInflater.inflate(R.layout.dialog_scope, null)

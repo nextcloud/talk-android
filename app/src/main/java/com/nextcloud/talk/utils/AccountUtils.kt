@@ -32,7 +32,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.ImportAccount
 import com.nextcloud.talk.models.database.UserEntity
-import java.util.*
+import java.util.ArrayList
+import java.util.Arrays
 
 object AccountUtils {
 
@@ -60,14 +61,15 @@ object AccountUtils {
                             break
                         }
                     } else {
-                        if (internalUserEntity.username == importAccount.username && (internalUserEntity
-                                        .baseUrl == "http://" + importAccount.baseUrl ||
-                                        internalUserEntity.baseUrl == "https://" + importAccount
-                                        .baseUrl)) {
+                        if (internalUserEntity.username == importAccount.username &&
+                            (
+                                internalUserEntity.baseUrl == "http://" + importAccount.baseUrl ||
+                                    internalUserEntity.baseUrl == "https://" + importAccount.baseUrl
+                                )
+                        ) {
                             accountFound = true
                             break
                         }
-
                     }
                 } else {
                     accountFound = true
@@ -88,8 +90,12 @@ object AccountUtils {
         val packageManager = context.packageManager
         var appName = ""
         try {
-            appName = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName,
-                    PackageManager.GET_META_DATA)) as String
+            appName = packageManager.getApplicationLabel(
+                packageManager.getApplicationInfo(
+                    packageName,
+                    PackageManager.GET_META_DATA
+                )
+            ) as String
         } catch (e: PackageManager.NameNotFoundException) {
             Log.e(TAG, "Failed to get app name based on package")
         }
@@ -103,7 +109,10 @@ object AccountUtils {
             val packageInfo = pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), 0)
             if (packageInfo.versionCode >= 30060151) {
                 val ownSignatures = pm.getPackageInfo(context.packageName, PackageManager.GET_SIGNATURES).signatures
-                val filesAppSignatures = pm.getPackageInfo(context.getString(R.string.nc_import_accounts_from), PackageManager.GET_SIGNATURES).signatures
+                val filesAppSignatures = pm.getPackageInfo(
+                    context.getString(R.string.nc_import_accounts_from),
+                    PackageManager.GET_SIGNATURES
+                ).signatures
 
                 if (Arrays.equals(ownSignatures, filesAppSignatures)) {
                     val accMgr = AccountManager.get(context)
@@ -118,7 +127,7 @@ object AccountUtils {
                 }
             }
         } catch (appNotFoundException: PackageManager.NameNotFoundException) {
-
+            // ignore
         }
 
         return false
@@ -146,4 +155,3 @@ object AccountUtils {
         return ImportAccount(username, password, urlString)
     }
 }
-

@@ -22,7 +22,6 @@ package com.nextcloud.talk.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -33,7 +32,6 @@ import autodagger.AutoInjector
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.PlayerControlView
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -54,9 +52,11 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return if (item.itemId == R.id.share) {
-            val shareUri = FileProvider.getUriForFile(this,
-                    BuildConfig.APPLICATION_ID,
-                    File(path))
+            val shareUri = FileProvider.getUriForFile(
+                this,
+                BuildConfig.APPLICATION_ID,
+                File(path)
+            )
 
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -82,11 +82,11 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
 
         setContentView(R.layout.activity_full_screen_media)
         setSupportActionBar(findViewById(R.id.mediaview_toolbar))
-        supportActionBar?.setDisplayShowTitleEnabled(false);
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         playerView = findViewById(R.id.player_view)
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         playerView.showController()
         if (isAudioOnly) {
@@ -121,7 +121,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
 
     private fun initializePlayer() {
         player = SimpleExoPlayer.Builder(applicationContext).build()
-        playerView.player = player;
+        playerView.player = player
         player.playWhenReady = true
         player.addListener(this)
     }
@@ -131,17 +131,21 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
     }
 
     private fun hideSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_IMMERSIVE
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_IMMERSIVE
                 or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_FULLSCREEN)
+                or View.SYSTEM_UI_FLAG_FULLSCREEN
+            )
     }
 
     private fun showSystemUI() {
-        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
+                or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            )
     }
 }

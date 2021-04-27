@@ -104,7 +104,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     @Inject
     var eventBus: EventBus? = null
 
-
     override fun onCreate() {
         super.onCreate()
         sharedApplication!!.componentApplication.inject(this)
@@ -148,18 +147,26 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             val pushUtils = PushUtils()
             val privateKey = pushUtils.readKeyFromFile(false) as PrivateKey
             try {
-                signatureVerification = pushUtils.verifySignature(base64DecodedSignature,
-                        base64DecodedSubject)
+                signatureVerification = pushUtils.verifySignature(
+                    base64DecodedSignature,
+                    base64DecodedSubject
+                )
                 if (signatureVerification!!.signatureValid) {
                     val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
                     cipher.init(Cipher.DECRYPT_MODE, privateKey)
                     val decryptedSubject = cipher.doFinal(base64DecodedSubject)
-                    decryptedPushMessage = LoganSquare.parse(String(decryptedSubject),
-                            DecryptedPushMessage::class.java)
+                    decryptedPushMessage = LoganSquare.parse(
+                        String(decryptedSubject),
+                        DecryptedPushMessage::class.java
+                    )
                     decryptedPushMessage?.apply {
                         timestamp = System.currentTimeMillis()
                         if (delete) {
-                            cancelExistingNotificationWithId(applicationContext, signatureVerification!!.userEntity, notificationId)
+                            cancelExistingNotificationWithId(
+                                applicationContext,
+                                signatureVerification!!.userEntity,
+                                notificationId
+                            )
                         } else if (deleteAll) {
                             cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
                         } else if (type == "call") {
@@ -171,39 +178,66 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             fullScreenIntent.putExtras(bundle)
 
                             fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                            val fullScreenPendingIntent = PendingIntent.getActivity(this@MagicFirebaseMessagingService, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                            val fullScreenPendingIntent = PendingIntent.getActivity(
+                                this@MagicFirebaseMessagingService,
+                                0,
+                                fullScreenIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                            )
 
-                            val audioAttributesBuilder = AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            val audioAttributesBuilder =
+                                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                             audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
 
                             val ringtonePreferencesString: String? = appPreferences!!.callRingtoneUri
                             val soundUri = if (TextUtils.isEmpty(ringtonePreferencesString)) {
-                                Uri.parse("android.resource://" + applicationContext.packageName +
-                                        "/raw/librem_by_feandesign_call")
+                                Uri.parse(
+                                    "android.resource://" + applicationContext.packageName +
+                                        "/raw/librem_by_feandesign_call"
+                                )
                             } else {
                                 try {
-                                    val ringtoneSettings = LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
+                                    val ringtoneSettings =
+                                        LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
                                     ringtoneSettings.ringtoneUri
                                 } catch (exception: IOException) {
                                     Uri.parse("android.resource://" + applicationContext.packageName + "/raw/librem_by_feandesign_call")
                                 }
                             }
 
-                            val notificationChannelId = NotificationUtils.getNotificationChannelId(applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls), applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls_description), true,
-                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri!!, audioAttributesBuilder.build(), null, false)
+                            val notificationChannelId = NotificationUtils.getNotificationChannelId(
+                                applicationContext.resources
+                                    .getString(R.string.nc_notification_channel_calls),
+                                applicationContext.resources
+                                    .getString(R.string.nc_notification_channel_calls_description),
+                                true,
+                                NotificationManagerCompat.IMPORTANCE_HIGH,
+                                soundUri!!,
+                                audioAttributesBuilder.build(),
+                                null,
+                                false
+                            )
 
-                            createNotificationChannel(applicationContext!!,
-                                    notificationChannelId, applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls), applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls_description), true,
-                                    NotificationManagerCompat.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build(), null, false)
+                            createNotificationChannel(
+                                applicationContext!!,
+                                notificationChannelId,
+                                applicationContext.resources
+                                    .getString(R.string.nc_notification_channel_calls),
+                                applicationContext.resources
+                                    .getString(R.string.nc_notification_channel_calls_description),
+                                true,
+                                NotificationManagerCompat.IMPORTANCE_HIGH,
+                                soundUri,
+                                audioAttributesBuilder.build(),
+                                null,
+                                false
+                            )
 
                             val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
                             val baseUrl = uri.host
 
-                            val notification = NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
+                            val notification =
+                                NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
                                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                                     .setCategory(NotificationCompat.CATEGORY_CALL)
                                     .setSmallIcon(R.drawable.ic_call_black_24dp)
@@ -213,7 +247,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                     .setContentTitle(EmojiCompat.get().process(decryptedPushMessage!!.subject))
                                     .setAutoCancel(true)
                                     .setOngoing(true)
-                                    //.setTimeoutAfter(45000L)
+                                    // .setTimeoutAfter(45000L)
                                     .setContentIntent(fullScreenPendingIntent)
                                     .setFullScreenIntent(fullScreenPendingIntent, true)
                                     .setSound(soundUri)
@@ -224,10 +258,12 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             startForeground(decryptedPushMessage!!.timestamp.toInt(), notification)
                         } else {
                             val messageData = Data.Builder()
-                                    .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
-                                    .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, signature)
+                                .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
+                                .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, signature)
+                                .build()
+                            val pushNotificationWork =
+                                OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
                                     .build()
-                            val pushNotificationWork = OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData).build()
                             WorkManager.getInstance().enqueue(pushNotificationWork)
                         }
                     }
@@ -244,47 +280,59 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    private fun checkIfCallIsActive(signatureVerification: SignatureVerification, decryptedPushMessage: DecryptedPushMessage) {
-        val ncApi = retrofit!!.newBuilder().client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build().create(NcApi::class.java)
+    private fun checkIfCallIsActive(
+        signatureVerification: SignatureVerification,
+        decryptedPushMessage: DecryptedPushMessage
+    ) {
+        val ncApi = retrofit!!.newBuilder()
+            .client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build()
+            .create(NcApi::class.java)
         var hasParticipantsInCall = false
         var inCallOnDifferentDevice = false
 
-        ncApi.getPeersForCall(ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
-                ApiUtils.getUrlForCall(signatureVerification.userEntity.baseUrl,
-                        decryptedPushMessage.id))
-                .takeWhile {
-                    isServiceInForeground
+        ncApi.getPeersForCall(
+            ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
+            ApiUtils.getUrlForCall(
+                signatureVerification.userEntity.baseUrl,
+                decryptedPushMessage.id
+            )
+        )
+            .takeWhile {
+                isServiceInForeground
+            }
+            .subscribeOn(Schedulers.io())
+            .subscribe(object : Observer<ParticipantsOverall> {
+                override fun onSubscribe(d: Disposable) {
                 }
-                .subscribeOn(Schedulers.io())
-                .subscribe(object : Observer<ParticipantsOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                    }
 
-                    override fun onNext(participantsOverall: ParticipantsOverall) {
-                        val participantList: List<Participant> = participantsOverall.ocs.data
-                        hasParticipantsInCall = participantList.isNotEmpty()
-                        if (!hasParticipantsInCall) {
-                            for (participant in participantList) {
-                                if (participant.userId == signatureVerification.userEntity.userId) {
-                                    inCallOnDifferentDevice = true
-                                    break
-                                }
+                override fun onNext(participantsOverall: ParticipantsOverall) {
+                    val participantList: List<Participant> = participantsOverall.ocs.data
+                    hasParticipantsInCall = participantList.isNotEmpty()
+                    if (!hasParticipantsInCall) {
+                        for (participant in participantList) {
+                            if (participant.userId == signatureVerification.userEntity.userId) {
+                                inCallOnDifferentDevice = true
+                                break
                             }
                         }
+                    }
 
-                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
-                            stopForeground(true)
-                            handler.removeCallbacksAndMessages(null)
-                        } else if (isServiceInForeground) {
-                            handler.postDelayed({
+                    if (!hasParticipantsInCall || inCallOnDifferentDevice) {
+                        stopForeground(true)
+                        handler.removeCallbacksAndMessages(null)
+                    } else if (isServiceInForeground) {
+                        handler.postDelayed(
+                            {
                                 checkIfCallIsActive(signatureVerification, decryptedPushMessage)
-                            }, 5000)
-                        }
+                            },
+                            5000
+                        )
                     }
+                }
 
-                    override fun onError(e: Throwable) {}
-                    override fun onComplete() {
-                    }
-                })
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {
+                }
+            })
     }
 }

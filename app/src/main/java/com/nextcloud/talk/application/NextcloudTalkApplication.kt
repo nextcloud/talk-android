@@ -90,6 +90,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     @Inject
     lateinit var appPreferences: AppPreferences
+
     @Inject
     lateinit var okHttpClient: OkHttpClient
     //endregion
@@ -105,8 +106,10 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
                 WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
             }
 
-            PeerConnectionFactory.initialize(PeerConnectionFactory.InitializationOptions.builder(this)
-                    .createInitializationOptions())
+            PeerConnectionFactory.initialize(
+                PeerConnectionFactory.InitializationOptions.builder(this)
+                    .createInitializationOptions()
+            )
         } catch (e: UnsatisfiedLinkError) {
             Log.w(TAG, e)
         }
@@ -120,8 +123,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
         val securityKeyManager = SecurityKeyManager.getInstance()
         val securityKeyConfig = SecurityKeyManagerConfig.Builder()
-                .setEnableDebugLogging(BuildConfig.DEBUG)
-                .build()
+            .setEnableDebugLogging(BuildConfig.DEBUG)
+            .build()
         securityKeyManager.init(this, securityKeyConfig)
 
         initializeWebRtc()
@@ -136,13 +139,15 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         super.onCreate()
 
         val imagePipelineConfig = ImagePipelineConfig.newBuilder(this)
-                .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
-                .setMainDiskCacheConfig(DiskCacheConfig.newBuilder(this)
-                        .setMaxCacheSize(0)
-                        .setMaxCacheSizeOnLowDiskSpace(0)
-                        .setMaxCacheSizeOnVeryLowDiskSpace(0)
-                        .build())
-                .build()
+            .setNetworkFetcher(OkHttpNetworkFetcherWithCache(okHttpClient))
+            .setMainDiskCacheConfig(
+                DiskCacheConfig.newBuilder(this)
+                    .setMaxCacheSize(0)
+                    .setMaxCacheSizeOnLowDiskSpace(0)
+                    .setMaxCacheSizeOnVeryLowDiskSpace(0)
+                    .build()
+            )
+            .build()
 
         Fresco.initialize(this, imagePipelineConfig)
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
@@ -152,8 +157,10 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
-        val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(CapabilitiesWorker::class.java,
-                12, TimeUnit.HOURS).build()
+        val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
+            CapabilitiesWorker::class.java,
+            12, TimeUnit.HOURS
+        ).build()
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
 
@@ -161,7 +168,11 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         WorkManager.getInstance().enqueue(accountRemovalWork)
         WorkManager.getInstance().enqueue(capabilitiesUpdateWork)
         WorkManager.getInstance().enqueue(signalingSettingsWork)
-        WorkManager.getInstance().enqueueUniquePeriodicWork("DailyCapabilitiesUpdateWork", ExistingPeriodicWorkPolicy.REPLACE, periodicCapabilitiesUpdateWork)
+        WorkManager.getInstance().enqueueUniquePeriodicWork(
+            "DailyCapabilitiesUpdateWork",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            periodicCapabilitiesUpdateWork
+        )
 
         val config = BundledEmojiCompatConfig(this)
         config.setReplaceAll(true)
@@ -176,17 +187,16 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
     }
     //endregion
 
-
     //region Protected methods
     protected fun buildComponent() {
         componentApplication = DaggerNextcloudTalkApplicationComponent.builder()
-                .busModule(BusModule())
-                .contextModule(ContextModule(applicationContext))
-                .databaseModule(DatabaseModule())
-                .restModule(RestModule(applicationContext))
-                .userModule(UserModule())
-                .arbitraryStorageModule(ArbitraryStorageModule())
-                .build()
+            .busModule(BusModule())
+            .contextModule(ContextModule(applicationContext))
+            .databaseModule(DatabaseModule())
+            .restModule(RestModule(applicationContext))
+            .userModule(UserModule())
+            .arbitraryStorageModule(ArbitraryStorageModule())
+            .build()
     }
 
     override fun attachBaseContext(base: Context) {
@@ -196,19 +206,20 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     private fun buildDefaultImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
-                .availableMemoryPercentage(0.5) // Use 50% of the application's available memory.
-                .crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
-                .componentRegistry {
-                    if (SDK_INT >= P) {
-                        add(ImageDecoderDecoder(applicationContext))
-                    } else {
-                        add(GifDecoder())
-                    }
-                    add(SvgDecoder(applicationContext))
+            .availableMemoryPercentage(0.5) // Use 50% of the application's available memory.
+            .crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
+            .componentRegistry {
+                if (SDK_INT >= P) {
+                    add(ImageDecoderDecoder(applicationContext))
+                } else {
+                    add(GifDecoder())
                 }
-                .okHttpClient(okHttpClient)
-                .build()
+                add(SvgDecoder(applicationContext))
+            }
+            .okHttpClient(okHttpClient)
+            .build()
     }
+
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
         //region Singleton

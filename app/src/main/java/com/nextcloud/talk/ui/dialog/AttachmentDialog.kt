@@ -32,7 +32,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
 import com.nextcloud.talk.controllers.ChatController
 
-
 class AttachmentDialog(val activity: Activity, var chatController: ChatController) : BottomSheetDialog(activity) {
 
     @BindView(R.id.txt_attach_file_from_local)
@@ -54,7 +53,7 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
 
         var serverName = chatController.conversationUser?.serverName
         attachFromCloud?.text = chatController.resources?.let {
-            if(serverName.isNullOrEmpty()){
+            if (serverName.isNullOrEmpty()) {
                 serverName = it.getString(R.string.nc_server_product_name)
             }
             String.format(it.getString(R.string.nc_upload_from_cloud), serverName)
