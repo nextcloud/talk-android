@@ -277,13 +277,13 @@ dependencies {
     implementation 'com.github.tobiaskaminsky:ImagePicker:extraFile-SNAPSHOT'
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.9.0'
     testImplementation "org.powermock:powermock-core:${powermockVersion}"
     testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
     testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
 
-    androidTestImplementation ('androidx.test.espresso:espresso-core:3.1.0-alpha4', {
+    androidTestImplementation ('androidx.test.espresso:espresso-core:3.3.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
