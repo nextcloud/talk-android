@@ -22,12 +22,69 @@ package com.nextcloud.talk.models;
 
 
 import com.nextcloud.talk.models.database.UserEntity;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @Parcel
 public class SignatureVerification {
     public boolean signatureValid;
     public UserEntity userEntity;
+
+    public SignatureVerification() {
+    }
+
+    public boolean isSignatureValid() {
+        return this.signatureValid;
+    }
+
+    public UserEntity getUserEntity() {
+        return this.userEntity;
+    }
+
+    public void setSignatureValid(boolean signatureValid) {
+        this.signatureValid = signatureValid;
+    }
+
+    public void setUserEntity(UserEntity userEntity) {
+        this.userEntity = userEntity;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof SignatureVerification)) {
+            return false;
+        }
+        final SignatureVerification other = (SignatureVerification) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        if (this.isSignatureValid() != other.isSignatureValid()) {
+            return false;
+        }
+        final Object this$userEntity = this.getUserEntity();
+        final Object other$userEntity = other.getUserEntity();
+        if (this$userEntity == null ? other$userEntity != null : !this$userEntity.equals(other$userEntity)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof SignatureVerification;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + (this.isSignatureValid() ? 79 : 97);
+        final Object $userEntity = this.getUserEntity();
+        result = result * PRIME + ($userEntity == null ? 43 : $userEntity.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "SignatureVerification(signatureValid=" + this.isSignatureValid() + ", userEntity=" + this.getUserEntity() + ")";
+    }
 }

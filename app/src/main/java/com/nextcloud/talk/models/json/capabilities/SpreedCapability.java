@@ -22,14 +22,13 @@ package com.nextcloud.talk.models.json.capabilities;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 import java.util.HashMap;
 import java.util.List;
 
 @Parcel
-@Data
 @JsonObject
 public class SpreedCapability {
     @JsonField(name = "features")
@@ -37,4 +36,65 @@ public class SpreedCapability {
 
     @JsonField(name = "config")
     HashMap<String, HashMap<String, String>> config;
+
+    public SpreedCapability() {
+    }
+
+    public List<String> getFeatures() {
+        return this.features;
+    }
+
+    public HashMap<String, HashMap<String, String>> getConfig() {
+        return this.config;
+    }
+
+    public void setFeatures(List<String> features) {
+        this.features = features;
+    }
+
+    public void setConfig(HashMap<String, HashMap<String, String>> config) {
+        this.config = config;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof SpreedCapability)) {
+            return false;
+        }
+        final SpreedCapability other = (SpreedCapability) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$features = this.getFeatures();
+        final Object other$features = other.getFeatures();
+        if (this$features == null ? other$features != null : !this$features.equals(other$features)) {
+            return false;
+        }
+        final Object this$config = this.getConfig();
+        final Object other$config = other.getConfig();
+        if (this$config == null ? other$config != null : !this$config.equals(other$config)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof SpreedCapability;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $features = this.getFeatures();
+        result = result * PRIME + ($features == null ? 43 : $features.hashCode());
+        final Object $config = this.getConfig();
+        result = result * PRIME + ($config == null ? 43 : $config.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "SpreedCapability(features=" + this.getFeatures() + ", config=" + this.getConfig() + ")";
+    }
 }

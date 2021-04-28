@@ -17,12 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import com.github.spotbugs.snom.SpotBugsTask
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'findbugs'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
 configurations {
@@ -36,7 +37,7 @@ if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskReq
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '29.0.2'
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
@@ -107,6 +108,28 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
 
+    android.applicationVariants.all { variant ->
+        String variantName = variant.name
+        String capVariantName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1)
+        tasks.register("spotbugs${capVariantName}Report", SpotBugsTask) {
+            ignoreFailures = true // should continue checking
+            effort = "max"
+            reportLevel = "medium"
+            classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/classes/")
+            excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
+
+            reports {
+                xml.enabled = false
+                html {
+                    enabled = true
+                    destination = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+                }
+            }
+        }
+    }
+
+    check.dependsOn 'spotbugsGplayDebugReport', 'lint', 'ktlint', 'detekt'
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -118,27 +141,6 @@ android {
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
         disable 'MissingTranslation'
     }
-
-    task findbugs(type: FindBugs) {
-        ignoreFailures = false
-        effort = "max"
-        reportLevel = "medium"
-        classes = fileTree("${project.rootDir}/app/build/intermediates/javac/gplayDebug/classes/com/nextcloud/")
-        excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
-        source = fileTree('src/main/java')
-        pluginClasspath = project.configurations.findbugsPlugins
-        classpath = files()
-        include '**/*.java'
-        exclude '**/gen/**'
-
-        reports {
-            xml.enabled = false
-            html.enabled = true
-            html {
-                destination = file("$project.buildDir/reports/findbugs/findbugs.html")
-            }
-        }
-    }
 }
 
 ext {
@@ -146,7 +148,7 @@ ext {
     coilKtVersion = "1.2.0"
     daggerVersion = "2.34.1"
     okhttpVersion = "3.14.2"
-    lombokVersion = "1.18.10"
+    lombokVersion = "1.18.12"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
     powermockVersion = "2.0.9"
@@ -201,6 +203,7 @@ dependencies {
 
     implementation 'com.bluelinelabs:logansquare:1.3.7'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.12.3'
+    annotationProcessor 'com.bluelinelabs:logansquare-compiler:1.3.7'
     kapt 'com.bluelinelabs:logansquare-compiler:1.3.7'
 
     implementation "com.squareup.retrofit2:retrofit:${retrofit2Version}"
@@ -217,12 +220,15 @@ dependencies {
     implementation 'io.requery:requery:1.5.1'
     implementation 'io.requery:requery-android:1.6.1'
     implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
+    annotationProcessor 'io.requery:requery-processor:1.6.1'
     kapt 'io.requery:requery-processor:1.6.1'
     implementation "org.parceler:parceler-api:$parcelerVersion"
+    annotationProcessor "org.parceler:parceler:$parcelerVersion"
     kapt "org.parceler:parceler:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    kapt "org.projectlombok:lombok:${lombokVersion}"
     implementation "com.jakewharton:butterknife:${butterknifeVersion}"
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
@@ -285,8 +291,8 @@ dependencies {
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.3.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
-    findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
 }
 
 task ktlint(type: JavaExec, group: "verification") {

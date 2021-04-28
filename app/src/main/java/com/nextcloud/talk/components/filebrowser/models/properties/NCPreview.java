@@ -23,12 +23,8 @@ package com.nextcloud.talk.components.filebrowser.models.properties;
 import android.text.TextUtils;
 import android.util.Log;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
-import lombok.Getter;
-import lombok.Setter;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParser;
@@ -36,15 +32,25 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+import at.bitfire.dav4android.Property;
+import at.bitfire.dav4android.PropertyFactory;
+import at.bitfire.dav4android.XmlUtils;
+
 public class NCPreview implements Property {
     public static final Property.Name NAME = new Property.Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_HAS_PREVIEW);
 
-    @Getter
-    @Setter
     private boolean ncPreview;
 
     private NCPreview(boolean hasPreview) {
         ncPreview = hasPreview;
+    }
+
+    public boolean isNcPreview() {
+        return this.ncPreview;
+    }
+
+    public void setNcPreview(boolean ncPreview) {
+        this.ncPreview = ncPreview;
     }
 
     public static class Factory implements PropertyFactory {

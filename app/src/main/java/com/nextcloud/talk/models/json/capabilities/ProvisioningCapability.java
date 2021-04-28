@@ -25,12 +25,55 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
 
-import lombok.Data;
-
 @Parcel
-@Data
 @JsonObject
 public class ProvisioningCapability {
     @JsonField(name = "AccountPropertyScopesVersion")
     Integer accountPropertyScopesVersion;
+
+    public ProvisioningCapability() {
+    }
+
+    public Integer getAccountPropertyScopesVersion() {
+        return this.accountPropertyScopesVersion;
+    }
+
+    public void setAccountPropertyScopesVersion(Integer accountPropertyScopesVersion) {
+        this.accountPropertyScopesVersion = accountPropertyScopesVersion;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ProvisioningCapability)) {
+            return false;
+        }
+        final ProvisioningCapability other = (ProvisioningCapability) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$accountPropertyScopesVersion = this.getAccountPropertyScopesVersion();
+        final Object other$accountPropertyScopesVersion = other.getAccountPropertyScopesVersion();
+        if (this$accountPropertyScopesVersion == null ? other$accountPropertyScopesVersion != null : !this$accountPropertyScopesVersion.equals(other$accountPropertyScopesVersion)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ProvisioningCapability;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $accountPropertyScopesVersion = this.getAccountPropertyScopesVersion();
+        result = result * PRIME + ($accountPropertyScopesVersion == null ? 43 : $accountPropertyScopesVersion.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ProvisioningCapability(accountPropertyScopesVersion=" + this.getAccountPropertyScopesVersion() + ")";
+    }
 }

@@ -22,10 +22,9 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class RequestOfferSignalingMessage {
@@ -34,4 +33,65 @@ public class RequestOfferSignalingMessage {
 
     @JsonField(name = "data")
     SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer;
+
+    public RequestOfferSignalingMessage() {
+    }
+
+    public ActorWebSocketMessage getActorWebSocketMessage() {
+        return this.actorWebSocketMessage;
+    }
+
+    public SignalingDataWebSocketMessageForOffer getSignalingDataWebSocketMessageForOffer() {
+        return this.signalingDataWebSocketMessageForOffer;
+    }
+
+    public void setActorWebSocketMessage(ActorWebSocketMessage actorWebSocketMessage) {
+        this.actorWebSocketMessage = actorWebSocketMessage;
+    }
+
+    public void setSignalingDataWebSocketMessageForOffer(SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer) {
+        this.signalingDataWebSocketMessageForOffer = signalingDataWebSocketMessageForOffer;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof RequestOfferSignalingMessage)) {
+            return false;
+        }
+        final RequestOfferSignalingMessage other = (RequestOfferSignalingMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$actorWebSocketMessage = this.getActorWebSocketMessage();
+        final Object other$actorWebSocketMessage = other.getActorWebSocketMessage();
+        if (this$actorWebSocketMessage == null ? other$actorWebSocketMessage != null : !this$actorWebSocketMessage.equals(other$actorWebSocketMessage)) {
+            return false;
+        }
+        final Object this$signalingDataWebSocketMessageForOffer = this.getSignalingDataWebSocketMessageForOffer();
+        final Object other$signalingDataWebSocketMessageForOffer = other.getSignalingDataWebSocketMessageForOffer();
+        if (this$signalingDataWebSocketMessageForOffer == null ? other$signalingDataWebSocketMessageForOffer != null : !this$signalingDataWebSocketMessageForOffer.equals(other$signalingDataWebSocketMessageForOffer)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof RequestOfferSignalingMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $actorWebSocketMessage = this.getActorWebSocketMessage();
+        result = result * PRIME + ($actorWebSocketMessage == null ? 43 : $actorWebSocketMessage.hashCode());
+        final Object $signalingDataWebSocketMessageForOffer = this.getSignalingDataWebSocketMessageForOffer();
+        result = result * PRIME + ($signalingDataWebSocketMessageForOffer == null ? 43 : $signalingDataWebSocketMessageForOffer.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "RequestOfferSignalingMessage(actorWebSocketMessage=" + this.getActorWebSocketMessage() + ", signalingDataWebSocketMessageForOffer=" + this.getSignalingDataWebSocketMessageForOffer() + ")";
+    }
 }

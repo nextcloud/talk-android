@@ -22,12 +22,11 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
 import com.nextcloud.talk.models.json.conversations.Conversation;
-import lombok.Data;
+import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter;
+
 import org.parceler.Parcel;
 
-@Data
 @Parcel
 @JsonObject
 public class RoomPropertiesWebSocketMessage {
@@ -36,4 +35,65 @@ public class RoomPropertiesWebSocketMessage {
 
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
     Conversation.ConversationType roomType;
+
+    public RoomPropertiesWebSocketMessage() {
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Conversation.ConversationType getRoomType() {
+        return this.roomType;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setRoomType(Conversation.ConversationType roomType) {
+        this.roomType = roomType;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof RoomPropertiesWebSocketMessage)) {
+            return false;
+        }
+        final RoomPropertiesWebSocketMessage other = (RoomPropertiesWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$name = this.getName();
+        final Object other$name = other.getName();
+        if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
+            return false;
+        }
+        final Object this$roomType = this.getRoomType();
+        final Object other$roomType = other.getRoomType();
+        if (this$roomType == null ? other$roomType != null : !this$roomType.equals(other$roomType)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof RoomPropertiesWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $name = this.getName();
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        final Object $roomType = this.getRoomType();
+        result = result * PRIME + ($roomType == null ? 43 : $roomType.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "RoomPropertiesWebSocketMessage(name=" + this.getName() + ", roomType=" + this.getRoomType() + ")";
+    }
 }

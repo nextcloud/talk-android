@@ -22,15 +22,60 @@ package com.nextcloud.talk.models.json.sharees;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 import java.util.List;
 
 @Parcel
-@Data
 @JsonObject
 public class ExactSharees {
     @JsonField(name = "users")
     List<Sharee> exactSharees;
+
+    public ExactSharees() {
+    }
+
+    public List<Sharee> getExactSharees() {
+        return this.exactSharees;
+    }
+
+    public void setExactSharees(List<Sharee> exactSharees) {
+        this.exactSharees = exactSharees;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ExactSharees)) {
+            return false;
+        }
+        final ExactSharees other = (ExactSharees) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$exactSharees = this.getExactSharees();
+        final Object other$exactSharees = other.getExactSharees();
+        if (this$exactSharees == null ? other$exactSharees != null : !this$exactSharees.equals(other$exactSharees)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ExactSharees;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $exactSharees = this.getExactSharees();
+        result = result * PRIME + ($exactSharees == null ? 43 : $exactSharees.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ExactSharees(exactSharees=" + this.getExactSharees() + ")";
+    }
 }

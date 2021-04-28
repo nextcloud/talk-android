@@ -23,10 +23,9 @@ package com.nextcloud.talk.models.json.push;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @Parcel
 @JsonObject
 public class PushRegistration {
@@ -38,5 +37,81 @@ public class PushRegistration {
 
     @JsonField(name = "signature")
     String signature;
+
+    public PushRegistration() {
+    }
+
+    public String getPublicKey() {
+        return this.publicKey;
+    }
+
+    public String getDeviceIdentifier() {
+        return this.deviceIdentifier;
+    }
+
+    public String getSignature() {
+        return this.signature;
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
+    }
+
+    public void setDeviceIdentifier(String deviceIdentifier) {
+        this.deviceIdentifier = deviceIdentifier;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof PushRegistration)) {
+            return false;
+        }
+        final PushRegistration other = (PushRegistration) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$publicKey = this.getPublicKey();
+        final Object other$publicKey = other.getPublicKey();
+        if (this$publicKey == null ? other$publicKey != null : !this$publicKey.equals(other$publicKey)) {
+            return false;
+        }
+        final Object this$deviceIdentifier = this.getDeviceIdentifier();
+        final Object other$deviceIdentifier = other.getDeviceIdentifier();
+        if (this$deviceIdentifier == null ? other$deviceIdentifier != null : !this$deviceIdentifier.equals(other$deviceIdentifier)) {
+            return false;
+        }
+        final Object this$signature = this.getSignature();
+        final Object other$signature = other.getSignature();
+        if (this$signature == null ? other$signature != null : !this$signature.equals(other$signature)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof PushRegistration;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $publicKey = this.getPublicKey();
+        result = result * PRIME + ($publicKey == null ? 43 : $publicKey.hashCode());
+        final Object $deviceIdentifier = this.getDeviceIdentifier();
+        result = result * PRIME + ($deviceIdentifier == null ? 43 : $deviceIdentifier.hashCode());
+        final Object $signature = this.getSignature();
+        result = result * PRIME + ($signature == null ? 43 : $signature.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "PushRegistration(publicKey=" + this.getPublicKey() + ", deviceIdentifier=" + this.getDeviceIdentifier() + ", signature=" + this.getSignature() + ")";
+    }
 }
 

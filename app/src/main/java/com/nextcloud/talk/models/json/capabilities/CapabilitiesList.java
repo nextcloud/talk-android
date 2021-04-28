@@ -22,13 +22,58 @@ package com.nextcloud.talk.models.json.capabilities;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class CapabilitiesList {
     @JsonField(name = "capabilities")
     Capabilities capabilities;
+
+    public CapabilitiesList() {
+    }
+
+    public Capabilities getCapabilities() {
+        return this.capabilities;
+    }
+
+    public void setCapabilities(Capabilities capabilities) {
+        this.capabilities = capabilities;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof CapabilitiesList)) {
+            return false;
+        }
+        final CapabilitiesList other = (CapabilitiesList) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$capabilities = this.getCapabilities();
+        final Object other$capabilities = other.getCapabilities();
+        if (this$capabilities == null ? other$capabilities != null : !this$capabilities.equals(other$capabilities)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof CapabilitiesList;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $capabilities = this.getCapabilities();
+        result = result * PRIME + ($capabilities == null ? 43 : $capabilities.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "CapabilitiesList(capabilities=" + this.getCapabilities() + ")";
+    }
 }

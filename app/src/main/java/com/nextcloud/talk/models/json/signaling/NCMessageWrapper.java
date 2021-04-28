@@ -22,10 +22,9 @@ package com.nextcloud.talk.models.json.signaling;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class NCMessageWrapper {
@@ -38,4 +37,80 @@ public class NCMessageWrapper {
 
     @JsonField(name = "sessionId")
     String sessionId;
+
+    public NCMessageWrapper() {
+    }
+
+    public NCSignalingMessage getSignalingMessage() {
+        return this.signalingMessage;
+    }
+
+    public String getEv() {
+        return this.ev;
+    }
+
+    public String getSessionId() {
+        return this.sessionId;
+    }
+
+    public void setSignalingMessage(NCSignalingMessage signalingMessage) {
+        this.signalingMessage = signalingMessage;
+    }
+
+    public void setEv(String ev) {
+        this.ev = ev;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof NCMessageWrapper)) {
+            return false;
+        }
+        final NCMessageWrapper other = (NCMessageWrapper) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$signalingMessage = this.getSignalingMessage();
+        final Object other$signalingMessage = other.getSignalingMessage();
+        if (this$signalingMessage == null ? other$signalingMessage != null : !this$signalingMessage.equals(other$signalingMessage)) {
+            return false;
+        }
+        final Object this$ev = this.getEv();
+        final Object other$ev = other.getEv();
+        if (this$ev == null ? other$ev != null : !this$ev.equals(other$ev)) {
+            return false;
+        }
+        final Object this$sessionId = this.getSessionId();
+        final Object other$sessionId = other.getSessionId();
+        if (this$sessionId == null ? other$sessionId != null : !this$sessionId.equals(other$sessionId)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof NCMessageWrapper;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $signalingMessage = this.getSignalingMessage();
+        result = result * PRIME + ($signalingMessage == null ? 43 : $signalingMessage.hashCode());
+        final Object $ev = this.getEv();
+        result = result * PRIME + ($ev == null ? 43 : $ev.hashCode());
+        final Object $sessionId = this.getSessionId();
+        result = result * PRIME + ($sessionId == null ? 43 : $sessionId.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "NCMessageWrapper(signalingMessage=" + this.getSignalingMessage() + ", ev=" + this.getEv() + ", sessionId=" + this.getSessionId() + ")";
+    }
 }

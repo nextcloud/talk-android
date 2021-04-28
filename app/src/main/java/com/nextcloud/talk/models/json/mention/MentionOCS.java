@@ -22,15 +22,60 @@ package com.nextcloud.talk.models.json.mention;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 import java.util.List;
 
-@Data
 @Parcel
 @JsonObject
 public class MentionOCS extends GenericOCS {
     @JsonField(name = "data")
     List<Mention> data;
+
+    public MentionOCS() {
+    }
+
+    public List<Mention> getData() {
+        return this.data;
+    }
+
+    public void setData(List<Mention> data) {
+        this.data = data;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof MentionOCS)) {
+            return false;
+        }
+        final MentionOCS other = (MentionOCS) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$data = this.getData();
+        final Object other$data = other.getData();
+        if (this$data == null ? other$data != null : !this$data.equals(other$data)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof MentionOCS;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $data = this.getData();
+        result = result * PRIME + ($data == null ? 43 : $data.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "MentionOCS(data=" + this.getData() + ")";
+    }
 }

@@ -23,13 +23,8 @@ package com.nextcloud.talk.components.filebrowser.models.properties;
 import android.text.TextUtils;
 import android.util.Log;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
 import com.nextcloud.talk.components.filebrowser.webdav.DavUtils;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.xmlpull.v1.XmlPullParser;
@@ -37,15 +32,25 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
+import at.bitfire.dav4android.Property;
+import at.bitfire.dav4android.PropertyFactory;
+import at.bitfire.dav4android.XmlUtils;
+
 public class OCSize implements Property {
     public static final Property.Name NAME = new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE);
 
-    @Getter
-    @Setter
     private long ocSize;
 
     private OCSize(long size) {
         ocSize = size;
+    }
+
+    public long getOcSize() {
+        return this.ocSize;
+    }
+
+    public void setOcSize(long ocSize) {
+        this.ocSize = ocSize;
     }
 
     public static class Factory implements PropertyFactory {

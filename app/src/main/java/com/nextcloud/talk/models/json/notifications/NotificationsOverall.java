@@ -21,11 +21,55 @@ package com.nextcloud.talk.models.json.notifications;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
 
-@Data
 @JsonObject
 public class NotificationsOverall {
     @JsonField(name = "ocs")
     NotificationsOCS ocs;
+
+    public NotificationsOverall() {
+    }
+
+    public NotificationsOCS getOcs() {
+        return this.ocs;
+    }
+
+    public void setOcs(NotificationsOCS ocs) {
+        this.ocs = ocs;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof NotificationsOverall)) {
+            return false;
+        }
+        final NotificationsOverall other = (NotificationsOverall) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$ocs = this.getOcs();
+        final Object other$ocs = other.getOcs();
+        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof NotificationsOverall;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $ocs = this.getOcs();
+        result = result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "NotificationsOverall(ocs=" + this.getOcs() + ")";
+    }
 }

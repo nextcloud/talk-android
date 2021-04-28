@@ -22,13 +22,58 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class JoinedRoomOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "room")
     RoomWebSocketMessage roomWebSocketMessage;
+
+    public JoinedRoomOverallWebSocketMessage() {
+    }
+
+    public RoomWebSocketMessage getRoomWebSocketMessage() {
+        return this.roomWebSocketMessage;
+    }
+
+    public void setRoomWebSocketMessage(RoomWebSocketMessage roomWebSocketMessage) {
+        this.roomWebSocketMessage = roomWebSocketMessage;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof JoinedRoomOverallWebSocketMessage)) {
+            return false;
+        }
+        final JoinedRoomOverallWebSocketMessage other = (JoinedRoomOverallWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$roomWebSocketMessage = this.getRoomWebSocketMessage();
+        final Object other$roomWebSocketMessage = other.getRoomWebSocketMessage();
+        if (this$roomWebSocketMessage == null ? other$roomWebSocketMessage != null : !this$roomWebSocketMessage.equals(other$roomWebSocketMessage)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof JoinedRoomOverallWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $roomWebSocketMessage = this.getRoomWebSocketMessage();
+        result = result * PRIME + ($roomWebSocketMessage == null ? 43 : $roomWebSocketMessage.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "JoinedRoomOverallWebSocketMessage(roomWebSocketMessage=" + this.getRoomWebSocketMessage() + ")";
+    }
 }

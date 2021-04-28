@@ -13,7 +13,7 @@ stableBranch="master"
 ruby scripts/analysis/lint-up.rb $1 $2 $3
 lintValue=$?
 
-./gradlew assembleGplay app:findbugs
+./gradlew assembleGplay app:spotbugs
 
 # exit codes:
 # 0: count was reduced
@@ -23,11 +23,11 @@ lintValue=$?
 echo "Branch: $3"
 
 if [ $3 = "master" ]; then
-    echo "New findbugs result for master at: https://www.kaminsky.me/nc-dev/talk-findbugs/master.html"
-    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/master.html --upload-file app/build/reports/findbugs/findbugs.html
+    echo "New spotbugs result for master at: https://www.kaminsky.me/nc-dev/talk-spotbugs/master.html"
+    curl -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-spotbugs/master.html --upload-file app/build/reports/spotbugs/spotbugs.html
     
-    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" app/build/reports/findbugs/findbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s'/Summary/FindBugs (master)/' | tr "\"" "\'" | tr -d "\r\n")
-    curl -u $4:$5 -X PUT -d "$summary" https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/findbugs-summary-master.html
+    summary=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" app/build/reports/spotbugs/spotbugs.html | head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s'/Summary/Spotbugs (master)/' | tr "\"" "\'" | tr -d "\r\n")
+    curl -u $4:$5 -X PUT -d "$summary" https://nextcloud.kaminsky.me/remote.php/webdav/talk-spotbugs/spotbugs-summary-master.html
     
     if [ $lintValue -ne 1 ]; then
         echo "New lint result for master at: https://www.kaminsky.me/nc-dev/talk-lint/master.html"
@@ -41,8 +41,8 @@ else
     echo "New lint results at https://www.kaminsky.me/nc-dev/talk-lint/$6.html"
     curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-lint/$6.html --upload-file app/build/reports/lint/lint.html
     
-    echo "New findbugs results at https://www.kaminsky.me/nc-dev/talk-findbugs/$6.html"
-    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-findbugs/$6.html --upload-file app/build/reports/findbugs/findbugs.html
+    echo "New spotbugs results at https://www.kaminsky.me/nc-dev/talk-spotbugs/$6.html"
+    curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/talk-spotbugs/$6.html --upload-file app/build/reports/spotbugs/spotbugs.html
     
     # delete all old comments
     oldComments=$(curl 2>/dev/null -u $1:$2 -X GET https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments | jq '.[] | (.id |tostring)  + "|" + (.user.login | test("nextcloud-android-bot") | tostring) ' | grep true | tr -d "\"" | cut -f1 -d"|")
@@ -75,8 +75,8 @@ else
         lintWarningOld=0
     fi
     lintResult="<h1>Lint</h1><table width='500' cellpadding='5' cellspacing='2'><tr class='tablerow0'><td>Type</td><td><a href='https://www.kaminsky.me/nc-dev/talk-lint/master.html'>Master</a></td><td><a href='https://www.kaminsky.me/nc-dev/talk-lint/"$6".html'>PR</a></td></tr><tr class='tablerow1'><td>Warnings</td><td>"$lintWarningOld"</td><td>"$lintWarningNew"</td></tr><tr class='tablerow0'><td>Errors</td><td>"$lintErrorOld"</td><td>"$lintErrorNew"</td></tr></table>"
-    findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" app/build/reports/findbugs/findbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/talk-findbugs/$6.html\">FindBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n")
-    findbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/talk-findbugs/findbugs-summary-master.html | tr "\"" "\'" | tr -d "\r\n" | sed s'#FindBugs#<a href=\"https://www.kaminsky.me/nc-dev/talk-findbugs/master.html">FindBugs</a>#'| tr "\"" "\'" | tr -d "\n")
+    spotbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" app/build/reports/spotbugs/spotbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/talk-spotbugs/$6.html\">SpotBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n")
+    spotbugsResultOld=$(curl 2>/dev/null https://www.kaminsky.me/nc-dev/talk-spotbugs/spotbugs-summary-master.html | tr "\"" "\'" | tr -d "\r\n" | sed s'#SpotBugs#<a href=\"https://www.kaminsky.me/nc-dev/talk-spotbugs/master.html">SpotBugs</a>#'| tr "\"" "\'" | tr -d "\n")
     curl -u $1:$2 -X POST https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments -d "{ \"body\" : \"$lintResult $findbugsResultNew $findbugsResultOld \" }"
     
     if [ $lintValue -eq 2 ]; then

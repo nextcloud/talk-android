@@ -22,13 +22,58 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class HelloResponseOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "hello")
     HelloResponseWebSocketMessage helloResponseWebSocketMessage;
+
+    public HelloResponseOverallWebSocketMessage() {
+    }
+
+    public HelloResponseWebSocketMessage getHelloResponseWebSocketMessage() {
+        return this.helloResponseWebSocketMessage;
+    }
+
+    public void setHelloResponseWebSocketMessage(HelloResponseWebSocketMessage helloResponseWebSocketMessage) {
+        this.helloResponseWebSocketMessage = helloResponseWebSocketMessage;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof HelloResponseOverallWebSocketMessage)) {
+            return false;
+        }
+        final HelloResponseOverallWebSocketMessage other = (HelloResponseOverallWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$helloResponseWebSocketMessage = this.getHelloResponseWebSocketMessage();
+        final Object other$helloResponseWebSocketMessage = other.getHelloResponseWebSocketMessage();
+        if (this$helloResponseWebSocketMessage == null ? other$helloResponseWebSocketMessage != null : !this$helloResponseWebSocketMessage.equals(other$helloResponseWebSocketMessage)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof HelloResponseOverallWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $helloResponseWebSocketMessage = this.getHelloResponseWebSocketMessage();
+        result = result * PRIME + ($helloResponseWebSocketMessage == null ? 43 : $helloResponseWebSocketMessage.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "HelloResponseOverallWebSocketMessage(helloResponseWebSocketMessage=" + this.getHelloResponseWebSocketMessage() + ")";
+    }
 }

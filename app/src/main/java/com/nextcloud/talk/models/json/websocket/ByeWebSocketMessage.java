@@ -22,15 +22,60 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 import java.util.HashMap;
 
 @JsonObject
 @Parcel
-@Data
 public class ByeWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "bye")
     HashMap<String, Object> bye;
+
+    public ByeWebSocketMessage() {
+    }
+
+    public HashMap<String, Object> getBye() {
+        return this.bye;
+    }
+
+    public void setBye(HashMap<String, Object> bye) {
+        this.bye = bye;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ByeWebSocketMessage)) {
+            return false;
+        }
+        final ByeWebSocketMessage other = (ByeWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$bye = this.getBye();
+        final Object other$bye = other.getBye();
+        if (this$bye == null ? other$bye != null : !this$bye.equals(other$bye)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ByeWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $bye = this.getBye();
+        result = result * PRIME + ($bye == null ? 43 : $bye.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ByeWebSocketMessage(bye=" + this.getBye() + ")";
+    }
 }

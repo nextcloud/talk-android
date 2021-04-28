@@ -29,12 +29,55 @@ import org.parceler.Parcel;
 import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Data;
-
-@Data
 @Parcel
 @JsonObject
 public class ContactsByNumberOCS extends GenericOCS {
     @JsonField(name = "data")
     public Map<String, String> map = new HashMap();
+
+    public ContactsByNumberOCS() {
+    }
+
+    public Map<String, String> getMap() {
+        return this.map;
+    }
+
+    public void setMap(Map<String, String> map) {
+        this.map = map;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ContactsByNumberOCS)) {
+            return false;
+        }
+        final ContactsByNumberOCS other = (ContactsByNumberOCS) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$map = this.getMap();
+        final Object other$map = other.getMap();
+        if (this$map == null ? other$map != null : !this$map.equals(other$map)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ContactsByNumberOCS;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $map = this.getMap();
+        result = result * PRIME + ($map == null ? 43 : $map.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ContactsByNumberOCS(map=" + this.getMap() + ")";
+    }
 }

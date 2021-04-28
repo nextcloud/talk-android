@@ -23,11 +23,55 @@ package com.nextcloud.talk.models.json.participants;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.conversations.RoomsOCS;
-import lombok.Data;
 
-@Data
 @JsonObject
 public class AddParticipantOverall {
     @JsonField(name = "ocs")
     RoomsOCS ocs;
+
+    public AddParticipantOverall() {
+    }
+
+    public RoomsOCS getOcs() {
+        return this.ocs;
+    }
+
+    public void setOcs(RoomsOCS ocs) {
+        this.ocs = ocs;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof AddParticipantOverall)) {
+            return false;
+        }
+        final AddParticipantOverall other = (AddParticipantOverall) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$ocs = this.getOcs();
+        final Object other$ocs = other.getOcs();
+        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof AddParticipantOverall;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $ocs = this.getOcs();
+        result = result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "AddParticipantOverall(ocs=" + this.getOcs() + ")";
+    }
 }

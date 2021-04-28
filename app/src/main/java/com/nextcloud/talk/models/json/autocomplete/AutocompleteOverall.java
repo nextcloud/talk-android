@@ -22,13 +22,58 @@ package com.nextcloud.talk.models.json.autocomplete;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class AutocompleteOverall {
     @JsonField(name = "ocs")
     AutocompleteOCS ocs;
+
+    public AutocompleteOverall() {
+    }
+
+    public AutocompleteOCS getOcs() {
+        return this.ocs;
+    }
+
+    public void setOcs(AutocompleteOCS ocs) {
+        this.ocs = ocs;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof AutocompleteOverall)) {
+            return false;
+        }
+        final AutocompleteOverall other = (AutocompleteOverall) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$ocs = this.getOcs();
+        final Object other$ocs = other.getOcs();
+        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof AutocompleteOverall;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $ocs = this.getOcs();
+        result = result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "AutocompleteOverall(ocs=" + this.getOcs() + ")";
+    }
 }

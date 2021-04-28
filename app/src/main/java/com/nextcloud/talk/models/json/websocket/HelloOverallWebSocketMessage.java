@@ -22,13 +22,58 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class HelloOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "hello")
     HelloWebSocketMessage helloWebSocketMessage;
+
+    public HelloOverallWebSocketMessage() {
+    }
+
+    public HelloWebSocketMessage getHelloWebSocketMessage() {
+        return this.helloWebSocketMessage;
+    }
+
+    public void setHelloWebSocketMessage(HelloWebSocketMessage helloWebSocketMessage) {
+        this.helloWebSocketMessage = helloWebSocketMessage;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof HelloOverallWebSocketMessage)) {
+            return false;
+        }
+        final HelloOverallWebSocketMessage other = (HelloOverallWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$helloWebSocketMessage = this.getHelloWebSocketMessage();
+        final Object other$helloWebSocketMessage = other.getHelloWebSocketMessage();
+        if (this$helloWebSocketMessage == null ? other$helloWebSocketMessage != null : !this$helloWebSocketMessage.equals(other$helloWebSocketMessage)) {
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof HelloOverallWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $helloWebSocketMessage = this.getHelloWebSocketMessage();
+        result = result * PRIME + ($helloWebSocketMessage == null ? 43 : $helloWebSocketMessage.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "HelloOverallWebSocketMessage(helloWebSocketMessage=" + this.getHelloWebSocketMessage() + ")";
+    }
 }
