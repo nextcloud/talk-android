@@ -184,6 +184,7 @@
     <string name="nc_incoming_call">Honen sarrerako deia</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_public_call">Elkarrizketa publiko berria</string>
+    <string name="nc_public_call_explanation">Elkarrizketa publikoek kanpoko jendea gonbidatzen uzten dizute bereziki sortutako esteka baten bidez.</string>
     <string name="nc_call_timeout">Ez da erantzunik egon 45 segundutan, sakatu berriro saiatzeko</string>
     <string name="nc_call_reconnecting">Berriro konektatzen...</string>
     <string name="nc_offline">Lineaz kanpo zaude momentu honetan, mesedez egiaztatu zure konexioa</string>
@@ -202,8 +203,11 @@
     <string name="nc_mute_calls">Mututu deiak</string>
     <string name="nc_mute_calls_desc">Sarrerako deiak isilduko dira</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
+    <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
+    <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
     <string name="nc_ok">Ados</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
@@ -246,6 +250,7 @@
     <string name="nc_sent_an_audio_you">Audio bat bidali duzu.</string>
     <string name="nc_sent_a_video_you">Bideo bat bidali duzu.</string>
     <string name="nc_sent_an_image_you">Irudi bat bidali duzu.</string>
+    <string name="nc_message_quote_cancel_reply">Utzi erantzuna bertan behera</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Zu: %1$s</string>
 
@@ -316,6 +321,11 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
 
     <string name="share">Partekatu</string>
+    <string name="send_to">Bidali honi:</string>
+    <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
+
+    <!-- Upload -->
+    <string name="nc_add_file">Gehitu elkarrizketara</string>
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
     <string name="nc_upload_failed">Sentitzen dugu, kargatzeak huts egin du.</string>
@@ -324,6 +334,7 @@
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
     <string name="nc_upload_in_progess">igotzen</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
     <string name="nc_settings_phone_book_integration_title">Telefono zenbaki integrazioa</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu beste erabiltzaile batzuek aurkitu ahal izateko</string>
@@ -334,6 +345,8 @@
     <string name="nc_phone_book_integration_account_not_found">Ez da kontua aurkitu</string>
 
     <string name="starred">Gogokoa</string>
+    <string name="password_protected">Pasahitz bidez babestuta</string>
+
     <string name="avatar">Avatarra</string>
     <string name="account_icon">Kontuaren ikonoa</string>
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
@@ -369,4 +382,5 @@
     <string name="nc_action_open_main_menu">Ireki menu nagusia</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="selected_list_item">hautatuta</string>
-    </resources>
+    <string name="filename_progress">%1$s(%2$d)</string>
+</resources>

@@ -320,6 +320,12 @@
     <string name="nc_delete_message">Excluir</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
 
+    <string name="share">Compartilhar </string>
+    <string name="send_to">Enviar para</string>
+    <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
+
+    <!-- Upload -->
+    <string name="nc_add_file">Adicionar à conversa </string>
     <string name="nc_upload_local_file">Enviar arquivo local</string>
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
     <string name="nc_upload_failed">Desculpe, falha no envio</string>
@@ -376,4 +382,5 @@
     <string name="nc_action_open_main_menu">Abrir menu principal</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
     <string name="selected_list_item">selecionado</string>
-    </resources>
+    <string name="filename_progress">%1$s (%2$d)</string>
+</resources>

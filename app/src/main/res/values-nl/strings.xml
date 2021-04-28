@@ -31,6 +31,7 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Instellingen</string>
 
+    <string name="nc_server_url">Serveradres https://…</string>
     <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_maintenance">Haal je %1$s uit de onderhoudsmodus</string>
@@ -147,6 +148,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete">Verwijderen</string>
     <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
+    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook verwijderd voor %1$s.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
 
     <string name="nc_new_conversation">Nieuw gesprek</string>
@@ -175,6 +177,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_incoming_call">Inkomend gesprek van</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_public_call">Nieuw openbaar gesprek</string>
+    <string name="nc_public_call_explanation">Met openbare gesprekken kun je mensen zonder account uitnodigen via een persoonlijke link.</string>
     <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
@@ -193,8 +196,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
     <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
+    <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
+    <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_all_ok_operation">OK, alles in orde!</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Gespreksnaam</string>
@@ -252,6 +258,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_description_more_menu_group">Menu voor openbaar gesprek %1$s</string>
     <string name="nc_description_send_message_button">Verstuur bericht</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
@@ -271,6 +279,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_file_browser_refresh">Verversen</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">Je mag het bestand niet verder delen</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">Webinar</string>
     <string name="nc_lobby">Lobby</string>
@@ -301,16 +311,55 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
 
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
+    <string name="nc_upload_from_cloud">Delen van %1$s</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
     <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
     <string name="nc_upload_in_progess">uploaden</string>
 
+    <string name="nc_settings_phone_book_integration_desc">Match contactpersonen op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
+    <string name="nc_settings_phone_book_integration_title">Telefoonnummer-integratie</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefoonnummer</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Je kunt je telefoonnummer instellen zodat andere gebruikers je kunnen vinden</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ongeldig telefoonnummer</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefoonnummer succesvol ingesteld</string>
+    <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende permissies</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
 
+    <string name="avatar">Avatar</string>
+    <string name="account_icon">Accountpictogram</string>
+    <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
+    <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
+    <string name="userinfo_error_text">Kon persoonlijke informatie niet ophalen.</string>
+    <string name="user_info_phone">Telefoonnummer</string>
+    <string name="user_info_email">E-mailadres</string>
+    <string name="user_info_address">Adres</string>
+    <string name="user_info_website">Website</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">Volledige naam</string>
+    <string name="file_list_folder">map</string>
+    <string name="file_list_loading">Laden...</string>
+    <string name="edit">Bewerken</string>
+    <string name="save">Bewaren</string>
+    <string name="upload_new_avatar_from_device">Upload een nieuwe avatar van toestel</string>
+    <string name="choose_avatar_from_cloud">Kies een avatar uit de cloud</string>
+    <string name="delete_avatar">Verwijder avatar</string>
+    <string name="scope_private_title">Privé</string>
+    <string name="scope_private_description">Alleen zichtbaar voor mensen die via telefoonnummerintegratie gematcht zijn voor Talk op mobiel</string>
+    <string name="lock_symbol">Slot symbool</string>
+    <string name="scope_local_title">Lokaal</string>
+    <string name="scope_local_description">Alleen zichtbaar voor gebruikers op deze server en gasten</string>
+    <string name="scope_federated_title">Gefedereerd</string>
+    <string name="scope_federated_description">Alleen synchroniseren met vertrouwde servers</string>
+    <string name="scope_published_title">Gepubliceerd</string>
+    <string name="scope_published_description">Synchroniseren met vertrouwde servers en het wereldwijde en openbare adresboek</string>
+    <string name="scope_toggle">Scope omschakelen</string>
+
+    <!-- App Bar -->
+    <string name="appbar_search_in">Zoeken in %s</string>
+
+    <string name="nc_action_open_main_menu">Openen hoofdmenu</string>
+    <string name="failed_to_save">Kon %1$s niet opslaan</string>
     </resources>

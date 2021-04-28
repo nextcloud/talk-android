@@ -324,6 +324,8 @@
     <string name="send_to">Senden an</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
 
+    <!-- Upload -->
+    <string name="nc_add_file">Zur Unterhaltung hinzufügen</string>
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
     <string name="nc_upload_failed">Hochladen leider fehlgeschlagen</string>
