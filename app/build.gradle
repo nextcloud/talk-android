@@ -148,7 +148,6 @@ ext {
     coilKtVersion = "1.2.0"
     daggerVersion = "2.34.1"
     okhttpVersion = "3.14.2"
-    lombokVersion = "1.18.12"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
     powermockVersion = "2.0.9"
@@ -226,9 +225,6 @@ dependencies {
     annotationProcessor "org.parceler:parceler:$parcelerVersion"
     kapt "org.parceler:parceler:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-    kapt "org.projectlombok:lombok:${lombokVersion}"
     implementation "com.jakewharton:butterknife:${butterknifeVersion}"
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
