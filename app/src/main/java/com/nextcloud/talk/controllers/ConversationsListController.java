@@ -23,6 +23,7 @@
 package com.nextcloud.talk.controllers;
 
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -400,6 +402,7 @@ public class ConversationsListController extends BaseController implements Searc
         searchItem.expandActionView();
     }
 
+    @SuppressLint("LongLogTag")
     private void fetchData(boolean fromBottomSheet) {
         dispose(null);
 
@@ -478,11 +481,18 @@ public class ConversationsListController extends BaseController implements Searc
                             case 401:
                                 if (getParentController() != null &&
                                         getParentController().getRouter() != null) {
+                                    Log.d(TAG, "Starting reauth webview via getParentController()");
                                     getParentController().getRouter().pushController((RouterTransaction.with
                                             (new WebViewLoginController(currentUser.getBaseUrl(),
                                                     true))
                                             .pushChangeHandler(new VerticalChangeHandler())
                                             .popChangeHandler(new VerticalChangeHandler())));
+                                } else {
+                                    Log.d(TAG, "Starting reauth webview via ConversationsListController");
+                                    getRouter().pushController(RouterTransaction.with(
+                                            new WebViewLoginController(currentUser.getBaseUrl(), true))
+                                                                       .pushChangeHandler(new VerticalChangeHandler())
+                                                                       .popChangeHandler(new VerticalChangeHandler()));
                                 }
                                 break;
                             default:
