@@ -46,10 +46,10 @@ else
     echo "New findbugs results at https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html"
     curl 2>/dev/null -u $4:$5 -X PUT https://nextcloud.kaminsky.me/remote.php/webdav/$repository-findbugs/$6.html --upload-file app/build/reports/spotbugs/spotbugs.html
 
-    # delete all old comments
-    oldComments=$(curl 2>/dev/null -u $1:$2 -X GET https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments | jq '.[] | (.id |tostring)  + "|" + (.user.login | test("nextcloud-android-bot") | tostring) ' | grep true | tr -d "\"" | cut -f1 -d"|")
+    # delete all old comments, starting with Codacy
+    oldComments=$(curl 2>/dev/null -u $1:$2 -X GET https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments | jq '.[] | (.id |tostring) + "|" + (.user.login | test("nextcloud-android-bot") | tostring) + "|" + (.body | test("<h1>Codacy.*") | tostring)'  | grep "true|true" | tr -d "\"" | cut -f1 -d"|")
 
-    echo $oldComments | while read comment ; do 
+    echo $oldComments | while read comment ; do
         curl 2>/dev/null -u $1:$2 -X DELETE https://api.github.com/repos/nextcloud/talk-android/issues/comments/$comment
     done
 
@@ -87,6 +87,13 @@ else
     if ( [ -z $lintWarningOld ] ); then
         lintWarningOld=0
     fi
+	
+	if [ $stableBranch = "master" ] ; then
+        codacyValue=$(curl 2>/dev/null https://app.codacy.com/gh/nextcloud/talk-android/dashboard | grep "total issues" | cut -d">" -f3 | cut -d"<" -f1)
+        codacyResult="<h1>Codacy</h1>$codacyValue"
+    else
+        codacyResult=""
+    fi
 
     lintResult="<h1>Lint</h1><table width='500' cellpadding='5' cellspacing='2'><tr class='tablerow0'><td>Type</td><td><a href='https://www.kaminsky.me/nc-dev/"$repository"-lint/"$stableBranch".html'>$stableBranch</a></td><td><a href='https://www.kaminsky.me/nc-dev/"$repository"-lint/"$6".html'>PR</a></td></tr><tr class='tablerow1'><td>Warnings</td><td>"$lintWarningOld"</td><td>"$lintWarningNew"</td></tr><tr class='tablerow0'><td>Errors</td><td>"$lintErrorOld"</td><td>"$lintErrorNew"</td></tr></table>"
     findbugsResultNew=$(sed -n "/<h1>Summary<\/h1>/,/<h1>Warnings<\/h1>/p" app/build/reports/spotbugs/spotbugs.html |head -n-1 | sed s'/<\/a>//'g | sed s'/<a.*>//'g | sed s"#Summary#<a href=\"https://www.kaminsky.me/nc-dev/$repository-findbugs/$6.html\">SpotBugs</a> (new)#" | tr "\"" "\'" | tr -d "\n")
@@ -106,7 +113,7 @@ else
         notNull="org.jetbrains.annotations.NotNull is used. Please use androidx.annotation.NonNull instead.<br><br>"
     fi
 
-    curl -u $1:$2 -X POST https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments -d "{ \"body\" : \"$lintResult $findbugsResultNew $findbugsResultOld $lintMessage $findbugsMessage $notNull\" }"
+    curl -u $1:$2 -X POST https://api.github.com/repos/nextcloud/talk-android/issues/$7/comments -d "{ \"body\" : \"$codacyResult $lintResult $findbugsResultNew $findbugsResultOld $lintMessage $findbugsMessage $notNull\" }"
 
     if [ ! $lintValue -eq 2 ]; then
         exit $lintValue
