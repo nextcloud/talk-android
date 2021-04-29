@@ -185,7 +185,7 @@ dependencies {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
     ktlint "com.pinterest:ktlint:0.41.0"
-    implementation 'org.conscrypt:conscrypt-android:2.5.1'
+    implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
