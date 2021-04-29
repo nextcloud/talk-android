@@ -112,7 +112,7 @@ else
         exit $lintValue
     fi
 
-    if [ $notNull -gt 0 ]; then
+    if [[ -n $notNull ]]; then
         exit 1
     fi
 
