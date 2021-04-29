@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.*;
 import android.widget.ProgressBar;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
@@ -42,6 +43,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.nextcloud.talk.R;
@@ -64,9 +66,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import io.requery.Persistable;
 import io.requery.reactivex.ReactiveEntityStore;
+
 import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
+
 import java.lang.reflect.Field;
 import java.net.CookieManager;
 import java.net.URLDecoder;
@@ -233,9 +237,9 @@ public class WebViewLoginController extends BaseController {
                             webView.loadUrl("javascript:var justStore = document.getElementById('user').value = '" + username + "';");
                         } else {
                             webView.loadUrl("javascript: {" +
-                                    "document.getElementById('user').value = '" + username + "';" +
-                                    "document.getElementById('password').value = '" + password + "';" +
-                                    "document.getElementById('submit').click(); };");
+                                                    "document.getElementById('user').value = '" + username + "';" +
+                                                    "document.getElementById('password').value = '" + password + "';" +
+                                                    "document.getElementById('submit').click(); };");
                         }
                     }
                 }
@@ -406,6 +410,9 @@ public class WebViewLoginController extends BaseController {
                     }
                 } else {
                     if (finalMessageType != null) {
+                        // FIXME when the user registers a new account that was setup before (aka
+                        //  ApplicationWideMessageHolder.MessageType.ACCOUNT_UPDATED_NOT_ADDED)
+                        //  The token is not updated in the database and therefor the account not visible/usable
                         ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                     }
                     getRouter().popToRoot();
