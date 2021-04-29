@@ -128,6 +128,7 @@ object DrawableUtils {
         drawableMap["text/css"] = R.drawable.ic_mimetype_text_code
         drawableMap["text/csv"] = R.drawable.ic_mimetype_x_office_spreadsheet
         drawableMap["text/html"] = R.drawable.ic_mimetype_text_code
+        drawableMap["text/vcard"] = R.drawable.ic_mimetype_text_vcard
         drawableMap["text/x-c"] = R.drawable.ic_mimetype_text_code
         drawableMap["text/x-c++src"] = R.drawable.ic_mimetype_text_code
         drawableMap["text/x-h"] = R.drawable.ic_mimetype_text_code
