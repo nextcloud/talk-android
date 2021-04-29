@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -161,13 +163,11 @@ ext {
     markwonVersion =  "4.6.2"
 }
 
-
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
     exclude group: 'com.google.firebase', module: 'firebase-analytics'
     exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
 }
-
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
@@ -186,7 +186,6 @@ dependencies {
     })
     ktlint "com.pinterest:ktlint:0.41.0"
     implementation 'org.conscrypt:conscrypt-android:2.5.1'
-
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
