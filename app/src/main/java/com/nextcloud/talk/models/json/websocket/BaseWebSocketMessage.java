@@ -31,9 +31,6 @@ public class BaseWebSocketMessage {
     @JsonField(name = "type")
     String type;
 
-    public BaseWebSocketMessage() {
-    }
-
     public String getType() {
         return this.type;
     }
@@ -55,10 +52,8 @@ public class BaseWebSocketMessage {
         }
         final Object this$type = this.getType();
         final Object other$type = other.getType();
-        if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
-            return false;
-        }
-        return true;
+
+        return this$type == null ? other$type == null : this$type.equals(other$type);
     }
 
     protected boolean canEqual(final Object other) {

@@ -35,9 +35,6 @@ public class EventOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "event")
     HashMap<String, Object> eventMap;
 
-    public EventOverallWebSocketMessage() {
-    }
-
     public String getType() {
         return this.type;
     }
@@ -72,10 +69,8 @@ public class EventOverallWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$eventMap = this.getEventMap();
         final Object other$eventMap = other.getEventMap();
-        if (this$eventMap == null ? other$eventMap != null : !this$eventMap.equals(other$eventMap)) {
-            return false;
-        }
-        return true;
+
+        return this$eventMap == null ? other$eventMap == null : this$eventMap.equals(other$eventMap);
     }
 
     protected boolean canEqual(final Object other) {

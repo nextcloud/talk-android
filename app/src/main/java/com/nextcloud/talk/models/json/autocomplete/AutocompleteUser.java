@@ -37,9 +37,6 @@ public class AutocompleteUser {
     @JsonField(name = "source")
     String source;
 
-    public AutocompleteUser() {
-    }
-
     public String getId() {
         return this.id;
     }
@@ -87,10 +84,7 @@ public class AutocompleteUser {
         }
         final Object this$source = this.getSource();
         final Object other$source = other.getSource();
-        if (this$source == null ? other$source != null : !this$source.equals(other$source)) {
-            return false;
-        }
-        return true;
+        return this$source == null ? other$source == null : this$source.equals(other$source);
     }
 
     protected boolean canEqual(final Object other) {

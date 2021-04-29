@@ -32,9 +32,6 @@ public class NotificationOCS extends GenericOCS {
     @JsonField(name = "data")
     Notification notification;
 
-    public NotificationOCS() {
-    }
-
     public Notification getNotification() {
         return this.notification;
     }
@@ -56,10 +53,8 @@ public class NotificationOCS extends GenericOCS {
         }
         final Object this$notification = this.getNotification();
         final Object other$notification = other.getNotification();
-        if (this$notification == null ? other$notification != null : !this$notification.equals(other$notification)) {
-            return false;
-        }
-        return true;
+
+        return this$notification == null ? other$notification == null : this$notification.equals(other$notification);
     }
 
     protected boolean canEqual(final Object other) {

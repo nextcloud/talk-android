@@ -35,9 +35,6 @@ public class Signaling {
     @JsonField(name = "data")
     Object messageWrapper;
 
-    public Signaling() {
-    }
-
     public String getType() {
         return this.type;
     }
@@ -72,10 +69,8 @@ public class Signaling {
         }
         final Object this$messageWrapper = this.getMessageWrapper();
         final Object other$messageWrapper = other.getMessageWrapper();
-        if (this$messageWrapper == null ? other$messageWrapper != null : !this$messageWrapper.equals(other$messageWrapper)) {
-            return false;
-        }
-        return true;
+
+        return this$messageWrapper == null ? other$messageWrapper == null : this$messageWrapper.equals(other$messageWrapper);
     }
 
     protected boolean canEqual(final Object other) {

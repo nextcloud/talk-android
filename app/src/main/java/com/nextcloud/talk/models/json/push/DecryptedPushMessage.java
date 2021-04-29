@@ -59,9 +59,6 @@ public class DecryptedPushMessage {
     @JsonIgnore
     public long timestamp;
 
-    public DecryptedPushMessage() {
-    }
-
     public String getApp() {
         return this.app;
     }
@@ -192,10 +189,8 @@ public class DecryptedPushMessage {
         if (this$text == null ? other$text != null : !this$text.equals(other$text)) {
             return false;
         }
-        if (this.getTimestamp() != other.getTimestamp()) {
-            return false;
-        }
-        return true;
+
+        return this.getTimestamp() == other.getTimestamp();
     }
 
     protected boolean canEqual(final Object other) {

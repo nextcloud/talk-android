@@ -39,9 +39,6 @@ public class RingtoneSettings {
     @JsonField(name = "ringtoneName")
     public String ringtoneName;
 
-    public RingtoneSettings() {
-    }
-
     @Nullable
     public Uri getRingtoneUri() {
         return this.ringtoneUri;
@@ -77,10 +74,8 @@ public class RingtoneSettings {
         }
         final Object this$ringtoneName = this.getRingtoneName();
         final Object other$ringtoneName = other.getRingtoneName();
-        if (this$ringtoneName == null ? other$ringtoneName != null : !this$ringtoneName.equals(other$ringtoneName)) {
-            return false;
-        }
-        return true;
+
+        return this$ringtoneName == null ? other$ringtoneName == null : this$ringtoneName.equals(other$ringtoneName);
     }
 
     protected boolean canEqual(final Object other) {

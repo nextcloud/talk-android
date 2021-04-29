@@ -31,9 +31,6 @@ public class GenericOCS {
     @JsonField(name = "meta")
     public GenericMeta meta;
 
-    public GenericOCS() {
-    }
-
     public GenericMeta getMeta() {
         return this.meta;
     }
@@ -55,10 +52,8 @@ public class GenericOCS {
         }
         final Object this$meta = this.getMeta();
         final Object other$meta = other.getMeta();
-        if (this$meta == null ? other$meta != null : !this$meta.equals(other$meta)) {
-            return false;
-        }
-        return true;
+
+        return this$meta == null ? other$meta == null : this$meta.equals(other$meta);
     }
 
     protected boolean canEqual(final Object other) {

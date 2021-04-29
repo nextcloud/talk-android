@@ -94,9 +94,6 @@ public class Conversation {
     @JsonField(name = "callFlag")
     public int callFlag;
 
-    public Conversation() {
-    }
-
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
     }
@@ -106,7 +103,6 @@ public class Conversation {
                 Participant.ParticipantType.GUEST_MODERATOR.equals(participantType) ||
                 Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participantType));
     }
-
 
     private boolean isLockedOneToOne(UserEntity conversationUser) {
         return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
@@ -135,8 +131,8 @@ public class Conversation {
     }
 
     public boolean canLeave(UserEntity conversationUser) {
-        return !canModerate(conversationUser) || (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
-
+        return !canModerate(conversationUser) ||
+                (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
     }
 
     public String getDeleteWarningMessage() {
@@ -477,10 +473,8 @@ public class Conversation {
         if (this.getLastReadMessage() != other.getLastReadMessage()) {
             return false;
         }
-        if (this.getCallFlag() != other.getCallFlag()) {
-            return false;
-        }
-        return true;
+
+        return this.getCallFlag() == other.getCallFlag();
     }
 
     protected boolean canEqual(final Object other) {

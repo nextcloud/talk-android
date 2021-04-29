@@ -37,9 +37,6 @@ public class HelloWebSocketMessage {
     @JsonField(name = "auth")
     AuthWebSocketMessage authWebSocketMessage;
 
-    public HelloWebSocketMessage() {
-    }
-
     public String getVersion() {
         return this.version;
     }
@@ -87,10 +84,8 @@ public class HelloWebSocketMessage {
         }
         final Object this$authWebSocketMessage = this.getAuthWebSocketMessage();
         final Object other$authWebSocketMessage = other.getAuthWebSocketMessage();
-        if (this$authWebSocketMessage == null ? other$authWebSocketMessage != null : !this$authWebSocketMessage.equals(other$authWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$authWebSocketMessage == null ? other$authWebSocketMessage == null : this$authWebSocketMessage.equals(other$authWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

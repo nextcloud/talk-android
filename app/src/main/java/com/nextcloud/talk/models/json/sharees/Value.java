@@ -31,9 +31,6 @@ public class Value {
     @JsonField(name = "shareWith")
     String shareWith;
 
-    public Value() {
-    }
-
     public String getShareWith() {
         return this.shareWith;
     }
@@ -55,10 +52,8 @@ public class Value {
         }
         final Object this$shareWith = this.getShareWith();
         final Object other$shareWith = other.getShareWith();
-        if (this$shareWith == null ? other$shareWith != null : !this$shareWith.equals(other$shareWith)) {
-            return false;
-        }
-        return true;
+
+        return this$shareWith == null ? other$shareWith == null : this$shareWith.equals(other$shareWith);
     }
 
     protected boolean canEqual(final Object other) {

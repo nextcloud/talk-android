@@ -30,9 +30,6 @@ public class MentionOverall {
     @JsonField(name = "ocs")
     MentionOCS ocs;
 
-    public MentionOverall() {
-    }
-
     public MentionOCS getOcs() {
         return this.ocs;
     }
@@ -54,10 +51,8 @@ public class MentionOverall {
         }
         final Object this$ocs = this.getOcs();
         final Object other$ocs = other.getOcs();
-        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
-            return false;
-        }
-        return true;
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
     }
 
     protected boolean canEqual(final Object other) {

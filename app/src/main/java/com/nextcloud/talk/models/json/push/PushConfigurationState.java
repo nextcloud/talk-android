@@ -43,9 +43,6 @@ public class PushConfigurationState {
     @JsonField(name = "usesRegularPass")
     public boolean usesRegularPass;
 
-    public PushConfigurationState() {
-    }
-
     public String getPushToken() {
         return this.pushToken;
     }
@@ -117,10 +114,8 @@ public class PushConfigurationState {
         if (this$userPublicKey == null ? other$userPublicKey != null : !this$userPublicKey.equals(other$userPublicKey)) {
             return false;
         }
-        if (this.isUsesRegularPass() != other.isUsesRegularPass()) {
-            return false;
-        }
-        return true;
+
+        return this.isUsesRegularPass() == other.isUsesRegularPass();
     }
 
     protected boolean canEqual(final Object other) {

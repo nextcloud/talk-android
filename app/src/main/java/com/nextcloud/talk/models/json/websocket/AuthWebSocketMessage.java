@@ -34,9 +34,6 @@ public class AuthWebSocketMessage {
     @JsonField(name = "params")
     AuthParametersWebSocketMessage authParametersWebSocketMessage;
 
-    public AuthWebSocketMessage() {
-    }
-
     public String getUrl() {
         return this.url;
     }
@@ -71,10 +68,8 @@ public class AuthWebSocketMessage {
         }
         final Object this$authParametersWebSocketMessage = this.getAuthParametersWebSocketMessage();
         final Object other$authParametersWebSocketMessage = other.getAuthParametersWebSocketMessage();
-        if (this$authParametersWebSocketMessage == null ? other$authParametersWebSocketMessage != null : !this$authParametersWebSocketMessage.equals(other$authParametersWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$authParametersWebSocketMessage == null ? other$authParametersWebSocketMessage == null : this$authParametersWebSocketMessage.equals(other$authParametersWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

@@ -21,9 +21,6 @@
 package com.nextcloud.talk.events;
 
 public class ConfigurationChangeEvent {
-    public ConfigurationChangeEvent() {
-    }
-
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
@@ -32,10 +29,8 @@ public class ConfigurationChangeEvent {
             return false;
         }
         final ConfigurationChangeEvent other = (ConfigurationChangeEvent) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        return true;
+
+        return other.canEqual((Object) this);
     }
 
     protected boolean canEqual(final Object other) {
@@ -43,8 +38,7 @@ public class ConfigurationChangeEvent {
     }
 
     public int hashCode() {
-        int result = 1;
-        return result;
+        return 1;
     }
 
     public String toString() {

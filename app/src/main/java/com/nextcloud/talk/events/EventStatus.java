@@ -74,10 +74,8 @@ public class EventStatus {
         if (this$eventType == null ? other$eventType != null : !this$eventType.equals(other$eventType)) {
             return false;
         }
-        if (this.isAllGood() != other.isAllGood()) {
-            return false;
-        }
-        return true;
+
+        return this.isAllGood() == other.isAllGood();
     }
 
     protected boolean canEqual(final Object other) {

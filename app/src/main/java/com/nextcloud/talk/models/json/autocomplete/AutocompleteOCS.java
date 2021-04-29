@@ -34,9 +34,6 @@ public class AutocompleteOCS extends GenericOCS {
     @JsonField(name = "data")
     List<AutocompleteUser> data;
 
-    public AutocompleteOCS() {
-    }
-
     public List<AutocompleteUser> getData() {
         return this.data;
     }
@@ -58,10 +55,8 @@ public class AutocompleteOCS extends GenericOCS {
         }
         final Object this$data = this.getData();
         final Object other$data = other.getData();
-        if (this$data == null ? other$data != null : !this$data.equals(other$data)) {
-            return false;
-        }
-        return true;
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
     }
 
     protected boolean canEqual(final Object other) {

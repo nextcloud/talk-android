@@ -34,9 +34,6 @@ public class AuthParametersWebSocketMessage {
     @JsonField(name = "ticket")
     String ticket;
 
-    public AuthParametersWebSocketMessage() {
-    }
-
     public String getUserid() {
         return this.userid;
     }
@@ -71,10 +68,8 @@ public class AuthParametersWebSocketMessage {
         }
         final Object this$ticket = this.getTicket();
         final Object other$ticket = other.getTicket();
-        if (this$ticket == null ? other$ticket != null : !this$ticket.equals(other$ticket)) {
-            return false;
-        }
-        return true;
+
+        return this$ticket == null ? other$ticket == null : this$ticket.equals(other$ticket);
     }
 
     protected boolean canEqual(final Object other) {

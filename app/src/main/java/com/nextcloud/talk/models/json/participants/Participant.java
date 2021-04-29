@@ -59,10 +59,6 @@ public class Participant {
 
     public boolean selected;
 
-    public Participant() {
-    }
-
-
     public ParticipantFlags getParticipantFlags() {
         ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
         if (inCall != null) {
@@ -212,10 +208,8 @@ public class Participant {
         if (this$source == null ? other$source != null : !this$source.equals(other$source)) {
             return false;
         }
-        if (this.isSelected() != other.isSelected()) {
-            return false;
-        }
-        return true;
+
+        return this.isSelected() == other.isSelected();
     }
 
     protected boolean canEqual(final Object other) {

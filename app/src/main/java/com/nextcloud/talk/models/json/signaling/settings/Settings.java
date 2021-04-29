@@ -39,9 +39,6 @@ public class Settings {
     @JsonField(name = "ticket")
     String externalSignalingTicket;
 
-    public Settings() {
-    }
-
     public List<IceServer> getStunServers() {
         return this.stunServers;
     }
@@ -102,10 +99,8 @@ public class Settings {
         }
         final Object this$externalSignalingTicket = this.getExternalSignalingTicket();
         final Object other$externalSignalingTicket = other.getExternalSignalingTicket();
-        if (this$externalSignalingTicket == null ? other$externalSignalingTicket != null : !this$externalSignalingTicket.equals(other$externalSignalingTicket)) {
-            return false;
-        }
-        return true;
+
+        return this$externalSignalingTicket == null ? other$externalSignalingTicket == null : this$externalSignalingTicket.equals(other$externalSignalingTicket);
     }
 
     protected boolean canEqual(final Object other) {

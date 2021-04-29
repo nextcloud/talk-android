@@ -35,9 +35,6 @@ public class ContactsByNumberOCS extends GenericOCS {
     @JsonField(name = "data")
     public Map<String, String> map = new HashMap();
 
-    public ContactsByNumberOCS() {
-    }
-
     public Map<String, String> getMap() {
         return this.map;
     }
@@ -59,10 +56,8 @@ public class ContactsByNumberOCS extends GenericOCS {
         }
         final Object this$map = this.getMap();
         final Object other$map = other.getMap();
-        if (this$map == null ? other$map != null : !this$map.equals(other$map)) {
-            return false;
-        }
-        return true;
+
+        return this$map == null ? other$map == null : this$map.equals(other$map);
     }
 
     protected boolean canEqual(final Object other) {

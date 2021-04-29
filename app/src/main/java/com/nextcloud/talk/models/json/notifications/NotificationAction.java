@@ -40,9 +40,6 @@ public class NotificationAction {
     @JsonField(name = "primary")
     boolean primary;
 
-    public NotificationAction() {
-    }
-
     public String getLabel() {
         return this.label;
     }
@@ -101,10 +98,8 @@ public class NotificationAction {
         if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
             return false;
         }
-        if (this.isPrimary() != other.isPrimary()) {
-            return false;
-        }
-        return true;
+
+        return this.isPrimary() == other.isPrimary();
     }
 
     protected boolean canEqual(final Object other) {

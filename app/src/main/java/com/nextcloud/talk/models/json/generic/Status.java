@@ -49,9 +49,6 @@ public class Status {
     @JsonField(name = "productname")
     public String productName;
 
-    public Status() {
-    }
-
     public boolean isInstalled() {
         return this.installed;
     }
@@ -145,10 +142,8 @@ public class Status {
         }
         final Object this$productName = this.getProductName();
         final Object other$productName = other.getProductName();
-        if (this$productName == null ? other$productName != null : !this$productName.equals(other$productName)) {
-            return false;
-        }
-        return true;
+
+        return this$productName == null ? other$productName == null : this$productName.equals(other$productName);
     }
 
     protected boolean canEqual(final Object other) {

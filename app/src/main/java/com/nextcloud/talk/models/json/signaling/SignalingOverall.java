@@ -28,9 +28,6 @@ public class SignalingOverall {
     @JsonField(name = "ocs")
     SignalingOCS ocs;
 
-    public SignalingOverall() {
-    }
-
     public SignalingOCS getOcs() {
         return this.ocs;
     }
@@ -52,10 +49,8 @@ public class SignalingOverall {
         }
         final Object this$ocs = this.getOcs();
         final Object other$ocs = other.getOcs();
-        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
-            return false;
-        }
-        return true;
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
     }
 
     protected boolean canEqual(final Object other) {

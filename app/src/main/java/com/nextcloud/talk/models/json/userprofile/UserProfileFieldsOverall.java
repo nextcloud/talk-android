@@ -31,9 +31,6 @@ public class UserProfileFieldsOverall {
     @JsonField(name = "ocs")
     UserProfileFieldsOCS ocs;
 
-    public UserProfileFieldsOverall() {
-    }
-
     public UserProfileFieldsOCS getOcs() {
         return this.ocs;
     }
@@ -55,10 +52,8 @@ public class UserProfileFieldsOverall {
         }
         final Object this$ocs = this.getOcs();
         final Object other$ocs = other.getOcs();
-        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
-            return false;
-        }
-        return true;
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
     }
 
     protected boolean canEqual(final Object other) {

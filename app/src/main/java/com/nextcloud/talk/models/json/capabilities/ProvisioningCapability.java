@@ -31,9 +31,6 @@ public class ProvisioningCapability {
     @JsonField(name = "AccountPropertyScopesVersion")
     Integer accountPropertyScopesVersion;
 
-    public ProvisioningCapability() {
-    }
-
     public Integer getAccountPropertyScopesVersion() {
         return this.accountPropertyScopesVersion;
     }
@@ -55,10 +52,8 @@ public class ProvisioningCapability {
         }
         final Object this$accountPropertyScopesVersion = this.getAccountPropertyScopesVersion();
         final Object other$accountPropertyScopesVersion = other.getAccountPropertyScopesVersion();
-        if (this$accountPropertyScopesVersion == null ? other$accountPropertyScopesVersion != null : !this$accountPropertyScopesVersion.equals(other$accountPropertyScopesVersion)) {
-            return false;
-        }
-        return true;
+
+        return this$accountPropertyScopesVersion == null ? other$accountPropertyScopesVersion == null : this$accountPropertyScopesVersion.equals(other$accountPropertyScopesVersion);
     }
 
     protected boolean canEqual(final Object other) {

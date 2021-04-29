@@ -31,9 +31,6 @@ public class RequestOfferOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "message")
     RequestOfferSignalingMessage requestOfferOverallWebSocketMessage;
 
-    public RequestOfferOverallWebSocketMessage() {
-    }
-
     public RequestOfferSignalingMessage getRequestOfferOverallWebSocketMessage() {
         return this.requestOfferOverallWebSocketMessage;
     }
@@ -55,10 +52,8 @@ public class RequestOfferOverallWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$requestOfferOverallWebSocketMessage = this.getRequestOfferOverallWebSocketMessage();
         final Object other$requestOfferOverallWebSocketMessage = other.getRequestOfferOverallWebSocketMessage();
-        if (this$requestOfferOverallWebSocketMessage == null ? other$requestOfferOverallWebSocketMessage != null : !this$requestOfferOverallWebSocketMessage.equals(other$requestOfferOverallWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$requestOfferOverallWebSocketMessage == null ? other$requestOfferOverallWebSocketMessage == null : this$requestOfferOverallWebSocketMessage.equals(other$requestOfferOverallWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

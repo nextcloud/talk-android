@@ -72,9 +72,6 @@ public class UserProfileData {
     @JsonField(name = "websiteScope", typeConverter = ScopeConverter.class)
     Scope websiteScope;
 
-    public UserProfileData() {
-    }
-
     public String getValueByField(ProfileController.Field field) {
         switch (field) {
             case EMAIL:
@@ -303,10 +300,8 @@ public class UserProfileData {
         }
         final Object this$websiteScope = this.getWebsiteScope();
         final Object other$websiteScope = other.getWebsiteScope();
-        if (this$websiteScope == null ? other$websiteScope != null : !this$websiteScope.equals(other$websiteScope)) {
-            return false;
-        }
-        return true;
+
+        return this$websiteScope == null ? other$websiteScope == null : this$websiteScope.equals(other$websiteScope);
     }
 
     protected boolean canEqual(final Object other) {

@@ -28,9 +28,6 @@ public class RetrofitBucket {
     public String url;
     public Map<String, String> queryMap;
 
-    public RetrofitBucket() {
-    }
-
     public String getUrl() {
         return this.url;
     }
@@ -65,10 +62,8 @@ public class RetrofitBucket {
         }
         final Object this$queryMap = this.getQueryMap();
         final Object other$queryMap = other.getQueryMap();
-        if (this$queryMap == null ? other$queryMap != null : !this$queryMap.equals(other$queryMap)) {
-            return false;
-        }
-        return true;
+
+        return this$queryMap == null ? other$queryMap == null : this$queryMap.equals(other$queryMap);
     }
 
     protected boolean canEqual(final Object other) {

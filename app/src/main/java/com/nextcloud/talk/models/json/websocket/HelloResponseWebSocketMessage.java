@@ -37,9 +37,6 @@ public class HelloResponseWebSocketMessage {
     @JsonField(name = "server")
     ServerHelloResponseFeaturesWebSocketMessage serverHelloResponseFeaturesWebSocketMessage;
 
-    public HelloResponseWebSocketMessage() {
-    }
-
     public boolean serverHasMCUSupport() {
         return serverHelloResponseFeaturesWebSocketMessage != null && serverHelloResponseFeaturesWebSocketMessage.getFeatures() != null
                 && serverHelloResponseFeaturesWebSocketMessage.getFeatures().contains("mcu");
@@ -92,10 +89,8 @@ public class HelloResponseWebSocketMessage {
         }
         final Object this$serverHelloResponseFeaturesWebSocketMessage = this.getServerHelloResponseFeaturesWebSocketMessage();
         final Object other$serverHelloResponseFeaturesWebSocketMessage = other.getServerHelloResponseFeaturesWebSocketMessage();
-        if (this$serverHelloResponseFeaturesWebSocketMessage == null ? other$serverHelloResponseFeaturesWebSocketMessage != null : !this$serverHelloResponseFeaturesWebSocketMessage.equals(other$serverHelloResponseFeaturesWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$serverHelloResponseFeaturesWebSocketMessage == null ? other$serverHelloResponseFeaturesWebSocketMessage == null : this$serverHelloResponseFeaturesWebSocketMessage.equals(other$serverHelloResponseFeaturesWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

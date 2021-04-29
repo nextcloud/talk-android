@@ -31,9 +31,6 @@ public class SignalingOCS extends GenericOCS {
     @JsonField(name = "data")
     List<Signaling> signalings;
 
-    public SignalingOCS() {
-    }
-
     public List<Signaling> getSignalings() {
         return this.signalings;
     }
@@ -55,10 +52,8 @@ public class SignalingOCS extends GenericOCS {
         }
         final Object this$signalings = this.getSignalings();
         final Object other$signalings = other.getSignalings();
-        if (this$signalings == null ? other$signalings != null : !this$signalings.equals(other$signalings)) {
-            return false;
-        }
-        return true;
+
+        return this$signalings == null ? other$signalings == null : this$signalings.equals(other$signalings);
     }
 
     protected boolean canEqual(final Object other) {

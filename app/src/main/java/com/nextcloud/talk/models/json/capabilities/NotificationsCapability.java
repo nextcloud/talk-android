@@ -33,9 +33,6 @@ public class NotificationsCapability {
     @JsonField(name = "ocs-endpoints")
     List<String> features;
 
-    public NotificationsCapability() {
-    }
-
     public List<String> getFeatures() {
         return this.features;
     }
@@ -57,10 +54,8 @@ public class NotificationsCapability {
         }
         final Object this$features = this.getFeatures();
         final Object other$features = other.getFeatures();
-        if (this$features == null ? other$features != null : !this$features.equals(other$features)) {
-            return false;
-        }
-        return true;
+
+        return this$features == null ? other$features == null : this$features.equals(other$features);
     }
 
     protected boolean canEqual(final Object other) {

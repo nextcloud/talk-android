@@ -33,9 +33,6 @@ public class ByeWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "bye")
     HashMap<String, Object> bye;
 
-    public ByeWebSocketMessage() {
-    }
-
     public HashMap<String, Object> getBye() {
         return this.bye;
     }
@@ -57,10 +54,8 @@ public class ByeWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$bye = this.getBye();
         final Object other$bye = other.getBye();
-        if (this$bye == null ? other$bye != null : !this$bye.equals(other$bye)) {
-            return false;
-        }
-        return true;
+
+        return this$bye == null ? other$bye == null : this$bye.equals(other$bye);
     }
 
     protected boolean canEqual(final Object other) {

@@ -34,9 +34,6 @@ public class NotificationsOCS extends GenericOCS {
     @JsonField(name = "data")
     List<Notification> notificationsList;
 
-    public NotificationsOCS() {
-    }
-
     public List<Notification> getNotificationsList() {
         return this.notificationsList;
     }
@@ -58,10 +55,8 @@ public class NotificationsOCS extends GenericOCS {
         }
         final Object this$notificationsList = this.getNotificationsList();
         final Object other$notificationsList = other.getNotificationsList();
-        if (this$notificationsList == null ? other$notificationsList != null : !this$notificationsList.equals(other$notificationsList)) {
-            return false;
-        }
-        return true;
+
+        return this$notificationsList == null ? other$notificationsList == null : this$notificationsList.equals(other$notificationsList);
     }
 
     protected boolean canEqual(final Object other) {

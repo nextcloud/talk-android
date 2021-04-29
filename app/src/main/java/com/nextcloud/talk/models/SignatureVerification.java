@@ -30,9 +30,6 @@ public class SignatureVerification {
     public boolean signatureValid;
     public UserEntity userEntity;
 
-    public SignatureVerification() {
-    }
-
     public boolean isSignatureValid() {
         return this.signatureValid;
     }
@@ -65,10 +62,8 @@ public class SignatureVerification {
         }
         final Object this$userEntity = this.getUserEntity();
         final Object other$userEntity = other.getUserEntity();
-        if (this$userEntity == null ? other$userEntity != null : !this$userEntity.equals(other$userEntity)) {
-            return false;
-        }
-        return true;
+
+        return this$userEntity == null ? other$userEntity == null : this$userEntity.equals(other$userEntity);
     }
 
     protected boolean canEqual(final Object other) {

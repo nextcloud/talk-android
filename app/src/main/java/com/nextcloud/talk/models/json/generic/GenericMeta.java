@@ -37,9 +37,6 @@ public class GenericMeta {
     @JsonField(name = "message")
     public String message;
 
-    public GenericMeta() {
-    }
-
     public String getStatus() {
         return this.status;
     }
@@ -85,10 +82,8 @@ public class GenericMeta {
         }
         final Object this$message = this.getMessage();
         final Object other$message = other.getMessage();
-        if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
-            return false;
-        }
-        return true;
+
+        return this$message == null ? other$message == null : this$message.equals(other$message);
     }
 
     protected boolean canEqual(final Object other) {

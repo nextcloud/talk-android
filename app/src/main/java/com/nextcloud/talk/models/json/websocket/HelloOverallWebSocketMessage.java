@@ -31,9 +31,6 @@ public class HelloOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "hello")
     HelloWebSocketMessage helloWebSocketMessage;
 
-    public HelloOverallWebSocketMessage() {
-    }
-
     public HelloWebSocketMessage getHelloWebSocketMessage() {
         return this.helloWebSocketMessage;
     }
@@ -55,10 +52,8 @@ public class HelloOverallWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$helloWebSocketMessage = this.getHelloWebSocketMessage();
         final Object other$helloWebSocketMessage = other.getHelloWebSocketMessage();
-        if (this$helloWebSocketMessage == null ? other$helloWebSocketMessage != null : !this$helloWebSocketMessage.equals(other$helloWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$helloWebSocketMessage == null ? other$helloWebSocketMessage == null : this$helloWebSocketMessage.equals(other$helloWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

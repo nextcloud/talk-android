@@ -38,9 +38,6 @@ public class PushRegistration {
     @JsonField(name = "signature")
     String signature;
 
-    public PushRegistration() {
-    }
-
     public String getPublicKey() {
         return this.publicKey;
     }
@@ -88,10 +85,8 @@ public class PushRegistration {
         }
         final Object this$signature = this.getSignature();
         final Object other$signature = other.getSignature();
-        if (this$signature == null ? other$signature != null : !this$signature.equals(other$signature)) {
-            return false;
-        }
-        return true;
+
+        return this$signature == null ? other$signature == null : this$signature.equals(other$signature);
     }
 
     protected boolean canEqual(final Object other) {

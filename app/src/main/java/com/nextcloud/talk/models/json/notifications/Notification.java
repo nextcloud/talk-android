@@ -64,9 +64,6 @@ public class Notification {
     @JsonField(name = "actions")
     List<NotificationAction> actions;
 
-    public Notification() {
-    }
-
     public String getIcon() {
         return this.icon;
     }
@@ -268,10 +265,8 @@ public class Notification {
         }
         final Object this$actions = this.getActions();
         final Object other$actions = other.getActions();
-        if (this$actions == null ? other$actions != null : !this$actions.equals(other$actions)) {
-            return false;
-        }
-        return true;
+
+        return this$actions == null ? other$actions == null : this$actions.equals(other$actions);
     }
 
     protected boolean canEqual(final Object other) {

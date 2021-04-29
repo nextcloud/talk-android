@@ -44,10 +44,8 @@ public class UserMentionClickEvent {
         }
         final Object this$userId = this.getUserId();
         final Object other$userId = other.getUserId();
-        if (this$userId == null ? other$userId != null : !this$userId.equals(other$userId)) {
-            return false;
-        }
-        return true;
+
+        return this$userId == null ? other$userId == null : this$userId.equals(other$userId);
     }
 
     protected boolean canEqual(final Object other) {

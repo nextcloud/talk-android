@@ -34,9 +34,6 @@ public class RequestOfferSignalingMessage {
     @JsonField(name = "data")
     SignalingDataWebSocketMessageForOffer signalingDataWebSocketMessageForOffer;
 
-    public RequestOfferSignalingMessage() {
-    }
-
     public ActorWebSocketMessage getActorWebSocketMessage() {
         return this.actorWebSocketMessage;
     }
@@ -71,10 +68,8 @@ public class RequestOfferSignalingMessage {
         }
         final Object this$signalingDataWebSocketMessageForOffer = this.getSignalingDataWebSocketMessageForOffer();
         final Object other$signalingDataWebSocketMessageForOffer = other.getSignalingDataWebSocketMessageForOffer();
-        if (this$signalingDataWebSocketMessageForOffer == null ? other$signalingDataWebSocketMessageForOffer != null : !this$signalingDataWebSocketMessageForOffer.equals(other$signalingDataWebSocketMessageForOffer)) {
-            return false;
-        }
-        return true;
+
+        return this$signalingDataWebSocketMessageForOffer == null ? other$signalingDataWebSocketMessageForOffer == null : this$signalingDataWebSocketMessageForOffer.equals(other$signalingDataWebSocketMessageForOffer);
     }
 
     protected boolean canEqual(final Object other) {

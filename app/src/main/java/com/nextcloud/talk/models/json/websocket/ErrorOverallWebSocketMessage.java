@@ -31,9 +31,6 @@ public class ErrorOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "error")
     ErrorWebSocketMessage errorWebSocketMessage;
 
-    public ErrorOverallWebSocketMessage() {
-    }
-
     public ErrorWebSocketMessage getErrorWebSocketMessage() {
         return this.errorWebSocketMessage;
     }
@@ -55,10 +52,8 @@ public class ErrorOverallWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$errorWebSocketMessage = this.getErrorWebSocketMessage();
         final Object other$errorWebSocketMessage = other.getErrorWebSocketMessage();
-        if (this$errorWebSocketMessage == null ? other$errorWebSocketMessage != null : !this$errorWebSocketMessage.equals(other$errorWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$errorWebSocketMessage == null ? other$errorWebSocketMessage == null : this$errorWebSocketMessage.equals(other$errorWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

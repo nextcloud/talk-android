@@ -34,9 +34,6 @@ public class ErrorWebSocketMessage {
     @JsonField(name = "message")
     String message;
 
-    public ErrorWebSocketMessage() {
-    }
-
     public String getCode() {
         return this.code;
     }
@@ -71,10 +68,8 @@ public class ErrorWebSocketMessage {
         }
         final Object this$message = this.getMessage();
         final Object other$message = other.getMessage();
-        if (this$message == null ? other$message != null : !this$message.equals(other$message)) {
-            return false;
-        }
-        return true;
+
+        return this$message == null ? other$message == null : this$message.equals(other$message);
     }
 
     protected boolean canEqual(final Object other) {

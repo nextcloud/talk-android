@@ -37,9 +37,6 @@ public class NCIceCandidate {
     @JsonField(name = "candidate")
     String candidate;
 
-    public NCIceCandidate() {
-    }
-
     public int getSdpMLineIndex() {
         return this.sdpMLineIndex;
     }
@@ -85,10 +82,8 @@ public class NCIceCandidate {
         }
         final Object this$candidate = this.getCandidate();
         final Object other$candidate = other.getCandidate();
-        if (this$candidate == null ? other$candidate != null : !this$candidate.equals(other$candidate)) {
-            return false;
-        }
-        return true;
+
+        return this$candidate == null ? other$candidate == null : this$candidate.equals(other$candidate);
     }
 
     protected boolean canEqual(final Object other) {

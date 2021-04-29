@@ -29,9 +29,6 @@ public class RoomOCS extends GenericOCS {
     @JsonField(name = "data")
     public Conversation data;
 
-    public RoomOCS() {
-    }
-
     public Conversation getData() {
         return this.data;
     }
@@ -53,10 +50,8 @@ public class RoomOCS extends GenericOCS {
         }
         final Object this$data = this.getData();
         final Object other$data = other.getData();
-        if (this$data == null ? other$data != null : !this$data.equals(other$data)) {
-            return false;
-        }
-        return true;
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
     }
 
     protected boolean canEqual(final Object other) {

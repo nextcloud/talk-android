@@ -39,9 +39,6 @@ public class IceServer {
     @JsonField(name = "credential")
     String credential;
 
-    public IceServer() {
-    }
-
     public String getUrl() {
         return this.url;
     }
@@ -102,10 +99,8 @@ public class IceServer {
         }
         final Object this$credential = this.getCredential();
         final Object other$credential = other.getCredential();
-        if (this$credential == null ? other$credential != null : !this$credential.equals(other$credential)) {
-            return false;
-        }
-        return true;
+
+        return this$credential == null ? other$credential == null : this$credential.equals(other$credential);
     }
 
     protected boolean canEqual(final Object other) {

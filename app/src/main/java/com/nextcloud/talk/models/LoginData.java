@@ -28,9 +28,6 @@ public class LoginData {
     String username;
     String token;
 
-    public LoginData() {
-    }
-
     public String getServerUrl() {
         return this.serverUrl;
     }
@@ -78,10 +75,8 @@ public class LoginData {
         }
         final Object this$token = this.getToken();
         final Object other$token = other.getToken();
-        if (this$token == null ? other$token != null : !this$token.equals(other$token)) {
-            return false;
-        }
-        return true;
+
+        return this$token == null ? other$token == null : this$token.equals(other$token);
     }
 
     protected boolean canEqual(final Object other) {

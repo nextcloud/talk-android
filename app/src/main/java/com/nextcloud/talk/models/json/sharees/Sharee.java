@@ -37,9 +37,6 @@ public class Sharee {
     @JsonField(name = "label")
     String label;
 
-    public Sharee() {
-    }
-
     public String getId() {
         return this.id;
     }
@@ -87,10 +84,8 @@ public class Sharee {
         }
         final Object this$label = this.getLabel();
         final Object other$label = other.getLabel();
-        if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
-            return false;
-        }
-        return true;
+
+        return this$label == null ? other$label == null : this$label.equals(other$label);
     }
 
     protected boolean canEqual(final Object other) {

@@ -91,10 +91,8 @@ public class BottomSheetLockEvent {
         if (this.isCancel() != other.isCancel()) {
             return false;
         }
-        if (this.isDismissView() != other.isDismissView()) {
-            return false;
-        }
-        return true;
+
+        return this.isDismissView() == other.isDismissView();
     }
 
     protected boolean canEqual(final Object other) {

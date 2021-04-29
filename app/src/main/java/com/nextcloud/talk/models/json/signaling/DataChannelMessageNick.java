@@ -78,10 +78,8 @@ public class DataChannelMessageNick {
         }
         final Object this$payload = this.getPayload();
         final Object other$payload = other.getPayload();
-        if (this$payload == null ? other$payload != null : !this$payload.equals(other$payload)) {
-            return false;
-        }
-        return true;
+
+        return this$payload == null ? other$payload == null : this$payload.equals(other$payload);
     }
 
     protected boolean canEqual(final Object other) {

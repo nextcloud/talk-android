@@ -46,10 +46,8 @@ public class MoreMenuClickEvent {
         }
         final Object this$conversation = this.getConversation();
         final Object other$conversation = other.getConversation();
-        if (this$conversation == null ? other$conversation != null : !this$conversation.equals(other$conversation)) {
-            return false;
-        }
-        return true;
+
+        return this$conversation == null ? other$conversation == null : this$conversation.equals(other$conversation);
     }
 
     protected boolean canEqual(final Object other) {

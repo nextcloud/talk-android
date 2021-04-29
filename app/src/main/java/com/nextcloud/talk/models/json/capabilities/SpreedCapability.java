@@ -37,9 +37,6 @@ public class SpreedCapability {
     @JsonField(name = "config")
     HashMap<String, HashMap<String, String>> config;
 
-    public SpreedCapability() {
-    }
-
     public List<String> getFeatures() {
         return this.features;
     }
@@ -74,10 +71,8 @@ public class SpreedCapability {
         }
         final Object this$config = this.getConfig();
         final Object other$config = other.getConfig();
-        if (this$config == null ? other$config != null : !this$config.equals(other$config)) {
-            return false;
-        }
-        return true;
+
+        return this$config == null ? other$config == null : this$config.equals(other$config);
     }
 
     protected boolean canEqual(final Object other) {

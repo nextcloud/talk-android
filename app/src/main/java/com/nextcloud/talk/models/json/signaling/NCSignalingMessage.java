@@ -43,9 +43,6 @@ public class NCSignalingMessage {
     @JsonField(name = "prefix")
     String prefix;
 
-    public NCSignalingMessage() {
-    }
-
     public String getFrom() {
         return this.from;
     }
@@ -145,10 +142,8 @@ public class NCSignalingMessage {
         }
         final Object this$prefix = this.getPrefix();
         final Object other$prefix = other.getPrefix();
-        if (this$prefix == null ? other$prefix != null : !this$prefix.equals(other$prefix)) {
-            return false;
-        }
-        return true;
+
+        return this$prefix == null ? other$prefix == null : this$prefix.equals(other$prefix);
     }
 
     protected boolean canEqual(final Object other) {

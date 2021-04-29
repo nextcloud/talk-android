@@ -60,9 +60,6 @@ public class BrowserFile {
     public String permissions;
     private boolean isAllowedToReShare = false;
 
-    public BrowserFile() {
-    }
-
     public static BrowserFile getModelFromResponse(Response response, String remotePath) {
         BrowserFile browserFile = new BrowserFile();
         browserFile.setPath(Uri.decode(remotePath));
@@ -273,10 +270,8 @@ public class BrowserFile {
         if (this$permissions == null ? other$permissions != null : !this$permissions.equals(other$permissions)) {
             return false;
         }
-        if (this.isAllowedToReShare() != other.isAllowedToReShare()) {
-            return false;
-        }
-        return true;
+
+        return this.isAllowedToReShare() == other.isAllowedToReShare();
     }
 
     protected boolean canEqual(final Object other) {

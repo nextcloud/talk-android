@@ -27,9 +27,6 @@ public class NotificationsOverall {
     @JsonField(name = "ocs")
     NotificationsOCS ocs;
 
-    public NotificationsOverall() {
-    }
-
     public NotificationsOCS getOcs() {
         return this.ocs;
     }
@@ -51,10 +48,8 @@ public class NotificationsOverall {
         }
         final Object this$ocs = this.getOcs();
         final Object other$ocs = other.getOcs();
-        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
-            return false;
-        }
-        return true;
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
     }
 
     protected boolean canEqual(final Object other) {

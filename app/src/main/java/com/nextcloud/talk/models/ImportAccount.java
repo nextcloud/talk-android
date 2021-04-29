@@ -82,10 +82,8 @@ public class ImportAccount {
         }
         final Object this$baseUrl = this.getBaseUrl();
         final Object other$baseUrl = other.getBaseUrl();
-        if (this$baseUrl == null ? other$baseUrl != null : !this$baseUrl.equals(other$baseUrl)) {
-            return false;
-        }
-        return true;
+
+        return this$baseUrl == null ? other$baseUrl == null : this$baseUrl.equals(other$baseUrl);
     }
 
     protected boolean canEqual(final Object other) {

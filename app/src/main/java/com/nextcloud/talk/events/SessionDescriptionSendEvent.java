@@ -99,10 +99,8 @@ public class SessionDescriptionSendEvent {
         }
         final Object this$videoStreamType = this.getVideoStreamType();
         final Object other$videoStreamType = other.getVideoStreamType();
-        if (this$videoStreamType == null ? other$videoStreamType != null : !this$videoStreamType.equals(other$videoStreamType)) {
-            return false;
-        }
-        return true;
+
+        return this$videoStreamType == null ? other$videoStreamType == null : this$videoStreamType.equals(other$videoStreamType);
     }
 
     protected boolean canEqual(final Object other) {

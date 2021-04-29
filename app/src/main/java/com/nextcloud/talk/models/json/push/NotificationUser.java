@@ -37,9 +37,6 @@ public class NotificationUser {
     @JsonField(name = "name")
     String name;
 
-    public NotificationUser() {
-    }
-
     public String getType() {
         return this.type;
     }
@@ -87,10 +84,8 @@ public class NotificationUser {
         }
         final Object this$name = this.getName();
         final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
-            return false;
-        }
-        return true;
+
+        return this$name == null ? other$name == null : this$name.equals(other$name);
     }
 
     protected boolean canEqual(final Object other) {

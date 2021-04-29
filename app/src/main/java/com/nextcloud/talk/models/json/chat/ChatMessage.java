@@ -91,9 +91,6 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
 
-    public ChatMessage() {
-    }
-
     private boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
@@ -487,10 +484,8 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         }
         final Object this$messageTypesToIgnore = this.getMessageTypesToIgnore();
         final Object other$messageTypesToIgnore = other.getMessageTypesToIgnore();
-        if (this$messageTypesToIgnore == null ? other$messageTypesToIgnore != null : !this$messageTypesToIgnore.equals(other$messageTypesToIgnore)) {
-            return false;
-        }
-        return true;
+
+        return this$messageTypesToIgnore == null ? other$messageTypesToIgnore == null : this$messageTypesToIgnore.equals(other$messageTypesToIgnore);
     }
 
     protected boolean canEqual(final Object other) {

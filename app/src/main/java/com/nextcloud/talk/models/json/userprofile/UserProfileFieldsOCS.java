@@ -34,9 +34,6 @@ public class UserProfileFieldsOCS extends GenericOCS {
     @JsonField(name = "data")
     ArrayList<String> data;
 
-    public UserProfileFieldsOCS() {
-    }
-
     public ArrayList<String> getData() {
         return this.data;
     }
@@ -65,10 +62,8 @@ public class UserProfileFieldsOCS extends GenericOCS {
         }
         final Object this$data = this.getData();
         final Object other$data = other.getData();
-        if (this$data == null ? other$data != null : !this$data.equals(other$data)) {
-            return false;
-        }
-        return true;
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
     }
 
     protected boolean canEqual(final Object other) {

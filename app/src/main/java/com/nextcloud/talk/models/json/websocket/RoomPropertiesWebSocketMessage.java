@@ -36,9 +36,6 @@ public class RoomPropertiesWebSocketMessage {
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
     Conversation.ConversationType roomType;
 
-    public RoomPropertiesWebSocketMessage() {
-    }
-
     public String getName() {
         return this.name;
     }
@@ -73,10 +70,8 @@ public class RoomPropertiesWebSocketMessage {
         }
         final Object this$roomType = this.getRoomType();
         final Object other$roomType = other.getRoomType();
-        if (this$roomType == null ? other$roomType != null : !this$roomType.equals(other$roomType)) {
-            return false;
-        }
-        return true;
+
+        return this$roomType == null ? other$roomType == null : this$roomType.equals(other$roomType);
     }
 
     protected boolean canEqual(final Object other) {

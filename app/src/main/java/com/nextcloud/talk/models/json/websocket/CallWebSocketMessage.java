@@ -38,9 +38,6 @@ public class CallWebSocketMessage {
     @JsonField(name = "data")
     NCSignalingMessage ncSignalingMessage;
 
-    public CallWebSocketMessage() {
-    }
-
     public ActorWebSocketMessage getRecipientWebSocketMessage() {
         return this.recipientWebSocketMessage;
     }
@@ -88,10 +85,8 @@ public class CallWebSocketMessage {
         }
         final Object this$ncSignalingMessage = this.getNcSignalingMessage();
         final Object other$ncSignalingMessage = other.getNcSignalingMessage();
-        if (this$ncSignalingMessage == null ? other$ncSignalingMessage != null : !this$ncSignalingMessage.equals(other$ncSignalingMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$ncSignalingMessage == null ? other$ncSignalingMessage == null : this$ncSignalingMessage.equals(other$ncSignalingMessage);
     }
 
     protected boolean canEqual(final Object other) {

@@ -34,9 +34,6 @@ public class SignalingDataWebSocketMessageForOffer {
     @JsonField(name = "roomType")
     String roomType;
 
-    public SignalingDataWebSocketMessageForOffer() {
-    }
-
     public String getType() {
         return this.type;
     }
@@ -71,10 +68,8 @@ public class SignalingDataWebSocketMessageForOffer {
         }
         final Object this$roomType = this.getRoomType();
         final Object other$roomType = other.getRoomType();
-        if (this$roomType == null ? other$roomType != null : !this$roomType.equals(other$roomType)) {
-            return false;
-        }
-        return true;
+
+        return this$roomType == null ? other$roomType == null : this$roomType.equals(other$roomType);
     }
 
     protected boolean canEqual(final Object other) {

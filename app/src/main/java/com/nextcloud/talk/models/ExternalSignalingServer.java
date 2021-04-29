@@ -33,9 +33,6 @@ public class ExternalSignalingServer {
     @JsonField(name = "externalSignalingTicket")
     String externalSignalingTicket;
 
-    public ExternalSignalingServer() {
-    }
-
     public String getExternalSignalingServer() {
         return this.externalSignalingServer;
     }
@@ -70,10 +67,8 @@ public class ExternalSignalingServer {
         }
         final Object this$externalSignalingTicket = this.getExternalSignalingTicket();
         final Object other$externalSignalingTicket = other.getExternalSignalingTicket();
-        if (this$externalSignalingTicket == null ? other$externalSignalingTicket != null : !this$externalSignalingTicket.equals(other$externalSignalingTicket)) {
-            return false;
-        }
-        return true;
+
+        return this$externalSignalingTicket == null ? other$externalSignalingTicket == null : this$externalSignalingTicket.equals(other$externalSignalingTicket);
     }
 
     protected boolean canEqual(final Object other) {

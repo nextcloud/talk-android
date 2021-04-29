@@ -72,10 +72,8 @@ public class Spans {
             }
             final Object this$label = this.getLabel();
             final Object other$label = other.getLabel();
-            if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
-                return false;
-            }
-            return true;
+
+            return this$label == null ? other$label == null : this$label.equals(other$label);
         }
 
         protected boolean canEqual(final Object other) {

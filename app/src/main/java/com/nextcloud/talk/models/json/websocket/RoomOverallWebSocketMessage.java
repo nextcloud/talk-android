@@ -31,9 +31,6 @@ public class RoomOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "room")
     RoomWebSocketMessage roomWebSocketMessage;
 
-    public RoomOverallWebSocketMessage() {
-    }
-
     public RoomWebSocketMessage getRoomWebSocketMessage() {
         return this.roomWebSocketMessage;
     }
@@ -55,10 +52,8 @@ public class RoomOverallWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$roomWebSocketMessage = this.getRoomWebSocketMessage();
         final Object other$roomWebSocketMessage = other.getRoomWebSocketMessage();
-        if (this$roomWebSocketMessage == null ? other$roomWebSocketMessage != null : !this$roomWebSocketMessage.equals(other$roomWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$roomWebSocketMessage == null ? other$roomWebSocketMessage == null : this$roomWebSocketMessage.equals(other$roomWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

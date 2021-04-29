@@ -38,9 +38,6 @@ public class NCMessageWrapper {
     @JsonField(name = "sessionId")
     String sessionId;
 
-    public NCMessageWrapper() {
-    }
-
     public NCSignalingMessage getSignalingMessage() {
         return this.signalingMessage;
     }
@@ -88,10 +85,8 @@ public class NCMessageWrapper {
         }
         final Object this$sessionId = this.getSessionId();
         final Object other$sessionId = other.getSessionId();
-        if (this$sessionId == null ? other$sessionId != null : !this$sessionId.equals(other$sessionId)) {
-            return false;
-        }
-        return true;
+
+        return this$sessionId == null ? other$sessionId == null : this$sessionId.equals(other$sessionId);
     }
 
     protected boolean canEqual(final Object other) {

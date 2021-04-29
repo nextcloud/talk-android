@@ -31,9 +31,6 @@ public class CallOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "message")
     CallWebSocketMessage callWebSocketMessage;
 
-    public CallOverallWebSocketMessage() {
-    }
-
     public CallWebSocketMessage getCallWebSocketMessage() {
         return this.callWebSocketMessage;
     }
@@ -55,10 +52,8 @@ public class CallOverallWebSocketMessage extends BaseWebSocketMessage {
         }
         final Object this$callWebSocketMessage = this.getCallWebSocketMessage();
         final Object other$callWebSocketMessage = other.getCallWebSocketMessage();
-        if (this$callWebSocketMessage == null ? other$callWebSocketMessage != null : !this$callWebSocketMessage.equals(other$callWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$callWebSocketMessage == null ? other$callWebSocketMessage == null : this$callWebSocketMessage.equals(other$callWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

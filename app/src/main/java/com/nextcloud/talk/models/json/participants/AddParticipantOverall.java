@@ -29,9 +29,6 @@ public class AddParticipantOverall {
     @JsonField(name = "ocs")
     RoomsOCS ocs;
 
-    public AddParticipantOverall() {
-    }
-
     public RoomsOCS getOcs() {
         return this.ocs;
     }
@@ -53,10 +50,8 @@ public class AddParticipantOverall {
         }
         final Object this$ocs = this.getOcs();
         final Object other$ocs = other.getOcs();
-        if (this$ocs == null ? other$ocs != null : !this$ocs.equals(other$ocs)) {
-            return false;
-        }
-        return true;
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
     }
 
     protected boolean canEqual(final Object other) {

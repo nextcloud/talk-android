@@ -21,6 +21,12 @@
 package com.nextcloud.talk.events;
 
 public class NetworkEvent {
+    private final NetworkConnectionEvent networkConnectionEvent;
+
+    public NetworkEvent(NetworkConnectionEvent networkConnectionEvent) {
+        this.networkConnectionEvent = networkConnectionEvent;
+    }
+
     public NetworkConnectionEvent getNetworkConnectionEvent() {
         return this.networkConnectionEvent;
     }
@@ -38,10 +44,8 @@ public class NetworkEvent {
         }
         final Object this$networkConnectionEvent = this.getNetworkConnectionEvent();
         final Object other$networkConnectionEvent = other.getNetworkConnectionEvent();
-        if (this$networkConnectionEvent == null ? other$networkConnectionEvent != null : !this$networkConnectionEvent.equals(other$networkConnectionEvent)) {
-            return false;
-        }
-        return true;
+
+        return this$networkConnectionEvent == null ? other$networkConnectionEvent == null : this$networkConnectionEvent.equals(other$networkConnectionEvent);
     }
 
     protected boolean canEqual(final Object other) {
@@ -62,11 +66,5 @@ public class NetworkEvent {
 
     public enum NetworkConnectionEvent {
         NETWORK_CONNECTED, NETWORK_DISCONNECTED
-    }
-
-    private final NetworkConnectionEvent networkConnectionEvent;
-
-    public NetworkEvent(NetworkConnectionEvent networkConnectionEvent) {
-        this.networkConnectionEvent = networkConnectionEvent;
     }
 }

@@ -46,9 +46,6 @@ public class Capabilities {
     @JsonField(name = "provisioning_api")
     ProvisioningCapability provisioningCapability;
 
-    public Capabilities() {
-    }
-
     public SpreedCapability getSpreedCapability() {
         return this.spreedCapability;
     }
@@ -122,10 +119,8 @@ public class Capabilities {
         }
         final Object this$provisioningCapability = this.getProvisioningCapability();
         final Object other$provisioningCapability = other.getProvisioningCapability();
-        if (this$provisioningCapability == null ? other$provisioningCapability != null : !this$provisioningCapability.equals(other$provisioningCapability)) {
-            return false;
-        }
-        return true;
+
+        return this$provisioningCapability == null ? other$provisioningCapability == null : this$provisioningCapability.equals(other$provisioningCapability);
     }
 
     protected boolean canEqual(final Object other) {

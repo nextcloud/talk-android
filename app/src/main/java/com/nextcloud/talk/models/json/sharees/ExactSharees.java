@@ -33,9 +33,6 @@ public class ExactSharees {
     @JsonField(name = "users")
     List<Sharee> exactSharees;
 
-    public ExactSharees() {
-    }
-
     public List<Sharee> getExactSharees() {
         return this.exactSharees;
     }
@@ -57,10 +54,8 @@ public class ExactSharees {
         }
         final Object this$exactSharees = this.getExactSharees();
         final Object other$exactSharees = other.getExactSharees();
-        if (this$exactSharees == null ? other$exactSharees != null : !this$exactSharees.equals(other$exactSharees)) {
-            return false;
-        }
-        return true;
+
+        return this$exactSharees == null ? other$exactSharees == null : this$exactSharees.equals(other$exactSharees);
     }
 
     protected boolean canEqual(final Object other) {

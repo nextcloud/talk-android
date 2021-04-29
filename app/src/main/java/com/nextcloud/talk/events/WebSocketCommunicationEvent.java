@@ -61,10 +61,8 @@ public class WebSocketCommunicationEvent {
         }
         final Object this$hashMap = this.getHashMap();
         final Object other$hashMap = other.getHashMap();
-        if (this$hashMap == null ? other$hashMap != null : !this$hashMap.equals(other$hashMap)) {
-            return false;
-        }
-        return true;
+
+        return this$hashMap == null ? other$hashMap == null : this$hashMap.equals(other$hashMap);
     }
 
     protected boolean canEqual(final Object other) {

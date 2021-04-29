@@ -37,9 +37,6 @@ public class RoomWebSocketMessage {
     @JsonField(name = "properties")
     RoomPropertiesWebSocketMessage roomPropertiesWebSocketMessage;
 
-    public RoomWebSocketMessage() {
-    }
-
     public String getRoomId() {
         return this.roomId;
     }
@@ -87,10 +84,8 @@ public class RoomWebSocketMessage {
         }
         final Object this$roomPropertiesWebSocketMessage = this.getRoomPropertiesWebSocketMessage();
         final Object other$roomPropertiesWebSocketMessage = other.getRoomPropertiesWebSocketMessage();
-        if (this$roomPropertiesWebSocketMessage == null ? other$roomPropertiesWebSocketMessage != null : !this$roomPropertiesWebSocketMessage.equals(other$roomPropertiesWebSocketMessage)) {
-            return false;
-        }
-        return true;
+
+        return this$roomPropertiesWebSocketMessage == null ? other$roomPropertiesWebSocketMessage == null : this$roomPropertiesWebSocketMessage.equals(other$roomPropertiesWebSocketMessage);
     }
 
     protected boolean canEqual(final Object other) {

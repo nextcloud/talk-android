@@ -33,9 +33,6 @@ public class MentionOCS extends GenericOCS {
     @JsonField(name = "data")
     List<Mention> data;
 
-    public MentionOCS() {
-    }
-
     public List<Mention> getData() {
         return this.data;
     }
@@ -57,10 +54,8 @@ public class MentionOCS extends GenericOCS {
         }
         final Object this$data = this.getData();
         final Object other$data = other.getData();
-        if (this$data == null ? other$data != null : !this$data.equals(other$data)) {
-            return false;
-        }
-        return true;
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
     }
 
     protected boolean canEqual(final Object other) {

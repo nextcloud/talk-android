@@ -58,9 +58,6 @@ public class ThemingCapability {
     @JsonField(name = "background-default")
     boolean backgroundDefault;
 
-    public ThemingCapability() {
-    }
-
     public String getName() {
         return this.name;
     }
@@ -195,10 +192,8 @@ public class ThemingCapability {
         if (this.isBackgroundPlain() != other.isBackgroundPlain()) {
             return false;
         }
-        if (this.isBackgroundDefault() != other.isBackgroundDefault()) {
-            return false;
-        }
-        return true;
+
+        return this.isBackgroundDefault() == other.isBackgroundDefault();
     }
 
     protected boolean canEqual(final Object other) {

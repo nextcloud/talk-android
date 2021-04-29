@@ -31,9 +31,6 @@ public class CapabilitiesList {
     @JsonField(name = "capabilities")
     Capabilities capabilities;
 
-    public CapabilitiesList() {
-    }
-
     public Capabilities getCapabilities() {
         return this.capabilities;
     }
@@ -55,10 +52,8 @@ public class CapabilitiesList {
         }
         final Object this$capabilities = this.getCapabilities();
         final Object other$capabilities = other.getCapabilities();
-        if (this$capabilities == null ? other$capabilities != null : !this$capabilities.equals(other$capabilities)) {
-            return false;
-        }
-        return true;
+
+        return this$capabilities == null ? other$capabilities == null : this$capabilities.equals(other$capabilities);
     }
 
     protected boolean canEqual(final Object other) {

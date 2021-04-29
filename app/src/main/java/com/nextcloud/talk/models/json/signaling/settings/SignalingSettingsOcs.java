@@ -29,9 +29,6 @@ public class SignalingSettingsOcs extends GenericOCS {
     @JsonField(name = "data")
     Settings settings;
 
-    public SignalingSettingsOcs() {
-    }
-
     public Settings getSettings() {
         return this.settings;
     }
@@ -53,10 +50,8 @@ public class SignalingSettingsOcs extends GenericOCS {
         }
         final Object this$settings = this.getSettings();
         final Object other$settings = other.getSettings();
-        if (this$settings == null ? other$settings != null : !this$settings.equals(other$settings)) {
-            return false;
-        }
-        return true;
+
+        return this$settings == null ? other$settings == null : this$settings.equals(other$settings);
     }
 
     protected boolean canEqual(final Object other) {

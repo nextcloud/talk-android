@@ -37,9 +37,6 @@ public class ActorWebSocketMessage {
     @JsonField(name = "userid")
     String userid;
 
-    public ActorWebSocketMessage() {
-    }
-
     public String getType() {
         return this.type;
     }
@@ -87,10 +84,8 @@ public class ActorWebSocketMessage {
         }
         final Object this$userid = this.getUserid();
         final Object other$userid = other.getUserid();
-        if (this$userid == null ? other$userid != null : !this$userid.equals(other$userid)) {
-            return false;
-        }
-        return true;
+
+        return this$userid == null ? other$userid == null : this$userid.equals(other$userid);
     }
 
     protected boolean canEqual(final Object other) {
