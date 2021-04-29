@@ -120,7 +120,7 @@ previous_git_email = previous_git_email.strip
 system ("git config --local user.name '"  + git_user + "'")
 system ("git config --local user.email 'android@nextcloud.com'")
 system ("git remote rm origin")
-system ("git remote add origin https://" + git_user + ":" + git_token + "@github.com/nextcloud/android")
+system ("git remote add origin https://" + git_user + ":" + git_token + "@github.com/nextcloud/talk-android")
 
 # add previous FindBugs result file to git
 system ('git add ' + PREVIOUS_FINDBUGS_RESULTS_FILE)
