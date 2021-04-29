@@ -18,7 +18,7 @@ TRAVIS_GIT_USERNAME = String.new("Drone CI server")
 #   lintOptions {
 #       htmlOutput file("[FILE_NAME].html")
 #   }
-FINDBUGS_REPORT_FILE = String.new("build/reports/spotbugs/spotbugs.html")
+FINDBUGS_REPORT_FILE = String.new("app/build/reports/spotbugs/spotbugs.html")
 
 # File name and relative path of previous results of this script.
 PREVIOUS_FINDBUGS_RESULTS_FILE=String.new("scripts/analysis/findbugs-results.txt")
