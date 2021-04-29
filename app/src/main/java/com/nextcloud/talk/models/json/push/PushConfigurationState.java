@@ -22,11 +22,10 @@ package com.nextcloud.talk.models.json.push;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class PushConfigurationState {
     @JsonField(name = "pushToken")
@@ -43,4 +42,102 @@ public class PushConfigurationState {
 
     @JsonField(name = "usesRegularPass")
     public boolean usesRegularPass;
+
+    public String getPushToken() {
+        return this.pushToken;
+    }
+
+    public String getDeviceIdentifier() {
+        return this.deviceIdentifier;
+    }
+
+    public String getDeviceIdentifierSignature() {
+        return this.deviceIdentifierSignature;
+    }
+
+    public String getUserPublicKey() {
+        return this.userPublicKey;
+    }
+
+    public boolean isUsesRegularPass() {
+        return this.usesRegularPass;
+    }
+
+    public void setPushToken(String pushToken) {
+        this.pushToken = pushToken;
+    }
+
+    public void setDeviceIdentifier(String deviceIdentifier) {
+        this.deviceIdentifier = deviceIdentifier;
+    }
+
+    public void setDeviceIdentifierSignature(String deviceIdentifierSignature) {
+        this.deviceIdentifierSignature = deviceIdentifierSignature;
+    }
+
+    public void setUserPublicKey(String userPublicKey) {
+        this.userPublicKey = userPublicKey;
+    }
+
+    public void setUsesRegularPass(boolean usesRegularPass) {
+        this.usesRegularPass = usesRegularPass;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof PushConfigurationState)) {
+            return false;
+        }
+        final PushConfigurationState other = (PushConfigurationState) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$pushToken = this.getPushToken();
+        final Object other$pushToken = other.getPushToken();
+        if (this$pushToken == null ? other$pushToken != null : !this$pushToken.equals(other$pushToken)) {
+            return false;
+        }
+        final Object this$deviceIdentifier = this.getDeviceIdentifier();
+        final Object other$deviceIdentifier = other.getDeviceIdentifier();
+        if (this$deviceIdentifier == null ? other$deviceIdentifier != null : !this$deviceIdentifier.equals(other$deviceIdentifier)) {
+            return false;
+        }
+        final Object this$deviceIdentifierSignature = this.getDeviceIdentifierSignature();
+        final Object other$deviceIdentifierSignature = other.getDeviceIdentifierSignature();
+        if (this$deviceIdentifierSignature == null ? other$deviceIdentifierSignature != null : !this$deviceIdentifierSignature.equals(other$deviceIdentifierSignature)) {
+            return false;
+        }
+        final Object this$userPublicKey = this.getUserPublicKey();
+        final Object other$userPublicKey = other.getUserPublicKey();
+        if (this$userPublicKey == null ? other$userPublicKey != null : !this$userPublicKey.equals(other$userPublicKey)) {
+            return false;
+        }
+
+        return this.isUsesRegularPass() == other.isUsesRegularPass();
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof PushConfigurationState;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $pushToken = this.getPushToken();
+        result = result * PRIME + ($pushToken == null ? 43 : $pushToken.hashCode());
+        final Object $deviceIdentifier = this.getDeviceIdentifier();
+        result = result * PRIME + ($deviceIdentifier == null ? 43 : $deviceIdentifier.hashCode());
+        final Object $deviceIdentifierSignature = this.getDeviceIdentifierSignature();
+        result = result * PRIME + ($deviceIdentifierSignature == null ? 43 : $deviceIdentifierSignature.hashCode());
+        final Object $userPublicKey = this.getUserPublicKey();
+        result = result * PRIME + ($userPublicKey == null ? 43 : $userPublicKey.hashCode());
+        result = result * PRIME + (this.isUsesRegularPass() ? 79 : 97);
+        return result;
+    }
+
+    public String toString() {
+        return "PushConfigurationState(pushToken=" + this.getPushToken() + ", deviceIdentifier=" + this.getDeviceIdentifier() + ", deviceIdentifierSignature=" + this.getDeviceIdentifierSignature() + ", userPublicKey=" + this.getUserPublicKey() + ", usesRegularPass=" + this.isUsesRegularPass() + ")";
+    }
 }

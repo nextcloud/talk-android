@@ -22,11 +22,9 @@ package com.nextcloud.talk.models.json.signaling.settings;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
 
 import java.util.List;
 
-@Data
 @JsonObject
 public class Settings {
     @JsonField(name = "stunservers")
@@ -40,4 +38,90 @@ public class Settings {
 
     @JsonField(name = "ticket")
     String externalSignalingTicket;
+
+    public List<IceServer> getStunServers() {
+        return this.stunServers;
+    }
+
+    public List<IceServer> getTurnServers() {
+        return this.turnServers;
+    }
+
+    public String getExternalSignalingServer() {
+        return this.externalSignalingServer;
+    }
+
+    public String getExternalSignalingTicket() {
+        return this.externalSignalingTicket;
+    }
+
+    public void setStunServers(List<IceServer> stunServers) {
+        this.stunServers = stunServers;
+    }
+
+    public void setTurnServers(List<IceServer> turnServers) {
+        this.turnServers = turnServers;
+    }
+
+    public void setExternalSignalingServer(String externalSignalingServer) {
+        this.externalSignalingServer = externalSignalingServer;
+    }
+
+    public void setExternalSignalingTicket(String externalSignalingTicket) {
+        this.externalSignalingTicket = externalSignalingTicket;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Settings)) {
+            return false;
+        }
+        final Settings other = (Settings) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$stunServers = this.getStunServers();
+        final Object other$stunServers = other.getStunServers();
+        if (this$stunServers == null ? other$stunServers != null : !this$stunServers.equals(other$stunServers)) {
+            return false;
+        }
+        final Object this$turnServers = this.getTurnServers();
+        final Object other$turnServers = other.getTurnServers();
+        if (this$turnServers == null ? other$turnServers != null : !this$turnServers.equals(other$turnServers)) {
+            return false;
+        }
+        final Object this$externalSignalingServer = this.getExternalSignalingServer();
+        final Object other$externalSignalingServer = other.getExternalSignalingServer();
+        if (this$externalSignalingServer == null ? other$externalSignalingServer != null : !this$externalSignalingServer.equals(other$externalSignalingServer)) {
+            return false;
+        }
+        final Object this$externalSignalingTicket = this.getExternalSignalingTicket();
+        final Object other$externalSignalingTicket = other.getExternalSignalingTicket();
+
+        return this$externalSignalingTicket == null ? other$externalSignalingTicket == null : this$externalSignalingTicket.equals(other$externalSignalingTicket);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof Settings;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $stunServers = this.getStunServers();
+        result = result * PRIME + ($stunServers == null ? 43 : $stunServers.hashCode());
+        final Object $turnServers = this.getTurnServers();
+        result = result * PRIME + ($turnServers == null ? 43 : $turnServers.hashCode());
+        final Object $externalSignalingServer = this.getExternalSignalingServer();
+        result = result * PRIME + ($externalSignalingServer == null ? 43 : $externalSignalingServer.hashCode());
+        final Object $externalSignalingTicket = this.getExternalSignalingTicket();
+        result = result * PRIME + ($externalSignalingTicket == null ? 43 : $externalSignalingTicket.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "Settings(stunServers=" + this.getStunServers() + ", turnServers=" + this.getTurnServers() + ", externalSignalingServer=" + this.getExternalSignalingServer() + ", externalSignalingTicket=" + this.getExternalSignalingTicket() + ")";
+    }
 }

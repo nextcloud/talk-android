@@ -23,15 +23,55 @@ package com.nextcloud.talk.models.json.autocomplete;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 import java.util.List;
 
 @Parcel
-@Data
 @JsonObject
 public class AutocompleteOCS extends GenericOCS {
     @JsonField(name = "data")
     List<AutocompleteUser> data;
+
+    public List<AutocompleteUser> getData() {
+        return this.data;
+    }
+
+    public void setData(List<AutocompleteUser> data) {
+        this.data = data;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof AutocompleteOCS)) {
+            return false;
+        }
+        final AutocompleteOCS other = (AutocompleteOCS) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$data = this.getData();
+        final Object other$data = other.getData();
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof AutocompleteOCS;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $data = this.getData();
+        result = result * PRIME + ($data == null ? 43 : $data.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "AutocompleteOCS(data=" + this.getData() + ")";
+    }
 }

@@ -21,11 +21,10 @@ package com.nextcloud.talk.models.json.mention;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class Mention {
     @JsonField(name = "id")
@@ -37,4 +36,75 @@ public class Mention {
     // type of user (guests or users or calls)
     @JsonField(name = "source")
     String source;
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public String getSource() {
+        return this.source;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Mention)) {
+            return false;
+        }
+        final Mention other = (Mention) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$id = this.getId();
+        final Object other$id = other.getId();
+        if (this$id == null ? other$id != null : !this$id.equals(other$id)) {
+            return false;
+        }
+        final Object this$label = this.getLabel();
+        final Object other$label = other.getLabel();
+        if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
+            return false;
+        }
+        final Object this$source = this.getSource();
+        final Object other$source = other.getSource();
+
+        return this$source == null ? other$source == null : this$source.equals(other$source);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof Mention;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $id = this.getId();
+        result = result * PRIME + ($id == null ? 43 : $id.hashCode());
+        final Object $label = this.getLabel();
+        result = result * PRIME + ($label == null ? 43 : $label.hashCode());
+        final Object $source = this.getSource();
+        result = result * PRIME + ($source == null ? 43 : $source.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "Mention(id=" + this.getId() + ", label=" + this.getLabel() + ", source=" + this.getSource() + ")";
+    }
 }

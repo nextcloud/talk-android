@@ -22,10 +22,9 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @JsonObject
 @Parcel
 public class ActorWebSocketMessage {
@@ -37,4 +36,75 @@ public class ActorWebSocketMessage {
 
     @JsonField(name = "userid")
     String userid;
+
+    public String getType() {
+        return this.type;
+    }
+
+    public String getSessionId() {
+        return this.sessionId;
+    }
+
+    public String getUserid() {
+        return this.userid;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public void setUserid(String userid) {
+        this.userid = userid;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ActorWebSocketMessage)) {
+            return false;
+        }
+        final ActorWebSocketMessage other = (ActorWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$type = this.getType();
+        final Object other$type = other.getType();
+        if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
+            return false;
+        }
+        final Object this$sessionId = this.getSessionId();
+        final Object other$sessionId = other.getSessionId();
+        if (this$sessionId == null ? other$sessionId != null : !this$sessionId.equals(other$sessionId)) {
+            return false;
+        }
+        final Object this$userid = this.getUserid();
+        final Object other$userid = other.getUserid();
+
+        return this$userid == null ? other$userid == null : this$userid.equals(other$userid);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ActorWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $type = this.getType();
+        result = result * PRIME + ($type == null ? 43 : $type.hashCode());
+        final Object $sessionId = this.getSessionId();
+        result = result * PRIME + ($sessionId == null ? 43 : $sessionId.hashCode());
+        final Object $userid = this.getUserid();
+        result = result * PRIME + ($userid == null ? 43 : $userid.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ActorWebSocketMessage(type=" + this.getType() + ", sessionId=" + this.getSessionId() + ", userid=" + this.getUserid() + ")";
+    }
 }

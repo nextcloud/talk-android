@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,26 +19,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import com.github.spotbugs.snom.SpotBugsTask
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'findbugs'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 
 configurations {
     ktlint
 }
 
-def taskRequest = getGradle().getStartParameter().getTaskRequests().toString()
-if (taskRequest.contains("Gplay") || taskRequest.contains("findbugs") || taskRequest.contains("lint")) {
-    apply from: 'gplay.gradle'
+for (TaskExecutionRequest tr : getGradle().getStartParameter().getTaskRequests()) {
+    for (String arg : tr.args) {
+        // any gplay, but only exact "build", as e.g. buildGeneric shall not apply gplay.grade
+        if (arg.contains("Gplay") || arg.contains("lint") || arg == "build") {
+            apply from: 'gplay.gradle'
+            System.console().println("Applying gplay.gradle")
+        }
+    }
 }
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    buildToolsVersion '30.0.3'
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
@@ -107,6 +115,28 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
 
+    android.applicationVariants.all { variant ->
+        String variantName = variant.name
+        String capVariantName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1)
+        tasks.register("spotbugs${capVariantName}Report", SpotBugsTask) {
+            ignoreFailures = true // should continue checking
+            effort = "max"
+            reportLevel = "medium"
+            classes = fileTree("$project.buildDir/intermediates/javac/${variantName}/classes/")
+            excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
+
+            reports {
+                xml.enabled = false
+                html {
+                    enabled = true
+                    destination = file("$project.buildDir/reports/spotbugs/spotbugs.html")
+                }
+            }
+        }
+    }
+
+    check.dependsOn 'spotbugsGplayDebugReport', 'lint', 'ktlint', 'detekt'
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -118,27 +148,6 @@ android {
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
         disable 'MissingTranslation'
     }
-
-    task findbugs(type: FindBugs) {
-        ignoreFailures = false
-        effort = "max"
-        reportLevel = "medium"
-        classes = fileTree("${project.rootDir}/app/build/intermediates/javac/gplayDebug/classes/com/nextcloud/")
-        excludeFilter = file("${project.rootDir}/findbugs-filter.xml")
-        source = fileTree('src/main/java')
-        pluginClasspath = project.configurations.findbugsPlugins
-        classpath = files()
-        include '**/*.java'
-        exclude '**/gen/**'
-
-        reports {
-            xml.enabled = false
-            html.enabled = true
-            html {
-                destination = file("$project.buildDir/reports/findbugs/findbugs.html")
-            }
-        }
-    }
 }
 
 ext {
@@ -146,7 +155,6 @@ ext {
     coilKtVersion = "1.2.0"
     daggerVersion = "2.34.1"
     okhttpVersion = "3.14.2"
-    lombokVersion = "1.18.10"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
     powermockVersion = "2.0.9"
@@ -155,13 +163,11 @@ ext {
     markwonVersion =  "4.6.2"
 }
 
-
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
     exclude group: 'com.google.firebase', module: 'firebase-analytics'
     exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
 }
-
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
@@ -180,7 +186,6 @@ dependencies {
     })
     ktlint "com.pinterest:ktlint:0.41.0"
     implementation 'org.conscrypt:conscrypt-android:2.5.1'
-
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
@@ -221,8 +226,6 @@ dependencies {
     implementation "org.parceler:parceler-api:$parcelerVersion"
     kapt "org.parceler:parceler:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     implementation "com.jakewharton:butterknife:${butterknifeVersion}"
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
@@ -285,8 +288,8 @@ dependencies {
     androidTestImplementation ('androidx.test.espresso:espresso-core:3.3.0', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    findbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
-    findbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.6'
+    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
 }
 
 task ktlint(type: JavaExec, group: "verification") {

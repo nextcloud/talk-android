@@ -37,18 +37,22 @@ import java.io.IOException;
 import at.bitfire.dav4android.Property;
 import at.bitfire.dav4android.PropertyFactory;
 import at.bitfire.dav4android.XmlUtils;
-import lombok.Getter;
-import lombok.Setter;
 
 public class NCPermission implements Property {
     public static final Name NAME = new Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_PERMISSIONS);
 
-    @Getter
-    @Setter
     private String ncPermission;
 
     private NCPermission(String p) {
         ncPermission = p;
+    }
+
+    public String getNcPermission() {
+        return this.ncPermission;
+    }
+
+    public void setNcPermission(String ncPermission) {
+        this.ncPermission = ncPermission;
     }
 
     public static class Factory implements PropertyFactory {

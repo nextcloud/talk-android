@@ -22,13 +22,53 @@ package com.nextcloud.talk.models.json.generic;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class GenericOverall {
     @JsonField(name = "ocs")
     public GenericOCS ocs;
+
+    public GenericOCS getOcs() {
+        return this.ocs;
+    }
+
+    public void setOcs(GenericOCS ocs) {
+        this.ocs = ocs;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof GenericOverall)) {
+            return false;
+        }
+        final GenericOverall other = (GenericOverall) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$ocs = this.getOcs();
+        final Object other$ocs = other.getOcs();
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof GenericOverall;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $ocs = this.getOcs();
+        result = result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "GenericOverall(ocs=" + this.getOcs() + ")";
+    }
 }

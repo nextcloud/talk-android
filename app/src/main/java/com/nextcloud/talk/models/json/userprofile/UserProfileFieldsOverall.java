@@ -25,12 +25,50 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
 
-import lombok.Data;
-
 @Parcel
-@Data
 @JsonObject
 public class UserProfileFieldsOverall {
     @JsonField(name = "ocs")
     UserProfileFieldsOCS ocs;
+
+    public UserProfileFieldsOCS getOcs() {
+        return this.ocs;
+    }
+
+    public void setOcs(UserProfileFieldsOCS ocs) {
+        this.ocs = ocs;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof UserProfileFieldsOverall)) {
+            return false;
+        }
+        final UserProfileFieldsOverall other = (UserProfileFieldsOverall) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$ocs = this.getOcs();
+        final Object other$ocs = other.getOcs();
+
+        return this$ocs == null ? other$ocs == null : this$ocs.equals(other$ocs);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof UserProfileFieldsOverall;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $ocs = this.getOcs();
+        result = result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "UserProfileFieldsOverall(ocs=" + this.getOcs() + ")";
+    }
 }

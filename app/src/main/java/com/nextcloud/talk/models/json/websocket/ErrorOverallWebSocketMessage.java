@@ -22,13 +22,53 @@ package com.nextcloud.talk.models.json.websocket;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @Parcel
 @JsonObject
 public class ErrorOverallWebSocketMessage extends BaseWebSocketMessage {
     @JsonField(name = "error")
     ErrorWebSocketMessage errorWebSocketMessage;
+
+    public ErrorWebSocketMessage getErrorWebSocketMessage() {
+        return this.errorWebSocketMessage;
+    }
+
+    public void setErrorWebSocketMessage(ErrorWebSocketMessage errorWebSocketMessage) {
+        this.errorWebSocketMessage = errorWebSocketMessage;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ErrorOverallWebSocketMessage)) {
+            return false;
+        }
+        final ErrorOverallWebSocketMessage other = (ErrorOverallWebSocketMessage) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$errorWebSocketMessage = this.getErrorWebSocketMessage();
+        final Object other$errorWebSocketMessage = other.getErrorWebSocketMessage();
+
+        return this$errorWebSocketMessage == null ? other$errorWebSocketMessage == null : this$errorWebSocketMessage.equals(other$errorWebSocketMessage);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ErrorOverallWebSocketMessage;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $errorWebSocketMessage = this.getErrorWebSocketMessage();
+        result = result * PRIME + ($errorWebSocketMessage == null ? 43 : $errorWebSocketMessage.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "ErrorOverallWebSocketMessage(errorWebSocketMessage=" + this.getErrorWebSocketMessage() + ")";
+    }
 }

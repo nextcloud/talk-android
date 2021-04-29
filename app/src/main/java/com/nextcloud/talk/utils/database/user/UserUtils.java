@@ -44,7 +44,7 @@ public class UserUtils {
     }
 
     public boolean anyUserExists() {
-        return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true))
+        return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
                 .limit(1).get().value() > 0);
     }
 
@@ -56,8 +56,8 @@ public class UserUtils {
     }
 
     public List getUsersScheduledForDeletion() {
-        Result findUsersQueryResult = dataStore.select(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.eq(true))
-                .get();
+        Result findUsersQueryResult = dataStore.select(User.class)
+                .where(UserEntity.SCHEDULED_FOR_DELETION.eq(Boolean.TRUE)).get();
 
         return findUsersQueryResult.toList();
     }
@@ -65,7 +65,7 @@ public class UserUtils {
 
     public UserEntity getAnyUserAndSetAsActive() {
         Result findUserQueryResult = dataStore.select(User.class)
-                .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true))
+                .where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
                 .limit(1).get();
 
         UserEntity userEntity;
@@ -79,8 +79,8 @@ public class UserUtils {
     }
 
     public @Nullable UserEntity getCurrentUser() {
-        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(true)
-                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
+        Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(Boolean.TRUE)
+                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
                 .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
@@ -143,12 +143,11 @@ public class UserUtils {
         }
 
         return false;
-
     }
 
     public UserEntity getUserWithInternalId(long internalId) {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.ID.eq(internalId)
-                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)))
+                .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))
                 .limit(1).get();
 
         return (UserEntity) findUserQueryResult.firstOrNull();
@@ -174,7 +173,6 @@ public class UserUtils {
         }
 
         return getAnyUserAndSetAsActive() != null;
-
     }
 
     public Observable<UserEntity> createOrUpdateUser(@Nullable String username, @Nullable String token,
@@ -268,5 +266,4 @@ public class UserUtils {
                 .toObservable()
                 .subscribeOn(Schedulers.io());
     }
-
 }

@@ -22,10 +22,9 @@ package com.nextcloud.talk.models.json.notifications;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
-@Data
 @Parcel
 @JsonObject
 public class NotificationRichObject {
@@ -37,4 +36,75 @@ public class NotificationRichObject {
 
     @JsonField(name = "name")
     String name;
+
+    public String getLabel() {
+        return this.label;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof NotificationRichObject)) {
+            return false;
+        }
+        final NotificationRichObject other = (NotificationRichObject) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$label = this.getLabel();
+        final Object other$label = other.getLabel();
+        if (this$label == null ? other$label != null : !this$label.equals(other$label)) {
+            return false;
+        }
+        final Object this$type = this.getType();
+        final Object other$type = other.getType();
+        if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
+            return false;
+        }
+        final Object this$name = this.getName();
+        final Object other$name = other.getName();
+
+        return this$name == null ? other$name == null : this$name.equals(other$name);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof NotificationRichObject;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $label = this.getLabel();
+        result = result * PRIME + ($label == null ? 43 : $label.hashCode());
+        final Object $type = this.getType();
+        result = result * PRIME + ($type == null ? 43 : $type.hashCode());
+        final Object $name = this.getName();
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "NotificationRichObject(label=" + this.getLabel() + ", type=" + this.getType() + ", name=" + this.getName() + ")";
+    }
 }

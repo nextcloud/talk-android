@@ -23,15 +23,55 @@ package com.nextcloud.talk.models.json.conversations;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 import java.util.List;
 
-@Data
 @Parcel
 @JsonObject
 public class RoomsOCS extends GenericOCS {
     @JsonField(name = "data")
     public List<Conversation> data;
+
+    public List<Conversation> getData() {
+        return this.data;
+    }
+
+    public void setData(List<Conversation> data) {
+        this.data = data;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof RoomsOCS)) {
+            return false;
+        }
+        final RoomsOCS other = (RoomsOCS) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$data = this.getData();
+        final Object other$data = other.getData();
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof RoomsOCS;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $data = this.getData();
+        result = result * PRIME + ($data == null ? 43 : $data.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "RoomsOCS(data=" + this.getData() + ")";
+    }
 }

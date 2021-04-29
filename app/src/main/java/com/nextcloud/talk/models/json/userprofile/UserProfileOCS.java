@@ -23,13 +23,53 @@ package com.nextcloud.talk.models.json.userprofile;
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.generic.GenericOCS;
-import lombok.Data;
+
 import org.parceler.Parcel;
 
 @Parcel
-@Data
 @JsonObject
 public class UserProfileOCS extends GenericOCS {
     @JsonField(name = "data")
     UserProfileData data;
+
+    public UserProfileData getData() {
+        return this.data;
+    }
+
+    public void setData(UserProfileData data) {
+        this.data = data;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof UserProfileOCS)) {
+            return false;
+        }
+        final UserProfileOCS other = (UserProfileOCS) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        final Object this$data = this.getData();
+        final Object other$data = other.getData();
+
+        return this$data == null ? other$data == null : this$data.equals(other$data);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof UserProfileOCS;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $data = this.getData();
+        result = result * PRIME + ($data == null ? 43 : $data.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "UserProfileOCS(data=" + this.getData() + ")";
+    }
 }

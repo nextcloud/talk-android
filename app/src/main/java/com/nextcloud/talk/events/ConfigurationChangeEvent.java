@@ -20,8 +20,28 @@
 
 package com.nextcloud.talk.events;
 
-import lombok.Data;
-
-@Data
 public class ConfigurationChangeEvent {
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof ConfigurationChangeEvent)) {
+            return false;
+        }
+        final ConfigurationChangeEvent other = (ConfigurationChangeEvent) o;
+
+        return other.canEqual((Object) this);
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof ConfigurationChangeEvent;
+    }
+
+    public int hashCode() {
+        return 1;
+    }
+
+    public String toString() {
+        return "ConfigurationChangeEvent()";
+    }
 }

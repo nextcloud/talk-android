@@ -20,9 +20,6 @@
 
 package com.nextcloud.talk.events;
 
-import lombok.Data;
-
-@Data
 public class BottomSheetLockEvent {
     private final boolean cancelable;
     private final int delay;
@@ -47,4 +44,73 @@ public class BottomSheetLockEvent {
         this.dismissView = dismissView;
     }
 
+    public boolean isCancelable() {
+        return this.cancelable;
+    }
+
+    public int getDelay() {
+        return this.delay;
+    }
+
+    public boolean isShouldRefreshData() {
+        return this.shouldRefreshData;
+    }
+
+    public boolean isCancel() {
+        return this.cancel;
+    }
+
+    public boolean isDismissView() {
+        return this.dismissView;
+    }
+
+    public void setDismissView(boolean dismissView) {
+        this.dismissView = dismissView;
+    }
+
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof BottomSheetLockEvent)) {
+            return false;
+        }
+        final BottomSheetLockEvent other = (BottomSheetLockEvent) o;
+        if (!other.canEqual((Object) this)) {
+            return false;
+        }
+        if (this.isCancelable() != other.isCancelable()) {
+            return false;
+        }
+        if (this.getDelay() != other.getDelay()) {
+            return false;
+        }
+        if (this.isShouldRefreshData() != other.isShouldRefreshData()) {
+            return false;
+        }
+        if (this.isCancel() != other.isCancel()) {
+            return false;
+        }
+
+        return this.isDismissView() == other.isDismissView();
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof BottomSheetLockEvent;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + (this.isCancelable() ? 79 : 97);
+        result = result * PRIME + this.getDelay();
+        result = result * PRIME + (this.isShouldRefreshData() ? 79 : 97);
+        result = result * PRIME + (this.isCancel() ? 79 : 97);
+        result = result * PRIME + (this.isDismissView() ? 79 : 97);
+        return result;
+    }
+
+    public String toString() {
+        return "BottomSheetLockEvent(cancelable=" + this.isCancelable() + ", delay=" + this.getDelay() + ", shouldRefreshData=" + this.isShouldRefreshData() + ", cancel=" + this.isCancel() + ", dismissView=" + this.isDismissView() + ")";
+    }
 }
