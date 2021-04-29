@@ -434,14 +434,17 @@ class ChatController(args: Bundle) :
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_SYSTEM_MESSAGE, MagicSystemMessageViewHolder::class.java,
-                R.layout.item_system_message, MagicSystemMessageViewHolder::class.java, R.layout.item_system_message,
+                R.layout.item_system_message, MagicSystemMessageViewHolder::class.java,
+                R.layout.item_system_message,
                 this
             )
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_UNREAD_NOTICE_MESSAGE,
-                MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header,
-                MagicUnreadNoticeMessageViewHolder::class.java, R.layout.item_date_header, this
+                MagicUnreadNoticeMessageViewHolder::class.java,
+                R.layout.item_date_header,
+                MagicUnreadNoticeMessageViewHolder::class.java,
+                R.layout.item_date_header, this
             )
 
             adapter = TalkMessagesListAdapter(
