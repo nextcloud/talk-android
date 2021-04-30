@@ -96,7 +96,6 @@ public class AccountRemovalWorker extends Worker {
                     ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                             JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                    String finalCredentials = credentials;
                     ncApi.unregisterDeviceForNotificationsWithNextcloud(credentials, ApiUtils.getUrlNextcloudPush(userEntity
                             .getBaseUrl()))
                             .blockingSubscribe(new Observer<GenericOverall>() {
@@ -114,90 +113,13 @@ public class AccountRemovalWorker extends Worker {
                                         queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
                                         queryMap.put("deviceIdentifierSignature",
                                                 finalPushConfigurationState.getDeviceIdentifierSignature());
-
-                                        ncApi.unregisterDeviceForNotificationsWithProxy
-                                                (ApiUtils.getUrlPushProxy(), queryMap)
-                                                .subscribe(new Observer<Void>() {
-                                                    @Override
-                                                    public void onSubscribe(Disposable d) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onNext(Void aVoid) {
-
-                                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                                            String groupName = String.format(getApplicationContext().getResources()
-                                                                    .getString(R.string
-                                                                            .nc_notification_channel), userEntity.getUserId(), userEntity.getBaseUrl());
-                                                            CRC32 crc32 = new CRC32();
-                                                            crc32.update(groupName.getBytes());
-                                                            NotificationManager notificationManager =
-                                                                    (NotificationManager) getApplicationContext().getSystemService
-                                                                            (Context.NOTIFICATION_SERVICE);
-
-                                                            if (notificationManager != null) {
-                                                                notificationManager.deleteNotificationChannelGroup(Long
-                                                                        .toString(crc32.getValue()));
-                                                            }
-                                                        }
-
-                                                        WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(userEntity.getId());
-
-                                                        arbitraryStorageUtils.deleteAllEntriesForAccountIdentifier(userEntity.getId()).subscribe(new Observer() {
-                                                            @Override
-                                                            public void onSubscribe(Disposable d) {
-
-                                                            }
-
-                                                            @Override
-                                                            public void onNext(Object o) {
-                                                                userUtils.deleteUser(userEntity.getId()).subscribe(new CompletableObserver() {
-                                                                    @Override
-                                                                    public void onSubscribe(Disposable d) {
-
-                                                                    }
-
-                                                                    @Override
-                                                                    public void onComplete() {
-
-                                                                    }
-
-                                                                    @Override
-                                                                    public void onError(Throwable e) {
-
-                                                                    }
-                                                                });
-                                                            }
-
-                                                            @Override
-                                                            public void onError(Throwable e) {
-
-                                                            }
-
-                                                            @Override
-                                                            public void onComplete() {
-
-                                                            }
-                                                        });
-                                                    }
-
-                                                    @Override
-                                                    public void onError(Throwable e) {
-
-                                                    }
-
-                                                    @Override
-                                                    public void onComplete() {
-
-                                                    }
-                                                });
+                                        unregisterDeviceForNotificationWithProxy(queryMap, userEntity);
                                     }
                                 }
 
                                 @Override
                                 public void onError(Throwable e) {
-
+                                    Log.e(TAG, "error while trying to unregister Device For Notifications", e);
                                 }
 
                                 @Override
@@ -206,46 +128,101 @@ public class AccountRemovalWorker extends Worker {
                                 }
                             });
                 } else {
-                    userUtils.deleteUser(userEntity.getId())
-                            .subscribe(new CompletableObserver() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onComplete() {
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-                            });
+                    deleteUser(userEntity);
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong while removing job at parsing PushConfigurationState");
-                userUtils.deleteUser(userEntity.getId())
-                        .subscribe(new CompletableObserver() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-                        });
+                deleteUser(userEntity);
             }
         }
 
         return Result.success();
+    }
+
+    private void unregisterDeviceForNotificationWithProxy(HashMap<String, String> queryMap, UserEntity userEntity) {
+        ncApi.unregisterDeviceForNotificationsWithProxy
+                (ApiUtils.getUrlPushProxy(), queryMap)
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Void aVoid) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            String groupName = String.format(getApplicationContext().getResources()
+                                    .getString(R.string
+                                            .nc_notification_channel), userEntity.getUserId(), userEntity.getBaseUrl());
+                            CRC32 crc32 = new CRC32();
+                            crc32.update(groupName.getBytes());
+                            NotificationManager notificationManager =
+                                    (NotificationManager) getApplicationContext().getSystemService
+                                            (Context.NOTIFICATION_SERVICE);
+
+                            if (notificationManager != null) {
+                                notificationManager.deleteNotificationChannelGroup(Long
+                                        .toString(crc32.getValue()));
+                            }
+                        }
+                        WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(userEntity.getId());
+                        deleteAllEntriesForAccountIdentifier(userEntity);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "error while trying to unregister Device For Notification With Proxy", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    private void deleteAllEntriesForAccountIdentifier(UserEntity userEntity) {
+        arbitraryStorageUtils.deleteAllEntriesForAccountIdentifier(userEntity.getId()).subscribe(new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(Object o) {
+                deleteUser(userEntity);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "error while trying to delete All Entries For Account Identifier", e);
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+    }
+
+    private void deleteUser(UserEntity userEntity) {
+        String username = userEntity.getUsername();
+        userUtils.deleteUser(userEntity.getId())
+                .subscribe(new CompletableObserver() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "deleted user: " + username);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e(TAG, "error while trying to delete user", e);
+                    }
+                });
     }
 }
