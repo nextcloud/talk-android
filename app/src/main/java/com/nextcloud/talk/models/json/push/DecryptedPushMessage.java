@@ -44,11 +44,17 @@ public class DecryptedPushMessage {
     @JsonField(name = "nid")
     public long notificationId;
 
+    @JsonField(name = "nids")
+    public long[] notificationIds;
+
     @JsonField(name = "delete")
     public boolean delete;
 
     @JsonField(name = "delete-all")
     public boolean deleteAll;
+
+    @JsonField(name = "delete-multiple")
+    public boolean deleteMultiple;
 
     @JsonIgnore
     public NotificationUser notificationUser;
@@ -99,6 +105,14 @@ public class DecryptedPushMessage {
         return this.timestamp;
     }
 
+    public long[] getNotificationIds() {
+        return notificationIds;
+    }
+
+    public boolean isDeleteMultiple() {
+        return deleteMultiple;
+    }
+
     public void setApp(String app) {
         this.app = app;
     }
@@ -137,6 +151,14 @@ public class DecryptedPushMessage {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public void setNotificationIds(long[] notificationIds) {
+        this.notificationIds = notificationIds;
+    }
+
+    public void setDeleteMultiple(boolean deleteMultiple) {
+        this.deleteMultiple = deleteMultiple;
     }
 
     public boolean equals(final Object o) {

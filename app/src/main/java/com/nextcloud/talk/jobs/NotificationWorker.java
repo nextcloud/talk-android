@@ -586,6 +586,10 @@ public class NotificationWorker extends Worker {
                         NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
                     } else if (decryptedPushMessage.isDeleteAll()) {
                         NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
+                    } else if (decryptedPushMessage.isDeleteMultiple()) {
+                        for (long notificationId : decryptedPushMessage.getNotificationIds()) {
+                            NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), notificationId);
+                        }
                     } else {
                         credentials = ApiUtils.getCredentials(signatureVerification.getUserEntity().getUsername(),
                                 signatureVerification.getUserEntity().getToken());

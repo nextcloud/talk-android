@@ -169,6 +169,14 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             )
                         } else if (deleteAll) {
                             cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
+                        } else if (deleteMultiple) {
+                            notificationIds.forEach {
+                                cancelExistingNotificationWithId(
+                                    applicationContext,
+                                    signatureVerification!!.userEntity,
+                                    it
+                                )
+                            }
                         } else if (type == "call") {
                             val fullScreenIntent = Intent(applicationContext, MagicCallActivity::class.java)
                             val bundle = Bundle()
@@ -201,7 +209,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                         LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
                                     ringtoneSettings.ringtoneUri
                                 } catch (exception: IOException) {
-                                    Uri.parse("android.resource://" + applicationContext.packageName + "/raw/librem_by_feandesign_call")
+                                    Uri.parse(
+                                        "android.resource://" +
+                                            applicationContext.packageName +
+                                            "/raw/librem_by_feandesign_call"
+                                    )
                                 }
                             }
 
