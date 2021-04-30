@@ -263,7 +263,9 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
 
         currentUser = userUtils.getCurrentUser();
 
@@ -480,12 +482,10 @@ public class ConversationsListController extends BaseController implements Searc
                         HttpException exception = (HttpException) throwable;
                         switch (exception.code()) {
                             case 401:
-                                if (getParentController() != null &&
-                                        getParentController().getRouter() != null) {
+                                if (getParentController() != null && getParentController().getRouter() != null) {
                                     Log.d(TAG, "Starting reauth webview via getParentController()");
                                     getParentController().getRouter().pushController((RouterTransaction.with
-                                            (new WebViewLoginController(currentUser.getBaseUrl(),
-                                                                        true))
+                                            (new WebViewLoginController(currentUser.getBaseUrl(), true))
                                             .pushChangeHandler(new VerticalChangeHandler())
                                             .popChangeHandler(new VerticalChangeHandler())));
                                 } else {
@@ -827,6 +827,7 @@ public class ConversationsListController extends BaseController implements Searc
                     .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
                                                             R.drawable.ic_delete_black_24dp, R.color.bg_default))
                     .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+                    .setCancelable(false)
                     .setTitle(R.string.nc_dialog_invalid_password)
                     .setMessage(R.string.nc_dialog_reauth_or_delete)
                     .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
