@@ -26,14 +26,17 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
@@ -54,13 +57,16 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
+import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
@@ -195,25 +201,6 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         }
     }
 
-    public boolean isSupportedMimetype(String mimetype){
-        switch (mimetype) {
-            case "image/png":
-            case "image/jpeg":
-            case "image/gif":
-            case "audio/mpeg":
-            case "audio/wav":
-            case "audio/ogg":
-            case "video/mp4":
-            case "video/quicktime":
-            case "video/ogg":
-            case "text/markdown":
-            case "text/plain":
-                return true;
-            default:
-                return false;
-        }
-    }
-
     private void openOrDownloadFile(ChatMessage message) {
         String filename = message.getSelectedIndividualHashMap().get("name");
         String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
@@ -243,6 +230,26 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         }
     }
 
+    public boolean isSupportedMimetype(String mimetype){
+        switch (mimetype) {
+            case "image/png":
+            case "image/jpeg":
+            case "image/gif":
+            case "audio/mpeg":
+            case "audio/wav":
+            case "audio/ogg":
+            case "video/mp4":
+            case "video/quicktime":
+            case "video/ogg":
+            case "text/markdown":
+            case "text/plain":
+            case "application/pdf":
+                return true;
+            default:
+                return false;
+        }
+    }
+
     private void openFile(String filename, String mimetype) {
         switch (mimetype) {
             case "audio/mpeg":
@@ -262,8 +269,40 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             case "text/plain":
                 openTextView(filename, mimetype);
                 break;
+            case "application/pdf":
+                openPdf(filename);
+                break;
             default:
                 Log.w(TAG, "no method defined for mimetype: " + mimetype);
+        }
+    }
+
+    private void openPdf(String fileName) {
+        String path = context.getCacheDir().getAbsolutePath() + "/" + fileName;
+        File file = new File(path);
+        Intent intent = null;
+        if (Build.VERSION.SDK_INT < 24) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        } else {
+            intent = new Intent();
+            intent.setAction(Intent.ACTION_VIEW);
+            Uri pdfURI = FileProvider.getUriForFile(context, context.getPackageName(), file);
+            intent.setDataAndType(pdfURI, "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        }
+
+        try {
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+            } else {
+                Toast.makeText(context, "No Application found to open the pdf", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error while opening pdf file", e);
         }
     }
 
