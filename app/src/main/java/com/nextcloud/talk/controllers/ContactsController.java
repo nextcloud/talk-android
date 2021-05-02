@@ -23,11 +23,11 @@ package com.nextcloud.talk.controllers;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,7 +36,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.bluelinelabs.conductor.RouterTransaction;
@@ -46,7 +47,6 @@ import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
-import com.nextcloud.talk.adapters.items.ProgressItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -62,8 +62,6 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.sharees.Sharee;
-import com.nextcloud.talk.models.json.sharees.ShareesOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.KeyboardUtils;
@@ -90,6 +88,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -121,17 +120,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @Nullable
     @BindView(R.id.initial_relative_layout)
     RelativeLayout initialRelativeLayout;
+
     @Nullable
     @BindView(R.id.secondary_relative_layout)
     RelativeLayout secondaryRelativeLayout;
-    @Inject
-    UserUtils userUtils;
-    @Inject
-    EventBus eventBus;
-    @Inject
-    AppPreferences appPreferences;
-    @BindView(R.id.progressBar)
-    ProgressBar progressBar;
+
+    @BindView(R.id.loading_content)
+    LinearLayout loadingContent;
+
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -147,11 +143,27 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.joinConversationViaLinkRelativeLayout)
     RelativeLayout joinConversationViaLinkLayout;
 
+    @BindView(R.id.joinConversationViaLinkImageView)
+    ImageView joinConversationViaLinkImageView;
+
+    @BindView(R.id.public_call_link)
+    ImageView publicCallLinkImageView;
+
     @BindView(R.id.generic_rv_layout)
     CoordinatorLayout genericRvLayout;
 
     @Inject
     NcApi ncApi;
+
+    @Inject
+    UserUtils userUtils;
+
+    @Inject
+    EventBus eventBus;
+
+    @Inject
+    AppPreferences appPreferences;
+
     private String credentials;
     private UserEntity currentUser;
     private Disposable contactsQueryDisposable;
@@ -160,8 +172,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private List<AbstractFlexibleItem> contactItems;
     private BottomSheet bottomSheet;
     private View view;
-    private int currentPage;
-    private int currentSearchPage;
 
     private SmoothScrollLinearLayoutManager layoutManager;
 
@@ -174,8 +184,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private HashMap<String, GenericTextHeaderItem> userHeaderItems = new HashMap<>();
 
     private boolean alreadyFetching = false;
-    private boolean canFetchFurther = true;
-    private boolean canFetchSearchFurther = true;
 
     private MenuItem doneMenuItem;
 
@@ -229,7 +237,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             joinConversationViaLinkLayout.setVisibility(View.GONE);
             conversationPrivacyToogleLayout.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -658,12 +665,22 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         });
 
+        joinConversationViaLinkImageView
+                .getBackground()
+                .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null),
+                                PorterDuff.Mode.SRC_IN);
+
+        publicCallLinkImageView
+                .getBackground()
+                .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null),
+                                PorterDuff.Mode.SRC_IN);
+
         disengageProgressBar();
     }
 
     private void disengageProgressBar() {
         if (!alreadyFetching) {
-            progressBar.setVisibility(View.GONE);
+            loadingContent.setVisibility(View.GONE);
             genericRvLayout.setVisibility(View.VISIBLE);
 
             if (isNewConversationView) {

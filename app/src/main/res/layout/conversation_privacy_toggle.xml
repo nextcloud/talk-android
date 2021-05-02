@@ -43,9 +43,11 @@
             android:layout_height="@dimen/avatar_size"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/standard_margin"
+            android:background="@drawable/round_bgnd"
             android:contentDescription="@null"
+            android:padding="@dimen/standard_half_padding"
             android:src="@drawable/ic_public_black_24px"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/white" />
 
         <TextView
             android:layout_width="match_parent"
