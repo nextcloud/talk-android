@@ -181,6 +181,7 @@ dependencies {
     implementation 'org.michaelevans.colorart:library:0.0.3'
     implementation "androidx.work:work-runtime:${workVersion}"
     implementation "androidx.work:work-rxjava2:${workVersion}"
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
     implementation 'com.google.android:flexbox:2.0.1'
     implementation ('com.gitlab.bitfireAT:dav4jvm:f2078bc846', {
@@ -200,7 +201,6 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:2.2.21"
 
     implementation 'com.bluelinelabs:conductor:3.0.1'
-    implementation 'com.bluelinelabs:conductor-support:2.1.5'
 
     implementation "com.squareup.okhttp3:okhttp:${okhttpVersion}"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:${okhttpVersion}"

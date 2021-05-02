@@ -39,7 +39,7 @@ abstract class ButterKnifeController : Controller {
 
     protected abstract fun inflateView(inflater: LayoutInflater, container: ViewGroup): View
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup, savedViewState: Bundle?): View {
         val view = inflateView(inflater, container)
         unbinder = ButterKnife.bind(this, view)
         onViewBound(view)
