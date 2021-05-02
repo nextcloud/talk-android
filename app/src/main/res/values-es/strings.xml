@@ -250,6 +250,7 @@
     <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
     <string name="nc_sent_a_video_you">Has enviado un video.</string>
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
+    <string name="nc_message_quote_cancel_reply">Cancelar respuesta</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Tu: %1$s</string>
 
@@ -319,6 +320,12 @@
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensaje borrado con éxito, pero puede haber sido filtrado a otros servicios</string>
 
+    <string name="share">Compartir</string>
+    <string name="send_to">Enviar a</string>
+    <string name="open_in_files_app">Abrir en app Archivos</string>
+
+    <!-- Upload -->
+    <string name="nc_add_file">Añadir a la conversación</string>
     <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_upload_from_cloud">Compartido por %1$s</string>
     <string name="nc_upload_failed">Lo siento, error en la subida</string>
@@ -337,6 +344,9 @@
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
     <string name="nc_phone_book_integration_chat_via">Chat a través de %s</string>
     <string name="nc_phone_book_integration_account_not_found">Cuenta no encontrada</string>
+
+    <string name="starred">Favorito</string>
+    <string name="password_protected">Protegido por contraseña</string>
 
     <string name="avatar">Avatar</string>
     <string name="account_icon">Icono de la cuenta</string>
@@ -373,4 +383,5 @@
     <string name="nc_action_open_main_menu">Abrir menú principal</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
     <string name="selected_list_item">seleccionado</string>
-    </resources>
+    <string name="filename_progress">%1$s (%2$d)</string>
+</resources>
