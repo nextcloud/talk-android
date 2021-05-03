@@ -46,6 +46,7 @@ import com.nextcloud.talk.jobs.CapabilitiesWorker;
 import com.nextcloud.talk.jobs.PushRegistrationWorker;
 import com.nextcloud.talk.jobs.SignalingSettingsWorker;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.generic.Status;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
@@ -221,17 +222,35 @@ public class AccountVerificationController extends BaseController {
     }
 
     private void findServerTalkApp(String credentials) {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+        ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
                 .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<RoomsOverall>() {
+                .subscribe(new Observer<CapabilitiesOverall>() {
                     @Override
                     public void onSubscribe(Disposable d) {
                         disposables.add(d);
                     }
 
                     @Override
-                    public void onNext(RoomsOverall roomsOverall) {
-                        fetchProfile(credentials);
+                    public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                        boolean hasTalk =
+                                capabilitiesOverall.getOcs().getData().getCapabilities() != null
+                                        && capabilitiesOverall.getOcs().getData().getCapabilities().getSpreedCapability() != null
+                                        && capabilitiesOverall.getOcs().getData().getCapabilities().getSpreedCapability().getFeatures() != null
+                                        && !capabilitiesOverall.getOcs().getData().getCapabilities().getSpreedCapability().getFeatures().isEmpty();
+
+                        if (hasTalk) {
+                            fetchProfile(credentials);
+                        } else {
+                            if (getActivity() != null && getResources() != null) {
+                                getActivity().runOnUiThread(() -> progressText.setText(String.format(getResources().getString(
+                                        R.string.nc_nextcloud_talk_app_not_installed), getResources().getString(R.string.nc_app_name))));
+                            }
+
+                            ApplicationWideMessageHolder.getInstance().setMessageType(
+                                    ApplicationWideMessageHolder.MessageType.SERVER_WITHOUT_TALK);
+
+                            abortVerification();
+                        }
                     }
 
                     @Override
