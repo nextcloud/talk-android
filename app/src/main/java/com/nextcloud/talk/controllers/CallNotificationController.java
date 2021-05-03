@@ -263,7 +263,7 @@ public class CallNotificationController extends BaseController {
             return;
         }
 
-        ncApi.getRoom(credentials, ApiUtils.getRoom(apiVersion, userBeingCalled.getBaseUrl(), roomId))
+        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userBeingCalled.getBaseUrl(), roomId))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())

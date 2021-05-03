@@ -46,10 +46,16 @@ public class ApiUtils {
         return userAgent + BuildConfig.VERSION_NAME;
     }
 
+    /**
+     * @deprecated Please specify the api version you want to use via
+     * {@link ApiUtils#getUrlForRoomWebinaryLobby(int, String, String)} instead.
+     */
+    @Deprecated
     public static String getUrlForLobbyForConversation(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/webinary/lobby";
     }
 
+    @Deprecated
     public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {
         String url = getUrlForParticipants(baseUrl, roomToken);
 
@@ -102,16 +108,30 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-
+    /**
+     * @deprecated Please specify the api version you want to use via
+     * {@link ApiUtils#getUrlForRoomNotificationLevel(int, String, String)} instead.
+     */
+    @Deprecated
     public static String getUrlForSettingNotificationlevel(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/notify";
     }
 
+    /**
+     * @deprecated Please specify the api version you want to use via
+     * {@link ApiUtils#getUrlForParticipantsActive(int, String, String)} instead.
+     */
+    @Deprecated
     public static String getUrlForSettingMyselfAsActiveParticipant(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants/active";
     }
 
 
+    /**
+     * @deprecated Please specify the api version you want to use via
+     * {@link ApiUtils#getUrlForParticipants(int, String, String)} instead.
+     */
+    @Deprecated
     public static String getUrlForParticipants(String baseUrl, String token) {
         return getRoom(baseUrl, token) + "/participants";
     }
@@ -120,17 +140,22 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
+    /**
+     * @deprecated Please specify the api version you want to use via
+     * {@link ApiUtils#getUrlForRooms(int, String)} instead.
+     */
+    @Deprecated
     public static String getUrlForGetRooms(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
     }
 
     /**
      * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getRoom(int, String, String)} instead.
+     * {@link ApiUtils#getUrlForRoom(int, String, String)} instead.
      */
     @Deprecated
     public static String getRoom(String baseUrl, String token) {
-        return getRoom(1, baseUrl, token);
+        return getUrlForRoom(1, baseUrl, token);
     }
 
     public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
@@ -142,14 +167,35 @@ public class ApiUtils {
         return null;
     }
 
-    protected static String getApi(int version, String baseUrl) {
+    protected static String getUrlForApi(int version, String baseUrl) {
         return baseUrl + spreedApiBase + version;
     }
 
-    public static String getRoom(int version, String baseUrl, String token) {
-        return getApi(version, baseUrl) + "/room/" + token;
+    public static String getUrlForRooms(int version, String baseUrl) {
+        return getUrlForApi(version, baseUrl) + "/room";
     }
 
+    public static String getUrlForRoom(int version, String baseUrl, String token) {
+        return getUrlForRooms(version, baseUrl) + "/" + token;
+    }
+
+    public static String getUrlForParticipants(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/participants";
+    }
+
+    public static String getUrlForParticipantsActive(int version, String baseUrl, String token) {
+        return getUrlForParticipants(version, baseUrl, token) + "/active";
+    }
+
+    public static String getUrlForRoomNotificationLevel(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/notify";
+    }
+
+    public static String getUrlForRoomWebinaryLobby(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
+    }
+
+    @Deprecated
     public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
@@ -171,6 +217,7 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
+    @Deprecated
     public static RetrofitBucket getRetrofitBucketForAddParticipant(String baseUrl, String token, String user) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
         retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants");
@@ -197,35 +244,43 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
+    @Deprecated
     public static String getUrlForRemoveSelfFromRoom(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants/self";
     }
 
+    @Deprecated
     public static String getUrlForRoomVisibility(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/public";
     }
 
+    @Deprecated
     public static String getUrlForCall(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/call/" + token;
 
     }
 
+    @Deprecated
     public static String getUrlForCallPing(String baseUrl, String token) {
         return getUrlForCall(baseUrl, token) + "/ping";
     }
 
+    @Deprecated
     public static String getUrlForChat(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
     }
 
+    @Deprecated
     public static String getUrlForExternalServerAuthBackend(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/signaling/backend";
     }
 
+    @Deprecated
     public static String getUrlForMentionSuggestions(String baseUrl, String token) {
         return getUrlForChat(baseUrl, token) + "/mentions";
     }
 
+    @Deprecated
     public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
         String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
         if (token == null) {
@@ -235,10 +290,12 @@ public class ApiUtils {
         }
     }
 
+    @Deprecated
     public static String getUrlForModerators(String baseUrl, String roomToken) {
         return getRoom(baseUrl, roomToken) + "/moderators";
     }
 
+    @Deprecated
     public static String getUrlForSignalingSettings(String baseUrl) {
         return getUrlForSignaling(baseUrl, null) + "/settings";
     }
@@ -252,6 +309,7 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/users/" + userId;
     }
 
+    @Deprecated
     public static String getUrlForUserSettings(String baseUrl) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/settings/user";
     }
@@ -279,6 +337,7 @@ public class ApiUtils {
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize;
     }
 
+    @Deprecated
     public static String getUrlForPassword(String baseUrl, String token) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/password";
     }
@@ -299,6 +358,7 @@ public class ApiUtils {
                 getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }
 
+    @Deprecated
     public static String getUrlForConversationFavorites(String baseUrl, String roomToken) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/favorite";
     }
@@ -307,6 +367,7 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/notifications/" + notificationId;
     }
 
+    @Deprecated
     public static String getUrlForReadOnlyState(String baseUrl, String roomToken) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/read-only";
     }
@@ -323,6 +384,7 @@ public class ApiUtils {
         return baseUrl + "/remote.php/dav/files/" + user + "/" + remotePath;
     }
 
+    @Deprecated
     public static String getUrlForMessageDeletion(String baseUrl, String token, String messageId) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token + "/" + messageId;
     }
