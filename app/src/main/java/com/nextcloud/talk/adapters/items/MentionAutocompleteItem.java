@@ -113,7 +113,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         if (source.equals("calls")) {
-            holder.simpleDraweeView.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedBitmapDrawableFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px));
+            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
         } else {
             String avatarId = objectId;
             String avatarUrl = ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),

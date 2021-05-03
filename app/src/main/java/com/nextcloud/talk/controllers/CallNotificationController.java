@@ -455,11 +455,9 @@ public class CallNotificationController extends BaseController {
 
                 break;
             case ROOM_GROUP_CALL:
-                avatarImageView.getHierarchy().setImage(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
-                        , 100, true);
+                avatarImageView.setImageResource(R.drawable.ic_circular_group);
             case ROOM_PUBLIC_CALL:
-                avatarImageView.getHierarchy().setImage(DisplayUtils.getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px))
-                        , 100, true);
+                avatarImageView.setImageResource(R.drawable.ic_circular_group);
                 break;
             default:
         }
