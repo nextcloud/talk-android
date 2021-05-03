@@ -196,7 +196,7 @@ public class OperationsMenuController extends BaseController {
             Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation",
                                                         new int[] {1});
 
-            if(apiVersion == null) {
+            if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
                 return;
             }
@@ -285,7 +285,7 @@ public class OperationsMenuController extends BaseController {
 
                     if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
                             !currentUser.hasSpreedFeatureCapability("empty-group-room")) {
-                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
+                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
                                 "3", invite, conversationName);
                     } else {
                         String roomType = "2";
@@ -294,7 +294,7 @@ public class OperationsMenuController extends BaseController {
                             roomType = "3";
                         }
 
-                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
+                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
                                 roomType, invite, conversationName);
                     }
 
@@ -405,7 +405,7 @@ public class OperationsMenuController extends BaseController {
         Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation",
                                                     new int[] {1});
 
-        if(apiVersion == null) {
+        if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
             return;
         }
@@ -558,6 +558,7 @@ public class OperationsMenuController extends BaseController {
                 });
     }
 
+    @SuppressLint("LongLogTag")
     private void inviteUsersToAConversation() {
         RetrofitBucket retrofitBucket;
         final ArrayList<String> localInvitedUsers = invitedUsers;
@@ -566,11 +567,20 @@ public class OperationsMenuController extends BaseController {
             localInvitedGroups.remove(0);
         }
 
+        Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
         if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
             if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
                     final String groupId = localInvitedGroups.get(i);
-                    retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(currentUser.getBaseUrl(), conversation.getToken(),
+                    retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(apiVersion,
+                                                                                      currentUser.getBaseUrl(),
+                                                                                      conversation.getToken(),
                             groupId);
 
                     ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
@@ -610,8 +620,10 @@ public class OperationsMenuController extends BaseController {
 
             for (int i = 0; i < localInvitedUsers.size(); i++) {
                 final String userId = invitedUsers.get(i);
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
-                        userId);
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion,
+                                                                             currentUser.getBaseUrl(),
+                                                                             conversation.getToken(),
+                                                                             userId);
 
                 ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())

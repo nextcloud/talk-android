@@ -20,7 +20,9 @@
 
 package com.nextcloud.talk.jobs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -46,6 +48,8 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AddParticipantsToConversation extends Worker {
+    private static final String TAG = "AddParticipantsToConversation";
+
     @Inject
     NcApi ncApi;
 
@@ -60,19 +64,29 @@ public class AddParticipantsToConversation extends Worker {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
+    @SuppressLint("LongLogTag")
     @NonNull
     @Override
     public Result doWork() {
+        UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
+
+        Integer apiVersion = ApiUtils.getApiVersion(user, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return Result.failure();
+        }
+
         Data data = getInputData();
         String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
         String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
-        UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
         String conversationToken = data.getString(BundleKeys.INSTANCE.getKEY_TOKEN());
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
         RetrofitBucket retrofitBucket;
         for (String userId : selectedUserIds) {
-            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(user.getBaseUrl(), conversationToken,
+            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion, user.getBaseUrl(),
+                                                                         conversationToken,
                     userId);
 
             ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
@@ -81,7 +95,7 @@ public class AddParticipantsToConversation extends Worker {
         }
 
         for (String groupId : selectedGroupIds) {
-            retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(user.getBaseUrl(), conversationToken,
+            retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(apiVersion, user.getBaseUrl(), conversationToken,
                     groupId);
 
             ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())

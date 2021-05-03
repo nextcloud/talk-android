@@ -441,7 +441,14 @@ public class CallController extends BaseController {
     }
 
     private void handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl))
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1234,9 +1241,16 @@ public class CallController extends BaseController {
     private void joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
+        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation",
+                                                    new int[] {1});
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
         if (TextUtils.isEmpty(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
-                                                                                           roomToken), conversationPassword)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken),
+                           conversationPassword)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -1648,7 +1662,14 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
+        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation",
+                                                    new int[] {1});
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.leaveRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {

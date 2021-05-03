@@ -90,7 +90,7 @@ public class LeaveConversationWorker extends Worker {
             Integer apiVersion = ApiUtils.getApiVersion(operationUser, "conversation",
                                                         new int[] {1});
 
-            if(apiVersion == null) {
+            if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
                 return Result.failure();
             }

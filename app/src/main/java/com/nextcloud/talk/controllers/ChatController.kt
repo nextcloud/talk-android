@@ -977,9 +977,17 @@ class ChatController(args: Bundle) :
         if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
             currentConversation?.sessionId == "0"
         ) {
+            val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+            if (apiVersion == null) {
+                Log.e(TAG, "No supported API version found")
+                return
+            }
+
             ncApi?.joinRoom(
                 credentials,
-                ApiUtils.getUrlForSettingMyselfAsActiveParticipant(conversationUser?.baseUrl, roomToken), roomPassword
+                ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
+                roomPassword
             )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -1043,9 +1051,17 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
+        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
         ncApi?.leaveRoom(
             credentials,
-            ApiUtils.getUrlForSettingMyselfAsActiveParticipant(
+            ApiUtils.getUrlForParticipantsActive(
+                apiVersion,
                 conversationUser?.baseUrl,
                 roomToken
             )
@@ -1762,8 +1778,16 @@ class ChatController(args: Bundle) :
         if (currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             currentConversation?.name != userMentionClickEvent.userId
         ) {
+
+            val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+            if (apiVersion == null) {
+                Log.e(TAG, "No supported API version found")
+                return
+            }
+
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                conversationUser?.baseUrl, "1",
+                apiVersion, conversationUser?.baseUrl, "1",
                 userMentionClickEvent.userId, null
             )
 

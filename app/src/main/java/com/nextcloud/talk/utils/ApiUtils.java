@@ -29,10 +29,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.DimenRes;
@@ -41,18 +38,18 @@ import okhttp3.Credentials;
 
 public class ApiUtils {
     private static final String TAG = "ApiUtils";
-    private static String ocsApiVersion = "/ocs/v2.php";
-    private static String spreedApiVersion = "/apps/spreed/api/v1";
-    private static String spreedApiBase = ocsApiVersion + "/apps/spreed/api/v";
+    private static final String ocsApiVersion = "/ocs/v2.php";
+    private static final String spreedApiVersion = "/apps/spreed/api/v1";
+    private static final String spreedApiBase = ocsApiVersion + "/apps/spreed/api/v";
 
-    private static String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
+    private static final String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
 
     public static String getUserAgent() {
         return userAgent + BuildConfig.VERSION_NAME;
     }
 
     /**
-     * @deprecated Please specify the api version you want to use via
+     * @deprecated This is only supported on API v1-3, in API v4+ please use
      * {@link ApiUtils#getUrlForAttendees(int, String, String)} instead.
      */
     @Deprecated
@@ -108,26 +105,8 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-    /**
-     * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getUrlForParticipantsActive(int, String, String)} instead.
-     */
-    @Deprecated
-    public static String getUrlForSettingMyselfAsActiveParticipant(String baseUrl, String token) {
-        return getUrlForParticipantsActive(1, baseUrl, token);
-    }
-
     public static String getUrlForCapabilities(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
-    }
-
-    /**
-     * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getUrlForRooms(int, String)} instead.
-     */
-    @Deprecated
-    public static String getUrlForGetRooms(String baseUrl) {
-        return getUrlForRooms(1, baseUrl);
     }
 
     public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
@@ -217,12 +196,11 @@ public class ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
     }
 
-    @Deprecated
-    public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType,
+    public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room");
+        retrofitBucket.setUrl(getUrlForRooms(version, baseUrl));
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("roomType", roomType);
@@ -239,10 +217,9 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-    @Deprecated
-    public static RetrofitBucket getRetrofitBucketForAddParticipant(String baseUrl, String token, String user) {
+    public static RetrofitBucket getRetrofitBucketForAddParticipant(int version, String baseUrl, String token, String user) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants");
+        retrofitBucket.setUrl(getUrlForParticipants(version, baseUrl, token));
 
         Map<String, String> queryMap = new HashMap<>();
 
@@ -254,46 +231,46 @@ public class ApiUtils {
 
     }
 
-    public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(String baseUrl, String token, String group) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, group);
+    public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(int version, String baseUrl, String token, String group) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, group);
         retrofitBucket.getQueryMap().put("source", "groups");
         return retrofitBucket;
     }
 
-    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(String baseUrl, String token, String mail) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, mail);
+    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(int version, String baseUrl, String token, String mail) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, mail);
         retrofitBucket.getQueryMap().put("source", "emails");
         return retrofitBucket;
     }
 
-    @Deprecated
     public static String getUrlForCall(String baseUrl, String token) {
-        // FIXME user APIv4
+        // FIXME Introduce API version
         return baseUrl + ocsApiVersion + spreedApiVersion + "/call/" + token;
 
     }
 
-    @Deprecated
     public static String getUrlForCallPing(String baseUrl, String token) {
+        // FIXME Introduce API version
         return getUrlForCall(baseUrl, token) + "/ping";
     }
 
     public static String getUrlForChat(String baseUrl, String token) {
+        // FIXME Introduce API version
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
     }
 
-    @Deprecated
     public static String getUrlForExternalServerAuthBackend(String baseUrl) {
+        // FIXME Introduce API version
         return getUrlForSignaling(baseUrl, null) + "/backend";
     }
 
     public static String getUrlForMentionSuggestions(String baseUrl, String token) {
+        // FIXME Introduce API version
         return getUrlForChat(baseUrl, token) + "/mentions";
     }
 
-    @Deprecated
     public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
-        // FIXME use APIv2 ?
+        // FIXME Introduce API version
         String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
         if (token == null) {
             return signalingUrl;
@@ -302,17 +279,8 @@ public class ApiUtils {
         }
     }
 
-    /**
-     * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getUrlForRoomModerators(int, String, String)} instead.
-     */
-    @Deprecated
-    public static String getUrlForModerators(String baseUrl, String roomToken) {
-        return getUrlForRoomModerators(1, baseUrl, roomToken);
-    }
-
-    @Deprecated
     public static String getUrlForSignalingSettings(String baseUrl) {
+        // FIXME Introduce API version
         return getUrlForSignaling(baseUrl, null) + "/settings";
     }
 
@@ -326,6 +294,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForUserSettings(String baseUrl) {
+        // FIXME Introduce API version
         return baseUrl + ocsApiVersion + spreedApiVersion + "/settings/user";
     }
 

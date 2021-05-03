@@ -288,8 +288,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     userId = selectedUserIds.iterator().next();
                 }
 
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
-                        userId, null);
+                Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {1});
+
+                if (apiVersion == null) {
+                    Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                    return;
+                }
+
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
+                                                                                        currentUser.getBaseUrl(),
+                                                                                        roomType,
+                                                                                        userId,
+                                                                                        null);
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
@@ -851,7 +861,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     roomType = "2";
                 }
 
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType, userItem.getModel().getUserId(), null);
+                Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {1});
+
+                if (apiVersion == null) {
+                    Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                    return false;
+                }
+
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
+                                                                                        currentUser.getBaseUrl(),
+                                                                                        roomType,
+                                                                                        userItem.getModel().getUserId(),
+                                                                                        null);
 
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())

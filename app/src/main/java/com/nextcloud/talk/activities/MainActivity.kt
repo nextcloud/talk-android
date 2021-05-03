@@ -231,9 +231,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val roomType = "1"
         val currentUser = userUtils.currentUser ?: return
 
+        val apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            currentUser.baseUrl, roomType,
+            apiVersion, currentUser.baseUrl, roomType,
             userId, null
         )
         ncApi.createRoom(
