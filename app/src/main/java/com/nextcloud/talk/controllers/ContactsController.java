@@ -672,7 +672,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         publicCallLinkImageView
                 .getBackground()
-                .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorBackgroundDarker, null),
+                .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null),
                                 PorterDuff.Mode.SRC_IN);
 
         disengageProgressBar();

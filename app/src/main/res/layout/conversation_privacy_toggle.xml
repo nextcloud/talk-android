@@ -46,7 +46,7 @@
             android:background="@drawable/round_bgnd"
             android:contentDescription="@null"
             android:padding="@dimen/standard_half_padding"
-            android:src="@drawable/ic_contacts"
+            android:src="@drawable/ic_add_white_24px"
             app:tint="@color/white" />
 
         <TextView
