@@ -155,18 +155,31 @@ public class ApiUtils {
     }
 
     public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
-        boolean checkedConversationV4 = !apiName.equals("conversation");
+         if (apiName.equals("conversation")) {
+             boolean hasApiV4 = false;
+             for (int version : versions) {
+                 hasApiV4 |= version == 4;
+             }
+
+             if (!hasApiV4) {
+                 Exception e = new Exception("Api call did not try conversation-v4 api");
+                 Log.d(TAG, e.getMessage(), e);
+             }
+         }
 
         for (int version : versions) {
-            checkedConversationV4 |= version == 4;
-
             if (capabilities.hasSpreedFeatureCapability(apiName + "-v" + version)) {
-                if (!checkedConversationV4) {
-                    Exception e = new Exception("Api call did not try conversation-v4 api");
-                    Log.e(TAG, e.getMessage(), e);
-                }
-
                 return version;
+            }
+
+            // Fallback for old API versions
+            if (apiName.equals("conversation") && (version == 1 || version == 2)) {
+                if (capabilities.hasSpreedFeatureCapability(apiName + "-v2")) {
+                    return version;
+                }
+                if (version == 1  && capabilities.hasSpreedFeatureCapability(apiName)) {
+                    return version;
+                }
             }
         }
         return null;
