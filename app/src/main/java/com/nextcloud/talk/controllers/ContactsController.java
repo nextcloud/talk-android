@@ -308,9 +308,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
-                                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                                Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation",
+                                                                           new int[] {1});
+                                if (apiVersion != null && currentUser.hasSpreedFeatureCapability("chat-v2")) {
+
                                     ncApi.getRoom(credentials,
-                                            ApiUtils.getRoom(currentUser.getBaseUrl(),
+                                            ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
                                                     roomOverall.getOcs().getData().getToken()))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())

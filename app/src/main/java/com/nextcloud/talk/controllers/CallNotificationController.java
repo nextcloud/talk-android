@@ -257,9 +257,11 @@ public class CallNotificationController extends BaseController {
 
     }
 
+    @SuppressLint("LongLogTag")
     private void handleFromNotification() {
         Integer apiVersion = ApiUtils.getApiVersion(userBeingCalled, "conversation", new int[] {4, 3, 1});
         if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
             return;
         }
 

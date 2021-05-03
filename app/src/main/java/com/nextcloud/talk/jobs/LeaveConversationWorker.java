@@ -21,6 +21,8 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -47,6 +49,9 @@ import java.net.CookieManager;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class LeaveConversationWorker extends Worker {
+
+    private static final String TAG = "LeaveConversationWorker";
+
     @Inject
     Retrofit retrofit;
 
@@ -82,7 +87,17 @@ public class LeaveConversationWorker extends Worker {
             EventStatus eventStatus = new EventStatus(operationUser.getId(),
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
-            ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(operationUser.getBaseUrl(), conversationToken))
+            Integer apiVersion = ApiUtils.getApiVersion(operationUser, "conversation",
+                                                        new int[] {1});
+
+            if(apiVersion == null) {
+                Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                return Result.failure();
+            }
+
+            ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForParticipantsSelf(apiVersion,
+                                                                                     operationUser.getBaseUrl(),
+                                                                                     conversationToken))
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;

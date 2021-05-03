@@ -20,7 +20,10 @@
 
 package com.nextcloud.talk.jobs;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -47,6 +50,7 @@ import java.net.CookieManager;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DeleteConversationWorker extends Worker {
+    private static final String TAG = "DeleteConversationWorker";
     @Inject
     Retrofit retrofit;
 
@@ -66,6 +70,7 @@ public class DeleteConversationWorker extends Worker {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
+    @SuppressLint("LongLogTag")
     @NonNull
     @Override
     public Result doWork() {
@@ -75,6 +80,14 @@ public class DeleteConversationWorker extends Worker {
         UserEntity operationUser = userUtils.getUserWithId(operationUserId);
 
         if (operationUser != null) {
+            Integer apiVersion = ApiUtils.getApiVersion(operationUser, "conversation",
+                                                        new int[] {1});
+
+            if (apiVersion == null) {
+                Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                return Result.failure();
+            }
+
             String credentials = ApiUtils.getCredentials(operationUser.getUsername(), operationUser.getToken());
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                     JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
@@ -82,7 +95,8 @@ public class DeleteConversationWorker extends Worker {
             EventStatus eventStatus = new EventStatus(operationUser.getId(),
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
-            ncApi.deleteRoom(credentials, ApiUtils.getRoom(operationUser.getBaseUrl(), conversationToken))
+            ncApi.deleteRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, operationUser.getBaseUrl(),
+                                                              conversationToken))
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;

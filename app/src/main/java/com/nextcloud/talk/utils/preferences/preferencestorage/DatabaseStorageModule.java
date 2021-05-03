@@ -22,6 +22,8 @@ package com.nextcloud.talk.utils.preferences.preferencestorage;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
 import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -40,6 +42,8 @@ import java.util.Set;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {
+    private static final String TAG = "DatabaseStorageModule";
+
     @Inject
     ArbitraryStorageUtils arbitraryStorageUtils;
 
@@ -53,6 +57,7 @@ public class DatabaseStorageModule implements StorageModule {
     private boolean lobbyValue;
 
     private String messageNotificationLevel;
+
     public DatabaseStorageModule(UserEntity conversationUser, String conversationToken) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
@@ -92,8 +97,14 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
+                    Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {4, 1});
+                    if (apiVersion == null) {
+                        Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                    }
+
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
-                            ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
+                            ApiUtils.getUrlForRoomNotificationLevel(apiVersion, conversationUser.getBaseUrl(),
+                                                                    conversationToken),
                             intValue)
                             .subscribeOn(Schedulers.io())
                             .subscribe(new Observer<GenericOverall>() {
