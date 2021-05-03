@@ -8,6 +8,7 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 ## [UNRELEASED]
 ### Added
 - open files inside app (jpg, .png, .gif, .mp3, .mp4, .mov, .wav, .txt, .md)
+    - other data types are opened with external apps if they are able to handle it
 - edit profile information and privacy settings
 
 ### Changed
