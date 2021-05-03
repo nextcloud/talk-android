@@ -18,31 +18,55 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     android:animateLayoutChanges="true">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
-        android:layout_gravity="center"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in" />
+    <LinearLayout
+        android:id="@+id/loading_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <include
-        layout="@layout/join_conversation_via_link"
-        android:visibility="gone" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:id="@+id/title_text_view"
+                android:layout_width="16dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="72dp"
+                android:layout_marginTop="@dimen/standard_half_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_half_margin"
+                app:custom_color="@color/nc_shimmer_default_color" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="?android:attr/listDivider" />
+
+        </LinearLayout>
+
+        <include layout="@layout/rv_item_contact_shimmer" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+        <include layout="@layout/rv_item_contact_shimmer" />
+
+    </LinearLayout>
 
     <include
         layout="@layout/conversation_privacy_toggle"
+        android:visibility="gone" />
+
+    <include
+        layout="@layout/join_conversation_via_link"
         android:visibility="gone" />
 
     <include

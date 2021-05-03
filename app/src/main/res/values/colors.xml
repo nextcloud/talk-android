@@ -57,6 +57,7 @@
     <color name="controller_call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
     <color name="textColorMaxContrast">#767676</color>
+    <color name="colorBackgroundDarker">#DBDBDB</color>
 
     <!-- Emoji list in chat window -->
     <color name="emoji_icons">#61000000</color>

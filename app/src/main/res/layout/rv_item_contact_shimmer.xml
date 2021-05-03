@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
-  ~ @author Mario Danic
   ~ @author Andy Scherzinger
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2021 Andy Scherzinger
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -22,7 +20,6 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/joinConversationViaLinkRelativeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/standard_margin"
@@ -31,26 +28,21 @@
     android:layout_marginBottom="@dimen/standard_half_margin"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/joinConversationViaLinkImageView"
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/simple_drawee_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/standard_margin"
-        android:background="@drawable/round_bgnd"
-        android:contentDescription="@null"
-        android:padding="@dimen/standard_half_padding"
-        android:src="@drawable/ic_public_black_24px"
-        app:tint="@color/white" />
+        app:corners="100"
+        app:custom_color="@color/nc_shimmer_default_color" />
 
-    <TextView
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/joinConversationViaLinkImageView"
-        android:ellipsize="middle"
-        android:singleLine="true"
-        android:text="@string/nc_join_via_link"
-        android:textAppearance="@style/ListItem" />
+        android:layout_toEndOf="@id/simple_drawee_view"
+        app:custom_color="@color/nc_shimmer_default_color" />
 
 </RelativeLayout>
