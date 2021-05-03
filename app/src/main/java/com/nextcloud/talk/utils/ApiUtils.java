@@ -21,6 +21,7 @@ package com.nextcloud.talk.utils;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
@@ -28,7 +29,10 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import androidx.annotation.DimenRes;
@@ -36,6 +40,7 @@ import androidx.annotation.Nullable;
 import okhttp3.Credentials;
 
 public class ApiUtils {
+    private static final String TAG = "ApiUtils";
     private static String ocsApiVersion = "/ocs/v2.php";
     private static String spreedApiVersion = "/apps/spreed/api/v1";
     private static String spreedApiBase = ocsApiVersion + "/apps/spreed/api/v";
@@ -150,8 +155,17 @@ public class ApiUtils {
     }
 
     public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
+        boolean checkedConversationV4 = !apiName.equals("conversation");
+
         for (int version : versions) {
+            checkedConversationV4 |= version == 4;
+
             if (capabilities.hasSpreedFeatureCapability(apiName + "-v" + version)) {
+                if (!checkedConversationV4) {
+                    Exception e = new Exception("Api call did not try conversation-v4 api");
+                    Log.e(TAG, e.getMessage(), e);
+                }
+
                 return version;
             }
         }
