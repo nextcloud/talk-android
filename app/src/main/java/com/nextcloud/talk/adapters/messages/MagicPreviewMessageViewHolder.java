@@ -26,7 +26,6 @@ import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -57,14 +56,12 @@ import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
-import androidx.core.app.ShareCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.emoji.widget.EmojiTextView;
@@ -149,7 +146,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
             image.setOnClickListener(v -> {
                 String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
-                if (isSupportedMimetype(mimetype)) {
+                if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileName)) {
                     openOrDownloadFile(message);
                 } else {
                     openFileInFilesApp(message, accountString);
@@ -208,29 +205,11 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         if (file.exists()) {
             openFile(filename, mimetype);
         } else {
-            String size = message.getSelectedIndividualHashMap().get("size");
-
-            if (size == null) {
-                size = "-1";
-            }
-            Integer fileSize = Integer.valueOf(size);
-
-            String fileId = message.getSelectedIndividualHashMap().get("id");
-            String path = message.getSelectedIndividualHashMap().get("path");
-            downloadFileToCache(
-                    message.activeUser.getBaseUrl(),
-                    message.activeUser.getUserId(),
-                    message.activeUser.getAttachmentFolder(),
-                    filename,
-                    path,
-                    mimetype,
-                    fileSize,
-                    fileId
-            );
+            downloadFileToCache(message);
         }
     }
 
-    public boolean isSupportedMimetype(String mimetype){
+    public boolean isSupportedForInternalViewer(String mimetype){
         switch (mimetype) {
             case "image/png":
             case "image/jpeg":
@@ -243,7 +222,6 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             case "video/ogg":
             case "text/markdown":
             case "text/plain":
-            case "application/pdf":
                 return true;
             default:
                 return false;
@@ -269,27 +247,24 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             case "text/plain":
                 openTextView(filename, mimetype);
                 break;
-            case "application/pdf":
-                openPdf(filename);
-                break;
             default:
-                Log.w(TAG, "no method defined for mimetype: " + mimetype);
+                openFileByExternalApp(filename, mimetype);
         }
     }
 
-    private void openPdf(String fileName) {
+    private void openFileByExternalApp(String fileName, String mimetype) {
         String path = context.getCacheDir().getAbsolutePath() + "/" + fileName;
         File file = new File(path);
-        Intent intent = null;
+        Intent intent;
         if (Build.VERSION.SDK_INT < 24) {
             intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(file), "application/pdf");
+            intent.setDataAndType(Uri.fromFile(file), mimetype);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
         } else {
             intent = new Intent();
             intent.setAction(Intent.ACTION_VIEW);
             Uri pdfURI = FileProvider.getUriForFile(context, context.getPackageName(), file);
-            intent.setDataAndType(pdfURI, "application/pdf");
+            intent.setDataAndType(pdfURI, mimetype);
             intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         }
@@ -299,11 +274,20 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             } else {
-                Toast.makeText(context, "No Application found to open the pdf", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "No Application found to open the file. This should have been handled beforehand!");
             }
         } catch (Exception e) {
-            Log.e(TAG, "Error while opening pdf file", e);
+            Log.e(TAG, "Error while opening file", e);
         }
+    }
+
+    private boolean canBeHandledByExternalApp(String mimetype, String fileName){
+        String path = context.getCacheDir().getAbsolutePath() + "/" + fileName;
+        File file = new File(path);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(file), mimetype);
+
+        return intent.resolveActivity(context.getPackageManager()) != null;
     }
 
     private void openImageView(String filename, String mimetype) {
@@ -332,7 +316,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     }
 
     private void onMessageViewLongClick(ChatMessage message, String accountString) {
-        if (isSupportedMimetype(message.getSelectedIndividualHashMap().get("mimetype"))) {
+        if (isSupportedForInternalViewer(message.getSelectedIndividualHashMap().get("mimetype"))) {
             return;
         }
 
@@ -348,14 +332,24 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
     }
 
     @SuppressLint("LongLogTag")
-    private void downloadFileToCache(String baseUrl,
-                                     String userId,
-                                     String attachmentFolder,
-                                     String fileName,
-                                     String path,
-                                     String mimetype,
-                                     Integer size,
-                                     String fileId) {
+    private void downloadFileToCache(ChatMessage message) {
+
+        String baseUrl = message.activeUser.getBaseUrl();
+        String userId = message.activeUser.getUserId();
+        String attachmentFolder = message.activeUser.getAttachmentFolder();
+
+        String fileName = message.getSelectedIndividualHashMap().get("name");
+        String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
+
+        String size = message.getSelectedIndividualHashMap().get("size");
+
+        if (size == null) {
+            size = "-1";
+        }
+        Integer fileSize = Integer.valueOf(size);
+
+        String fileId = message.getSelectedIndividualHashMap().get("id");
+        String path = message.getSelectedIndividualHashMap().get("path");
 
         // check if download worker is already running
         ListenableFuture<List<WorkInfo>> workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId);
@@ -381,7 +375,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
                 .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
                 .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
-                .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, size)
+                .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
                 .build();
 
         downloadWorker = new OneTimeWorkRequest.Builder(DownloadFileToCacheWorker.class)
@@ -411,7 +405,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 if (image.isShown()) {
                     openFile(fileName, mimetype);
                 } else {
-                    Log.d(TAG, "image " + fileName + " was downloaded but it's not opened (view is not shown)");
+                    Log.d(TAG, "file " + fileName + " was downloaded but it's not opened because view is not shown on" +
+                            " screen");
                 }
                 messageText.setText(fileName);
                 progressBar.setVisibility(View.GONE);
