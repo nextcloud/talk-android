@@ -23,6 +23,7 @@
 package com.nextcloud.talk.controllers;
 
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -32,6 +33,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -85,6 +87,7 @@ import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
+import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -232,7 +235,7 @@ public class ConversationsListController extends BaseController implements Searc
             }
 
             ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
-                    currentUser.getUserId(), avatarSize), currentUser);
+                                                                                                                     currentUser.getUserId(), avatarSize), currentUser);
 
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
@@ -260,7 +263,9 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
-        eventBus.register(this);
+        if (!eventBus.isRegistered(this)) {
+            eventBus.register(this);
+        }
 
         currentUser = userUtils.getCurrentUser();
 
@@ -331,7 +336,7 @@ public class ConversationsListController extends BaseController implements Searc
                     DisplayUtils.applyColorToStatusBar(
                             activity,
                             ResourcesCompat.getColor(getResources(), R.color.appbar, null)
-                    );
+                                                      );
                 }
             });
         }
@@ -343,7 +348,7 @@ public class ConversationsListController extends BaseController implements Searc
                     DisplayUtils.applyColorToStatusBar(
                             activity,
                             ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                    );
+                                                      );
                 }
             } else {
                 searchView.post(() -> searchView.setQuery("", true));
@@ -365,19 +370,19 @@ public class ConversationsListController extends BaseController implements Searc
                     activity.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
                             activity.appBar.getContext(),
                             R.animator.appbar_elevation_off)
-                    );
+                                                        );
                     activity.toolbar.setVisibility(View.GONE);
                     activity.searchCardView.setVisibility(View.VISIBLE);
                     if (getResources() != null) {
                         DisplayUtils.applyColorToStatusBar(
                                 activity,
                                 ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                        );
+                                                          );
                     }
                 }
                 SmoothScrollLinearLayoutManager layoutManager =
                         (SmoothScrollLinearLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager!=null) {
+                if (layoutManager != null) {
                     layoutManager.scrollToPositionWithOffset(0, 0);
                 }
                 return true;
@@ -400,6 +405,7 @@ public class ConversationsListController extends BaseController implements Searc
         searchItem.expandActionView();
     }
 
+    @SuppressLint("LongLogTag")
     private void fetchData(boolean fromBottomSheet) {
         dispose(null);
 
@@ -462,7 +468,7 @@ public class ConversationsListController extends BaseController implements Searc
                     } else {
                         Collections.sort(callItems, (callItem, t1) ->
                                 Long.compare(((CallItem) t1).getModel().getLastPing(),
-                                        ((CallItem) callItem).getModel().getLastPing()));
+                                             ((CallItem) callItem).getModel().getLastPing()));
                     }
 
                     adapter.updateDataSet(callItems, false);
@@ -476,13 +482,15 @@ public class ConversationsListController extends BaseController implements Searc
                         HttpException exception = (HttpException) throwable;
                         switch (exception.code()) {
                             case 401:
-                                if (getParentController() != null &&
-                                        getParentController().getRouter() != null) {
+                                if (getParentController() != null && getParentController().getRouter() != null) {
+                                    Log.d(TAG, "Starting reauth webview via getParentController()");
                                     getParentController().getRouter().pushController((RouterTransaction.with
-                                            (new WebViewLoginController(currentUser.getBaseUrl(),
-                                                    true))
+                                            (new WebViewLoginController(currentUser.getBaseUrl(), true))
                                             .pushChangeHandler(new VerticalChangeHandler())
                                             .popChangeHandler(new VerticalChangeHandler())));
+                                } else {
+                                    Log.d(TAG, "Starting reauth webview via ConversationsListController");
+                                    showUnauthorizedDialog();
                                 }
                                 break;
                             default:
@@ -726,7 +734,7 @@ public class ConversationsListController extends BaseController implements Searc
                 if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                     bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
                     ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                            conversation.getToken(), bundle, false);
+                                                                    conversation.getToken(), bundle, false);
                 } else {
                     overridePushHandler(new NoOpControllerChangeHandler());
                     overridePopHandler(new NoOpControllerChangeHandler());
@@ -783,7 +791,7 @@ public class ConversationsListController extends BaseController implements Searc
                 new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
                         .setTopColorRes(R.color.nc_darkRed)
                         .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
-                                R.drawable.ic_delete_black_24dp, R.color.bg_default))
+                                                                R.drawable.ic_delete_black_24dp, R.color.bg_default))
                         .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
                         .setTitle(R.string.nc_delete_call)
                         .setMessage(conversation.getDeleteWarningMessage())
@@ -792,7 +800,7 @@ public class ConversationsListController extends BaseController implements Searc
                             public void onClick(View v) {
                                 Data.Builder data = new Data.Builder();
                                 data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(),
-                                        conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
+                                             conversationMenuBundle.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID()));
                                 data.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
                                 conversationMenuBundle = null;
                                 deleteConversation(data.build());
@@ -808,6 +816,50 @@ public class ConversationsListController extends BaseController implements Searc
                         .setSavedInstanceState(savedInstanceState)
                         .show();
             }
+        }
+    }
+
+    private void showUnauthorizedDialog() {
+        if (getActivity() != null) {
+
+            new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                    .setTopColorRes(R.color.nc_darkRed)
+                    .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
+                                                            R.drawable.ic_delete_black_24dp, R.color.bg_default))
+                    .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+                    .setCancelable(false)
+                    .setTitle(R.string.nc_dialog_invalid_password)
+                    .setMessage(R.string.nc_dialog_reauth_or_delete)
+                    .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
+
+                            OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
+                            WorkManager.getInstance().enqueue(accountRemovalWork);
+
+                            if (otherUserExists && getView() != null) {
+                                onViewBound(getView());
+                                onAttach(getView());
+                            } else if (!otherUserExists) {
+                                getRouter().setRoot(RouterTransaction.with(
+                                        new ServerSelectionController())
+                                                            .pushChangeHandler(new VerticalChangeHandler())
+                                                            .popChangeHandler(new VerticalChangeHandler()));
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.nc_settings_reauthorize, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            getRouter().pushController(RouterTransaction.with(
+                                    new WebViewLoginController(currentUser.getBaseUrl(), true))
+                                                               .pushChangeHandler(new VerticalChangeHandler())
+                                                               .popChangeHandler(new VerticalChangeHandler()));
+                        }
+                    })
+                    .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
+                    .show();
         }
     }
 
