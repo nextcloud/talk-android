@@ -20,11 +20,13 @@
 
 package com.nextcloud.talk.controllers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -298,6 +300,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
+    @SuppressLint("LongLogTag")
     fun submitLobbyChanges() {
         val state = if (
             (
@@ -306,9 +309,17 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ) as SwitchCompat
                 ).isChecked
         ) 1 else 0
+
+        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
         ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
-            ApiUtils.getUrlForLobbyForConversation(conversationUser.baseUrl, conversation!!.token),
+            ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
             state,
             conversation!!.lobbyTimer
         )
@@ -438,9 +449,16 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun getListOfParticipants() {
+        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
         ncApi.getPeersForCall(
             credentials,
-            ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken)
+            ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken)
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -527,7 +545,14 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun fetchRoomInfo() {
-        ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
+        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
+        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
@@ -701,11 +726,18 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     title(text = participant.displayName)
                     listItemsWithImage(items = items) { dialog, index, _ ->
 
+                        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+                        if (apiVersion == null) {
+                            Log.e(TAG, "No supported API version found")
+                        }
+
                         if (index == 0) {
                             if (participant.type == Participant.ParticipantType.MODERATOR) {
                                 ncApi.demoteModeratorToUser(
                                     credentials,
-                                    ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
+                                    ApiUtils.getUrlForRoomModerators(apiVersion, conversationUser.baseUrl,
+                                        conversation!!.token),
                                     participant.userId
                                 )
                                     .subscribeOn(Schedulers.io())
@@ -716,7 +748,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             } else if (participant.type == Participant.ParticipantType.USER) {
                                 ncApi.promoteUserToModerator(
                                     credentials,
-                                    ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
+                                    ApiUtils.getUrlForRoomModerators(apiVersion, conversationUser.baseUrl,
+                                        conversation!!.token),
                                     participant.userId
                                 )
                                     .subscribeOn(Schedulers.io())
@@ -771,6 +804,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     companion object {
 
+        private val TAG = "ConversationInfoController"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 

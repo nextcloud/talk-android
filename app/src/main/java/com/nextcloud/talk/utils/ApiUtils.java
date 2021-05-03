@@ -53,13 +53,8 @@ public class ApiUtils {
 
     /**
      * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getUrlForRoomWebinaryLobby(int, String, String)} instead.
+     * {@link ApiUtils#getUrlForAttendees(int, String, String)} instead.
      */
-    @Deprecated
-    public static String getUrlForLobbyForConversation(String baseUrl, String token) {
-        return getUrlForRoomWebinaryLobby(1, baseUrl, token);
-    }
-
     @Deprecated
     public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {
         String url = getUrlForParticipants(1, baseUrl, roomToken);
@@ -122,16 +117,6 @@ public class ApiUtils {
         return getUrlForParticipantsActive(1, baseUrl, token);
     }
 
-
-    /**
-     * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getUrlForParticipants(int, String, String)} instead.
-     */
-    @Deprecated
-    public static String getUrlForParticipants(String baseUrl, String token) {
-        return getUrlForParticipants(1, baseUrl, token);
-    }
-
     public static String getUrlForCapabilities(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
@@ -143,15 +128,6 @@ public class ApiUtils {
     @Deprecated
     public static String getUrlForGetRooms(String baseUrl) {
         return getUrlForRooms(1, baseUrl);
-    }
-
-    /**
-     * @deprecated Please specify the api version you want to use via
-     * {@link ApiUtils#getUrlForRoom(int, String, String)} instead.
-     */
-    @Deprecated
-    public static String getRoom(String baseUrl, String token) {
-        return getUrlForRoom(1, baseUrl, token);
     }
 
     public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
@@ -195,6 +171,10 @@ public class ApiUtils {
 
     public static String getUrlForRoom(int version, String baseUrl, String token) {
         return getUrlForRooms(version, baseUrl) + "/" + token;
+    }
+
+    public static String getUrlForAttendees(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/attendees";
     }
 
     public static String getUrlForParticipants(int version, String baseUrl, String token) {

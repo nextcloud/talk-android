@@ -28,6 +28,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
 import android.text.TextUtils
+import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
@@ -48,6 +49,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.CallNotificationController
+import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
@@ -249,9 +251,17 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
                     if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                        val apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", intArrayOf(1))
+
+                        if (apiVersion == null) {
+                            Log.e(TAG, "No supported API version found")
+                            return
+                        }
+
                         ncApi.getRoom(
                             credentials,
-                            ApiUtils.getRoom(
+                            ApiUtils.getUrlForRoom(
+                                apiVersion,
                                 currentUser.baseUrl,
                                 roomOverall.ocs.data.token
                             )

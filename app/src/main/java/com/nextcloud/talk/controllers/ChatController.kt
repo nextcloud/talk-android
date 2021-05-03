@@ -82,6 +82,7 @@ import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
@@ -293,7 +294,14 @@ class ChatController(args: Bundle) :
         }
 
         if (conversationUser != null) {
-            ncApi?.getRoom(credentials, ApiUtils.getRoom(conversationUser.baseUrl, roomToken))
+            val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+            if (apiVersion == null) {
+                Log.e(TAG, "No supported API version found")
+                return
+            }
+
+            ncApi?.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<RoomOverall> {
@@ -332,7 +340,18 @@ class ChatController(args: Bundle) :
     }
 
     private fun handleFromNotification() {
-        ncApi?.getRooms(credentials, ApiUtils.getUrlForGetRooms(conversationUser?.baseUrl))
+        if (ncApi == null) {
+            return
+        }
+
+        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
+        ncApi?.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))
             ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<RoomsOverall> {
                 override fun onSubscribe(d: Disposable) {
