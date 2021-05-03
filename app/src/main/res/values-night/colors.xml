@@ -51,6 +51,8 @@
 
     <color name="controller_chat_separator">#484848</color>
 
+    <color name="colorBackgroundDarker">#2C2C2C</color>
+
     <!-- Chat window incoming message text & informational -->
     <color name="bg_bottom_sheet">#121212</color>
     <color name="bg_message_list_incoming_bubble">#484848</color>

@@ -62,11 +62,11 @@
     </LinearLayout>
 
     <include
-        layout="@layout/join_conversation_via_link"
+        layout="@layout/conversation_privacy_toggle"
         android:visibility="gone" />
 
     <include
-        layout="@layout/conversation_privacy_toggle"
+        layout="@layout/join_conversation_via_link"
         android:visibility="gone" />
 
     <include
