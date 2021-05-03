@@ -129,7 +129,7 @@ public class ApiUtils {
      */
     @Deprecated
     public static String getUrlForParticipants(String baseUrl, String token) {
-        return getRoom(baseUrl, token) + "/participants";
+        return getUrlForParticipants(1, baseUrl, token);
     }
 
     public static String getUrlForCapabilities(String baseUrl) {
@@ -142,7 +142,7 @@ public class ApiUtils {
      */
     @Deprecated
     public static String getUrlForGetRooms(String baseUrl) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
+        return getUrlForRooms(1, baseUrl);
     }
 
     /**
