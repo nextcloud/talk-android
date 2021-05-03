@@ -686,7 +686,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
-        bottomSheet.setOnDismissListener(dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
+        bottomSheet.setOnDismissListener(dialog -> showSearchOrToolbar());
         bottomSheet.show();
     }
 
