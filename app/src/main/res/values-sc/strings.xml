@@ -118,7 +118,7 @@
     <string name="nc_no_proxy">Perunu proxy</string>
     <string name="nc_username">Nùmene utente</string>
     <string name="nc_password">Crae</string>
-    <string name="nc_conversation_link">Ligòngiu tzarrada</string>
+    <string name="nc_conversation_link">Ligòngiu resonada</string>
     <string name="nc_new_password">Crae noa</string>
     <string name="nc_wrong_password">Crae isballiada</string>
     <string name="nc_about">In contu de</string>
@@ -131,22 +131,22 @@
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Cumintza una tzarrada</string>
-    <string name="nc_configure_room">Cunfigura tzarrada</string>
-    <string name="nc_leave">Lassa tzarrada</string>
-    <string name="nc_rename">Torra a numenare sa tzarrada</string>
+    <string name="nc_configure_room">Cunfigura resonada</string>
+    <string name="nc_leave">Lassa resonada</string>
+    <string name="nc_rename">Torra a numenare sa resonada</string>
     <string name="nc_set_password">Imposta una crae</string>
     <string name="nc_change_password">Càmbia crae</string>
     <string name="nc_clear_password">Isbòida crae</string>
     <string name="nc_share_link">Cumpartzi ligòngiu</string>
     <string name="nc_share_link_via">Cumpartzi ligòngiu tràmite</string>
-    <string name="nc_make_call_public">Faghe pùblica sa tzarrada</string>
-    <string name="nc_make_call_private">Faghe privada sa tzarrada</string>
-    <string name="nc_delete_call">Cantzella tzarrada</string>
+    <string name="nc_make_call_public">Faghe pùblica sa resonada</string>
+    <string name="nc_make_call_private">Faghe privada sa resonada</string>
+    <string name="nc_delete_call">Cantzella resonada</string>
     <string name="nc_delete">Cantzella</string>
-    <string name="nc_delete_conversation_default">Cunfirma s\'intentzione tua de nde bogare sa tzarrada.</string>
-    <string name="nc_delete_conversation_more">Si cantzellas sa tzarrada, at a èssere cantzellada puru pro su restu de partetzipantes.</string>
+    <string name="nc_delete_conversation_default">Cunfirma s\'intentzione tua de nde bogare sa resonada.</string>
+    <string name="nc_delete_conversation_more">Si cantzellas sa resonada, s\'at a cantzellare puru pro su restu de partetzipantes.</string>
 
-    <string name="nc_new_conversation">Tzarrada noa</string>
+    <string name="nc_new_conversation">Resonada noa</string>
     <string name="nc_join_via_link">Intra cun unu ligòngiu</string>
     <string name="nc_join_via_web">Intra dae sa rete</string>
     <string name="nc_add_to_favorites">Agiunghe a preferidos</string>
@@ -188,7 +188,7 @@
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
     <string name="nc_all_ok_operation">AB, fatu!</string>
     <string name="nc_ok">AB</string>
-    <string name="nc_call_name">Nùmene tzarrada</string>
+    <string name="nc_call_name">Nùmene resonada</string>
     <string name="nc_proceed">Sighi</string>
     <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
     <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
@@ -203,7 +203,7 @@
     <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
 
     <!-- Moderation -->
-    <string name="nc_demote">Botza dae moderadore</string>
+    <string name="nc_demote">Lea·ssi su permissu de moderare</string>
     <string name="nc_promote">Approva a moderadore</string>
     <string name="nc_remove_participant"> Boga·nche partetzipante</string>
 
@@ -213,7 +213,7 @@
     <string name="nc_date_header_today">Oe</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
-    <string name="nc_conversation_menu_conversation_info">Informatziones de tzarrada</string>
+    <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
     <string name="nc_new_messages">Messàgios non lèghidos</string>
     <string name="nc_no_messages_yet">Ancora perunu messàgiu</string>
     <string name="nc_sent_a_link" formatted="true">%1$s at imbiadu unu ligòngiu.</string>
@@ -235,7 +235,7 @@
     <string name="nc_no_more_load_retry">Non ddoe at àteros elementos de carrigare. Agiorna pro torrare a proare</string>
     <string name="nc_endless_disabled">Non ddoe at àteros elementos de carrigare (cròmpidu a su màssimu).</string>
     <string name="nc_endless_cancel">Cantzelladu dae s\'utente.</string>
-    <string name="nc_endless_error">Ddoe at àpidu un\'errore carrighende àteros elementos.</string>
+    <string name="nc_endless_error">B\'at àpidu un\'errore carrighende àteros elementos.</string>
 
     <!-- Content descriptions -->
     <string name="nc_description_more_menu_one_to_one">Menu pro tzarrada cun%1$s</string>
@@ -258,7 +258,7 @@
     <string name="nc_unauthorized_error">Peruna autorizatzione</string>
 
     <string name="nc_general_settings">Generale</string>
-    <string name="nc_last_moderator_title">No at fatu a lassare sa tzarrada</string>
+    <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
     <!-- Chat -->
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Còpia</string>

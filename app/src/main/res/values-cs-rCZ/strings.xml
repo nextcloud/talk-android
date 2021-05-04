@@ -250,7 +250,7 @@
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
     <string name="nc_sent_a_video_you">Odeslali jste video.</string>
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
-    <string name="nc_message_quote_cancel_reply">Zrušit odpověď</string>
+    <string name="nc_message_quote_cancel_reply">Odebrat odpověď</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vy: %1$s</string>
 
@@ -323,6 +323,8 @@
     <string name="send_to">Odeslat k</string>
     <string name="open_in_files_app">Otevřít v aplikaci pro soubory</string>
 
+    <!-- Upload -->
+    <string name="nc_add_file">Přidat do konverzace</string>
     <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
     <string name="nc_upload_from_cloud">Sdílení od %1$s</string>
     <string name="nc_upload_failed">Odesílání se nezdařilo, omlouváme se</string>
@@ -380,4 +382,4 @@
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
     <string name="selected_list_item">vybraný</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-</resources>
+    </resources>

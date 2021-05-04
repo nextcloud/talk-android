@@ -384,4 +384,4 @@
     <string name="failed_to_save">Fallo al guardar %1$s</string>
     <string name="selected_list_item">seleccionado</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-</resources>
+    </resources>

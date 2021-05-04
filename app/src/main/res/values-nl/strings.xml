@@ -31,6 +31,12 @@
     <!-- Bottom Navigation -->
     <string name="nc_settings">Instellingen</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">Testen serververbinding</string>
+    <string name="nc_server_helper_text">De link naar je %1$s web interface wanneer je die opent in de browser. </string>
+    <string name="nc_server_testing_connection">Testen verbinding </string>
+    <string name="nc_server_unsupported">De server heeft geen ondersteunde Talk app geïnstalleerd</string>
+
     <string name="nc_server_url">Serveradres https://…</string>
     <string name="nc_server_not_installed">Beëindig je %1$s installatie</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
@@ -131,7 +137,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_license_title">Licentie</string>
     <string name="nc_license_summary">GNU General Public Licence, versie 3</string>
 
-    <string name="nc_select_an_account">Selecteer een account</string>
+    <string name="nc_select_an_account">Selecteer een account</string>
+
+    <string name="nc_profile_personal_info_title">Persoonlijke info</string>
 
     <!-- Conversation menu -->
     <string name="nc_start_conversation">Begin een gesprek</string>
@@ -243,6 +251,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_sent_an_audio_you">Je verstuurde een geluidsbestand.</string>
     <string name="nc_sent_a_video_you">Je verstuurde een video.</string>
     <string name="nc_sent_an_image_you">Je verstuurde een afbeelding.</string>
+    <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Jij: %1$s</string>
 
@@ -260,6 +269,7 @@ Kies er eentje van een provider.</string>
 
     <!-- Empty states -->
     <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
+    <string name="nc_conversations_empty_details">Zeg hallo tegen je vrienden en collega\'s!</string>
     <string name="nc_hello">Hallo</string>
 
     <!-- Other -->
@@ -267,6 +277,8 @@ Kies er eentje van een provider.</string>
 %stekens limiet bereikt</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_participants">Deelnemers</string>
+    <string name="nc_participants_add">Deelnemers toevoegen</string>
+
     <string name="nc_owner">Eigenaar</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_user">Gebruiker</string>
@@ -310,6 +322,12 @@ Kies er eentje van een provider.</string>
     <string name="nc_delete_message">verwijderen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
 
+    <string name="share">Delen</string>
+    <string name="send_to">Versturen naar</string>
+    <string name="open_in_files_app">Openen in de Bestanden-app</string>
+
+    <!-- Upload -->
+    <string name="nc_add_file">Toevoegen aan gespek</string>
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_from_cloud">Delen van %1$s</string>
     <string name="nc_upload_failed">Sorry, uploaden mislukt</string>
@@ -327,6 +345,9 @@ Kies er eentje van een provider.</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende permissies</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
+
+    <string name="starred">Favoriet</string>
+    <string name="password_protected">Wachtwoord-beveiligd</string>
 
     <string name="avatar">Avatar</string>
     <string name="account_icon">Accountpictogram</string>
@@ -362,4 +383,6 @@ Kies er eentje van een provider.</string>
 
     <string name="nc_action_open_main_menu">Openen hoofdmenu</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
+    <string name="selected_list_item">geselecteerd</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
     </resources>
