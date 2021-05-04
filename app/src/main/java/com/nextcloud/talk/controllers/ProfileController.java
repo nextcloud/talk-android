@@ -749,14 +749,36 @@ public class ProfileController extends BaseController {
 
                 switch (item.scope) {
                     case PRIVATE:
+                        holder.scope.setImageResource(R.drawable.ic_password);
+                        holder.scope.setContentDescription(
+                                controller.getActivity().getResources().getString(
+                                        R.string.scope_toggle_description,
+                                        item.hint,
+                                        controller.getActivity().getString(R.string.scope_private_title)));
+                        break;
                     case LOCAL:
                         holder.scope.setImageResource(R.drawable.ic_password);
+                        holder.scope.setContentDescription(
+                                controller.getActivity().getResources().getString(
+                                        R.string.scope_toggle_description,
+                                        item.hint,
+                                        controller.getActivity().getString(R.string.scope_local_title)));
                         break;
                     case FEDERATED:
                         holder.scope.setImageResource(R.drawable.ic_contacts);
+                        holder.scope.setContentDescription(
+                                controller.getActivity().getResources().getString(
+                                        R.string.scope_toggle_description,
+                                        item.hint,
+                                        controller.getActivity().getString(R.string.scope_federated_title)));
                         break;
                     case PUBLISHED:
                         holder.scope.setImageResource(R.drawable.ic_link);
+                        holder.scope.setContentDescription(
+                                controller.getActivity().getResources().getString(
+                                        R.string.scope_toggle_description,
+                                        item.hint,
+                                        controller.getActivity().getString(R.string.scope_published_title)));
                         break;
                 }
             }

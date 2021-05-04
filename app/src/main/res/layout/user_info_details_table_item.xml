@@ -30,7 +30,7 @@
         android:layout_width="@dimen/iconized_single_line_item_icon_size"
         android:layout_height="@dimen/iconized_single_line_item_icon_size"
         android:layout_marginStart="@dimen/standard_margin"
-        android:contentDescription="@string/account_icon"
+        android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
