@@ -403,8 +403,7 @@ public class CallNotificationController extends BaseController {
                                                                                                             .incoming_gradient));
                             }
 
-                            if ((AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) &&
-                                    userBeingCalled.hasSpreedFeatureCapability("no-ping")) {
+                            if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
                                 if (getActivity() != null) {
                                     Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
                                     new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);

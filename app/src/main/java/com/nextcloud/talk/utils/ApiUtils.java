@@ -295,14 +295,6 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-    /**
-     * @deprecated Method is only needed before Talk 4 which is from 2018 => todrop
-     */
-    @Deprecated
-    public static String getUrlForCallPing(String baseUrl, String token) {
-        return getUrlForCall(1, baseUrl, token) + "/ping";
-    }
-
     public static String getUrlForUserProfile(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/user";
     }

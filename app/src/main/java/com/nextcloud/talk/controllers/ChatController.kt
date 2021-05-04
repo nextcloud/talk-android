@@ -844,7 +844,7 @@ class ChatController(args: Bundle) :
         cancelNotificationsForCurrentConversation()
 
         if (inConversation) {
-            if (wasDetached && conversationUser?.hasSpreedFeatureCapability("no-ping") ?: false) {
+            if (wasDetached) {
                 currentConversation?.sessionId = "0"
                 wasDetached = false
                 joinRoomWithPassword()
@@ -854,12 +854,7 @@ class ChatController(args: Bundle) :
 
     private fun cancelNotificationsForCurrentConversation() {
         if (conversationUser != null) {
-            if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
-                NotificationUtils.cancelExistingNotificationsForRoom(
-                    applicationContext,
-                    conversationUser, roomId
-                )
-            } else if (!TextUtils.isEmpty(roomToken)) {
+            if (!TextUtils.isEmpty(roomToken)) {
                 NotificationUtils.cancelExistingNotificationsForRoom(
                     applicationContext,
                     conversationUser, roomToken!!
@@ -882,7 +877,6 @@ class ChatController(args: Bundle) :
         }
 
         if (conversationUser != null &&
-            conversationUser.hasSpreedFeatureCapability("no-ping") &&
             activity != null &&
             !activity?.isChangingConfigurations!! &&
             !isLeavingForConversation
@@ -927,35 +921,6 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun startPing() {
-        if (conversationUser != null && !conversationUser.hasSpreedFeatureCapability("no-ping")) {
-            ncApi?.pingCall(
-                credentials,
-                ApiUtils.getUrlForCallPing(
-                    conversationUser.baseUrl,
-                    roomToken
-                )
-            )
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.repeatWhen { observable -> observable.delay(5000, TimeUnit.MILLISECONDS) }
-                ?.takeWhile { observable -> inConversation }
-                ?.retry(3) { observable -> inConversation }
-                ?.subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
-                    }
-
-                    override fun onNext(genericOverall: GenericOverall) {
-                    }
-
-                    override fun onError(e: Throwable) {}
-
-                    override fun onComplete() {}
-                })
-        }
-    }
-
     @OnClick(R.id.smileyButton)
     internal fun onSmileyClick() {
         emojiPopup?.toggle()
@@ -991,7 +956,6 @@ class ChatController(args: Bundle) :
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
-                        startPing()
 
                         setupWebsocket()
                         checkLobbyState()
@@ -1029,7 +993,6 @@ class ChatController(args: Bundle) :
                     currentConversation?.sessionId
                 )
             }
-            startPing()
             if (isFirstMessagesProcessing) {
                 pullChatMessages(0)
             } else {
