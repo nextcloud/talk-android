@@ -180,7 +180,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
             }
         } else if ("groups".equals(participant.getSource())) {
-            holder.simpleDraweeView.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(NextcloudTalkApplication.Companion.getSharedApplication().getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
+            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();

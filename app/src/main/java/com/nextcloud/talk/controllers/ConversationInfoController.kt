@@ -652,18 +652,10 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 conversationAvatarImageView.controller = draweeController
             }
             Conversation.ConversationType.ROOM_GROUP_CALL -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
-                DisplayUtils
-                    .getRoundedBitmapDrawableFromVectorDrawableResource(
-                        resources,
-                        R.drawable.ic_people_group_white_24px
-                    )
+                R.drawable.ic_circular_group
             )
             Conversation.ConversationType.ROOM_PUBLIC_CALL -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
-                DisplayUtils
-                    .getRoundedBitmapDrawableFromVectorDrawableResource(
-                        resources,
-                        R.drawable.ic_link_white_24px
-                    )
+                R.drawable.ic_circular_link
             )
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)

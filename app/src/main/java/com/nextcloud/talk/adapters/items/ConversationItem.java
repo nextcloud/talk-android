@@ -258,12 +258,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                        holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils.getRoundedBitmapFromVectorDrawableResource(context.getResources(), R.drawable.ic_people_group_white_24px)), 100, true);
+                        holder.dialogAvatar.setImageResource(R.drawable.ic_circular_group);
                     break;
                 case ROOM_PUBLIC_CALL:
-                        holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
-                                .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                        R.drawable.ic_link_white_24px)), 100, true);
+                        holder.dialogAvatar.setImageResource(R.drawable.ic_circular_link);
                     break;
                 default:
                     holder.dialogAvatar.setVisibility(View.GONE);

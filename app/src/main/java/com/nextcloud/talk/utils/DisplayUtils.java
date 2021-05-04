@@ -294,9 +294,9 @@ public class DisplayUtils {
                 drawable = R.drawable.accent_circle;
             }
 
-            chip.setChipIcon(context.getDrawable(drawable));
+            chip.setChipIconResource(drawable);
         } else {
-            chip.setChipIcon(getRoundedDrawable(context.getDrawable(R.drawable.ic_people_group_white_24px)));
+            chip.setChipIconResource(R.drawable.ic_circular_group);
         }
 
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
