@@ -258,8 +258,6 @@ public class CallController extends BaseController {
     private boolean videoOn = false;
     private boolean audioOn = false;
 
-    private boolean isMultiSession = false;
-
     private boolean isVoiceOnlyCall;
     private boolean isIncomingCallFromNotification;
     private Handler callControlHandler = new Handler();
@@ -1196,15 +1194,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                        isMultiSession = capabilitiesOverall.getOcs().getData()
-                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability() != null &&
-                                capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("multi-room-users");
-
+                        // FIXME check for compatible Call API version
                         if (hasExternalSignalingServer) {
                             setupAndInitiateWebSocketsConnection();
                         } else {
@@ -1214,7 +1204,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
-                        isMultiSession = false;
+
                     }
 
                     @Override
@@ -1302,12 +1292,6 @@ public class CallController extends BaseController {
 
                             ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
 
-                            // Start pulling signaling messages
-                            String urlToken = null;
-                            if (isMultiSession) {
-                                urlToken = roomToken;
-                            }
-
                             if (!TextUtils.isEmpty(roomToken)) {
                                 NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
                             }
@@ -1316,7 +1300,7 @@ public class CallController extends BaseController {
                                 int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
                                 ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion,
-                                                                                                     baseUrl, urlToken))
+                                                                                                     baseUrl, roomToken))
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .repeatWhen(observable -> observable)
@@ -1587,14 +1571,10 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        if (isMultiSession) {
-                            if (shutDownView && getActivity() != null) {
-                                getActivity().finish();
-                            } else if (!shutDownView && (currentCallStatus.equals(CallStatus.RECONNECTING) || currentCallStatus.equals(CallStatus.PUBLISHER_FAILED))) {
-                                initiateCall();
-                            }
-                        } else {
-                            leaveRoom(shutDownView);
+                        if (shutDownView && getActivity() != null) {
+                            getActivity().finish();
+                        } else if (!shutDownView && (currentCallStatus.equals(CallStatus.RECONNECTING) || currentCallStatus.equals(CallStatus.PUBLISHER_FAILED))) {
+                            initiateCall();
                         }
                     }
 
@@ -2007,14 +1987,9 @@ public class CallController extends BaseController {
             String stringToSend = stringBuilder.toString();
             strings.add(stringToSend);
 
-            String urlToken = null;
-            if (isMultiSession) {
-                urlToken = roomToken;
-            }
-
             int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
-            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, urlToken),
+            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
                                         strings.toString())
                     .retry(3)
                     .subscribeOn(Schedulers.io())
