@@ -303,7 +303,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         var inCallOnDifferentDevice = false
 
 
-        val apiVersion = ApiUtils.getApiVersion(signatureVerification.userEntity, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(signatureVerification.userEntity, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")

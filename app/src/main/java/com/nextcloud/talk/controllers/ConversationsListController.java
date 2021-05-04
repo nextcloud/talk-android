@@ -418,7 +418,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         callItems = new ArrayList<>();
 
-        Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {4, 1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {4, 1});
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
             return;

@@ -441,7 +441,7 @@ public class CallController extends BaseController {
     }
 
     private void handleFromNotification() {
-        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
@@ -1248,8 +1248,7 @@ public class CallController extends BaseController {
     private void joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
-        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation",
-                                                    new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {1});
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
             return;
@@ -1309,7 +1308,7 @@ public class CallController extends BaseController {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
@@ -1648,7 +1647,7 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
@@ -1690,8 +1689,7 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation",
-                                                    new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
             return;
@@ -1790,7 +1788,7 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));

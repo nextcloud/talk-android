@@ -231,7 +231,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val roomType = "1"
         val currentUser = userUtils.currentUser ?: return
 
-        val apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")
@@ -258,7 +258,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
                     if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                        val apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", intArrayOf(1))
+                        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(1))
 
                         if (apiVersion == null) {
                             Log.e(TAG, "No supported API version found")

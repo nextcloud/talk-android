@@ -80,8 +80,7 @@ public class DeleteConversationWorker extends Worker {
         UserEntity operationUser = userUtils.getUserWithId(operationUserId);
 
         if (operationUser != null) {
-            Integer apiVersion = ApiUtils.getApiVersion(operationUser, "conversation",
-                                                        new int[] {1});
+            Integer apiVersion = ApiUtils.getConversationApiVersion(operationUser,  new int[] {1});
 
             if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));

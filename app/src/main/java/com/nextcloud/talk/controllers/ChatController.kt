@@ -294,7 +294,7 @@ class ChatController(args: Bundle) :
         }
 
         if (conversationUser != null) {
-            val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
             if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found")
@@ -344,7 +344,7 @@ class ChatController(args: Bundle) :
             return
         }
 
-        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")
@@ -977,7 +977,7 @@ class ChatController(args: Bundle) :
         if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
             currentConversation?.sessionId == "0"
         ) {
-            val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
             if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found")
@@ -1051,7 +1051,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
-        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")
@@ -1806,7 +1806,7 @@ class ChatController(args: Bundle) :
             currentConversation?.name != userMentionClickEvent.userId
         ) {
 
-            val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
             if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found")

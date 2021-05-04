@@ -310,7 +310,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ).isChecked
         ) 1 else 0
 
-        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")
@@ -449,7 +449,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun getListOfParticipants() {
-        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")
@@ -545,7 +545,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun fetchRoomInfo() {
-        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found")
@@ -726,7 +726,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     title(text = participant.displayName)
                     listItemsWithImage(items = items) { dialog, index, _ ->
 
-                        val apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", intArrayOf(1))
+                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
                         if (apiVersion == null) {
                             Log.e(TAG, "No supported API version found")

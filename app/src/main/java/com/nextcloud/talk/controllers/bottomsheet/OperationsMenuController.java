@@ -193,8 +193,7 @@ public class OperationsMenuController extends BaseController {
                 credentials = null;
             }
 
-            Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation",
-                                                        new int[] {1});
+            Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
             if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
@@ -402,8 +401,7 @@ public class OperationsMenuController extends BaseController {
     @SuppressLint("LongLogTag")
     private void performGroupCallWorkaround(String credentials) {
 
-        Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation",
-                                                    new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
@@ -567,7 +565,7 @@ public class OperationsMenuController extends BaseController {
             localInvitedGroups.remove(0);
         }
 
-        Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));

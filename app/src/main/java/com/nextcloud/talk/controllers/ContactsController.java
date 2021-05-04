@@ -288,7 +288,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     userId = selectedUserIds.iterator().next();
                 }
 
-                Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {1});
+                Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
                 if (apiVersion == null) {
                     Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
@@ -318,8 +318,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
-                                Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation",
-                                                                           new int[] {1});
+                                Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
                                 if (apiVersion != null && currentUser.hasSpreedFeatureCapability("chat-v2")) {
 
                                     ncApi.getRoom(credentials,
@@ -861,7 +860,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     roomType = "2";
                 }
 
-                Integer apiVersion = ApiUtils.getApiVersion(currentUser, "conversation", new int[] {1});
+                Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
                 if (apiVersion == null) {
                     Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));

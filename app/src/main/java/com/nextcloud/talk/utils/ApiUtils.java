@@ -109,30 +109,28 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
-    public static Integer getApiVersion(UserEntity capabilities, String apiName, int[] versions) {
-         if (apiName.equals("conversation")) {
-             boolean hasApiV4 = false;
-             for (int version : versions) {
-                 hasApiV4 |= version == 4;
-             }
+    public static Integer getConversationApiVersion(UserEntity capabilities, int[] versions) {
+        boolean hasApiV4 = false;
+        for (int version : versions) {
+            hasApiV4 |= version == 4;
+        }
 
-             if (!hasApiV4) {
-                 Exception e = new Exception("Api call did not try conversation-v4 api");
-                 Log.d(TAG, e.getMessage(), e);
-             }
-         }
+        if (!hasApiV4) {
+            Exception e = new Exception("Api call did not try conversation-v4 api");
+            Log.d(TAG, e.getMessage(), e);
+        }
 
         for (int version : versions) {
-            if (capabilities.hasSpreedFeatureCapability(apiName + "-v" + version)) {
+            if (capabilities.hasSpreedFeatureCapability("conversation-v" + version)) {
                 return version;
             }
 
             // Fallback for old API versions
-            if (apiName.equals("conversation") && (version == 1 || version == 2)) {
-                if (capabilities.hasSpreedFeatureCapability(apiName + "-v2")) {
+            if ((version == 1 || version == 2)) {
+                if (capabilities.hasSpreedFeatureCapability("conversation-v2")) {
                     return version;
                 }
-                if (version == 1  && capabilities.hasSpreedFeatureCapability(apiName)) {
+                if (version == 1  && capabilities.hasSpreedFeatureCapability("conversation")) {
                     return version;
                 }
             }

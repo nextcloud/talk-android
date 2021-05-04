@@ -70,7 +70,7 @@ public class AddParticipantsToConversation extends Worker {
     public Result doWork() {
         UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
 
-        Integer apiVersion = ApiUtils.getApiVersion(user, "conversation", new int[] {1});
+        Integer apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {1});
 
         if (apiVersion == null) {
             Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));

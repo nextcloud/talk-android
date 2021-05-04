@@ -97,7 +97,7 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
-                    Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {4, 1});
+                    Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {4, 1});
                     if (apiVersion == null) {
                         Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
                     }

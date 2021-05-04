@@ -87,8 +87,7 @@ public class LeaveConversationWorker extends Worker {
             EventStatus eventStatus = new EventStatus(operationUser.getId(),
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
-            Integer apiVersion = ApiUtils.getApiVersion(operationUser, "conversation",
-                                                        new int[] {1});
+            Integer apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[] {1});
 
             if (apiVersion == null) {
                 Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
