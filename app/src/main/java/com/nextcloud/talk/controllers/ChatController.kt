@@ -1654,8 +1654,12 @@ class ChatController(args: Bundle) :
                         val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
                         ncApi?.deleteChatMessage(
                             credentials,
-                            ApiUtils.getUrlForChatMessage(apiVersion, conversationUser?.baseUrl, roomToken,
-                                message?.id)
+                            ApiUtils.getUrlForChatMessage(
+                                apiVersion,
+                                conversationUser?.baseUrl,
+                                roomToken,
+                                message?.id
+                            )
                         )?.subscribeOn(Schedulers.io())
                             ?.observeOn(AndroidSchedulers.mainThread())
                             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
