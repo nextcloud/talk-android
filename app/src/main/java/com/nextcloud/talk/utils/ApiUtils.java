@@ -154,6 +154,16 @@ public class ApiUtils {
         return null;
     }
 
+    public static Integer getChatApiVersion(UserEntity capabilities, int[] versions) {
+        for (int version : versions) {
+            if (version == 1 && capabilities.hasSpreedFeatureCapability("chat-v2")) {
+                // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
+                return version;
+            }
+        }
+        return null;
+    }
+
     protected static String getUrlForApi(int version, String baseUrl) {
         return baseUrl + spreedApiBase + version;
     }
@@ -212,6 +222,16 @@ public class ApiUtils {
 
     public static String getUrlForCall(int version, String baseUrl, String token) {
         return getUrlForApi(version, baseUrl) + "/call/" + token;
+    }
+    public static String getUrlForChat(int version, String baseUrl, String token) {
+        return getUrlForApi(version, baseUrl) + "/chat/" + token;
+    }
+
+    public static String getUrlForMentionSuggestions(int version, String baseUrl, String token) {
+        return getUrlForChat(version, baseUrl, token) + "/mentions";
+    }
+    public static String getUrlForChatMessage(int version, String baseUrl, String token, String messageId) {
+        return getUrlForChat(version, baseUrl, token) + "/" + messageId;
     }
 
     public static String getUrlForSignaling(int version, String baseUrl) {
@@ -285,16 +305,6 @@ public class ApiUtils {
         return getUrlForCall(1, baseUrl, token) + "/ping";
     }
 
-    public static String getUrlForChat(String baseUrl, String token) {
-        // FIXME Introduce API version
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
-    }
-
-    public static String getUrlForMentionSuggestions(String baseUrl, String token) {
-        // FIXME Introduce API version
-        return getUrlForChat(baseUrl, token) + "/mentions";
-    }
-
     public static String getUrlForUserProfile(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/user";
     }
@@ -361,10 +371,6 @@ public class ApiUtils {
 
     public static String getUrlForFileDownload(String baseUrl, String user, String remotePath) {
         return baseUrl + "/remote.php/dav/files/" + user + "/" + remotePath;
-    }
-
-    public static String getUrlForMessageDeletion(String baseUrl, String token, String messageId) {
-        return getUrlForChat(baseUrl, token) + "/" + messageId;
     }
 
     public static String getUrlForTempAvatar(String baseUrl) {

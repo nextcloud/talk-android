@@ -1142,9 +1142,16 @@ class ChatController(args: Bundle) :
     private fun sendMessage(message: CharSequence, replyTo: Int?) {
 
         if (conversationUser != null) {
+            val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+
+            if (apiVersion == null) {
+                Log.e(TAG, "No supported API version found")
+                return
+            }
+
             ncApi!!.sendChatMessage(
                 credentials,
-                ApiUtils.getUrlForChat(conversationUser.baseUrl, roomToken),
+                ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, roomToken),
                 message,
                 conversationUser.displayName,
                 replyTo
@@ -1244,11 +1251,23 @@ class ChatController(args: Bundle) :
         }
 
         if (!wasDetached) {
+            var apiVersion: Int?
+            // FIXME this is a best guess, guests would need to get the capabilities themselves
+            apiVersion = 1
+            if (conversationUser != null) {
+                apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+
+                if (apiVersion == null) {
+                    Log.e(TAG, "No supported API version found")
+                    return
+                }
+            }
+
             if (lookIntoFuture > 0) {
                 val finalTimeout = timeout
                 ncApi?.pullChatMessages(
                     credentials,
-                    ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap
+                    ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
                 )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
@@ -1277,7 +1296,7 @@ class ChatController(args: Bundle) :
             } else {
                 ncApi?.pullChatMessages(
                     credentials,
-                    ApiUtils.getUrlForChat(conversationUser?.baseUrl, roomToken), fieldMap
+                    ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
                 )
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
@@ -1667,9 +1686,17 @@ class ChatController(args: Bundle) :
                         true
                     }
                     R.id.action_delete_message -> {
+                        val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+
+                        if (apiVersion == null) {
+                            Log.e(TAG, "No supported API version found")
+                        }
+
+
                         ncApi?.deleteChatMessage(
                             credentials,
-                            ApiUtils.getUrlForMessageDeletion(conversationUser?.baseUrl, roomToken, message?.id)
+                            ApiUtils.getUrlForChatMessage(apiVersion, conversationUser?.baseUrl, roomToken,
+                                message?.id)
                         )?.subscribeOn(Schedulers.io())
                             ?.observeOn(AndroidSchedulers.mainThread())
                             ?.subscribe(object : Observer<ChatOverallSingleMessage> {

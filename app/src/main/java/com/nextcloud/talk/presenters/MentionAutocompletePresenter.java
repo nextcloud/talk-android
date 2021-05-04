@@ -20,7 +20,9 @@
 
 package com.nextcloud.talk.presenters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,6 +49,7 @@ import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
+    private static final String TAG = "MentionAutocompletePresenter";
     @Inject
     NcApi ncApi;
     @Inject
@@ -81,6 +84,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         return adapter;
     }
 
+    @SuppressLint("LongLogTag")
     @Override
     protected void onQuery(@Nullable CharSequence query) {
 
@@ -91,9 +95,17 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
             queryString = "";
         }
 
+        Integer apiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
         adapter.setFilter(queryString);
-        ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUsername(), currentUser
-                        .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
+        ncApi.getMentionAutocompleteSuggestions(
+                ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                ApiUtils.getUrlForMentionSuggestions(apiVersion, currentUser.getBaseUrl(), roomToken),
                 queryString, 5)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
