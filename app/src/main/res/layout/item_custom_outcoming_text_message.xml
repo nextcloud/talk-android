@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -66,7 +68,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
-            app:layout_alignSelf="center" />
+            app:layout_alignSelf="center"
+            android:contentDescription="@null" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
