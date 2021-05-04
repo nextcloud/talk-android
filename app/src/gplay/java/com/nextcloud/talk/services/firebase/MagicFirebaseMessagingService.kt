@@ -302,9 +302,18 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         var hasParticipantsInCall = false
         var inCallOnDifferentDevice = false
 
+
+        val apiVersion = ApiUtils.getApiVersion(signatureVerification.userEntity, "conversation", intArrayOf(1))
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found")
+            return
+        }
+
         ncApi.getPeersForCall(
             ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
             ApiUtils.getUrlForCall(
+                apiVersion,
                 signatureVerification.userEntity.baseUrl,
                 decryptedPushMessage.id
             )
@@ -346,5 +355,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 override fun onComplete() {
                 }
             })
+    }
+
+    companion object {
+
+        private val TAG = "MagicFirebaseMessagingService"
+        private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 }

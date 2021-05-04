@@ -208,8 +208,16 @@ public class CallNotificationController extends BaseController {
                                                  .pushChangeHandler(new HorizontalChangeHandler()));
     }
 
+    @SuppressLint("LongLogTag")
     private void checkIfAnyParticipantsRemainInRoom() {
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(userBeingCalled.getBaseUrl(),
+        Integer apiVersion = ApiUtils.getApiVersion(userBeingCalled, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
                                                                   currentConversation.getToken()))
                 .subscribeOn(Schedulers.io())
                 .takeWhile(observable -> !leavingScreen)

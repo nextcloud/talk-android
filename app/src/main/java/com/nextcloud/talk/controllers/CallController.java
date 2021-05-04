@@ -1302,8 +1302,14 @@ public class CallController extends BaseController {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        ncApi.joinCall(credentials,
-                       ApiUtils.getUrlForCall(baseUrl, roomToken), inCallFlag)
+        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1627,7 +1633,14 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1762,7 +1775,14 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+        Integer apiVersion = ApiUtils.getApiVersion(conversationUser, "conversation", new int[] {1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override

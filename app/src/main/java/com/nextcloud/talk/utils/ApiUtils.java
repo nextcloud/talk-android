@@ -196,6 +196,10 @@ public class ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
     }
 
+    public static String getUrlForCall(int version, String baseUrl, String token) {
+        return getUrlForApi(version, baseUrl) + "/call/" + token;
+    }
+
     public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
@@ -243,15 +247,12 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-    public static String getUrlForCall(String baseUrl, String token) {
-        // FIXME Introduce API version
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/call/" + token;
-
-    }
-
+    /**
+     * @deprecated Method is only needed before Talk 4 which is from 2018 => todrop
+     */
+    @Deprecated
     public static String getUrlForCallPing(String baseUrl, String token) {
-        // FIXME Introduce API version
-        return getUrlForCall(baseUrl, token) + "/ping";
+        return getUrlForCall(1, baseUrl, token) + "/ping";
     }
 
     public static String getUrlForChat(String baseUrl, String token) {
