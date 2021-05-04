@@ -68,6 +68,9 @@ public class AddParticipantsToConversation extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+        Data data = getInputData();
+        String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
+        String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
         UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
 
         Integer apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {1});
@@ -77,9 +80,6 @@ public class AddParticipantsToConversation extends Worker {
             return Result.failure();
         }
 
-        Data data = getInputData();
-        String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
-        String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
         String conversationToken = data.getString(BundleKeys.INSTANCE.getKEY_TOKEN());
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
