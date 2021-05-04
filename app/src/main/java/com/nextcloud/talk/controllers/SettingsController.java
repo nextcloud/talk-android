@@ -144,6 +144,8 @@ public class SettingsController extends BaseController {
     EmojiTextView displayNameTextView;
     @BindView(R.id.base_url_text)
     TextView baseUrlTextView;
+    @BindView(R.id.server_age_warning_text)
+    TextView serverAgeTextView;
     @BindView(R.id.settings_call_sound)
     MaterialStandardPreference settingsCallSound;
     @BindView(R.id.settings_message_sound)
@@ -550,6 +552,18 @@ public class SettingsController extends BaseController {
         if (currentUser != null) {
 
             baseUrlTextView.setText(Uri.parse(currentUser.getBaseUrl()).getHost());
+
+            if (!currentUser.hasSpreedFeatureCapability("no-ping")) {
+                // Talk 4+
+                serverAgeTextView.setTextColor(getResources().getColor(R.color.nc_darkRed));
+                serverAgeTextView.setText(R.string.nc_settings_server_eol);
+            } else if (!currentUser.hasSpreedFeatureCapability("chat-replies")) {
+                // Talk 8+
+                serverAgeTextView.setTextColor(getResources().getColor(R.color.nc_darkYellow));
+                serverAgeTextView.setText(R.string.nc_settings_server_almost_eol);
+            } else {
+                serverAgeTextView.setVisibility(View.GONE);
+            }
 
             reauthorizeButton.addPreferenceClickListener(view14 -> {
                 getRouter().pushController(RouterTransaction.with(

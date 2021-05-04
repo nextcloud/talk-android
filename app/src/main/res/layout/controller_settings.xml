@@ -71,7 +71,17 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="4dp"
                 android:textColor="@color/medium_emphasis_text"
-                tools:text="jane@nextcloud.com" />
+                tools:text="nextcloud.com" />
+
+            <TextView
+                android:id="@+id/server_age_warning_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/base_url_text"
+                android:layout_centerHorizontal="true"
+                android:layout_margin="@dimen/standard_margin"
+                android:textColor="@color/nc_darkRed"
+                tools:text="@string/nc_settings_server_almost_eol" />
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/avatar_image"
@@ -87,7 +97,7 @@
                 android:id="@+id/settings_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/base_url_text"
+                android:layout_below="@id/server_age_warning_text"
                 android:tag="switchAccountButton"
                 apc:mp_title="@string/nc_settings_switch_account" />
 
