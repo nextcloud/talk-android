@@ -448,6 +448,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
+    @SuppressLint("LongLogTag")
     private fun getListOfParticipants() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
@@ -544,6 +545,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         router.setBackstack(backstack, HorizontalChangeHandler())
     }
 
+    @SuppressLint("LongLogTag")
     private fun fetchRoomInfo() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
@@ -695,6 +697,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
+    @SuppressLint("LongLogTag")
     override fun onItemClick(view: View?, position: Int): Boolean {
         val userItem = adapter?.getItem(position) as UserItem
         val participant = userItem.model

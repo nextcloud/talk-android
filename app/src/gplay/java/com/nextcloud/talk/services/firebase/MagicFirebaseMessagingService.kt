@@ -292,6 +292,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    @SuppressLint("LongLogTag")
     private fun checkIfCallIsActive(
         signatureVerification: SignatureVerification,
         decryptedPushMessage: DecryptedPushMessage
