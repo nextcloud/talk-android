@@ -53,6 +53,7 @@
         android:layout_height="16dp"
         android:layout_below="@id/file_icon"
         android:layout_alignStart="@+id/file_icon"
+        android:contentDescription="@string/encrypted"
         android:src="@drawable/ic_lock_grey600_24px" />
 
     <TextView
