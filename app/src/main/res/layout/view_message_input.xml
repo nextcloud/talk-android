@@ -46,7 +46,8 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_below="@id/quotedChatMessageView"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:contentDescription="@string/nc_add_attachment" />
 
         <ImageButton
             android:id="@+id/smileyButton"
@@ -56,7 +57,8 @@
             android:layout_toStartOf="@id/messageSendButton"
             android:background="@color/transparent"
             android:src="@drawable/ic_insert_emoticon_black_24dp"
-            android:tint="@color/emoji_icons" />
+            android:tint="@color/emoji_icons"
+            android:contentDescription="@string/nc_add_emojis" />
 
         <ImageButton
             android:id="@id/messageSendButton"
@@ -66,7 +68,8 @@
             android:layout_below="@id/quotedChatMessageView"
             android:adjustViewBounds="true"
             android:padding="4dp"
-            android:scaleType="centerInside" />
+            android:scaleType="centerInside"
+            android:contentDescription="@string/nc_description_send_message_button" />
 
         <Space
             android:id="@id/attachmentButtonSpace"
