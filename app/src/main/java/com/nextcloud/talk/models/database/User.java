@@ -92,6 +92,16 @@ public interface User extends Parcelable, Persistable, Serializable {
         return false;
     }
 
+    default boolean isServerEOL() {
+        // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
+        return !hasSpreedFeatureCapability("no-ping");
+    }
+
+    default boolean isServerAlmostEOL() {
+        // Capability is available since Talk 8 => Nextcloud 18 => January 2020
+        return !hasSpreedFeatureCapability("chat-replies");
+    }
+
     default boolean hasSpreedFeatureCapability(String capabilityName) {
         if (getCapabilities() != null) {
             try {

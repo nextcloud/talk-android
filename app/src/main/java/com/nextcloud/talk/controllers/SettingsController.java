@@ -553,12 +553,10 @@ public class SettingsController extends BaseController {
 
             baseUrlTextView.setText(Uri.parse(currentUser.getBaseUrl()).getHost());
 
-            if (!currentUser.hasSpreedFeatureCapability("no-ping")) {
-                // Talk 4+
+            if (currentUser.isServerEOL()) {
                 serverAgeTextView.setTextColor(getResources().getColor(R.color.nc_darkRed));
                 serverAgeTextView.setText(R.string.nc_settings_server_eol);
-            } else if (!currentUser.hasSpreedFeatureCapability("chat-replies")) {
-                // Talk 8+
+            } else if (currentUser.isServerAlmostEOL()) {
                 serverAgeTextView.setTextColor(getResources().getColor(R.color.nc_darkYellow));
                 serverAgeTextView.setText(R.string.nc_settings_server_almost_eol);
             } else {

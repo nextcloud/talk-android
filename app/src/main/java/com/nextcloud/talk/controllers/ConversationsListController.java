@@ -270,8 +270,7 @@ public class ConversationsListController extends BaseController implements Searc
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
-            if (!currentUser.hasSpreedFeatureCapability("no-ping")) {
-                // Talk 4+
+            if (currentUser.isServerEOL()) {
                 new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
                         .setTopColorRes(R.color.nc_darkRed)
                         .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
