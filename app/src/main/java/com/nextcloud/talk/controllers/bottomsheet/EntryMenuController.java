@@ -35,13 +35,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import androidx.annotation.NonNull;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.OnClick;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -64,6 +59,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import butterknife.OnClick;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class EntryMenuController extends BaseController {
@@ -95,7 +95,6 @@ public class EntryMenuController extends BaseController {
 
     private EmojiPopup emojiPopup;
 
-
     private Bundle originalBundle;
 
     public EntryMenuController(Bundle args) {
@@ -116,6 +115,7 @@ public class EntryMenuController extends BaseController {
         this.callUrl = args.getString(BundleKeys.INSTANCE.getKEY_CALL_URL(), "");
     }
 
+    @NonNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_entry_menu, container, false);
