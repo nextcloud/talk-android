@@ -270,6 +270,45 @@ public class ConversationsListController extends BaseController implements Searc
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
+            if (!currentUser.hasSpreedFeatureCapability("no-ping")) {
+                // Talk 4+
+                new LovelyStandardDialog(getActivity(), LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                        .setTopColorRes(R.color.nc_darkRed)
+                        .setIcon(DisplayUtils.getTintedDrawable(context.getResources(),
+                                                                R.drawable.ic_timer_black_24dp, R.color.bg_default))
+                        .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
+                        .setCancelable(false)
+                        .setTitle(R.string.nc_settings_server_eol_title)
+                        .setMessage(R.string.nc_settings_server_eol)
+                        .setPositiveButton(R.string.nc_settings_remove_account, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                boolean otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser.getId());
+
+                                OneTimeWorkRequest accountRemovalWork = new OneTimeWorkRequest.Builder(AccountRemovalWorker.class).build();
+                                WorkManager.getInstance().enqueue(accountRemovalWork);
+
+                                if (otherUserExists && getView() != null) {
+                                    onViewBound(getView());
+                                    onAttach(getView());
+                                } else if (!otherUserExists) {
+                                    getRouter().setRoot(RouterTransaction.with(
+                                            new ServerSelectionController())
+                                                                .pushChangeHandler(new VerticalChangeHandler())
+                                                                .popChangeHandler(new VerticalChangeHandler()));
+                                }
+                            }
+                        })
+                        .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
+                            }
+                        })
+                        .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
+                        .show();
+            }
+
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
             if (getActivity() != null && getActivity() instanceof MainActivity) {
