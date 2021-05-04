@@ -210,6 +210,9 @@
     <string name="nc_call_reconnecting">Reconnecting…</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_leaving_call">Leaving call…</string>
+    <string name="nc_call_state_in_call">%1$s in call</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s in call with audio</string>
+    <string name="nc_call_state_with_video">%1$s with video</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
