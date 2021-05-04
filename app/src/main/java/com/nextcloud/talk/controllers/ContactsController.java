@@ -288,13 +288,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     userId = selectedUserIds.iterator().next();
                 }
 
-                Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
-
-                if (apiVersion == null) {
-                    Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                    return;
-                }
-
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
@@ -318,8 +312,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
-                                Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
-                                if (apiVersion != null && currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+                                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
 
                                     ncApi.getRoom(credentials,
                                             ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
@@ -860,12 +854,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     roomType = "2";
                 }
 
-                Integer apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
-
-                if (apiVersion == null) {
-                    Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                    return false;
-                }
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),

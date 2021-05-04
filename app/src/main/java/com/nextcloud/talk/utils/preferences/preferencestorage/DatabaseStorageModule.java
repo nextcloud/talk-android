@@ -97,10 +97,7 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
-                    Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {4, 1});
-                    if (apiVersion == null) {
-                        Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                    }
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {4, 1});
 
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
                             ApiUtils.getUrlForRoomNotificationLevel(apiVersion, conversationUser.getBaseUrl(),

@@ -80,12 +80,7 @@ public class DeleteConversationWorker extends Worker {
         UserEntity operationUser = userUtils.getUserWithId(operationUserId);
 
         if (operationUser != null) {
-            Integer apiVersion = ApiUtils.getConversationApiVersion(operationUser,  new int[] {1});
-
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                return Result.failure();
-            }
+            int apiVersion = ApiUtils.getConversationApiVersion(operationUser,  new int[] {1});
 
             String credentials = ApiUtils.getCredentials(operationUser.getUsername(), operationUser.getToken());
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new

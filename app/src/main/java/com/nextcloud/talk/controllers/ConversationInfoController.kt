@@ -312,11 +312,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
-
         ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
             ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
@@ -452,11 +447,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     private fun getListOfParticipants() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
-
         ncApi.getPeersForCall(
             credentials,
             ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken)
@@ -548,11 +538,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     @SuppressLint("LongLogTag")
     private fun fetchRoomInfo() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
             .subscribeOn(Schedulers.io())
@@ -730,10 +715,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     listItemsWithImage(items = items) { dialog, index, _ ->
 
                         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
-
-                        if (apiVersion == null) {
-                            Log.e(TAG, "No supported API version found")
-                        }
 
                         if (index == 0) {
                             if (participant.type == Participant.ParticipantType.MODERATOR) {

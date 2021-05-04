@@ -109,7 +109,7 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
-    public static Integer getConversationApiVersion(UserEntity capabilities, int[] versions) {
+    public static int getConversationApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
         boolean hasApiV4 = false;
         for (int version : versions) {
             hasApiV4 |= version == 4;
@@ -135,10 +135,10 @@ public class ApiUtils {
                 }
             }
         }
-        return null;
+        throw new NoSupportedApiException();
     }
 
-    public static Integer getSignalingApiVersion(UserEntity capabilities, int[] versions) {
+    public static int getSignalingApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
             if (version == 2 && capabilities.hasSpreedFeatureCapability("sip-support")) {
                 return version;
@@ -149,17 +149,17 @@ public class ApiUtils {
                 return version;
             }
         }
-        return null;
+        throw new NoSupportedApiException();
     }
 
-    public static Integer getChatApiVersion(UserEntity capabilities, int[] versions) {
+    public static int getChatApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
             if (version == 1 && capabilities.hasSpreedFeatureCapability("chat-v2")) {
                 // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
                 return version;
             }
         }
-        return null;
+        throw new NoSupportedApiException();
     }
 
     protected static String getUrlForApi(int version, String baseUrl) {

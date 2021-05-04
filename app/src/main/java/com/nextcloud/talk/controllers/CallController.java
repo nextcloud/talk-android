@@ -441,12 +441,7 @@ public class CallController extends BaseController {
     }
 
     private void handleFromNotification() {
-        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl))
                 .retry(3)
@@ -1104,12 +1099,7 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
-        Integer apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
                 .subscribeOn(Schedulers.io())
@@ -1248,11 +1238,7 @@ public class CallController extends BaseController {
     private void joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
-        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {1});
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {1});
 
         if (TextUtils.isEmpty(callSession)) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken),
@@ -1308,12 +1294,7 @@ public class CallController extends BaseController {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
                 .subscribeOn(Schedulers.io())
@@ -1375,12 +1356,7 @@ public class CallController extends BaseController {
                             }
 
                             if (!hasExternalSignalingServer) {
-                                Integer apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
-
-                                if (apiVersion == null) {
-                                    Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                                    return;
-                                }
+                                int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
                                 ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion,
                                                                                                      baseUrl, urlToken))
@@ -1647,12 +1623,7 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
@@ -1689,11 +1660,7 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         ncApi.leaveRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
@@ -1788,12 +1755,7 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        Integer apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
@@ -2099,12 +2061,7 @@ public class CallController extends BaseController {
                 urlToken = roomToken;
             }
 
-            Integer apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
-
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                return;
-            }
+            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
             ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, urlToken),
                                         strings.toString())

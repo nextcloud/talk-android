@@ -231,12 +231,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val currentUser = userUtils.currentUser ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(1))
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
-
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion, currentUser.baseUrl, roomType,
@@ -257,13 +251,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
                     if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(1))
-
-                        if (apiVersion == null) {
-                            Log.e(TAG, "No supported API version found")
-                            return
-                        }
-
                         ncApi.getRoom(
                             credentials,
                             ApiUtils.getUrlForRoom(

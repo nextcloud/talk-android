@@ -305,11 +305,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
         val apiVersion = ApiUtils.getConversationApiVersion(signatureVerification.userEntity, intArrayOf(1))
 
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
-
         ncApi.getPeersForCall(
             ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
             ApiUtils.getUrlForCall(

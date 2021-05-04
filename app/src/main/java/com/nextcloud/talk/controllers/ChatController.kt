@@ -82,7 +82,6 @@ import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
@@ -116,6 +115,7 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.KeyboardUtils
 import com.nextcloud.talk.utils.MagicCharPolicy
+import com.nextcloud.talk.utils.NoSupportedApiException
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -296,11 +296,6 @@ class ChatController(args: Bundle) :
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found")
-                return
-            }
-
             ncApi?.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -345,11 +340,6 @@ class ChatController(args: Bundle) :
         }
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
 
         ncApi?.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))
             ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
@@ -979,11 +969,6 @@ class ChatController(args: Bundle) :
         ) {
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found")
-                return
-            }
-
             ncApi?.joinRoom(
                 credentials,
                 ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
@@ -1052,11 +1037,6 @@ class ChatController(args: Bundle) :
 
     private fun leaveRoom() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found")
-            return
-        }
 
         ncApi?.leaveRoom(
             credentials,
@@ -1143,11 +1123,6 @@ class ChatController(args: Bundle) :
 
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found")
-                return
-            }
 
             ncApi!!.sendChatMessage(
                 credentials,
@@ -1251,16 +1226,11 @@ class ChatController(args: Bundle) :
         }
 
         if (!wasDetached) {
-            var apiVersion: Int?
+            var apiVersion: Int
             // FIXME this is a best guess, guests would need to get the capabilities themselves
             apiVersion = 1
             if (conversationUser != null) {
                 apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-
-                if (apiVersion == null) {
-                    Log.e(TAG, "No supported API version found")
-                    return
-                }
             }
 
             if (lookIntoFuture > 0) {
@@ -1687,11 +1657,6 @@ class ChatController(args: Bundle) :
                     }
                     R.id.action_delete_message -> {
                         val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-
-                        if (apiVersion == null) {
-                            Log.e(TAG, "No supported API version found")
-                        }
-
                         ncApi?.deleteChatMessage(
                             credentials,
                             ApiUtils.getUrlForChatMessage(apiVersion, conversationUser?.baseUrl, roomToken,
@@ -1806,11 +1771,6 @@ class ChatController(args: Bundle) :
         ) {
 
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
-
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found")
-                return
-            }
 
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
                 apiVersion, conversationUser?.baseUrl, "1",

@@ -82,12 +82,7 @@ public class SignalingSettingsWorker extends Worker {
             userEntity = userEntityList.get(i);
             UserEntity finalUserEntity = userEntity;
 
-            Integer apiVersion = ApiUtils.getSignalingApiVersion(finalUserEntity, new int[] {2, 1});
-
-            if (apiVersion == null) {
-                Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-                continue;
-            }
+            int apiVersion = ApiUtils.getSignalingApiVersion(finalUserEntity, new int[] {2, 1});
 
             ncApi.getSignalingSettings(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
                     ApiUtils.getUrlForSignalingSettings(apiVersion, userEntity.getBaseUrl()))

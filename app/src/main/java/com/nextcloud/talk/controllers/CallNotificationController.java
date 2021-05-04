@@ -210,12 +210,7 @@ public class CallNotificationController extends BaseController {
 
     @SuppressLint("LongLogTag")
     private void checkIfAnyParticipantsRemainInRoom() {
-        Integer apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
                                                                   currentConversation.getToken()))
@@ -267,11 +262,7 @@ public class CallNotificationController extends BaseController {
 
     @SuppressLint("LongLogTag")
     private void handleFromNotification() {
-        Integer apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {4, 3, 1});
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {4, 3, 1});
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userBeingCalled.getBaseUrl(), roomId))
                 .subscribeOn(Schedulers.io())

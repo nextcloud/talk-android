@@ -73,12 +73,7 @@ public class AddParticipantsToConversation extends Worker {
         String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
         UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
 
-        Integer apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return Result.failure();
-        }
+        int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {1});
 
         String conversationToken = data.getString(BundleKeys.INSTANCE.getKEY_TOKEN());
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());

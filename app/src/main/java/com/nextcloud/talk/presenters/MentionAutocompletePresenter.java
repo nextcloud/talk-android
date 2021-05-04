@@ -95,12 +95,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
             queryString = "";
         }
 
-        Integer apiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {1});
-
-        if (apiVersion == null) {
-            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
-            return;
-        }
+        int apiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {1});
 
         adapter.setFilter(queryString);
         ncApi.getMentionAutocompleteSuggestions(
