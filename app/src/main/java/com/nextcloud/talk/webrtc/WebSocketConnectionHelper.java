@@ -20,6 +20,9 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import autodagger.AutoInjector;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -34,6 +37,8 @@ import java.util.Map;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
+    private static final String TAG = "WebSocketConnectionHelper";
+
     private static Map<Long, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
 
     @Inject
@@ -87,13 +92,21 @@ public class WebSocketConnectionHelper {
         }
     }
 
+    @SuppressLint("LongLogTag")
     HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
+        Integer apiVersion = ApiUtils.getSignalingApiVersion(userEntity, new int[] {2, 1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return null;
+        }
+
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
         helloWebSocketMessage.setVersion("1.0");
         AuthWebSocketMessage authWebSocketMessage = new AuthWebSocketMessage();
-        authWebSocketMessage.setUrl(ApiUtils.getUrlForExternalServerAuthBackend(userEntity.getBaseUrl()));
+        authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, userEntity.getBaseUrl()));
         AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
         authParametersWebSocketMessage.setTicket(ticket);
         authParametersWebSocketMessage.setUserid(userEntity.getUserId());

@@ -140,6 +140,20 @@ public class ApiUtils {
         return null;
     }
 
+    public static Integer getSignalingApiVersion(UserEntity capabilities, int[] versions) {
+        for (int version : versions) {
+            if (version == 2 && capabilities.hasSpreedFeatureCapability("sip-support")) {
+                return version;
+            }
+
+            if (version == 1) {
+                // Has no capability, we just assume it is always there for now.
+                return version;
+            }
+        }
+        return null;
+    }
+
     protected static String getUrlForApi(int version, String baseUrl) {
         return baseUrl + spreedApiBase + version;
     }
@@ -198,6 +212,22 @@ public class ApiUtils {
 
     public static String getUrlForCall(int version, String baseUrl, String token) {
         return getUrlForApi(version, baseUrl) + "/call/" + token;
+    }
+
+    public static String getUrlForSignaling(int version, String baseUrl) {
+        return getUrlForApi(version, baseUrl) + "/signaling";
+    }
+
+    public static String getUrlForSignalingBackend(int version, String baseUrl) {
+        return getUrlForSignaling(version, baseUrl) + "/backend";
+    }
+
+    public static String getUrlForSignalingSettings(int version, String baseUrl) {
+        return getUrlForSignaling(version, baseUrl) + "/settings";
+    }
+
+    public static String getUrlForSignaling(int version, String baseUrl, String token) {
+        return getUrlForSignaling(version, baseUrl) + "/" + token;
     }
 
     public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
@@ -260,31 +290,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
     }
 
-    public static String getUrlForExternalServerAuthBackend(String baseUrl) {
-        // FIXME Introduce API version
-        return getUrlForSignaling(baseUrl, null) + "/backend";
-    }
-
     public static String getUrlForMentionSuggestions(String baseUrl, String token) {
         // FIXME Introduce API version
         return getUrlForChat(baseUrl, token) + "/mentions";
     }
-
-    public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
-        // FIXME Introduce API version
-        String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
-        if (token == null) {
-            return signalingUrl;
-        } else {
-            return signalingUrl + "/" + token;
-        }
-    }
-
-    public static String getUrlForSignalingSettings(String baseUrl) {
-        // FIXME Introduce API version
-        return getUrlForSignaling(baseUrl, null) + "/settings";
-    }
-
 
     public static String getUrlForUserProfile(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/user";

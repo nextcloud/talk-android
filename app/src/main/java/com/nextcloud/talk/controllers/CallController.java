@@ -1104,7 +1104,14 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
-        ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
+        Integer apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+
+        if (apiVersion == null) {
+            Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+            return;
+        }
+
+        ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1369,7 +1376,15 @@ public class CallController extends BaseController {
                             }
 
                             if (!hasExternalSignalingServer) {
-                                ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
+                                Integer apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+
+                                if (apiVersion == null) {
+                                    Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                                    return;
+                                }
+
+                                ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion,
+                                                                                                     baseUrl, urlToken))
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .repeatWhen(observable -> observable)
@@ -2086,7 +2101,14 @@ public class CallController extends BaseController {
                 urlToken = roomToken;
             }
 
-            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
+            Integer apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+
+            if (apiVersion == null) {
+                Log.e(TAG, "No supported API version found", new Exception("No supported API version found"));
+                return;
+            }
+
+            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, urlToken),
                                         strings.toString())
                     .retry(3)
                     .subscribeOn(Schedulers.io())
