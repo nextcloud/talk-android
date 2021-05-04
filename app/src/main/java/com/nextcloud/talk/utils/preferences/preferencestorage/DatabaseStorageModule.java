@@ -22,8 +22,6 @@ package com.nextcloud.talk.utils.preferences.preferencestorage;
 
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-
 import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -42,8 +40,6 @@ import java.util.Set;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {
-    private static final String TAG = "DatabaseStorageModule";
-
     @Inject
     ArbitraryStorageUtils arbitraryStorageUtils;
 

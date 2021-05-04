@@ -20,9 +20,7 @@
 
 package com.nextcloud.talk.jobs;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -35,8 +33,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
-
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
@@ -48,8 +44,6 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class AddParticipantsToConversation extends Worker {
-    private static final String TAG = "AddParticipantsToConversation";
-
     @Inject
     NcApi ncApi;
 
@@ -64,7 +58,6 @@ public class AddParticipantsToConversation extends Worker {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    @SuppressLint("LongLogTag")
     @NonNull
     @Override
     public Result doWork() {

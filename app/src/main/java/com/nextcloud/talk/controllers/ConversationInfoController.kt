@@ -20,13 +20,11 @@
 
 package com.nextcloud.talk.controllers
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -300,7 +298,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
-    @SuppressLint("LongLogTag")
     fun submitLobbyChanges() {
         val state = if (
             (
@@ -443,7 +440,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
-    @SuppressLint("LongLogTag")
     private fun getListOfParticipants() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
@@ -535,7 +531,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         router.setBackstack(backstack, HorizontalChangeHandler())
     }
 
-    @SuppressLint("LongLogTag")
     private fun fetchRoomInfo() {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
@@ -682,7 +677,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
-    @SuppressLint("LongLogTag")
     override fun onItemClick(view: View?, position: Int): Boolean {
         val userItem = adapter?.getItem(position) as UserItem
         val participant = userItem.model
@@ -794,7 +788,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     companion object {
 
-        private val TAG = "ConversationInfoController"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 

@@ -115,7 +115,6 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.KeyboardUtils
 import com.nextcloud.talk.utils.MagicCharPolicy
-import com.nextcloud.talk.utils.NoSupportedApiException
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -335,10 +334,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun handleFromNotification() {
-        if (ncApi == null) {
-            return
-        }
-
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
 
         ncApi?.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))

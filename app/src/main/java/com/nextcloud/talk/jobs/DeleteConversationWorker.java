@@ -20,10 +20,7 @@
 
 package com.nextcloud.talk.jobs;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -50,7 +47,6 @@ import java.net.CookieManager;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DeleteConversationWorker extends Worker {
-    private static final String TAG = "DeleteConversationWorker";
     @Inject
     Retrofit retrofit;
 
@@ -70,7 +66,6 @@ public class DeleteConversationWorker extends Worker {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
-    @SuppressLint("LongLogTag")
     @NonNull
     @Override
     public Result doWork() {

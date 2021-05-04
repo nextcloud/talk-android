@@ -208,7 +208,6 @@ public class CallNotificationController extends BaseController {
                                                  .pushChangeHandler(new HorizontalChangeHandler()));
     }
 
-    @SuppressLint("LongLogTag")
     private void checkIfAnyParticipantsRemainInRoom() {
         int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {1});
 
@@ -260,7 +259,6 @@ public class CallNotificationController extends BaseController {
 
     }
 
-    @SuppressLint("LongLogTag")
     private void handleFromNotification() {
         int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {4, 3, 1});
 

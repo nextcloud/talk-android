@@ -21,8 +21,6 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -49,8 +47,6 @@ import java.net.CookieManager;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class LeaveConversationWorker extends Worker {
-
-    private static final String TAG = "LeaveConversationWorker";
 
     @Inject
     Retrofit retrofit;

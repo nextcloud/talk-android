@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -82,8 +81,6 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
-
-    private static final String TAG = "OperationsMenuController";
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
@@ -172,7 +169,6 @@ public class OperationsMenuController extends BaseController {
         processOperation();
     }
 
-    @SuppressLint("LongLogTag")
     private void processOperation() {
         currentUser = userUtils.getCurrentUser();
         OperationsObserver operationsObserver = new OperationsObserver();
@@ -393,9 +389,7 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    @SuppressLint("LongLogTag")
     private void performGroupCallWorkaround(String credentials) {
-
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
         ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
@@ -546,7 +540,6 @@ public class OperationsMenuController extends BaseController {
                 });
     }
 
-    @SuppressLint("LongLogTag")
     private void inviteUsersToAConversation() {
         RetrofitBucket retrofitBucket;
         final ArrayList<String> localInvitedUsers = invitedUsers;

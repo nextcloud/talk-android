@@ -28,7 +28,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.ContactsContract
 import android.text.TextUtils
-import android.util.Log
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import autodagger.AutoInjector

@@ -292,7 +292,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    @SuppressLint("LongLogTag")
     private fun checkIfCallIsActive(
         signatureVerification: SignatureVerification,
         decryptedPushMessage: DecryptedPushMessage
@@ -350,11 +349,5 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 override fun onComplete() {
                 }
             })
-    }
-
-    companion object {
-
-        private val TAG = "MagicFirebaseMessagingService"
-        private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 }

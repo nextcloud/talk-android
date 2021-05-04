@@ -20,9 +20,7 @@
 
 package com.nextcloud.talk.presenters;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -49,7 +47,6 @@ import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
-    private static final String TAG = "MentionAutocompletePresenter";
     @Inject
     NcApi ncApi;
     @Inject
@@ -84,7 +81,6 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         return adapter;
     }
 
-    @SuppressLint("LongLogTag")
     @Override
     protected void onQuery(@Nullable CharSequence query) {
 
