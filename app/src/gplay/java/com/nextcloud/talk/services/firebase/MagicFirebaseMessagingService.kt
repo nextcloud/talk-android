@@ -302,7 +302,6 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         var hasParticipantsInCall = false
         var inCallOnDifferentDevice = false
 
-
         val apiVersion = ApiUtils.getConversationApiVersion(signatureVerification.userEntity, intArrayOf(1))
 
         if (apiVersion == null) {

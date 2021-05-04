@@ -1692,7 +1692,6 @@ class ChatController(args: Bundle) :
                             Log.e(TAG, "No supported API version found")
                         }
 
-
                         ncApi?.deleteChatMessage(
                             credentials,
                             ApiUtils.getUrlForChatMessage(apiVersion, conversationUser?.baseUrl, roomToken,

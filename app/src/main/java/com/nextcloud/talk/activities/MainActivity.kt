@@ -49,7 +49,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.CallNotificationController
-import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController

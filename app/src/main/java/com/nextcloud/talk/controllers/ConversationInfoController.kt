@@ -736,8 +736,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             if (participant.type == Participant.ParticipantType.MODERATOR) {
                                 ncApi.demoteModeratorToUser(
                                     credentials,
-                                    ApiUtils.getUrlForRoomModerators(apiVersion, conversationUser.baseUrl,
-                                        conversation!!.token),
+                                    ApiUtils.getUrlForRoomModerators(
+                                        apiVersion,
+                                        conversationUser.baseUrl,
+                                        conversation!!.token
+                                    ),
                                     participant.userId
                                 )
                                     .subscribeOn(Schedulers.io())
@@ -748,8 +751,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             } else if (participant.type == Participant.ParticipantType.USER) {
                                 ncApi.promoteUserToModerator(
                                     credentials,
-                                    ApiUtils.getUrlForRoomModerators(apiVersion, conversationUser.baseUrl,
-                                        conversation!!.token),
+                                    ApiUtils.getUrlForRoomModerators(
+                                        apiVersion,
+                                        conversationUser.baseUrl,
+                                        conversation!!.token
+                                    ),
                                     participant.userId
                                 )
                                     .subscribeOn(Schedulers.io())
