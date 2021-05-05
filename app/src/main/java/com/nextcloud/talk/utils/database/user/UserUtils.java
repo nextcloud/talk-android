@@ -48,6 +48,11 @@ public class UserUtils {
                 .limit(1).get().value() > 0);
     }
 
+    public boolean hasMultipleUsers() {
+        return (dataStore.count(User.class).where(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE))
+                .get().value() > 1);
+    }
+
     public List getUsers() {
         Result findUsersQueryResult = dataStore.select(User.class).where
                 (UserEntity.SCHEDULED_FOR_DELETION.notEqual(true)).get();

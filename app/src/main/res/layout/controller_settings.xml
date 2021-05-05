@@ -22,6 +22,7 @@
 
 <com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_screen"
     android:layout_width="match_parent"
@@ -71,7 +72,46 @@
                 android:layout_centerHorizontal="true"
                 android:layout_margin="4dp"
                 android:textColor="@color/medium_emphasis_text"
-                tools:text="jane@nextcloud.com" />
+                tools:text="nextcloud.com" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/server_age_warning_text_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/base_url_text"
+                android:layout_margin="@dimen/standard_margin"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:strokeWidth="0dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:id="@+id/server_age_warning_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_warning_white"
+                        android:layout_centerVertical="true"
+                        app:tint="@color/nc_darkRed"
+                        android:contentDescription="@string/nc_settings_warning" />
+
+                    <TextView
+                        android:id="@+id/server_age_warning_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@id/server_age_warning_icon"
+                        android:paddingStart="@dimen/standard_padding"
+                        android:paddingEnd="0dp"
+                        android:layout_centerHorizontal="true"
+                        android:textColor="@color/nc_darkRed"
+                        tools:text="@string/nc_settings_server_almost_eol" />
+
+                </RelativeLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/avatar_image"
@@ -82,12 +122,11 @@
                 apc:roundAsCircle="true"
                 tools:src="@tools:sample/avatars[0]" />
 
-
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_switch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/base_url_text"
+                android:layout_below="@id/server_age_warning_text_card"
                 android:tag="switchAccountButton"
                 apc:mp_title="@string/nc_settings_switch_account" />
 
