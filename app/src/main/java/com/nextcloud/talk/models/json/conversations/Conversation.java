@@ -52,14 +52,9 @@ public class Conversation {
     public String displayName;
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
     public ConversationType type;
-    @JsonField(name = "count")
-    public long count;
     @JsonField(name = "lastPing")
     public long lastPing;
-    @JsonField(name = "numGuests")
-    public long numberOfGuests;
-    @JsonField(name = "guestList")
-    public HashMap<String, HashMap<String, Object>> guestList;
+    @Deprecated
     @JsonField(name = "participants")
     public HashMap<String, HashMap<String, Object>> participants;
     @JsonField(name = "participantType", typeConverter = EnumParticipantTypeConverter.class)
@@ -167,20 +162,8 @@ public class Conversation {
         return this.type;
     }
 
-    public long getCount() {
-        return this.count;
-    }
-
     public long getLastPing() {
         return this.lastPing;
-    }
-
-    public long getNumberOfGuests() {
-        return this.numberOfGuests;
-    }
-
-    public HashMap<String, HashMap<String, Object>> getGuestList() {
-        return this.guestList;
     }
 
     public HashMap<String, HashMap<String, Object>> getParticipants() {
@@ -271,20 +254,8 @@ public class Conversation {
         this.type = type;
     }
 
-    public void setCount(long count) {
-        this.count = count;
-    }
-
     public void setLastPing(long lastPing) {
         this.lastPing = lastPing;
-    }
-
-    public void setNumberOfGuests(long numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public void setGuestList(HashMap<String, HashMap<String, Object>> guestList) {
-        this.guestList = guestList;
     }
 
     public void setParticipants(HashMap<String, HashMap<String, Object>> participants) {
@@ -391,18 +362,7 @@ public class Conversation {
         if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
             return false;
         }
-        if (this.getCount() != other.getCount()) {
-            return false;
-        }
         if (this.getLastPing() != other.getLastPing()) {
-            return false;
-        }
-        if (this.getNumberOfGuests() != other.getNumberOfGuests()) {
-            return false;
-        }
-        final Object this$guestList = this.getGuestList();
-        final Object other$guestList = other.getGuestList();
-        if (this$guestList == null ? other$guestList != null : !this$guestList.equals(other$guestList)) {
             return false;
         }
         final Object this$participants = this.getParticipants();
@@ -494,14 +454,8 @@ public class Conversation {
         result = result * PRIME + ($displayName == null ? 43 : $displayName.hashCode());
         final Object $type = this.getType();
         result = result * PRIME + ($type == null ? 43 : $type.hashCode());
-        final long $count = this.getCount();
-        result = result * PRIME + (int) ($count >>> 32 ^ $count);
         final long $lastPing = this.getLastPing();
         result = result * PRIME + (int) ($lastPing >>> 32 ^ $lastPing);
-        final long $numberOfGuests = this.getNumberOfGuests();
-        result = result * PRIME + (int) ($numberOfGuests >>> 32 ^ $numberOfGuests);
-        final Object $guestList = this.getGuestList();
-        result = result * PRIME + ($guestList == null ? 43 : $guestList.hashCode());
         final Object $participants = this.getParticipants();
         result = result * PRIME + ($participants == null ? 43 : $participants.hashCode());
         final Object $participantType = this.getParticipantType();
@@ -534,7 +488,7 @@ public class Conversation {
     }
 
     public String toString() {
-        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", count=" + this.getCount() + ", lastPing=" + this.getLastPing() + ", numberOfGuests=" + this.getNumberOfGuests() + ", guestList=" + this.getGuestList() + ", participants=" + this.getParticipants() + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
+        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", lastPing=" + this.getLastPing() + ", participants=" + this.getParticipants() + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
     }
 
     public enum NotificationLevel {
