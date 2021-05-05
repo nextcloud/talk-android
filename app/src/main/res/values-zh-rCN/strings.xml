@@ -383,4 +383,6 @@
     <string name="failed_to_save">未能保存 %1$s</string>
     <string name="selected_list_item">已选中</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    </resources>
+    <string name="nc_dialog_invalid_password">无效的密码</string>
+    <string name="nc_dialog_reauth_or_delete">你想重新授权还是删除此帐户？</string>
+</resources>

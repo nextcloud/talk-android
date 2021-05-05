@@ -383,4 +383,6 @@
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="selected_list_item">hautatuta</string>
     <string name="filename_progress">%1$s(%2$d)</string>
-    </resources>
+    <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
+    <string name="nc_dialog_reauth_or_delete">Kontu hau birbaimendu edo ezabatu nahi duzu?</string>
+</resources>
