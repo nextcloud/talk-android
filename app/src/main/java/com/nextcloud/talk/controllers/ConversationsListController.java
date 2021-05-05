@@ -301,7 +301,12 @@ public class ConversationsListController extends BaseController implements Searc
                         .setNegativeButton(R.string.nc_cancel, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
+                                if (userUtils.hasMultipleUsers()) {
+                                    getRouter().pushController(RouterTransaction.with(new SwitchAccountController()));
+                                } else {
+                                    getActivity().finishAffinity();
+                                    getActivity().finish();
+                                }
                             }
                         })
                         .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler)
