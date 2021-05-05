@@ -86,10 +86,9 @@
     <string name="nc_settings_remove_account">Remove account</string>
     <string name="nc_settings_add_account">Add a new account</string>
     <string name="nc_settings_server_eol_title">Unsupported server</string>
-    <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the
-        Android app</string>
-    <string name="nc_settings_server_almost_eol">The server version is very old and will not be supported in the next
-        release!</string>
+    <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the Android app</string>
+    <string name="nc_settings_server_almost_eol">The server version is very old and will not be supported in the next release!</string>
+    <string name="nc_settings_warning">Warning</string>
     <string name="nc_add">Add</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>

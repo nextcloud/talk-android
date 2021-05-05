@@ -29,6 +29,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,6 +46,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Checkable;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -56,6 +58,7 @@ import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
@@ -103,6 +106,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.work.OneTimeWorkRequest;
@@ -144,8 +148,12 @@ public class SettingsController extends BaseController {
     EmojiTextView displayNameTextView;
     @BindView(R.id.base_url_text)
     TextView baseUrlTextView;
+    @BindView(R.id.server_age_warning_text_card)
+    MaterialCardView serverAgeCardView;
     @BindView(R.id.server_age_warning_text)
     TextView serverAgeTextView;
+    @BindView(R.id.server_age_warning_icon)
+    ImageView serverAgeIcon;
     @BindView(R.id.settings_call_sound)
     MaterialStandardPreference settingsCallSound;
     @BindView(R.id.settings_message_sound)
@@ -554,13 +562,17 @@ public class SettingsController extends BaseController {
             baseUrlTextView.setText(Uri.parse(currentUser.getBaseUrl()).getHost());
 
             if (currentUser.isServerEOL()) {
-                serverAgeTextView.setTextColor(getResources().getColor(R.color.nc_darkRed));
+                serverAgeTextView.setTextColor(ContextCompat.getColor(context, R.color.nc_darkRed));
                 serverAgeTextView.setText(R.string.nc_settings_server_eol);
+                serverAgeIcon.setColorFilter(ContextCompat.getColor(context, R.color.nc_darkRed),
+                                             PorterDuff.Mode.SRC_IN);
             } else if (currentUser.isServerAlmostEOL()) {
-                serverAgeTextView.setTextColor(getResources().getColor(R.color.nc_darkYellow));
+                serverAgeTextView.setTextColor(ContextCompat.getColor(context, R.color.nc_darkYellow));
                 serverAgeTextView.setText(R.string.nc_settings_server_almost_eol);
+                serverAgeIcon.setColorFilter(ContextCompat.getColor(context, R.color.nc_darkYellow),
+                                             PorterDuff.Mode.SRC_IN);
             } else {
-                serverAgeTextView.setVisibility(View.GONE);
+                serverAgeCardView.setVisibility(View.GONE);
             }
 
             reauthorizeButton.addPreferenceClickListener(view14 -> {
