@@ -334,7 +334,11 @@ class ChatController(args: Bundle) :
     }
 
     private fun handleFromNotification() {
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        var apiVersion = 1
+        // FIXME Can this be called for guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        }
 
         ncApi?.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, conversationUser?.baseUrl))
             ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
@@ -962,7 +966,11 @@ class ChatController(args: Bundle) :
         if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
             currentConversation?.sessionId == "0"
         ) {
-            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            var apiVersion = 1
+            // FIXME Fix API checking with guests?
+            if (conversationUser != null) {
+                apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            }
 
             ncApi?.joinRoom(
                 credentials,
@@ -1031,7 +1039,11 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        }
 
         ncApi?.leaveRoom(
             credentials,
@@ -1221,9 +1233,8 @@ class ChatController(args: Bundle) :
         }
 
         if (!wasDetached) {
-            var apiVersion: Int
+            var apiVersion = 1
             // FIXME this is a best guess, guests would need to get the capabilities themselves
-            apiVersion = 1
             if (conversationUser != null) {
                 apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
             }
@@ -1651,7 +1662,12 @@ class ChatController(args: Bundle) :
                         true
                     }
                     R.id.action_delete_message -> {
-                        val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+                        var apiVersion = 1
+                        // FIXME Fix API checking with guests?
+                        if (conversationUser != null) {
+                            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+                        }
+
                         ncApi?.deleteChatMessage(
                             credentials,
                             ApiUtils.getUrlForChatMessage(
@@ -1769,7 +1785,11 @@ class ChatController(args: Bundle) :
             currentConversation?.name != userMentionClickEvent.userId
         ) {
 
-            val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            var apiVersion = 1
+            // FIXME Fix API checking with guests?
+            if (conversationUser != null) {
+                apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            }
 
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
                 apiVersion, conversationUser?.baseUrl, "1",

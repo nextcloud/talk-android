@@ -185,11 +185,15 @@ public class OperationsMenuController extends BaseController {
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
 
+            int apiVersion;
             if (!TextUtils.isEmpty(baseUrl) && !baseUrl.equals(currentUser.getBaseUrl())) {
                 credentials = null;
+                // FIXME joining a public link we need to check other capabilities
+                apiVersion = 1;
+            } else {
+                apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
             }
 
-            int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
 
             switch (operationCode) {
                 case 2:

@@ -441,7 +441,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun getListOfParticipants() {
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        }
 
         ncApi.getPeersForCall(
             credentials,
@@ -532,7 +536,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun fetchRoomInfo() {
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        }
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
             .subscribeOn(Schedulers.io())
