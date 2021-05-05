@@ -38,6 +38,7 @@
             android:layout_height="12dp"
             android:layout_gravity="bottom|end"
             android:background="@drawable/shape_lock_bubble"
+            android:contentDescription="@null"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -47,6 +48,7 @@
             android:layout_height="12dp"
             android:layout_gravity="top|end"
             android:background="@drawable/shape_favorite_bubble"
+            android:contentDescription="@null"
             android:visibility="gone"
             tools:visibility="visible" />
 

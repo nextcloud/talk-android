@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -46,6 +48,7 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
+        android:contentDescription="@string/nc_remote_audio_off"
         android:src="@drawable/ic_mic_off_white_24px"
         android:visibility="invisible" />
 
@@ -56,6 +59,7 @@
         android:layout_below="@id/peer_nick_text_view"
         android:layout_marginStart="8dp"
         android:layout_toEndOf="@id/remote_audio_off"
+        android:contentDescription="@string/nc_remote_video_off"
         android:src="@drawable/ic_videocam_off_white_24px"
         android:visibility="invisible" />
 

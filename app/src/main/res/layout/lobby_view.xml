@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -32,6 +34,7 @@
         android:layout_above="@id/lobby_text_view"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/margin_between_elements"
+        android:contentDescription="@string/nc_lobby"
         android:src="@drawable/ic_room_service_black_24dp"
         app:tint="@color/grey_600" />
 
@@ -40,9 +43,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:layout_margin="@dimen/margin_between_elements"
+        android:layout_margin="@dimen/standard_margin"
         android:text="@string/nc_lobby_waiting"
         android:textAlignment="center"
-        android:textColor="@color/grey_600" />
+        android:textColor="@color/grey_600"
+        android:textSize="16sp" />
 
 </RelativeLayout>

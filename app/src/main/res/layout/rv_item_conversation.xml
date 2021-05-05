@@ -59,6 +59,7 @@
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/standard_margin"
         android:background="?android:attr/selectableItemBackground"
+        android:contentDescription="@null"
         android:scaleType="center"
         android:src="@drawable/ic_more_horiz_black_24dp" />
 

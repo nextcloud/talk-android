@@ -194,12 +194,20 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             else -> null
         }
 
+        val readStatusContentDescriptionString = when (message.readStatus) {
+            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
+            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            else -> null
+        }
+
         readStatusDrawableInt?.let { drawableInt ->
             context?.resources?.getDrawable(drawableInt, null)?.let {
                 it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 checkMark?.setImageDrawable(it)
             }
         }
+
+        checkMark?.setContentDescription(readStatusContentDescriptionString)
     }
 
     init {

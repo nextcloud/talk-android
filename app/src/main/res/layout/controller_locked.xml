@@ -46,6 +46,7 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
+            android:contentDescription="@string/nc_locked"
             android:src="@drawable/ic_lock_white_24px" />
 
     </FrameLayout>
@@ -57,7 +58,7 @@
         android:layout_gravity="center_horizontal"
         android:paddingTop="16dp"
         android:paddingBottom="56dp"
-        android:text="@string/nc_locked"
+        android:text="@string/nc_locked_tap_to_unlock"
         android:textAlignment="center"
         android:textColor="@color/textColorOnPrimaryBackground"
         android:textSize="22sp" />

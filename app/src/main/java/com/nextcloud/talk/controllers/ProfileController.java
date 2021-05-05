@@ -759,6 +759,11 @@ public class ProfileController extends BaseController {
                         holder.scope.setImageResource(R.drawable.ic_link);
                         break;
                 }
+
+                holder.scope.setContentDescription(
+                        controller.getActivity().getResources().getString(
+                                R.string.scope_toggle_description,
+                                item.hint));
             }
 
             holder.icon.setImageResource(item.icon);

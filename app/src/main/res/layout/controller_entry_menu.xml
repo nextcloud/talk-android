@@ -74,6 +74,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginStart="-4dp"
         android:background="@color/transparent"
+        android:contentDescription="@string/nc_add_emojis"
         android:src="@drawable/ic_insert_emoticon_black_24dp"
         android:tint="@color/emoji_icons"
         android:visibility="gone"

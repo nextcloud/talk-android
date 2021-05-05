@@ -193,24 +193,42 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     holder.videoCallImageView.setVisibility(View.GONE);
                     break;
                 case IN_CALL:
-                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
+                    holder.voiceOrSimpleCallImageView.setBackground(
+                            ResourcesCompat.getDrawable(resources, R.drawable.shape_call_bubble, null));
                     holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.voiceOrSimpleCallImageView.setContentDescription(
+                            resources.getString(R.string.nc_call_state_in_call, participant.displayName));
                     holder.videoCallImageView.setVisibility(View.GONE);
                     break;
                 case IN_CALL_WITH_AUDIO:
-                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
+                    holder.voiceOrSimpleCallImageView.setBackground(
+                            ResourcesCompat.getDrawable(resources, R.drawable.shape_voice_bubble, null));
                     holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
+                    holder.voiceOrSimpleCallImageView.setContentDescription(
+                            resources.getString(R.string.nc_call_state_in_call_with_audio, participant.displayName));
                     holder.videoCallImageView.setVisibility(View.GONE);
                     break;
                 case IN_CALL_WITH_VIDEO:
-                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_call_bubble));
-                    holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                    holder.voiceOrSimpleCallImageView.setBackground(
+                            ResourcesCompat.getDrawable(resources, R.drawable.shape_call_bubble, null));
+                    holder.videoCallImageView.setBackground(
+                            ResourcesCompat.getDrawable(resources, R.drawable.shape_video_bubble, null));
+                    holder.voiceOrSimpleCallImageView.setContentDescription(
+                            resources.getString(R.string.nc_call_state_in_call, participant.displayName));
+                    holder.videoCallImageView.setContentDescription(
+                            resources.getString(R.string.nc_call_state_with_video, participant.displayName));
                     holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
                     holder.videoCallImageView.setVisibility(View.VISIBLE);
                     break;
                 case IN_CALL_WITH_AUDIO_AND_VIDEO:
-                    holder.voiceOrSimpleCallImageView.setBackground(resources.getDrawable(R.drawable.shape_voice_bubble));
-                    holder.videoCallImageView.setBackground(resources.getDrawable(R.drawable.shape_video_bubble));
+                    holder.voiceOrSimpleCallImageView.setBackground(
+                            ResourcesCompat.getDrawable(resources, R.drawable.shape_voice_bubble, null));
+                    holder.videoCallImageView.setBackground(
+                            ResourcesCompat.getDrawable(resources, R.drawable.shape_video_bubble, null));
+                    holder.voiceOrSimpleCallImageView.setContentDescription(
+                            resources.getString(R.string.nc_call_state_in_call_with_audio));
+                    holder.videoCallImageView.setContentDescription(
+                            resources.getString(R.string.nc_call_state_with_video));
                     holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
                     holder.videoCallImageView.setVisibility(View.VISIBLE);
                     break;
@@ -219,7 +237,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     holder.videoCallImageView.setVisibility(View.GONE);
                     break;
             }
-
 
             if (holder.contactMentionId != null) {
                 String userType = "";

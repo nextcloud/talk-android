@@ -32,6 +32,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="8dp"
+        android:contentDescription="@null"
         android:tintMode="src_in"
         android:visibility="gone" />
 

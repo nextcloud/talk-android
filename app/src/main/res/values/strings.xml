@@ -128,7 +128,8 @@
     <string name="nc_settings_link_previews_desc">Allows previews of content from received links for supported services</string>
     <string name="nc_settings_link_previews_key" translatable="false">link_previews</string>
     <string name="nc_settings_read_privacy_key" translatable="false">read_privacy</string>
-    <string name="nc_locked">Tap to unlock</string>
+    <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
+    <string name="nc_locked">Locked</string>
     <string name="nc_settings_read_privacy_desc">Share my read-status and show the read-status of others</string>
     <string name="nc_settings_read_privacy_title">Read status</string>
 
@@ -209,6 +210,9 @@
     <string name="nc_call_reconnecting">Reconnecting…</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_leaving_call">Leaving call…</string>
+    <string name="nc_call_state_in_call">%1$s in call</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s in call with audio</string>
+    <string name="nc_call_state_with_video">%1$s with video</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
@@ -232,6 +236,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Conversation name</string>
     <string name="nc_proceed">Proceed</string>
+    <string name="nc_add_emojis">Add emojis</string>
     <string name="nc_call_name_is_same">The name you entered is the same as the existing one</string>
     <string name="nc_wrong_link">Conversation link is not valid</string>
     <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
@@ -274,6 +279,11 @@
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">You: %1$s</string>
+    <string name="nc_message_read">Message read</string>
+    <string name="nc_message_sent">Message sent</string>
+    <string name="nc_remote_video_off">Remote video off</string>
+    <string name="nc_remote_audio_off">Remote audio off</string>
+    <string name="nc_add_attachment">Add attachment</string>
 
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No more items to load. Refresh to retry.</string>
@@ -368,6 +378,7 @@
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
 
     <string name="starred">Favorite</string>
+    <string name="encrypted">Encrypted</string>
     <string name="password_protected">Password protected</string>
 
     <string name="avatar">Avatar</string>
@@ -398,6 +409,7 @@
     <string name="scope_published_title">Published</string>
     <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
     <string name="scope_toggle">Scope toggle</string>
+    <string name="scope_toggle_description">Change privacy level of %1$s</string>
 
     <!-- App Bar -->
     <string name="appbar_search_in">Search in %s</string>
