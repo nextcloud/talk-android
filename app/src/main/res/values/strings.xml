@@ -129,7 +129,7 @@
     <string name="nc_settings_link_previews_key" translatable="false">link_previews</string>
     <string name="nc_settings_read_privacy_key" translatable="false">read_privacy</string>
     <string name="nc_locked_tap_to_unlock">Tap to unlock</string>
-    <string name="nc_locked">locked</string>
+    <string name="nc_locked">Locked</string>
     <string name="nc_settings_read_privacy_desc">Share my read-status and show the read-status of others</string>
     <string name="nc_settings_read_privacy_title">Read status</string>
 
@@ -236,7 +236,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Conversation name</string>
     <string name="nc_proceed">Proceed</string>
-    <string name="nc_add_emojis">Add Emojis</string>
+    <string name="nc_add_emojis">Add emojis</string>
     <string name="nc_call_name_is_same">The name you entered is the same as the existing one</string>
     <string name="nc_wrong_link">Conversation link is not valid</string>
     <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
@@ -409,7 +409,7 @@
     <string name="scope_published_title">Published</string>
     <string name="scope_published_description">Synchronize to trusted servers and the global and public address book</string>
     <string name="scope_toggle">Scope toggle</string>
-    <string name="scope_toggle_description">Scope toggle for %1$s (%2$s)</string>
+    <string name="scope_toggle_description">Change privacy level of %1$s</string>
 
     <!-- App Bar -->
     <string name="appbar_search_in">Search in %s</string>
