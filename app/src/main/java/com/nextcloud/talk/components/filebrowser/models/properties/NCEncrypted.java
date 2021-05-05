@@ -32,9 +32,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.XmlUtils;
 
 public class NCEncrypted implements Property {
     public static final Name NAME = new Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_IS_ENCRYPTED);

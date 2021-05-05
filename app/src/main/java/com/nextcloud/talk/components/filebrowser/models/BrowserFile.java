@@ -36,12 +36,12 @@ import org.parceler.Parcel;
 import java.io.File;
 import java.util.List;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.Response;
-import at.bitfire.dav4android.property.DisplayName;
-import at.bitfire.dav4android.property.GetContentType;
-import at.bitfire.dav4android.property.GetLastModified;
-import at.bitfire.dav4android.property.ResourceType;
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.Response;
+import at.bitfire.dav4jvm.property.DisplayName;
+import at.bitfire.dav4jvm.property.GetContentType;
+import at.bitfire.dav4jvm.property.GetLastModified;
+import at.bitfire.dav4jvm.property.ResourceType;
 
 @JsonObject
 @Parcel
