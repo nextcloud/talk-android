@@ -23,6 +23,7 @@
 package com.nextcloud.talk.controllers;
 
 import android.animation.AnimatorInflater;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
@@ -409,6 +410,7 @@ public class ConversationsListController extends BaseController implements Searc
         searchItem.expandActionView();
     }
 
+    @SuppressLint("LongLogTag")
     private void fetchData(boolean fromBottomSheet) {
         dispose(null);
 
