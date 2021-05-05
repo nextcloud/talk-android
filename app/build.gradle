@@ -184,7 +184,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
     implementation 'com.google.android:flexbox:2.0.1'
-    implementation ('com.gitlab.bitfireAT:dav4jvm:f2078bc846', {
+    implementation ('com.gitlab.bitfireAT:dav4jvm:2.1.2', {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
     ktlint "com.pinterest:ktlint:0.41.0"
