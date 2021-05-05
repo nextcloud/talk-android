@@ -44,7 +44,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import retrofit2.Response
 import java.io.File
@@ -103,7 +103,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             val input: InputStream = context.contentResolver.openInputStream(sourcefileUri)!!
             val buf = ByteArray(input.available())
             while (input.read(buf) != -1);
-            requestBody = RequestBody.create(MediaType.parse("application/octet-stream"), buf)
+            requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
         } catch (e: Exception) {
             Log.e(javaClass.simpleName, "failed to create RequestBody for $sourcefileUri", e)
         }

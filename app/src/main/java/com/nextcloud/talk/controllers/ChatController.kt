@@ -1267,7 +1267,7 @@ class ChatController(args: Bundle) :
         val xChatLastCommonRead = response.headers().get("X-Chat-Last-Common-Read")?.let {
             Integer.parseInt(it)
         }
-        if (response.headers().size() > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
+        if (response.headers().size > 0 && !TextUtils.isEmpty(xChatLastGivenHeader)) {
 
             val header = Integer.parseInt(xChatLastGivenHeader!!)
             if (header > 0) {
