@@ -162,13 +162,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
-
-        if (conversation.isHasPassword()) {
-            holder.passwordProtectedRoomImageView.setVisibility(View.VISIBLE);
-        } else {
-            holder.passwordProtectedRoomImageView.setVisibility(View.GONE);
-        }
-
         if (conversation.isFavorite()) {
             holder.pinnedConversationImageView.setVisibility(View.VISIBLE);
         } else {
@@ -286,8 +279,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         EmojiTextView dialogLastMessage;
         @BindView(R.id.dialogUnreadBubble)
         Chip dialogUnreadBubble;
-        @BindView(R.id.passwordProtectedRoomImageView)
-        ImageView passwordProtectedRoomImageView;
         @BindView(R.id.favoriteConversationImageView)
         ImageView pinnedConversationImageView;
 

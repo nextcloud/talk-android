@@ -47,14 +47,6 @@
                 tools:src="@drawable/ic_call_black_24dp" />
 
             <ImageView
-                android:id="@+id/passwordProtectedRoomImageView"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_gravity="bottom|end"
-                android:background="@drawable/shape_lock_bubble"
-                android:contentDescription="@string/password_protected" />
-
-            <ImageView
                 android:id="@+id/favoriteConversationImageView"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
