@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
     <string name="nc_settings_link_previews_title">Pokaż podgląd linków</string>
     <string name="nc_settings_link_previews_desc">Umożliwia podgląd treści z otrzymanych linków przez obsługiwane usługi</string>
-    <string name="nc_locked">Stuknij, aby odblokować</string>
     <string name="nc_settings_read_privacy_desc">Udostępnij mój status odczytu i pokaż innym</string>
     <string name="nc_settings_read_privacy_title">Status odczytu</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
     <string name="nc_leaving_call">Opuszczanie połączenia…</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s kanale powiadomień</string>
     <string name="nc_notification_channel_calls">Kanał powiadomienia o rozmowach</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">Anuluj odpowiedź</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Ty: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Brak nowych elementów do załadowania. Odśwież, aby spróbować ponownie.</string>
     <string name="nc_endless_disabled">Nie ma więcej pozycji do załadowania (osiągnięto maksimum).</string>
@@ -375,7 +372,6 @@
     <string name="scope_published_title">Opublikowane</string>
     <string name="scope_published_description">Synchronizuj z zaufanymi serwerami oraz globalną i publiczną książką adresową</string>
     <string name="scope_toggle">Przełącznik zakresu</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">Szukaj w %s</string>
 

@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Указывает клавиатуре отключить персонализированное обучение (без гарантий)</string>
     <string name="nc_settings_link_previews_title">Отображать предпросмотр ссылки</string>
     <string name="nc_settings_link_previews_desc">Позволяет предварительно просматривать контент по полученным ссылкам для поддерживаемых сервисов</string>
-    <string name="nc_locked">Коснитесь для разблокирования</string>
     <string name="nc_settings_read_privacy_desc">Просматривать и показывать отчёт о прочтении сообщений</string>
     <string name="nc_settings_read_privacy_title">Отчёт о прочтении</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">Переподключение...</string>
     <string name="nc_offline">Нет подключения к сети, пожалуйста, проверьте ваше соединение</string>
     <string name="nc_leaving_call">Завершение вызова...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Способ уведомления о вызове</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Вы: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Все объекты загружены. Попробуйте обновить.</string>
     <string name="nc_endless_disabled">Достигнут предел количества загрузки объектов.</string>
@@ -372,7 +369,6 @@
     <string name="scope_published_title">Опубликовано</string>
     <string name="scope_published_description">Выполнять синхронизацию с доверенными серверами и глобальной и открытой адресной книгой</string>
     <string name="scope_toggle">Переключить область видимости</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">Искать в %s</string>
 

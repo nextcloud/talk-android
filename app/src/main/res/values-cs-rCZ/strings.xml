@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_link_previews_title">Zobrazovat náhledy odkazů</string>
     <string name="nc_settings_link_previews_desc">U podporovaných služeb umožňuje náhledy obsahu z obdržených odkazů</string>
-    <string name="nc_locked">Odemkněte ťuknutím</string>
     <string name="nc_settings_read_privacy_desc">Sdílet mé oznámení o přečtení a zobrazit oznámení o přečtení ostatních</string>
     <string name="nc_settings_read_privacy_title">Oznámení o přečtení</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_leaving_call">Opouštění hovoru…</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s v %2$s kanálu upozornění</string>
     <string name="nc_notification_channel_calls">Kanál pro upozorňování na volání</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">Odebrat odpověď</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vy: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Žádné další položky k načtení. Pro opětovný pokus načtěte znovu.</string>
     <string name="nc_endless_disabled">Žádné další položky k načtení (dosaženo nejvyššího umožněného počtu).</string>
@@ -321,7 +318,7 @@
 
     <string name="share">Sdílet</string>
     <string name="send_to">Odeslat k</string>
-    <string name="open_in_files_app">Otevřít v aplikaci pro soubory</string>
+    <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Přidat do konverzace</string>
@@ -352,7 +349,7 @@
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="userinfo_error_text">Nepodařilo se získat osobní údaje uživatele.</string>
     <string name="user_info_phone">Telefonní číslo</string>
-    <string name="user_info_email">Email</string>
+    <string name="user_info_email">E-mail</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_website">Webová stránka</string>
     <string name="user_info_twitter">Twitter</string>
@@ -374,7 +371,6 @@
     <string name="scope_published_title">Zveřejněno</string>
     <string name="scope_published_description">Synchronizovat s důvěryhodnými servery a globálním a veřejným adresářem kontaktů</string>
     <string name="scope_toggle">Přepnout pohled</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">Hledat v %s</string>
 
@@ -383,4 +379,5 @@
     <string name="selected_list_item">vybraný</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
-    </resources>
+    <string name="nc_dialog_reauth_or_delete">Chcete tento účet znovu ověřit nebo smazat?</string>
+</resources>

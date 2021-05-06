@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">指示鍵盤禁用個性化學習（無保證）</string>
     <string name="nc_settings_link_previews_title">顯示 連結預覽</string>
     <string name="nc_settings_link_previews_desc">允許為受支持的服務提供接收到的連結內容的預覽</string>
-    <string name="nc_locked">點擊可解除鎖定</string>
     <string name="nc_settings_read_privacy_desc">分享我的閱讀狀態並顯示其他人的閱讀狀態</string>
     <string name="nc_settings_read_privacy_title">閱讀狀態</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_offline">當前離線，請檢查您的連接</string>
     <string name="nc_leaving_call">離開通話...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">來電通知頻道</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">你： %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">沒有更多要加載的項目。刷新以重試。</string>
     <string name="nc_endless_disabled">沒有更多要加載的項目（已達到上限）。</string>
@@ -375,7 +372,6 @@
     <string name="scope_published_title">已發佈</string>
     <string name="scope_published_description">同步到受信任的伺服器以及全域與公開的通訊錄</string>
     <string name="scope_toggle">切換範圍</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">%s內搜尋</string>
 

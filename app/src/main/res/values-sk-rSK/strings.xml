@@ -101,7 +101,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Klávesnica bude pracovať bez personalizovaného učenia (bez záruky)</string>
     <string name="nc_settings_link_previews_title">Ukázať ukážky odkazov</string>
     <string name="nc_settings_link_previews_desc">Povolí ukážky obsahu v prijatých odkazoch pre podporované služby</string>
-    <string name="nc_locked">Dotknite sa pre odomknutie</string>
     <string name="nc_screen_lock_timeout_30">30 sekúnd</string>
     <string name="nc_screen_lock_timeout_60">1 minúta</string>
     <string name="nc_screen_lock_timeout_300">5 minút</string>
@@ -171,7 +170,6 @@
     <string name="nc_call_reconnecting">Opätovné pripájanie...</string>
     <string name="nc_offline">Práve ste odpojený. Prosím, skontrolujte vaše pripojenie.</string>
     <string name="nc_leaving_call">Opúšťam hovor...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
@@ -230,7 +228,6 @@
     <string name="nc_sent_an_image_you">Odoslali ste obrázok.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vy: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Už žiadne položky pre načítanie. Obnovte pre opakovanie.</string>
     <string name="nc_endless_disabled">Už žiadne ďalšie položky pre načítanie (dosiahnuté maximum).</string>

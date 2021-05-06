@@ -101,7 +101,6 @@
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_link_previews_title">اظهر معاينات الروابط</string>
     <string name="nc_settings_link_previews_desc">يسمح بمعاينات المحتوى من الروابط المستلمة للخدمات المدعومة </string>
-    <string name="nc_locked">انقر لفك القفل</string>
     <string name="nc_settings_read_privacy_desc">شارك حالتي و أظهر الحالة للآخرين</string>
     <string name="nc_settings_read_privacy_title">قراءة الحالة</string>
 
@@ -178,7 +177,6 @@
     <string name="nc_call_reconnecting">إعادة الاتصال...</string>
     <string name="nc_offline">غير متصل حاليًا، من فضلك التأكد من الاتصال بالانترنت</string>
     <string name="nc_leaving_call">مغادرة المكالمة</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">قناة إشعار %1$s في %2$s </string>
     <string name="nc_notification_channel_calls">قناة إشعار المكالمات</string>
@@ -238,7 +236,6 @@
     <string name="nc_sent_an_image_you">لقد قمت بإرسال صورة.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">أنت: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">لايمكن تحميل المزيد من العناصر. قم بالتحديث لإعادة المحاولة.</string>
     <string name="nc_endless_disabled">لا يمكن تحميل المزيد من العناصر (وصلت إلى أقصى حد).</string>

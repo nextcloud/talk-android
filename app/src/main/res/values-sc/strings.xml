@@ -99,7 +99,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Imparat a sa tastiera a disativare s\'imparu personale (chene garantzias)</string>
     <string name="nc_settings_link_previews_title">Mustra anteprima de is ligòngios</string>
     <string name="nc_settings_link_previews_desc">Permite anteprimas de cuntenutu dae ligòngios retzidos pro servìtzios suportados</string>
-    <string name="nc_locked">Toca pro isblocare</string>
     <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
     <string name="nc_settings_read_privacy_title">Leghe istadu</string>
 
@@ -170,7 +169,6 @@
     <string name="nc_call_reconnecting">Torrende a connètere...</string>
     <string name="nc_offline">Foras de lìnia, controlla sa connessione tua</string>
     <string name="nc_leaving_call">Lassende sa mutida...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s in %2$s canale de notìfica</string>
     <string name="nc_notification_channel_calls">Canale de notìfica de mutidas</string>
@@ -230,7 +228,6 @@
     <string name="nc_sent_an_image_you">As imbiadu un\'immàgine.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Tue: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Non ddoe at àteros elementos de carrigare. Agiorna pro torrare a proare</string>
     <string name="nc_endless_disabled">Non ddoe at àteros elementos de carrigare (cròmpidu a su màssimu).</string>

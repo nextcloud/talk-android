@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_link_previews_title">Pré-visualizar links</string>
     <string name="nc_settings_link_previews_desc">Permite pré-visualizar links recebidos para serviços suportados</string>
-    <string name="nc_locked">Toque para desbloquear</string>
     <string name="nc_settings_read_privacy_desc">Compartilhar meu status de leitura e mostrá-los a outros</string>
     <string name="nc_settings_read_privacy_title">Status de leitura</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">Reconectando...</string>
     <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
     <string name="nc_leaving_call">Desligando...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Você: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Não há mais itens a carregar. Atualize tentar novamente.</string>
     <string name="nc_endless_disabled">Não há mais itens a carregar (máx alcançado).</string>
@@ -375,7 +372,6 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_published_description">Sincronize com servidores confiáveis ​​e com o catálogo de endereço público e global</string>
     <string name="scope_toggle">Alternância de escopo</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">Procurar em 1%s</string>
 

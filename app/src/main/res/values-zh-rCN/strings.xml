@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">通知键盘禁用个性化学习（不保证键盘会执行）</string>
     <string name="nc_settings_link_previews_title">显示链接预览</string>
     <string name="nc_settings_link_previews_desc">允许为受支持的服务提供接收到的链接内容的预览</string>
-    <string name="nc_locked">触摸解锁</string>
     <string name="nc_settings_read_privacy_desc">共享我的消息读取状态，并显示其他人的消息读取状态</string>
     <string name="nc_settings_read_privacy_title">消息读取状态</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">重新连接 ...</string>
     <string name="nc_offline">当前离线，请检查您的连接</string>
     <string name="nc_leaving_call">离开通话中 ...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s在%2$s通知频道中</string>
     <string name="nc_notification_channel_calls">通话提醒频道</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">取消回复</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">您：%1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">无更多条目可以加载，请刷新重试。</string>
     <string name="nc_endless_disabled">无更多条目可以加载（已达到最大数目）。</string>
@@ -375,7 +372,6 @@
     <string name="scope_published_title">已发布</string>
     <string name="scope_published_description">同步到受信任的服务器、全局和公共地址簿</string>
     <string name="scope_toggle">范围切换</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">搜索位置 %s</string>
 

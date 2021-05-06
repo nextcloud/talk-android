@@ -87,7 +87,6 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
     <string name="nc_settings_link_previews_title">Rodyti nuorodų peržiūras</string>
     <string name="nc_settings_link_previews_desc">Palaikomuose įrenginiuose leidžia matyti gautų nuorodų turinio peržiūras</string>
-    <string name="nc_locked">Bakstelėkite, norėdami atrakinti</string>
     <string name="nc_screen_lock_timeout_30">30 sekundžių</string>
     <string name="nc_screen_lock_timeout_60">1 minutė</string>
     <string name="nc_screen_lock_timeout_300">5 minutės</string>
@@ -145,7 +144,6 @@
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_offline">Šiuo metu atsijungta nuo interneto, patikrinkite savo ryšį</string>
     <string name="nc_leaving_call">Išeinama iš skambučio…</string>
-
     <string name="nc_notification_channel_calls_description">Rodo gaunamuosius skambučius</string>
     <string name="nc_notification_settings">Pranešimų nustatymai</string>
     <string name="nc_plain_old_messages">Žinutės</string>
@@ -197,7 +195,6 @@
     <string name="nc_sent_an_image_you">Jūs išsiuntėte paveikslą.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Jūs: %1$s</string>
-
     <string name="nc_endless_cancel">Atšaukė naudotojas.</string>
     <string name="nc_endless_error">Įkeliant daugiau elementų, įvyko klaida.</string>
 

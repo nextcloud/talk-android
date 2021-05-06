@@ -101,7 +101,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
     <string name="nc_settings_link_previews_title">Amosar as vistas previas das ligazóns</string>
     <string name="nc_settings_link_previews_desc">Permite obter vistas do contido de ligazóns recibidas para servizos compatíbeis</string>
-    <string name="nc_locked">Toque para desbloquear</string>
     <string name="nc_settings_read_privacy_desc">Compartir o meu estado de lectura e amosar o estado de lectura doutras persoas</string>
     <string name="nc_settings_read_privacy_title">Estado de lectura</string>
 
@@ -174,7 +173,6 @@
     <string name="nc_call_reconnecting">Volvendo conectar…</string>
     <string name="nc_offline">Non ten conexión, verifique a súa conectividade</string>
     <string name="nc_leaving_call">Abandonando a chamada…</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Canle de notificación de chamadas</string>
@@ -234,7 +232,6 @@
     <string name="nc_sent_an_image_you">Vostede enviou unha imaxe.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vostede: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Non hai máis elementos que cargar. Actualice para volver tentar.</string>
     <string name="nc_endless_disabled">Non hai máis elementos que cargar acadouse o máximo.</string>

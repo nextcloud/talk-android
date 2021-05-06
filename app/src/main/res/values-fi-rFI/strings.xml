@@ -86,7 +86,6 @@
     <string name="nc_settings_screen_security_desc">Estää näyttökuvat viimeisimmät listassa sovelluksen sisällä</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito-näppäimistö</string>
     <string name="nc_settings_link_previews_title">Näytä linkkien esikatselut</string>
-    <string name="nc_locked">Napauta avataksesi lukituksen</string>
     <string name="nc_settings_read_privacy_title">Lue tila</string>
 
     <string name="nc_screen_lock_timeout_30">30 sekuntia</string>
@@ -152,7 +151,6 @@
     <string name="nc_call_reconnecting">Yhdistetään uudelleen…</string>
     <string name="nc_offline">Ei yhteyttä tällä hetkellä, tarkista verkkoyhteydet</string>
     <string name="nc_leaving_call">Poistutaan puhelusta…</string>
-
     <string name="nc_notification_channel_calls">Puhelujen ilmoituskanava</string>
     <string name="nc_notification_channel_messages">Viestien ilmoituskanava</string>
     <string name="nc_notification_channel_calls_description">Näyttää saapuvat puhelut</string>
@@ -209,7 +207,6 @@
     <string name="nc_sent_an_image_you">Lähetit kuvan.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Sinä: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ei enempää tietueita ladattavaksi. Päivitä yrittääksesi uudelleen.</string>
     <string name="nc_endless_cancel">Peruttu käyttäjän toimesta.</string>

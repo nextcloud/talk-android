@@ -96,7 +96,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Ενημερώνει το πληκτρολόγιο για να απενεργοποιήσει την προσωπική μάθηση (χωρίς εγγυήσεις)</string>
     <string name="nc_settings_link_previews_title">Προβολή προεπισκόπησης συνδέσμων</string>
     <string name="nc_settings_link_previews_desc">Επιτρέπει προεπισκοπήσεις περιεχομένου από ληφθέντες συνδέσμους για υποστηριζόμενες υπηρεσίες</string>
-    <string name="nc_locked">Αγγίξτε για ξεκλείδωμα</string>
     <string name="nc_settings_read_privacy_desc">Διαμοιρασμός της κατάστασης-ανάγνωσης μου και εμφάνιση της κατάστασης-ανάγνωσης άλλων</string>
     <string name="nc_settings_read_privacy_title">Κατάσταση ανάγνωσης</string>
 
@@ -167,7 +166,6 @@
     <string name="nc_call_reconnecting">Επανασύνδεση...</string>
     <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
     <string name="nc_leaving_call">Αποχώρηση από την κλήση</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s από %2$s κανάλι ειδοποίησης</string>
     <string name="nc_notification_channel_calls">Κανάλι ειδοποιήσης κλήσεων</string>
@@ -227,7 +225,6 @@
     <string name="nc_sent_an_image_you">Στείλατε εικόνα.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Εσείς: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Δεν υπάρχουν αντικείμενα για φόρτωση. Ανανεώστε και προσπαθήστε ξανά.</string>
     <string name="nc_endless_disabled">Δεν υπάρχουν περισσότερα αντικείμενα για φόρτωση (φτάσατε στο μέγιστο).</string>

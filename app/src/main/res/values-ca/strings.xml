@@ -91,7 +91,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Indica al teclat que desactivi l\'aprenentatge personalitzat (sense garanties)</string>
     <string name="nc_settings_link_previews_title">Mostra les visualitzacions prèvies dels enllaços</string>
     <string name="nc_settings_link_previews_desc">Permet la visualització prèvia del contingut dels enllaços rebuts per als serveis compatibles</string>
-    <string name="nc_locked">Toca per desblocar</string>
     <string name="nc_screen_lock_timeout_30">30 segons</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minuts</string>
@@ -154,7 +153,6 @@
     <string name="nc_call_reconnecting">S\'està reconnectant...</string>
     <string name="nc_offline">Actualment fora de línia, si us plau comproveu la vostra connectivitat</string>
     <string name="nc_leaving_call">S\'està abandonant la trucada...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
     <string name="nc_notification_channel_calls">Canal de notificació de trucades</string>
@@ -213,7 +211,6 @@
     <string name="nc_sent_an_image_you">Heu enviat una imatge.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Tu: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">No hi ha més elements a carregar. Actualitzeu per tornar-ho a provar.</string>
     <string name="nc_endless_disabled">No es poden carregar més elements (s\'ha assolit el màxim).</string>

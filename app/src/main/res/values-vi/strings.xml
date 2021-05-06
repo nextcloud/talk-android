@@ -95,7 +95,6 @@
     <string name="nc_settings_screen_lock_title">Khoá màn hình</string>
     <string name="nc_none">Không có</string>
     <string name="nc_settings_link_previews_title">Hiện mục xem trước liên kết</string>
-    <string name="nc_locked">Nhấn để mở khoá</string>
     <string name="nc_settings_read_privacy_title">Đọc trạng thái</string>
 
     <string name="nc_biometric_unlock">Mở khoá %1$s</string>
@@ -152,7 +151,6 @@
     <string name="nc_call_timeout">Không có phản hồi trong 45 giây, nhấn để thử lại</string>
     <string name="nc_call_reconnecting">Đang kết nối lại...</string>
     <string name="nc_leaving_call">Đang rời khỏi cuộc gọi...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s từ %2$s thông báo kênh</string>
     <string name="nc_notification_channel_calls">Thông báo các kênh cuộc gọi</string>

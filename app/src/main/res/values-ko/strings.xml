@@ -91,7 +91,6 @@
     <string name="nc_settings_incognito_keyboard_desc">키보드에 개인화된 학습을 비활성화하도록 지시(보증 없음)</string>
     <string name="nc_settings_link_previews_title">링크 미리보기</string>
     <string name="nc_settings_link_previews_desc">지원되는 서비스에 대해 수신된 링크의 콘텐츠 미리 보기 허용</string>
-    <string name="nc_locked">잠금 해제를 위해 탭하기</string>
     <string name="nc_screen_lock_timeout_30">30 초</string>
     <string name="nc_screen_lock_timeout_60">1분</string>
     <string name="nc_screen_lock_timeout_300">5분</string>
@@ -154,7 +153,6 @@
     <string name="nc_call_reconnecting">재연결 중...</string>
     <string name="nc_offline">현재 오프라인 상태입니다. 연결 상태를 확인하십시오.</string>
     <string name="nc_leaving_call">통화 종료 중...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s 알림 채널의 %1$s</string>
     <string name="nc_notification_channel_calls">통화 알림 채널</string>
@@ -213,7 +211,6 @@
     <string name="nc_sent_an_image_you">이미지를 보냈습니다.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">나: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">아이템 없음. 새로고침 하시오.</string>
     <string name="nc_endless_disabled">더 이상 아이템을 올릴 수 없습니다. (최대치에 다다름)</string>

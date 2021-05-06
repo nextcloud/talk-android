@@ -108,7 +108,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi devre dışı bırakır (garanti edilmez)</string>
     <string name="nc_settings_link_previews_title">Bağlantı ön izlemeleri görüntülensin</string>
     <string name="nc_settings_link_previews_desc">Desteklenen aygıtlarda alınan bağlantının içeriğinin ön izlemesini görüntüler</string>
-    <string name="nc_locked">Kilidi açmak için dokunun</string>
     <string name="nc_settings_read_privacy_desc">Okundu durumumu paylaş ve diğerlerinin okundu durumunu görüntüle</string>
     <string name="nc_settings_read_privacy_title">Okundu durumu</string>
 
@@ -189,7 +188,6 @@
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_offline">Şu anda çevrimdışı, lütfen bağlantınızı denetleyin</string>
     <string name="nc_leaving_call">Arama sonlandırılıyor …</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
@@ -253,7 +251,6 @@
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Siz: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Yüklenecek başka bir öge yok. Yeniden denemek için yenileyin.</string>
     <string name="nc_endless_disabled">Yüklenecek başka bir öge yok (en çok sayıya ulaşıldı)</string>
@@ -375,7 +372,6 @@
     <string name="scope_published_title">Yayınlanmış</string>
     <string name="scope_published_description">Genel ve herkese açık adres defteri ile ve güvenilen sunucularla eşitlensin</string>
     <string name="scope_toggle">Ölçeği değiştir</string>
-
     <!-- App Bar -->
     <string name="appbar_search_in">%s içinde arama</string>
 

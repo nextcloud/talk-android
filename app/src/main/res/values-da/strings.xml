@@ -91,7 +91,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Indstiller tastatur til at deaktivere personaliseret indlæring (uden garanti)</string>
     <string name="nc_settings_link_previews_title">Vis link forhåndsvisninger</string>
     <string name="nc_settings_link_previews_desc">Tillader forhåndsvisning af indhold fra modtagne links for understøttede services</string>
-    <string name="nc_locked">Tryk for at låse op</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minutter</string>
@@ -154,7 +153,6 @@
     <string name="nc_call_reconnecting">Forbinder igen...</string>
     <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
     <string name="nc_leaving_call">Forlader opkald...</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
     <string name="nc_notification_channel_calls">Opkalds notifikations kanal</string>
@@ -213,7 +211,6 @@
     <string name="nc_sent_an_image_you">Du sendte et billede.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Dig: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ikke flere ting at indlæse. Genindlæse for at prøve igen.</string>
     <string name="nc_endless_disabled">Ikke flere ting at indlæse (maximum nået).</string>

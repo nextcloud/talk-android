@@ -91,7 +91,6 @@
     <string name="nc_settings_incognito_keyboard_desc">Naloži tastaturi da isključi personalizovano učenje (bez garancija)</string>
     <string name="nc_settings_link_previews_title">Prikaži pretpregled veza</string>
     <string name="nc_settings_link_previews_desc">Dozvoljava pretpreglede sadržaja sa primljenih veza za podržane servise</string>
-    <string name="nc_locked">Tapni za otključavanje</string>
     <string name="nc_screen_lock_timeout_30">30 sekundi</string>
     <string name="nc_screen_lock_timeout_60">1 minut</string>
     <string name="nc_screen_lock_timeout_300">5 minuta</string>
@@ -154,7 +153,6 @@
     <string name="nc_call_reconnecting">Ponovo se povezujem…</string>
     <string name="nc_offline">Trenutno van mreže, proverite da li imate internet</string>
     <string name="nc_leaving_call">Napuštam razgovor…</string>
-
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na kanalu za obaveštenje o %2$s</string>
     <string name="nc_notification_channel_calls">Kanal obaveštenja o pozivima</string>
@@ -213,7 +211,6 @@
     <string name="nc_sent_an_image_you">Poslali ste sliku.</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Ti: %1$s</string>
-
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Nema više kontakata. Osvežite da probate ponovo.</string>
     <string name="nc_endless_disabled">Nema više stavki za učitavanje (dostignut maksimum).</string>
