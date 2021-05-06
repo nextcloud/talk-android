@@ -46,6 +46,8 @@ public class Conversation {
     public String name;
     @JsonField(name = "displayName")
     public String displayName;
+    @JsonField(name = "description")
+    public String description;
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
     public ConversationType type;
     @JsonField(name = "lastPing")
@@ -158,6 +160,10 @@ public class Conversation {
         return this.name;
     }
 
+    public String getDescription() {
+        return this.description;
+    }
+
     public String getDisplayName() {
         return this.displayName;
     }
@@ -244,6 +250,10 @@ public class Conversation {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public void setDisplayName(String displayName) {
@@ -374,6 +384,9 @@ public class Conversation {
         if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) {
             return false;
         }
+        if (description != null ? !description.equals(that.description) : that.description != null) {
+            return false;
+        }
         if (type != that.type) {
             return false;
         }
@@ -423,6 +436,7 @@ public class Conversation {
         result = 31 * result + token.hashCode();
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + type.hashCode();
         result = 31 * result + (int) (lastPing ^ (lastPing >>> 32));
         result = 31 * result + (participants != null ? participants.hashCode() : 0);
@@ -454,6 +468,7 @@ public class Conversation {
                 ", token='" + token + '\'' +
                 ", name='" + name + '\'' +
                 ", displayName='" + displayName + '\'' +
+                ", description='" + description + '\'' +
                 ", type=" + type +
                 ", lastPing=" + lastPing +
                 ", participants=" + participants +

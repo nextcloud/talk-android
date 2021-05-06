@@ -125,6 +125,12 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     @BindView(R.id.display_name_text)
     lateinit var conversationDisplayName: EmojiTextView
 
+    @BindView(R.id.conversation_description)
+    lateinit var descriptionCategoryView: MaterialPreferenceCategory
+
+    @BindView(R.id.description_text)
+    lateinit var conversationDescription: EmojiTextView
+
     @BindView(R.id.participants_list_category)
     lateinit var participantsListCategory: MaterialPreferenceCategory
 
@@ -599,6 +605,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                         nameCategoryView.visibility = View.VISIBLE
 
                         conversationDisplayName.text = conversation!!.displayName
+
+                        if (conversation!!.description != null && !conversation!!.description.isEmpty()) {
+                            conversationDescription.text = conversation!!.description
+                            descriptionCategoryView.visibility = View.VISIBLE
+                        }
 
                         loadConversationAvatar()
                         adjustNotificationLevelUI()
