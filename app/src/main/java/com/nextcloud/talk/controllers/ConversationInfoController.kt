@@ -362,7 +362,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 )
                 .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
                 .setTitle(R.string.nc_delete_call)
-                .setMessage(conversation!!.deleteWarningMessage)
+                .setMessage(R.string.nc_delete_conversation_more)
                 .setPositiveButton(R.string.nc_delete) { deleteConversation() }
                 .setNegativeButton(R.string.nc_cancel, null)
                 .setInstanceStateHandler(ID_DELETE_CONVERSATION_DIALOG, saveStateHandler!!)

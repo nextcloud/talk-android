@@ -20,12 +20,8 @@
  */
 package com.nextcloud.talk.models.json.conversations;
 
-import android.content.res.Resources;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.R;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter;
@@ -88,6 +84,8 @@ public class Conversation {
     public int lastReadMessage;
     @JsonField(name = "callFlag")
     public int callFlag;
+    @JsonField(name = "canLeaveConversation")
+    public Boolean canLeaveConversation;
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
@@ -126,20 +124,13 @@ public class Conversation {
     }
 
     public boolean canLeave(UserEntity conversationUser) {
-        return !canModerate(conversationUser) ||
-                (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
-    }
-
-    public String getDeleteWarningMessage() {
-        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
-        if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
-                    getDisplayName());
-        } else if (getParticipants().size() > 1) {
-            return resources.getString(R.string.nc_delete_conversation_more);
+        if (canLeaveConversation != null) {
+            // Available since APIv2
+            return canLeaveConversation;
         }
-
-        return resources.getString(R.string.nc_delete_conversation_default);
+        // Fallback for APIv1
+        return !canModerate(conversationUser) ||
+                (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && this.participants.size() > 1);
     }
 
     public String getRoomId() {
@@ -164,10 +155,6 @@ public class Conversation {
 
     public long getLastPing() {
         return this.lastPing;
-    }
-
-    public HashMap<String, HashMap<String, Object>> getParticipants() {
-        return this.participants;
     }
 
     public Participant.ParticipantType getParticipantType() {
@@ -258,6 +245,7 @@ public class Conversation {
         this.lastPing = lastPing;
     }
 
+    @Deprecated
     public void setParticipants(HashMap<String, HashMap<String, Object>> participants) {
         this.participants = participants;
     }
@@ -365,8 +353,8 @@ public class Conversation {
         if (this.getLastPing() != other.getLastPing()) {
             return false;
         }
-        final Object this$participants = this.getParticipants();
-        final Object other$participants = other.getParticipants();
+        final Object this$participants = this.participants;
+        final Object other$participants = other.participants;
         if (this$participants == null ? other$participants != null : !this$participants.equals(other$participants)) {
             return false;
         }
@@ -456,7 +444,7 @@ public class Conversation {
         result = result * PRIME + ($type == null ? 43 : $type.hashCode());
         final long $lastPing = this.getLastPing();
         result = result * PRIME + (int) ($lastPing >>> 32 ^ $lastPing);
-        final Object $participants = this.getParticipants();
+        final Object $participants = this.participants;
         result = result * PRIME + ($participants == null ? 43 : $participants.hashCode());
         final Object $participantType = this.getParticipantType();
         result = result * PRIME + ($participantType == null ? 43 : $participantType.hashCode());
@@ -488,7 +476,7 @@ public class Conversation {
     }
 
     public String toString() {
-        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", lastPing=" + this.getLastPing() + ", participants=" + this.getParticipants() + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
+        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", lastPing=" + this.getLastPing() + ", participants=" + this.participants + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
     }
 
     public enum NotificationLevel {
