@@ -75,7 +75,7 @@ public class DeleteConversationWorker extends Worker {
         UserEntity operationUser = userUtils.getUserWithId(operationUserId);
 
         if (operationUser != null) {
-            int apiVersion = ApiUtils.getConversationApiVersion(operationUser,  new int[] {1});
+            int apiVersion = ApiUtils.getConversationApiVersion(operationUser,  new int[] {ApiUtils.APIv4, 1});
 
             String credentials = ApiUtils.getCredentials(operationUser.getUsername(), operationUser.getToken());
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new

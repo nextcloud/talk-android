@@ -307,7 +307,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ).isChecked
         ) 1 else 0
 
-        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
         ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
@@ -539,7 +539,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))

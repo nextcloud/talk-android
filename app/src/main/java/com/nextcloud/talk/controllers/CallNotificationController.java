@@ -260,7 +260,8 @@ public class CallNotificationController extends BaseController {
     }
 
     private void handleFromNotification() {
-        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {4, 3, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {ApiUtils.APIv4,
+                ApiUtils.APIv3, 1});
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userBeingCalled.getBaseUrl(), roomId))
                 .subscribeOn(Schedulers.io())

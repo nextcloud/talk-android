@@ -288,7 +288,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     userId = selectedUserIds.iterator().next();
                 }
 
-                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
@@ -313,6 +313,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
                                 if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
                                     ncApi.getRoom(credentials,
                                             ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
                                                     roomOverall.getOcs().getData().getToken()))
@@ -852,7 +853,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     roomType = "2";
                 }
 
-                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
 
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),

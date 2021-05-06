@@ -93,7 +93,7 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
-                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {4, 1});
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
                             ApiUtils.getUrlForRoomNotificationLevel(apiVersion, conversationUser.getBaseUrl(),
