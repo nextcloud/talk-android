@@ -61,7 +61,7 @@ public class OCFavorite implements Property {
             try {
                 String text = XmlUtils.INSTANCE.readText(xmlPullParser);
                 if (!TextUtils.isEmpty(text)) {
-                    return new OCFavorite(Boolean.parseBoolean(text));
+                    return new OCFavorite("1".equals(text));
                 }
             } catch (IOException | XmlPullParserException e) {
                 Log.e("OCFavorite", "failed to create property", e);
