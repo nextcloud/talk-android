@@ -61,7 +61,7 @@ public class NCEncrypted implements Property {
             try {
                 String text = XmlUtils.INSTANCE.readText(xmlPullParser);
                 if (!TextUtils.isEmpty(text)) {
-                    return new NCEncrypted(Boolean.parseBoolean(text));
+                    return new NCEncrypted("1".equals(text));
                 }
             } catch (IOException | XmlPullParserException e) {
                 Log.e("NCEncrypted", "failed to create property", e);
