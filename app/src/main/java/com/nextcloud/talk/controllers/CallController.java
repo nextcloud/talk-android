@@ -1273,7 +1273,7 @@ public class CallController extends BaseController {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
                 .subscribeOn(Schedulers.io())
@@ -1558,7 +1558,7 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
@@ -1686,7 +1686,7 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
