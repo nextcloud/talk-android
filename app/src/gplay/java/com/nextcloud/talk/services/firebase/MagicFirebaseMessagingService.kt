@@ -302,9 +302,12 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         var hasParticipantsInCall = false
         var inCallOnDifferentDevice = false
 
+        val apiVersion = ApiUtils.getConversationApiVersion(signatureVerification.userEntity, intArrayOf(1))
+
         ncApi.getPeersForCall(
             ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
             ApiUtils.getUrlForCall(
+                apiVersion,
                 signatureVerification.userEntity.baseUrl,
                 decryptedPushMessage.id
             )

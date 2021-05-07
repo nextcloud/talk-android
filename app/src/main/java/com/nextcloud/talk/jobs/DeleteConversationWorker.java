@@ -75,6 +75,8 @@ public class DeleteConversationWorker extends Worker {
         UserEntity operationUser = userUtils.getUserWithId(operationUserId);
 
         if (operationUser != null) {
+            int apiVersion = ApiUtils.getConversationApiVersion(operationUser,  new int[] {1});
+
             String credentials = ApiUtils.getCredentials(operationUser.getUsername(), operationUser.getToken());
             ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                     JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
@@ -82,7 +84,8 @@ public class DeleteConversationWorker extends Worker {
             EventStatus eventStatus = new EventStatus(operationUser.getId(),
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
-            ncApi.deleteRoom(credentials, ApiUtils.getRoom(operationUser.getBaseUrl(), conversationToken))
+            ncApi.deleteRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, operationUser.getBaseUrl(),
+                                                              conversationToken))
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;

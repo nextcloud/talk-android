@@ -306,9 +306,12 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ) as SwitchCompat
                 ).isChecked
         ) 1 else 0
+
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+
         ncApi.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
-            ApiUtils.getUrlForLobbyForConversation(conversationUser.baseUrl, conversation!!.token),
+            ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
             state,
             conversation!!.lobbyTimer
         )
@@ -438,9 +441,15 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun getListOfParticipants() {
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        }
+
         ncApi.getPeersForCall(
             credentials,
-            ApiUtils.getUrlForParticipants(conversationUser!!.baseUrl, conversationToken)
+            ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken)
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -527,7 +536,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     private fun fetchRoomInfo() {
-        ncApi.getRoom(credentials, ApiUtils.getRoom(conversationUser!!.baseUrl, conversationToken))
+        var apiVersion = 1
+        // FIXME Fix API checking with guests?
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+        }
+
+        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
@@ -701,11 +716,17 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     title(text = participant.displayName)
                     listItemsWithImage(items = items) { dialog, index, _ ->
 
+                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+
                         if (index == 0) {
                             if (participant.type == Participant.ParticipantType.MODERATOR) {
                                 ncApi.demoteModeratorToUser(
                                     credentials,
-                                    ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
+                                    ApiUtils.getUrlForRoomModerators(
+                                        apiVersion,
+                                        conversationUser.baseUrl,
+                                        conversation!!.token
+                                    ),
                                     participant.userId
                                 )
                                     .subscribeOn(Schedulers.io())
@@ -716,7 +737,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             } else if (participant.type == Participant.ParticipantType.USER) {
                                 ncApi.promoteUserToModerator(
                                     credentials,
-                                    ApiUtils.getUrlForModerators(conversationUser.baseUrl, conversation!!.token),
+                                    ApiUtils.getUrlForRoomModerators(
+                                        apiVersion,
+                                        conversationUser.baseUrl,
+                                        conversation!!.token
+                                    ),
                                     participant.userId
                                 )
                                     .subscribeOn(Schedulers.io())

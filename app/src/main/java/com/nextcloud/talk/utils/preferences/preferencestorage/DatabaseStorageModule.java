@@ -53,6 +53,7 @@ public class DatabaseStorageModule implements StorageModule {
     private boolean lobbyValue;
 
     private String messageNotificationLevel;
+
     public DatabaseStorageModule(UserEntity conversationUser, String conversationToken) {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
@@ -92,8 +93,11 @@ public class DatabaseStorageModule implements StorageModule {
                             intValue = 0;
                     }
 
+                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {4, 1});
+
                     ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken()),
-                            ApiUtils.getUrlForSettingNotificationlevel(conversationUser.getBaseUrl(), conversationToken),
+                            ApiUtils.getUrlForRoomNotificationLevel(apiVersion, conversationUser.getBaseUrl(),
+                                                                    conversationToken),
                             intValue)
                             .subscribeOn(Schedulers.io())
                             .subscribe(new Observer<GenericOverall>() {

@@ -441,7 +441,9 @@ public class CallController extends BaseController {
     }
 
     private void handleFromNotification() {
-        ncApi.getRooms(credentials, ApiUtils.getUrlForGetRooms(baseUrl))
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+
+        ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl))
                 .retry(3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1097,7 +1099,9 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
-        ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(baseUrl))
+        int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+
+        ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1234,9 +1238,11 @@ public class CallController extends BaseController {
     private void joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {1});
+
         if (TextUtils.isEmpty(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl,
-                                                                                           roomToken), conversationPassword)
+            ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken),
+                           conversationPassword)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -1288,8 +1294,9 @@ public class CallController extends BaseController {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        ncApi.joinCall(credentials,
-                       ApiUtils.getUrlForCall(baseUrl, roomToken), inCallFlag)
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+
+        ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
                 .subscribeOn(Schedulers.io())
                 .retry(3)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -1349,7 +1356,10 @@ public class CallController extends BaseController {
                             }
 
                             if (!hasExternalSignalingServer) {
-                                ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken))
+                                int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+
+                                ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion,
+                                                                                                     baseUrl, urlToken))
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .repeatWhen(observable -> observable)
@@ -1613,7 +1623,9 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+
+        ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1648,7 +1660,9 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, roomToken))
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+
+        ncApi.leaveRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
@@ -1741,7 +1755,9 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(baseUrl, roomToken))
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
@@ -2045,7 +2061,9 @@ public class CallController extends BaseController {
                 urlToken = roomToken;
             }
 
-            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(baseUrl, urlToken),
+            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+
+            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, urlToken),
                                         strings.toString())
                     .retry(3)
                     .subscribeOn(Schedulers.io())

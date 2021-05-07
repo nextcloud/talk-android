@@ -229,9 +229,10 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val roomType = "1"
         val currentUser = userUtils.currentUser ?: return
 
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(1))
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            currentUser.baseUrl, roomType,
+            apiVersion, currentUser.baseUrl, roomType,
             userId, null
         )
         ncApi.createRoom(
@@ -251,7 +252,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                         ncApi.getRoom(
                             credentials,
-                            ApiUtils.getRoom(
+                            ApiUtils.getUrlForRoom(
+                                apiVersion,
                                 currentUser.baseUrl,
                                 roomOverall.ocs.data.token
                             )

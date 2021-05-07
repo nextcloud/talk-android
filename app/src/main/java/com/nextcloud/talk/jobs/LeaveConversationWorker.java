@@ -47,6 +47,7 @@ import java.net.CookieManager;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class LeaveConversationWorker extends Worker {
+
     @Inject
     Retrofit retrofit;
 
@@ -82,7 +83,11 @@ public class LeaveConversationWorker extends Worker {
             EventStatus eventStatus = new EventStatus(operationUser.getId(),
                     EventStatus.EventType.CONVERSATION_UPDATE, true);
 
-            ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForRemoveSelfFromRoom(operationUser.getBaseUrl(), conversationToken))
+            int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[] {1});
+
+            ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForParticipantsSelf(apiVersion,
+                                                                                     operationUser.getBaseUrl(),
+                                                                                     conversationToken))
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         Disposable disposable;

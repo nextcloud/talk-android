@@ -81,8 +81,11 @@ public class SignalingSettingsWorker extends Worker {
         for (int i = 0; i < userEntityList.size(); i++) {
             userEntity = userEntityList.get(i);
             UserEntity finalUserEntity = userEntity;
+
+            int apiVersion = ApiUtils.getSignalingApiVersion(finalUserEntity, new int[] {2, 1});
+
             ncApi.getSignalingSettings(ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()),
-                    ApiUtils.getUrlForSignalingSettings(userEntity.getBaseUrl()))
+                    ApiUtils.getUrlForSignalingSettings(apiVersion, userEntity.getBaseUrl()))
                     .blockingSubscribe(new Observer<SignalingSettingsOverall>() {
                         @Override
                         public void onSubscribe(Disposable d) {

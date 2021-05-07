@@ -185,13 +185,20 @@ public class OperationsMenuController extends BaseController {
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
 
+            int apiVersion;
             if (!TextUtils.isEmpty(baseUrl) && !baseUrl.equals(currentUser.getBaseUrl())) {
                 credentials = null;
+                // FIXME joining a public link we need to check other capabilities
+                apiVersion = 1;
+            } else {
+                apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
             }
+
 
             switch (operationCode) {
                 case 2:
-                    ncApi.renameRoom(credentials, ApiUtils.getRoom(currentUser.getBaseUrl(), conversation.getToken()),
+                    ncApi.renameRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
+                                                                         conversation.getToken()),
                             conversation.getName())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -199,8 +206,8 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(operationsObserver);
                     break;
                 case 3:
-                    ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation
-                            .getToken()))
+                    ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
+                                                                                   conversation.getToken()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -213,8 +220,8 @@ public class OperationsMenuController extends BaseController {
                     if (conversation.getPassword() != null) {
                         pass = conversation.getPassword();
                     }
-                    ncApi.setPassword(credentials, ApiUtils.getUrlForPassword(currentUser.getBaseUrl(),
-                            conversation.getToken()), pass)
+                    ncApi.setPassword(credentials, ApiUtils.getUrlForRoomPassword(apiVersion, currentUser.getBaseUrl(),
+                                                                                  conversation.getToken()), pass)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -224,15 +231,16 @@ public class OperationsMenuController extends BaseController {
                     // Operation 7 is sharing, so we handle this differently
                     break;
                 case 8:
-                    ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation
-                            .getToken()))
+                    ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion,
+                                                                                    currentUser.getBaseUrl(),
+                                                                                    conversation.getToken()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
                     break;
                 case 10:
-                    ncApi.getRoom(credentials, ApiUtils.getRoom(baseUrl, conversationToken))
+                    ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
@@ -271,7 +279,7 @@ public class OperationsMenuController extends BaseController {
 
                     if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
                             !currentUser.hasSpreedFeatureCapability("empty-group-room")) {
-                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
+                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
                                 "3", invite, conversationName);
                     } else {
                         String roomType = "2";
@@ -280,7 +288,7 @@ public class OperationsMenuController extends BaseController {
                             roomType = "3";
                         }
 
-                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(),
+                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
                                 roomType, invite, conversationName);
                     }
 
@@ -300,7 +308,8 @@ public class OperationsMenuController extends BaseController {
                                     conversation = roomOverall.getOcs().getData();
 
                                     ncApi.getRoom(credentials,
-                                            ApiUtils.getRoom(currentUser.getBaseUrl(), conversation.getToken()))
+                                            ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
+                                                             conversation.getToken()))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(new Observer<RoomOverall>() {
@@ -349,15 +358,19 @@ public class OperationsMenuController extends BaseController {
                 case 97:
                 case 98:
                     if (operationCode == 97) {
-                        ncApi.removeConversationFromFavorites(credentials, ApiUtils.getUrlForConversationFavorites(currentUser.getBaseUrl(),
-                                conversation.getToken()))
+                        ncApi.removeConversationFromFavorites(credentials,
+                                                              ApiUtils.getUrlForRoomFavorite(apiVersion,
+                                                                                             currentUser.getBaseUrl(),
+                                                                                             conversation.getToken()))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .retry(1)
                                 .subscribe(operationsObserver);
                     } else {
-                        ncApi.addConversationToFavorites(credentials, ApiUtils.getUrlForConversationFavorites(currentUser.getBaseUrl(),
-                                conversation.getToken()))
+                        ncApi.addConversationToFavorites(credentials,
+                                                         ApiUtils.getUrlForRoomFavorite(apiVersion,
+                                                                                        currentUser.getBaseUrl(),
+                                                                                        conversation.getToken()))
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .retry(1)
@@ -365,7 +378,9 @@ public class OperationsMenuController extends BaseController {
                     }
                     break;
                 case 99:
-                    ncApi.joinRoom(credentials, ApiUtils.getUrlForSettingMyselfAsActiveParticipant(baseUrl, conversationToken),
+                    ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion,
+                                                                                     baseUrl,
+                                                                                     conversationToken),
                             callPassword)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -379,7 +394,10 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void performGroupCallWorkaround(String credentials) {
-        ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomVisibility(currentUser.getBaseUrl(), conversation.getToken()))
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+
+        ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
+                                                                            conversation.getToken()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(1)
@@ -534,11 +552,15 @@ public class OperationsMenuController extends BaseController {
             localInvitedGroups.remove(0);
         }
 
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+
         if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
             if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
                     final String groupId = localInvitedGroups.get(i);
-                    retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(currentUser.getBaseUrl(), conversation.getToken(),
+                    retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(apiVersion,
+                                                                                      currentUser.getBaseUrl(),
+                                                                                      conversation.getToken(),
                             groupId);
 
                     ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
@@ -578,8 +600,10 @@ public class OperationsMenuController extends BaseController {
 
             for (int i = 0; i < localInvitedUsers.size(); i++) {
                 final String userId = invitedUsers.get(i);
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(currentUser.getBaseUrl(), conversation.getToken(),
-                        userId);
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion,
+                                                                             currentUser.getBaseUrl(),
+                                                                             conversation.getToken(),
+                                                                             userId);
 
                 ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())

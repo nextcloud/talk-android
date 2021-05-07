@@ -288,8 +288,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     userId = selectedUserIds.iterator().next();
                 }
 
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType,
-                        userId, null);
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
+                                                                                        currentUser.getBaseUrl(),
+                                                                                        roomType,
+                                                                                        userId,
+                                                                                        null);
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
@@ -310,7 +314,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                 if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
                                     ncApi.getRoom(credentials,
-                                            ApiUtils.getRoom(currentUser.getBaseUrl(),
+                                            ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
                                                     roomOverall.getOcs().getData().getToken()))
                                             .subscribeOn(Schedulers.io())
                                             .observeOn(AndroidSchedulers.mainThread())
@@ -848,7 +852,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     roomType = "2";
                 }
 
-                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(currentUser.getBaseUrl(), roomType, userItem.getModel().getUserId(), null);
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+
+                RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
+                                                                                        currentUser.getBaseUrl(),
+                                                                                        roomType,
+                                                                                        userItem.getModel().getUserId(),
+                                                                                        null);
 
                 ncApi.createRoom(credentials,
                         retrofitBucket.getUrl(), retrofitBucket.getQueryMap())

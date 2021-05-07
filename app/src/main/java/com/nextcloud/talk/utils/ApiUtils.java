@@ -21,11 +21,13 @@ package com.nextcloud.talk.utils;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,21 +37,24 @@ import androidx.annotation.Nullable;
 import okhttp3.Credentials;
 
 public class ApiUtils {
-    private static String ocsApiVersion = "/ocs/v2.php";
-    private static String spreedApiVersion = "/apps/spreed/api/v1";
+    private static final String TAG = "ApiUtils";
+    private static final String ocsApiVersion = "/ocs/v2.php";
+    private static final String spreedApiVersion = "/apps/spreed/api/v1";
+    private static final String spreedApiBase = ocsApiVersion + "/apps/spreed/api/v";
 
-    private static String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
+    private static final String userAgent = "Mozilla/5.0 (Android) Nextcloud-Talk v";
 
     public static String getUserAgent() {
         return userAgent + BuildConfig.VERSION_NAME;
     }
 
-    public static String getUrlForLobbyForConversation(String baseUrl, String token) {
-        return getRoom(baseUrl, token) + "/webinary/lobby";
-    }
-
+    /**
+     * @deprecated This is only supported on API v1-3, in API v4+ please use
+     * {@link ApiUtils#getUrlForAttendees(int, String, String)} instead.
+     */
+    @Deprecated
     public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {
-        String url = getUrlForParticipants(baseUrl, roomToken);
+        String url = getUrlForParticipants(1, baseUrl, roomToken);
 
         if (isGuest) {
             url += "/guests";
@@ -100,41 +105,154 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-
-    public static String getUrlForSettingNotificationlevel(String baseUrl, String token) {
-        return getRoom(baseUrl, token) + "/notify";
-    }
-
-    public static String getUrlForSettingMyselfAsActiveParticipant(String baseUrl, String token) {
-        return getRoom(baseUrl, token) + "/participants/active";
-    }
-
-
-    public static String getUrlForParticipants(String baseUrl, String token) {
-        return getRoom(baseUrl, token) + "/participants";
-    }
-
     public static String getUrlForCapabilities(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
-    public static String getUrlForGetRooms(String baseUrl) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room";
+    public static int getConversationApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
+        boolean hasApiV4 = false;
+        for (int version : versions) {
+            hasApiV4 |= version == 4;
+        }
+
+        if (!hasApiV4) {
+            Exception e = new Exception("Api call did not try conversation-v4 api");
+            Log.d(TAG, e.getMessage(), e);
+        }
+
+        for (int version : versions) {
+            if (capabilities.hasSpreedFeatureCapability("conversation-v" + version)) {
+                return version;
+            }
+
+            // Fallback for old API versions
+            if ((version == 1 || version == 2)) {
+                if (capabilities.hasSpreedFeatureCapability("conversation-v2")) {
+                    return version;
+                }
+                if (version == 1  && capabilities.hasSpreedFeatureCapability("conversation")) {
+                    return version;
+                }
+            }
+        }
+        throw new NoSupportedApiException();
     }
 
-    public static String getRoom(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token;
+    public static int getSignalingApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
+        for (int version : versions) {
+            if (version == 2 && capabilities.hasSpreedFeatureCapability("sip-support")) {
+                return version;
+            }
+
+            if (version == 1) {
+                // Has no capability, we just assume it is always there for now.
+                return version;
+            }
+        }
+        throw new NoSupportedApiException();
     }
 
-    public static String getRoomV3(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + "/apps/spreed/api/v3" + "/room/" + token;
+    public static int getChatApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
+        for (int version : versions) {
+            if (version == 1 && capabilities.hasSpreedFeatureCapability("chat-v2")) {
+                // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
+                return version;
+            }
+        }
+        throw new NoSupportedApiException();
     }
 
-    public static RetrofitBucket getRetrofitBucketForCreateRoom(String baseUrl, String roomType,
+    protected static String getUrlForApi(int version, String baseUrl) {
+        return baseUrl + spreedApiBase + version;
+    }
+
+    public static String getUrlForRooms(int version, String baseUrl) {
+        return getUrlForApi(version, baseUrl) + "/room";
+    }
+
+    public static String getUrlForRoom(int version, String baseUrl, String token) {
+        return getUrlForRooms(version, baseUrl) + "/" + token;
+    }
+
+    public static String getUrlForAttendees(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/attendees";
+    }
+
+    public static String getUrlForParticipants(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/participants";
+    }
+
+    public static String getUrlForParticipantsActive(int version, String baseUrl, String token) {
+        return getUrlForParticipants(version, baseUrl, token) + "/active";
+    }
+
+    public static String getUrlForParticipantsSelf(int version, String baseUrl, String token) {
+        return getUrlForParticipants(version, baseUrl, token) + "/self";
+    }
+
+    public static String getUrlForRoomFavorite(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/favorite";
+    }
+
+    public static String getUrlForRoomModerators(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/moderators";
+    }
+
+    public static String getUrlForRoomNotificationLevel(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/notify";
+    }
+
+    public static String getUrlForRoomPublic(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/public";
+    }
+
+    public static String getUrlForRoomPassword(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/password";
+    }
+
+    public static String getUrlForRoomReadOnlyState(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/read-only";
+    }
+
+    public static String getUrlForRoomWebinaryLobby(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
+    }
+
+    public static String getUrlForCall(int version, String baseUrl, String token) {
+        return getUrlForApi(version, baseUrl) + "/call/" + token;
+    }
+    public static String getUrlForChat(int version, String baseUrl, String token) {
+        return getUrlForApi(version, baseUrl) + "/chat/" + token;
+    }
+
+    public static String getUrlForMentionSuggestions(int version, String baseUrl, String token) {
+        return getUrlForChat(version, baseUrl, token) + "/mentions";
+    }
+    public static String getUrlForChatMessage(int version, String baseUrl, String token, String messageId) {
+        return getUrlForChat(version, baseUrl, token) + "/" + messageId;
+    }
+
+    public static String getUrlForSignaling(int version, String baseUrl) {
+        return getUrlForApi(version, baseUrl) + "/signaling";
+    }
+
+    public static String getUrlForSignalingBackend(int version, String baseUrl) {
+        return getUrlForSignaling(version, baseUrl) + "/backend";
+    }
+
+    public static String getUrlForSignalingSettings(int version, String baseUrl) {
+        return getUrlForSignaling(version, baseUrl) + "/settings";
+    }
+
+    public static String getUrlForSignaling(int version, String baseUrl, String token) {
+        return getUrlForSignaling(version, baseUrl) + "/" + token;
+    }
+
+    public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room");
+        retrofitBucket.setUrl(getUrlForRooms(version, baseUrl));
         Map<String, String> queryMap = new HashMap<>();
 
         queryMap.put("roomType", roomType);
@@ -151,9 +269,9 @@ public class ApiUtils {
         return retrofitBucket;
     }
 
-    public static RetrofitBucket getRetrofitBucketForAddParticipant(String baseUrl, String token, String user) {
+    public static RetrofitBucket getRetrofitBucketForAddParticipant(int version, String baseUrl, String token, String user) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
-        retrofitBucket.setUrl(baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants");
+        retrofitBucket.setUrl(getUrlForParticipants(version, baseUrl, token));
 
         Map<String, String> queryMap = new HashMap<>();
 
@@ -165,64 +283,25 @@ public class ApiUtils {
 
     }
 
-    public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(String baseUrl, String token, String group) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, group);
+    public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(int version, String baseUrl, String token, String group) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, group);
         retrofitBucket.getQueryMap().put("source", "groups");
         return retrofitBucket;
     }
 
-    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(String baseUrl, String token, String mail) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(baseUrl, token, mail);
+    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(int version, String baseUrl, String token, String mail) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, mail);
         retrofitBucket.getQueryMap().put("source", "emails");
         return retrofitBucket;
     }
 
-    public static String getUrlForRemoveSelfFromRoom(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/participants/self";
-    }
-
-    public static String getUrlForRoomVisibility(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/public";
-    }
-
-    public static String getUrlForCall(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/call/" + token;
-
-    }
-
+    /**
+     * @deprecated Method is only needed before Talk 4 which is from 2018 => todrop
+     */
+    @Deprecated
     public static String getUrlForCallPing(String baseUrl, String token) {
-        return getUrlForCall(baseUrl, token) + "/ping";
+        return getUrlForCall(1, baseUrl, token) + "/ping";
     }
-
-    public static String getUrlForChat(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token;
-    }
-
-    public static String getUrlForExternalServerAuthBackend(String baseUrl) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/signaling/backend";
-    }
-
-    public static String getUrlForMentionSuggestions(String baseUrl, String token) {
-        return getUrlForChat(baseUrl, token) + "/mentions";
-    }
-
-    public static String getUrlForSignaling(String baseUrl, @Nullable String token) {
-        String signalingUrl = baseUrl + ocsApiVersion + spreedApiVersion + "/signaling";
-        if (token == null) {
-            return signalingUrl;
-        } else {
-            return signalingUrl + "/" + token;
-        }
-    }
-
-    public static String getUrlForModerators(String baseUrl, String roomToken) {
-        return getRoom(baseUrl, roomToken) + "/moderators";
-    }
-
-    public static String getUrlForSignalingSettings(String baseUrl) {
-        return getUrlForSignaling(baseUrl, null) + "/settings";
-    }
-
 
     public static String getUrlForUserProfile(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/user";
@@ -233,6 +312,7 @@ public class ApiUtils {
     }
 
     public static String getUrlForUserSettings(String baseUrl) {
+        // FIXME Introduce API version
         return baseUrl + ocsApiVersion + spreedApiVersion + "/settings/user";
     }
 
@@ -259,10 +339,6 @@ public class ApiUtils {
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize;
     }
 
-    public static String getUrlForPassword(String baseUrl, String token) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + token + "/password";
-    }
-
     public static String getCredentials(String username, String token) {
         if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
             return null;
@@ -279,16 +355,8 @@ public class ApiUtils {
                 getApplicationContext().getResources().getString(R.string.nc_push_server_url) + "/devices";
     }
 
-    public static String getUrlForConversationFavorites(String baseUrl, String roomToken) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/favorite";
-    }
-
     public static String getUrlForNotificationWithId(String baseUrl, String notificationId) {
         return baseUrl + ocsApiVersion + "/apps/notifications/api/v2/notifications/" + notificationId;
-    }
-
-    public static String getUrlForReadOnlyState(String baseUrl, String roomToken) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/room/" + roomToken + "/read-only";
     }
 
     public static String getUrlForSearchByNumber(String baseUrl) {
@@ -301,10 +369,6 @@ public class ApiUtils {
 
     public static String getUrlForFileDownload(String baseUrl, String user, String remotePath) {
         return baseUrl + "/remote.php/dav/files/" + user + "/" + remotePath;
-    }
-
-    public static String getUrlForMessageDeletion(String baseUrl, String token, String messageId) {
-        return baseUrl + ocsApiVersion + spreedApiVersion + "/chat/" + token + "/" + messageId;
     }
 
     public static String getUrlForTempAvatar(String baseUrl) {

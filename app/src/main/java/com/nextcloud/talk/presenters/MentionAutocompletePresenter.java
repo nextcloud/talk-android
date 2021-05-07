@@ -91,9 +91,12 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
             queryString = "";
         }
 
+        int apiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {1});
+
         adapter.setFilter(queryString);
-        ncApi.getMentionAutocompleteSuggestions(ApiUtils.getCredentials(currentUser.getUsername(), currentUser
-                        .getToken()), ApiUtils.getUrlForMentionSuggestions(currentUser.getBaseUrl(), roomToken),
+        ncApi.getMentionAutocompleteSuggestions(
+                ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                ApiUtils.getUrlForMentionSuggestions(apiVersion, currentUser.getBaseUrl(), roomToken),
                 queryString, 5)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

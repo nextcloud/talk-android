@@ -88,12 +88,14 @@ public class WebSocketConnectionHelper {
     }
 
     HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
+        int apiVersion = ApiUtils.getSignalingApiVersion(userEntity, new int[] {2, 1});
+
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
         helloWebSocketMessage.setVersion("1.0");
         AuthWebSocketMessage authWebSocketMessage = new AuthWebSocketMessage();
-        authWebSocketMessage.setUrl(ApiUtils.getUrlForExternalServerAuthBackend(userEntity.getBaseUrl()));
+        authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, userEntity.getBaseUrl()));
         AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
         authParametersWebSocketMessage.setTicket(ticket);
         authParametersWebSocketMessage.setUserid(userEntity.getUserId());
