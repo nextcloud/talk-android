@@ -150,7 +150,6 @@ import java.util.ArrayList
 import java.util.Date
 import java.util.HashMap
 import java.util.Objects
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
