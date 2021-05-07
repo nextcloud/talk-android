@@ -704,6 +704,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         val userItem = adapter?.getItem(position) as UserItem
         val participant = userItem.model
 
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+
         if (participant.userId != conversationUser!!.userId) {
             var items = mutableListOf(
                 BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
@@ -730,40 +732,97 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
                     title(text = participant.displayName)
                     listItemsWithImage(items = items) { dialog, index, _ ->
-
-                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
-
                         if (index == 0) {
-                            if (participant.type == Participant.ParticipantType.MODERATOR) {
-                                ncApi.demoteModeratorToUser(
-                                    credentials,
-                                    ApiUtils.getUrlForRoomModerators(
-                                        apiVersion,
-                                        conversationUser.baseUrl,
-                                        conversation!!.token
-                                    ),
-                                    participant.userId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
-                            } else if (participant.type == Participant.ParticipantType.USER) {
-                                ncApi.promoteUserToModerator(
-                                    credentials,
-                                    ApiUtils.getUrlForRoomModerators(
-                                        apiVersion,
-                                        conversationUser.baseUrl,
-                                        conversation!!.token
-                                    ),
-                                    participant.userId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
+                            if (apiVersion >= ApiUtils.APIv4) {
+                                if (participant.type == Participant.ParticipantType.MODERATOR) {
+                                    ncApi.demoteAttendeeFromModerator(
+                                        credentials,
+                                        ApiUtils.getUrlForRoomModerators(
+                                            apiVersion,
+                                            conversationUser.baseUrl,
+                                            conversation!!.token
+                                        ),
+                                        participant.attendeeId
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(object : Observer<GenericOverall> {
+                                            override fun onSubscribe(d: Disposable) {
+                                            }
+
+                                            override fun onNext(genericOverall: GenericOverall) {
+                                                getListOfParticipants()
+                                            }
+
+                                            @SuppressLint("LongLogTag")
+                                            override fun onError(e: Throwable) {
+                                                Log.e(TAG, "Error demoting an attendee from moderators", e)
+                                            }
+
+                                            override fun onComplete() {
+                                            }
+                                        })
+                                } else if (participant.type == Participant.ParticipantType.USER) {
+                                    ncApi.promoteAttendeeToModerator(
+                                        credentials,
+                                        ApiUtils.getUrlForRoomModerators(
+                                            apiVersion,
+                                            conversationUser.baseUrl,
+                                            conversation!!.token
+                                        ),
+                                        participant.attendeeId
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(object : Observer<GenericOverall> {
+                                            override fun onSubscribe(d: Disposable) {
+                                            }
+
+                                            override fun onNext(genericOverall: GenericOverall) {
+                                                getListOfParticipants()
+                                            }
+
+                                            @SuppressLint("LongLogTag")
+                                            override fun onError(e: Throwable) {
+                                                Log.e(TAG, "Error promoting an attendee to moderators", e)
+                                            }
+
+                                            override fun onComplete() {
+                                            }
+                                        })
+                                }
+                            } else {
+                                if (participant.type == Participant.ParticipantType.MODERATOR) {
+                                    ncApi.demoteModeratorToUser(
+                                        credentials,
+                                        ApiUtils.getUrlForRoomModerators(
+                                            apiVersion,
+                                            conversationUser.baseUrl,
+                                            conversation!!.token
+                                        ),
+                                        participant.userId
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                        }
+                                } else if (participant.type == Participant.ParticipantType.USER) {
+                                    ncApi.promoteUserToModerator(
+                                        credentials,
+                                        ApiUtils.getUrlForRoomModerators(
+                                            apiVersion,
+                                            conversationUser.baseUrl,
+                                            conversation!!.token
+                                        ),
+                                        participant.userId
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                        }
+                                }
                             }
                         } else if (index == 1) {
                             if (apiVersion >= ApiUtils.APIv4) {
