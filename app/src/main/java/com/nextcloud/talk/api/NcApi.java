@@ -194,12 +194,6 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken/ping
-    */
-    @POST
-    Observable<GenericOverall> pingCall(@Nullable @Header("Authorization") String authorization, @Url String url);
-
     @GET
     Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization,
                                                               @Url String url);

@@ -617,12 +617,7 @@ public class NotificationWorker extends Worker {
 
                             intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                            if (!signatureVerification.getUserEntity().hasSpreedFeatureCapability
-                                    ("no-ping")) {
-                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), decryptedPushMessage.getId());
-                            } else {
-                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
-                            }
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
 
                             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), signatureVerification.getUserEntity());
 
@@ -633,9 +628,7 @@ public class NotificationWorker extends Worker {
 
                             switch (decryptedPushMessage.getType()) {
                                 case "call":
-                                    if (!bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
-                                        context.startActivity(intent);
-                                    } else {
+                                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())) {
                                         showNotificationForCallWithNoPing(intent);
                                     }
                                     break;

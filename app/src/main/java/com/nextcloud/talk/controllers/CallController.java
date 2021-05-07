@@ -244,7 +244,6 @@ public class CallController extends BaseController {
     private VideoCapturer videoCapturer;
     private EglBase rootEglBase;
     private Disposable signalingDisposable;
-    private Disposable pingDisposable;
     private List<PeerConnection.IceServer> iceServers;
     private CameraEnumerator cameraEnumerator;
     private String roomToken;
@@ -258,9 +257,6 @@ public class CallController extends BaseController {
 
     private boolean videoOn = false;
     private boolean audioOn = false;
-
-    private boolean isMultiSession = false;
-    private boolean needsPing = true;
 
     private boolean isVoiceOnlyCall;
     private boolean isIncomingCallFromNotification;
@@ -1198,24 +1194,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                        isMultiSession = capabilitiesOverall.getOcs().getData()
-                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability() != null &&
-                                capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("multi-room-users");
-
-                        needsPing = !(capabilitiesOverall.getOcs().getData()
-                                .getCapabilities() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability() != null &&
-                                capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("no-ping"));
-
+                        // FIXME check for compatible Call API version
                         if (hasExternalSignalingServer) {
                             setupAndInitiateWebSocketsConnection();
                         } else {
@@ -1225,7 +1204,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
-                        isMultiSession = false;
+
                     }
 
                     @Override
@@ -1313,45 +1292,7 @@ public class CallController extends BaseController {
 
                             ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
 
-                            if (needsPing) {
-                                ncApi.pingCall(credentials, ApiUtils.getUrlForCallPing(baseUrl, roomToken))
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .repeatWhen(observable -> observable.delay(5000, TimeUnit.MILLISECONDS))
-                                        .takeWhile(observable -> isConnectionEstablished())
-                                        .retry(3, observable -> isConnectionEstablished())
-                                        .subscribe(new Observer<GenericOverall>() {
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
-                                                pingDisposable = d;
-                                            }
-
-                                            @Override
-                                            public void onNext(GenericOverall genericOverall) {
-
-                                            }
-
-                                            @Override
-                                            public void onError(Throwable e) {
-                                                dispose(pingDisposable);
-                                            }
-
-                                            @Override
-                                            public void onComplete() {
-                                                dispose(pingDisposable);
-                                            }
-                                        });
-                            }
-
-                            // Start pulling signaling messages
-                            String urlToken = null;
-                            if (isMultiSession) {
-                                urlToken = roomToken;
-                            }
-
-                            if (!conversationUser.hasSpreedFeatureCapability("no-ping") && !TextUtils.isEmpty(roomId)) {
-                                NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomId);
-                            } else if (!TextUtils.isEmpty(roomToken)) {
+                            if (!TextUtils.isEmpty(roomToken)) {
                                 NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(), conversationUser, roomToken);
                             }
 
@@ -1359,7 +1300,7 @@ public class CallController extends BaseController {
                                 int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
                                 ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion,
-                                                                                                     baseUrl, urlToken))
+                                                                                                     baseUrl, roomToken))
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .repeatWhen(observable -> observable)
@@ -1482,12 +1423,6 @@ public class CallController extends BaseController {
         if (disposable != null && !disposable.isDisposed()) {
             disposable.dispose();
         } else if (disposable == null) {
-
-            if (pingDisposable != null && !pingDisposable.isDisposed()) {
-                pingDisposable.dispose();
-                pingDisposable = null;
-            }
-
             if (signalingDisposable != null && !signalingDisposable.isDisposed()) {
                 signalingDisposable.dispose();
                 signalingDisposable = null;
@@ -1636,14 +1571,10 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onNext(GenericOverall genericOverall) {
-                        if (isMultiSession) {
-                            if (shutDownView && getActivity() != null) {
-                                getActivity().finish();
-                            } else if (!shutDownView && (currentCallStatus.equals(CallStatus.RECONNECTING) || currentCallStatus.equals(CallStatus.PUBLISHER_FAILED))) {
-                                initiateCall();
-                            }
-                        } else {
-                            leaveRoom(shutDownView);
+                        if (shutDownView && getActivity() != null) {
+                            getActivity().finish();
+                        } else if (!shutDownView && (currentCallStatus.equals(CallStatus.RECONNECTING) || currentCallStatus.equals(CallStatus.PUBLISHER_FAILED))) {
+                            initiateCall();
                         }
                     }
 
@@ -2056,14 +1987,9 @@ public class CallController extends BaseController {
             String stringToSend = stringBuilder.toString();
             strings.add(stringToSend);
 
-            String urlToken = null;
-            if (isMultiSession) {
-                urlToken = roomToken;
-            }
-
             int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
 
-            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, urlToken),
+            ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
                                         strings.toString())
                     .retry(3)
                     .subscribeOn(Schedulers.io())
