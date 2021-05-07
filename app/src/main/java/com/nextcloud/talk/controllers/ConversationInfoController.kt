@@ -419,12 +419,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             } else {
                 userItem.isOnline = !participant.sessionIds!!.isEmpty()
             }
-            if (!TextUtils.isEmpty(participant.userId) && participant.userId == conversationUser!!.userId) {
-                ownUserItem = userItem
-                ownUserItem.model.sessionId = "-1"
-                ownUserItem.isOnline = true
-            } else if (participant.actorType != null && participant.actorType == USERS
-                && !TextUtils.isEmpty(participant.actorId) && participant.actorId == conversationUser!!.userId) {
+
+            if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
                 ownUserItem = userItem
                 ownUserItem.model.sessionId = "-1"
                 ownUserItem.isOnline = true
@@ -491,7 +487,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         recyclerViewItems.forEach {
             val userItem = it as UserItem
-            existingParticipantsId.add(userItem.model.userId)
+            if (userItem.model.getActorType() == USERS) {
+                existingParticipantsId.add(userItem.model.getActorId())
+            }
         }
 
         bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)
@@ -920,7 +918,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        if (participant.getUserId() == conversationUser!!.userId) {
+        if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
             if (participant.attendeePin.isNotEmpty()) {
                 val items = mutableListOf(
                     BasicListItemWithImage(
@@ -980,11 +978,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             )
         )
 
-        if (participant.type == Participant.ParticipantType.MODERATOR
-            || participant.type == Participant.ParticipantType.GUEST_MODERATOR) {
+        if (participant.type == Participant.ParticipantType.MODERATOR ||
+            participant.type == Participant.ParticipantType.GUEST_MODERATOR
+        ) {
             items.removeAt(1)
-        } else if (participant.type == Participant.ParticipantType.USER
-            || participant.type == Participant.ParticipantType.GUEST) {
+        } else if (participant.type == Participant.ParticipantType.USER ||
+            participant.type == Participant.ParticipantType.GUEST
+        ) {
             items.removeAt(2)
         } else {
             // Self joined users can not be promoted nor demoted
@@ -1053,7 +1053,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             moderatorTypes.add(Participant.ParticipantType.MODERATOR)
             moderatorTypes.add(Participant.ParticipantType.OWNER)
             moderatorTypes.add(Participant.ParticipantType.GUEST_MODERATOR)
-
 
             if (moderatorTypes.contains(left.model.type) && !moderatorTypes.contains(right.model.type)) {
                 return -1

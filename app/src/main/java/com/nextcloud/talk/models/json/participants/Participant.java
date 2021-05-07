@@ -105,14 +105,18 @@ public class Participant {
     }
 
     public ActorType getActorType() {
-        if (this.userId != null) {
-            return ActorType.USERS;
+        if (this.actorType == null) {
+            if (this.userId != null) {
+                return ActorType.USERS;
+            } else {
+                return ActorType.GUESTS;
+            }
         }
         return actorType;
     }
 
     public String getActorId() {
-        if (this.userId != null) {
+        if (this.actorId == null) {
             return this.userId;
         }
         return actorId;
