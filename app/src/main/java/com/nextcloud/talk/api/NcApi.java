@@ -135,8 +135,12 @@ public interface NcApi {
 
 
     // also used for removing a guest from a conversation
+    @Deprecated
     @DELETE
     Observable<GenericOverall> removeParticipantFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+
+    @DELETE
+    Observable<GenericOverall> removeAttendeeFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
 
     @POST
     Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);

@@ -20,11 +20,13 @@
 
 package com.nextcloud.talk.controllers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -63,6 +65,8 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -85,11 +89,13 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import retrofit2.adapter.rxjava2.HttpException
 import java.util.Calendar
 import java.util.Collections
 import java.util.Comparator
 import java.util.Locale
 import javax.inject.Inject
+import kotlin.reflect.typeOf
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleAdapter.OnItemClickListener {
@@ -410,8 +416,17 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         for (i in participants.indices) {
             participant = participants[i]
             userItem = UserItem(participant, conversationUser, null)
-            userItem.isOnline = !participant.sessionId.equals("0")
+            if (participant.sessionId != null) {
+                userItem.isOnline = !participant.sessionId.equals("0")
+            } else {
+                userItem.isOnline = !participant.sessionIds!!.isEmpty()
+            }
             if (!TextUtils.isEmpty(participant.userId) && participant.userId == conversationUser!!.userId) {
+                ownUserItem = userItem
+                ownUserItem.model.sessionId = "-1"
+                ownUserItem.isOnline = true
+            } else if (participant.actorType != null && participant.actorType == USERS
+                && !TextUtils.isEmpty(participant.actorId) && participant.actorId == conversationUser!!.userId) {
                 ownUserItem = userItem
                 ownUserItem.model.sessionId = "-1"
                 ownUserItem.isOnline = true
@@ -444,7 +459,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
         ncApi.getPeersForCall(
@@ -716,7 +731,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     title(text = participant.displayName)
                     listItemsWithImage(items = items) { dialog, index, _ ->
 
-                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
                         if (index == 0) {
                             if (participant.type == Participant.ParticipantType.MODERATOR) {
@@ -751,39 +766,69 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                                     }
                             }
                         } else if (index == 1) {
-                            if (participant.type == Participant.ParticipantType.GUEST ||
-                                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
-                            ) {
-                                ncApi.removeParticipantFromConversation(
+                            if (apiVersion >= ApiUtils.APIv4) {
+                                ncApi.removeAttendeeFromConversation(
                                     credentials,
-                                    ApiUtils.getUrlForRemovingParticipantFromConversation(
+                                    ApiUtils.getUrlForAttendees(
+                                        apiVersion,
                                         conversationUser.baseUrl,
-                                        conversation!!.token,
-                                        true
+                                        conversation!!.token
                                     ),
-                                    participant.sessionId
+                                    participant.attendeeId
                                 )
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
+                                    .subscribe(object : Observer<GenericOverall> {
+                                        override fun onSubscribe(d: Disposable) {
+                                        }
+
+                                        override fun onNext(genericOverall: GenericOverall) {
+                                            getListOfParticipants()
+                                        }
+
+                                        @SuppressLint("LongLogTag")
+                                        override fun onError(e: Throwable) {
+                                            Log.e(TAG, "Error removing attendee from conversation", e)
+                                        }
+
+                                        override fun onComplete() {
+                                        }
+                                    })
                             } else {
-                                ncApi.removeParticipantFromConversation(
-                                    credentials,
-                                    ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                        conversationUser.baseUrl,
-                                        conversation!!.token,
-                                        false
-                                    ),
-                                    participant.userId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                        // get participants again
-                                    }
+                                if (participant.type == Participant.ParticipantType.GUEST ||
+                                    participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+                                ) {
+                                    ncApi.removeParticipantFromConversation(
+                                        credentials,
+                                        ApiUtils.getUrlForRemovingParticipantFromConversation(
+                                            conversationUser.baseUrl,
+                                            conversation!!.token,
+                                            true
+                                        ),
+                                        participant.sessionId
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                        }
+                                } else {
+                                    ncApi.removeParticipantFromConversation(
+                                        credentials,
+                                        ApiUtils.getUrlForRemovingParticipantFromConversation(
+                                            conversationUser.baseUrl,
+                                            conversation!!.token,
+                                            false
+                                        ),
+                                        participant.userId
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe {
+                                            getListOfParticipants()
+                                            // get participants again
+                                        }
+                                }
                             }
                         }
                     }
@@ -796,6 +841,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     companion object {
 
+        private const val TAG = "ConversationInfoController"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 
@@ -804,6 +850,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
      */
     class UserItemComparator : Comparator<UserItem> {
         override fun compare(left: UserItem, right: UserItem): Int {
+            val leftIsGroup = left.model.actorType == GROUPS
+            val rightIsGroup = right.model.actorType == GROUPS
+            if (leftIsGroup != rightIsGroup) {
+                // Groups below participants
+                return if (rightIsGroup) { -1 } else { 1 }
+            }
+
             if (left.isOnline && !right.isOnline) {
                 return -1
             } else if (!left.isOnline && right.isOnline) {
@@ -814,6 +867,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             moderatorTypes.add(Participant.ParticipantType.MODERATOR)
             moderatorTypes.add(Participant.ParticipantType.OWNER)
             moderatorTypes.add(Participant.ParticipantType.GUEST_MODERATOR)
+
 
             if (moderatorTypes.contains(left.model.type) && !moderatorTypes.contains(right.model.type)) {
                 return -1
