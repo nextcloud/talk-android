@@ -209,7 +209,7 @@ public class CallNotificationController extends BaseController {
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {
-        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[] {1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
                                                                   currentConversation.getToken()))
