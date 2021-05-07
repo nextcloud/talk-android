@@ -270,29 +270,20 @@ public class OperationsMenuController extends BaseController {
                     break;
                 case 11:
                     RetrofitBucket retrofitBucket;
-                    boolean isGroupCallWorkaround = false;
                     String invite = null;
 
                     if (invitedGroups.size() > 0) {
                         invite = invitedGroups.get(0);
                     }
 
-                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) ||
-                            !currentUser.hasSpreedFeatureCapability("empty-group-room")) {
+                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL)) {
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
-                                "3", invite, conversationName);
+                                                                                 "3", invite, conversationName);
                     } else {
-                        String roomType = "2";
-                        if (!currentUser.hasSpreedFeatureCapability("empty-group-room")) {
-                            isGroupCallWorkaround = true;
-                            roomType = "3";
-                        }
-
                         retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
-                                roomType, invite, conversationName);
+                                                                                 "2", invite, conversationName);
                     }
 
-                    final boolean isGroupCallWorkaroundFinal = isGroupCallWorkaround;
                     ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
@@ -321,11 +312,7 @@ public class OperationsMenuController extends BaseController {
                                                 @Override
                                                 public void onNext(RoomOverall roomOverall) {
                                                     conversation = roomOverall.getOcs().getData();
-                                                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL) && isGroupCallWorkaroundFinal) {
-                                                        performGroupCallWorkaround(credentials);
-                                                    } else {
-                                                        inviteUsersToAConversation();
-                                                    }
+                                                    inviteUsersToAConversation();
                                                 }
 
                                                 @Override
@@ -391,40 +378,6 @@ public class OperationsMenuController extends BaseController {
                     break;
             }
         }
-    }
-
-    private void performGroupCallWorkaround(String credentials) {
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
-
-        ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
-                                                                            conversation.getToken()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(GenericOverall genericOverall) {
-                        inviteUsersToAConversation();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        showResultImage(false, false);
-                        dispose();
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        dispose();
-                    }
-                });
-
-
     }
 
     private void showResultImage(boolean everythingOK, boolean isGuestSupportError) {
@@ -552,7 +505,7 @@ public class OperationsMenuController extends BaseController {
             localInvitedGroups.remove(0);
         }
 
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {4, 1});
 
         if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
             if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
