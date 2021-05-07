@@ -152,7 +152,7 @@ public class NotificationWorker extends Worker {
             importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
 
-        int apiVersion = ApiUtils.getConversationApiVersion(userEntity, new int[] {1});
+        int apiVersion = ApiUtils.getConversationApiVersion(userEntity, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userEntity.getBaseUrl(),
                 intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN())))

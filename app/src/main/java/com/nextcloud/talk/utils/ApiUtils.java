@@ -37,6 +37,8 @@ import androidx.annotation.Nullable;
 import okhttp3.Credentials;
 
 public class ApiUtils {
+    public static final int APIv3 = 3;
+    public static final int APIv4 = 4;
     private static final String TAG = "ApiUtils";
     private static final String ocsApiVersion = "/ocs/v2.php";
     private static final String spreedApiVersion = "/apps/spreed/api/v1";

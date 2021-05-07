@@ -229,7 +229,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val roomType = "1"
         val currentUser = userUtils.currentUser ?: return
 
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion, currentUser.baseUrl, roomType,
@@ -250,6 +250,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
                     if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
+                        // FIXME once APIv2 or later is used only, the createRoom already returns all the data
                         ncApi.getRoom(
                             credentials,
                             ApiUtils.getUrlForRoom(

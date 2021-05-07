@@ -191,7 +191,7 @@ public class OperationsMenuController extends BaseController {
                 // FIXME joining a public link we need to check other capabilities
                 apiVersion = 1;
             } else {
-                apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+                apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
             }
 
 
@@ -394,7 +394,7 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void performGroupCallWorkaround(String credentials) {
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {1});
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
                                                                             conversation.getToken()))

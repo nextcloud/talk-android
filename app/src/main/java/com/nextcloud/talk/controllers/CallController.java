@@ -437,7 +437,7 @@ public class CallController extends BaseController {
     }
 
     private void handleFromNotification() {
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl))
                 .retry(3)
@@ -1217,7 +1217,7 @@ public class CallController extends BaseController {
     private void joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {1});
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {ApiUtils.APIv4, 1});
 
         if (TextUtils.isEmpty(callSession)) {
             ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken),
@@ -1591,7 +1591,7 @@ public class CallController extends BaseController {
     }
 
     private void leaveRoom(boolean shutDownView) {
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.leaveRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
