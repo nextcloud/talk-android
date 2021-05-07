@@ -700,201 +700,293 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
+    fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
+        if (apiVersion >= ApiUtils.APIv4) {
+            if (participant.type == Participant.ParticipantType.MODERATOR) {
+                ncApi.demoteAttendeeFromModerator(
+                    credentials,
+                    ApiUtils.getUrlForRoomModerators(
+                        apiVersion,
+                        conversationUser!!.baseUrl,
+                        conversation!!.token
+                    ),
+                    participant.attendeeId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error demoting an attendee from moderators", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            } else if (participant.type == Participant.ParticipantType.USER) {
+                ncApi.promoteAttendeeToModerator(
+                    credentials,
+                    ApiUtils.getUrlForRoomModerators(
+                        apiVersion,
+                        conversationUser!!.baseUrl,
+                        conversation!!.token
+                    ),
+                    participant.attendeeId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error promoting an attendee to moderators", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            }
+        } else {
+            if (participant.type == Participant.ParticipantType.MODERATOR) {
+                ncApi.demoteModeratorToUser(
+                    credentials,
+                    ApiUtils.getUrlForRoomModerators(
+                        apiVersion,
+                        conversationUser!!.baseUrl,
+                        conversation!!.token
+                    ),
+                    participant.userId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error demoting a user from moderators", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            } else if (participant.type == Participant.ParticipantType.USER) {
+                ncApi.promoteUserToModerator(
+                    credentials,
+                    ApiUtils.getUrlForRoomModerators(
+                        apiVersion,
+                        conversationUser!!.baseUrl,
+                        conversation!!.token
+                    ),
+                    participant.userId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error promoting a user to moderators", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            }
+        }
+    }
+
+    fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
+        if (apiVersion >= ApiUtils.APIv4) {
+            ncApi.removeAttendeeFromConversation(
+                credentials,
+                ApiUtils.getUrlForAttendees(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.attendeeId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                        getListOfParticipants()
+                    }
+
+                    @SuppressLint("LongLogTag")
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error removing attendee from conversation", e)
+                    }
+
+                    override fun onComplete() {
+                    }
+                })
+        } else {
+            if (participant.type == Participant.ParticipantType.GUEST ||
+                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+            ) {
+                ncApi.removeParticipantFromConversation(
+                    credentials,
+                    ApiUtils.getUrlForRemovingParticipantFromConversation(
+                        conversationUser!!.baseUrl,
+                        conversation!!.token,
+                        true
+                    ),
+                    participant.sessionId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error removing guest from conversation", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            } else {
+                ncApi.removeParticipantFromConversation(
+                    credentials,
+                    ApiUtils.getUrlForRemovingParticipantFromConversation(
+                        conversationUser!!.baseUrl,
+                        conversation!!.token,
+                        false
+                    ),
+                    participant.userId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error removing user from conversation", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            }
+        }
+    }
+
     override fun onItemClick(view: View?, position: Int): Boolean {
+        if (!conversation!!.canModerate(conversationUser)) {
+            return true
+        }
+
         val userItem = adapter?.getItem(position) as UserItem
         val participant = userItem.model
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        if (participant.userId != conversationUser!!.userId) {
-            var items = mutableListOf(
-                BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
-                BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
+        if (participant.getUserId() == conversationUser!!.userId
+            || participant.type == Participant.ParticipantType.OWNER) {
+            // FIXME Show pin?
+            return true
+        }
+
+        if (participant.getActorType() == GROUPS) {
+            val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
-                    context.getString(R.string.nc_remove_participant)
+                    context.getString(R.string.nc_remove_group_and_members)
                 )
             )
+            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                cornerRadius(res = R.dimen.corner_radius)
 
-            if (!conversation!!.canModerate(conversationUser)) {
-                items = mutableListOf()
-            } else {
-                if (participant.type == Participant.ParticipantType.MODERATOR || participant.type == Participant.ParticipantType.OWNER) {
-                    items.removeAt(0)
-                } else if (participant.type == Participant.ParticipantType.USER) {
-                    items.removeAt(1)
+                title(text = participant.displayName)
+                listItemsWithImage(items = items) { dialog, index, _ ->
+                    if (index == 0) {
+                        removeAttendeeFromConversation(apiVersion, participant)
+                    }
                 }
             }
+            return true
+        }
 
-            if (items.isNotEmpty()) {
-                MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
-                    cornerRadius(res = R.dimen.corner_radius)
+        var items = mutableListOf(
+            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
+            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
+            BasicListItemWithImage(
+                R.drawable.ic_delete_grey600_24dp,
+                context.getString(R.string.nc_remove_participant)
+            )
+        )
 
-                    title(text = participant.displayName)
-                    listItemsWithImage(items = items) { dialog, index, _ ->
-                        if (index == 0) {
-                            if (apiVersion >= ApiUtils.APIv4) {
-                                if (participant.type == Participant.ParticipantType.MODERATOR) {
-                                    ncApi.demoteAttendeeFromModerator(
-                                        credentials,
-                                        ApiUtils.getUrlForRoomModerators(
-                                            apiVersion,
-                                            conversationUser.baseUrl,
-                                            conversation!!.token
-                                        ),
-                                        participant.attendeeId
-                                    )
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(object : Observer<GenericOverall> {
-                                            override fun onSubscribe(d: Disposable) {
-                                            }
+        if (participant.type == Participant.ParticipantType.MODERATOR
+            || participant.type == Participant.ParticipantType.GUEST_MODERATOR) {
+            items.removeAt(0)
+        } else if (participant.type == Participant.ParticipantType.USER
+            || participant.type == Participant.ParticipantType.GUEST) {
+            items.removeAt(1)
+        } else {
+            // Self joined users can not be promoted nor demoted
+            items.removeAt(0)
+            items.removeAt(0)
+        }
 
-                                            override fun onNext(genericOverall: GenericOverall) {
-                                                getListOfParticipants()
-                                            }
+        if (items.isNotEmpty()) {
+            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                cornerRadius(res = R.dimen.corner_radius)
 
-                                            @SuppressLint("LongLogTag")
-                                            override fun onError(e: Throwable) {
-                                                Log.e(TAG, "Error demoting an attendee from moderators", e)
-                                            }
-
-                                            override fun onComplete() {
-                                            }
-                                        })
-                                } else if (participant.type == Participant.ParticipantType.USER) {
-                                    ncApi.promoteAttendeeToModerator(
-                                        credentials,
-                                        ApiUtils.getUrlForRoomModerators(
-                                            apiVersion,
-                                            conversationUser.baseUrl,
-                                            conversation!!.token
-                                        ),
-                                        participant.attendeeId
-                                    )
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(object : Observer<GenericOverall> {
-                                            override fun onSubscribe(d: Disposable) {
-                                            }
-
-                                            override fun onNext(genericOverall: GenericOverall) {
-                                                getListOfParticipants()
-                                            }
-
-                                            @SuppressLint("LongLogTag")
-                                            override fun onError(e: Throwable) {
-                                                Log.e(TAG, "Error promoting an attendee to moderators", e)
-                                            }
-
-                                            override fun onComplete() {
-                                            }
-                                        })
-                                }
-                            } else {
-                                if (participant.type == Participant.ParticipantType.MODERATOR) {
-                                    ncApi.demoteModeratorToUser(
-                                        credentials,
-                                        ApiUtils.getUrlForRoomModerators(
-                                            apiVersion,
-                                            conversationUser.baseUrl,
-                                            conversation!!.token
-                                        ),
-                                        participant.userId
-                                    )
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe {
-                                            getListOfParticipants()
-                                        }
-                                } else if (participant.type == Participant.ParticipantType.USER) {
-                                    ncApi.promoteUserToModerator(
-                                        credentials,
-                                        ApiUtils.getUrlForRoomModerators(
-                                            apiVersion,
-                                            conversationUser.baseUrl,
-                                            conversation!!.token
-                                        ),
-                                        participant.userId
-                                    )
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe {
-                                            getListOfParticipants()
-                                        }
-                                }
-                            }
-                        } else if (index == 1) {
-                            if (apiVersion >= ApiUtils.APIv4) {
-                                ncApi.removeAttendeeFromConversation(
-                                    credentials,
-                                    ApiUtils.getUrlForAttendees(
-                                        apiVersion,
-                                        conversationUser.baseUrl,
-                                        conversation!!.token
-                                    ),
-                                    participant.attendeeId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(object : Observer<GenericOverall> {
-                                        override fun onSubscribe(d: Disposable) {
-                                        }
-
-                                        override fun onNext(genericOverall: GenericOverall) {
-                                            getListOfParticipants()
-                                        }
-
-                                        @SuppressLint("LongLogTag")
-                                        override fun onError(e: Throwable) {
-                                            Log.e(TAG, "Error removing attendee from conversation", e)
-                                        }
-
-                                        override fun onComplete() {
-                                        }
-                                    })
-                            } else {
-                                if (participant.type == Participant.ParticipantType.GUEST ||
-                                    participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
-                                ) {
-                                    ncApi.removeParticipantFromConversation(
-                                        credentials,
-                                        ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                            conversationUser.baseUrl,
-                                            conversation!!.token,
-                                            true
-                                        ),
-                                        participant.sessionId
-                                    )
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe {
-                                            getListOfParticipants()
-                                        }
-                                } else {
-                                    ncApi.removeParticipantFromConversation(
-                                        credentials,
-                                        ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                            conversationUser.baseUrl,
-                                            conversation!!.token,
-                                            false
-                                        ),
-                                        participant.userId
-                                    )
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe {
-                                            getListOfParticipants()
-                                            // get participants again
-                                        }
-                                }
-                            }
+                title(text = participant.displayName)
+                listItemsWithImage(items = items) { dialog, index, _ ->
+                    if (index == 0) {
+                        if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+                            removeAttendeeFromConversation(apiVersion, participant)
+                        } else {
+                            toggleModeratorStatus(apiVersion, participant)
                         }
+                    } else if (index == 1) {
+                        removeAttendeeFromConversation(apiVersion, participant)
                     }
                 }
             }
         }
-
         return true
     }
 
