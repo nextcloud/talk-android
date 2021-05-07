@@ -585,7 +585,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             leaveConversationAction.visibility = View.VISIBLE
                         }
 
-                        if (!conversation!!.canModerate(conversationUser)) {
+                        if (!conversation!!.canDelete(conversationUser)) {
                             deleteConversationAction.visibility = View.GONE
                         } else {
                             deleteConversationAction.visibility = View.VISIBLE

@@ -300,7 +300,7 @@ public class Participant {
 
     @Override
     public int hashCode() {
-        int result = attendeeId.hashCode();
+        int result = (attendeeId != null ? attendeeId.hashCode() : 0);
         result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
         result = 31 * result + (actorId != null ? actorId.hashCode() : 0);
         result = 31 * result + (attendeePin != null ? attendeePin.hashCode() : 0);
