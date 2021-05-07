@@ -2044,11 +2044,11 @@ public class CallController extends BaseController {
             nick = getPeerConnectionWrapperForSessionIdAndType(session, videoStreamType, false).getNick();
         }
 
-        String userId;
+        String userId = "";
         if (hasMCU) {
             userId = webSocketClient.getUserIdForSession(session);
-        } else {
-            userId = participantMap.get(session).getUserId();
+        } else if (participantMap.get(session).getActorType() == Participant.ActorType.USERS) {
+            userId = participantMap.get(session).getActorId();
         }
 
         String urlForAvatar;

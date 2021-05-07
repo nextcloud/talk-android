@@ -399,16 +399,22 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public String getDisplayNameForSession(String session) {
-        if (usersHashMap.containsKey(session)) {
-            return usersHashMap.get(session).getDisplayName();
+        Participant participant = usersHashMap.get(session);
+        if (participant != null) {
+            if (participant.getDisplayName() != null) {
+                return participant.getDisplayName();
+            }
         }
 
         return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
     }
 
     public String getUserIdForSession(String session) {
-        if (usersHashMap.containsKey(session)) {
-            return usersHashMap.get(session).getUserId();
+        Participant participant = usersHashMap.get(session);
+        if (participant != null) {
+            if (participant.getActorType() == Participant.ActorType.USERS) {
+                return participant.getActorId();
+            }
         }
 
         return "";
