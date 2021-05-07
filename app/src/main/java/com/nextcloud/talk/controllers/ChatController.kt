@@ -1524,7 +1524,7 @@ class ChatController(args: Bundle) :
 
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
         return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.PARENT_MESSAGE_DELETED
+            .SystemMessageType.MESSAGE_DELETED
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
