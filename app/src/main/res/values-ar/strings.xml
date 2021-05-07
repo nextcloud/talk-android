@@ -300,8 +300,6 @@
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
-    <string name="nc_upload_in_progess">جاري الرفع...</string>
-
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">رقم الهاتف</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">رقم الهاتف غير صحيح </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">تم تعيين رقم الهاتف بنجاح </string>

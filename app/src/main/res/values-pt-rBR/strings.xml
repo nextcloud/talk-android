@@ -329,8 +329,6 @@
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
-    <string name="nc_upload_in_progess">enviando</string>
-
     <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
     <string name="nc_settings_phone_book_integration_title">Integração de número de telefone</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número do telefone</string>

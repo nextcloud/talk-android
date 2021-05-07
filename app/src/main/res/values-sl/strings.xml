@@ -79,6 +79,10 @@
     <string name="nc_settings_remove_confirmation">Potrdite zahtevo za odstranitev trenutnega računa.</string>
     <string name="nc_settings_remove_account">Odstrani račun</string>
     <string name="nc_settings_add_account">Dodaj račun</string>
+    <string name="nc_settings_server_eol_title">Nepodprta različica strežnika</string>
+    <string name="nc_settings_server_eol">Različica strežnika je zastarela in ni več podprta v tej različici programa za okolje Android.</string>
+    <string name="nc_settings_server_almost_eol">Različica strežnika je zastarela in ne bo več podprta z naslenjo različico programa.</string>
+    <string name="nc_settings_warning">Opozorilo</string>
     <string name="nc_add">Dodaj</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
     <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
@@ -108,6 +112,8 @@
     <string name="nc_settings_incognito_keyboard_desc">Nastavi določilo za onemogočanje osebnega učenja (brez vsakršnih zagotovil)</string>
     <string name="nc_settings_link_previews_title">Pokaži predoglede povezav</string>
     <string name="nc_settings_link_previews_desc">Dovoli predogled vsebine prejetih povezav podprtih storitev</string>
+    <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
+    <string name="nc_locked">Zaklenjeno</string>
     <string name="nc_settings_read_privacy_desc">Objavi moje stanje branja in pokaži tudi stanja drugih uporabnikov</string>
     <string name="nc_settings_read_privacy_title">Stanje branja</string>
 
@@ -188,6 +194,10 @@
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
     <string name="nc_leaving_call">Poteka zapuščanje klica ...</string>
+    <string name="nc_call_state_in_call">%1$s v klicu</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s v zvočnem klicu</string>
+    <string name="nc_call_state_with_video">%1$s v video klicu</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
@@ -210,6 +220,7 @@
     <string name="nc_ok">V redu</string>
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_proceed">Nadaljuj</string>
+    <string name="nc_add_emojis">Vstavi izrazno ikono</string>
     <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
     <string name="nc_wrong_link">Povezava do pogovora ni veljavna</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
@@ -251,6 +262,12 @@
     <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">→ %1$s</string>
+    <string name="nc_message_read">Sporočilo je prebrano</string>
+    <string name="nc_message_sent">Sporočilo je poslano</string>
+    <string name="nc_remote_video_off">Oddaljen video je onemogočen</string>
+    <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
+    <string name="nc_add_attachment">Dodaj prilogo</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>
     <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je dovoljena omejitev).</string>
@@ -317,18 +334,18 @@
     <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
 
+    <string name="share">Souporaba</string>
     <string name="send_to">Pošlji</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Dodaj v pogovor</string>
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
+    <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
-    <string name="nc_upload_in_progess">pošiljanje</string>
-
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>
@@ -340,6 +357,7 @@
     <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
 
     <string name="starred">Priljubljeno</string>
+    <string name="encrypted">Šifrirano</string>
     <string name="password_protected">Zaščiteno z geslom</string>
 
     <string name="avatar">Podoba</string>
@@ -370,6 +388,8 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_published_description">Usklajuj z varnimi strežniki in splošnimi in javnimi imeniki</string>
     <string name="scope_toggle">Preklop obsega</string>
+    <string name="scope_toggle_description">Spremeni pravila zasebnosti za %1$s</string>
+
     <!-- App Bar -->
     <string name="appbar_search_in">Poišči v %s</string>
 

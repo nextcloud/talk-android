@@ -322,8 +322,6 @@
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
     <string name="nc_upload_confirm_send_single">Ezen fájl küldése ide: %1$s</string>
-    <string name="nc_upload_in_progess">feltöltés</string>
-
     <string name="nc_settings_phone_book_integration_desc">Párosítsa a névjegyeket telefonszám alapján, hogy integrálja a Beszélgetéseket a rendszer Névjegyek alkalmazásba</string>
     <string name="nc_settings_phone_book_integration_title">Telefonszám integráció</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonszám</string>

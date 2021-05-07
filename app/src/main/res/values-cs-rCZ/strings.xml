@@ -79,6 +79,10 @@
     <string name="nc_settings_remove_confirmation">Potvrďte, že chcete stávající účet odebrat.</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_add_account">Přidat nový účet</string>
+    <string name="nc_settings_server_eol_title">Nepodporovaný server</string>
+    <string name="nc_settings_server_eol">Verze serveru je příliš stará a nepodporovaná touto verzí aplikace pro Android</string>
+    <string name="nc_settings_server_almost_eol">Verze serveru je příliš stará a v příštím vydání této aplikace už nebude podporována!</string>
+    <string name="nc_settings_warning">Varování</string>
     <string name="nc_add">Přidat</string>
     <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
@@ -108,6 +112,8 @@
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_link_previews_title">Zobrazovat náhledy odkazů</string>
     <string name="nc_settings_link_previews_desc">U podporovaných služeb umožňuje náhledy obsahu z obdržených odkazů</string>
+    <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
+    <string name="nc_locked">Uzamčeno</string>
     <string name="nc_settings_read_privacy_desc">Sdílet mé oznámení o přečtení a zobrazit oznámení o přečtení ostatních</string>
     <string name="nc_settings_read_privacy_title">Oznámení o přečtení</string>
 
@@ -210,6 +216,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_proceed">Pokračovat</string>
+    <string name="nc_add_emojis">Přidat emotikony</string>
     <string name="nc_call_name_is_same">Zadaný název je stejný jako ten stávající</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
@@ -251,6 +258,9 @@
     <string name="nc_message_quote_cancel_reply">Odebrat odpověď</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vy: %1$s</string>
+    <string name="nc_message_sent">Zpráva odeslána</string>
+    <string name="nc_add_attachment">Přidat přílohu</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Žádné další položky k načtení. Pro opětovný pokus načtěte znovu.</string>
     <string name="nc_endless_disabled">Žádné další položky k načtení (dosaženo nejvyššího umožněného počtu).</string>
@@ -328,8 +338,6 @@
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
-    <string name="nc_upload_in_progess">nahrávání</string>
-
     <string name="nc_settings_phone_book_integration_desc">Najít kontakty se stejným telefonním číslem a přidat zkratku Talk do systémové aplikace pro kontakty</string>
     <string name="nc_settings_phone_book_integration_title">Propojení telefonních čísel</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonní číslo</string>
@@ -341,6 +349,7 @@
     <string name="nc_phone_book_integration_account_not_found">Účet nenalezen</string>
 
     <string name="starred">Oblíbené</string>
+    <string name="encrypted">Šifrované</string>
     <string name="password_protected">Chráněno heslem</string>
 
     <string name="avatar">Profilový obrázek</string>

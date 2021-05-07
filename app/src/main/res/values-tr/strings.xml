@@ -329,8 +329,6 @@
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
-    <string name="nc_upload_in_progess">yükleniyor</string>
-
     <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Talk kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_title">Telefon numarası bütünleştirmesi</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefon numarası</string>

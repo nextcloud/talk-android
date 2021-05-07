@@ -80,6 +80,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_remove_confirmation">Bevestig dat je het huidige account wilt verwijderen.</string>
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_add_account">Toevoegen nieuw account</string>
+    <string name="nc_settings_server_eol_title">Niet-ondersteunde server</string>
+    <string name="nc_settings_server_eol">De serverversie is te oud en wordt niet meer ondersteund door deze versie van de Android app</string>
+    <string name="nc_settings_server_almost_eol">De serverversie is heel oud en wordt niet meer ondersteund in de volgende release.</string>
+    <string name="nc_settings_warning">Waarschuwing</string>
     <string name="nc_add">Toevoegen</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
@@ -109,6 +113,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrueert het toetsenbord gepersonaliseerd leren uit te schakelen (geen garanties)</string>
     <string name="nc_settings_link_previews_title">Tonen link-voorbeelden</string>
     <string name="nc_settings_link_previews_desc">Staat voorbeeldweergave toe van ontvangen links van ondersteunde diensten</string>
+    <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
+    <string name="nc_locked">Vergrendeld</string>
     <string name="nc_settings_read_privacy_desc">Deel mijn lees-status en toon de lees-status van anderen</string>
     <string name="nc_settings_read_privacy_title">Lees-status</string>
 
@@ -189,6 +195,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
     <string name="nc_leaving_call">Beëindigen verbinding...</string>
+    <string name="nc_call_state_in_call">%1$s in gesprek</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s in gesprek met audio</string>
+    <string name="nc_call_state_with_video">%1$s met video</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
@@ -211,6 +221,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_proceed">Verder</string>
+    <string name="nc_add_emojis">Toevoegen emojis</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
     <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
@@ -252,6 +263,12 @@ Kies er eentje van een provider.</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Jij: %1$s</string>
+    <string name="nc_message_read">Bericht gelezen</string>
+    <string name="nc_message_sent">Bericht verstuurd</string>
+    <string name="nc_remote_video_off">Externe video uit</string>
+    <string name="nc_remote_audio_off">Externe audio uit</string>
+    <string name="nc_add_attachment">Toevoegen bijlage</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Niets meer te laden. Verversen om nog eens te proberen</string>
     <string name="nc_endless_disabled">Niets meer te laden (max bereikt).</string>
@@ -331,8 +348,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
     <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
-    <string name="nc_upload_in_progess">uploaden</string>
-
     <string name="nc_settings_phone_book_integration_desc">Match contactpersonen op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_title">Telefoonnummer-integratie</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefoonnummer</string>
@@ -344,6 +359,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
 
     <string name="starred">Favoriet</string>
+    <string name="encrypted">Versleuteld</string>
     <string name="password_protected">Wachtwoord-beveiligd</string>
 
     <string name="avatar">Avatar</string>
@@ -374,6 +390,8 @@ Kies er eentje van een provider.</string>
     <string name="scope_published_title">Gepubliceerd</string>
     <string name="scope_published_description">Synchroniseren met vertrouwde servers en het wereldwijde en openbare adresboek</string>
     <string name="scope_toggle">Scope omschakelen</string>
+    <string name="scope_toggle_description">Wijzigen privacyniveau van %1$s</string>
+
     <!-- App Bar -->
     <string name="appbar_search_in">Zoeken in %s</string>
 

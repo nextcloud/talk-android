@@ -296,6 +296,4 @@ Le démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
-    <string name="nc_upload_in_progess">Téléchargement</string>
-
     </resources>

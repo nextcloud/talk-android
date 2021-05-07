@@ -258,6 +258,4 @@
     <string name="nc_upload_local_file">Lähetä paikallinen tiedosto</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
-    <string name="nc_upload_in_progess">lähetetään</string>
-
     </resources>

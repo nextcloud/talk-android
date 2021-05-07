@@ -329,8 +329,6 @@
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
     <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
     <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
-    <string name="nc_upload_in_progess">subiendo</string>
-
     <string name="nc_settings_phone_book_integration_desc">Comparar el número de teléfono de los contactos para integrar un acceso directo a Talk en la app de contactos del sistema
 </string>
     <string name="nc_settings_phone_book_integration_title">Integración del número de teléfono</string>

@@ -326,8 +326,6 @@
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
-    <string name="nc_upload_in_progess">передача на сервер</string>
-
     <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в приложение системных контактов</string>
     <string name="nc_settings_phone_book_integration_title">Интеграция номера телефона</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Номер телефона</string>

@@ -296,8 +296,6 @@
     <string name="nc_upload_choose_local_files">Escolla os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
-    <string name="nc_upload_in_progess">enviando</string>
-
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de teléfono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
