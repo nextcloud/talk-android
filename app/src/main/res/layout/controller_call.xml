@@ -45,13 +45,39 @@
             android:layout_weight="1"
             tools:visibility="visible">
 
-            <LinearLayout
-                android:id="@+id/remote_renderers_layout"
+            <GridView
+                android:id="@+id/gridview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:animateLayoutChanges="true"
-                android:orientation="vertical">
-            </LinearLayout>
+                android:gravity="center"
+                android:stretchMode="columnWidth"
+                android:numColumns="2"
+                />
+
+            <FrameLayout
+                android:id="@+id/selfVideoView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <org.webrtc.SurfaceViewRenderer
+                    android:id="@+id/pip_video_view"
+                    android:layout_width="@dimen/large_preview_dimension"
+                    android:layout_height="150dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:visibility="invisible"
+                    android:clickable="false"
+                    tools:visibility="visible" />
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/call_control_switch_camera"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="20dp"
+                    app:placeholderImage="@drawable/ic_switch_video_white_24px"
+                    app:roundAsCircle="true" />
+            </FrameLayout>
 
             <LinearLayout
                 android:id="@+id/callInfosLinearLayout"
@@ -83,34 +109,10 @@
                     android:ellipsize="marquee"
                     android:textAlignment="center"
                     android:textColor="@color/white"
-                    android:textSize="28sp"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
                     tools:text="Marsellus Wallace" />
             </LinearLayout>
-
-            <FrameLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_below="@id/callInfosLinearLayout">
-
-                <org.webrtc.SurfaceViewRenderer
-                    android:id="@+id/pip_video_view"
-                    android:layout_width="@dimen/large_preview_dimension"
-                    android:layout_height="150dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:visibility="invisible"
-                    tools:visibility="visible"/>
-
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/call_control_switch_camera"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="20dp"
-                    app:placeholderImage="@drawable/ic_switch_video_white_24px"
-                    app:roundAsCircle="true" />
-            </FrameLayout>
 
             <View android:id="@+id/verticalCenter"
                 android:layout_width="0dp"
@@ -137,7 +139,7 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:layout_alignBottom="@id/linearWrapperLayout"
-        android:layout_marginBottom="10dp">
+        android:layout_marginBottom="16dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callControlToggleChat"

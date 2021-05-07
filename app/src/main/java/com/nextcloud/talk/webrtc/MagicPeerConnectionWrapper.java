@@ -50,6 +50,7 @@ import java.util.List;
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPeerConnectionWrapper {
     private static String TAG = "MagicPeerConnectionWrapper";
+
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
