@@ -20,12 +20,8 @@
  */
 package com.nextcloud.talk.models.json.conversations;
 
-import android.content.res.Resources;
-
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
-import com.nextcloud.talk.R;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter;
@@ -52,14 +48,9 @@ public class Conversation {
     public String displayName;
     @JsonField(name = "type", typeConverter = EnumRoomTypeConverter.class)
     public ConversationType type;
-    @JsonField(name = "count")
-    public long count;
     @JsonField(name = "lastPing")
     public long lastPing;
-    @JsonField(name = "numGuests")
-    public long numberOfGuests;
-    @JsonField(name = "guestList")
-    public HashMap<String, HashMap<String, Object>> guestList;
+    @Deprecated
     @JsonField(name = "participants")
     public HashMap<String, HashMap<String, Object>> participants;
     @JsonField(name = "participantType", typeConverter = EnumParticipantTypeConverter.class)
@@ -93,6 +84,8 @@ public class Conversation {
     public int lastReadMessage;
     @JsonField(name = "callFlag")
     public int callFlag;
+    @JsonField(name = "canLeaveConversation")
+    public Boolean canLeaveConversation;
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
@@ -131,20 +124,13 @@ public class Conversation {
     }
 
     public boolean canLeave(UserEntity conversationUser) {
-        return !canModerate(conversationUser) ||
-                (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && getParticipants().size() > 1);
-    }
-
-    public String getDeleteWarningMessage() {
-        Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
-        if (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            return String.format(resources.getString(R.string.nc_delete_conversation_one2one),
-                    getDisplayName());
-        } else if (getParticipants().size() > 1) {
-            return resources.getString(R.string.nc_delete_conversation_more);
+        if (canLeaveConversation != null) {
+            // Available since APIv2
+            return canLeaveConversation;
         }
-
-        return resources.getString(R.string.nc_delete_conversation_default);
+        // Fallback for APIv1
+        return !canModerate(conversationUser) ||
+                (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && this.participants.size() > 1);
     }
 
     public String getRoomId() {
@@ -167,24 +153,8 @@ public class Conversation {
         return this.type;
     }
 
-    public long getCount() {
-        return this.count;
-    }
-
     public long getLastPing() {
         return this.lastPing;
-    }
-
-    public long getNumberOfGuests() {
-        return this.numberOfGuests;
-    }
-
-    public HashMap<String, HashMap<String, Object>> getGuestList() {
-        return this.guestList;
-    }
-
-    public HashMap<String, HashMap<String, Object>> getParticipants() {
-        return this.participants;
     }
 
     public Participant.ParticipantType getParticipantType() {
@@ -271,22 +241,11 @@ public class Conversation {
         this.type = type;
     }
 
-    public void setCount(long count) {
-        this.count = count;
-    }
-
     public void setLastPing(long lastPing) {
         this.lastPing = lastPing;
     }
 
-    public void setNumberOfGuests(long numberOfGuests) {
-        this.numberOfGuests = numberOfGuests;
-    }
-
-    public void setGuestList(HashMap<String, HashMap<String, Object>> guestList) {
-        this.guestList = guestList;
-    }
-
+    @Deprecated
     public void setParticipants(HashMap<String, HashMap<String, Object>> participants) {
         this.participants = participants;
     }
@@ -391,22 +350,11 @@ public class Conversation {
         if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
             return false;
         }
-        if (this.getCount() != other.getCount()) {
-            return false;
-        }
         if (this.getLastPing() != other.getLastPing()) {
             return false;
         }
-        if (this.getNumberOfGuests() != other.getNumberOfGuests()) {
-            return false;
-        }
-        final Object this$guestList = this.getGuestList();
-        final Object other$guestList = other.getGuestList();
-        if (this$guestList == null ? other$guestList != null : !this$guestList.equals(other$guestList)) {
-            return false;
-        }
-        final Object this$participants = this.getParticipants();
-        final Object other$participants = other.getParticipants();
+        final Object this$participants = this.participants;
+        final Object other$participants = other.participants;
         if (this$participants == null ? other$participants != null : !this$participants.equals(other$participants)) {
             return false;
         }
@@ -494,15 +442,9 @@ public class Conversation {
         result = result * PRIME + ($displayName == null ? 43 : $displayName.hashCode());
         final Object $type = this.getType();
         result = result * PRIME + ($type == null ? 43 : $type.hashCode());
-        final long $count = this.getCount();
-        result = result * PRIME + (int) ($count >>> 32 ^ $count);
         final long $lastPing = this.getLastPing();
         result = result * PRIME + (int) ($lastPing >>> 32 ^ $lastPing);
-        final long $numberOfGuests = this.getNumberOfGuests();
-        result = result * PRIME + (int) ($numberOfGuests >>> 32 ^ $numberOfGuests);
-        final Object $guestList = this.getGuestList();
-        result = result * PRIME + ($guestList == null ? 43 : $guestList.hashCode());
-        final Object $participants = this.getParticipants();
+        final Object $participants = this.participants;
         result = result * PRIME + ($participants == null ? 43 : $participants.hashCode());
         final Object $participantType = this.getParticipantType();
         result = result * PRIME + ($participantType == null ? 43 : $participantType.hashCode());
@@ -534,7 +476,7 @@ public class Conversation {
     }
 
     public String toString() {
-        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", count=" + this.getCount() + ", lastPing=" + this.getLastPing() + ", numberOfGuests=" + this.getNumberOfGuests() + ", guestList=" + this.getGuestList() + ", participants=" + this.getParticipants() + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
+        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", lastPing=" + this.getLastPing() + ", participants=" + this.participants + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
     }
 
     public enum NotificationLevel {

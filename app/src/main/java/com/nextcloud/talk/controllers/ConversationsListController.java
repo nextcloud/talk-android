@@ -802,7 +802,7 @@ public class ConversationsListController extends BaseController implements Searc
                                                                 R.drawable.ic_delete_black_24dp, R.color.bg_default))
                         .setPositiveButtonColor(context.getResources().getColor(R.color.nc_darkRed))
                         .setTitle(R.string.nc_delete_call)
-                        .setMessage(conversation.getDeleteWarningMessage())
+                        .setMessage(R.string.nc_delete_conversation_more)
                         .setPositiveButton(R.string.nc_delete, new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
