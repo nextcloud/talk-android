@@ -21,6 +21,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.accounts.Account;
+import android.net.Uri;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
@@ -113,7 +114,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             holder.contactDisplayName.setText(participant.getDisplayName());
         }
 
-        holder.serverUrl.setText(userEntity.getBaseUrl());
+        holder.serverUrl.setText((Uri.parse(userEntity.getBaseUrl()).getHost()));
 
         if (userEntity != null && userEntity.getBaseUrl() != null && userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
             holder.avatarImageView.setVisibility(View.VISIBLE);
