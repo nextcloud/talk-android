@@ -128,6 +128,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @BindView(R.id.loading_content)
     LinearLayout loadingContent;
 
+
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -153,9 +154,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     CoordinatorLayout genericRvLayout;
 
     @Inject
-    NcApi ncApi;
-
-    @Inject
     UserUtils userUtils;
 
     @Inject
@@ -163,6 +161,9 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    NcApi ncApi;
 
     private String credentials;
     private UserEntity currentUser;
@@ -996,11 +997,19 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void toggleNewCallHeaderVisibility(boolean showInitialLayout) {
         if (showInitialLayout) {
-            initialRelativeLayout.setVisibility(View.VISIBLE);
-            secondaryRelativeLayout.setVisibility(View.GONE);
+            if (initialRelativeLayout != null) {
+                initialRelativeLayout.setVisibility(View.VISIBLE);
+            }
+            if (secondaryRelativeLayout != null) {
+                secondaryRelativeLayout.setVisibility(View.GONE);
+            }
         } else {
-            initialRelativeLayout.setVisibility(View.GONE);
-            secondaryRelativeLayout.setVisibility(View.VISIBLE);
+            if (initialRelativeLayout != null) {
+                initialRelativeLayout.setVisibility(View.GONE);
+            }
+            if (secondaryRelativeLayout != null) {
+                secondaryRelativeLayout.setVisibility(View.VISIBLE);
+            }
         }
     }
 }
