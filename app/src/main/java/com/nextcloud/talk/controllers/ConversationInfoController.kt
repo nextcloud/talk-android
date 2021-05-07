@@ -89,13 +89,11 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.adapter.rxjava2.HttpException
 import java.util.Calendar
 import java.util.Collections
 import java.util.Comparator
 import java.util.Locale
 import javax.inject.Inject
-import kotlin.reflect.typeOf
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleAdapter.OnItemClickListener {
@@ -922,9 +920,30 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        if (participant.getUserId() == conversationUser!!.userId
-            || participant.type == Participant.ParticipantType.OWNER) {
-            // FIXME Show pin?
+        if (participant.getUserId() == conversationUser!!.userId) {
+            if (participant.attendeePin.isNotEmpty()) {
+                val items = mutableListOf(
+                    BasicListItemWithImage(
+                        R.drawable.ic_lock_grey600_24px,
+                        context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+                    )
+                )
+                MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                    cornerRadius(res = R.dimen.corner_radius)
+
+                    title(text = participant.displayName)
+                    listItemsWithImage(items = items) { dialog, index, _ ->
+                        if (index == 0) {
+                            removeAttendeeFromConversation(apiVersion, participant)
+                        }
+                    }
+                }
+            }
+            return true
+        }
+
+        if (participant.type == Participant.ParticipantType.OWNER) {
+            // Can not moderate owner
             return true
         }
 
@@ -949,6 +968,10 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
 
         var items = mutableListOf(
+            BasicListItemWithImage(
+                R.drawable.ic_lock_grey600_24px,
+                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+            ),
             BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
             BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
             BasicListItemWithImage(
@@ -959,13 +982,17 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         if (participant.type == Participant.ParticipantType.MODERATOR
             || participant.type == Participant.ParticipantType.GUEST_MODERATOR) {
-            items.removeAt(0)
+            items.removeAt(1)
         } else if (participant.type == Participant.ParticipantType.USER
             || participant.type == Participant.ParticipantType.GUEST) {
-            items.removeAt(1)
+            items.removeAt(2)
         } else {
             // Self joined users can not be promoted nor demoted
-            items.removeAt(0)
+            items.removeAt(2)
+            items.removeAt(1)
+        }
+
+        if (participant.attendeePin.isEmpty()) {
             items.removeAt(0)
         }
 
@@ -975,13 +1002,21 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
                 title(text = participant.displayName)
                 listItemsWithImage(items = items) { dialog, index, _ ->
-                    if (index == 0) {
-                        if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
-                            removeAttendeeFromConversation(apiVersion, participant)
-                        } else {
-                            toggleModeratorStatus(apiVersion, participant)
-                        }
-                    } else if (index == 1) {
+                    var actionToTrigger = index
+                    if (participant.attendeePin.isEmpty()) {
+                        actionToTrigger++
+                    }
+                    if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+                        actionToTrigger++
+                    }
+
+                    if (actionToTrigger == 0) {
+                        // Pin, nothing to do
+                    } else if (actionToTrigger == 1) {
+                        // Promote/demote
+                        toggleModeratorStatus(apiVersion, participant)
+                    } else if (actionToTrigger == 2) {
+                        // Remove from conversation
                         removeAttendeeFromConversation(apiVersion, participant)
                     }
                 }

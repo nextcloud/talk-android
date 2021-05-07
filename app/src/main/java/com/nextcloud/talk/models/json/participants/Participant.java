@@ -44,6 +44,9 @@ public class Participant {
     @JsonField(name = "actorId")
     public String actorId;
 
+    @JsonField(name = "attendeePin")
+    public String attendeePin;
+
     @Deprecated
     @JsonField(name = "userId")
     public String userId;
@@ -115,6 +118,9 @@ public class Participant {
         return actorId;
     }
 
+    public String getAttendeePin() {
+        return attendeePin;
+    }
 
     @Deprecated
     public String getUserId() {
@@ -182,6 +188,10 @@ public class Participant {
 
     public void setActorId(String actorId) {
         this.actorId = actorId;
+    }
+
+    public void setAttendeePin(String attendeePin) {
+        this.attendeePin = attendeePin;
     }
 
     public void setType(ParticipantType type) {
@@ -256,6 +266,9 @@ public class Participant {
         if (!actorId.equals(that.actorId)) {
             return false;
         }
+        if (!attendeePin.equals(that.attendeePin)) {
+            return false;
+        }
         if (!userId.equals(that.userId)) {
             return false;
         }
@@ -288,8 +301,9 @@ public class Participant {
     @Override
     public int hashCode() {
         int result = attendeeId.hashCode();
-        result = 31 * result + actorType.hashCode();
-        result = 31 * result + actorId.hashCode();
+        result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
+        result = 31 * result + (actorId != null ? actorId.hashCode() : 0);
+        result = 31 * result + (attendeePin != null ? attendeePin.hashCode() : 0);
         result = 31 * result + (userId != null ? userId.hashCode() : 0);
         result = 31 * result + (type != null ? type.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
@@ -310,6 +324,7 @@ public class Participant {
                 "attendeeId=" + attendeeId +
                 ", actorType='" + actorType + '\'' +
                 ", actorId='" + actorId + '\'' +
+                ", attendeePin='" + attendeePin + '\'' +
                 ", userId='" + userId + '\'' +
                 ", type=" + type +
                 ", name='" + name + '\'' +
