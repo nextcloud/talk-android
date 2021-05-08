@@ -32,9 +32,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.XmlUtils;
 
 public class NCPreview implements Property {
     public static final Property.Name NAME = new Property.Name(DavUtils.NC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_HAS_PREVIEW);

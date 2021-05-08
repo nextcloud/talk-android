@@ -32,9 +32,9 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 
-import at.bitfire.dav4android.Property;
-import at.bitfire.dav4android.PropertyFactory;
-import at.bitfire.dav4android.XmlUtils;
+import at.bitfire.dav4jvm.Property;
+import at.bitfire.dav4jvm.PropertyFactory;
+import at.bitfire.dav4jvm.XmlUtils;
 
 public class OCSize implements Property {
     public static final Property.Name NAME = new Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE);

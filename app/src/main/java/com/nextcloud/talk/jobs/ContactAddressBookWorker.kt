@@ -54,8 +54,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -122,7 +122,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             ncApi.searchContactsByPhoneNumber(
                 ApiUtils.getCredentials(currentUser.username, currentUser.token),
                 ApiUtils.getUrlForSearchByNumber(currentUser.baseUrl),
-                RequestBody.create(MediaType.parse("application/json"), json)
+                json.toRequestBody("application/json".toMediaTypeOrNull())
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
