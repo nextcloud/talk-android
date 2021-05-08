@@ -736,17 +736,9 @@ public class ConversationsListController extends BaseController implements Searc
             } else {
                 currentUser = userUtils.getCurrentUser();
 
-                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
-                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                                    conversation.getToken(), bundle, false);
-                } else {
-                    overridePushHandler(new NoOpControllerChangeHandler());
-                    overridePopHandler(new NoOpControllerChangeHandler());
-                    Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
-                    callIntent.putExtras(bundle);
-                    startActivity(callIntent);
-                }
+                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
+                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                                conversation.getToken(), bundle, false);
             }
         }
 
