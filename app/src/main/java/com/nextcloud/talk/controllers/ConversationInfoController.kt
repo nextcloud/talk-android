@@ -696,7 +696,24 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
-    fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
+    private fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
+        val subscriber = object : Observer<GenericOverall> {
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(genericOverall: GenericOverall) {
+                getListOfParticipants()
+            }
+
+            @SuppressLint("LongLogTag")
+            override fun onError(e: Throwable) {
+                Log.e(TAG, "Error toggling moderator status", e)
+            }
+
+            override fun onComplete() {
+            }
+        }
+
         if (apiVersion >= ApiUtils.APIv4) {
             if (participant.type == Participant.ParticipantType.MODERATOR) {
                 ncApi.demoteAttendeeFromModerator(
@@ -710,22 +727,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<GenericOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                        }
-
-                        override fun onNext(genericOverall: GenericOverall) {
-                            getListOfParticipants()
-                        }
-
-                        @SuppressLint("LongLogTag")
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "Error demoting an attendee from moderators", e)
-                        }
-
-                        override fun onComplete() {
-                        }
-                    })
+                    .subscribe(subscriber)
             } else if (participant.type == Participant.ParticipantType.USER) {
                 ncApi.promoteAttendeeToModerator(
                     credentials,
@@ -738,22 +740,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<GenericOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                        }
-
-                        override fun onNext(genericOverall: GenericOverall) {
-                            getListOfParticipants()
-                        }
-
-                        @SuppressLint("LongLogTag")
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "Error promoting an attendee to moderators", e)
-                        }
-
-                        override fun onComplete() {
-                        }
-                    })
+                    .subscribe(subscriber)
             }
         } else {
             if (participant.type == Participant.ParticipantType.MODERATOR) {
@@ -768,22 +755,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<GenericOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                        }
-
-                        override fun onNext(genericOverall: GenericOverall) {
-                            getListOfParticipants()
-                        }
-
-                        @SuppressLint("LongLogTag")
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "Error demoting a user from moderators", e)
-                        }
-
-                        override fun onComplete() {
-                        }
-                    })
+                    .subscribe(subscriber)
             } else if (participant.type == Participant.ParticipantType.USER) {
                 ncApi.promoteUserToModerator(
                     credentials,
@@ -796,22 +768,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 )
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<GenericOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                        }
-
-                        override fun onNext(genericOverall: GenericOverall) {
-                            getListOfParticipants()
-                        }
-
-                        @SuppressLint("LongLogTag")
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "Error promoting a user to moderators", e)
-                        }
-
-                        override fun onComplete() {
-                        }
-                    })
+                    .subscribe(subscriber)
             }
         }
     }
