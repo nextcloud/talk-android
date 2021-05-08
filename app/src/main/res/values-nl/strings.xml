@@ -160,8 +160,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete">Verwijderen</string>
-    <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
-    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook verwijderd voor %1$s.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
 
     <string name="nc_new_conversation">Nieuw gesprek</string>
@@ -265,7 +263,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_message_read">Bericht gelezen</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
-    <string name="nc_remote_video_off">Externe video uit</string>
     <string name="nc_remote_audio_off">Externe audio uit</string>
     <string name="nc_add_attachment">Toevoegen bijlage</string>
 

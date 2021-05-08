@@ -142,7 +142,6 @@
     <string name="nc_make_call_private">Faghe privada sa resonada</string>
     <string name="nc_delete_call">Cantzella resonada</string>
     <string name="nc_delete">Cantzella</string>
-    <string name="nc_delete_conversation_default">Cunfirma s\'intentzione tua de nde bogare sa resonada.</string>
     <string name="nc_delete_conversation_more">Si cantzellas sa resonada, s\'at a cantzellare puru pro su restu de partetzipantes.</string>
 
     <string name="nc_new_conversation">Resonada noa</string>

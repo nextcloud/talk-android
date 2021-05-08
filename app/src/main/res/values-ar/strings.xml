@@ -144,7 +144,6 @@
     <string name="nc_make_call_private">اجعل المحادثة خاصة </string>
     <string name="nc_delete_call">احذف المحادثة</string>
     <string name="nc_delete">حذف </string>
-    <string name="nc_delete_conversation_default">من فضلك قم بالتأكيد على رغبتك بازالة المحادثة.</string>
     <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
 
     <string name="nc_new_conversation">محادثة جديدة</string>

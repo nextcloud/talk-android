@@ -132,7 +132,6 @@
     <string name="nc_make_call_private">مکالمه را خصوصی کنید</string>
     <string name="nc_delete_call">مکالمه را حذف کنید</string>
     <string name="nc_delete">حذف</string>
-    <string name="nc_delete_conversation_default">لطفاً قصد خود را برای حذف این مکالمه تأیید کنید.</string>
     <string name="nc_delete_conversation_more">اگر این مکالمه را حذف کنید ، برای سایر شرکت کنندگان نیز حذف خواهد شد.</string>
 
     <string name="nc_new_conversation">مکالمه جدید</string>

@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
-    <string name="nc_delete_conversation_default">Baieztatu mesedez elkarrizketa kendu nahi duzula.</string>
-    <string name="nc_delete_conversation_one2one">Elkarrizketa ezabatzen baduzu, %1$s(r)entzako ere ezabatuko da.</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
 
     <string name="nc_new_conversation">Elkarrizketa berria</string>
@@ -264,7 +262,6 @@
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_message_read">Mezua irakurrita</string>
     <string name="nc_message_sent">Mezua bidalita</string>
-    <string name="nc_remote_video_off">Urruneko bideoa itzalita</string>
     <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
     <string name="nc_add_attachment">Gehitu eranskina</string>
 
@@ -346,6 +343,8 @@
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
+    <string name="nc_upload_in_progess">Kargatzen</string>
+
     <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
     <string name="nc_settings_phone_book_integration_title">Telefono zenbaki integrazioa</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>

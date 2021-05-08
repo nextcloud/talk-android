@@ -141,7 +141,6 @@
     <string name="nc_make_call_private">Urobiť rozhovor súkromným</string>
     <string name="nc_delete_call">Zmazať rozhovor</string>
     <string name="nc_delete">Zmazať</string>
-    <string name="nc_delete_conversation_default">Potvrďte prosím, že naozaj chcete zmazať rozhovor</string>
     <string name="nc_delete_conversation_more">Ak zmažete rozhovor, bude takisto zmazaný pre všetkých ostatných zúčastnených</string>
 
     <string name="nc_new_conversation">Nový rozhovor</string>

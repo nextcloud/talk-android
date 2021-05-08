@@ -79,6 +79,10 @@
     <string name="nc_settings_remove_confirmation">Conferma la tua intenzione di rimuovere l\'account attuale.</string>
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
+    <string name="nc_settings_server_eol_title">Server non supportato</string>
+    <string name="nc_settings_server_eol">La versione del server è troppo datata e non supportata da questa versione dell\'app Android</string>
+    <string name="nc_settings_server_almost_eol">La versione del server è molto vecchia e non verrà più supportata nella prossima versione!</string>
+    <string name="nc_settings_warning">Attenzione</string>
     <string name="nc_add">Aggiungi</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
     <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server sul quale hai provato ad autenticarti</string>
@@ -108,6 +112,8 @@
     <string name="nc_settings_incognito_keyboard_desc">Ordina alla tastiera di disattivare l\'apprendimento personalizzato (senza garanzie)</string>
     <string name="nc_settings_link_previews_title">Mostra anteprime collegamenti</string>
     <string name="nc_settings_link_previews_desc">Permetti le anteprime del contenuto dai collegamenti ricevuti per i servizi supportati</string>
+    <string name="nc_locked_tap_to_unlock">Tocca per sbloccare</string>
+    <string name="nc_locked">Bloccato</string>
     <string name="nc_settings_read_privacy_desc">Condividi il mio stato di lettura e mostra lo stato di lettura degli altri</string>
     <string name="nc_settings_read_privacy_title">Stato di lettura</string>
 
@@ -153,8 +159,6 @@
     <string name="nc_make_call_private">Rendi privata la conversazione</string>
     <string name="nc_delete_call">Elimina conversazione</string>
     <string name="nc_delete">Elimina</string>
-    <string name="nc_delete_conversation_default">Conferma la tua intenzione di rimuovere la conversazione.</string>
-    <string name="nc_delete_conversation_one2one">Se elimini la conversazione, sarà eliminata anche per %1$s.</string>
     <string name="nc_delete_conversation_more">Se elimini la conversazione, sarà eliminata anche per tutti i partecipanti.</string>
 
     <string name="nc_new_conversation">Nuova conversazione</string>
@@ -188,6 +192,10 @@
     <string name="nc_call_reconnecting">Riconnessione in corso...</string>
     <string name="nc_offline">Attualmente non in linea, controlla la tua connettività</string>
     <string name="nc_leaving_call">Chiusura della chiamata in corso...</string>
+    <string name="nc_call_state_in_call">%1$s in chiamata</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s in chiamata con audio</string>
+    <string name="nc_call_state_with_video">%1$s con video</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s sul canale di notifica %2$s</string>
     <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
@@ -210,6 +218,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_proceed">Procedi</string>
+    <string name="nc_add_emojis">Aggiungi emoji</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
     <string name="nc_wrong_link">Il collegamento della conversazione non è valido</string>
     <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>
@@ -251,6 +260,11 @@
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Tu: %1$s</string>
+    <string name="nc_message_read">Messaggio letto</string>
+    <string name="nc_message_sent">Messaggio inviato</string>
+    <string name="nc_remote_audio_off">Audio remoto spento</string>
+    <string name="nc_add_attachment">Aggiungi allegato</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Non ci sono altri elementi da caricare. Aggiorna per riprovare.</string>
     <string name="nc_endless_disabled">Non ci sono altri elementi da caricare (massimo raggiunto).</string>
@@ -329,6 +343,8 @@
     <string name="nc_upload_choose_local_files">Scegli i file</string>
     <string name="nc_upload_confirm_send_multiple">Inviare questi file a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Inviare questo file a %1$s?</string>
+    <string name="nc_upload_in_progess">Caricamento</string>
+
     <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nell\'applicazione dei contatti di sistema</string>
     <string name="nc_settings_phone_book_integration_title">Integrazione numero di telefono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numero di telefono</string>
@@ -340,6 +356,7 @@
     <string name="nc_phone_book_integration_account_not_found">Account non trovato</string>
 
     <string name="starred">Preferito</string>
+    <string name="encrypted">Cifrato</string>
     <string name="password_protected">Protetto da password</string>
 
     <string name="avatar">Avatar</string>
@@ -370,6 +387,8 @@
     <string name="scope_published_title">Pubblicato</string>
     <string name="scope_published_description">Sincronizza con server fidati e la rubrica globale e pubblica</string>
     <string name="scope_toggle">Cambio di ambito</string>
+    <string name="scope_toggle_description">Cambia livello di privacy di %1$s</string>
+
     <!-- App Bar -->
     <string name="appbar_search_in">Cerca in %s</string>
 
@@ -378,4 +397,5 @@
     <string name="selected_list_item">selezionati</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Password non valida</string>
-    </resources>
+    <string name="nc_dialog_reauth_or_delete">Vuoi ri-autorizzare o eliminare questo account?</string>
+</resources>

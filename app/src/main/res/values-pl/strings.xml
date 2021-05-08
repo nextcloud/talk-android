@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete">Usuń</string>
-    <string name="nc_delete_conversation_default">Potwierdź zamiar usunięcia rozmowy.</string>
-    <string name="nc_delete_conversation_one2one">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla %1$s.</string>
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
 
     <string name="nc_new_conversation">Nowa rozmowa</string>
@@ -264,7 +262,6 @@
     <string name="nc_formatted_message_you">Ty: %1$s</string>
     <string name="nc_message_read">Wiadomość przeczytana</string>
     <string name="nc_message_sent">Wiadomość wysłana</string>
-    <string name="nc_remote_video_off">Zdalne wyłączenie wideo</string>
     <string name="nc_remote_audio_off">Zdalne wyłączenie dźwięku</string>
     <string name="nc_add_attachment">Dodaj załącznik</string>
 
@@ -346,6 +343,8 @@
     <string name="nc_upload_choose_local_files">Wybierz plik</string>
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
+    <string name="nc_upload_in_progess">Wysyłanie</string>
+
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk z aplikacją kontaktów systemowych</string>
     <string name="nc_settings_phone_book_integration_title">Integracja numeru telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numer telefonu</string>

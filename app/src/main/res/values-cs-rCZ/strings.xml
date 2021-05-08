@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_delete">Smazat</string>
-    <string name="nc_delete_conversation_default">Potvrďte, že chcete odebrat tuto konverzaci.</string>
-    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také smazána pro %1$s.</string>
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
 
     <string name="nc_new_conversation">Nová konverzace</string>
@@ -338,6 +336,8 @@
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
+    <string name="nc_upload_in_progess">Nahrávání</string>
+
     <string name="nc_settings_phone_book_integration_desc">Najít kontakty se stejným telefonním číslem a přidat zkratku Talk do systémové aplikace pro kontakty</string>
     <string name="nc_settings_phone_book_integration_title">Propojení telefonních čísel</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonní číslo</string>
@@ -380,6 +380,8 @@
     <string name="scope_published_title">Zveřejněno</string>
     <string name="scope_published_description">Synchronizovat s důvěryhodnými servery a globálním a veřejným adresářem kontaktů</string>
     <string name="scope_toggle">Přepnout pohled</string>
+    <string name="scope_toggle_description">Změnit úroveň soukromí pro %1$s</string>
+
     <!-- App Bar -->
     <string name="appbar_search_in">Hledat v %s</string>
 

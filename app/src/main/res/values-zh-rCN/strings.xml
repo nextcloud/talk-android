@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">设置会话为私有</string>
     <string name="nc_delete_call">删除会话</string>
     <string name="nc_delete">删除</string>
-    <string name="nc_delete_conversation_default">请确认你移除此会话的意图</string>
-    <string name="nc_delete_conversation_one2one">如果你删除了会话，它也会从%1$s 处被删除。</string>
     <string name="nc_delete_conversation_more">如果你删除了该会话，它也会被从其他所有与会者那里删除。</string>
 
     <string name="nc_new_conversation">新的会话</string>
@@ -264,7 +262,6 @@
     <string name="nc_formatted_message_you">您：%1$s</string>
     <string name="nc_message_read">消息已读</string>
     <string name="nc_message_sent">消息已发送</string>
-    <string name="nc_remote_video_off">远程视频关闭</string>
     <string name="nc_remote_audio_off">远程音频关闭</string>
     <string name="nc_add_attachment">添加附件</string>
 
@@ -346,6 +343,8 @@
     <string name="nc_upload_choose_local_files">选择文件</string>
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">将此文件发送到 %1$s？</string>
+    <string name="nc_upload_in_progess">上传中</string>
+
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成 Talk 快捷方式到系统联系人应用</string>
     <string name="nc_settings_phone_book_integration_title">电话号码集成 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">电话号码 </string>
