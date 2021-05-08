@@ -714,62 +714,81 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             }
         }
 
-        if (apiVersion >= ApiUtils.APIv4) {
-            if (participant.type == Participant.ParticipantType.MODERATOR) {
-                ncApi.demoteAttendeeFromModerator(
-                    credentials,
-                    ApiUtils.getUrlForRoomModerators(
-                        apiVersion,
-                        conversationUser!!.baseUrl,
-                        conversation!!.token
-                    ),
-                    participant.attendeeId
-                )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber)
-            } else if (participant.type == Participant.ParticipantType.USER) {
-                ncApi.promoteAttendeeToModerator(
-                    credentials,
-                    ApiUtils.getUrlForRoomModerators(
-                        apiVersion,
-                        conversationUser!!.baseUrl,
-                        conversation!!.token
-                    ),
-                    participant.attendeeId
-                )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber)
+        if (participant.type == Participant.ParticipantType.MODERATOR ||
+            participant.type == Participant.ParticipantType.GUEST_MODERATOR) {
+            ncApi.demoteAttendeeFromModerator(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.attendeeId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        } else if (participant.type == Participant.ParticipantType.USER ||
+            participant.type == Participant.ParticipantType.GUEST) {
+            ncApi.promoteAttendeeToModerator(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.attendeeId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        }
+    }
+
+    private fun toggleModeratorStatusLegacy(apiVersion: Int, participant: Participant) {
+        val subscriber = object : Observer<GenericOverall> {
+            override fun onSubscribe(d: Disposable) {
             }
-        } else {
-            if (participant.type == Participant.ParticipantType.MODERATOR) {
-                ncApi.demoteModeratorToUser(
-                    credentials,
-                    ApiUtils.getUrlForRoomModerators(
-                        apiVersion,
-                        conversationUser!!.baseUrl,
-                        conversation!!.token
-                    ),
-                    participant.userId
-                )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber)
-            } else if (participant.type == Participant.ParticipantType.USER) {
-                ncApi.promoteUserToModerator(
-                    credentials,
-                    ApiUtils.getUrlForRoomModerators(
-                        apiVersion,
-                        conversationUser!!.baseUrl,
-                        conversation!!.token
-                    ),
-                    participant.userId
-                )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(subscriber)
+
+            override fun onNext(genericOverall: GenericOverall) {
+                getListOfParticipants()
             }
+
+            @SuppressLint("LongLogTag")
+            override fun onError(e: Throwable) {
+                Log.e(TAG, "Error toggling moderator status", e)
+            }
+
+            override fun onComplete() {
+            }
+        }
+
+        if (participant.type == Participant.ParticipantType.MODERATOR) {
+            ncApi.demoteModeratorToUser(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.userId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        } else if (participant.type == Participant.ParticipantType.USER) {
+            ncApi.promoteUserToModerator(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.userId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
         }
     }
 
@@ -971,7 +990,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                         // Pin, nothing to do
                     } else if (actionToTrigger == 1) {
                         // Promote/demote
-                        toggleModeratorStatus(apiVersion, participant)
+                        if (apiVersion >= ApiUtils.APIv4) {
+                            toggleModeratorStatus(apiVersion, participant)
+                        } else {
+                            toggleModeratorStatusLegacy(apiVersion, participant)
+                        }
                     } else if (actionToTrigger == 2) {
                         // Remove from conversation
                         removeAttendeeFromConversation(apiVersion, participant)
