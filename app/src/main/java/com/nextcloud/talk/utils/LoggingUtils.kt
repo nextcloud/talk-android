@@ -30,10 +30,11 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 
 object LoggingUtils {
     fun writeLogEntryToFile(context: Context, logEntry: String) {
-        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ROOT)
         val date = Date()
         val logEntryWithDateTime = dateFormat.format(date) + ": " + logEntry + "\n"
 
