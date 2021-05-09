@@ -715,7 +715,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
 
         if (participant.type == Participant.ParticipantType.MODERATOR ||
-            participant.type == Participant.ParticipantType.GUEST_MODERATOR) {
+            participant.type == Participant.ParticipantType.GUEST_MODERATOR
+        ) {
             ncApi.demoteAttendeeFromModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
@@ -729,7 +730,8 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber)
         } else if (participant.type == Participant.ParticipantType.USER ||
-            participant.type == Participant.ParticipantType.GUEST) {
+            participant.type == Participant.ParticipantType.GUEST
+        ) {
             ncApi.promoteAttendeeToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(

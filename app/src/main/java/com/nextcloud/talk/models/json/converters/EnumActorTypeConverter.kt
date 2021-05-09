@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Joas Schilling
+ * @author Andy Scherzinger
  * Copyright (C) 2021 Joas Schilling <coding@schilljs.com>
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,12 +32,12 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 
 class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>() {
     override fun getFromString(string: String): Participant.ActorType {
-        when (string) {
-            "emails" -> return EMAILS
-            "groups" -> return GROUPS
-            "guests" -> return GUESTS
-            "users" -> return USERS
-            else -> return DUMMY
+        return when (string) {
+            "emails" -> EMAILS
+            "groups" -> GROUPS
+            "guests" -> GUESTS
+            "users" -> USERS
+            else -> DUMMY
         }
     }
 
@@ -45,12 +47,12 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
             return ""
         }
 
-        when (`object`) {
-            EMAILS -> return "emails"
-            GROUPS -> return "groups"
-            GUESTS -> return "guests"
-            USERS -> return "users"
-            else -> return ""
+        return when (`object`) {
+            EMAILS -> "emails"
+            GROUPS -> "groups"
+            GUESTS -> "guests"
+            USERS -> "users"
+            else -> ""
         }
     }
 }

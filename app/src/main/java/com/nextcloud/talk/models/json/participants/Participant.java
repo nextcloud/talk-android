@@ -24,7 +24,6 @@ import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
-import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
 
 import org.parceler.Parcel;
