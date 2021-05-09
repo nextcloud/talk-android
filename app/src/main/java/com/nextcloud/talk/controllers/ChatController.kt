@@ -683,11 +683,11 @@ class ChatController(args: Bundle) :
                     }
                     require(files.isNotEmpty())
 
-                    var filenamesWithLinebreaks = "\n"
+                    val filenamesWithLinebreaks = StringBuilder("\n")
 
                     for (file in files) {
                         val filename = UriUtils.getFileName(Uri.parse(file), context)
-                        filenamesWithLinebreaks += filename + "\n"
+                        filenamesWithLinebreaks.append(filename).append("\n")
                     }
 
                     val confirmationQuestion = when (files.size) {
@@ -702,7 +702,7 @@ class ChatController(args: Bundle) :
                     LovelyStandardDialog(activity)
                         .setPositiveButtonColorRes(R.color.nc_darkGreen)
                         .setTitle(confirmationQuestion)
-                        .setMessage(filenamesWithLinebreaks)
+                        .setMessage(filenamesWithLinebreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { v ->
                             uploadFiles(files)
                             Toast.makeText(
