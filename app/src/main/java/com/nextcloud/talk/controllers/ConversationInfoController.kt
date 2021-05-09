@@ -20,11 +20,13 @@
 
 package com.nextcloud.talk.controllers
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -63,6 +65,8 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -410,8 +414,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         for (i in participants.indices) {
             participant = participants[i]
             userItem = UserItem(participant, conversationUser, null)
-            userItem.isOnline = !participant.sessionId.equals("0")
-            if (!TextUtils.isEmpty(participant.userId) && participant.userId == conversationUser!!.userId) {
+            if (participant.sessionId != null) {
+                userItem.isOnline = !participant.sessionId.equals("0")
+            } else {
+                userItem.isOnline = !participant.sessionIds!!.isEmpty()
+            }
+
+            if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
                 ownUserItem = userItem
                 ownUserItem.model.sessionId = "-1"
                 ownUserItem.isOnline = true
@@ -444,7 +453,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
-            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
+            apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
         ncApi.getPeersForCall(
@@ -478,7 +487,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         recyclerViewItems.forEach {
             val userItem = it as UserItem
-            existingParticipantsId.add(userItem.model.userId)
+            if (userItem.model.getActorType() == USERS) {
+                existingParticipantsId.add(userItem.model.getActorId())
+            }
         }
 
         bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)
@@ -572,7 +583,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             leaveConversationAction.visibility = View.VISIBLE
                         }
 
-                        if (!conversation!!.canModerate(conversationUser)) {
+                        if (!conversation!!.canDelete(conversationUser)) {
                             deleteConversationAction.visibility = View.GONE
                         } else {
                             deleteConversationAction.visibility = View.VISIBLE
@@ -685,117 +696,320 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
+    private fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
+        val subscriber = object : Observer<GenericOverall> {
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(genericOverall: GenericOverall) {
+                getListOfParticipants()
+            }
+
+            @SuppressLint("LongLogTag")
+            override fun onError(e: Throwable) {
+                Log.e(TAG, "Error toggling moderator status", e)
+            }
+
+            override fun onComplete() {
+            }
+        }
+
+        if (participant.type == Participant.ParticipantType.MODERATOR ||
+            participant.type == Participant.ParticipantType.GUEST_MODERATOR
+        ) {
+            ncApi.demoteAttendeeFromModerator(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.attendeeId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        } else if (participant.type == Participant.ParticipantType.USER ||
+            participant.type == Participant.ParticipantType.GUEST
+        ) {
+            ncApi.promoteAttendeeToModerator(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.attendeeId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        }
+    }
+
+    private fun toggleModeratorStatusLegacy(apiVersion: Int, participant: Participant) {
+        val subscriber = object : Observer<GenericOverall> {
+            override fun onSubscribe(d: Disposable) {
+            }
+
+            override fun onNext(genericOverall: GenericOverall) {
+                getListOfParticipants()
+            }
+
+            @SuppressLint("LongLogTag")
+            override fun onError(e: Throwable) {
+                Log.e(TAG, "Error toggling moderator status", e)
+            }
+
+            override fun onComplete() {
+            }
+        }
+
+        if (participant.type == Participant.ParticipantType.MODERATOR) {
+            ncApi.demoteModeratorToUser(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.userId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        } else if (participant.type == Participant.ParticipantType.USER) {
+            ncApi.promoteUserToModerator(
+                credentials,
+                ApiUtils.getUrlForRoomModerators(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.userId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber)
+        }
+    }
+
+    fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
+        if (apiVersion >= ApiUtils.APIv4) {
+            ncApi.removeAttendeeFromConversation(
+                credentials,
+                ApiUtils.getUrlForAttendees(
+                    apiVersion,
+                    conversationUser!!.baseUrl,
+                    conversation!!.token
+                ),
+                participant.attendeeId
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(genericOverall: GenericOverall) {
+                        getListOfParticipants()
+                    }
+
+                    @SuppressLint("LongLogTag")
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error removing attendee from conversation", e)
+                    }
+
+                    override fun onComplete() {
+                    }
+                })
+        } else {
+            if (participant.type == Participant.ParticipantType.GUEST ||
+                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
+            ) {
+                ncApi.removeParticipantFromConversation(
+                    credentials,
+                    ApiUtils.getUrlForRemovingParticipantFromConversation(
+                        conversationUser!!.baseUrl,
+                        conversation!!.token,
+                        true
+                    ),
+                    participant.sessionId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error removing guest from conversation", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            } else {
+                ncApi.removeParticipantFromConversation(
+                    credentials,
+                    ApiUtils.getUrlForRemovingParticipantFromConversation(
+                        conversationUser!!.baseUrl,
+                        conversation!!.token,
+                        false
+                    ),
+                    participant.userId
+                )
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                        }
+
+                        override fun onNext(genericOverall: GenericOverall) {
+                            getListOfParticipants()
+                        }
+
+                        @SuppressLint("LongLogTag")
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error removing user from conversation", e)
+                        }
+
+                        override fun onComplete() {
+                        }
+                    })
+            }
+        }
+    }
+
     override fun onItemClick(view: View?, position: Int): Boolean {
+        if (!conversation!!.canModerate(conversationUser)) {
+            return true
+        }
+
         val userItem = adapter?.getItem(position) as UserItem
         val participant = userItem.model
 
-        if (participant.userId != conversationUser!!.userId) {
-            var items = mutableListOf(
-                BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
-                BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
-                BasicListItemWithImage(
-                    R.drawable.ic_delete_grey600_24dp,
-                    context.getString(R.string.nc_remove_participant)
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+
+        if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
+            if (participant.attendeePin.isNotEmpty()) {
+                val items = mutableListOf(
+                    BasicListItemWithImage(
+                        R.drawable.ic_lock_grey600_24px,
+                        context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+                    )
                 )
-            )
-
-            if (!conversation!!.canModerate(conversationUser)) {
-                items = mutableListOf()
-            } else {
-                if (participant.type == Participant.ParticipantType.MODERATOR || participant.type == Participant.ParticipantType.OWNER) {
-                    items.removeAt(0)
-                } else if (participant.type == Participant.ParticipantType.USER) {
-                    items.removeAt(1)
-                }
-            }
-
-            if (items.isNotEmpty()) {
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
                     cornerRadius(res = R.dimen.corner_radius)
 
                     title(text = participant.displayName)
                     listItemsWithImage(items = items) { dialog, index, _ ->
-
-                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(1))
-
                         if (index == 0) {
-                            if (participant.type == Participant.ParticipantType.MODERATOR) {
-                                ncApi.demoteModeratorToUser(
-                                    credentials,
-                                    ApiUtils.getUrlForRoomModerators(
-                                        apiVersion,
-                                        conversationUser.baseUrl,
-                                        conversation!!.token
-                                    ),
-                                    participant.userId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
-                            } else if (participant.type == Participant.ParticipantType.USER) {
-                                ncApi.promoteUserToModerator(
-                                    credentials,
-                                    ApiUtils.getUrlForRoomModerators(
-                                        apiVersion,
-                                        conversationUser.baseUrl,
-                                        conversation!!.token
-                                    ),
-                                    participant.userId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
-                            }
-                        } else if (index == 1) {
-                            if (participant.type == Participant.ParticipantType.GUEST ||
-                                participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
-                            ) {
-                                ncApi.removeParticipantFromConversation(
-                                    credentials,
-                                    ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                        conversationUser.baseUrl,
-                                        conversation!!.token,
-                                        true
-                                    ),
-                                    participant.sessionId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                    }
-                            } else {
-                                ncApi.removeParticipantFromConversation(
-                                    credentials,
-                                    ApiUtils.getUrlForRemovingParticipantFromConversation(
-                                        conversationUser.baseUrl,
-                                        conversation!!.token,
-                                        false
-                                    ),
-                                    participant.userId
-                                )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe {
-                                        getListOfParticipants()
-                                        // get participants again
-                                    }
-                            }
+                            removeAttendeeFromConversation(apiVersion, participant)
                         }
                     }
                 }
             }
+            return true
         }
 
+        if (participant.type == Participant.ParticipantType.OWNER) {
+            // Can not moderate owner
+            return true
+        }
+
+        if (participant.getActorType() == GROUPS) {
+            val items = mutableListOf(
+                BasicListItemWithImage(
+                    R.drawable.ic_delete_grey600_24dp,
+                    context.getString(R.string.nc_remove_group_and_members)
+                )
+            )
+            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                cornerRadius(res = R.dimen.corner_radius)
+
+                title(text = participant.displayName)
+                listItemsWithImage(items = items) { dialog, index, _ ->
+                    if (index == 0) {
+                        removeAttendeeFromConversation(apiVersion, participant)
+                    }
+                }
+            }
+            return true
+        }
+
+        var items = mutableListOf(
+            BasicListItemWithImage(
+                R.drawable.ic_lock_grey600_24px,
+                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+            ),
+            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
+            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
+            BasicListItemWithImage(
+                R.drawable.ic_delete_grey600_24dp,
+                context.getString(R.string.nc_remove_participant)
+            )
+        )
+
+        if (participant.type == Participant.ParticipantType.MODERATOR ||
+            participant.type == Participant.ParticipantType.GUEST_MODERATOR
+        ) {
+            items.removeAt(1)
+        } else if (participant.type == Participant.ParticipantType.USER ||
+            participant.type == Participant.ParticipantType.GUEST
+        ) {
+            items.removeAt(2)
+        } else {
+            // Self joined users can not be promoted nor demoted
+            items.removeAt(2)
+            items.removeAt(1)
+        }
+
+        if (participant.attendeePin.isEmpty()) {
+            items.removeAt(0)
+        }
+
+        if (items.isNotEmpty()) {
+            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                cornerRadius(res = R.dimen.corner_radius)
+
+                title(text = participant.displayName)
+                listItemsWithImage(items = items) { dialog, index, _ ->
+                    var actionToTrigger = index
+                    if (participant.attendeePin.isEmpty()) {
+                        actionToTrigger++
+                    }
+                    if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+                        actionToTrigger++
+                    }
+
+                    if (actionToTrigger == 0) {
+                        // Pin, nothing to do
+                    } else if (actionToTrigger == 1) {
+                        // Promote/demote
+                        if (apiVersion >= ApiUtils.APIv4) {
+                            toggleModeratorStatus(apiVersion, participant)
+                        } else {
+                            toggleModeratorStatusLegacy(apiVersion, participant)
+                        }
+                    } else if (actionToTrigger == 2) {
+                        // Remove from conversation
+                        removeAttendeeFromConversation(apiVersion, participant)
+                    }
+                }
+            }
+        }
         return true
     }
 
     companion object {
 
+        private const val TAG = "ConversationInfoController"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
     }
 
@@ -804,6 +1018,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
      */
     class UserItemComparator : Comparator<UserItem> {
         override fun compare(left: UserItem, right: UserItem): Int {
+            val leftIsGroup = left.model.actorType == GROUPS
+            val rightIsGroup = right.model.actorType == GROUPS
+            if (leftIsGroup != rightIsGroup) {
+                // Groups below participants
+                return if (rightIsGroup) { -1 } else { 1 }
+            }
+
             if (left.isOnline && !right.isOnline) {
                 return -1
             } else if (!left.isOnline && right.isOnline) {

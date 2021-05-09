@@ -111,6 +111,10 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/cloud/capabilities";
     }
 
+    public static int getCallApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
+        return getConversationApiVersion(capabilities, versions);
+    }
+
     public static int getConversationApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
         boolean hasApiV4 = false;
         for (int version : versions) {

@@ -61,6 +61,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
@@ -508,6 +509,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             Participant participant;
 
                             List<AbstractFlexibleItem> newUserItemList = new ArrayList<>();
+                            EnumActorTypeConverter actorTypeConverter = new EnumActorTypeConverter();
 
                             try {
                                     AutocompleteOverall autocompleteOverall = LoganSquare.parse(responseBody.string(), AutocompleteOverall.class);
@@ -516,13 +518,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
                                         if (!autocompleteUser.getId().equals(currentUser.getUserId()) && !existingParticipants.contains(autocompleteUser.getId())) {
                                             participant = new Participant();
-                                            participant.setUserId(autocompleteUser.getId());
+                                            participant.setActorId(autocompleteUser.getId());
+                                            participant.setActorType(actorTypeConverter.getFromString(autocompleteUser.getSource()));
                                             participant.setDisplayName(autocompleteUser.getLabel());
                                             participant.setSource(autocompleteUser.getSource());
 
                                             String headerTitle;
 
-                                            if (!autocompleteUser.getSource().equals("groups")) {
+                                            if (participant.getActorType() != Participant.ActorType.GROUPS) {
                                                 headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
                                             } else {
                                                 headerTitle = getResources().getString(R.string.nc_groups);

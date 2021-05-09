@@ -84,8 +84,12 @@ public class Conversation {
     public int lastReadMessage;
     @JsonField(name = "callFlag")
     public int callFlag;
+
     @JsonField(name = "canLeaveConversation")
     public Boolean canLeaveConversation;
+
+    @JsonField(name = "canDeleteConversation")
+    public Boolean canDeleteConversation;
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
@@ -131,6 +135,15 @@ public class Conversation {
         // Fallback for APIv1
         return !canModerate(conversationUser) ||
                 (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && this.participants.size() > 1);
+    }
+
+    public boolean canDelete(UserEntity conversationUser) {
+        if (canDeleteConversation != null) {
+            // Available since APIv2
+            return canDeleteConversation;
+        }
+        // Fallback for APIv1
+        return canModerate(conversationUser);
     }
 
     public String getRoomId() {
@@ -314,169 +327,155 @@ public class Conversation {
         this.callFlag = callFlag;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) {
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (!(o instanceof Conversation)) {
-            return false;
-        }
-        final Conversation other = (Conversation) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$roomId = this.getRoomId();
-        final Object other$roomId = other.getRoomId();
-        if (this$roomId == null ? other$roomId != null : !this$roomId.equals(other$roomId)) {
-            return false;
-        }
-        final Object this$token = this.getToken();
-        final Object other$token = other.getToken();
-        if (this$token == null ? other$token != null : !this$token.equals(other$token)) {
-            return false;
-        }
-        final Object this$name = this.getName();
-        final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
-            return false;
-        }
-        final Object this$displayName = this.getDisplayName();
-        final Object other$displayName = other.getDisplayName();
-        if (this$displayName == null ? other$displayName != null : !this$displayName.equals(other$displayName)) {
-            return false;
-        }
-        final Object this$type = this.getType();
-        final Object other$type = other.getType();
-        if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
-            return false;
-        }
-        if (this.getLastPing() != other.getLastPing()) {
-            return false;
-        }
-        final Object this$participants = this.participants;
-        final Object other$participants = other.participants;
-        if (this$participants == null ? other$participants != null : !this$participants.equals(other$participants)) {
-            return false;
-        }
-        final Object this$participantType = this.getParticipantType();
-        final Object other$participantType = other.getParticipantType();
-        if (this$participantType == null ? other$participantType != null : !this$participantType.equals(other$participantType)) {
-            return false;
-        }
-        if (this.isHasPassword() != other.isHasPassword()) {
-            return false;
-        }
-        final Object this$sessionId = this.getSessionId();
-        final Object other$sessionId = other.getSessionId();
-        if (this$sessionId == null ? other$sessionId != null : !this$sessionId.equals(other$sessionId)) {
-            return false;
-        }
-        final Object this$password = this.getPassword();
-        final Object other$password = other.getPassword();
-        if (this$password == null ? other$password != null : !this$password.equals(other$password)) {
-            return false;
-        }
-        if (this.isFavorite() != other.isFavorite()) {
-            return false;
-        }
-        if (this.getLastActivity() != other.getLastActivity()) {
-            return false;
-        }
-        if (this.getUnreadMessages() != other.getUnreadMessages()) {
-            return false;
-        }
-        if (this.isUnreadMention() != other.isUnreadMention()) {
-            return false;
-        }
-        final Object this$lastMessage = this.getLastMessage();
-        final Object other$lastMessage = other.getLastMessage();
-        if (this$lastMessage == null ? other$lastMessage != null : !this$lastMessage.equals(other$lastMessage)) {
-            return false;
-        }
-        final Object this$objectType = this.getObjectType();
-        final Object other$objectType = other.getObjectType();
-        if (this$objectType == null ? other$objectType != null : !this$objectType.equals(other$objectType)) {
-            return false;
-        }
-        final Object this$notificationLevel = this.getNotificationLevel();
-        final Object other$notificationLevel = other.getNotificationLevel();
-        if (this$notificationLevel == null ? other$notificationLevel != null : !this$notificationLevel.equals(other$notificationLevel)) {
-            return false;
-        }
-        final Object this$conversationReadOnlyState = this.getConversationReadOnlyState();
-        final Object other$conversationReadOnlyState = other.getConversationReadOnlyState();
-        if (this$conversationReadOnlyState == null ? other$conversationReadOnlyState != null : !this$conversationReadOnlyState.equals(other$conversationReadOnlyState)) {
-            return false;
-        }
-        final Object this$lobbyState = this.getLobbyState();
-        final Object other$lobbyState = other.getLobbyState();
-        if (this$lobbyState == null ? other$lobbyState != null : !this$lobbyState.equals(other$lobbyState)) {
-            return false;
-        }
-        final Object this$lobbyTimer = this.getLobbyTimer();
-        final Object other$lobbyTimer = other.getLobbyTimer();
-        if (this$lobbyTimer == null ? other$lobbyTimer != null : !this$lobbyTimer.equals(other$lobbyTimer)) {
-            return false;
-        }
-        if (this.getLastReadMessage() != other.getLastReadMessage()) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        return this.getCallFlag() == other.getCallFlag();
+        Conversation that = (Conversation) o;
+
+        if (lastPing != that.lastPing) {
+            return false;
+        }
+        if (hasPassword != that.hasPassword) {
+            return false;
+        }
+        if (isFavorite != that.isFavorite) {
+            return false;
+        }
+        if (lastActivity != that.lastActivity) {
+            return false;
+        }
+        if (unreadMessages != that.unreadMessages) {
+            return false;
+        }
+        if (unreadMention != that.unreadMention) {
+            return false;
+        }
+        if (lastReadMessage != that.lastReadMessage) {
+            return false;
+        }
+        if (callFlag != that.callFlag) {
+            return false;
+        }
+        if (roomId != null ? !roomId.equals(that.roomId) : that.roomId != null) {
+            return false;
+        }
+        if (!token.equals(that.token)) {
+            return false;
+        }
+        if (name != null ? !name.equals(that.name) : that.name != null) {
+            return false;
+        }
+        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) {
+            return false;
+        }
+        if (type != that.type) {
+            return false;
+        }
+        if (participants != null ? !participants.equals(that.participants) : that.participants != null) {
+            return false;
+        }
+        if (participantType != that.participantType) {
+            return false;
+        }
+        if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) {
+            return false;
+        }
+        if (password != null ? !password.equals(that.password) : that.password != null) {
+            return false;
+        }
+        if (lastMessage != null ? !lastMessage.equals(that.lastMessage) : that.lastMessage != null) {
+            return false;
+        }
+        if (objectType != null ? !objectType.equals(that.objectType) : that.objectType != null) {
+            return false;
+        }
+        if (notificationLevel != that.notificationLevel) {
+            return false;
+        }
+        if (conversationReadOnlyState != that.conversationReadOnlyState) {
+            return false;
+        }
+        if (lobbyState != that.lobbyState) {
+            return false;
+        }
+        if (lobbyTimer != null ? !lobbyTimer.equals(that.lobbyTimer) : that.lobbyTimer != null) {
+            return false;
+        }
+        if (canLeaveConversation != null ? !canLeaveConversation.equals(that.canLeaveConversation) : that.canLeaveConversation != null) {
+            return false;
+        }
+        return canDeleteConversation != null ? canDeleteConversation.equals(that.canDeleteConversation) : that.canDeleteConversation == null;
     }
 
     protected boolean canEqual(final Object other) {
         return other instanceof Conversation;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $roomId = this.getRoomId();
-        result = result * PRIME + ($roomId == null ? 43 : $roomId.hashCode());
-        final Object $token = this.getToken();
-        result = result * PRIME + ($token == null ? 43 : $token.hashCode());
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $displayName = this.getDisplayName();
-        result = result * PRIME + ($displayName == null ? 43 : $displayName.hashCode());
-        final Object $type = this.getType();
-        result = result * PRIME + ($type == null ? 43 : $type.hashCode());
-        final long $lastPing = this.getLastPing();
-        result = result * PRIME + (int) ($lastPing >>> 32 ^ $lastPing);
-        final Object $participants = this.participants;
-        result = result * PRIME + ($participants == null ? 43 : $participants.hashCode());
-        final Object $participantType = this.getParticipantType();
-        result = result * PRIME + ($participantType == null ? 43 : $participantType.hashCode());
-        result = result * PRIME + (this.isHasPassword() ? 79 : 97);
-        final Object $sessionId = this.getSessionId();
-        result = result * PRIME + ($sessionId == null ? 43 : $sessionId.hashCode());
-        final Object $password = this.getPassword();
-        result = result * PRIME + ($password == null ? 43 : $password.hashCode());
-        result = result * PRIME + (this.isFavorite() ? 79 : 97);
-        final long $lastActivity = this.getLastActivity();
-        result = result * PRIME + (int) ($lastActivity >>> 32 ^ $lastActivity);
-        result = result * PRIME + this.getUnreadMessages();
-        result = result * PRIME + (this.isUnreadMention() ? 79 : 97);
-        final Object $lastMessage = this.getLastMessage();
-        result = result * PRIME + ($lastMessage == null ? 43 : $lastMessage.hashCode());
-        final Object $objectType = this.getObjectType();
-        result = result * PRIME + ($objectType == null ? 43 : $objectType.hashCode());
-        final Object $notificationLevel = this.getNotificationLevel();
-        result = result * PRIME + ($notificationLevel == null ? 43 : $notificationLevel.hashCode());
-        final Object $conversationReadOnlyState = this.getConversationReadOnlyState();
-        result = result * PRIME + ($conversationReadOnlyState == null ? 43 : $conversationReadOnlyState.hashCode());
-        final Object $lobbyState = this.getLobbyState();
-        result = result * PRIME + ($lobbyState == null ? 43 : $lobbyState.hashCode());
-        final Object $lobbyTimer = this.getLobbyTimer();
-        result = result * PRIME + ($lobbyTimer == null ? 43 : $lobbyTimer.hashCode());
-        result = result * PRIME + this.getLastReadMessage();
-        result = result * PRIME + this.getCallFlag();
+        int result = roomId != null ? roomId.hashCode() : 0;
+        result = 31 * result + token.hashCode();
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + type.hashCode();
+        result = 31 * result + (int) (lastPing ^ (lastPing >>> 32));
+        result = 31 * result + (participants != null ? participants.hashCode() : 0);
+        result = 31 * result + (participantType != null ? participantType.hashCode() : 0);
+        result = 31 * result + (hasPassword ? 1 : 0);
+        result = 31 * result + (sessionId != null ? sessionId.hashCode() : 0);
+        result = 31 * result + (password != null ? password.hashCode() : 0);
+        result = 31 * result + (isFavorite ? 1 : 0);
+        result = 31 * result + (int) (lastActivity ^ (lastActivity >>> 32));
+        result = 31 * result + unreadMessages;
+        result = 31 * result + (unreadMention ? 1 : 0);
+        result = 31 * result + (lastMessage != null ? lastMessage.hashCode() : 0);
+        result = 31 * result + (objectType != null ? objectType.hashCode() : 0);
+        result = 31 * result + (notificationLevel != null ? notificationLevel.hashCode() : 0);
+        result = 31 * result + (conversationReadOnlyState != null ? conversationReadOnlyState.hashCode() : 0);
+        result = 31 * result + (lobbyState != null ? lobbyState.hashCode() : 0);
+        result = 31 * result + (lobbyTimer != null ? lobbyTimer.hashCode() : 0);
+        result = 31 * result + lastReadMessage;
+        result = 31 * result + callFlag;
+        result = 31 * result + (canLeaveConversation != null ? canLeaveConversation.hashCode() : 0);
+        result = 31 * result + (canDeleteConversation != null ? canDeleteConversation.hashCode() : 0);
         return result;
     }
 
+    @Override
     public String toString() {
-        return "Conversation(roomId=" + this.getRoomId() + ", token=" + this.getToken() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", type=" + this.getType() + ", lastPing=" + this.getLastPing() + ", participants=" + this.participants + ", participantType=" + this.getParticipantType() + ", hasPassword=" + this.isHasPassword() + ", sessionId=" + this.getSessionId() + ", password=" + this.getPassword() + ", isFavorite=" + this.isFavorite() + ", lastActivity=" + this.getLastActivity() + ", unreadMessages=" + this.getUnreadMessages() + ", unreadMention=" + this.isUnreadMention() + ", lastMessage=" + this.getLastMessage() + ", objectType=" + this.getObjectType() + ", notificationLevel=" + this.getNotificationLevel() + ", conversationReadOnlyState=" + this.getConversationReadOnlyState() + ", lobbyState=" + this.getLobbyState() + ", lobbyTimer=" + this.getLobbyTimer() + ", lastReadMessage=" + this.getLastReadMessage() + ", callFlag=" + this.getCallFlag() + ")";
+        return "Conversation{" +
+                "roomId='" + roomId + '\'' +
+                ", token='" + token + '\'' +
+                ", name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", type=" + type +
+                ", lastPing=" + lastPing +
+                ", participants=" + participants +
+                ", participantType=" + participantType +
+                ", hasPassword=" + hasPassword +
+                ", sessionId='" + sessionId + '\'' +
+                ", password='" + password + '\'' +
+                ", isFavorite=" + isFavorite +
+                ", lastActivity=" + lastActivity +
+                ", unreadMessages=" + unreadMessages +
+                ", unreadMention=" + unreadMention +
+                ", lastMessage=" + lastMessage +
+                ", objectType='" + objectType + '\'' +
+                ", notificationLevel=" + notificationLevel +
+                ", conversationReadOnlyState=" + conversationReadOnlyState +
+                ", lobbyState=" + lobbyState +
+                ", lobbyTimer=" + lobbyTimer +
+                ", lastReadMessage=" + lastReadMessage +
+                ", callFlag=" + callFlag +
+                ", canLeaveConversation=" + canLeaveConversation +
+                ", canDeleteConversation=" + canDeleteConversation +
+                '}';
     }
 
     public enum NotificationLevel {

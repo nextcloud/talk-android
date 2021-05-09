@@ -178,17 +178,17 @@ public class SwitchAccountController extends BaseController {
                 for (Object userEntityObject : userUtils.getUsers()) {
                     userEntity = (UserEntity) userEntityObject;
                     if (!userEntity.getCurrent()) {
-                        participant = new Participant();
-                        participant.setName(userEntity.getDisplayName());
-
                         String userId;
-
                         if (userEntity.getUserId() != null) {
                             userId = userEntity.getUserId();
                         } else {
                             userId = userEntity.getUsername();
                         }
-                        participant.setUserId(userId);
+
+                        participant = new Participant();
+                        participant.setActorType(Participant.ActorType.USERS);
+                        participant.setActorId(userId);
+                        participant.setDisplayName(userEntity.getDisplayName());
                         userItems.add(new AdvancedUserItem(participant, userEntity, null));
                     }
                 }
@@ -203,8 +203,9 @@ public class SwitchAccountController extends BaseController {
                     importAccount = AccountUtils.INSTANCE.getInformationFromAccount(account);
 
                     participant = new Participant();
-                    participant.setName(importAccount.getUsername());
-                    participant.setUserId(importAccount.getUsername());
+                    participant.setActorType(Participant.ActorType.USERS);
+                    participant.setActorId(importAccount.getUsername());
+                    participant.setDisplayName(importAccount.getUsername());
                     userEntity = new UserEntity();
                     userEntity.setBaseUrl(importAccount.getBaseUrl());
                     userItems.add(new AdvancedUserItem(participant, userEntity, account));

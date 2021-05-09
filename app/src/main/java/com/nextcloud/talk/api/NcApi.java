@@ -135,14 +135,26 @@ public interface NcApi {
 
 
     // also used for removing a guest from a conversation
+    @Deprecated
     @DELETE
     Observable<GenericOverall> removeParticipantFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
 
+    @DELETE
+    Observable<GenericOverall> removeAttendeeFromConversation(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
+
+    @Deprecated
     @POST
     Observable<GenericOverall> promoteUserToModerator(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
 
+    @Deprecated
     @DELETE
     Observable<GenericOverall> demoteModeratorToUser(@Header("Authorization") String authorization, @Url String url, @Query("participant") String participantId);
+
+    @POST
+    Observable<GenericOverall> promoteAttendeeToModerator(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
+
+    @DELETE
+    Observable<GenericOverall> demoteAttendeeFromModerator(@Header("Authorization") String authorization, @Url String url, @Query("attendeeId") Long attendeeId);
 
     /*
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants/self

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.accounts.Account;
+import android.net.Uri;
 import android.view.View;
 import android.widget.*;
 import androidx.annotation.Nullable;
@@ -106,14 +107,14 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         holder.avatarImageView.setController(null);
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getName(),
+            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources().getColor(R.color.colorPrimary));
         } else {
-            holder.contactDisplayName.setText(participant.getName());
+            holder.contactDisplayName.setText(participant.getDisplayName());
         }
 
-        holder.serverUrl.setText(userEntity.getBaseUrl());
+        holder.serverUrl.setText((Uri.parse(userEntity.getBaseUrl()).getHost()));
 
         if (userEntity != null && userEntity.getBaseUrl() != null && userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
             holder.avatarImageView.setVisibility(View.VISIBLE);
@@ -122,7 +123,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
                     .setOldController(holder.avatarImageView.getController())
                     .setAutoPlayAnimations(true)
                     .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            participant.getUserId(), R.dimen.avatar_size), null))
+                            participant.getActorId(), R.dimen.avatar_size), null))
                     .build();
             holder.avatarImageView.setController(draweeController);
 
@@ -138,8 +139,8 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public boolean filter(String constraint) {
-        return participant.getName() != null &&
-                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getName().trim()).find();
+        return participant.getDisplayName() != null &&
+                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find();
     }
 
 

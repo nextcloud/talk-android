@@ -21,7 +21,6 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.res.Resources;
-import android.graphics.drawable.BitmapDrawable;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -150,37 +149,38 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.contactDisplayName.setText(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest));
         }
 
-        if (TextUtils.isEmpty(participant.getSource()) || participant.getSource().equals("users")) {
-            if (Participant.ParticipantType.GUEST.equals(participant.getType()) ||
-                    Participant.ParticipantType.USER_FOLLOWING_LINK.equals(participant.getType())) {
-                String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
-                        .getResources().getString(R.string.nc_guest);
-
-                if (!TextUtils.isEmpty(participant.getDisplayName())) {
-                    displayName = participant.getDisplayName();
-                }
-
-                DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                        .setOldController(holder.simpleDraweeView.getController())
-                        .setAutoPlayAnimations(true)
-                        .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(),
-                                displayName, R.dimen.avatar_size), null))
-                        .build();
-                holder.simpleDraweeView.setController(draweeController);
-
-            } else {
-
-                DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                        .setOldController(holder.simpleDraweeView.getController())
-                        .setAutoPlayAnimations(true)
-                        .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                participant.getUserId(), R.dimen.avatar_size), null))
-                        .build();
-                holder.simpleDraweeView.setController(draweeController);
-
-            }
-        } else if ("groups".equals(participant.getSource())) {
+        if (participant.getActorType() == Participant.ActorType.GROUPS || "groups".equals(participant.getSource())) {
             holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
+        } else if (participant.getActorType() == Participant.ActorType.EMAILS) {
+            // FIXME use an email icon
+            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
+        } else if (participant.getActorType() == Participant.ActorType.GUESTS ||
+                Participant.ParticipantType.GUEST.equals(participant.getType()) ||
+                Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
+
+            String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
+                    .getResources().getString(R.string.nc_guest);
+
+            if (!TextUtils.isEmpty(participant.getDisplayName())) {
+                displayName = participant.getDisplayName();
+            }
+
+            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setOldController(holder.simpleDraweeView.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(),
+                                                                                                                  displayName, R.dimen.avatar_size), null))
+                    .build();
+            holder.simpleDraweeView.setController(draweeController);
+
+        } else if (participant.getActorType() == Participant.ActorType.USERS || participant.getSource().equals("users")) {
+            DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+                    .setOldController(holder.simpleDraweeView.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                                                                                         participant.getUserId(), R.dimen.avatar_size), null))
+                    .build();
+            holder.simpleDraweeView.setController(draweeController);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
@@ -246,13 +246,20 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                         //userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_owner);
                         //break;
                     case 2:
+                    case 6: // Guest moderator
                         userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_moderator);
                         break;
                     case 3:
                         userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_user);
+                        if (participant.getActorType() == Participant.ActorType.GROUPS) {
+                            userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_group);
+                        }
                         break;
                     case 4:
                         userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
+                        if (participant.getActorType() == Participant.ActorType.EMAILS) {
+                            userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_email);
+                        }
                         break;
                     case 5:
                         userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_following_link);

@@ -22,21 +22,38 @@ package com.nextcloud.talk.models.json.participants;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.converters.ObjectParcelConverter;
 
 import org.parceler.Parcel;
 import org.parceler.ParcelPropertyConverter;
 
+import java.util.Arrays;
+
 @Parcel
 @JsonObject
 public class Participant {
+    @JsonField(name = "attendeeId")
+    public Long attendeeId;
+
+    @JsonField(name = "actorType", typeConverter = EnumActorTypeConverter.class)
+    public ActorType actorType;
+
+    @JsonField(name = "actorId")
+    public String actorId;
+
+    @JsonField(name = "attendeePin")
+    public String attendeePin;
+
+    @Deprecated
     @JsonField(name = "userId")
     public String userId;
 
     @JsonField(name = {"type", "participantType"}, typeConverter = EnumParticipantTypeConverter.class)
     public ParticipantType type;
 
+    @Deprecated
     @JsonField(name = "name")
     public String name;
 
@@ -46,15 +63,21 @@ public class Participant {
     @JsonField(name = "lastPing")
     public long lastPing;
 
+    @Deprecated
     @JsonField(name = "sessionId")
     public String sessionId;
 
+    @JsonField(name = "sessionIds")
+    public String[] sessionIds;
+
+    @Deprecated
     @JsonField(name = "roomId")
     public long roomId;
 
     @ParcelPropertyConverter(ObjectParcelConverter.class)
     @JsonField(name = "inCall")
     public Object inCall;
+
     public String source;
 
     public boolean selected;
@@ -76,7 +99,37 @@ public class Participant {
         return participantFlags;
     }
 
+    public Long getAttendeeId() {
+        return attendeeId;
+    }
+
+    public ActorType getActorType() {
+        if (this.actorType == null) {
+            if (this.userId != null) {
+                return ActorType.USERS;
+            } else {
+                return ActorType.GUESTS;
+            }
+        }
+        return actorType;
+    }
+
+    public String getActorId() {
+        if (this.actorId == null) {
+            return this.userId;
+        }
+        return actorId;
+    }
+
+    public String getAttendeePin() {
+        return attendeePin;
+    }
+
+    @Deprecated
     public String getUserId() {
+        if (this.actorType != null && this.actorType == ActorType.USERS) {
+            return this.actorId;
+        }
         return this.userId;
     }
 
@@ -84,6 +137,7 @@ public class Participant {
         return this.type;
     }
 
+    @Deprecated
     public String getName() {
         return this.name;
     }
@@ -96,10 +150,16 @@ public class Participant {
         return this.lastPing;
     }
 
+    @Deprecated
     public String getSessionId() {
         return this.sessionId;
     }
 
+    public String[] getSessionIds() {
+        return sessionIds;
+    }
+
+    @Deprecated
     public long getRoomId() {
         return this.roomId;
     }
@@ -116,14 +176,32 @@ public class Participant {
         return this.selected;
     }
 
+    @Deprecated
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public void setAttendeeId(Long attendeeId) {
+        this.attendeeId = attendeeId;
+    }
+
+    public void setActorType(ActorType actorType) {
+        this.actorType = actorType;
+    }
+
+    public void setActorId(String actorId) {
+        this.actorId = actorId;
+    }
+
+    public void setAttendeePin(String attendeePin) {
+        this.attendeePin = attendeePin;
     }
 
     public void setType(ParticipantType type) {
         this.type = type;
     }
 
+    @Deprecated
     public void setName(String name) {
         this.name = name;
     }
@@ -136,10 +214,12 @@ public class Participant {
         this.lastPing = lastPing;
     }
 
+    @Deprecated
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
     }
 
+    @Deprecated
     public void setRoomId(long roomId) {
         this.roomId = roomId;
     }
@@ -156,93 +236,118 @@ public class Participant {
         this.selected = selected;
     }
 
-    public boolean equals(final Object o) {
-        if (o == this) {
+    public void setSessionIds(String[] sessionIds) {
+        this.sessionIds = sessionIds;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
             return true;
         }
-        if (!(o instanceof Participant)) {
-            return false;
-        }
-        final Participant other = (Participant) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$userId = this.getUserId();
-        final Object other$userId = other.getUserId();
-        if (this$userId == null ? other$userId != null : !this$userId.equals(other$userId)) {
-            return false;
-        }
-        final Object this$type = this.getType();
-        final Object other$type = other.getType();
-        if (this$type == null ? other$type != null : !this$type.equals(other$type)) {
-            return false;
-        }
-        final Object this$name = this.getName();
-        final Object other$name = other.getName();
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
-            return false;
-        }
-        final Object this$displayName = this.getDisplayName();
-        final Object other$displayName = other.getDisplayName();
-        if (this$displayName == null ? other$displayName != null : !this$displayName.equals(other$displayName)) {
-            return false;
-        }
-        if (this.getLastPing() != other.getLastPing()) {
-            return false;
-        }
-        final Object this$sessionId = this.getSessionId();
-        final Object other$sessionId = other.getSessionId();
-        if (this$sessionId == null ? other$sessionId != null : !this$sessionId.equals(other$sessionId)) {
-            return false;
-        }
-        if (this.getRoomId() != other.getRoomId()) {
-            return false;
-        }
-        final Object this$inCall = this.getInCall();
-        final Object other$inCall = other.getInCall();
-        if (this$inCall == null ? other$inCall != null : !this$inCall.equals(other$inCall)) {
-            return false;
-        }
-        final Object this$source = this.getSource();
-        final Object other$source = other.getSource();
-        if (this$source == null ? other$source != null : !this$source.equals(other$source)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
 
-        return this.isSelected() == other.isSelected();
+        Participant that = (Participant) o;
+
+        if (lastPing != that.lastPing) {
+            return false;
+        }
+        if (roomId != that.roomId) {
+            return false;
+        }
+        if (selected != that.selected) {
+            return false;
+        }
+        if (!attendeeId.equals(that.attendeeId)) {
+            return false;
+        }
+        if (!actorType.equals(that.actorType)) {
+            return false;
+        }
+        if (!actorId.equals(that.actorId)) {
+            return false;
+        }
+        if (!attendeePin.equals(that.attendeePin)) {
+            return false;
+        }
+        if (!userId.equals(that.userId)) {
+            return false;
+        }
+        if (type != that.type) {
+            return false;
+        }
+        if (!name.equals(that.name)) {
+            return false;
+        }
+        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) {
+            return false;
+        }
+        if (!sessionId.equals(that.sessionId)) {
+            return false;
+        }
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(sessionIds, that.sessionIds)) {
+            return false;
+        }
+        if (inCall != null ? !inCall.equals(that.inCall) : that.inCall != null) {
+            return false;
+        }
+        return source != null ? source.equals(that.source) : that.source == null;
     }
 
     protected boolean canEqual(final Object other) {
         return other instanceof Participant;
     }
 
+    @Override
     public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $userId = this.getUserId();
-        result = result * PRIME + ($userId == null ? 43 : $userId.hashCode());
-        final Object $type = this.getType();
-        result = result * PRIME + ($type == null ? 43 : $type.hashCode());
-        final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        final Object $displayName = this.getDisplayName();
-        result = result * PRIME + ($displayName == null ? 43 : $displayName.hashCode());
-        final long $lastPing = this.getLastPing();
-        result = result * PRIME + (int) ($lastPing >>> 32 ^ $lastPing);
-        final Object $sessionId = this.getSessionId();
-        result = result * PRIME + ($sessionId == null ? 43 : $sessionId.hashCode());
-        final long $roomId = this.getRoomId();
-        result = result * PRIME + (int) ($roomId >>> 32 ^ $roomId);
-        final Object $inCall = this.getInCall();
-        result = result * PRIME + ($inCall == null ? 43 : $inCall.hashCode());
-        final Object $source = this.getSource();
-        result = result * PRIME + ($source == null ? 43 : $source.hashCode());
-        result = result * PRIME + (this.isSelected() ? 79 : 97);
+        int result = (attendeeId != null ? attendeeId.hashCode() : 0);
+        result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
+        result = 31 * result + (actorId != null ? actorId.hashCode() : 0);
+        result = 31 * result + (attendeePin != null ? attendeePin.hashCode() : 0);
+        result = 31 * result + (userId != null ? userId.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (displayName != null ? displayName.hashCode() : 0);
+        result = 31 * result + (int) (lastPing ^ (lastPing >>> 32));
+        result = 31 * result + (sessionId != null ? sessionId.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(sessionIds);
+        result = 31 * result + (int) (roomId ^ (roomId >>> 32));
+        result = 31 * result + (inCall != null ? inCall.hashCode() : 0);
+        result = 31 * result + (source != null ? source.hashCode() : 0);
+        result = 31 * result + (selected ? 1 : 0);
         return result;
     }
 
+    @Override
     public String toString() {
-        return "Participant(userId=" + this.getUserId() + ", type=" + this.getType() + ", name=" + this.getName() + ", displayName=" + this.getDisplayName() + ", lastPing=" + this.getLastPing() + ", sessionId=" + this.getSessionId() + ", roomId=" + this.getRoomId() + ", inCall=" + this.getInCall() + ", source=" + this.getSource() + ", selected=" + this.isSelected() + ")";
+        return "Participant{" +
+                "attendeeId=" + attendeeId +
+                ", actorType='" + actorType + '\'' +
+                ", actorId='" + actorId + '\'' +
+                ", attendeePin='" + attendeePin + '\'' +
+                ", userId='" + userId + '\'' +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", lastPing=" + lastPing +
+                ", sessionId='" + sessionId + '\'' +
+                ", sessionIds=" + Arrays.toString(sessionIds) +
+                ", roomId=" + roomId +
+                ", inCall=" + inCall +
+                ", source='" + source + '\'' +
+                ", selected=" + selected +
+                '}';
+    }
+
+    public enum ActorType {
+        DUMMY,
+        EMAILS,
+        GROUPS,
+        GUESTS,
+        USERS,
     }
 
     public enum ParticipantType {
