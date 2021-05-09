@@ -80,9 +80,9 @@
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
     <string name="nc_settings_server_eol_title">Server non supportato</string>
-    <string name="nc_settings_server_eol">La versione del server è troppo datata e non supportata da questa versione dell\'app Android</string>
-    <string name="nc_settings_server_almost_eol">La versione del server è molto vecchia e non verrà più supportata nella prossima versione!</string>
-    <string name="nc_settings_warning">Attenzione</string>
+    <string name="nc_settings_server_eol">La versione del server è troppo datata e non supportata da questa versione dell\'applicazione Android</string>
+    <string name="nc_settings_server_almost_eol">La versione del server è molto datata e non sarà più supportata nella prossima versione!</string>
+    <string name="nc_settings_warning">Avviso</string>
     <string name="nc_add">Aggiungi</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
     <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server sul quale hai provato ad autenticarti</string>
@@ -397,5 +397,5 @@
     <string name="selected_list_item">selezionati</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Password non valida</string>
-    <string name="nc_dialog_reauth_or_delete">Vuoi ri-autorizzare o eliminare questo account?</string>
+    <string name="nc_dialog_reauth_or_delete">Vuoi autorizzare nuovamente o eliminare questo account?</string>
 </resources>

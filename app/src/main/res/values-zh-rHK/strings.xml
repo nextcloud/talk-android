@@ -343,6 +343,8 @@
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
+    <string name="nc_upload_in_progess">上傳中</string>
+
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_title">電話號碼整合</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話號碼</string>
