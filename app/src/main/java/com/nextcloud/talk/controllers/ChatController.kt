@@ -684,8 +684,9 @@ class ChatController(args: Bundle) :
                     require(files.isNotEmpty())
 
                     var filenamesWithLinebreaks = "\n"
-                    files.forEach {
-                        var filename = UriUtils.getFileName(Uri.parse(it), context)
+
+                    for (file in files) {
+                        val filename = UriUtils.getFileName(Uri.parse(file), context)
                         filenamesWithLinebreaks += filename + "\n"
                     }
 

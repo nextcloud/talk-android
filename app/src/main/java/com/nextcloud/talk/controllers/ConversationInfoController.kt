@@ -485,8 +485,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         val bundle = Bundle()
         val existingParticipantsId = arrayListOf<String>()
 
-        recyclerViewItems.forEach {
-            val userItem = it as UserItem
+        for (userItem in recyclerViewItems) {
             if (userItem.model.getActorType() == USERS) {
                 existingParticipantsId.add(userItem.model.getActorId())
             }
