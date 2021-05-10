@@ -230,7 +230,8 @@ public class CallNotificationController extends BaseController {
 
                         if (hasParticipantsInCall) {
                             for (Participant participant : participantList) {
-                                if (participant.getUserId().equals(userBeingCalled.getUserId())) {
+                                if (participant.getActorType() == Participant.ActorType.USERS &&
+                                        participant.getActorId().equals(userBeingCalled.getUserId())) {
                                     inCallOnDifferentDevice = true;
                                     break;
                                 }

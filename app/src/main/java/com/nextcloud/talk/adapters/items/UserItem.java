@@ -70,7 +70,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     public boolean equals(Object o) {
         if (o instanceof UserItem) {
             UserItem inItem = (UserItem) o;
-            return participant.getUserId().equals(inItem.getModel().getUserId());
+            return participant.getActorType().equals(inItem.getModel().getActorType()) &&
+                    participant.getActorId().equals(inItem.getModel().getActorId());
         }
         return false;
     }
@@ -178,7 +179,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                     .setOldController(holder.simpleDraweeView.getController())
                     .setAutoPlayAnimations(true)
                     .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                                                                                         participant.getUserId(), R.dimen.avatar_size), null))
+                                                                                                         participant.getActorId(), R.dimen.avatar_size), null))
                     .build();
             holder.simpleDraweeView.setController(draweeController);
         }
@@ -279,7 +280,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     public boolean filter(String constraint) {
         return participant.getDisplayName() != null &&
                 (Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find() ||
-                        Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getUserId().trim()).find());
+                        Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getActorId().trim()).find());
     }
 
     @Override

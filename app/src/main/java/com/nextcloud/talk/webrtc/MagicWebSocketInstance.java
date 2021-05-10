@@ -64,6 +64,9 @@ import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okio.ByteString;
 
+import static com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS;
+import static com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicWebSocketInstance extends WebSocketListener {
     private static final String TAG = "MagicWebSocketInstance";
@@ -246,7 +249,14 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                             internalHashMap = joinEventMap.get(i);
                                             HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
                                             participant = new Participant();
-                                            participant.setUserId((String) internalHashMap.get("userid"));
+                                            String userId = (String) internalHashMap.get("userid");
+                                            if (userId != null) {
+                                                participant.setActorType(USERS);
+                                                participant.setActorId(userId);
+                                            } else {
+                                                participant.setActorType(GUESTS);
+                                                // FIXME seems to be not given by the HPB: participant.setActorId();
+                                            }
                                             if (userMap != null) {
                                                 // There is no "user" attribute for guest participants.
                                                 participant.setDisplayName((String) userMap.get("displayname"));
@@ -412,7 +422,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public String getUserIdForSession(String session) {
         Participant participant = usersHashMap.get(session);
         if (participant != null) {
-            if (participant.getActorType() == Participant.ActorType.USERS) {
+            if (participant.getActorType() == USERS) {
                 return participant.getActorId();
             }
         }
