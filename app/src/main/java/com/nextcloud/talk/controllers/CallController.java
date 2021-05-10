@@ -1866,15 +1866,21 @@ public class CallController extends BaseController {
                 }
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE)) {
-            participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+            }
             participantsAdapter.notifyDataSetChanged();
 
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
-            participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+            }
             participantsAdapter.notifyDataSetChanged();
 
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE)) {
-            participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+            }
             participantsAdapter.notifyDataSetChanged();
 
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
