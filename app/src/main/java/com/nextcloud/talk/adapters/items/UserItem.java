@@ -70,7 +70,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     public boolean equals(Object o) {
         if (o instanceof UserItem) {
             UserItem inItem = (UserItem) o;
-            return participant.getActorType().equals(inItem.getModel().getActorType()) &&
+            return participant.getActorType() == inItem.getModel().getActorType() &&
                     participant.getActorId().equals(inItem.getModel().getActorId());
         }
         return false;
