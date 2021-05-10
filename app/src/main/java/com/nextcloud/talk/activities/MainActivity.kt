@@ -50,6 +50,7 @@ import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
+import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -190,6 +191,32 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
 
         handleActionFromContact(intent)
+    }
+
+    fun resetConversationsList() {
+        if (userUtils.anyUserExists()) {
+            router!!.setRoot(
+                RouterTransaction.with(ConversationsListController())
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+    }
+
+    fun openSettings() {
+        router!!.pushController(
+            RouterTransaction.with(SettingsController())
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
+    }
+
+    fun addAccount() {
+        router!!.pushController(
+            RouterTransaction.with(ServerSelectionController())
+                .pushChangeHandler(VerticalChangeHandler())
+                .popChangeHandler(VerticalChangeHandler())
+        )
     }
 
     private fun handleActionFromContact(intent: Intent) {

@@ -79,6 +79,7 @@ import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -108,6 +109,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.RoundedBitmapDrawable;
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.work.Data;
@@ -565,11 +567,15 @@ public class ConversationsListController extends BaseController implements Searc
 
             if (activity.settingsButton != null) {
                 activity.settingsButton.setOnClickListener(v -> {
-                    ArrayList<String> names = new ArrayList<>();
-                    names.add("userAvatar.transitionTag");
-                    getRouter().pushController((RouterTransaction.with(new SettingsController())
-                            .pushChangeHandler(new HorizontalChangeHandler())
-                            .popChangeHandler(new HorizontalChangeHandler())));
+                    if (getResources() != null && getResources().getBoolean(R.bool.multiaccount_support)) {
+                        DialogFragment newFragment = ChooseAccountDialogFragment.newInstance();
+                        newFragment.show(((MainActivity) getActivity()).getSupportFragmentManager(),
+                                         "ChooseAccountDialogFragment");
+                    } else {
+                        getRouter().pushController((RouterTransaction.with(new SettingsController())
+                                .pushChangeHandler(new HorizontalChangeHandler())
+                                .popChangeHandler(new HorizontalChangeHandler())));
+                    }
                 });
             }
         }

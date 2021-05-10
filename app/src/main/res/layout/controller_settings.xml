@@ -123,18 +123,10 @@
                 tools:src="@tools:sample/avatars[0]" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
-                android:id="@+id/settings_switch"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/server_age_warning_text_card"
-                android:tag="switchAccountButton"
-                apc:mp_title="@string/nc_settings_switch_account" />
-
-            <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_reauthorize"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/settings_switch"
+                android:layout_below="@id/server_age_warning_text_card"
                 apc:mp_title="@string/nc_settings_reauthorize" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
@@ -150,13 +142,6 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@id/settings_client_cert"
                 apc:mp_title="@string/nc_settings_remove_account" />
-
-            <com.yarolegovich.mp.MaterialStandardPreference
-                android:id="@+id/settings_add_account"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/settings_remove_account"
-                apc:mp_title="@string/nc_settings_add_account" />
 
         </RelativeLayout>
 
