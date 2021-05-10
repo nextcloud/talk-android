@@ -2,7 +2,7 @@ name: "Assemble"
 
 on:
   pull_request:
-    branches: [ master, stable-* ]
+    branches: [ master, stable-*, v* ]
 
 jobs:
   flavor:
