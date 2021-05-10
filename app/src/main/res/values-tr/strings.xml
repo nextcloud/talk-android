@@ -224,7 +224,6 @@
     <string name="nc_demote">Sorumluluktan çıkar</string>
     <string name="nc_promote">Sorumlu olarak ata</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Bir ileti yazın …</string>
     <string name="nc_date_header_yesterday">Dün</string>

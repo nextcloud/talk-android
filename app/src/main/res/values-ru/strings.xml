@@ -224,7 +224,6 @@
     <string name="nc_demote">Сместить с поста модератора</string>
     <string name="nc_promote">Назначить модератором</string>
     <string name="nc_remove_participant">Удалить участника</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Напишите сообщение…</string>
     <string name="nc_date_header_yesterday">Вчера</string>

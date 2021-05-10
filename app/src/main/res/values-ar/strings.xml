@@ -211,7 +211,6 @@
     <string name="nc_demote">تخفيض رتبة مشرف</string>
     <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_remove_participant">حذف مشارك</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">ادخل رسالة</string>
     <string name="nc_date_header_yesterday">أمس</string>

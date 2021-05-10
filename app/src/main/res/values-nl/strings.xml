@@ -236,7 +236,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_demote">Degradeer van moderator</string>
     <string name="nc_promote">Promoveer tot moderator</string>
     <string name="nc_remove_participant">Verwijder deelnemer</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Voer een bericht in...</string>
     <string name="nc_date_header_yesterday">Gisteren</string>

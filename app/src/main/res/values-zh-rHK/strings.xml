@@ -235,7 +235,6 @@
     <string name="nc_demote">從主持人降級</string>
     <string name="nc_promote">晉升為主持人</string>
     <string name="nc_remove_participant">移除參與者</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">輸入訊息</string>
     <string name="nc_date_header_yesterday">昨日</string>

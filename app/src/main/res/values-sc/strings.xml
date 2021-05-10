@@ -203,7 +203,6 @@
     <string name="nc_demote">Lea·ssi su permissu de moderare</string>
     <string name="nc_promote">Approva a moderadore</string>
     <string name="nc_remove_participant"> Boga·nche partetzipante</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Inserta unu messàgiu...</string>
     <string name="nc_date_header_yesterday">Eris</string>
@@ -244,7 +243,7 @@
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Partetzipantes</string>
     <string name="nc_owner">Mere</string>
-    <string name="nc_file_browser_back">A coa</string>
+    <string name="nc_file_browser_back">In segus</string>
     <!-- Lobby -->
     <string name="nc_webinar">Seminàriu in lìnia</string>
     <string name="nc_start_time">Ora de cumintzu</string>

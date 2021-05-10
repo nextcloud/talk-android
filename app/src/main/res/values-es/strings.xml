@@ -235,7 +235,6 @@
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_promote">Elevar a moderador</string>
     <string name="nc_remove_participant">Eliminar participante</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_date_header_yesterday">Ayer</string>

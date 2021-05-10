@@ -235,7 +235,6 @@
     <string name="nc_demote">Declassa da moderatore</string>
     <string name="nc_promote">Promuovi a moderatore</string>
     <string name="nc_remove_participant">Rimuovi partecipante</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Digita un messaggio…</string>
     <string name="nc_date_header_yesterday">Ieri</string>

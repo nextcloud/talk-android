@@ -187,7 +187,6 @@
     <string name="nc_demote">Скини улогу модератора</string>
     <string name="nc_promote">Унапреди у модератора</string>
     <string name="nc_remove_participant">Уклони учесника</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Унесите поруку…</string>
     <string name="nc_date_header_yesterday">Јуче</string>

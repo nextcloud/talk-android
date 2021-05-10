@@ -193,7 +193,6 @@
     <string name="nc_demote">تنزل مقام از مدیر</string>
     <string name="nc_promote">ترفیع به مدیر</string>
     <string name="nc_remove_participant">شرکت کننده را حذف کنید</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">پیامی را وارد کنید...</string>
     <string name="nc_date_header_yesterday">دیروز</string>

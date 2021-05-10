@@ -224,7 +224,6 @@
     <string name="nc_demote">Lefokozás moderátorról</string>
     <string name="nc_promote">Kinevezés moderátorrá</string>
     <string name="nc_remove_participant">Résztvevő eltávolítása</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_date_header_yesterday">Tegnap</string>

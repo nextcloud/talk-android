@@ -24,9 +24,20 @@
     <!-- Common -->
     <string name="nc_yes">はい</string>
     <string name="nc_no">いいえ</string>
+    <string name="nc_common_skip">スキップ</string>
+    <string name="nc_common_set">設定</string>
+    <string name="nc_common_error_sorry">不明なエラーが発生しました。</string>
+
     <!-- Bottom Navigation -->
     <string name="nc_settings">設定</string>
 
+    <!-- Server selection -->
+    <string name="nc_server_connect">サーバー接続テスト</string>
+    <string name="nc_server_helper_text">%1$sをWeb画面でブラウザで開くときのURL</string>
+    <string name="nc_server_testing_connection">接続テスト</string>
+    <string name="nc_server_unsupported">サーバーにサポートされているトークアプリがインストールされていません</string>
+
+    <string name="nc_server_url">サーバーのアドレス https://...</string>
     <string name="nc_server_not_installed">%1$sのインストールを完了してください</string>
     <string name="nc_server_db_upgrade_needed">%1$sデータベースをアップグレードしてください</string>
     <string name="nc_server_maintenance">%1$sをメンテナンスから外してください</string>
@@ -36,6 +47,7 @@
     <string name="nc_server_import_account">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_import_accounts">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_failed_to_import_account">選択したアカウントのインポートに失敗しました</string>
+    <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
 
     <!-- Account verification -->
@@ -67,12 +79,20 @@
     <string name="nc_settings_remove_confirmation">現在のアカウントを削除する目的を確認してください。</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
+    <string name="nc_settings_server_eol_title">サポートされてないサーバーです</string>
+    <string name="nc_settings_server_eol">サーバーのバージョンが古く、このAndroidバージョンで対応していません。</string>
+    <string name="nc_settings_server_almost_eol">サーバーバージョンが古すぎるため、次のリリースのバージョンではサポートされません。</string>
+    <string name="nc_settings_warning">警告</string>
     <string name="nc_add">追加</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_account_scheduled_for_deletion">アカウントは削除予定であり、変更することはできません</string>
+    <string name="nc_settings_notification_sounds">音声</string>
+    <string name="nc_settings_call_ringtone">呼び出し</string>
+    <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_no_ringtone">音無し</string>
+    <string name="nc_settings_vibrate">バイブレーション通知</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
     <string name="nc_settings_appearance">表示</string>
     <string name="nc_settings_theme_title">テーマ</string>
@@ -81,6 +101,7 @@
     <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_dark">ダーク</string>
+    <string name="nc_settings_privacy">プライバシー</string>
     <string name="nc_settings_screen_lock_title">スクリーンロック</string>
     <string name="nc_settings_screen_lock_desc">%1$sをアンドロイドスクリーンロックかサポートされている生体認証でロックします。</string>
     <string name="nc_settings_screen_lock_timeout_title">タイムアウト時のスクリーンロック</string>
@@ -91,6 +112,11 @@
     <string name="nc_settings_incognito_keyboard_desc">カスタマイズされた入力が認識されないようにする（保証なし）</string>
     <string name="nc_settings_link_previews_title">リンクプレビューを表示</string>
     <string name="nc_settings_link_previews_desc">サポートされているサービスに送られてきたリンクからコンテンツのプレビューを許可する。</string>
+    <string name="nc_locked_tap_to_unlock">タップしてロック解除</string>
+    <string name="nc_locked">ロック</string>
+    <string name="nc_settings_read_privacy_desc">自分の読み取りステータスを共有し、他の人の読み取り状態を表示します</string>
+    <string name="nc_settings_read_privacy_title">読み取りステータス</string>
+
     <string name="nc_screen_lock_timeout_30">30 秒</string>
     <string name="nc_screen_lock_timeout_60">1 分間
 </string>
@@ -118,6 +144,8 @@
 
     <string name="nc_select_an_account">アカウントを選択</string>
 
+    <string name="nc_profile_personal_info_title">パーソナル情報</string>
+
     <!-- Conversation menu -->
     <string name="nc_start_conversation">会話を開始する</string>
     <string name="nc_configure_room">会話を構成する</string>
@@ -132,12 +160,16 @@
     <string name="nc_make_call_private">会話を非公開にする</string>
     <string name="nc_delete_call">会話を削除</string>
     <string name="nc_delete">削除</string>
+    <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者でも一緒に解除されます。</string>
+
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_join_via_link">トークに参加する</string>
     <string name="nc_join_via_web">ウェブ経由で参加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_contacts">連絡先を選択</string>
     <string name="nc_contacts_done">完了</string>
 
     <!-- Permissions -->
@@ -145,15 +177,26 @@
     <string name="nc_microphone_permission_permanently_denied">音声通信を有効にするには、システム設定で「マイク」権限を与えてください。</string>
     <string name="nc_permissions_settings">設定を開く</string>
 
+    <!-- Call -->
+    <string name="nc_call_voice">%s音声通話</string>
+    <string name="nc_call_video">%s映像通話</string>
+    <string name="nc_call_unknown">%s通話</string>
+    <string name="nc_call_incoming">呼び出し中</string>
+    <string name="nc_call_ringing">呼び出し中</string>
     <string name="nc_connecting_call">接続中</string>
     <string name="nc_calling">接続中</string>
     <string name="nc_incoming_call">着信コール</string>
     <string name="nc_nick_guest">ゲスト</string>
     <string name="nc_public_call">新規公開会話</string>
+    <string name="nc_public_call_explanation">会話を公開にすると、特別なリンクを介して外部からユーザーを招待できます。</string>
     <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
     <string name="nc_call_reconnecting">再接続中...</string>
     <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
     <string name="nc_leaving_call">通話を終了する</string>
+    <string name="nc_call_state_in_call">%1$s着信</string>
+    <string name="nc_call_state_in_call_with_audio">%1$sから音声付きで着信</string>
+    <string name="nc_call_state_with_video">%1$sと映像で</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
     <string name="nc_notification_channel_calls">通知チャネルを呼び出す</string>
@@ -165,13 +208,18 @@
     <string name="nc_notify_me_mention">言及したときに通知する</string>
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_mute_calls">通話をミュートする</string>
+    <string name="nc_mute_calls_desc">着信音をならしません</string>
     <string name="nc_important_conversation">重要な会議</string>
+    <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
+
     <!-- Bottom sheet menu -->
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
+    <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザ経由で会話への参加を試みてください。</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">会話名</string>
     <string name="nc_proceed">続行する</string>
+    <string name="nc_add_emojis">絵文字追加</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
     <string name="nc_wrong_link">会話リンクが無効です</string>
     <string name="nc_share_text">%1$s/index.php/%2$s の会話に参加する</string>
@@ -188,7 +236,6 @@
     <string name="nc_demote">モデレータから降格</string>
     <string name="nc_promote">モデレータに昇格</string>
     <string name="nc_remove_participant">参加者を削除</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_date_header_yesterday">昨日</string>
@@ -210,8 +257,14 @@
     <string name="nc_sent_an_audio_you">音声ファイルを送信しました</string>
     <string name="nc_sent_a_video_you">動画ファイルを送信しました。</string>
     <string name="nc_sent_an_image_you">イメージファイルを送信しました。</string>
+    <string name="nc_message_quote_cancel_reply">返信をキャンセル</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">あなた：%1$s</string>
+    <string name="nc_message_read">メッセージ既読</string>
+    <string name="nc_message_sent">メッセージ送信済</string>
+    <string name="nc_remote_audio_off">リモート音声オフ</string>
+    <string name="nc_add_attachment">ファイルを添付</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">読み込むアイテムがもうありません。 更新して再試行します。</string>
     <string name="nc_endless_disabled">ロードする項目がなくなりました（最大に到達）。</string>
@@ -224,12 +277,17 @@
     <string name="nc_description_more_menu_group">公開会話のメニュー %1$s</string>
     <string name="nc_description_send_message_button">メッセージを送信</string>
 
+    <!-- Empty states -->
+    <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
+    <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_hello">こんにちは</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s文字の制限に達しました</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_participants">参加者</string>
+    <string name="nc_participants_add">参加を追加</string>
+
     <string name="nc_owner">オーナー</string>
     <string name="nc_moderator">モデレータ</string>
     <string name="nc_user">ユーザー</string>
@@ -242,6 +300,8 @@
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_file_browser_refresh">更新</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
+    <string name="nc_file_browser_reshare_forbidden">このファイルの再共有を許可されていません</string>
+
     <!-- Lobby -->
     <string name="nc_webinar">ウェビナー</string>
     <string name="nc_lobby">ロビー</string>
@@ -267,4 +327,73 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">コピー</string>
     <string name="nc_reply">返信</string>
-    </resources>
+    <string name="nc_delete_message">削除</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">メッセージは削除されましたが、他サービスへは転送されている可能性があります。</string>
+
+    <string name="share">共有</string>
+    <string name="send_to">送信</string>
+    <string name="open_in_files_app">アプリでファイルを開く</string>
+
+    <!-- Upload -->
+    <string name="nc_add_file">会話に追加</string>
+    <string name="nc_upload_local_file">ローカルファイルをアップロード</string>
+    <string name="nc_upload_from_cloud">%1$sから共有</string>
+    <string name="nc_upload_failed">アップロードできませんでした</string>
+    <string name="nc_upload_choose_local_files">ファイルを選択</string>
+    <string name="nc_upload_confirm_send_multiple">%1$sへこれらのファイルを送信しますか?</string>
+    <string name="nc_upload_confirm_send_single">%1$sへこのファイルを送信しますか?</string>
+    <string name="nc_upload_in_progess">アップロード中</string>
+
+    <string name="nc_settings_phone_book_integration_desc">電話番号に基づいて連絡先を照合し、Talkのショートカットをシステムの連絡先アプリに統合します</string>
+    <string name="nc_settings_phone_book_integration_title">電話番号を統合</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話番号</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">電話番号を設定すると他のユーザーがあなたを見つけられるようになります</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話番号が正しくありません</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">電話番号を設定しました</string>
+    <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
+    <string name="nc_phone_book_integration_chat_via">%sとチャット</string>
+    <string name="nc_phone_book_integration_account_not_found">アカウントが見つかりません</string>
+
+    <string name="starred">お気に入り</string>
+    <string name="encrypted">暗号済</string>
+    <string name="password_protected">パスワード保護</string>
+
+    <string name="avatar">アバター</string>
+    <string name="account_icon">アカウントアイコン</string>
+    <string name="userinfo_no_info_headline">個人情報はありません</string>
+    <string name="userinfo_no_info_text">プロフィールページに名前、写真、連絡先の詳細を追加します。</string>
+    <string name="userinfo_error_text">ユーザー情報を取得できませんでした</string>
+    <string name="user_info_phone">電話番号</string>
+    <string name="user_info_email">メールアドレス</string>
+    <string name="user_info_address">住所</string>
+    <string name="user_info_website">ウェブサイト</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_displayname">フルネーム</string>
+    <string name="file_list_folder">フォルダー</string>
+    <string name="file_list_loading">読み込み中…</string>
+    <string name="edit">編集</string>
+    <string name="save">保存</string>
+    <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
+    <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
+    <string name="delete_avatar">アバターを削除</string>
+    <string name="scope_private_title">非公開</string>
+    <string name="scope_private_description">モバイルのTalkで電話番号が一致した人にのみ表示されます</string>
+    <string name="scope_local_title">ローカル</string>
+    <string name="scope_local_description">このインスタンスのユーザーとゲストにのみ表示</string>
+    <string name="scope_federated_title">連携</string>
+    <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
+    <string name="scope_published_title">公開されました</string>
+    <string name="scope_published_description">信頼できるサーバーへ、グローバルおよびパブリックアドレスブックを同期</string>
+    <string name="scope_toggle">公開範囲を切替</string>
+    <string name="scope_toggle_description">プライバシーレベルを%1$sに変更</string>
+
+    <!-- App Bar -->
+    <string name="appbar_search_in">%sを検索</string>
+
+    <string name="nc_action_open_main_menu">メインメニューを開く</string>
+    <string name="failed_to_save">%1$sを保存できませんでした</string>
+    <string name="selected_list_item">選択済</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="nc_dialog_invalid_password">無効なパスワード</string>
+    <string name="nc_dialog_reauth_or_delete">このアカウントを再認証しますか、それとも削除しますか?</string>
+</resources>

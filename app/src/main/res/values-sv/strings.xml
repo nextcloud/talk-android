@@ -187,7 +187,6 @@
     <string name="nc_demote">Degradera från moderator</string>
     <string name="nc_promote">Befordra till moderator</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Skriv ett meddelande…</string>
     <string name="nc_date_header_yesterday">Igår</string>
