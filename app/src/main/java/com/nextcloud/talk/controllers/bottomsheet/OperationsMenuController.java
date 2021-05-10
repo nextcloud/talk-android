@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -48,6 +49,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
@@ -58,6 +60,7 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.NoSupportedApiException;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder;
@@ -80,6 +83,8 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
+
+    private static final String TAG = "OperationsMenuController";
 
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
@@ -165,13 +170,7 @@ public class OperationsMenuController extends BaseController {
         super.onViewBound(view);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        processOperation();
-    }
-
-    private void processOperation() {
         currentUser = userUtils.getCurrentUser();
-        OperationsObserver operationsObserver = new OperationsObserver();
-
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1);
             if (callUrl.contains("/index.php")) {
@@ -181,201 +180,280 @@ public class OperationsMenuController extends BaseController {
             }
         }
 
-        if (currentUser != null) {
-            credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-
-            int apiVersion;
-            if (!TextUtils.isEmpty(baseUrl) && !baseUrl.equals(currentUser.getBaseUrl())) {
-                credentials = null;
-                // FIXME joining a public link we need to check other capabilities
-                apiVersion = 1;
-            } else {
-                apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
-            }
+        if (!TextUtils.isEmpty(baseUrl) && !baseUrl.equals(currentUser.getBaseUrl())) {
+            fetchCapabilitiesForGuest();
+        } else {
+            processOperation();
+        }
+    }
 
 
-            switch (operationCode) {
-                case 2:
-                    ncApi.renameRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
-                                                                         conversation.getToken()),
-                            conversation.getName())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
-                case 3:
-                    ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
-                                                                                   conversation.getToken()))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
-                case 4:
-                case 5:
-                case 6:
-                    String pass = "";
-                    if (conversation.getPassword() != null) {
-                        pass = conversation.getPassword();
+    private void fetchCapabilitiesForGuest() {
+        ncApi.getCapabilities(null, ApiUtils.getUrlForCapabilities(baseUrl))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<CapabilitiesOverall>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
                     }
-                    ncApi.setPassword(credentials, ApiUtils.getUrlForRoomPassword(apiVersion, currentUser.getBaseUrl(),
-                                                                                  conversation.getToken()), pass)
+
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                        currentUser = new UserEntity();
+                        currentUser.setBaseUrl(baseUrl);
+                        currentUser.setUserId("?");
+                        try {
+                            currentUser.setCapabilities(LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()));
+                        } catch (IOException e) {
+                            Log.e("OperationsMenu", "Failed to serialize capabilities");
+                        }
+
+                        try {
+                            checkCapabilities(currentUser);
+                            processOperation();
+                        } catch (NoSupportedApiException e) {
+                            showResultImage(false, false);
+                            Log.d(TAG, "No supported server version found", e);
+                        }
+                    }
+
+                    @SuppressLint("LongLogTag")
+                    @Override
+                    public void onError(Throwable e) {
+                        showResultImage(false, false);
+                        Log.e(TAG, "Error fetching capabilities for guest", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+    }
+
+    @SuppressLint("LongLogTag")
+    private void processOperation() {
+        OperationsObserver operationsObserver = new OperationsObserver();
+
+        if (currentUser == null) {
+            showResultImage(false, true);
+            Log.e(TAG, "Ended up in processOperation without a valid currentUser");
+            return;
+        }
+
+        credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+
+        switch (operationCode) {
+            case 2:
+                ncApi.renameRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
+                                                                     conversation.getToken()),
+                        conversation.getName())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(operationsObserver);
+                break;
+            case 3:
+                ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
+                                                                               conversation.getToken()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(operationsObserver);
+                break;
+            case 4:
+            case 5:
+            case 6:
+                String pass = "";
+                if (conversation.getPassword() != null) {
+                    pass = conversation.getPassword();
+                }
+                ncApi.setPassword(credentials, ApiUtils.getUrlForRoomPassword(apiVersion, currentUser.getBaseUrl(),
+                                                                              conversation.getToken()), pass)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(operationsObserver);
+                break;
+            case 7:
+                // Operation 7 is sharing, so we handle this differently
+                break;
+            case 8:
+                ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion,
+                                                                                currentUser.getBaseUrl(),
+                                                                                conversation.getToken()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(operationsObserver);
+                break;
+            case 10:
+                ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(new Observer<RoomOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                                disposable = d;
+                            }
+
+                            @Override
+                            public void onNext(RoomOverall roomOverall) {
+                                conversation = roomOverall.getOcs().getData();
+                                if (conversation.isHasPassword() && conversation.isGuest()) {
+                                    eventBus.post(new BottomSheetLockEvent(true, 0,
+                                                                           true, false));
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
+                                    bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
+                                    try {
+                                        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES(),
+                                                             Parcels.wrap(LoganSquare.parse(currentUser.getCapabilities(),
+                                                                                            Capabilities.class)));
+                                    } catch (IOException e) {
+                                        Log.e(TAG, "Failed to parse capabilities for guest");
+                                        showResultImage(false, false);
+                                    }
+                                    bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
+                                    getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
+                                                                       .pushChangeHandler(new HorizontalChangeHandler())
+                                                                       .popChangeHandler(new HorizontalChangeHandler()));
+                                } else {
+                                    try {
+                                        initiateConversation(
+                                                false,
+                                                LoganSquare.parse(currentUser.getCapabilities(), Capabilities.class)
+                                                            );
+                                    } catch (IOException e) {
+                                        Log.e(TAG, "Failed to parse capabilities for guest");
+                                        showResultImage(false, false);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                showResultImage(false, false);
+                                dispose();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                dispose();
+                            }
+                        });
+                break;
+            case 11:
+                RetrofitBucket retrofitBucket;
+                String invite = null;
+
+                if (invitedGroups.size() > 0) {
+                    invite = invitedGroups.get(0);
+                }
+
+                if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL)) {
+                    retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
+                                                                             "3", invite, conversationName);
+                } else {
+                    retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
+                                                                             "2", invite, conversationName);
+                }
+
+                ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(new Observer<RoomOverall>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+
+                            }
+
+                            @Override
+                            public void onNext(RoomOverall roomOverall) {
+                                conversation = roomOverall.getOcs().getData();
+
+                                ncApi.getRoom(credentials,
+                                        ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
+                                                         conversation.getToken()))
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<RoomOverall>() {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
+
+                                            }
+
+                                            @Override
+                                            public void onNext(RoomOverall roomOverall) {
+                                                conversation = roomOverall.getOcs().getData();
+                                                inviteUsersToAConversation();
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+                                                showResultImage(false, false);
+                                                dispose();
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+
+                                            }
+                                        });
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                showResultImage(false, false);
+                                dispose();
+                            }
+
+                            @Override
+                            public void onComplete() {
+                                dispose();
+                            }
+                        });
+
+                break;
+            case 97:
+            case 98:
+                if (operationCode == 97) {
+                    ncApi.removeConversationFromFavorites(credentials,
+                                                          ApiUtils.getUrlForRoomFavorite(apiVersion,
+                                                                                         currentUser.getBaseUrl(),
+                                                                                         conversation.getToken()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
-                    break;
-                case 7:
-                    // Operation 7 is sharing, so we handle this differently
-                    break;
-                case 8:
-                    ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion,
+                } else {
+                    ncApi.addConversationToFavorites(credentials,
+                                                     ApiUtils.getUrlForRoomFavorite(apiVersion,
                                                                                     currentUser.getBaseUrl(),
                                                                                     conversation.getToken()))
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
                             .subscribe(operationsObserver);
-                    break;
-                case 10:
-                    ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(new Observer<RoomOverall>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-                                    disposable = d;
-                                }
-
-                                @Override
-                                public void onNext(RoomOverall roomOverall) {
-                                    conversation = roomOverall.getOcs().getData();
-                                    fetchCapabilities(credentials);
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    showResultImage(false, false);
-                                    dispose();
-                                }
-
-                                @Override
-                                public void onComplete() {
-                                    dispose();
-                                }
-                            });
-                    break;
-                case 11:
-                    RetrofitBucket retrofitBucket;
-                    String invite = null;
-
-                    if (invitedGroups.size() > 0) {
-                        invite = invitedGroups.get(0);
-                    }
-
-                    if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL)) {
-                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
-                                                                                 "3", invite, conversationName);
-                    } else {
-                        retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
-                                                                                 "2", invite, conversationName);
-                    }
-
-                    ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(new Observer<RoomOverall>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
-
-                                }
-
-                                @Override
-                                public void onNext(RoomOverall roomOverall) {
-                                    conversation = roomOverall.getOcs().getData();
-
-                                    ncApi.getRoom(credentials,
-                                            ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
-                                                             conversation.getToken()))
-                                            .subscribeOn(Schedulers.io())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(new Observer<RoomOverall>() {
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
-
-                                                }
-
-                                                @Override
-                                                public void onNext(RoomOverall roomOverall) {
-                                                    conversation = roomOverall.getOcs().getData();
-                                                    inviteUsersToAConversation();
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-                                                    showResultImage(false, false);
-                                                    dispose();
-                                                }
-
-                                                @Override
-                                                public void onComplete() {
-
-                                                }
-                                            });
-
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-                                    showResultImage(false, false);
-                                    dispose();
-                                }
-
-                                @Override
-                                public void onComplete() {
-                                    dispose();
-                                }
-                            });
-
-                    break;
-                case 97:
-                case 98:
-                    if (operationCode == 97) {
-                        ncApi.removeConversationFromFavorites(credentials,
-                                                              ApiUtils.getUrlForRoomFavorite(apiVersion,
-                                                                                             currentUser.getBaseUrl(),
-                                                                                             conversation.getToken()))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .retry(1)
-                                .subscribe(operationsObserver);
-                    } else {
-                        ncApi.addConversationToFavorites(credentials,
-                                                         ApiUtils.getUrlForRoomFavorite(apiVersion,
-                                                                                        currentUser.getBaseUrl(),
-                                                                                        conversation.getToken()))
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .retry(1)
-                                .subscribe(operationsObserver);
-                    }
-                    break;
-                case 99:
-                    ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion,
-                                                                                     baseUrl,
-                                                                                     conversationToken),
-                            callPassword)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(operationsObserver);
-                    break;
-                default:
-                    break;
-            }
+                }
+                break;
+            case 99:
+                ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion,
+                                                                                 baseUrl,
+                                                                                 conversationToken),
+                        callPassword)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .retry(1)
+                        .subscribe(operationsObserver);
+                break;
+            default:
+                break;
         }
     }
 
@@ -436,58 +514,11 @@ public class OperationsMenuController extends BaseController {
         dispose();
     }
 
-    private void fetchCapabilities(String credentials) {
-        ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<CapabilitiesOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onNext(CapabilitiesOverall capabilitiesOverall) {
-                        // Guest checking the capabilities so there is no global server EOL warning until here.
-                        // FIXME check the serverEOL capabilities instead
-                        if (capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability() != null &&
-                                capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("chat-v2")) {
-                            if (conversation.isHasPassword() && conversation.isGuest()) {
-                                eventBus.post(new BottomSheetLockEvent(true, 0,
-                                        true, false));
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
-                                bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
-                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES(),
-                                        Parcels.wrap(capabilitiesOverall.getOcs().getData().getCapabilities()));
-                                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
-                                getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
-                                        .pushChangeHandler(new HorizontalChangeHandler())
-                                        .popChangeHandler(new HorizontalChangeHandler()));
-                            } else {
-                                initiateConversation(false, capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities());
-                            }
-                        } else {
-                            showResultImage(false, true);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        showResultImage(false, false);
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+    private void checkCapabilities(UserEntity currentUser) throws NoSupportedApiException {
+        ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+        ApiUtils.getCallApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+        ApiUtils.getChatApiVersion(currentUser, new int[] {1});
+        ApiUtils.getSignalingApiVersion(currentUser, new int[] {2, 1});
     }
 
     private void inviteUsersToAConversation() {
