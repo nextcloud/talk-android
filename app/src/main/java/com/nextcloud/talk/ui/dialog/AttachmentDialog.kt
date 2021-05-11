@@ -35,6 +35,10 @@ import com.nextcloud.talk.models.database.CapabilitiesUtil
 
 class AttachmentDialog(val activity: Activity, var chatController: ChatController) : BottomSheetDialog(activity) {
 
+    @BindView(R.id.txt_share_location)
+    @JvmField
+    var shareLocation: AppCompatTextView? = null
+
     @BindView(R.id.txt_attach_file_from_local)
     @JvmField
     var attachFromLocal: AppCompatTextView? = null
@@ -58,6 +62,11 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
                 serverName = it.getString(R.string.nc_server_product_name)
             }
             String.format(it.getString(R.string.nc_upload_from_cloud), serverName)
+        }
+
+        shareLocation?.setOnClickListener {
+            chatController.showShareLocationScreen()
+            dismiss()
         }
 
         attachFromLocal?.setOnClickListener {

@@ -793,6 +793,10 @@ class ChatController(args: Bundle) :
         )
     }
 
+    fun showShareLocationScreen(){
+        Log.d(TAG, "showShareLocationScreen")
+    }
+
     private fun showConversationInfoScreen() {
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
