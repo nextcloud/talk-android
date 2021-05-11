@@ -1450,6 +1450,8 @@ class ChatController(args: Bundle) :
         inflater.inflate(R.menu.menu_conversation, menu)
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
+            conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
+            conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
         } else {
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
