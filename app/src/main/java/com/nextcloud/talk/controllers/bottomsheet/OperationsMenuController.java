@@ -176,13 +176,44 @@ public class OperationsMenuController extends BaseController {
         }
 
         if (!TextUtils.isEmpty(baseUrl) && !baseUrl.equals(currentUser.getBaseUrl())) {
-            fetchCapabilitiesForGuest();
+            if (serverCapabilities != null) {
+                try {
+                    useBundledCapabilitiesForGuest();
+                } catch (IOException e) {
+                    // Fall back to fetching capabilities again
+                    fetchCapabilitiesForGuest();
+                }
+            } else {
+                fetchCapabilitiesForGuest();
+            }
         } else {
             processOperation();
         }
     }
 
 
+    @SuppressLint("LongLogTag")
+    private void useBundledCapabilitiesForGuest() throws IOException {
+        currentUser = new UserEntity();
+        currentUser.setBaseUrl(baseUrl);
+        currentUser.setUserId("?");
+        try {
+            currentUser.setCapabilities(LoganSquare.serialize(serverCapabilities));
+        } catch (IOException e) {
+            Log.e("OperationsMenu", "Failed to serialize capabilities");
+            throw e;
+        }
+
+        try {
+            checkCapabilities(currentUser);
+            processOperation();
+        } catch (NoSupportedApiException e) {
+            showResultImage(false, false);
+            Log.d(TAG, "No supported server version found", e);
+        }
+    }
+
+    @SuppressLint("LongLogTag")
     private void fetchCapabilitiesForGuest() {
         ncApi.getCapabilities(null, ApiUtils.getUrlForCapabilities(baseUrl))
                 .subscribeOn(Schedulers.io())
