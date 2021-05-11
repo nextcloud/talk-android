@@ -235,6 +235,9 @@
     <string name="nc_demote">取消主持人资格</string>
     <string name="nc_promote">设置为主持人</string>
     <string name="nc_remove_participant">远程参与者</string>
+    <string name="nc_remove_group_and_members">移除群组和成员</string>
+    <string name="nc_attendee_pin">固定：%1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">输入消息...</string>
     <string name="nc_date_header_yesterday">昨天</string>
@@ -283,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">已达到%s字符限制</string>
+    <string name="nc_email">电子邮件</string>
+    <string name="nc_group">群组</string>
     <string name="nc_groups">群组</string>
     <string name="nc_participants">参与者</string>
     <string name="nc_participants_add">添加参与者 </string>

@@ -235,6 +235,9 @@
     <string name="nc_demote">Moderatzailetik degradatua</string>
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
+    <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Idatzi mezu bat…</string>
     <string name="nc_date_header_yesterday">Atzo</string>
@@ -283,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
+    <string name="nc_email">E-posta</string>
+    <string name="nc_group">Taldea</string>
     <string name="nc_groups">Taldeak</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_participants_add">Gehitu parte-hartzaileak</string>

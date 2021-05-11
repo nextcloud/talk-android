@@ -235,6 +235,9 @@
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_promote">Elevar a moderador</string>
     <string name="nc_remove_participant">Eliminar participante</string>
+    <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_date_header_yesterday">Ayer</string>
@@ -283,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">Se ha alcanzado el límite de %s carácteres</string>
+    <string name="nc_email">Email</string>
+    <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Añadir participantes</string>

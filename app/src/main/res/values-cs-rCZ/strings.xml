@@ -192,6 +192,10 @@
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_leaving_call">Opouštění hovoru…</string>
+    <string name="nc_call_state_in_call">%1$s má hovor</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s má zvukový hovor</string>
+    <string name="nc_call_state_with_video">%1$s s přenosem obrazu</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s v %2$s kanálu upozornění</string>
     <string name="nc_notification_channel_calls">Kanál pro upozorňování na volání</string>
@@ -231,6 +235,9 @@
     <string name="nc_demote">Odebrat oprávnění moderátora</string>
     <string name="nc_promote">Povýšit na moderátora</string>
     <string name="nc_remove_participant">Odebrat účastníka</string>
+    <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
     <string name="nc_date_header_yesterday">Včera</string>
@@ -255,7 +262,9 @@
     <string name="nc_message_quote_cancel_reply">Odebrat odpověď</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Vy: %1$s</string>
+    <string name="nc_message_read">Zpráva přečtena</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
+    <string name="nc_remote_audio_off">Ztlumení mikrofonu na dálku</string>
     <string name="nc_add_attachment">Přidat přílohu</string>
 
     <!-- Contacts endless loading -->
@@ -277,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">byl dosažen limit %s znaků</string>
+    <string name="nc_email">E-mail</string>
+    <string name="nc_group">Group</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Přidat účastníky</string>
