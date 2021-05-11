@@ -35,7 +35,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -318,15 +317,7 @@ public class OperationsMenuController extends BaseController {
                                                                        .pushChangeHandler(new HorizontalChangeHandler())
                                                                        .popChangeHandler(new HorizontalChangeHandler()));
                                 } else {
-                                    try {
-                                        initiateConversation(
-                                                false,
-                                                LoganSquare.parse(currentUser.getCapabilities(), Capabilities.class)
-                                                            );
-                                    } catch (IOException e) {
-                                        Log.e(TAG, "Failed to parse capabilities for guest");
-                                        showResultImage(false, false);
-                                    }
+                                    initiateConversation(false);
                                 }
                             }
 
@@ -562,7 +553,7 @@ public class OperationsMenuController extends BaseController {
                                     }
 
                                     if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
-                                        initiateConversation(true, null);
+                                        initiateConversation(true);
                                     }
                                     dispose();
                                 }
@@ -604,54 +595,34 @@ public class OperationsMenuController extends BaseController {
                                 }
 
                                 if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
-                                    initiateConversation(true, null);
+                                    initiateConversation(true);
                                 }
                                 dispose();
                             }
                         });
             }
         } else {
-            initiateConversation(true, null);
+            initiateConversation(true);
         }
     }
 
-    private void initiateConversation(boolean dismissView, @Nullable Capabilities capabilities) {
-        Bundle bundle = new Bundle();
-        boolean isGuestUser = false;
-
-        if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
-            isGuestUser = true;
-        }
-
+    private void initiateConversation(boolean dismissView) {
         eventBus.post(new BottomSheetLockEvent(true, 0,
                                                true, true, dismissView));
 
         Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
+        Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), conversation.getDisplayName());
-        UserEntity conversationUser;
-        if (isGuestUser) {
-            conversationUser = new UserEntity();
-            conversationUser.setBaseUrl(baseUrl);
-            conversationUser.setUserId("?");
-            try {
-                conversationUser.setCapabilities(LoganSquare.serialize(capabilities));
-            } catch (IOException e) {
-                Log.e("OperationsMenu", "Failed to serialize capabilities");
-            }
-        } else {
-            conversationUser = currentUser;
-        }
-
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
         bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
 
         conversationIntent.putExtras(bundle);
 
         if (getParentController() != null) {
-            ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), conversationUser.getId(),
+            ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), currentUser.getId(),
                                                             conversation.getToken(), bundle, true);
         }
     }
@@ -670,7 +641,7 @@ public class OperationsMenuController extends BaseController {
             } else {
                 RoomOverall roomOverall = (RoomOverall) o;
                 conversation = roomOverall.getOcs().getData();
-                initiateConversation(true, serverCapabilities);
+                initiateConversation(true);
             }
         }
 
