@@ -152,8 +152,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         if (participant.getActorType() == Participant.ActorType.GROUPS || "groups".equals(participant.getSource())) {
             holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
         } else if (participant.getActorType() == Participant.ActorType.EMAILS) {
-            // FIXME use an email icon
-            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
+            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_mail);
         } else if (participant.getActorType() == Participant.ActorType.GUESTS ||
                 Participant.ParticipantType.GUEST.equals(participant.getType()) ||
                 Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
