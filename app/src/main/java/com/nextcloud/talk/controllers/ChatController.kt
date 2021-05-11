@@ -1777,18 +1777,16 @@ class ChatController(args: Bundle) :
                         bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs.data.roomId)
 
                         if (conversationUser != null) {
-                            if (conversationUser.hasSpreedFeatureCapability("chat-v2")) {
-                                bundle.putParcelable(
-                                    BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.ocs.data)
-                                )
-                                conversationIntent.putExtras(bundle)
+                            bundle.putParcelable(
+                                BundleKeys.KEY_ACTIVE_CONVERSATION,
+                                Parcels.wrap(roomOverall.ocs.data)
+                            )
+                            conversationIntent.putExtras(bundle)
 
-                                ConductorRemapping.remapChatController(
-                                    router, conversationUser.id,
-                                    roomOverall.ocs.data.token, bundle, false
-                                )
-                            }
+                            ConductorRemapping.remapChatController(
+                                router, conversationUser.id,
+                                roomOverall.ocs.data.token, bundle, false
+                            )
                         } else {
                             conversationIntent.putExtras(bundle)
                             startActivity(conversationIntent)

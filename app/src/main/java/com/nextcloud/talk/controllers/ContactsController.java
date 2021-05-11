@@ -308,57 +308,43 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                             @Override
                             public void onNext(RoomOverall roomOverall) {
-                                Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                                 Bundle bundle = new Bundle();
                                 bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
                                 bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
-                                if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
-                                    ncApi.getRoom(credentials,
-                                            ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
-                                                    roomOverall.getOcs().getData().getToken()))
-                                            .subscribeOn(Schedulers.io())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(new Observer<RoomOverall>() {
+                                // FIXME once APIv2 or later is used only, the createRoom already returns all the data
+                                ncApi.getRoom(credentials,
+                                              ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
+                                                                     roomOverall.getOcs().getData().getToken()))
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(new Observer<RoomOverall>() {
 
-                                                @Override
-                                                public void onSubscribe(Disposable d) {
+                                            @Override
+                                            public void onSubscribe(Disposable d) {
 
-                                                }
-
-                                                @Override
-                                                public void onNext(RoomOverall roomOverall) {
-                                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
-                                                            Parcels.wrap(roomOverall.getOcs().getData()));
-
-                                                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                            roomOverall.getOcs().getData().getToken(), bundle, true);
-                                                }
-
-                                                @Override
-                                                public void onError(Throwable e) {
-
-                                                }
-
-                                                @Override
-                                                public void onComplete() {
-
-                                                }
-                                            });
-                                } else {
-                                    conversationIntent.putExtras(bundle);
-                                    startActivity(conversationIntent);
-                                    new Handler().postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (!isDestroyed() && !isBeingDestroyed()) {
-                                                getRouter().popCurrentController();
                                             }
-                                        }
-                                    }, 100);
-                                }
+
+                                            @Override
+                                            public void onNext(RoomOverall roomOverall) {
+                                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+                                                                     Parcels.wrap(roomOverall.getOcs().getData()));
+
+                                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                                                                roomOverall.getOcs().getData().getToken(), bundle, true);
+                                            }
+
+                                            @Override
+                                            public void onError(Throwable e) {
+
+                                            }
+
+                                            @Override
+                                            public void onComplete() {
+
+                                            }
+                                        });
                             }
 
                             @Override
@@ -885,16 +871,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
                                     conversationIntent.putExtras(bundle);
 
-                                    if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                                        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
-                                                Parcels.wrap(roomOverall.getOcs().getData()));
+                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+                                                         Parcels.wrap(roomOverall.getOcs().getData()));
 
-                                        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                roomOverall.getOcs().getData().getToken(), bundle, true);
-                                    } else {
-                                        startActivity(conversationIntent);
-                                        new Handler().postDelayed(() -> getRouter().popCurrentController(), 100);
-                                    }
+                                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                                                    roomOverall.getOcs().getData().getToken(), bundle, true);
                                 }
                             }
 

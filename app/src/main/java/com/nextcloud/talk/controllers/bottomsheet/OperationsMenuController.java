@@ -448,6 +448,8 @@ public class OperationsMenuController extends BaseController {
 
                     @Override
                     public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                        // Guest checking the capabilities so there is no global server EOL warning until here.
+                        // FIXME check the serverEOL capabilities instead
                         if (capabilitiesOverall.getOcs().getData()
                                 .getCapabilities().getSpreedCapability() != null &&
                                 capabilitiesOverall.getOcs().getData()
@@ -471,14 +473,6 @@ public class OperationsMenuController extends BaseController {
                                 initiateConversation(false, capabilitiesOverall.getOcs().getData()
                                         .getCapabilities());
                             }
-                        } else if (capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability() != null &&
-                                capabilitiesOverall.getOcs().getData()
-                                        .getCapabilities().getSpreedCapability()
-                                        .getFeatures() != null && capabilitiesOverall.getOcs().getData()
-                                .getCapabilities().getSpreedCapability()
-                                .getFeatures().contains("guest-signaling")) {
-                            initiateCall();
                         } else {
                             showResultImage(false, true);
                         }
@@ -590,11 +584,7 @@ public class OperationsMenuController extends BaseController {
                         });
             }
         } else {
-            if (!currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                showResultImage(true, false);
-            } else {
-                initiateConversation(true, null);
-            }
+            initiateConversation(true, null);
         }
     }
 
@@ -605,6 +595,8 @@ public class OperationsMenuController extends BaseController {
 
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             isGuestUser = true;
+            // Guest checking the capabilities so there is no global server EOL warning until here.
+            // FIXME check the serverEOL capabilities instead
             hasChatCapability = capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null && capabilities.getSpreedCapability().getFeatures().contains("chat-v2");
         } else {
             hasChatCapability = currentUser.hasSpreedFeatureCapability("chat-v2");

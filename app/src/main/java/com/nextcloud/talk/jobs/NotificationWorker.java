@@ -598,9 +598,6 @@ public class NotificationWorker extends Worker {
                         ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
                                 JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
 
-                        boolean hasChatSupport = signatureVerification.getUserEntity().
-                                hasSpreedFeatureCapability("chat-v2");
-
                         boolean shouldShowNotification = decryptedPushMessage.getApp().equals("spreed");
 
                         if (shouldShowNotification) {
@@ -608,7 +605,7 @@ public class NotificationWorker extends Worker {
                             Bundle bundle = new Bundle();
 
 
-                            boolean startACall = decryptedPushMessage.getType().equals("call") || !hasChatSupport;
+                            boolean startACall = decryptedPushMessage.getType().equals("call");
                             if (startACall) {
                                 intent = new Intent(context, MagicCallActivity.class);
                             } else {

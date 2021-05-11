@@ -25,7 +25,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.ContactsContract
 import android.text.TextUtils
 import android.view.ViewGroup
@@ -244,51 +243,38 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             .subscribe(object : Observer<RoomOverall> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(roomOverall: RoomOverall) {
-                    val conversationIntent = Intent(context, MagicCallActivity::class.java)
                     val bundle = Bundle()
                     bundle.putParcelable(KEY_USER_ENTITY, currentUser)
                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
                     bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
-                    if (currentUser.hasSpreedFeatureCapability("chat-v2")) {
-                        // FIXME once APIv2 or later is used only, the createRoom already returns all the data
-                        ncApi.getRoom(
-                            credentials,
-                            ApiUtils.getUrlForRoom(
-                                apiVersion,
-                                currentUser.baseUrl,
-                                roomOverall.ocs.data.token
-                            )
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(object : Observer<RoomOverall> {
-                                override fun onSubscribe(d: Disposable) {}
-                                override fun onNext(roomOverall: RoomOverall) {
-                                    bundle.putParcelable(
-                                        KEY_ACTIVE_CONVERSATION,
-                                        Parcels.wrap(roomOverall.ocs.data)
-                                    )
-                                    remapChatController(
-                                        router!!, currentUser.id,
-                                        roomOverall.ocs.data.token, bundle, true
-                                    )
-                                }
 
-                                override fun onError(e: Throwable) {}
-                                override fun onComplete() {}
-                            })
-                    } else {
-                        conversationIntent.putExtras(bundle)
-                        startActivity(conversationIntent)
-                        Handler().postDelayed(
-                            {
-                                if (!isDestroyed) {
-                                    router!!.popCurrentController()
-                                }
-                            },
-                            100
+                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
+                    ncApi.getRoom(
+                        credentials,
+                        ApiUtils.getUrlForRoom(
+                            apiVersion,
+                            currentUser.baseUrl,
+                            roomOverall.ocs.data.token
                         )
-                    }
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<RoomOverall> {
+                            override fun onSubscribe(d: Disposable) {}
+                            override fun onNext(roomOverall: RoomOverall) {
+                                bundle.putParcelable(
+                                    KEY_ACTIVE_CONVERSATION,
+                                    Parcels.wrap(roomOverall.ocs.data)
+                                )
+                                remapChatController(
+                                    router!!, currentUser.id,
+                                    roomOverall.ocs.data.token, bundle, true
+                                )
+                            }
+
+                            override fun onError(e: Throwable) {}
+                            override fun onComplete() {}
+                        })
                 }
 
                 override fun onError(e: Throwable) {}
