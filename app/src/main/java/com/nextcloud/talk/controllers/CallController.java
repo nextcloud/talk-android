@@ -1273,7 +1273,7 @@ public class CallController extends BaseController {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
                 .subscribeOn(Schedulers.io())
@@ -1558,7 +1558,7 @@ public class CallController extends BaseController {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
@@ -1686,7 +1686,7 @@ public class CallController extends BaseController {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
                 .subscribeOn(Schedulers.io())
@@ -1866,15 +1866,21 @@ public class CallController extends BaseController {
                 }
             }
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE)) {
-            participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
+            }
             participantsAdapter.notifyDataSetChanged();
 
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
-            participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
+            }
             participantsAdapter.notifyDataSetChanged();
 
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE)) {
-            participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+            if (participantDisplayItems.get(sessionId) != null) {
+                participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
+            }
             participantsAdapter.notifyDataSetChanged();
 
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
@@ -2044,11 +2050,11 @@ public class CallController extends BaseController {
             nick = getPeerConnectionWrapperForSessionIdAndType(session, videoStreamType, false).getNick();
         }
 
-        String userId;
+        String userId = "";
         if (hasMCU) {
             userId = webSocketClient.getUserIdForSession(session);
-        } else {
-            userId = participantMap.get(session).getUserId();
+        } else if (participantMap.get(session).getActorType() == Participant.ActorType.USERS) {
+            userId = participantMap.get(session).getActorId();
         }
 
         String urlForAvatar;

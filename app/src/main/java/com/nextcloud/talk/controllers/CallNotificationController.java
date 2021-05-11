@@ -209,7 +209,7 @@ public class CallNotificationController extends BaseController {
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {
-        int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[] {1});
+        int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[] {ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
                                                                   currentConversation.getToken()))
@@ -230,7 +230,8 @@ public class CallNotificationController extends BaseController {
 
                         if (hasParticipantsInCall) {
                             for (Participant participant : participantList) {
-                                if (participant.getUserId().equals(userBeingCalled.getUserId())) {
+                                if (participant.getActorType() == Participant.ActorType.USERS &&
+                                        participant.getActorId().equals(userBeingCalled.getUserId())) {
                                     inCallOnDifferentDevice = true;
                                     break;
                                 }

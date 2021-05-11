@@ -848,7 +848,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
-                                                                                        userItem.getModel().getUserId(),
+                                                                                        userItem.getModel().getActorId(),
                                                                                         null);
 
                 ncApi.createRoom(credentials,
@@ -895,15 +895,15 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                 if ("groups".equals(participant.getSource())) {
                     if (participant.isSelected()) {
-                        selectedGroupIds.add(participant.getUserId());
+                        selectedGroupIds.add(participant.getActorId());
                     } else {
-                        selectedGroupIds.remove(participant.getUserId());
+                        selectedGroupIds.remove(participant.getActorId());
                     }
                 } else {
                     if (participant.isSelected()) {
-                        selectedUserIds.add(participant.getUserId());
+                        selectedUserIds.add(participant.getActorId());
                     } else {
-                        selectedUserIds.remove(participant.getUserId());
+                        selectedUserIds.remove(participant.getActorId());
                     }
                 }
 
@@ -916,10 +916,11 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     Participant internalParticipant;
                     for (int i = 0; i < currentItems.size(); i++) {
                         internalParticipant = currentItems.get(i).getModel();
-                        if (internalParticipant.getUserId().equals(participant.getUserId()) &&
-                                "groups".equals(internalParticipant.getSource()) && internalParticipant.isSelected()) {
+                        if (internalParticipant.getActorId().equals(participant.getActorId()) &&
+                                internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
+                                internalParticipant.isSelected()) {
                             internalParticipant.setSelected(false);
-                            selectedGroupIds.remove(internalParticipant.getUserId());
+                            selectedGroupIds.remove(internalParticipant.getActorId());
                         }
                     }
 
@@ -959,9 +960,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             for (int i = 0; i < currentItems.size(); i++) {
                 if (currentItems.get(i) instanceof UserItem) {
                     internalParticipant = ((UserItem) currentItems.get(i)).getModel();
-                    if ("groups".equals(internalParticipant.getSource()) && internalParticipant.isSelected()) {
+                    if (internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
+                            internalParticipant.isSelected()) {
                         internalParticipant.setSelected(false);
-                        selectedGroupIds.remove(internalParticipant.getUserId());
+                        selectedGroupIds.remove(internalParticipant.getActorId());
                     }
                 }
             }

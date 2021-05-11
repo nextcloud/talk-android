@@ -125,21 +125,8 @@ public class Participant {
         return attendeePin;
     }
 
-    @Deprecated
-    public String getUserId() {
-        if (this.actorType != null && this.actorType == ActorType.USERS) {
-            return this.actorId;
-        }
-        return this.userId;
-    }
-
     public ParticipantType getType() {
         return this.type;
-    }
-
-    @Deprecated
-    public String getName() {
-        return this.name;
     }
 
     public String getDisplayName() {
@@ -159,11 +146,6 @@ public class Participant {
         return sessionIds;
     }
 
-    @Deprecated
-    public long getRoomId() {
-        return this.roomId;
-    }
-
     public Object getInCall() {
         return this.inCall;
     }
@@ -174,11 +156,6 @@ public class Participant {
 
     public boolean isSelected() {
         return this.selected;
-    }
-
-    @Deprecated
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public void setAttendeeId(Long attendeeId) {
@@ -201,11 +178,6 @@ public class Participant {
         this.type = type;
     }
 
-    @Deprecated
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
@@ -217,11 +189,6 @@ public class Participant {
     @Deprecated
     public void setSessionId(String sessionId) {
         this.sessionId = sessionId;
-    }
-
-    @Deprecated
-    public void setRoomId(long roomId) {
-        this.roomId = roomId;
     }
 
     public void setInCall(Object inCall) {
