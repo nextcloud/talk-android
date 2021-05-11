@@ -21,17 +21,14 @@
 package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -49,7 +46,6 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
@@ -622,81 +618,42 @@ public class OperationsMenuController extends BaseController {
     private void initiateConversation(boolean dismissView, @Nullable Capabilities capabilities) {
         Bundle bundle = new Bundle();
         boolean isGuestUser = false;
-        boolean hasChatCapability;
 
         if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
             isGuestUser = true;
-            // Guest checking the capabilities so there is no global server EOL warning until here.
-            // FIXME check the serverEOL capabilities instead
-            hasChatCapability = capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getFeatures() != null && capabilities.getSpreedCapability().getFeatures().contains("chat-v2");
-        } else {
-            hasChatCapability = currentUser.hasSpreedFeatureCapability("chat-v2");
         }
 
+        eventBus.post(new BottomSheetLockEvent(true, 0,
+                                               true, true, dismissView));
 
-        if (hasChatCapability) {
-            eventBus.post(new BottomSheetLockEvent(true, 0,
-                    true, true, dismissView));
-
-            Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
-            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
-            bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), conversation.getDisplayName());
-            UserEntity conversationUser;
-            if (isGuestUser) {
-                conversationUser = new UserEntity();
-                conversationUser.setBaseUrl(baseUrl);
-                conversationUser.setUserId("?");
-                try {
-                    conversationUser.setCapabilities(LoganSquare.serialize(capabilities));
-                } catch (IOException e) {
-                    Log.e("OperationsMenu", "Failed to serialize capabilities");
-                }
-            } else {
-                conversationUser = currentUser;
-            }
-
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
-            bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
-
-            conversationIntent.putExtras(bundle);
-
-            if (getParentController() != null) {
-                ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), conversationUser.getId(),
-                        conversation.getToken(), bundle, true);
-            }
-        } else {
-            initiateCall();
-        }
-    }
-
-
-    private void initiateCall() {
-        eventBus.post(new BottomSheetLockEvent(true, 0, true, true));
-        Bundle bundle = new Bundle();
+        Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-        if (baseUrl != null && !baseUrl.equals(currentUser.getBaseUrl())) {
-            bundle.putString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), baseUrl);
-        }
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
-
-        if (getActivity() != null) {
-
-            Intent callIntent = new Intent(getActivity(), MagicCallActivity.class);
-            callIntent.putExtras(bundle);
-
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
+        bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), conversation.getDisplayName());
+        UserEntity conversationUser;
+        if (isGuestUser) {
+            conversationUser = new UserEntity();
+            conversationUser.setBaseUrl(baseUrl);
+            conversationUser.setUserId("?");
+            try {
+                conversationUser.setCapabilities(LoganSquare.serialize(capabilities));
+            } catch (IOException e) {
+                Log.e("OperationsMenu", "Failed to serialize capabilities");
             }
-
-            new Handler().postDelayed(() -> getParentController().getRouter().popCurrentController(), 100);
-            startActivity(callIntent);
-
+        } else {
+            conversationUser = currentUser;
         }
 
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), conversationUser);
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
+        bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
+
+        conversationIntent.putExtras(bundle);
+
+        if (getParentController() != null) {
+            ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), conversationUser.getId(),
+                                                            conversation.getToken(), bundle, true);
+        }
     }
 
     private class OperationsObserver implements Observer {
