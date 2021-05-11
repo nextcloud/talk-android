@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -108,6 +109,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         Context appContext =
                 NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
         holder.dialogAvatar.setController(null);
+
+        holder.dialogName.setTextColor(ResourcesCompat.getColor(context.getResources(),
+                                                                R.color.conversation_item_header,
+                                                                null));
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
