@@ -255,6 +255,7 @@ public class ApiUtils {
     }
 
     public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
+                                                                @Nullable String source,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
@@ -264,6 +265,9 @@ public class ApiUtils {
         queryMap.put("roomType", roomType);
         if (invite != null) {
             queryMap.put("invite", invite);
+        }
+        if (source != null) {
+            queryMap.put("source", source);
         }
 
         if (conversationName != null) {

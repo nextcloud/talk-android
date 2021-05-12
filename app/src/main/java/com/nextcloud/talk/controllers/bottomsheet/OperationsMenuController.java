@@ -403,10 +403,10 @@ public class OperationsMenuController extends BaseController {
 
                 if (conversationType.equals(Conversation.ConversationType.ROOM_PUBLIC_CALL)) {
                     retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
-                                                                             "3", invite, conversationName);
+                                                                             "3", null, invite, conversationName);
                 } else {
                     retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion, currentUser.getBaseUrl(),
-                                                                             "2", invite, conversationName);
+                                                                             "2", null, invite, conversationName);
                 }
 
                 ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())

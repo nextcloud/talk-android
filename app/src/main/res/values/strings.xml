@@ -312,6 +312,7 @@
     <string name="nc_email">Email</string>
     <string name="nc_group">Group</string>
     <string name="nc_groups">Groups</string>
+    <string name="nc_circles">Circles</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
 

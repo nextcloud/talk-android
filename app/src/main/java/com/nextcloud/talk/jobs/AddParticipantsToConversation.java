@@ -64,6 +64,7 @@ public class AddParticipantsToConversation extends Worker {
         Data data = getInputData();
         String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
         String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
+        String[] selectedCircleIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_CIRCLES());
         String[] selectedEmails = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_EMAILS());
         UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
 
@@ -90,6 +91,20 @@ public class AddParticipantsToConversation extends Worker {
                     conversationToken,
                     "groups",
                     groupId
+                                                                                  );
+
+            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.io())
+                    .blockingSubscribe();
+        }
+
+        for (String circleId : selectedCircleIds) {
+            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                    apiVersion,
+                    user.getBaseUrl(),
+                    conversationToken,
+                    "circles",
+                    circleId
                                                                                   );
 
             ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())

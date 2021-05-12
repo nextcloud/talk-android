@@ -1625,6 +1625,7 @@ class ChatController(args: Bundle) :
                             apiVersion,
                             conversationUser?.baseUrl,
                             "1",
+                            null,
                             message?.user?.id?.substring(6),
                             null
                         )
@@ -1818,8 +1819,12 @@ class ChatController(args: Bundle) :
             }
 
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                apiVersion, conversationUser?.baseUrl, "1",
-                userMentionClickEvent.userId, null
+                apiVersion,
+                conversationUser?.baseUrl,
+                "1",
+                null,
+                userMentionClickEvent.userId,
+                null
             )
 
             ncApi?.createRoom(

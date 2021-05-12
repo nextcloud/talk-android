@@ -191,6 +191,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private Set<String> selectedUserIds;
     private Set<String> selectedGroupIds;
+    private Set<String> selectedCircleIds;
     private Set<String> selectedEmails;
     private List<String> existingParticipants;
     private boolean isAddingParticipantsView;
@@ -218,9 +219,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
-        selectedEmails = new HashSet<>();
-        selectedGroupIds = new HashSet<>();
         selectedUserIds = new HashSet<>();
+        selectedGroupIds = new HashSet<>();
+        selectedEmails = new HashSet<>();
+        selectedCircleIds = new HashSet<>();
     }
 
     @Override
@@ -281,13 +283,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void selectionDone() {
         if (!isAddingParticipantsView) {
-            if (!isPublicCall && (selectedGroupIds.size() + selectedUserIds.size() == 1)) {
+            if (!isPublicCall && (selectedCircleIds.size() + selectedGroupIds.size() + selectedUserIds.size() == 1)) {
                 String userId;
+                String sourceType = null;
                 String roomType = "1";
 
                 if (selectedGroupIds.size() == 1) {
                     roomType = "2";
                     userId = selectedGroupIds.iterator().next();
+                } else if (selectedCircleIds.size() == 1) {
+                    roomType = "2";
+                    sourceType = "circles";
+                    userId = selectedCircleIds.iterator().next();
                 } else {
                     userId = selectedUserIds.iterator().next();
                 }
@@ -296,6 +303,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
+                                                                                        sourceType,
                                                                                         userId,
                                                                                         null);
                 ncApi.createRoom(credentials,
@@ -369,14 +377,16 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 }
 
                 ArrayList<String> userIdsArray = new ArrayList<>(selectedUserIds);
-                ArrayList<String> emailsArray = new ArrayList<>(selectedEmails);
                 ArrayList<String> groupIdsArray = new ArrayList<>(selectedGroupIds);
+                ArrayList<String> emailsArray = new ArrayList<>(selectedEmails);
+                ArrayList<String> circleIdsArray = new ArrayList<>(selectedCircleIds);
 
 
                 bundle.putParcelable(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE(), Parcels.wrap(roomType));
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS(), userIdsArray);
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP(), groupIdsArray);
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_EMAIL(), emailsArray);
+                bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_CIRCLE(), circleIdsArray);
                 bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
                 prepareAndShowBottomSheetWithBundle(bundle, true);
             }
@@ -384,6 +394,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             String[] userIdsArray = selectedUserIds.toArray(new String[selectedUserIds.size()]);
             String[] groupIdsArray = selectedGroupIds.toArray(new String[selectedGroupIds.size()]);
             String[] emailsArray = selectedEmails.toArray(new String[selectedEmails.size()]);
+            String[] circleIdsArray = selectedCircleIds.toArray(new String[selectedCircleIds.size()]);
 
             Data.Builder data = new Data.Builder();
             data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), currentUser.getId());
@@ -391,6 +402,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS(), userIdsArray);
             data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS(), groupIdsArray);
             data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_EMAILS(), emailsArray);
+            data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_CIRCLES(), circleIdsArray);
 
             OneTimeWorkRequest addParticipantsToConversationWorker =
                     new OneTimeWorkRequest.Builder(AddParticipantsToConversation.class).setInputData(data.build()).build();
@@ -487,6 +499,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             // emails
             shareTypesList.add("4");
         }
+        if (currentUser.hasSpreedFeatureCapability("circles-support")) {
+            // circles
+            shareTypesList.add("7");
+        }
 
         modifiedQueryMap.put("shareTypes[]", shareTypesList);
 
@@ -524,10 +540,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                                             String headerTitle;
 
-                                            if (participant.getActorType() != Participant.ActorType.GROUPS) {
-                                                headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
-                                            } else {
+                                            if (participant.getActorType() == Participant.ActorType.GROUPS) {
                                                 headerTitle = getResources().getString(R.string.nc_groups);
+                                            } else if (participant.getActorType() == Participant.ActorType.CIRCLES) {
+                                                headerTitle = getResources().getString(R.string.nc_circles);
+                                            } else {
+                                                headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
                                             }
 
                                             GenericTextHeaderItem genericTextHeaderItem;
@@ -571,13 +589,35 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 }
 
                                 if (o1 instanceof UserItem && o2 instanceof UserItem) {
-                                    if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
+                                    String firstSource = ((UserItem) o1).getModel().getSource();
+                                    String secondSource = ((UserItem) o2).getModel().getSource();
+                                    if (firstSource.equals(secondSource)) {
                                         return firstName.compareToIgnoreCase(secondName);
-                                    } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
+                                    }
+
+                                    // First users
+                                    if ("users".equals(firstSource)) {
                                         return -1;
-                                    } else if ("groups".equals(((UserItem) o2).getModel().getSource())) {
+                                    } else if ("users".equals(secondSource)) {
                                         return 1;
                                     }
+
+                                    // Then groups
+                                    if ("groups".equals(firstSource)) {
+                                        return -1;
+                                    } else if ("groups".equals(secondSource)) {
+                                        return 1;
+                                    }
+
+                                    // Then circles
+                                    if ("circles".equals(firstSource)) {
+                                        return -1;
+                                    } else if ("circles".equals(secondSource)) {
+                                        return 1;
+                                    }
+
+                                    // Otherwise fall back to name sorting
+                                    return firstName.compareToIgnoreCase(secondName);
                                 }
 
                                 return firstName.compareToIgnoreCase(secondName);
@@ -760,7 +800,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void checkAndHandleDoneMenuItem() {
         if (adapter != null && doneMenuItem != null) {
-            if ((selectedEmails.size() + selectedGroupIds.size() + selectedUserIds.size() > 0) || isPublicCall) {
+            if ((selectedCircleIds.size() + selectedEmails.size() + selectedGroupIds.size() + selectedUserIds.size() > 0) || isPublicCall) {
                 doneMenuItem.setVisible(true);
             } else {
                 doneMenuItem.setVisible(false);
@@ -861,6 +901,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
+                                                                                        null,
                                                                                         userItem.getModel().getActorId(),
                                                                                         null);
 
@@ -917,6 +958,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         selectedEmails.add(participant.getActorId());
                     } else {
                         selectedEmails.remove(participant.getActorId());
+                    }
+                } else if ("circles".equals(participant.getSource())) {
+                    if (participant.isSelected()) {
+                        selectedCircleIds.add(participant.getActorId());
+                    } else {
+                        selectedCircleIds.remove(participant.getActorId());
                     }
                 } else {
                     if (participant.isSelected()) {
