@@ -191,6 +191,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private Set<String> selectedUserIds;
     private Set<String> selectedGroupIds;
+    private Set<String> selectedEmails;
     private List<String> existingParticipants;
     private boolean isAddingParticipantsView;
     private String conversationToken;
@@ -217,6 +218,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             }
         }
 
+        selectedEmails = new HashSet<>();
         selectedGroupIds = new HashSet<>();
         selectedUserIds = new HashSet<>();
     }
@@ -367,24 +369,28 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 }
 
                 ArrayList<String> userIdsArray = new ArrayList<>(selectedUserIds);
+                ArrayList<String> emailsArray = new ArrayList<>(selectedEmails);
                 ArrayList<String> groupIdsArray = new ArrayList<>(selectedGroupIds);
 
 
                 bundle.putParcelable(BundleKeys.INSTANCE.getKEY_CONVERSATION_TYPE(), Parcels.wrap(roomType));
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_PARTICIPANTS(), userIdsArray);
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP(), groupIdsArray);
+                bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_EMAIL(), emailsArray);
                 bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
                 prepareAndShowBottomSheetWithBundle(bundle, true);
             }
         } else {
             String[] userIdsArray = selectedUserIds.toArray(new String[selectedUserIds.size()]);
             String[] groupIdsArray = selectedGroupIds.toArray(new String[selectedGroupIds.size()]);
+            String[] emailsArray = selectedEmails.toArray(new String[selectedEmails.size()]);
 
             Data.Builder data = new Data.Builder();
             data.putLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), currentUser.getId());
             data.putString(BundleKeys.INSTANCE.getKEY_TOKEN(), conversationToken);
             data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS(), userIdsArray);
             data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS(), groupIdsArray);
+            data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_EMAILS(), emailsArray);
 
             OneTimeWorkRequest addParticipantsToConversationWorker =
                     new OneTimeWorkRequest.Builder(AddParticipantsToConversation.class).setInputData(data.build()).build();
@@ -467,15 +473,22 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             modifiedQueryMap.put("itemId", conversationToken);
         }
 
-        List<String> shareTypesList = null;
+        List<String> shareTypesList;
 
-            shareTypesList = new ArrayList<>();
-            // users
-            shareTypesList.add("0");
+        shareTypesList = new ArrayList<>();
+        // users
+        shareTypesList.add("0");
+        if (!isAddingParticipantsView) {
             // groups
             shareTypesList.add("1");
+        } else if (currentUser.hasSpreedFeatureCapability("invite-groups-and-mails")) {
+            // groups
+            shareTypesList.add("1");
+            // emails
+            shareTypesList.add("4");
+        }
 
-            modifiedQueryMap.put("shareTypes[]", shareTypesList);
+        modifiedQueryMap.put("shareTypes[]", shareTypesList);
 
         ncApi.getContactsWithSearchParam(
                 credentials,
@@ -747,7 +760,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void checkAndHandleDoneMenuItem() {
         if (adapter != null && doneMenuItem != null) {
-            if ((selectedGroupIds.size() + selectedUserIds.size() > 0) || isPublicCall) {
+            if ((selectedEmails.size() + selectedGroupIds.size() + selectedUserIds.size() > 0) || isPublicCall) {
                 doneMenuItem.setVisible(true);
             } else {
                 doneMenuItem.setVisible(false);
@@ -898,6 +911,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         selectedGroupIds.add(participant.getActorId());
                     } else {
                         selectedGroupIds.remove(participant.getActorId());
+                    }
+                } else if ("emails".equals(participant.getSource())) {
+                    if (participant.isSelected()) {
+                        selectedEmails.add(participant.getActorId());
+                    } else {
+                        selectedEmails.remove(participant.getActorId());
                     }
                 } else {
                     if (participant.isSelected()) {

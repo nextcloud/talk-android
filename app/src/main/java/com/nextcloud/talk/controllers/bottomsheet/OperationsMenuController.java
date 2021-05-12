@@ -582,10 +582,13 @@ public class OperationsMenuController extends BaseController {
             if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
                     final String groupId = localInvitedGroups.get(i);
-                    retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(apiVersion,
-                                                                                      currentUser.getBaseUrl(),
-                                                                                      conversation.getToken(),
-                            groupId);
+                    retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                            apiVersion,
+                            currentUser.getBaseUrl(),
+                            conversation.getToken(),
+                            "groups",
+                            groupId
+                                                                                          );
 
                     ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                             .subscribeOn(Schedulers.io())

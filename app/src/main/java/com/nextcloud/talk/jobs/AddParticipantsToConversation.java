@@ -64,6 +64,7 @@ public class AddParticipantsToConversation extends Worker {
         Data data = getInputData();
         String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
         String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
+        String[] selectedEmails = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_EMAILS());
         UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
 
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
@@ -83,8 +84,27 @@ public class AddParticipantsToConversation extends Worker {
         }
 
         for (String groupId : selectedGroupIds) {
-            retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(apiVersion, user.getBaseUrl(), conversationToken,
-                    groupId);
+            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                    apiVersion,
+                    user.getBaseUrl(),
+                    conversationToken,
+                    "groups",
+                    groupId
+                                                                                  );
+
+            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.io())
+                    .blockingSubscribe();
+        }
+
+        for (String email : selectedEmails) {
+            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                    apiVersion,
+                    user.getBaseUrl(),
+                    conversationToken,
+                    "emails",
+                    email
+                                                                                  );
 
             ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                     .subscribeOn(Schedulers.io())
