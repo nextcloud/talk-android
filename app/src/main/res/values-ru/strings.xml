@@ -153,8 +153,6 @@
     <string name="nc_make_call_private">Сделать беседу личной</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete">Удалить</string>
-    <string name="nc_delete_conversation_default">Подтвердите удаление обсуждения.</string>
-    <string name="nc_delete_conversation_one2one">При удалении беседы, она будет также удалена у %1$s.</string>
     <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
 
     <string name="nc_new_conversation">Новая беседа</string>
@@ -226,7 +224,6 @@
     <string name="nc_demote">Сместить с поста модератора</string>
     <string name="nc_promote">Назначить модератором</string>
     <string name="nc_remove_participant">Удалить участника</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Напишите сообщение…</string>
     <string name="nc_date_header_yesterday">Вчера</string>

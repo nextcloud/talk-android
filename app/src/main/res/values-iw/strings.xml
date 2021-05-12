@@ -187,7 +187,6 @@
     <string name="nc_demote">הורדה מדרגת פיקוח</string>
     <string name="nc_promote">קידום לדרגת פיקוח</string>
     <string name="nc_remove_participant">הסרת משתתף</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">נא להקליד הודעה…</string>
     <string name="nc_date_header_yesterday">אתמול</string>

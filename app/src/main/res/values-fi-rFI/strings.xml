@@ -183,7 +183,6 @@
     <string name="nc_demote">Alenna moderaattorista</string>
     <string name="nc_promote">Ylennä moderaattoriksi</string>
     <string name="nc_remove_participant">Poista osallistuja</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_date_header_yesterday">Eilen</string>

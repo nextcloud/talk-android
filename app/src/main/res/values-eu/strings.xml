@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete">Ezabatu</string>
-    <string name="nc_delete_conversation_default">Baieztatu mesedez elkarrizketa kendu nahi duzula.</string>
-    <string name="nc_delete_conversation_one2one">Elkarrizketa ezabatzen baduzu, %1$s(r)entzako ere ezabatuko da.</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
 
     <string name="nc_new_conversation">Elkarrizketa berria</string>
@@ -237,6 +235,8 @@
     <string name="nc_demote">Moderatzailetik degradatua</string>
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
+    <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Idatzi mezu bat…</string>
@@ -264,7 +264,6 @@
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_message_read">Mezua irakurrita</string>
     <string name="nc_message_sent">Mezua bidalita</string>
-    <string name="nc_remote_video_off">Urruneko bideoa itzalita</string>
     <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
     <string name="nc_add_attachment">Gehitu eranskina</string>
 
@@ -287,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
+    <string name="nc_email">E-posta</string>
+    <string name="nc_group">Taldea</string>
     <string name="nc_groups">Taldeak</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_participants_add">Gehitu parte-hartzaileak</string>
@@ -346,6 +347,8 @@
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
+    <string name="nc_upload_in_progess">Kargatzen</string>
+
     <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
     <string name="nc_settings_phone_book_integration_title">Telefono zenbaki integrazioa</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono zenbakia</string>

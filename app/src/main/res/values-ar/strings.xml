@@ -144,7 +144,6 @@
     <string name="nc_make_call_private">اجعل المحادثة خاصة </string>
     <string name="nc_delete_call">احذف المحادثة</string>
     <string name="nc_delete">حذف </string>
-    <string name="nc_delete_conversation_default">من فضلك قم بالتأكيد على رغبتك بازالة المحادثة.</string>
     <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
 
     <string name="nc_new_conversation">محادثة جديدة</string>
@@ -212,7 +211,6 @@
     <string name="nc_demote">تخفيض رتبة مشرف</string>
     <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_remove_participant">حذف مشارك</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">ادخل رسالة</string>
     <string name="nc_date_header_yesterday">أمس</string>

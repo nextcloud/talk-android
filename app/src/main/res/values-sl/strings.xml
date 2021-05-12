@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete">Izbriši</string>
-    <string name="nc_delete_conversation_default">Potrdite zahtevo, da želite odstraniti pogovor.</string>
-    <string name="nc_delete_conversation_one2one">Če izbrišete pogovor, bo ta izbrisan tudi za račun %1$s.</string>
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
 
     <string name="nc_new_conversation">Nov pogovor</string>
@@ -237,6 +235,8 @@
     <string name="nc_demote">Ponižaj iz moderatorja</string>
     <string name="nc_promote">Povišaj v moderatorja</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
+    <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
+    <string name="nc_attendee_pin">Koda PIN: %1$s</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
@@ -264,7 +264,6 @@
     <string name="nc_formatted_message_you">→ %1$s</string>
     <string name="nc_message_read">Sporočilo je prebrano</string>
     <string name="nc_message_sent">Sporočilo je poslano</string>
-    <string name="nc_remote_video_off">Oddaljen video je onemogočen</string>
     <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
     <string name="nc_add_attachment">Dodaj prilogo</string>
 
@@ -287,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
+    <string name="nc_email">Elektronski naslov</string>
+    <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_participants">Udeleženci</string>
     <string name="nc_participants_add">Dodaj udeležence</string>
@@ -346,6 +347,8 @@
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
+    <string name="nc_upload_in_progess">Poteka pošiljanje</string>
+
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
     <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>

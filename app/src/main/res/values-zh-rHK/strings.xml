@@ -159,8 +159,6 @@
     <string name="nc_make_call_private">設成私密對話</string>
     <string name="nc_delete_call">刪除對話</string>
     <string name="nc_delete">刪除</string>
-    <string name="nc_delete_conversation_default">請確認是否要清除目前的對話。</string>
-    <string name="nc_delete_conversation_one2one">如果您刪除對話，它也將會從 %1$s 處刪除。</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
 
     <string name="nc_new_conversation">新對話</string>
@@ -237,6 +235,8 @@
     <string name="nc_demote">從主持人降級</string>
     <string name="nc_promote">晉升為主持人</string>
     <string name="nc_remove_participant">移除參與者</string>
+    <string name="nc_remove_group_and_members">移除群組及組員</string>
+    <string name="nc_attendee_pin">密碼：%1$s</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">輸入訊息</string>
@@ -264,7 +264,6 @@
     <string name="nc_formatted_message_you">你： %1$s</string>
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
-    <string name="nc_remote_video_off">遠端視頻關閉</string>
     <string name="nc_remote_audio_off">遠端音頻關閉</string>
     <string name="nc_add_attachment">添加附件</string>
 
@@ -287,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
+    <string name="nc_email">電郵地址</string>
+    <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">添加參與者</string>
@@ -346,6 +347,8 @@
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>
+    <string name="nc_upload_in_progess">上傳中</string>
+
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_title">電話號碼整合</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">電話號碼</string>

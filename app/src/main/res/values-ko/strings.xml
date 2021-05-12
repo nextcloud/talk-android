@@ -187,7 +187,6 @@
     <string name="nc_demote">중재자 권한 박탈</string>
     <string name="nc_promote">중재자 권한 부여</string>
     <string name="nc_remove_participant">참가자 삭제</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">메시지 입력...</string>
     <string name="nc_date_header_yesterday">어제</string>

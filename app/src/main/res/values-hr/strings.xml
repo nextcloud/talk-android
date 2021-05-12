@@ -187,7 +187,6 @@
     <string name="nc_demote">Ukloni moderatora</string>
     <string name="nc_promote">Unaprijedi u moderatora</string>
     <string name="nc_remove_participant">Ukloni sudionika</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Unesi poruku…</string>
     <string name="nc_date_header_yesterday">Jučer</string>

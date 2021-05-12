@@ -153,8 +153,6 @@
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete">Sil</string>
-    <string name="nc_delete_conversation_default">Lütfen görüşmeyi silmek istediğinizi onaylayın.</string>
-    <string name="nc_delete_conversation_one2one">Görüşmeyi silerseniz %1$s için de silinecek.</string>
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
 
     <string name="nc_new_conversation">Yeni görüşme</string>
@@ -226,7 +224,6 @@
     <string name="nc_demote">Sorumluluktan çıkar</string>
     <string name="nc_promote">Sorumlu olarak ata</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Bir ileti yazın …</string>
     <string name="nc_date_header_yesterday">Dün</string>

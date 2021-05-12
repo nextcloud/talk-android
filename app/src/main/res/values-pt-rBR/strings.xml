@@ -79,6 +79,10 @@
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
+    <string name="nc_settings_server_eol_title">Servidor sem suporte</string>
+    <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
+    <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
+    <string name="nc_settings_warning">Aviso</string>
     <string name="nc_add">Adicionar</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
@@ -108,6 +112,8 @@
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
     <string name="nc_settings_link_previews_title">Pré-visualizar links</string>
     <string name="nc_settings_link_previews_desc">Permite pré-visualizar links recebidos para serviços suportados</string>
+    <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
+    <string name="nc_locked">Indisponível</string>
     <string name="nc_settings_read_privacy_desc">Compartilhar meu status de leitura e mostrá-los a outros</string>
     <string name="nc_settings_read_privacy_title">Status de leitura</string>
 
@@ -153,8 +159,6 @@
     <string name="nc_make_call_private">Fazer esta conversa privada</string>
     <string name="nc_delete_call">Excluir conversa</string>
     <string name="nc_delete">Excluir</string>
-    <string name="nc_delete_conversation_default">Confirme sua intensão de remover a conversa.</string>
-    <string name="nc_delete_conversation_one2one">Se você excluir a conversa, ela também será excluída por %1$s.</string>
     <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para todos os outros participantes.</string>
 
     <string name="nc_new_conversation">Nova conversa</string>
@@ -188,6 +192,10 @@
     <string name="nc_call_reconnecting">Reconectando...</string>
     <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
     <string name="nc_leaving_call">Desligando...</string>
+    <string name="nc_call_state_in_call">%1$s em chamada</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s em chamada com áudio</string>
+    <string name="nc_call_state_with_video">%1$s com vídeo</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
@@ -210,6 +218,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_call_name">Nome de conversação</string>
     <string name="nc_proceed">Prosseguir</string>
+    <string name="nc_add_emojis">Adicionar emojis</string>
     <string name="nc_call_name_is_same">O nome que você inseriu é o mesmo que o existente</string>
     <string name="nc_wrong_link">O link de conversação não é válido</string>
     <string name="nc_share_text">Junte-se à conversa em %1$s/index.php/call/%2$s</string>
@@ -226,7 +235,6 @@
     <string name="nc_demote">Rebaixar de moderador</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_remove_participant">Excluir participante</string>
-
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Digite uma mensagem...</string>
     <string name="nc_date_header_yesterday">Ontem</string>
@@ -251,6 +259,11 @@
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Você: %1$s</string>
+    <string name="nc_message_read">Leitura de mensagem</string>
+    <string name="nc_message_sent">Mensagem enviada</string>
+    <string name="nc_remote_audio_off">Áudio remoto desligado</string>
+    <string name="nc_add_attachment">Adicionar anexo</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Não há mais itens a carregar. Atualize tentar novamente.</string>
     <string name="nc_endless_disabled">Não há mais itens a carregar (máx alcançado).</string>
@@ -329,6 +342,8 @@
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
+    <string name="nc_upload_in_progess">Enviando</string>
+
     <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
     <string name="nc_settings_phone_book_integration_title">Integração de número de telefone</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número do telefone</string>
@@ -340,6 +355,7 @@
     <string name="nc_phone_book_integration_account_not_found">Conta não encontrada</string>
 
     <string name="starred">Favorito</string>
+    <string name="encrypted">Criptografado</string>
     <string name="password_protected">Protegido por senha</string>
 
     <string name="avatar">Avatar</string>
@@ -370,6 +386,8 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_published_description">Sincronize com servidores confiáveis ​​e com o catálogo de endereço público e global</string>
     <string name="scope_toggle">Alternância de escopo</string>
+    <string name="scope_toggle_description">Alterar o nível de privacidade %1$s</string>
+
     <!-- App Bar -->
     <string name="appbar_search_in">Procurar em 1%s</string>
 
