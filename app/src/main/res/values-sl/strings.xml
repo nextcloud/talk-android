@@ -235,6 +235,9 @@
     <string name="nc_demote">Ponižaj iz moderatorja</string>
     <string name="nc_promote">Povišaj v moderatorja</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
+    <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
+    <string name="nc_attendee_pin">Koda PIN: %1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
     <string name="nc_date_header_yesterday">Včeraj</string>
@@ -283,6 +286,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
+    <string name="nc_email">Elektronski naslov</string>
+    <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_participants">Udeleženci</string>
     <string name="nc_participants_add">Dodaj udeležence</string>
