@@ -82,10 +82,31 @@
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
             <com.yarolegovich.mp.MaterialPreferenceCategory
-                android:id="@+id/otherRoomOptions"
+                android:id="@+id/conversation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/conversation_info_name"
+                android:animateLayoutChanges="true"
+                android:visibility="gone"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                tools:visibility="visible">
+
+                <androidx.emoji.widget.EmojiTextView
+                    android:id="@+id/description_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="@dimen/standard_margin"
+                    android:layout_marginTop="@dimen/margin_between_elements"
+                    tools:text="Hello world!" />
+            </com.yarolegovich.mp.MaterialPreferenceCategory>
+
+            <com.yarolegovich.mp.MaterialPreferenceCategory
+                android:id="@+id/otherRoomOptions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/conversation_description"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
