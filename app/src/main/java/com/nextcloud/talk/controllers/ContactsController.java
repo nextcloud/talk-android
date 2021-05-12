@@ -812,10 +812,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     protected String getTitle() {
-        if (!isNewConversationView && !isAddingParticipantsView) {
-            return getResources().getString(R.string.nc_app_name);
+        if (isAddingParticipantsView) {
+            return getResources().getString(R.string.nc_add_participants);
+        } else if (isNewConversationView) {
+            return getResources().getString(R.string.nc_select_participants);
         } else {
-            return getResources().getString(R.string.nc_select_contacts);
+            return getResources().getString(R.string.nc_app_name);
         }
     }
 

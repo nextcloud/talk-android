@@ -190,7 +190,8 @@
     <string name="nc_remove_from_favorites">Remove from favorites</string>
 
     <!-- Contacts -->
-    <string name="nc_select_contacts">Select contacts</string>
+    <string name="nc_select_participants">Select participants</string>
+    <string name="nc_add_participants">Add participants</string>
     <string name="nc_contacts_done">Done</string>
 
     <!-- Permissions -->
