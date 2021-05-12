@@ -160,12 +160,8 @@ public class SettingsController extends BaseController {
     MaterialStandardPreference settingsMessageSound;
     @BindView(R.id.settings_remove_account)
     MaterialStandardPreference removeAccountButton;
-    @BindView(R.id.settings_switch)
-    MaterialStandardPreference switchAccountButton;
     @BindView(R.id.settings_reauthorize)
     MaterialStandardPreference reauthorizeButton;
-    @BindView(R.id.settings_add_account)
-    MaterialStandardPreference addAccountButton;
     @BindView(R.id.message_view)
     MaterialPreferenceCategory messageView;
     @BindView(R.id.settings_client_cert)
@@ -321,22 +317,6 @@ public class SettingsController extends BaseController {
                     .popChangeHandler(new HorizontalChangeHandler()));
         });
 
-        if (getResources().getBoolean(R.bool.multiaccount_support)) {
-            addAccountButton.addPreferenceClickListener(view15 -> {
-                getRouter().pushController(RouterTransaction.with(new
-                        ServerSelectionController()).pushChangeHandler(new VerticalChangeHandler())
-                        .popChangeHandler(new VerticalChangeHandler()));
-            });
-        } else {
-            addAccountButton.setVisibility(View.GONE);
-        }
-
-        switchAccountButton.addPreferenceClickListener(view16 -> {
-            getRouter().pushController(RouterTransaction.with(new
-                    SwitchAccountController()).pushChangeHandler(new VerticalChangeHandler())
-                    .popChangeHandler(new VerticalChangeHandler()));
-        });
-
         if (userUtils.getCurrentUser().isPhoneBookIntegrationAvailable()) {
             phoneBookIntegrationPreference.setVisibility(View.VISIBLE);
         } else {
@@ -379,12 +359,8 @@ public class SettingsController extends BaseController {
     }
 
     private void showLovelyDialog(int dialogId, Bundle savedInstanceState) {
-        switch (dialogId) {
-            case ID_REMOVE_ACCOUNT_WARNING_DIALOG:
-                showRemoveAccountWarning(savedInstanceState);
-                break;
-            default:
-                break;
+        if (dialogId == ID_REMOVE_ACCOUNT_WARNING_DIALOG) {
+            showRemoveAccountWarning(savedInstanceState);
         }
     }
 
@@ -630,11 +606,6 @@ public class SettingsController extends BaseController {
             removeAccountButton.addPreferenceClickListener(view1 -> {
                 showLovelyDialog(ID_REMOVE_ACCOUNT_WARNING_DIALOG, null);
             });
-        }
-
-
-        if (userUtils.getUsers().size() <= 1) {
-            switchAccountButton.setVisibility(View.GONE);
         }
 
         if (ApplicationWideMessageHolder.getInstance().getMessageType() != null) {
