@@ -454,8 +454,17 @@ class ChatController(args: Bundle) :
                 R.layout.item_date_header, this
             )
 
+            var senderId = ""
+            if (!conversationUser?.userId.equals("?")) {
+                senderId = "users/" + conversationUser?.userId
+            } else {
+                senderId = currentConversation?.getActorType() + "/" + currentConversation?.getActorId()
+            }
+
+            Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: " + senderId)
+
             adapter = TalkMessagesListAdapter(
-                conversationUser?.userId,
+                senderId,
                 messageHolders,
                 ImageLoader { imageView, url, payload ->
                     val draweeController = Fresco.newDraweeControllerBuilder()
@@ -1050,18 +1059,6 @@ class ChatController(args: Bundle) :
             })
     }
 
-    private fun setSenderId() {
-        try {
-            val senderId = adapter?.javaClass?.getDeclaredField("senderId")
-            senderId?.isAccessible = true
-            senderId?.set(adapter, conversationUser?.userId)
-        } catch (e: NoSuchFieldException) {
-            Log.w(TAG, "Failed to set sender id")
-        } catch (e: IllegalAccessException) {
-            Log.w(TAG, "Failed to access and set field")
-        }
-    }
-
     private fun submitMessage() {
         if (messageInput != null) {
             val editable = messageInput!!.editableText
@@ -1351,14 +1348,6 @@ class ChatController(args: Bundle) :
                     chatMessage.activeUser = conversationUser
                     chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
 
-                    // if credentials are empty, we're acting as a guest
-                    if (TextUtils.isEmpty(credentials) && myFirstMessage != null && !TextUtils.isEmpty(myFirstMessage?.toString())) {
-                        if (chatMessage.actorType == "guests") {
-                            conversationUser?.userId = chatMessage.actorId
-                            setSenderId()
-                        }
-                    }
-
                     val shouldScroll =
                         !isThereANewNotice && !shouldAddNewMessagesNotice && layoutManager?.findFirstVisibleItemPosition() == 0 || adapter != null && adapter?.itemCount == 0
 
@@ -1450,6 +1439,8 @@ class ChatController(args: Bundle) :
         inflater.inflate(R.menu.menu_conversation, menu)
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
+            conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
+            conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
         } else {
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)

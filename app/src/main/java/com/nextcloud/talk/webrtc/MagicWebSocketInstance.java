@@ -152,9 +152,10 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void restartWebSocket() {
         reconnecting = true;
 
-            Request request = new Request.Builder().url(connectionUrl).build();
-            okHttpClient.newWebSocket(request, this);
-            restartCount++;
+        Log.d(TAG, "restartWebSocket: " + connectionUrl);
+        Request request = new Request.Builder().url(connectionUrl).build();
+        okHttpClient.newWebSocket(request, this);
+        restartCount++;
     }
 
     @Override
@@ -196,6 +197,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         eventBus.post(new WebSocketCommunicationEvent("hello", helloHasHap));
                         break;
                     case "error":
+                        Log.e(TAG, "Received error: " + text);
                         ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
                         if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
                             LoggingUtils.INSTANCE.writeLogEntryToFile(context,
@@ -351,7 +353,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.getMessage(), e);
         }
     }
 

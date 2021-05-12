@@ -214,12 +214,16 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         return new IUser() {
             @Override
             public String getId() {
-                return actorId;
+                return actorType + "/" + actorId;
             }
 
             @Override
             public String getName() {
-                return actorDisplayName;
+                if (!TextUtils.isEmpty(actorDisplayName)) {
+                    return actorDisplayName;
+                }
+
+                return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
             }
 
             @Override

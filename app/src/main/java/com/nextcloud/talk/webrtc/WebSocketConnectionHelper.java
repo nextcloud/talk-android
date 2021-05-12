@@ -98,7 +98,9 @@ public class WebSocketConnectionHelper {
         authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, userEntity.getBaseUrl()));
         AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
         authParametersWebSocketMessage.setTicket(ticket);
-        authParametersWebSocketMessage.setUserid(userEntity.getUserId());
+        if (!userEntity.getUserId().equals("?")) {
+            authParametersWebSocketMessage.setUserid(userEntity.getUserId());
+        }
         authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
         helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
         helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);

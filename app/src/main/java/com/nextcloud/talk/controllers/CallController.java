@@ -1132,7 +1132,13 @@ public class CallController extends BaseController {
                                             .subscribeOn(Schedulers.io())
                                             .subscribe();
                                 } catch (IOException exception) {
-                                    Log.e(TAG, "Failed to serialize external signaling server");
+                                    Log.e(TAG, "Failed to serialize external signaling server", exception);
+                                }
+                            } else {
+                                try {
+                                    conversationUser.setExternalSignalingServer(LoganSquare.serialize(externalSignalingServer));
+                                } catch (IOException exception) {
+                                    Log.e(TAG, "Failed to serialize external signaling server", exception);
                                 }
                             }
 
@@ -1172,6 +1178,7 @@ public class CallController extends BaseController {
 
                     @Override
                     public void onError(Throwable e) {
+                        Log.e(TAG, e.getMessage(), e);
                     }
 
                     @Override

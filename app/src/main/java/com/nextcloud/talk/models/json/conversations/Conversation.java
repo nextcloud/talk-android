@@ -61,6 +61,10 @@ public class Conversation {
     public boolean hasPassword;
     @JsonField(name = "sessionId")
     public String sessionId;
+    @JsonField(name = "actorId")
+    public String actorId;
+    @JsonField(name = "actorType")
+    public String actorType;
     public String password;
     @JsonField(name = "isFavorite")
     public boolean isFavorite;
@@ -180,6 +184,14 @@ public class Conversation {
         return this.participantType;
     }
 
+    public String getActorId() {
+        return actorId;
+    }
+
+    public String getActorType() {
+        return actorType;
+    }
+
     public boolean isHasPassword() {
         return this.hasPassword;
     }
@@ -275,6 +287,14 @@ public class Conversation {
 
     public void setParticipantType(Participant.ParticipantType participantType) {
         this.participantType = participantType;
+    }
+
+    public void setActorId(String actorId) {
+        this.actorId = actorId;
+    }
+
+    public void setActorType(String actorType) {
+        this.actorType = actorType;
     }
 
     public void setHasPassword(boolean hasPassword) {
@@ -399,6 +419,12 @@ public class Conversation {
         if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) {
             return false;
         }
+        if (actorId != null ? !actorId.equals(that.actorId) : that.actorId != null) {
+            return false;
+        }
+        if (actorType != null ? !actorType.equals(that.actorType) : that.actorType != null) {
+            return false;
+        }
         if (password != null ? !password.equals(that.password) : that.password != null) {
             return false;
         }
@@ -441,6 +467,8 @@ public class Conversation {
         result = 31 * result + (int) (lastPing ^ (lastPing >>> 32));
         result = 31 * result + (participants != null ? participants.hashCode() : 0);
         result = 31 * result + (participantType != null ? participantType.hashCode() : 0);
+        result = 31 * result + (actorId != null ? actorId.hashCode() : 0);
+        result = 31 * result + (actorType != null ? actorType.hashCode() : 0);
         result = 31 * result + (hasPassword ? 1 : 0);
         result = 31 * result + (sessionId != null ? sessionId.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
@@ -473,6 +501,8 @@ public class Conversation {
                 ", lastPing=" + lastPing +
                 ", participants=" + participants +
                 ", participantType=" + participantType +
+                ", actorId=" + actorId +
+                ", actorType=" + actorType +
                 ", hasPassword=" + hasPassword +
                 ", sessionId='" + sessionId + '\'' +
                 ", password='" + password + '\'' +
