@@ -347,6 +347,35 @@ public class OperationsMenuController extends BaseController {
                                     getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                                                        .pushChangeHandler(new HorizontalChangeHandler())
                                                                        .popChangeHandler(new HorizontalChangeHandler()));
+                                } else if (conversation.isGuest()) {
+                                    ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion,
+                                                                                                     baseUrl,
+                                                                                                     conversationToken), null)
+                                            .subscribeOn(Schedulers.io())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(new Observer<RoomOverall>() {
+                                                @Override
+                                                public void onSubscribe(Disposable d) {
+
+                                                }
+
+                                                @Override
+                                                public void onNext(RoomOverall roomOverall) {
+                                                    conversation = roomOverall.getOcs().getData();
+                                                    initiateConversation(false);
+                                                }
+
+                                                @Override
+                                                public void onError(Throwable e) {
+                                                    showResultImage(false, false);
+                                                    dispose();
+                                                }
+
+                                                @Override
+                                                public void onComplete() {
+
+                                                }
+                                            });
                                 } else {
                                     initiateConversation(false);
                                 }
@@ -668,6 +697,8 @@ public class OperationsMenuController extends BaseController {
         @Override
         public void onNext(Object o) {
             if (operationCode != 99) {
+                RoomOverall roomOverall = (RoomOverall) o;
+                conversation = roomOverall.getOcs().getData();
                 showResultImage(true, false);
             } else {
                 RoomOverall roomOverall = (RoomOverall) o;
