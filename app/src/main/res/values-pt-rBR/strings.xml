@@ -142,7 +142,6 @@
     <string name="nc_license_summary">GNU General Public License, Versão 3</string>
 
     <string name="nc_select_an_account">Selecionar uma conta</string>
-
     <string name="nc_profile_personal_info_title">Informação Pessoal</string>
 
     <!-- Conversation menu -->
@@ -235,6 +234,9 @@
     <string name="nc_demote">Rebaixar de moderador</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_remove_participant">Excluir participante</string>
+    <string name="nc_remove_group_and_members">Remover grupo e membros </string>
+    <string name="nc_attendee_pin">Pino: %1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Digite uma mensagem...</string>
     <string name="nc_date_header_yesterday">Ontem</string>
@@ -283,6 +285,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
+    <string name="nc_email">E-mail</string>
+    <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>

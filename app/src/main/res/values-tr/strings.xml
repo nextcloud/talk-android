@@ -79,6 +79,10 @@
     <string name="nc_settings_remove_confirmation">Lütfen geçerli hesabı silmek istediğinizi onaylayın.</string>
     <string name="nc_settings_remove_account">Hesabı sil</string>
     <string name="nc_settings_add_account">Hesap ekle</string>
+    <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
+    <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
+    <string name="nc_settings_server_almost_eol">Sunucu sürümü çok eski ve gelecek sürümde artık desteklenmeyecek</string>
+    <string name="nc_settings_warning">Uyarı</string>
     <string name="nc_add">Ekle</string>
     <string name="nc_settings_wrong_account">Yalnız geçerli hesaba yeniden izin verilebilir</string>
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
@@ -108,6 +112,8 @@
     <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi devre dışı bırakır (garanti edilmez)</string>
     <string name="nc_settings_link_previews_title">Bağlantı ön izlemeleri görüntülensin</string>
     <string name="nc_settings_link_previews_desc">Desteklenen aygıtlarda alınan bağlantının içeriğinin ön izlemesini görüntüler</string>
+    <string name="nc_locked_tap_to_unlock">Kilidi açmak için dokunun</string>
+    <string name="nc_locked">Kilitli</string>
     <string name="nc_settings_read_privacy_desc">Okundu durumumu paylaş ve diğerlerinin okundu durumunu görüntüle</string>
     <string name="nc_settings_read_privacy_title">Okundu durumu</string>
 
@@ -136,7 +142,6 @@
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. Sürüm</string>
 
     <string name="nc_select_an_account">Bir hesap seçin</string>
-
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
 
     <!-- Conversation menu -->
@@ -186,6 +191,10 @@
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_offline">Şu anda çevrimdışı, lütfen bağlantınızı denetleyin</string>
     <string name="nc_leaving_call">Arama sonlandırılıyor …</string>
+    <string name="nc_call_state_in_call">Görüşmede %1$s katılımcı var</string>
+    <string name="nc_call_state_in_call_with_audio">Görüşmede %1$s sesli katılımcı var</string>
+    <string name="nc_call_state_with_video">Görüşmede %1$s görüntülü katılımcı var</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
@@ -208,6 +217,7 @@
     <string name="nc_ok">Tamam</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_proceed">İlerle</string>
+    <string name="nc_add_emojis">Emojiler ekle</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
     <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
     <string name="nc_share_text">Görüşmeye şuradan katılın %1$s/index.php/call/%2$s</string>
@@ -224,6 +234,9 @@
     <string name="nc_demote">Sorumluluktan çıkar</string>
     <string name="nc_promote">Sorumlu olarak ata</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
+    <string name="nc_remove_group_and_members">Grup ve üyeleri sil</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Bir ileti yazın …</string>
     <string name="nc_date_header_yesterday">Dün</string>
@@ -248,6 +261,11 @@
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <!-- When translating to German, please use non-formal variant -->
     <string name="nc_formatted_message_you">Siz: %1$s</string>
+    <string name="nc_message_read">İleti okundu</string>
+    <string name="nc_message_sent">İleti gönderildi</string>
+    <string name="nc_remote_audio_off">Uzak ses kapalı</string>
+    <string name="nc_add_attachment">Dosya ekle</string>
+
     <!-- Contacts endless loading -->
     <string name="nc_no_more_load_retry">Yüklenecek başka bir öge yok. Yeniden denemek için yenileyin.</string>
     <string name="nc_endless_disabled">Yüklenecek başka bir öge yok (en çok sayıya ulaşıldı)</string>
@@ -267,6 +285,8 @@
 
     <!-- Other -->
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
+    <string name="nc_email">E-posta</string>
+    <string name="nc_group">Grup</string>
     <string name="nc_groups">Gruplar</string>
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
@@ -326,6 +346,8 @@
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
+    <string name="nc_upload_in_progess">Yükleniyor</string>
+
     <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Talk kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_title">Telefon numarası bütünleştirmesi</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefon numarası</string>
@@ -337,6 +359,7 @@
     <string name="nc_phone_book_integration_account_not_found">Hesap bulunamadı</string>
 
     <string name="starred">Sık Kullanılanlara Ekle</string>
+    <string name="encrypted">Şifrelenmiş</string>
     <string name="password_protected">Parola korumalı</string>
 
     <string name="avatar">Avatar</string>
@@ -367,6 +390,8 @@
     <string name="scope_published_title">Yayınlanmış</string>
     <string name="scope_published_description">Genel ve herkese açık adres defteri ile ve güvenilen sunucularla eşitlensin</string>
     <string name="scope_toggle">Ölçeği değiştir</string>
+    <string name="scope_toggle_description">%1$s gizlilik düzeyini değiştir</string>
+
     <!-- App Bar -->
     <string name="appbar_search_in">%s içinde arama</string>
 
