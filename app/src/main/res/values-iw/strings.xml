@@ -116,7 +116,6 @@
     <string name="nc_license_summary">הרישיון הציבורי הכללי של GNU, גרסה 3</string>
 
     <string name="nc_select_an_account">בחירת חשבון</string>
-
     <!-- Conversation menu -->
     <string name="nc_start_conversation">התחלת דיון</string>
     <string name="nc_configure_room">הגדרת דיון</string>
