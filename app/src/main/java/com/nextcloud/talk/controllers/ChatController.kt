@@ -547,8 +547,7 @@ class ChatController(args: Bundle) :
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length >= lengthFilter) {
                     messageInput?.error = String.format(
-                        Objects.requireNonNull<Resources>
-                            (resources).getString(R.string.nc_limit_hit),
+                        Objects.requireNonNull<Resources> (resources).getString(R.string.nc_limit_hit),
                         Integer.toString(lengthFilter)
                     )
                 } else {
@@ -624,8 +623,7 @@ class ChatController(args: Bundle) :
                     conversationVideoMenuItem?.icon?.alpha = 255
                 }
 
-                if (currentConversation != null && currentConversation!!.shouldShowLobby
-                        (conversationUser)
+                if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)
                 ) {
                     messageInputView?.visibility = View.GONE
                 } else {
@@ -1309,9 +1307,9 @@ class ChatController(args: Bundle) :
                             TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
                             chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
                             countGroupedMessages < 4 && DateFormatter.isSameDay(
-                                chatMessageList[i].createdAt,
-                                chatMessageList[i + 1].createdAt
-                            )
+                                    chatMessageList[i].createdAt,
+                                    chatMessageList[i + 1].createdAt
+                                )
                         ) {
                             chatMessageList[i].isGrouped = true
                             countGroupedMessages++
