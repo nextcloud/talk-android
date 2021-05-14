@@ -339,6 +339,8 @@
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
+    <string name="nc_message_sending">Message sending</string>
+    <string name="nc_message_send_error">Error while sending</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>

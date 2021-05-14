@@ -105,12 +105,16 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
         val readStatusDrawableInt = when (message.readStatus) {
             ReadStatus.READ -> R.drawable.ic_check_all
             ReadStatus.SENT -> R.drawable.ic_check
+            ReadStatus.SENDING -> R.drawable.ic_sending
+            ReadStatus.FAILED -> R.drawable.ic_warning_white
             else -> null
         }
 
         val readStatusContentDescriptionString = when (message.readStatus) {
             ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
             ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            ReadStatus.SENDING -> context?.resources?.getString(R.string.nc_message_sending)
+            ReadStatus.FAILED -> context?.resources?.getString(R.string.nc_message_send_error)
             else -> null
         }
 
