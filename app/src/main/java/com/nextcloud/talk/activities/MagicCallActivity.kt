@@ -58,6 +58,7 @@ class MagicCallActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        setTheme(R.style.CallTheme)
 
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(
