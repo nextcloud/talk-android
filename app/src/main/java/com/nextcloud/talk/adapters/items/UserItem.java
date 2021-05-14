@@ -37,6 +37,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.participants.Participant.InCallFlags;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -186,56 +187,24 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
 
         if (header == null) {
-            Participant.ParticipantFlags participantFlags = participant.getParticipantFlags();
-            switch (participantFlags) {
-                case NOT_IN_CALL:
-                    holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
-                    holder.videoCallImageView.setVisibility(View.GONE);
-                    break;
-                case IN_CALL:
-                    holder.voiceOrSimpleCallImageView.setBackground(
-                            ResourcesCompat.getDrawable(resources, R.drawable.shape_call_bubble, null));
-                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                    holder.voiceOrSimpleCallImageView.setContentDescription(
-                            resources.getString(R.string.nc_call_state_in_call, participant.displayName));
-                    holder.videoCallImageView.setVisibility(View.GONE);
-                    break;
-                case IN_CALL_WITH_AUDIO:
-                    holder.voiceOrSimpleCallImageView.setBackground(
-                            ResourcesCompat.getDrawable(resources, R.drawable.shape_voice_bubble, null));
-                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                    holder.voiceOrSimpleCallImageView.setContentDescription(
-                            resources.getString(R.string.nc_call_state_in_call_with_audio, participant.displayName));
-                    holder.videoCallImageView.setVisibility(View.GONE);
-                    break;
-                case IN_CALL_WITH_VIDEO:
-                    holder.voiceOrSimpleCallImageView.setBackground(
-                            ResourcesCompat.getDrawable(resources, R.drawable.shape_call_bubble, null));
-                    holder.videoCallImageView.setBackground(
-                            ResourcesCompat.getDrawable(resources, R.drawable.shape_video_bubble, null));
-                    holder.voiceOrSimpleCallImageView.setContentDescription(
-                            resources.getString(R.string.nc_call_state_in_call, participant.displayName));
-                    holder.videoCallImageView.setContentDescription(
-                            resources.getString(R.string.nc_call_state_with_video, participant.displayName));
-                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                    holder.videoCallImageView.setVisibility(View.VISIBLE);
-                    break;
-                case IN_CALL_WITH_AUDIO_AND_VIDEO:
-                    holder.voiceOrSimpleCallImageView.setBackground(
-                            ResourcesCompat.getDrawable(resources, R.drawable.shape_voice_bubble, null));
-                    holder.videoCallImageView.setBackground(
-                            ResourcesCompat.getDrawable(resources, R.drawable.shape_video_bubble, null));
-                    holder.voiceOrSimpleCallImageView.setContentDescription(
-                            resources.getString(R.string.nc_call_state_in_call_with_audio));
-                    holder.videoCallImageView.setContentDescription(
-                            resources.getString(R.string.nc_call_state_with_video));
-                    holder.voiceOrSimpleCallImageView.setVisibility(View.VISIBLE);
-                    holder.videoCallImageView.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    holder.voiceOrSimpleCallImageView.setVisibility(View.GONE);
-                    holder.videoCallImageView.setVisibility(View.GONE);
-                    break;
+            Long inCallFlag = participant.getInCall();
+            if ((inCallFlag & InCallFlags.WITH_PHONE) > 0) {
+                holder.videoCallIconView.setImageResource(R.drawable.ic_call_grey_600_24dp);
+                holder.videoCallIconView.setVisibility(View.VISIBLE);
+                holder.videoCallIconView.setContentDescription(
+                        resources.getString(R.string.nc_call_state_with_phone, participant.displayName));
+            } else if ((inCallFlag & InCallFlags.WITH_VIDEO) > 0) {
+                holder.videoCallIconView.setImageResource(R.drawable.ic_videocam_grey_600_24dp);
+                holder.videoCallIconView.setVisibility(View.VISIBLE);
+                holder.videoCallIconView.setContentDescription(
+                        resources.getString(R.string.nc_call_state_with_video, participant.displayName));
+            } else if (inCallFlag > InCallFlags.DISCONNECTED) {
+                holder.videoCallIconView.setImageResource(R.drawable.ic_mic_grey_600_24dp);
+                holder.videoCallIconView.setVisibility(View.VISIBLE);
+                holder.videoCallIconView.setContentDescription(
+                        resources.getString(R.string.nc_call_state_in_call, participant.displayName));
+            } else {
+                holder.videoCallIconView.setVisibility(View.GONE);
             }
 
             if (holder.contactMentionId != null) {
@@ -302,11 +271,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @BindView(R.id.secondary_text)
         public EmojiTextView contactMentionId;
         @Nullable
-        @BindView(R.id.voiceOrSimpleCallImageView)
-        ImageView voiceOrSimpleCallImageView;
-        @Nullable
-        @BindView(R.id.videoCallImageView)
-        ImageView videoCallImageView;
+        @BindView(R.id.videoCallIcon)
+        ImageView videoCallIconView;
         @Nullable
         @BindView(R.id.checkedImageView)
         ImageView checkedImageView;

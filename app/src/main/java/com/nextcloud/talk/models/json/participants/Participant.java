@@ -146,8 +146,19 @@ public class Participant {
         return sessionIds;
     }
 
-    public Object getInCall() {
-        return this.inCall;
+    public Long getInCall() {
+        if (inCall instanceof Long) {
+            return (Long) this.inCall;
+        }
+
+        if (this.inCall instanceof Boolean) {
+            if ((boolean) inCall) {
+                return 1L;
+            } else {
+                return 0L;
+            }
+        }
+        return 0L;
     }
 
     public String getSource() {
@@ -327,6 +338,15 @@ public class Participant {
         GUEST_MODERATOR
     }
 
+    public static class InCallFlags {
+        public static final int DISCONNECTED = 0;
+        public static final int IN_CALL = 1;
+        public static final int WITH_AUDIO = 2;
+        public static final int WITH_VIDEO = 4;
+        public static final int WITH_PHONE = 8;
+    }
+
+    @Deprecated
     public enum ParticipantFlags {
         NOT_IN_CALL(0),
         IN_CALL(1),

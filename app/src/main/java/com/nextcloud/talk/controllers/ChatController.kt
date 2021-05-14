@@ -56,6 +56,7 @@ import android.widget.RelativeLayout
 import android.widget.Space
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiEditText
@@ -1554,7 +1555,7 @@ class ChatController(args: Bundle) :
 
     override fun onMessageViewLongClick(view: View?, message: IMessage?) {
         PopupMenu(
-            this.context,
+            ContextThemeWrapper(view?.context, R.style.appActionBarPopupMenu),
             view,
             if (message?.user?.id == conversationUser?.userId) Gravity.END else Gravity.START
         ).apply {

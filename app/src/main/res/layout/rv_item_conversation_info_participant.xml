@@ -25,40 +25,27 @@
     android:layout_height="@dimen/item_height"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/frame_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/simple_drawee_view"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin">
+        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        app:roundAsCircle="true" />
 
-        <ImageView
-            android:id="@+id/voiceOrSimpleCallImageView"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_gravity="bottom|end"
-            android:background="@drawable/shape_lock_bubble"
-            android:contentDescription="@null"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/videoCallImageView"
-            android:layout_width="12dp"
-            android:layout_height="12dp"
-            android:layout_gravity="top|end"
-            android:background="@drawable/shape_favorite_bubble"
-            android:contentDescription="@null"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/simple_drawee_view"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            app:roundAsCircle="true" />
-
-    </FrameLayout>
+    <ImageView
+        android:id="@+id/videoCallIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
+        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_videocam_grey_600_24dp"
+        android:contentDescription="@null"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/linear_layout"
@@ -67,7 +54,8 @@
         android:layout_centerInParent="true"
         android:layout_marginStart="@dimen/margin_between_elements"
         android:layout_marginEnd="@dimen/margin_between_elements"
-        android:layout_toEndOf="@id/frame_layout"
+        android:layout_toEndOf="@id/simple_drawee_view"
+        android:layout_toStartOf="@id/videoCallIcon"
         android:orientation="vertical">
 
         <androidx.emoji.widget.EmojiTextView
