@@ -23,6 +23,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -146,7 +147,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                 holder.dialogUnreadBubble.setTextColor(Color.WHITE);
             } else {
-                holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.conversation_unread_bubble);
+                holder.dialogUnreadBubble.setChipBackgroundColor(
+                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.conversation_unread_bubble)));
                 holder.dialogUnreadBubble.setTextColor(
                         ContextCompat.getColor(context, R.color.conversation_unread_bubble_text));
             }
