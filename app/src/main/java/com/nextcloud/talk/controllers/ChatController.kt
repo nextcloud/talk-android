@@ -112,6 +112,7 @@ import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
+import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.KeyboardUtils
@@ -119,6 +120,10 @@ import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -542,8 +547,7 @@ class ChatController(args: Bundle) :
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length >= lengthFilter) {
                     messageInput?.error = String.format(
-                        Objects.requireNonNull<Resources>
-                        (resources).getString(R.string.nc_limit_hit),
+                        Objects.requireNonNull<Resources> (resources).getString(R.string.nc_limit_hit),
                         Integer.toString(lengthFilter)
                     )
                 } else {
@@ -619,8 +623,7 @@ class ChatController(args: Bundle) :
                     conversationVideoMenuItem?.icon?.alpha = 255
                 }
 
-                if (currentConversation != null && currentConversation!!.shouldShowLobby
-                    (conversationUser)
+                if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)
                 ) {
                     messageInputView?.visibility = View.GONE
                 } else {
@@ -1557,7 +1560,7 @@ class ChatController(args: Bundle) :
         PopupMenu(
             ContextThemeWrapper(view?.context, R.style.appActionBarPopupMenu),
             view,
-            if (message?.user?.id == conversationUser?.userId) Gravity.END else Gravity.START
+            if (message?.user?.id == currentConversation?.actorType + "/" + currentConversation?.actorId) Gravity.END else Gravity.START
         ).apply {
             setOnMenuItemClickListener { item ->
                 when (item?.itemId) {
@@ -1616,6 +1619,66 @@ class ChatController(args: Bundle) :
                         }
                         true
                     }
+                    R.id.action_reply_privately -> {
+                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+                        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+                            apiVersion,
+                            conversationUser?.baseUrl,
+                            "1",
+                            message?.user?.id?.substring(6),
+                            null
+                        )
+                        ncApi!!.createRoom(
+                            credentials,
+                            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<RoomOverall> {
+                                override fun onSubscribe(d: Disposable) {}
+                                override fun onNext(roomOverall: RoomOverall) {
+                                    val bundle = Bundle()
+                                    bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
+                                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
+                                    bundle.putString(KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
+
+                                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
+                                    ncApi!!.getRoom(
+                                        credentials,
+                                        ApiUtils.getUrlForRoom(
+                                            apiVersion, conversationUser?.baseUrl,
+                                            roomOverall.getOcs().getData().getToken()
+                                        )
+                                    )
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(object : Observer<RoomOverall> {
+                                            override fun onSubscribe(d: Disposable) {}
+                                            override fun onNext(roomOverall: RoomOverall) {
+                                                bundle.putParcelable(
+                                                    KEY_ACTIVE_CONVERSATION,
+                                                    Parcels.wrap(roomOverall.getOcs().getData())
+                                                )
+                                                remapChatController(
+                                                    router, conversationUser!!.id,
+                                                    roomOverall.getOcs().getData().getToken(), bundle, true
+                                                )
+                                            }
+
+                                            override fun onError(e: Throwable) {
+                                                Log.e(TAG, e.message, e)
+                                            }
+                                            override fun onComplete() {}
+                                        })
+                                }
+
+                                override fun onError(e: Throwable) {
+                                    Log.e(TAG, e.message, e)
+                                }
+                                override fun onComplete() {}
+                            })
+                        true
+                    }
                     R.id.action_delete_message -> {
                         var apiVersion = 1
                         // FIXME Fix API checking with guests?
@@ -1667,8 +1730,16 @@ class ChatController(args: Bundle) :
             inflate(R.menu.chat_message_menu)
             menu.findItem(R.id.action_copy_message).isVisible = !(message as ChatMessage).isDeleted
             menu.findItem(R.id.action_reply_to_message).isVisible = (message as ChatMessage).replyable
+            menu.findItem(R.id.action_reply_privately).isVisible = (message as ChatMessage).replyable &&
+                conversationUser?.userId?.isNotEmpty() == true && conversationUser.userId != "?" &&
+                (message as ChatMessage).user.id.startsWith("users/") &&
+                (message as ChatMessage).user.id.substring(6) != currentConversation?.actorId &&
+                currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
             if (menu.hasVisibleItems()) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    setForceShowIcon(true)
+                }
                 show()
             }
         }
