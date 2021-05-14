@@ -101,7 +101,7 @@ public class WebSocketConnectionHelper {
     }
 
     HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
-        int apiVersion = ApiUtils.getSignalingApiVersion(userEntity, new int[] {2, 1});
+        int apiVersion = ApiUtils.getSignalingApiVersion(userEntity, new int[] {ApiUtils.APIv3, 2, 1});
 
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");

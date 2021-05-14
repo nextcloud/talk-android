@@ -1095,7 +1095,7 @@ public class CallController extends BaseController {
     }
 
     private void fetchSignalingSettings() {
-        int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+        int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {ApiUtils.APIv3, 2, 1});
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
                 .subscribeOn(Schedulers.io())
@@ -1142,16 +1142,22 @@ public class CallController extends BaseController {
                                 }
                             }
 
-                            if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
-                                for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
-                                     i++) {
-                                    iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
-                                    if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
-                                                                                                                .getCredential())) {
+                            if (apiVersion == ApiUtils.APIv3) {
+                                if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
+                                    for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
+                                         i++) {
+                                        iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
+                                        for (int j = 0; j < iceServer.getUrls().size(); j++) {
+                                            iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
+                                    for (int i = 0; i < signalingSettingsOverall.getOcs().getSettings().getStunServers().size();
+                                         i++) {
+                                        iceServer = signalingSettingsOverall.getOcs().getSettings().getStunServers().get(i);
                                         iceServers.add(new PeerConnection.IceServer(iceServer.getUrl()));
-                                    } else {
-                                        iceServers.add(new PeerConnection.IceServer(iceServer.getUrl(),
-                                                                                    iceServer.getUsername(), iceServer.getCredential()));
                                     }
                                 }
                             }
@@ -1161,13 +1167,11 @@ public class CallController extends BaseController {
                                      i++) {
                                     iceServer = signalingSettingsOverall.getOcs().getSettings().getTurnServers().get(i);
                                     for (int j = 0; j < iceServer.getUrls().size(); j++) {
-                                        if (TextUtils.isEmpty(iceServer.getUsername()) || TextUtils.isEmpty(iceServer
-                                                                                                                    .getCredential())) {
-                                            iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j)));
-                                        } else {
-                                            iceServers.add(new PeerConnection.IceServer(iceServer.getUrls().get(j),
-                                                                                        iceServer.getUsername(), iceServer.getCredential()));
-                                        }
+                                        iceServers.add(new PeerConnection.IceServer(
+                                                iceServer.getUrls().get(j),
+                                                iceServer.getUsername(),
+                                                iceServer.getCredential()
+                                        ));
                                     }
                                 }
                             }
@@ -1304,7 +1308,8 @@ public class CallController extends BaseController {
                             }
 
                             if (!hasExternalSignalingServer) {
-                                int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+                                int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser,
+                                                                                 new int[] {ApiUtils.APIv3, 2, 1});
 
                                 ncApi.pullSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion,
                                                                                                      baseUrl, roomToken))
@@ -2000,7 +2005,7 @@ public class CallController extends BaseController {
             String stringToSend = stringBuilder.toString();
             strings.add(stringToSend);
 
-            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {2, 1});
+            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {ApiUtils.APIv3, 2, 1});
 
             ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
                                         strings.toString())

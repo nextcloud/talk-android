@@ -146,12 +146,19 @@ public class ApiUtils {
 
     public static int getSignalingApiVersion(UserEntity capabilities, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
-            if (version == 2 && capabilities.hasSpreedFeatureCapability("sip-support")) {
+            if (capabilities.hasSpreedFeatureCapability("signaling-v" + version)) {
                 return version;
             }
 
-            if (version == 1) {
-                // Has no capability, we just assume it is always there for now.
+            if (version == 2 &&
+                    capabilities.hasSpreedFeatureCapability("sip-support") &&
+                    !capabilities.hasSpreedFeatureCapability("signaling-v3")) {
+                return version;
+            }
+
+            if (version == 1 &&
+                    !capabilities.hasSpreedFeatureCapability("signaling-v3")) {
+                // Has no capability, we just assume it is always there when there is no v3 or later
                 return version;
             }
         }
