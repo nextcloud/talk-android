@@ -75,6 +75,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.parceler.Parcels;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -128,7 +129,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @BindView(R.id.loading_content)
     LinearLayout loadingContent;
-
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -527,45 +527,49 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             EnumActorTypeConverter actorTypeConverter = new EnumActorTypeConverter();
 
                             try {
-                                    AutocompleteOverall autocompleteOverall = LoganSquare.parse(responseBody.string(), AutocompleteOverall.class);
-                                    autocompleteUsersHashSet.addAll(autocompleteOverall.getOcs().getData());
+                                AutocompleteOverall autocompleteOverall = LoganSquare.parse(
+                                        responseBody.string(),
+                                        AutocompleteOverall.class);
+                                autocompleteUsersHashSet.addAll(autocompleteOverall.getOcs().getData());
 
-                                    for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
-                                        if (!autocompleteUser.getId().equals(currentUser.getUserId()) && !existingParticipants.contains(autocompleteUser.getId())) {
-                                            participant = new Participant();
-                                            participant.setActorId(autocompleteUser.getId());
-                                            participant.setActorType(actorTypeConverter.getFromString(autocompleteUser.getSource()));
-                                            participant.setDisplayName(autocompleteUser.getLabel());
-                                            participant.setSource(autocompleteUser.getSource());
+                                for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
+                                    if (!autocompleteUser.getId().equals(currentUser.getUserId())
+                                            && !existingParticipants.contains(autocompleteUser.getId())) {
+                                        participant = new Participant();
+                                        participant.setActorId(autocompleteUser.getId());
+                                        participant.setActorType(actorTypeConverter.getFromString(autocompleteUser.getSource()));
+                                        participant.setDisplayName(autocompleteUser.getLabel());
+                                        participant.setSource(autocompleteUser.getSource());
 
-                                            String headerTitle;
+                                        String headerTitle;
 
-                                            if (participant.getActorType() == Participant.ActorType.GROUPS) {
-                                                headerTitle = getResources().getString(R.string.nc_groups);
-                                            } else if (participant.getActorType() == Participant.ActorType.CIRCLES) {
-                                                headerTitle = getResources().getString(R.string.nc_circles);
-                                            } else {
-                                                headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
-                                            }
-
-                                            GenericTextHeaderItem genericTextHeaderItem;
-                                            if (!userHeaderItems.containsKey(headerTitle)) {
-                                                genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
-                                                userHeaderItems.put(headerTitle, genericTextHeaderItem);
-                                            }
-
-
-                                            UserItem newContactItem = new UserItem(participant, currentUser,
-                                                    userHeaderItems.get(headerTitle));
-
-                                            if (!contactItems.contains(newContactItem)) {
-                                                newUserItemList.add(newContactItem);
-                                            }
-
+                                        if (participant.getActorType() == Participant.ActorType.GROUPS) {
+                                            headerTitle = getResources().getString(R.string.nc_groups);
+                                        } else if (participant.getActorType() == Participant.ActorType.CIRCLES) {
+                                            headerTitle = getResources().getString(R.string.nc_circles);
+                                        } else {
+                                            headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
                                         }
+
+                                        GenericTextHeaderItem genericTextHeaderItem;
+                                        if (!userHeaderItems.containsKey(headerTitle)) {
+                                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                                            userHeaderItems.put(headerTitle, genericTextHeaderItem);
+                                        }
+
+                                        UserItem newContactItem = new UserItem(
+                                                participant,
+                                                currentUser,
+                                                userHeaderItems.get(headerTitle)
+                                        );
+
+                                        if (!contactItems.contains(newContactItem)) {
+                                            newUserItemList.add(newContactItem);
+                                        }
+                                    }
                                 }
-                            } catch (Exception exception) {
-                                Log.e(TAG, "Parsing response body failed while getting contacts");
+                            } catch (IOException ioe) {
+                                Log.e(TAG, "Parsing response body failed while getting contacts", ioe);
                             }
 
                             userHeaderItems = new HashMap<>();
@@ -574,7 +578,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             Collections.sort(newUserItemList, (o1, o2) -> {
                                 String firstName;
                                 String secondName;
-
 
                                 if (o1 instanceof UserItem) {
                                     firstName = ((UserItem) o1).getModel().getDisplayName();
@@ -627,7 +630,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 String firstName;
                                 String secondName;
 
-
                                 if (o1 instanceof UserItem) {
                                     firstName = ((UserItem) o1).getModel().getDisplayName();
                                 } else {
@@ -653,7 +655,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 return firstName.compareToIgnoreCase(secondName);
                             });
 
-
                             if (newUserItemList.size() > 0) {
                                 adapter.updateDataSet(newUserItemList);
                             } else {
@@ -664,7 +665,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                 swipeRefreshLayout.setRefreshing(false);
                             }
                         }
-
                     }
 
                     @Override
@@ -673,7 +673,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             swipeRefreshLayout.setRefreshing(false);
                         }
                         dispose(contactsQueryDisposable);
-
                     }
 
                     @Override
