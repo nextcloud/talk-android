@@ -1562,7 +1562,7 @@ class ChatController(args: Bundle) :
         PopupMenu(
             ContextThemeWrapper(view?.context, R.style.appActionBarPopupMenu),
             view,
-            if (message?.user?.id == conversationUser?.userId) Gravity.END else Gravity.START
+            if (message?.user?.id == currentConversation?.actorType + "/" + currentConversation?.actorId) Gravity.END else Gravity.START
         ).apply {
             setOnMenuItemClickListener { item ->
                 when (item?.itemId) {
@@ -1739,6 +1739,9 @@ class ChatController(args: Bundle) :
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
             if (menu.hasVisibleItems()) {
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                    setForceShowIcon(true)
+                }
                 show()
             }
         }
