@@ -24,6 +24,7 @@ package com.nextcloud.talk.models.json.converters
 
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.DUMMY
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.EMAILS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
@@ -37,6 +38,7 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
             "groups" -> GROUPS
             "guests" -> GUESTS
             "users" -> USERS
+            "circles" -> CIRCLES
             else -> DUMMY
         }
     }
@@ -52,6 +54,7 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
             GROUPS -> "groups"
             GUESTS -> "guests"
             USERS -> "users"
+            CIRCLES -> "circles"
             else -> ""
         }
     }

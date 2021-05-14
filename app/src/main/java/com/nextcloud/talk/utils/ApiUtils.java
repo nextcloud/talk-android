@@ -255,6 +255,7 @@ public class ApiUtils {
     }
 
     public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
+                                                                @Nullable String source,
                                                                 @Nullable String invite,
                                                                 @Nullable String conversationName) {
         RetrofitBucket retrofitBucket = new RetrofitBucket();
@@ -264,6 +265,9 @@ public class ApiUtils {
         queryMap.put("roomType", roomType);
         if (invite != null) {
             queryMap.put("invite", invite);
+        }
+        if (source != null) {
+            queryMap.put("source", source);
         }
 
         if (conversationName != null) {
@@ -289,15 +293,15 @@ public class ApiUtils {
 
     }
 
-    public static RetrofitBucket getRetrofitBucketForAddGroupParticipant(int version, String baseUrl, String token, String group) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, group);
-        retrofitBucket.getQueryMap().put("source", "groups");
-        return retrofitBucket;
-    }
-
-    public static RetrofitBucket getRetrofitBucketForAddMailParticipant(int version, String baseUrl, String token, String mail) {
-        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, mail);
-        retrofitBucket.getQueryMap().put("source", "emails");
+    public static RetrofitBucket getRetrofitBucketForAddParticipantWithSource(
+            int version,
+            String baseUrl,
+            String token,
+            String source,
+            String id
+                                                                             ) {
+        RetrofitBucket retrofitBucket = getRetrofitBucketForAddParticipant(version, baseUrl, token, id);
+        retrofitBucket.getQueryMap().put("source", source);
         return retrofitBucket;
     }
 

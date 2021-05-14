@@ -259,7 +259,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion, currentUser.baseUrl, roomType,
-            userId, null
+            null, userId, null
         )
         ncApi.createRoom(
             credentials,

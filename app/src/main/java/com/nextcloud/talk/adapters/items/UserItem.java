@@ -151,7 +151,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             holder.contactDisplayName.setText(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest));
         }
 
-        if (participant.getActorType() == Participant.ActorType.GROUPS || "groups".equals(participant.getSource())) {
+        if (participant.getActorType() == Participant.ActorType.GROUPS ||
+                "groups".equals(participant.getSource()) ||
+                participant.getActorType() == Participant.ActorType.CIRCLES ||
+                "circles".equals(participant.getSource())) {
             holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
         } else if (participant.getActorType() == Participant.ActorType.EMAILS) {
             holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_mail);

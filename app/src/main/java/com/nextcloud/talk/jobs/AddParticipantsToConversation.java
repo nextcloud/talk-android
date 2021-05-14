@@ -64,6 +64,8 @@ public class AddParticipantsToConversation extends Worker {
         Data data = getInputData();
         String[] selectedUserIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_USERS());
         String[] selectedGroupIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_GROUPS());
+        String[] selectedCircleIds = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_CIRCLES());
+        String[] selectedEmails = data.getStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_EMAILS());
         UserEntity user = userUtils.getUserWithInternalId(data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), -1));
 
         int apiVersion = ApiUtils.getConversationApiVersion(user, new int[] {ApiUtils.APIv4, 1});
@@ -72,23 +74,64 @@ public class AddParticipantsToConversation extends Worker {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
         RetrofitBucket retrofitBucket;
-        for (String userId : selectedUserIds) {
-            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion, user.getBaseUrl(),
-                                                                         conversationToken,
-                    userId);
+        if (selectedUserIds != null) {
+            for (String userId : selectedUserIds) {
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion, user.getBaseUrl(),
+                                                                             conversationToken,
+                                                                             userId);
 
-            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.io())
-                    .blockingSubscribe();
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.io())
+                        .blockingSubscribe();
+            }
         }
 
-        for (String groupId : selectedGroupIds) {
-            retrofitBucket = ApiUtils.getRetrofitBucketForAddGroupParticipant(apiVersion, user.getBaseUrl(), conversationToken,
-                    groupId);
+        if (selectedGroupIds != null) {
+            for (String groupId : selectedGroupIds) {
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                        apiVersion,
+                        user.getBaseUrl(),
+                        conversationToken,
+                        "groups",
+                        groupId
+                                                                                      );
 
-            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.io())
-                    .blockingSubscribe();
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.io())
+                        .blockingSubscribe();
+            }
+        }
+
+        if (selectedCircleIds != null) {
+            for (String circleId : selectedCircleIds) {
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                        apiVersion,
+                        user.getBaseUrl(),
+                        conversationToken,
+                        "circles",
+                        circleId
+                                                                                      );
+
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.io())
+                        .blockingSubscribe();
+            }
+        }
+
+        if (selectedEmails != null) {
+            for (String email : selectedEmails) {
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                        apiVersion,
+                        user.getBaseUrl(),
+                        conversationToken,
+                        "emails",
+                        email
+                                                                                      );
+
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                        .subscribeOn(Schedulers.io())
+                        .blockingSubscribe();
+            }
         }
 
         eventBus.post(new EventStatus(user.getId(), EventStatus.EventType.PARTICIPANTS_UPDATE, true));

@@ -326,6 +326,7 @@ public class Participant {
         GROUPS,
         GUESTS,
         USERS,
+        CIRCLES,
     }
 
     public enum ParticipantType {
