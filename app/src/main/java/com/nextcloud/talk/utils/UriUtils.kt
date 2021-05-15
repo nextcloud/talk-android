@@ -26,28 +26,29 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import android.util.Log
 
-object UriUtils {
-
-    fun getFileName(uri: Uri, context: Context?): String {
-        var filename: String? = null
-        if (uri.scheme == "content" && context != null) {
-            val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    filename = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+class UriUtils {
+    companion object {
+        fun getFileName(uri: Uri, context: Context?): String {
+            var filename: String? = null
+            if (uri.scheme == "content" && context != null) {
+                val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+                try {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        filename = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                    }
+                } finally {
+                    cursor?.close()
                 }
-            } finally {
-                cursor?.close()
             }
-        }
-        if (filename == null) {
-            Log.e("UriUtils", "failed to get DISPLAY_NAME from uri. using fallback.")
-            filename = uri.path
-            val lastIndexOfSlash = filename!!.lastIndexOf('/')
-            if (lastIndexOfSlash != -1) {
-                filename = filename.substring(lastIndexOfSlash + 1)
+            if (filename == null) {
+                Log.d("UriUtils", "failed to get DISPLAY_NAME from uri. using fallback.")
+                filename = uri.path
+                val lastIndexOfSlash = filename!!.lastIndexOf('/')
+                if (lastIndexOfSlash != -1) {
+                    filename = filename.substring(lastIndexOfSlash + 1)
+                }
             }
+            return filename
         }
-        return filename
     }
 }

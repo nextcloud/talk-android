@@ -307,9 +307,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-
         handleActionFromContact(intent)
-
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
                 router!!.pushController(

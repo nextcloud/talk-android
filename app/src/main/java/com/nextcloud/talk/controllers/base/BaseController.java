@@ -169,13 +169,7 @@ public abstract class BaseController extends ButterKnifeController {
                             R.animator.appbar_elevation_off)
                     );
                 } else {
-                    activity.binding.searchToolbar.setVisibility(View.GONE);
-                    activity.binding.toolbar.setVisibility(View.VISIBLE);
-                    layoutParams.setScrollFlags(0);
-                    activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                            activity.binding.appBar.getContext(),
-                            R.animator.appbar_elevation_on)
-                    );
+                    hideSearchBar();
                 }
 
                 activity.binding.searchToolbar.setLayoutParams(layoutParams);
@@ -202,6 +196,20 @@ public abstract class BaseController extends ButterKnifeController {
                 );
             }
         }
+    }
+
+    protected void hideSearchBar() {
+        MainActivity activity = (MainActivity) getActivity();
+        AppBarLayout.LayoutParams layoutParams =
+                (AppBarLayout.LayoutParams) activity.binding.searchToolbar.getLayoutParams();
+
+        activity.binding.searchToolbar.setVisibility(View.GONE);
+        activity.binding.toolbar.setVisibility(View.VISIBLE);
+        layoutParams.setScrollFlags(0);
+        activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
+                activity.binding.appBar.getContext(),
+                R.animator.appbar_elevation_on)
+                                                    );
     }
 
     @Override

@@ -26,6 +26,7 @@ import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
@@ -262,6 +263,8 @@ class ChatController(args: Bundle) :
     val roomJoined: Boolean = false
     var pastPreconditionFailed = false
     var futurePreconditionFailed = false
+
+    val filesToUpload: MutableList<String> = ArrayList()
 
     init {
         setHasOptionsMenu(true)
@@ -683,27 +686,27 @@ class ChatController(args: Bundle) :
             if (resultCode == RESULT_OK) {
                 try {
                     checkNotNull(intent)
-                    val files: MutableList<String> = ArrayList()
+                    filesToUpload.clear()
                     intent.clipData?.let {
                         for (index in 0 until it.itemCount) {
-                            files.add(it.getItemAt(index).uri.toString())
+                            filesToUpload.add(it.getItemAt(index).uri.toString())
                         }
                     } ?: run {
                         checkNotNull(intent.data)
                         intent.data.let {
-                            files.add(intent.data.toString())
+                            filesToUpload.add(intent.data.toString())
                         }
                     }
-                    require(files.isNotEmpty())
+                    require(filesToUpload.isNotEmpty())
 
                     val filenamesWithLinebreaks = StringBuilder("\n")
 
-                    for (file in files) {
+                    for (file in filesToUpload) {
                         val filename = UriUtils.getFileName(Uri.parse(file), context)
                         filenamesWithLinebreaks.append(filename).append("\n")
                     }
 
-                    val confirmationQuestion = when (files.size) {
+                    val confirmationQuestion = when (filesToUpload.size) {
                         1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
                             String.format(it, title)
                         }
@@ -717,11 +720,11 @@ class ChatController(args: Bundle) :
                         .setTitle(confirmationQuestion)
                         .setMessage(filenamesWithLinebreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { v ->
-                            uploadFiles(files)
-                            Toast.makeText(
-                                context, context?.resources?.getString(R.string.nc_upload_in_progess),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                                uploadFiles(filesToUpload)
+                            } else {
+                                UploadAndShareFilesWorker.requestStoragePermission(this)
+                            }
                         }
                         .setNegativeButton(R.string.nc_no) {}
                         .show()
@@ -738,6 +741,15 @@ class ChatController(args: Bundle) :
         }
     }
 
+     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
+            uploadFiles(filesToUpload)
+        } else {
+            Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun uploadFiles(files: MutableList<String>) {
         try {
             require(files.isNotEmpty())
@@ -750,6 +762,11 @@ class ChatController(args: Bundle) :
                 .setInputData(data)
                 .build()
             WorkManager.getInstance().enqueue(uploadWorker)
+
+            Toast.makeText(
+                context, context?.getString(R.string.nc_upload_in_progess),
+                Toast.LENGTH_LONG
+            ).show()
         } catch (e: IllegalArgumentException) {
             Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)

@@ -362,6 +362,8 @@
 
     <string name="share">Share</string>
     <string name="send_to">Send to</string>
+    <string name="send_to_three_dots">Send to …</string>
+    <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
     <string name="open_in_files_app">Open in Files app</string>
 
     <!-- Upload -->
@@ -425,6 +427,7 @@
 
     <!-- Non-translatable strings -->
     <string name="tooManyUnreadMessages" translatable="false">999+</string>
+
     <string name="nc_action_open_main_menu">Open main menu</string>
     <string name="failed_to_save">Failed to save %1$s</string>
     <string name="selected_list_item">selected</string>

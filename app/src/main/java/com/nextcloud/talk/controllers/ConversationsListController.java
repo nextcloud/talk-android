@@ -26,7 +26,10 @@ import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +45,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -54,6 +58,7 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -73,6 +78,7 @@ import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
+import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -81,6 +87,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
+import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -91,11 +98,13 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -128,7 +137,7 @@ public class ConversationsListController extends BaseController implements Searc
         FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
                 .OnScrollStateChangeListener, ConversationMenuInterface {
 
-    public static final String TAG = "ConversationsListController";
+    public static final String TAG = "ConvListController";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
     @Inject
@@ -186,6 +195,12 @@ public class ConversationsListController extends BaseController implements Searc
     private LovelySaveStateHandler saveStateHandler;
 
     private Bundle conversationMenuBundle = null;
+
+    private boolean showShareToScreen = false;
+    private boolean shareToScreenWasShown = false;
+
+    private ArrayList<String> filesToShare;
+    private Conversation selectedConversation;
 
     public ConversationsListController() {
         super();
@@ -262,7 +277,6 @@ public class ConversationsListController extends BaseController implements Searc
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this);
         }
-
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
@@ -322,73 +336,88 @@ public class ConversationsListController extends BaseController implements Searc
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        MainActivity activity = (MainActivity) getActivity();
+        showShareToScreen = !shareToScreenWasShown && hasActivityActionSendIntent();
 
-        searchItem.setVisible(callItems.size() > 0);
-        if (adapter.hasFilter()) {
-            showSearchView(activity, searchView, searchItem);
-            searchView.setQuery(adapter.getFilter(String.class), false);
-        }
+        if (showShareToScreen) {
+            hideSearchBar();
+            getActionBar().setTitle(R.string.send_to_three_dots);
+        } else {
+            MainActivity activity = (MainActivity) getActivity();
 
-        if (activity != null) {
-            activity.binding.searchText.setOnClickListener(v -> {
-                showSearchView(activity, searchView, searchItem);
-                if (getResources() != null) {
-                    DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(getResources(), R.color.appbar, null)
-                                                      );
+            searchItem.setVisible(callItems.size() > 0);
+            if (activity != null) {
+                if (adapter.hasFilter()) {
+                    showSearchView(activity, searchView, searchItem);
+                    searchView.setQuery(adapter.getFilter(String.class), false);
                 }
-            });
-        }
 
-        searchView.setOnCloseListener(() -> {
-            if (TextUtils.isEmpty(searchView.getQuery().toString())) {
-                searchView.onActionViewCollapsed();
-                if (activity != null && getResources() != null) {
-                    DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
-                                                      );
-                }
-            } else {
-                searchView.post(() -> searchView.setQuery("", true));
-            }
-            return true;
-        });
-
-        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return true;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                searchView.onActionViewCollapsed();
-                MainActivity activity = (MainActivity) getActivity();
-                if (activity != null) {
-                    activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                            activity.binding.appBar.getContext(),
-                            R.animator.appbar_elevation_off)
-                                                        );
-                    activity.binding.toolbar.setVisibility(View.GONE);
-                    activity.binding.searchToolbar.setVisibility(View.VISIBLE);
+                activity.binding.searchText.setOnClickListener(v -> {
+                    showSearchView(activity, searchView, searchItem);
                     if (getResources() != null) {
+                        DisplayUtils.applyColorToStatusBar(
+                                activity,
+                                ResourcesCompat.getColor(getResources(), R.color.appbar, null)
+                                                          );
+                    }
+                });
+            }
+
+            searchView.setOnCloseListener(() -> {
+                if (TextUtils.isEmpty(searchView.getQuery().toString())) {
+                    searchView.onActionViewCollapsed();
+                    if (activity != null && getResources() != null) {
                         DisplayUtils.applyColorToStatusBar(
                                 activity,
                                 ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
                                                           );
                     }
-                }
-                SmoothScrollLinearLayoutManager layoutManager =
-                        (SmoothScrollLinearLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager != null) {
-                    layoutManager.scrollToPositionWithOffset(0, 0);
+                } else {
+                    searchView.post(() -> searchView.setQuery(TAG, true));
                 }
                 return true;
-            }
-        });
+            });
+
+            searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+                @Override
+                public boolean onMenuItemActionExpand(MenuItem item) {
+                    return true;
+                }
+
+                @Override
+                public boolean onMenuItemActionCollapse(MenuItem item) {
+                    searchView.onActionViewCollapsed();
+                    MainActivity activity = (MainActivity) getActivity();
+                    if (activity != null) {
+                        activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
+                                activity.binding.appBar.getContext(),
+                                R.animator.appbar_elevation_off)
+                                                            );
+                        activity.binding.toolbar.setVisibility(View.GONE);
+                        activity.binding.searchToolbar.setVisibility(View.VISIBLE);
+                        if (getResources() != null) {
+                            DisplayUtils.applyColorToStatusBar(
+                                    activity,
+                                    ResourcesCompat.getColor(getResources(), R.color.bg_default, null)
+                                                              );
+                        }
+                    }
+                    SmoothScrollLinearLayoutManager layoutManager =
+                            (SmoothScrollLinearLayoutManager) recyclerView.getLayoutManager();
+                    if (layoutManager != null) {
+                        layoutManager.scrollToPositionWithOffset(0, 0);
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    private boolean hasActivityActionSendIntent() {
+        if (getActivity() != null) {
+            return Intent.ACTION_SEND.equals(getActivity().getIntent().getAction())
+                    || Intent.ACTION_SEND_MULTIPLE.equals(getActivity().getIntent().getAction());
+        }
+        return false;
     }
 
     protected void showSearchOrToolbar() {
@@ -414,7 +443,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         callItems = new ArrayList<>();
 
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, ApiUtils.APIv3, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
 
         roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion,
                                                                                    currentUser.getBaseUrl()))
@@ -716,39 +745,70 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public boolean onItemClick(View view, int position) {
-        Object clickedItem = adapter.getItem(position);
-        if (clickedItem != null && getActivity() != null) {
-            Conversation conversation;
-            if (shouldUseLastMessageLayout) {
-                conversation = ((ConversationItem) clickedItem).getModel();
+        selectedConversation = getConversation(position);
+        if (selectedConversation != null && getActivity() != null) {
+            if (showShareToScreen) {
+                shareToScreenWasShown = true;
+                showShareToConfirmDialog();
             } else {
-                conversation = ((CallItem) clickedItem).getModel();
-            }
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
-            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
-
-            if (conversation.hasPassword && (conversation.participantType.equals(Participant.ParticipantType.GUEST) ||
-                    conversation.participantType.equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
-                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
-                prepareAndShowBottomSheetWithBundle(bundle, false);
-            } else {
-                currentUser = userUtils.getCurrentUser();
-
-                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
-                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                                conversation.getToken(), bundle, false);
+                openConversation();
             }
         }
-
         return true;
+    }
+
+    private void showShareToConfirmDialog() {
+        if (UploadAndShareFilesWorker.Companion.isStoragePermissionGranted(context)) {
+            collectFilesToShareFromIntent();
+
+            StringBuilder fileNamesWithLineBreaks = new StringBuilder("\n");
+
+            for (String file : filesToShare) {
+                String filename = UriUtils.Companion.getFileName(Uri.parse(file), context);
+                fileNamesWithLineBreaks.append(filename).append("\n");
+            }
+
+            String confirmationQuestion;
+            if (filesToShare.size() == 1) {
+                confirmationQuestion =
+                        String.format(getResources().getString(R.string.nc_upload_confirm_send_single),
+                                      selectedConversation.getDisplayName());
+            } else {
+                confirmationQuestion =
+                        String.format(getResources().getString(R.string.nc_upload_confirm_send_multiple),
+                                      selectedConversation.getDisplayName());
+            }
+
+            new LovelyStandardDialog(getActivity())
+                    .setPositiveButtonColorRes(R.color.nc_darkGreen)
+                    .setTitle(confirmationQuestion)
+                    .setMessage(fileNamesWithLineBreaks.toString())
+                    .setPositiveButton(R.string.nc_yes, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            upload();
+                            openConversation();
+                        }
+                    })
+                    .setNegativeButton(R.string.nc_no, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Log.d(TAG, "sharing files aborted");
+                        }
+                    })
+                    .show();
+        } else {
+            UploadAndShareFilesWorker.Companion.requestStoragePermission(ConversationsListController.this);
+        }
     }
 
     @Override
     public void onItemLongClick(int position) {
-        if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
+
+        if (showShareToScreen) {
+            Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.");
+
+        } else if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
                 Conversation conversation;
@@ -762,6 +822,100 @@ public class ConversationsListController extends BaseController implements Searc
                 onMessageEvent(moreMenuClickEvent);
             }
         }
+    }
+
+    private void collectFilesToShareFromIntent() {
+        filesToShare = new ArrayList<>();
+        if (getActivity() != null && getActivity().getIntent() != null) {
+            Intent intent = getActivity().getIntent();
+            if (Intent.ACTION_SEND.equals(intent.getAction())
+                    || Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
+                if (intent.getClipData() != null) {
+                    for (int i = 0; i < intent.getClipData().getItemCount(); i++) {
+                        filesToShare.add(intent.getClipData().getItemAt(i).getUri().toString());
+                    }
+                } else {
+                    filesToShare.add(intent.getData().toString());
+                }
+                if (filesToShare.isEmpty()) {
+                    Log.e(TAG, "failed to get files from intent");
+                }
+            }
+        }
+    }
+
+    private void upload() {
+        if (selectedConversation == null) {
+            Log.e(TAG, "not able to upload any files because conversation was null.");
+            return;
+        }
+
+        try {
+            String[] filesToShareArray = new String[filesToShare.size()];
+            filesToShareArray = filesToShare.toArray(filesToShareArray);
+
+            Data data = new Data.Builder()
+                    .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, filesToShareArray)
+                    .putString(UploadAndShareFilesWorker.NC_TARGETPATH, currentUser.getAttachmentFolder())
+                    .putString(UploadAndShareFilesWorker.ROOM_TOKEN, selectedConversation.getToken())
+                    .build();
+            OneTimeWorkRequest uploadWorker = new OneTimeWorkRequest.Builder(UploadAndShareFilesWorker.class)
+                    .setInputData(data)
+                    .build();
+            WorkManager.getInstance().enqueue(uploadWorker);
+
+            Toast.makeText(
+                    context, context.getResources().getString(R.string.nc_upload_in_progess),
+                    Toast.LENGTH_LONG
+                          ).show();
+
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(context, context.getResources().getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show();
+            Log.e(TAG, "Something went wrong when trying to upload file", e);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION &&
+                grantResults.length > 0 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Log.d(TAG, "upload starting after permissions were granted");
+            showShareToConfirmDialog();
+        } else {
+            Toast.makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void openConversation() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
+        bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
+
+        if (selectedConversation.hasPassword && selectedConversation.participantType ==
+                Participant.ParticipantType.GUEST ||
+                selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
+            prepareAndShowBottomSheetWithBundle(bundle, false);
+        } else {
+            currentUser = userUtils.getCurrentUser();
+
+            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(selectedConversation));
+            ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                            selectedConversation.getToken(), bundle, false);
+        }
+    }
+
+    private Conversation getConversation(int position) {
+        Object clickedItem = adapter.getItem(position);
+        Conversation conversation;
+        if (shouldUseLastMessageLayout) {
+            conversation = ((ConversationItem) clickedItem).getModel();
+        } else {
+            conversation = ((CallItem) clickedItem).getModel();
+        }
+        return conversation;
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
