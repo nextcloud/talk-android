@@ -133,8 +133,6 @@
     <string name="nc_add_to_favorites">Thêm vào ưa thích</string>
     <string name="nc_remove_from_favorites">Xóa khỏi ưa thích</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Chọn liên hệ</string>
     <string name="nc_contacts_done">Hoàn tất</string>
 
     <!-- Permissions -->

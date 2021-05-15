@@ -151,8 +151,6 @@
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">اختر مراسِلين</string>
     <string name="nc_contacts_done">تم</string>
 
     <!-- Permissions -->

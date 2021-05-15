@@ -169,8 +169,6 @@
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecionar contatos</string>
     <string name="nc_contacts_done">Concluído</string>
 
     <!-- Permissions -->
@@ -195,7 +193,6 @@
     <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
     <string name="nc_leaving_call">Desligando...</string>
     <string name="nc_call_state_in_call">%1$s em chamada</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s em chamada com áudio</string>
     <string name="nc_call_state_with_video">%1$s com vídeo</string>
 
     <!-- Notification channels -->

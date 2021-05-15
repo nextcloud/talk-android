@@ -169,8 +169,6 @@
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
@@ -195,7 +193,6 @@
     <string name="nc_offline">Şu anda çevrimdışı, lütfen bağlantınızı denetleyin</string>
     <string name="nc_leaving_call">Arama sonlandırılıyor …</string>
     <string name="nc_call_state_in_call">Görüşmede %1$s katılımcı var</string>
-    <string name="nc_call_state_in_call_with_audio">Görüşmede %1$s sesli katılımcı var</string>
     <string name="nc_call_state_with_video">Görüşmede %1$s görüntülü katılımcı var</string>
 
     <!-- Notification channels -->

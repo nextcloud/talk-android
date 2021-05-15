@@ -160,8 +160,6 @@
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Névjegyek kiválasztása</string>
     <string name="nc_contacts_done">Kész</string>
 
     <!-- Permissions -->

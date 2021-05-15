@@ -166,8 +166,6 @@
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Vybrat kontakty</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
@@ -192,7 +190,6 @@
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_leaving_call">Opouštění hovoru…</string>
     <string name="nc_call_state_in_call">%1$s má hovor</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s má zvukový hovor</string>
     <string name="nc_call_state_with_video">%1$s s přenosem obrazu</string>
 
     <!-- Notification channels -->

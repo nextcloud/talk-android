@@ -160,8 +160,6 @@
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Выбрать контакты</string>
     <string name="nc_contacts_done">Готово</string>
 
     <!-- Permissions -->

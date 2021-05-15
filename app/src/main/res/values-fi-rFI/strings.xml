@@ -133,8 +133,6 @@
     <string name="nc_add_to_favorites">Lisää suosikkeihin</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Valitse yhteystiedot</string>
     <string name="nc_contacts_done">Valmis</string>
 
     <string name="nc_permissions_settings">Avaa asetukset</string>
