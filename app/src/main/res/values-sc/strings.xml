@@ -149,8 +149,6 @@
     <string name="nc_add_to_favorites">Agiunghe a preferidos</string>
     <string name="nc_remove_from_favorites">Boga dae preferidos</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Seletziona cuntatos</string>
     <string name="nc_contacts_done">Fatu</string>
 
     <!-- Permissions -->

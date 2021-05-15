@@ -139,8 +139,6 @@
     <string name="nc_add_to_favorites">افزودن‌ به مورد علاقه‌ها</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">شرکت کنندگان را پیدا کنید</string>
     <string name="nc_contacts_done">انجام شد</string>
 
     <!-- Permissions -->

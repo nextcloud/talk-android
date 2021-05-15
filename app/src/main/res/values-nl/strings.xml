@@ -167,8 +167,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Selecteer contactpersoon</string>
     <string name="nc_contacts_done">Gereed</string>
 
     <!-- Permissions -->
@@ -193,7 +191,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
     <string name="nc_leaving_call">Beëindigen verbinding...</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s in gesprek met audio</string>
     <string name="nc_call_state_with_video">%1$s met video</string>
 
     <!-- Notification channels -->

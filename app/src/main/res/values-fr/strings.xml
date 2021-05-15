@@ -153,8 +153,6 @@
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">Choisissez un contact</string>
     <string name="nc_contacts_done">Terminé</string>
 
     <!-- Permissions -->

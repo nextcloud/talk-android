@@ -167,8 +167,6 @@
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
 
-    <!-- Contacts -->
-    <string name="nc_select_contacts">連絡先を選択</string>
     <string name="nc_contacts_done">完了</string>
 
     <!-- Permissions -->
@@ -193,7 +191,6 @@
     <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
     <string name="nc_leaving_call">通話を終了する</string>
     <string name="nc_call_state_in_call">%1$s着信</string>
-    <string name="nc_call_state_in_call_with_audio">%1$sから音声付きで着信</string>
     <string name="nc_call_state_with_video">%1$sと映像で</string>
 
     <!-- Notification channels -->
