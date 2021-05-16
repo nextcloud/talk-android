@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
-            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textAppearance="@style/ListItem"
             tools:text="Call item text" />
 
         <androidx.emoji.widget.EmojiTextView
