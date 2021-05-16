@@ -169,6 +169,9 @@
     <string name="nc_add_to_favorites">添加收藏</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_participants">选择参与者</string>
+    <string name="nc_add_participants">添加参与者</string>
     <string name="nc_contacts_done">完成</string>
 
     <!-- Permissions -->
@@ -193,6 +196,7 @@
     <string name="nc_offline">当前离线，请检查您的连接</string>
     <string name="nc_leaving_call">离开通话中 ...</string>
     <string name="nc_call_state_in_call">%1$s 在通话中</string>
+    <string name="nc_call_state_with_phone">%1$s 通过手机</string>
     <string name="nc_call_state_with_video">%1$s 在进行视频通话</string>
 
     <!-- Notification channels -->
@@ -288,6 +292,7 @@
     <string name="nc_email">电子邮件</string>
     <string name="nc_group">群组</string>
     <string name="nc_groups">群组</string>
+    <string name="nc_circles">圈子</string>
     <string name="nc_participants">参与者</string>
     <string name="nc_participants_add">添加参与者 </string>
 
@@ -331,6 +336,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">复制</string>
     <string name="nc_reply">回复</string>
+    <string name="nc_reply_privately">私下回复</string>
     <string name="nc_delete_message">删除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功删除，但可能已泄漏给其他服务</string>
 

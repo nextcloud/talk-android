@@ -169,6 +169,9 @@
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_participants">Wybierz uczestników</string>
+    <string name="nc_add_participants">Dodaj uczestników</string>
     <string name="nc_contacts_done">Gotowe</string>
 
     <!-- Permissions -->
@@ -193,6 +196,7 @@
     <string name="nc_offline">Obecnie jesteś w offline, sprawdź swoją łączność</string>
     <string name="nc_leaving_call">Opuszczanie połączenia…</string>
     <string name="nc_call_state_in_call">%1$s w trakcie połączenia</string>
+    <string name="nc_call_state_with_phone">%1$s z telefonem</string>
     <string name="nc_call_state_with_video">%1$s z wideo</string>
 
     <!-- Notification channels -->
@@ -288,6 +292,7 @@
     <string name="nc_email">E-mail</string>
     <string name="nc_group">Grupa</string>
     <string name="nc_groups">Grupy</string>
+    <string name="nc_circles">Kręgi</string>
     <string name="nc_participants">Uczestnicy</string>
     <string name="nc_participants_add">Dodaj uczestników</string>
 
@@ -331,6 +336,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiuj</string>
     <string name="nc_reply">Odpowiedz</string>
+    <string name="nc_reply_privately">Odpowiedz prywatnie</string>
     <string name="nc_delete_message">Usuń</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Wiadomość została pomyślnie usunięta, ale mogła przedostać się do innych usług</string>
 
