@@ -1,284 +1,218 @@
-<!--
-  ~ Nextcloud Talk application
-  ~
-  ~ @author Mario Danic
-  ~ @author Andy Scherzinger
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Common -->
-    <string name="nc_yes">Ναι</string>
-    <string name="nc_no">Όχι</string>
-    <string name="nc_common_error_sorry">Συγνώμη, κάτι πήγε στραβά!</string>
-
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Ρυθμίσεις</string>
-
-    <string name="nc_server_not_installed">Παρακαλούμε ολοκληρώστε την %1$s εγκατάσταση</string>
-    <string name="nc_server_db_upgrade_needed">Παρακαλούμε αναβαθμίστε την %1$s βάση δεδομένων σας</string>
-    <string name="nc_server_maintenance">Παρακαλώ θέστε τον %1$sεκτος συντήρησης</string>
-    <string name="nc_server_version">%1$s δουλεύει μόνο με %2$s 13 και πάνω</string>
-    <string name="nc_server_import_account_plain">Εισαγωγή λογαριασμού</string>
-    <string name="nc_server_import_accounts_plain">Εισαγωγή λογαριασμών</string>
-    <string name="nc_server_import_account">Εισαγωγή λογαριασμού από την %1$s εφαρμογή</string>
-    <string name="nc_server_import_accounts">Εισαγωγή λογαριασμών από την εφαρμογή %1$s</string>
-    <string name="nc_server_failed_to_import_account">Αποτυχία εισαγωγής επιλεγμένου λογαριασμού</string>
+<?xml version="1.0" encoding="utf-8"?>
+  <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι τώρα διαθέσιμος</string>
-    <string name="nc_get_from_provider">Δεν έχετε ακόμα διακομιστή;\nΚάντε κλικ εδώ για να αποκτήσετε έναν από κάποιον πάροχο</string>
-
-    <!-- Account verification -->
-    <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
-    <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
-    <string name="nc_external_server_failed">Αποτυχία λήψης ρυθμίσεων σήματος</string>
-    <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Η εφαρμογή %1$s δεν εγκαταστάθηκε στον διακομιστή, ματαίωση</string>
-    <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
-
-    <string name="nc_never">Δεν ξανασυνδέθηκε</string>
-    <string name="nc_search">Αναζήτηση</string>
-
-    <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
-    <string name="nc_certificate_dialog_text">Eμπιστεύεσαι το άγνωστο έως τώρα πιστοποιητικό SSL που εκδόθηκε %1$s για %2$s, έγκυρο από %3$s σε%4$s;</string>
-    <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
-
-    <!-- Settings -->
-    <string name="nc_settings_proxy_title">Διαμεσολαβητής</string>
-    <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
-    <string name="nc_settings_proxy_host_title">Σύστημα διαμεσολαβητή</string>
-    <string name="nc_settings_proxy_port_title">Θύρα διαμεσολαβητή</string>
-    <string name="nc_settings_use_credentials_title">Χρήση διαπιστευτηρίων</string>
-    <string name="nc_settings_switch_account">Εναλλαγή λογαριασμών</string>
-    <string name="nc_settings_reauthorize">Επαναπιστοποίηση</string>
-    <string name="nc_client_cert_setup">Ρύθμιση πιστοποιητικού πελάτη</string>
-    <string name="nc_client_cert_change">Αλλαγή πιστοποιητικού πελάτη</string>
-    <string name="nc_settings_remove">Αφαίρεση</string>
-    <string name="nc_settings_remove_confirmation">Παρακαλώ επιβεβαιώστε την πρόθεσή σας να αφαιρέσετε το λογαριασμό,</string>
-    <string name="nc_settings_remove_account">Αφαίρεση λογαριασμού</string>
-    <string name="nc_settings_add_account">Προσθήκη νέου λογαριασμού</string>
-    <string name="nc_add">Προσθήκη</string>
-    <string name="nc_settings_wrong_account">Μόνο ο παρόν λογαριασμός μπορεί να επαναεγκριθεί</string>
-    <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
-    <string name="nc_settings_account_updated">Ο υπάρχων λογαριασμός ενημερώθηκε, χωρίς την εισαγωγή νέου</string>
-    <string name="nc_account_scheduled_for_deletion">Ο λογαριασμός προγραμματίστηκε να διαγραφή και δεν μπορεί να αλλάξει</string>
-    <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
-    <string name="nc_settings_vibrate">Δόνηση</string>
-    <string name="nc_settings_vibrate_desc">Το τηλέφωνο θα δονείται έως τη σίγαση του</string>
-    <string name="nc_settings_appearance">Εμφάνιση</string>
-    <string name="nc_settings_theme_title">Θέμα</string>
-    <string name="nc_settings_theme_key">θέμα</string>
-    <string name="nc_settings_theme_follow_system">Χρησιμοποιήστε το προεπιλεγμένο σύστημα</string>
-    <string name="nc_settings_theme_battery_saver">Ορισμός από Διαχείριση Μπαταρίας</string>
-    <string name="nc_settings_theme_light">Φωτεινό</string>
-    <string name="nc_settings_theme_dark">Σκούρο</string>
-    <string name="nc_settings_privacy">Ιδιωτικότητα</string>
-    <string name="nc_settings_screen_lock_title">Κλείδωμα οθόνης</string>
-    <string name="nc_settings_screen_lock_desc">Κλείδωμα %1$sμε Android οθόνη κλειδώματος ή υποστηριζόμενη μέθοδο βιομετρικών</string>
-    <string name="nc_settings_screen_lock_timeout_title">Χρονικό όριο αδράνειας κλειδώματος οθόνης</string>
-    <string name="nc_none">κανένα</string>
-    <string name="nc_settings_screen_security_title">Ασφάλεια οθόνης</string>
-    <string name="nc_settings_screen_security_desc">Αποτρέπει εικόνες στιγμιότυπων στην πρόσφατη λίστα και μέσα στην εφαρμογή</string>
-    <string name="nc_settings_incognito_keyboard_title">Πληκτρολόγιο ανώνυμης περιήγησης</string>
-    <string name="nc_settings_incognito_keyboard_desc">Ενημερώνει το πληκτρολόγιο για να απενεργοποιήσει την προσωπική μάθηση (χωρίς εγγυήσεις)</string>
-    <string name="nc_settings_link_previews_title">Προβολή προεπισκόπησης συνδέσμων</string>
-    <string name="nc_settings_link_previews_desc">Επιτρέπει προεπισκοπήσεις περιεχομένου από ληφθέντες συνδέσμους για υποστηριζόμενες υπηρεσίες</string>
-    <string name="nc_settings_read_privacy_desc">Διαμοιρασμός της κατάστασης-ανάγνωσης μου και εμφάνιση της κατάστασης-ανάγνωσης άλλων</string>
-    <string name="nc_settings_read_privacy_title">Κατάσταση ανάγνωσης</string>
-
-    <string name="nc_screen_lock_timeout_30">30 δευτερόλεπτα</string>
-    <string name="nc_screen_lock_timeout_60">1 λεπτό</string>
-    <string name="nc_screen_lock_timeout_300">5 λεπτά</string>
-    <string name="nc_screen_lock_timeout_600">10 λεπτά</string>
-    <string name="nc_screen_lock_timeout_thirty">30</string>
-    <string name="nc_screen_lock_timeout_sixty">60</string>
-    <string name="nc_screen_lock_timeout_three_hundred">300</string>
-    <string name="nc_screen_lock_timeout_six_hundred">600</string>
-
-    <string name="nc_biometric_unlock">Ξεκλείδωμα %1$s</string>
-    <string name="nc_cancel">Ακύρωση</string>
-
-    <string name="nc_no_proxy">Κανένας διαμεσολαβητής</string>
-    <string name="nc_username">Όνομα χρήστη</string>
-    <string name="nc_password">Συνθηματικό</string>
-    <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
-    <string name="nc_new_password">Νέο συνθηματικό</string>
-    <string name="nc_wrong_password">Λανθασμένο συνθηματικό</string>
     <string name="nc_about">Περί</string>
-    <string name="nc_privacy">Ιδιωτικότητα</string>
-    <string name="nc_get_source_code">Λήψη πηγαίου κώδικα</string>
-    <string name="nc_license_title">Άδεια χρήσης</string>
-    <string name="nc_license_summary">Γενική Άδεια Δημόσιας Χρήσης GNU, έκδοση 3</string>
-
-    <string name="nc_select_an_account">Επιλογή λογαριασμού</string>
-    <!-- Conversation menu -->
-    <string name="nc_start_conversation">Έναρξη συνομιλίας</string>
-    <string name="nc_configure_room">Ρύθμιση συνομιλίας</string>
-    <string name="nc_leave">Εγκατάλειψη συνομιλίας</string>
-    <string name="nc_rename">Μετονομασία συνομιλίας</string>
-    <string name="nc_set_password">Ορισμός συνθηματικού</string>
+    <string name="nc_account_scheduled_for_deletion">Ο λογαριασμός προγραμματίστηκε να διαγραφή και δεν μπορεί να αλλάξει</string>
+    <string name="nc_add">Προσθήκη</string>
+    <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
+    <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
+    <string name="nc_allow_guests">Επιτρέπονται οι επισκέπτες</string>
+    <string name="nc_bad_response_error">Λάθος απάντηση</string>
+    <string name="nc_biometric_unlock">Ξεκλείδωμα %1$s</string>
+    <string name="nc_call_name">Όνομα συνομιλίας</string>
+    <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
+    <string name="nc_call_reconnecting">Επανασύνδεση...</string>
+    <string name="nc_call_timeout">Πέρασαν 45 δεύτερα, δοκιμάστε ξανά</string>
+    <string name="nc_calling">Κλήση...</string>
+    <string name="nc_camera_permission_permanently_denied">Για ενεργοποίηση συνομιλίας με video παρακαλώ επιτρέψτε την πρόσβαση της \"Camera\" στις ρυθμίσεις συστήματος.</string>
+    <string name="nc_cancel">Ακύρωση</string>
+    <string name="nc_capabilities_failed">Η εμφάνιση δυνατοτήτων απέτυχε, ματαιωση</string>
+    <string name="nc_certificate_dialog_text">Eμπιστεύεσαι το άγνωστο έως τώρα πιστοποιητικό SSL που εκδόθηκε %1$s για %2$s, έγκυρο από %3$s σε%4$s;</string>
+    <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
+    <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
+    <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_change_password">Αλλαγή συνθηματικού</string>
     <string name="nc_clear_password">Εκκαθάριση συνθηματικού</string>
-    <string name="nc_share_link">Διαμοιρασμός συνδέσμου</string>
-    <string name="nc_share_link_via">Διαμοιρασμός συνδέσμου μέσω</string>
-    <string name="nc_make_call_public">Δημόσια συνομιλία</string>
-    <string name="nc_make_call_private">Ιδιωτική συνομιλία</string>
-    <string name="nc_delete_call">Διαγραφή συνομιλίας</string>
+    <string name="nc_client_cert_change">Αλλαγή πιστοποιητικού πελάτη</string>
+    <string name="nc_client_cert_setup">Ρύθμιση πιστοποιητικού πελάτη</string>
+    <string name="nc_common_error_sorry">Συγνώμη, κάτι πήγε στραβά!</string>
+    <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
+    <string name="nc_configure_room">Ρύθμιση συνομιλίας</string>
+    <string name="nc_connecting_call">Σύνδεση...</string>
+    <string name="nc_contacts_done">Ολοκληρώθηκε</string>
+    <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
+    <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
+    <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
+    <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
+    <string name="nc_copy_message">Αντιγραφή</string>
+    <string name="nc_date_header_today">Σήμερα</string>
+    <string name="nc_date_header_yesterday">Χθές</string>
     <string name="nc_delete">Διαγραφή</string>
+    <string name="nc_delete_call">Διαγραφή συνομιλίας</string>
     <string name="nc_delete_conversation_more">Αν διαγράψετε την συνομιλία, θα διαγραφεί επίσης για όλους τους υπόλοιπους συμμετέχοντες.</string>
-
-    <string name="nc_new_conversation">Νέα συνομιλία</string>
+    <string name="nc_delete_message">Διαγραφή</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Το μήνυμα διαγράφηκε με επιτυχία, αλλά ενδέχεται να έχει διαρρεύσει σε άλλες υπηρεσίες</string>
+    <string name="nc_demote">Υποβάθμιση από συντονιστή</string>
+    <string name="nc_description_more_menu_group">Μενού δημόσιας συνομιλίας %1$s</string>
+    <string name="nc_description_more_menu_one_to_one">Μενού συνομιλίας με %1$s</string>
+    <string name="nc_description_more_menu_public">Μενού για ομαδική συνομιλία %1$s</string>
+    <string name="nc_description_send_message_button">Αποστολή μηνύματος</string>
+    <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
+    <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
+    <string name="nc_empty_response_error">Κενή απάντηση</string>
+    <string name="nc_endless_cancel">Ακυρώθηκε από τον χρήστη.</string>
+    <string name="nc_endless_disabled">Δεν υπάρχουν περισσότερα αντικείμενα για φόρτωση (φτάσατε στο μέγιστο).</string>
+    <string name="nc_endless_error">Παρουσιάστηκε σφάλμα κατά την φόρτωση περισσότερων αντικειμένων.</string>
+    <string name="nc_external_server_failed">Αποτυχία λήψης ρυθμίσεων σήματος</string>
+    <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
+    <string name="nc_file_browser">Περιηγητής αρχείων\"</string>
+    <string name="nc_file_browser_back">Πίσω</string>
+    <string name="nc_file_browser_refresh">Ανανέωση</string>
+    <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
+    <string name="nc_formatted_message_you">Εσείς: %1$s</string>
+    <string name="nc_general_settings">Γενικά</string>
+    <string name="nc_get_from_provider">Δεν έχετε ακόμα διακομιστή;\nΚάντε κλικ εδώ για να αποκτήσετε έναν από κάποιον πάροχο</string>
+    <string name="nc_get_source_code">Λήψη πηγαίου κώδικα</string>
+    <string name="nc_groups">Ομάδες</string>
+    <string name="nc_guest">Επισκέπτης</string>
+    <string name="nc_hello">Γεια σας</string>
+    <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα…</string>
+    <string name="nc_important_conversation">Σημαντική συνομιλία</string>
+    <string name="nc_incoming_call">Εισερχόμενη κλήση από</string>
     <string name="nc_join_via_link">Συμμετοχή με σύνδεσμο</string>
     <string name="nc_join_via_web">Συμμετοχή μέσω ιστού</string>
-    <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
-    <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
-
-    <string name="nc_contacts_done">Ολοκληρώθηκε</string>
-
-    <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Για ενεργοποίηση συνομιλίας με video παρακαλώ επιτρέψτε την πρόσβαση της \"Camera\" στις ρυθμίσεις συστήματος.</string>
-    <string name="nc_microphone_permission_permanently_denied">Για ενεργοποίηση συνομιλίας με ήχο παρακαλώ επιτρέψτε την πρόσβαση του \"Microphone\" στις ρυθμίσεις συστήματος.</string>
-    <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
-
-    <string name="nc_connecting_call">Σύνδεση...</string>
-    <string name="nc_calling">Κλήση...</string>
-    <string name="nc_incoming_call">Εισερχόμενη κλήση από</string>
-    <string name="nc_nick_guest">Επισκέπτης</string>
-    <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
-    <string name="nc_call_timeout">Πέρασαν 45 δεύτερα, δοκιμάστε ξανά</string>
-    <string name="nc_call_reconnecting">Επανασύνδεση...</string>
-    <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
+    <string name="nc_last_moderator">Πρέπει να προάγεται νέο συντονιστή πρίν αποχωρήσετε %1$s.</string>
+    <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
+    <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
+    <string name="nc_leave">Εγκατάλειψη συνομιλίας</string>
     <string name="nc_leaving_call">Αποχώρηση από την κλήση</string>
-    <!-- Notification channels -->
+    <string name="nc_license_summary">Γενική Άδεια Δημόσιας Χρήσης GNU, έκδοση 3</string>
+    <string name="nc_license_title">Άδεια χρήσης</string>
+    <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>
+    <string name="nc_lobby">Αναμονή</string>
+    <string name="nc_lobby_waiting">Αυτή τη στιγμή είστε σε αναμονή</string>
+    <string name="nc_make_call_private">Ιδιωτική συνομιλία</string>
+    <string name="nc_make_call_public">Δημόσια συνομιλία</string>
+    <string name="nc_manual">Δεν ορίστηκε</string>
+    <string name="nc_microphone_permission_permanently_denied">Για ενεργοποίηση συνομιλίας με ήχο παρακαλώ επιτρέψτε την πρόσβαση του \"Microphone\" στις ρυθμίσεις συστήματος.</string>
+    <string name="nc_moderator">Συντονιστής</string>
+    <string name="nc_mute_calls">Σίγαση κλήσεων</string>
+    <string name="nc_mute_calls_desc">Οι εισερχόμενες κλήσεις θα τεθούν σε σίγαση</string>
+    <string name="nc_never">Δεν ξανασυνδέθηκε</string>
+    <string name="nc_new_conversation">Νέα συνομιλία</string>
+    <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
+    <string name="nc_new_password">Νέο συνθηματικό</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Η εφαρμογή %1$s δεν εγκαταστάθηκε στον διακομιστή, ματαίωση</string>
+    <string name="nc_nick_guest">Επισκέπτης</string>
+    <string name="nc_no">Όχι</string>
+    <string name="nc_no_connection_error">Δεν υπάρχει σύνδεση</string>
+    <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
+    <string name="nc_no_more_load_retry">Δεν υπάρχουν αντικείμενα για φόρτωση. Ανανεώστε και προσπαθήστε ξανά.</string>
+    <string name="nc_no_proxy">Κανένας διαμεσολαβητής</string>
+    <string name="nc_none">κανένα</string>
+    <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
     <string name="nc_notification_channel">%1$s από %2$s κανάλι ειδοποίησης</string>
     <string name="nc_notification_channel_calls">Κανάλι ειδοποιήσης κλήσεων</string>
-    <string name="nc_notification_channel_messages">Κανάλι ειδοποιήσης μηνυμάτων</string>
     <string name="nc_notification_channel_calls_description">Εμφανίζει εισερχόμενες κλήσεις</string>
+    <string name="nc_notification_channel_messages">Κανάλι ειδοποιήσης μηνυμάτων</string>
     <string name="nc_notification_settings">Ρυθμίσεις ειδοποιήσεων</string>
-    <string name="nc_plain_old_messages">Μηνύματα</string>
     <string name="nc_notify_me_always">Πάντα ειδοποίηση</string>
     <string name="nc_notify_me_mention">Ειδοποίηση όταν αναφέρεται</string>
     <string name="nc_notify_me_never">Χωρίς ειδοποίηση</string>
-    <string name="nc_mute_calls">Σίγαση κλήσεων</string>
-    <string name="nc_mute_calls_desc">Οι εισερχόμενες κλήσεις θα τεθούν σε σίγαση</string>
-    <string name="nc_important_conversation">Σημαντική συνομιλία</string>
-    <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
-    <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
+    <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
     <string name="nc_ok">OK</string>
-    <string name="nc_call_name">Όνομα συνομιλίας</string>
+    <string name="nc_owner">Ιδιοκτήτης</string>
+    <string name="nc_participants">Συμμετέχοντες</string>
+    <string name="nc_password">Συνθηματικό</string>
+    <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
+    <string name="nc_plain_old_messages">Μηνύματα</string>
+    <string name="nc_privacy">Ιδιωτικότητα</string>
     <string name="nc_proceed">Συνέχεια</string>
-    <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
-    <string name="nc_wrong_link">Μη έγκυρος σύνδεσμος συνομιλίας</string>
-    <string name="nc_share_text">Συμμετοχή στην συνομιλία από %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_subject">%1$s πρόσκληση</string>
-    <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
-
-    <!-- Magical stuff -->
+    <string name="nc_promote">Προαγωγή από συντονιστή</string>
+    <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
+    <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφωνο, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
-    <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
-    <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
-
-    <!-- Moderation -->
-    <string name="nc_demote">Υποβάθμιση από συντονιστή</string>
-    <string name="nc_promote">Προαγωγή από συντονιστή</string>
+    <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_remove_participant">Αφαίρεση συμμετέχοντα</string>
-    <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα…</string>
-    <string name="nc_date_header_yesterday">Χθές</string>
-    <string name="nc_date_header_today">Σήμερα</string>
-    <string name="nc_conversation_menu_voice_call">Κλήση ήχου</string>
-    <string name="nc_conversation_menu_video_call">Κλήση βίντεο</string>
-    <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
-    <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
-    <string name="nc_no_messages_yet">Κανένα μήνυμα ακόμα</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s έστειλε σύνδεσμο.</string>
-    <string name="nc_sent_a_gif" formatted="true">%1$s έστειλε GIF.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s έστειλε συνημμένο</string>
-    <string name="nc_sent_an_audio" formatted="true">%1$s έστειλε  ήχο.</string>
-    <string name="nc_sent_a_video" formatted="true">%1$s έστειλε βίντεο.</string>
-    <string name="nc_sent_an_image" formatted="true">%1$s έστειλε εικόνα.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Στείλατε σύνδεσμο.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Στείλατε εικόνα GIF.</string>
-    <string name="nc_sent_an_attachment_you">Στείλατε συνημμένο.</string>
-    <string name="nc_sent_an_audio_you">Στείλατε αρχείο ήχου.</string>
-    <string name="nc_sent_a_video_you">Στείλατε βίντεο.</string>
-    <string name="nc_sent_an_image_you">Στείλατε εικόνα.</string>
-    <!-- When translating to German, please use non-formal variant -->
-    <string name="nc_formatted_message_you">Εσείς: %1$s</string>
-    <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Δεν υπάρχουν αντικείμενα για φόρτωση. Ανανεώστε και προσπαθήστε ξανά.</string>
-    <string name="nc_endless_disabled">Δεν υπάρχουν περισσότερα αντικείμενα για φόρτωση (φτάσατε στο μέγιστο).</string>
-    <string name="nc_endless_cancel">Ακυρώθηκε από τον χρήστη.</string>
-    <string name="nc_endless_error">Παρουσιάστηκε σφάλμα κατά την φόρτωση περισσότερων αντικειμένων.</string>
-
-    <!-- Content descriptions -->
-    <string name="nc_description_more_menu_one_to_one">Μενού συνομιλίας με %1$s</string>
-    <string name="nc_description_more_menu_public">Μενού για ομαδική συνομιλία %1$s</string>
-    <string name="nc_description_more_menu_group">Μενού δημόσιας συνομιλίας %1$s</string>
-    <string name="nc_description_send_message_button">Αποστολή μηνύματος</string>
-
-    <string name="nc_hello">Γεια σας</string>
-
-    <!-- Other -->
-    <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>
-    <string name="nc_groups">Ομάδες</string>
-    <string name="nc_participants">Συμμετέχοντες</string>
-    <string name="nc_owner">Ιδιοκτήτης</string>
-    <string name="nc_moderator">Συντονιστής</string>
-    <string name="nc_user">Χρήστης</string>
-    <string name="nc_guest">Επισκέπτης</string>
-    <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
-
-    <!-- Browser component -->
-    <string name="nc_file_browser">Περιηγητής αρχείων\"</string>
-    <string name="nc_select_files">Επιλέξτε Αρχεία</string>
-    <string name="nc_file_browser_back">Πίσω</string>
-    <string name="nc_file_browser_refresh">Ανανέωση</string>
-    <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
-    <!-- Lobby -->
-    <string name="nc_webinar">Webinar</string>
-    <string name="nc_lobby">Αναμονή</string>
-    <string name="nc_start_time">Ώρα έναρξης</string>
-    <string name="nc_lobby_waiting">Αυτή τη στιγμή είστε σε αναμονή</string>
-    <string name="nc_lobby_waiting_with_date">Αυτή τη στιγμή είστε σε αναμονή.\n 
-Η συνάντηση είναι προγραμματισμένη για %1$s.</string>
-    <string name="nc_manual">Δεν ορίστηκε</string>
-
-    <!-- Errors -->
-    <string name="nc_no_connection_error">Δεν υπάρχει σύνδεση</string>
-    <string name="nc_bad_response_error">Λάθος απάντηση</string>
-    <string name="nc_timeout_error">Λήξη χρόνου</string>
-    <string name="nc_empty_response_error">Κενή απάντηση</string>
-    <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
-    <string name="nc_unauthorized_error">Μη εξουσιοδοτημένο</string>
-
-    <string name="nc_general_settings">Γενικά</string>
-    <string name="nc_allow_guests">Επιτρέπονται οι επισκέπτες</string>
-    <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
-    <string name="nc_last_moderator">Πρέπει να προάγεται νέο συντονιστή πρίν αποχωρήσετε %1$s.</string>
-
-    <!-- Chat -->
-    <string name="nc_99_plus">99+</string>
-    <string name="nc_copy_message">Αντιγραφή</string>
+    <string name="nc_rename">Μετονομασία συνομιλίας</string>
     <string name="nc_reply">Απάντηση</string>
-    <string name="nc_delete_message">Διαγραφή</string>
-    <string name="nc_delete_message_leaked_to_matterbridge">Το μήνυμα διαγράφηκε με επιτυχία, αλλά ενδέχεται να έχει διαρρεύσει σε άλλες υπηρεσίες</string>
-
-    <string name="nc_upload_local_file">Μεταφόρτωση τοπικού αρχείου</string>
+    <string name="nc_screen_lock_timeout_30">30 δευτερόλεπτα</string>
+    <string name="nc_screen_lock_timeout_300">5 λεπτά</string>
+    <string name="nc_screen_lock_timeout_60">1 λεπτό</string>
+    <string name="nc_screen_lock_timeout_600">10 λεπτά</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_search">Αναζήτηση</string>
+    <string name="nc_select_an_account">Επιλογή λογαριασμού</string>
+    <string name="nc_select_files">Επιλέξτε Αρχεία</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s έστειλε GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Στείλατε εικόνα GIF.</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s έστειλε σύνδεσμο.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Στείλατε σύνδεσμο.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s έστειλε βίντεο.</string>
+    <string name="nc_sent_a_video_you">Στείλατε βίντεο.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s έστειλε συνημμένο</string>
+    <string name="nc_sent_an_attachment_you">Στείλατε συνημμένο.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s έστειλε  ήχο.</string>
+    <string name="nc_sent_an_audio_you">Στείλατε αρχείο ήχου.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s έστειλε εικόνα.</string>
+    <string name="nc_sent_an_image_you">Στείλατε εικόνα.</string>
+    <string name="nc_server_db_upgrade_needed">Παρακαλούμε αναβαθμίστε την %1$s βάση δεδομένων σας</string>
+    <string name="nc_server_failed_to_import_account">Αποτυχία εισαγωγής επιλεγμένου λογαριασμού</string>
+    <string name="nc_server_import_account">Εισαγωγή λογαριασμού από την %1$s εφαρμογή</string>
+    <string name="nc_server_import_account_plain">Εισαγωγή λογαριασμού</string>
+    <string name="nc_server_import_accounts">Εισαγωγή λογαριασμών από την εφαρμογή %1$s</string>
+    <string name="nc_server_import_accounts_plain">Εισαγωγή λογαριασμών</string>
+    <string name="nc_server_maintenance">Παρακαλώ θέστε τον %1$sεκτος συντήρησης</string>
+    <string name="nc_server_not_installed">Παρακαλούμε ολοκληρώστε την %1$s εγκατάσταση</string>
+    <string name="nc_server_version">%1$s δουλεύει μόνο με %2$s 13 και πάνω</string>
+    <string name="nc_set_password">Ορισμός συνθηματικού</string>
+    <string name="nc_settings">Ρυθμίσεις</string>
+    <string name="nc_settings_account_updated">Ο υπάρχων λογαριασμός ενημερώθηκε, χωρίς την εισαγωγή νέου</string>
+    <string name="nc_settings_add_account">Προσθήκη νέου λογαριασμού</string>
+    <string name="nc_settings_appearance">Εμφάνιση</string>
+    <string name="nc_settings_incognito_keyboard_desc">Ενημερώνει το πληκτρολόγιο για να απενεργοποιήσει την προσωπική μάθηση (χωρίς εγγυήσεις)</string>
+    <string name="nc_settings_incognito_keyboard_title">Πληκτρολόγιο ανώνυμης περιήγησης</string>
+    <string name="nc_settings_link_previews_desc">Επιτρέπει προεπισκοπήσεις περιεχομένου από ληφθέντες συνδέσμους για υποστηριζόμενες υπηρεσίες</string>
+    <string name="nc_settings_link_previews_title">Προβολή προεπισκόπησης συνδέσμων</string>
+    <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
+    <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
+    <string name="nc_settings_privacy">Ιδιωτικότητα</string>
+    <string name="nc_settings_proxy_host_title">Σύστημα διαμεσολαβητή</string>
+    <string name="nc_settings_proxy_port_title">Θύρα διαμεσολαβητή</string>
+    <string name="nc_settings_proxy_title">Διαμεσολαβητής</string>
+    <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
+    <string name="nc_settings_read_privacy_desc">Διαμοιρασμός της κατάστασης-ανάγνωσης μου και εμφάνιση της κατάστασης-ανάγνωσης άλλων</string>
+    <string name="nc_settings_read_privacy_title">Κατάσταση ανάγνωσης</string>
+    <string name="nc_settings_reauthorize">Επαναπιστοποίηση</string>
+    <string name="nc_settings_remove">Αφαίρεση</string>
+    <string name="nc_settings_remove_account">Αφαίρεση λογαριασμού</string>
+    <string name="nc_settings_remove_confirmation">Παρακαλώ επιβεβαιώστε την πρόθεσή σας να αφαιρέσετε το λογαριασμό,</string>
+    <string name="nc_settings_screen_lock_desc">Κλείδωμα %1$sμε Android οθόνη κλειδώματος ή υποστηριζόμενη μέθοδο βιομετρικών</string>
+    <string name="nc_settings_screen_lock_timeout_title">Χρονικό όριο αδράνειας κλειδώματος οθόνης</string>
+    <string name="nc_settings_screen_lock_title">Κλείδωμα οθόνης</string>
+    <string name="nc_settings_screen_security_desc">Αποτρέπει εικόνες στιγμιότυπων στην πρόσφατη λίστα και μέσα στην εφαρμογή</string>
+    <string name="nc_settings_screen_security_title">Ασφάλεια οθόνης</string>
+    <string name="nc_settings_switch_account">Εναλλαγή λογαριασμών</string>
+    <string name="nc_settings_theme_battery_saver">Ορισμός από Διαχείριση Μπαταρίας</string>
+    <string name="nc_settings_theme_dark">Σκούρο</string>
+    <string name="nc_settings_theme_follow_system">Χρησιμοποιήστε το προεπιλεγμένο σύστημα</string>
+    <string name="nc_settings_theme_key">θέμα</string>
+    <string name="nc_settings_theme_light">Φωτεινό</string>
+    <string name="nc_settings_theme_title">Θέμα</string>
+    <string name="nc_settings_use_credentials_title">Χρήση διαπιστευτηρίων</string>
+    <string name="nc_settings_vibrate">Δόνηση</string>
+    <string name="nc_settings_vibrate_desc">Το τηλέφωνο θα δονείται έως τη σίγαση του</string>
+    <string name="nc_settings_wrong_account">Μόνο ο παρόν λογαριασμός μπορεί να επαναεγκριθεί</string>
+    <string name="nc_share_link">Διαμοιρασμός συνδέσμου</string>
+    <string name="nc_share_link_via">Διαμοιρασμός συνδέσμου μέσω</string>
+    <string name="nc_share_subject">%1$s πρόσκληση</string>
+    <string name="nc_share_text">Συμμετοχή στην συνομιλία από %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
+    <string name="nc_start_conversation">Έναρξη συνομιλίας</string>
+    <string name="nc_start_time">Ώρα έναρξης</string>
+    <string name="nc_timeout_error">Λήξη χρόνου</string>
+    <string name="nc_unauthorized_error">Μη εξουσιοδοτημένο</string>
     <string name="nc_upload_choose_local_files">Επιλογή αρχείων</string>
+    <string name="nc_upload_local_file">Μεταφόρτωση τοπικού αρχείου</string>
+    <string name="nc_user">Χρήστης</string>
+    <string name="nc_username">Όνομα χρήστη</string>
+    <string name="nc_webinar">Webinar</string>
+    <string name="nc_wrong_link">Μη έγκυρος σύνδεσμος συνομιλίας</string>
+    <string name="nc_wrong_password">Λανθασμένο συνθηματικό</string>
+    <string name="nc_yes">Ναι</string>
     </resources>
