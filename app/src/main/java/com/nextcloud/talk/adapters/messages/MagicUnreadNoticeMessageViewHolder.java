@@ -23,7 +23,6 @@ package com.nextcloud.talk.adapters.messages;
 import android.view.View;
 
 import com.nextcloud.talk.models.json.chat.ChatMessage;
-import com.stfalcon.chatkit.commons.ViewHolder;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 public class MagicUnreadNoticeMessageViewHolder extends MessageHolders.SystemMessageViewHolder<ChatMessage> {

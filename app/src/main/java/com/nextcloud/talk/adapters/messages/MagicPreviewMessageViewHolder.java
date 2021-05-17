@@ -35,7 +35,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
@@ -55,6 +54,8 @@ import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -69,9 +70,6 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-
-import org.jetbrains.annotations.NotNull;
-
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;

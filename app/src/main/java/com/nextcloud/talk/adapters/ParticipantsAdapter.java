@@ -1,7 +1,6 @@
 package com.nextcloud.talk.adapters;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

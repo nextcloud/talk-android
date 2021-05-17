@@ -25,8 +25,6 @@ import android.text.Editable;
 import android.text.Spanned;
 import android.widget.EditText;
 
-import androidx.emoji.text.EmojiCompat;
-
 import com.facebook.widget.text.span.BetterImageSpan;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.models.database.UserEntity;
