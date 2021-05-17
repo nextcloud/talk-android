@@ -1,409 +1,322 @@
-<!--
-  ~ Nextcloud Talk application
-  ~
-  ~ @author Mario Danic
-  ~ @author Andy Scherzinger
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Common -->
-    <string name="nc_yes">Da</string>
-    <string name="nc_no">Ne</string>
-    <string name="nc_common_skip">Preskoči</string>
-    <string name="nc_common_set">Nastavi</string>
-    <string name="nc_common_error_sorry">Prišlo je do napake ...</string>
-
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Nastavitve</string>
-
-    <!-- Server selection -->
-    <string name="nc_server_connect">Preizkusi povezavo s strežnikom</string>
-    <string name="nc_server_helper_text">Povezava do spletnega vmesnika %1$s, ki se odpre v brskalniku.</string>
-    <string name="nc_server_testing_connection">Preizkušanje povezave</string>
-    <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
-
-    <string name="nc_server_url">Naslov strežnika: https://</string>
-    <string name="nc_server_not_installed">Dokončajte namestitev %1$s</string>
-    <string name="nc_server_db_upgrade_needed">Posodobite podatkovno zbirko %1$s</string>
-    <string name="nc_server_maintenance">Končajte vzdrževalni način na %1$s.</string>
-    <string name="nc_server_version">Program %1$s je podprt le na različicah %2$s 13 in novejših.</string>
-    <string name="nc_server_import_account_plain">Uvozi račun</string>
-    <string name="nc_server_import_accounts_plain">Uvozi račune</string>
-    <string name="nc_server_import_account">Uvozi račun iz %1$s</string>
-    <string name="nc_server_import_accounts">Uvozi račune iz %1$s</string>
-    <string name="nc_server_failed_to_import_account">Uvoz izbranega računa je spodletel</string>
+<?xml version="1.0" encoding="utf-8"?>
+  <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="account_icon">Ikona računa</string>
+    <string name="appbar_search_in">Poišči v %s</string>
+    <string name="avatar">Podoba</string>
+    <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
+    <string name="delete_avatar">Izbriši podobo</string>
+    <string name="edit">Uredi</string>
+    <string name="encrypted">Šifrirano</string>
+    <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
+    <string name="file_list_folder">mapa</string>
+    <string name="file_list_loading">Poteka nalaganje …</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="lock_symbol">Simbol zaklepa</string>
+    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
-    <string name="nc_get_from_provider">Še nimate izbranega oziroma nameščenega strežnika? Kliknite in si pridobite dostop.</string>
-
-    <!-- Account verification -->
-    <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
-    <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
-    <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
-    <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
-    <string name="nc_nextcloud_talk_app_not_installed">Program %1$s na strežniku ni nameščen, zahteva bo preklicana.</string>
-    <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
-
-    <string name="nc_never">Nikoli pridružen</string>
-    <string name="nc_search">Poišči</string>
-
-    <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
-    <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
-    <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
-
-    <!-- Settings -->
-    <string name="nc_settings_proxy_title">Posredniški strežnik</string>
-    <string name="nc_settings_proxy_type_title">Vrsta posredniškega strežnika</string>
-    <string name="nc_settings_proxy_host_title">Gostitelj posredniškega strežnika</string>
-    <string name="nc_settings_proxy_port_title">Vrata posredniškega strežnika</string>
-    <string name="nc_settings_use_credentials_title">Uporabi poverila</string>
-    <string name="nc_settings_switch_account">Preklopi med računi</string>
-    <string name="nc_settings_reauthorize">Ponovno overi dostop</string>
-    <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
-    <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
-    <string name="nc_settings_remove">Odstrani</string>
-    <string name="nc_settings_remove_confirmation">Potrdite zahtevo za odstranitev trenutnega računa.</string>
-    <string name="nc_settings_remove_account">Odstrani račun</string>
-    <string name="nc_settings_add_account">Dodaj račun</string>
-    <string name="nc_settings_server_eol_title">Nepodprta različica strežnika</string>
-    <string name="nc_settings_server_eol">Različica strežnika je zastarela in ni več podprta v tej različici programa za okolje Android.</string>
-    <string name="nc_settings_server_almost_eol">Različica strežnika je zastarela in ne bo več podprta z naslenjo različico programa.</string>
-    <string name="nc_settings_warning">Opozorilo</string>
-    <string name="nc_add">Dodaj</string>
-    <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
-    <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
-    <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
-    <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
-    <string name="nc_settings_notification_sounds">Zvok</string>
-    <string name="nc_settings_call_ringtone">Klici</string>
-    <string name="nc_settings_other_notifications_ringtone">Obvestila</string>
-    <string name="nc_settings_no_ringtone">Brez zvoka</string>
-    <string name="nc_settings_vibrate">Tresenje</string>
-    <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
-    <string name="nc_settings_appearance">Videz</string>
-    <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_theme_key">tema</string>
-    <string name="nc_settings_theme_follow_system">Uporabi sistemsko privzeto možnost</string>
-    <string name="nc_settings_theme_battery_saver">Nastavljeno prek zunanjega programa</string>
-    <string name="nc_settings_theme_light">Svetla</string>
-    <string name="nc_settings_theme_dark">Temna</string>
-    <string name="nc_settings_privacy">Zasebnost</string>
-    <string name="nc_settings_screen_lock_title">Zaklep zaslona</string>
-    <string name="nc_settings_screen_lock_desc">Zakleni %1$s z zaklepom zaslona oziroma drugo podprto biometrično metodo</string>
-    <string name="nc_settings_screen_lock_timeout_title">Časovni zamik zaklepa ob nedejavnosti</string>
-    <string name="nc_none">Brez</string>
-    <string name="nc_settings_screen_security_title">Varnost zaslona</string>
-    <string name="nc_settings_screen_security_desc">Prepreči ustvarjanje zaslonskih slik v seznamu nedavnih pogovorov in znotraj programa</string>
-    <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
-    <string name="nc_settings_incognito_keyboard_desc">Nastavi določilo za onemogočanje osebnega učenja (brez vsakršnih zagotovil)</string>
-    <string name="nc_settings_link_previews_title">Pokaži predoglede povezav</string>
-    <string name="nc_settings_link_previews_desc">Dovoli predogled vsebine prejetih povezav podprtih storitev</string>
-    <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
-    <string name="nc_locked">Zaklenjeno</string>
-    <string name="nc_settings_read_privacy_desc">Objavi moje stanje branja in pokaži tudi stanja drugih uporabnikov</string>
-    <string name="nc_settings_read_privacy_title">Stanje branja</string>
-
-    <string name="nc_screen_lock_timeout_30">30 sekund</string>
-    <string name="nc_screen_lock_timeout_60">1 minuta</string>
-    <string name="nc_screen_lock_timeout_300">5 minut</string>
-    <string name="nc_screen_lock_timeout_600">10 minut</string>
-    <string name="nc_screen_lock_timeout_thirty">30</string>
-    <string name="nc_screen_lock_timeout_sixty">60</string>
-    <string name="nc_screen_lock_timeout_three_hundred">300</string>
-    <string name="nc_screen_lock_timeout_six_hundred">600</string>
-
-    <string name="nc_biometric_unlock">Odkleni %1$s</string>
-    <string name="nc_cancel">Prekliči</string>
-
-    <string name="nc_no_proxy">Brez posredniškega strežnika</string>
-    <string name="nc_username">Uporabniško ime</string>
-    <string name="nc_password">Geslo</string>
-    <string name="nc_conversation_link">Povezava pogovora</string>
-    <string name="nc_new_password">Novo geslo</string>
-    <string name="nc_wrong_password">Napačno geslo</string>
     <string name="nc_about">O programu</string>
-    <string name="nc_privacy">Zasebnost</string>
-    <string name="nc_get_source_code">Pridobi izvorno kodo</string>
-    <string name="nc_license_title">Dovoljenje</string>
-    <string name="nc_license_summary">Splošno Javno dovoljenje GNU GPL, različice 3</string>
-
-    <string name="nc_select_an_account">Izbor računa</string>
-    <string name="nc_account_chooser_add_account">Dodaj račun</string>
     <string name="nc_account_chooser_active_user">Dejavni uporabnik</string>
-
-    <string name="nc_profile_personal_info_title">Osebni podatki</string>
-
-    <!-- Conversation menu -->
-    <string name="nc_start_conversation">Začni pogovor</string>
-    <string name="nc_configure_room">Nastavitev pogovora</string>
-    <string name="nc_leave">Zapusti pogovor</string>
-    <string name="nc_rename">Preimenuj pogovor</string>
-    <string name="nc_set_password">Nastavi geslo</string>
-    <string name="nc_change_password">Spremeni geslo</string>
-    <string name="nc_clear_password">Počisti geslo</string>
-    <string name="nc_share_link">Objavi povezavo</string>
-    <string name="nc_share_link_via">Objavi povezavo prek</string>
-    <string name="nc_make_call_public">Nastavi pogovor kot javen</string>
-    <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
-    <string name="nc_delete_call">Izbriši pogovor</string>
-    <string name="nc_delete">Izbriši</string>
-    <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
-
-    <string name="nc_new_conversation">Nov pogovor</string>
-    <string name="nc_join_via_link">Pridruži se prek povezave</string>
-    <string name="nc_join_via_web">Pridruži se prek spleta</string>
-    <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
-    <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
-
-    <!-- Contacts -->
-    <string name="nc_select_participants">Izbor udeležencev</string>
+    <string name="nc_account_chooser_add_account">Dodaj račun</string>
+    <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
+    <string name="nc_action_open_main_menu">Odpri glavni meni</string>
+    <string name="nc_add">Dodaj</string>
+    <string name="nc_add_attachment">Dodaj prilogo</string>
+    <string name="nc_add_emojis">Vstavi izrazno ikono</string>
+    <string name="nc_add_file">Dodaj v pogovor</string>
     <string name="nc_add_participants">Dodaj udeležence</string>
-    <string name="nc_contacts_done">Začni pogovor</string>
-
-    <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora prek videa je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
-    <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
-    <string name="nc_permissions_settings">Odpri nastavitve</string>
-
-    <!-- Call -->
-    <string name="nc_call_voice">Glasovni klic %s</string>
-    <string name="nc_call_video">Glasovni klic %s</string>
-    <string name="nc_call_unknown">Klic %s</string>
+    <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
+    <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
+    <string name="nc_allow_guests">Dovoli povezave z gosti</string>
+    <string name="nc_attendee_pin">Koda PIN: %1$s</string>
+    <string name="nc_bad_response_error">Slab odziv</string>
+    <string name="nc_biometric_unlock">Odkleni %1$s</string>
     <string name="nc_call_incoming">DOHODNI</string>
-    <string name="nc_call_ringing">ZVONJENJE</string>
-    <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
-    <string name="nc_calling">Poteka klicanje ...</string>
-    <string name="nc_incoming_call">Dohodni klic:</string>
-    <string name="nc_nick_guest">Gost</string>
-    <string name="nc_public_call">Nov javni pogovor</string>
-    <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor z vsemi, ki poznajo ustvarjeno enkratno povezavo.</string>
-    <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
+    <string name="nc_call_name">Naslov pogovora</string>
+    <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
-    <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
-    <string name="nc_leaving_call">Poteka zapuščanje klica ...</string>
+    <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_call_state_in_call">%1$s v klicu</string>
     <string name="nc_call_state_with_video">%1$s v video klicu</string>
-
-    <!-- Notification channels -->
+    <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
+    <string name="nc_call_unknown">Klic %s</string>
+    <string name="nc_call_video">Glasovni klic %s</string>
+    <string name="nc_call_voice">Glasovni klic %s</string>
+    <string name="nc_calling">Poteka klicanje ...</string>
+    <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora prek videa je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
+    <string name="nc_cancel">Prekliči</string>
+    <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
+    <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
+    <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
+    <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
+    <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
+    <string name="nc_change_password">Spremeni geslo</string>
+    <string name="nc_circles">Krogi</string>
+    <string name="nc_clear_password">Počisti geslo</string>
+    <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
+    <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
+    <string name="nc_common_error_sorry">Prišlo je do napake ...</string>
+    <string name="nc_common_set">Nastavi</string>
+    <string name="nc_common_skip">Preskoči</string>
+    <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
+    <string name="nc_configure_room">Nastavitev pogovora</string>
+    <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
+    <string name="nc_contacts_done">Začni pogovor</string>
+    <string name="nc_conversation_link">Povezava pogovora</string>
+    <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
+    <string name="nc_conversation_menu_video_call">Video klic</string>
+    <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
+    <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
+    <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
+    <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_date_header_today">Danes</string>
+    <string name="nc_date_header_yesterday">Včeraj</string>
+    <string name="nc_delete">Izbriši</string>
+    <string name="nc_delete_call">Izbriši pogovor</string>
+    <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
+    <string name="nc_delete_message">Izbriši</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
+    <string name="nc_demote">Ponižaj iz moderatorja</string>
+    <string name="nc_description_more_menu_group">Meni za javen pogovor %1$s</string>
+    <string name="nc_description_more_menu_one_to_one">Meni pogovora z %1$s</string>
+    <string name="nc_description_more_menu_public">Meni za skupinski pogovor %1$s</string>
+    <string name="nc_description_send_message_button">Pošlji sporočilo</string>
+    <string name="nc_dialog_invalid_password">Neveljavno geslo</string>
+    <string name="nc_dialog_reauth_or_delete">Ali želite ponovno overiti ali odstraniti račun?</string>
+    <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
+    <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
+    <string name="nc_email">Elektronski naslov</string>
+    <string name="nc_empty_response_error">Neznan odziv</string>
+    <string name="nc_endless_cancel">Preklicano s strani uporabnika.</string>
+    <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je dovoljena omejitev).</string>
+    <string name="nc_endless_error">Med nalaganjem predmetov je prišlo do napake.</string>
+    <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
+    <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih telefonov. Poskusite se povezati prek spletnega brskalnika.</string>
+    <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
+    <string name="nc_file_browser">Brskalnik datotek\"</string>
+    <string name="nc_file_browser_back">Nazaj</string>
+    <string name="nc_file_browser_refresh">Osveži</string>
+    <string name="nc_file_browser_reshare_forbidden">Nadaljnje omogočanje uporabi te datoteke ni dovoljeno</string>
+    <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
+    <string name="nc_formatted_message_you">→ %1$s</string>
+    <string name="nc_general_settings">Splošno</string>
+    <string name="nc_get_from_provider">Še nimate izbranega oziroma nameščenega strežnika? Kliknite in si pridobite dostop.</string>
+    <string name="nc_get_source_code">Pridobi izvorno kodo</string>
+    <string name="nc_group">Skupina</string>
+    <string name="nc_groups">Skupine</string>
+    <string name="nc_guest">Gost</string>
+    <string name="nc_hello">Pozdravljeni</string>
+    <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
+    <string name="nc_important_conversation">Pomemben pogovor</string>
+    <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
+    <string name="nc_incoming_call">Dohodni klic:</string>
+    <string name="nc_join_via_link">Pridruži se prek povezave</string>
+    <string name="nc_join_via_web">Pridruži se prek spleta</string>
+    <string name="nc_last_moderator">Pred odhodom iz %1$s morate nekoga določiti za moderatorja.</string>
+    <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
+    <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
+    <string name="nc_leave">Zapusti pogovor</string>
+    <string name="nc_leaving_call">Poteka zapuščanje klica ...</string>
+    <string name="nc_license_summary">Splošno Javno dovoljenje GNU GPL, različice 3</string>
+    <string name="nc_license_title">Dovoljenje</string>
+    <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
+    <string name="nc_lobby">Spletna čakalnica</string>
+    <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
+    <string name="nc_locked">Zaklenjeno</string>
+    <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
+    <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
+    <string name="nc_make_call_public">Nastavi pogovor kot javen</string>
+    <string name="nc_manual">Ni nastavljeno</string>
+    <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
+    <string name="nc_message_read">Sporočilo je prebrano</string>
+    <string name="nc_message_sent">Sporočilo je poslano</string>
+    <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
+    <string name="nc_moderator">Moderator</string>
+    <string name="nc_mute_calls">Utišaj klice</string>
+    <string name="nc_mute_calls_desc">Dohodni klici bodo utišani</string>
+    <string name="nc_never">Nikoli pridružen</string>
+    <string name="nc_new_conversation">Nov pogovor</string>
+    <string name="nc_new_messages">Neprebrana sporočila</string>
+    <string name="nc_new_password">Novo geslo</string>
+    <string name="nc_nextcloud_talk_app_not_installed">Program %1$s na strežniku ni nameščen, zahteva bo preklicana.</string>
+    <string name="nc_nick_guest">Gost</string>
+    <string name="nc_no">Ne</string>
+    <string name="nc_no_connection_error">Ni vzpostavljene povezave</string>
+    <string name="nc_no_messages_yet">Ni še sporočil</string>
+    <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>
+    <string name="nc_no_proxy">Brez posredniškega strežnika</string>
+    <string name="nc_none">Brez</string>
+    <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
-    <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>
+    <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_settings">Nastavitve obveščanja</string>
-    <string name="nc_plain_old_messages">Sporočila</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
     <string name="nc_notify_me_never">Nikoli ne obvesti</string>
-    <string name="nc_mute_calls">Utišaj klice</string>
-    <string name="nc_mute_calls_desc">Dohodni klici bodo utišani</string>
-    <string name="nc_important_conversation">Pomemben pogovor</string>
-    <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
-
-    <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
-    <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih telefonov. Poskusite se povezati prek spletnega brskalnika.</string>
-    <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
+    <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
     <string name="nc_ok">V redu</string>
-    <string name="nc_call_name">Naslov pogovora</string>
-    <string name="nc_proceed">Nadaljuj</string>
-    <string name="nc_add_emojis">Vstavi izrazno ikono</string>
-    <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
-    <string name="nc_wrong_link">Povezava do pogovora ni veljavna</string>
-    <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_subject"> povabilo %1$s</string>
-    <string name="nc_share_text_pass">\nGeslo: %1$s</string>
-
-    <!-- Magical stuff -->
-    <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
-    <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
-    <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
-    <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
-
-    <!-- Moderation -->
-    <string name="nc_demote">Ponižaj iz moderatorja</string>
-    <string name="nc_promote">Povišaj v moderatorja</string>
-    <string name="nc_remove_participant">Odstrani udeležence</string>
-    <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
-    <string name="nc_attendee_pin">Koda PIN: %1$s</string>
-
-    <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
-    <string name="nc_date_header_yesterday">Včeraj</string>
-    <string name="nc_date_header_today">Danes</string>
-    <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
-    <string name="nc_conversation_menu_video_call">Video klic</string>
-    <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
-    <string name="nc_new_messages">Neprebrana sporočila</string>
-    <string name="nc_no_messages_yet">Ni še sporočil</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s pošlje povezavo.</string>
-    <string name="nc_sent_a_gif" formatted="true">%1$s pošlje sličico GIF.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s pošlje prilogo.</string>
-    <string name="nc_sent_an_audio" formatted="true">%1$s pošlje zvočno datoteko.</string>
-    <string name="nc_sent_a_video" formatted="true">%1$s pošlje video datoteko.</string>
-    <string name="nc_sent_an_image" formatted="true">%1$s pošlje sliko.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Pošljete povezavo</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Pošljete sličico GIF</string>
-    <string name="nc_sent_an_attachment_you">Pošljete prilogo</string>
-    <string name="nc_sent_an_audio_you">Pošljete zvočno sporočilo</string>
-    <string name="nc_sent_a_video_you">Pošljete video sporočilo</string>
-    <string name="nc_sent_an_image_you">Pošljete sliko</string>
-    <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
-    <!-- When translating to German, please use non-formal variant -->
-    <string name="nc_formatted_message_you">→ %1$s</string>
-    <string name="nc_message_read">Sporočilo je prebrano</string>
-    <string name="nc_message_sent">Sporočilo je poslano</string>
-    <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
-    <string name="nc_add_attachment">Dodaj prilogo</string>
-
-    <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>
-    <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je dovoljena omejitev).</string>
-    <string name="nc_endless_cancel">Preklicano s strani uporabnika.</string>
-    <string name="nc_endless_error">Med nalaganjem predmetov je prišlo do napake.</string>
-
-    <!-- Content descriptions -->
-    <string name="nc_description_more_menu_one_to_one">Meni pogovora z %1$s</string>
-    <string name="nc_description_more_menu_public">Meni za skupinski pogovor %1$s</string>
-    <string name="nc_description_more_menu_group">Meni za javen pogovor %1$s</string>
-    <string name="nc_description_send_message_button">Pošlji sporočilo</string>
-
-    <!-- Empty states -->
-    <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
-    <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
-    <string name="nc_hello">Pozdravljeni</string>
-
-    <!-- Other -->
-    <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
-    <string name="nc_email">Elektronski naslov</string>
-    <string name="nc_group">Skupina</string>
-    <string name="nc_groups">Skupine</string>
-    <string name="nc_circles">Krogi</string>
+    <string name="nc_owner">Lastnik</string>
     <string name="nc_participants">Udeleženci</string>
     <string name="nc_participants_add">Dodaj udeležence</string>
-
-    <string name="nc_owner">Lastnik</string>
-    <string name="nc_moderator">Moderator</string>
-    <string name="nc_user">Uporabnik</string>
-    <string name="nc_guest">Gost</string>
-    <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
-
-    <!-- Browser component -->
-    <string name="nc_file_browser">Brskalnik datotek\"</string>
-    <string name="nc_select_files">Izbor datotek</string>
-    <string name="nc_file_browser_back">Nazaj</string>
-    <string name="nc_file_browser_refresh">Osveži</string>
-    <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
-    <string name="nc_file_browser_reshare_forbidden">Nadaljnje omogočanje uporabi te datoteke ni dovoljeno</string>
-
-    <!-- Lobby -->
-    <string name="nc_webinar">Spletinar</string>
-    <string name="nc_lobby">Spletna čakalnica</string>
-    <string name="nc_start_time">Čas začetka</string>
-    <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
-    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\n
-        sestanek je načrtovan za %1$s.</string>
-    <string name="nc_manual">Ni nastavljeno</string>
-
-    <!-- Errors -->
-    <string name="nc_no_connection_error">Ni vzpostavljene povezave</string>
-    <string name="nc_bad_response_error">Slab odziv</string>
-    <string name="nc_timeout_error">Časovni zamik</string>
-    <string name="nc_empty_response_error">Neznan odziv</string>
-    <string name="nc_not_defined_error">Neznana napaka</string>
-    <string name="nc_unauthorized_error">Neoverjeno</string>
-
-    <string name="nc_general_settings">Splošno</string>
-    <string name="nc_allow_guests">Dovoli povezave z gosti</string>
-    <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
-    <string name="nc_last_moderator">Pred odhodom iz %1$s morate nekoga določiti za moderatorja.</string>
-
-    <!-- Chat -->
-    <string name="nc_99_plus">99+</string>
-    <string name="nc_copy_message">Kopiraj</string>
+    <string name="nc_password">Geslo</string>
+    <string name="nc_permissions_settings">Odpri nastavitve</string>
+    <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
+    <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
+    <string name="nc_plain_old_messages">Sporočila</string>
+    <string name="nc_privacy">Zasebnost</string>
+    <string name="nc_proceed">Nadaljuj</string>
+    <string name="nc_profile_personal_info_title">Osebni podatki</string>
+    <string name="nc_promote">Povišaj v moderatorja</string>
+    <string name="nc_public_call">Nov javni pogovor</string>
+    <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor z vsemi, ki poznajo ustvarjeno enkratno povezavo.</string>
+    <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
+    <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
+    <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
+    <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
+    <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
+    <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
+    <string name="nc_remove_participant">Odstrani udeležence</string>
+    <string name="nc_rename">Preimenuj pogovor</string>
     <string name="nc_reply">Odgovori</string>
     <string name="nc_reply_privately">Odgovori zasebno</string>
-    <string name="nc_delete_message">Izbriši</string>
-    <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
-
-    <string name="share">Souporaba</string>
-    <string name="send_to">Pošlji</string>
-    <string name="open_in_files_app">Odpri v programu Datoteke</string>
-
-    <!-- Upload -->
-    <string name="nc_add_file">Dodaj v pogovor</string>
-    <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
-    <string name="nc_upload_from_cloud">Souporaba %1$s</string>
-    <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
-    <string name="nc_upload_choose_local_files">Izbor datotek</string>
-    <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
-    <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
-    <string name="nc_upload_in_progess">Poteka pošiljanje</string>
-
+    <string name="nc_screen_lock_timeout_30">30 sekund</string>
+    <string name="nc_screen_lock_timeout_300">5 minut</string>
+    <string name="nc_screen_lock_timeout_60">1 minuta</string>
+    <string name="nc_screen_lock_timeout_600">10 minut</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_search">Poišči</string>
+    <string name="nc_select_an_account">Izbor računa</string>
+    <string name="nc_select_files">Izbor datotek</string>
+    <string name="nc_select_participants">Izbor udeležencev</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s pošlje sličico GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Pošljete sličico GIF</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s pošlje povezavo.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Pošljete povezavo</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s pošlje video datoteko.</string>
+    <string name="nc_sent_a_video_you">Pošljete video sporočilo</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s pošlje prilogo.</string>
+    <string name="nc_sent_an_attachment_you">Pošljete prilogo</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s pošlje zvočno datoteko.</string>
+    <string name="nc_sent_an_audio_you">Pošljete zvočno sporočilo</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s pošlje sliko.</string>
+    <string name="nc_sent_an_image_you">Pošljete sliko</string>
+    <string name="nc_server_connect">Preizkusi povezavo s strežnikom</string>
+    <string name="nc_server_db_upgrade_needed">Posodobite podatkovno zbirko %1$s</string>
+    <string name="nc_server_failed_to_import_account">Uvoz izbranega računa je spodletel</string>
+    <string name="nc_server_helper_text">Povezava do spletnega vmesnika %1$s, ki se odpre v brskalniku.</string>
+    <string name="nc_server_import_account">Uvozi račun iz %1$s</string>
+    <string name="nc_server_import_account_plain">Uvozi račun</string>
+    <string name="nc_server_import_accounts">Uvozi račune iz %1$s</string>
+    <string name="nc_server_import_accounts_plain">Uvozi račune</string>
+    <string name="nc_server_maintenance">Končajte vzdrževalni način na %1$s.</string>
+    <string name="nc_server_not_installed">Dokončajte namestitev %1$s</string>
+    <string name="nc_server_testing_connection">Preizkušanje povezave</string>
+    <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
+    <string name="nc_server_url">Naslov strežnika: https://</string>
+    <string name="nc_server_version">Program %1$s je podprt le na različicah %2$s 13 in novejših.</string>
+    <string name="nc_set_password">Nastavi geslo</string>
+    <string name="nc_settings">Nastavitve</string>
+    <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
+    <string name="nc_settings_add_account">Dodaj račun</string>
+    <string name="nc_settings_appearance">Videz</string>
+    <string name="nc_settings_call_ringtone">Klici</string>
+    <string name="nc_settings_incognito_keyboard_desc">Nastavi določilo za onemogočanje osebnega učenja (brez vsakršnih zagotovil)</string>
+    <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
+    <string name="nc_settings_link_previews_desc">Dovoli predogled vsebine prejetih povezav podprtih storitev</string>
+    <string name="nc_settings_link_previews_title">Pokaži predoglede povezav</string>
+    <string name="nc_settings_no_ringtone">Brez zvoka</string>
+    <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
+    <string name="nc_settings_notification_sounds">Zvok</string>
+    <string name="nc_settings_other_notifications_ringtone">Obvestila</string>
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
-    <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Nastavite telefonsko številko, da vas bodo drugi uporabniki lahko našli.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonska številka je uspešno nastavljena</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonska številka</string>
+    <string name="nc_settings_phone_book_integration_title">Združevalnik telefonskega imenika</string>
+    <string name="nc_settings_privacy">Zasebnost</string>
+    <string name="nc_settings_proxy_host_title">Gostitelj posredniškega strežnika</string>
+    <string name="nc_settings_proxy_port_title">Vrata posredniškega strežnika</string>
+    <string name="nc_settings_proxy_title">Posredniški strežnik</string>
+    <string name="nc_settings_proxy_type_title">Vrsta posredniškega strežnika</string>
+    <string name="nc_settings_read_privacy_desc">Objavi moje stanje branja in pokaži tudi stanja drugih uporabnikov</string>
+    <string name="nc_settings_read_privacy_title">Stanje branja</string>
+    <string name="nc_settings_reauthorize">Ponovno overi dostop</string>
+    <string name="nc_settings_remove">Odstrani</string>
+    <string name="nc_settings_remove_account">Odstrani račun</string>
+    <string name="nc_settings_remove_confirmation">Potrdite zahtevo za odstranitev trenutnega računa.</string>
+    <string name="nc_settings_screen_lock_desc">Zakleni %1$s z zaklepom zaslona oziroma drugo podprto biometrično metodo</string>
+    <string name="nc_settings_screen_lock_timeout_title">Časovni zamik zaklepa ob nedejavnosti</string>
+    <string name="nc_settings_screen_lock_title">Zaklep zaslona</string>
+    <string name="nc_settings_screen_security_desc">Prepreči ustvarjanje zaslonskih slik v seznamu nedavnih pogovorov in znotraj programa</string>
+    <string name="nc_settings_screen_security_title">Varnost zaslona</string>
+    <string name="nc_settings_server_almost_eol">Različica strežnika je zastarela in ne bo več podprta z naslenjo različico programa.</string>
+    <string name="nc_settings_server_eol">Različica strežnika je zastarela in ni več podprta v tej različici programa za okolje Android.</string>
+    <string name="nc_settings_server_eol_title">Nepodprta različica strežnika</string>
+    <string name="nc_settings_switch_account">Preklopi med računi</string>
+    <string name="nc_settings_theme_battery_saver">Nastavljeno prek zunanjega programa</string>
+    <string name="nc_settings_theme_dark">Temna</string>
+    <string name="nc_settings_theme_follow_system">Uporabi sistemsko privzeto možnost</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_light">Svetla</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">Uporabi poverila</string>
+    <string name="nc_settings_vibrate">Tresenje</string>
+    <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
+    <string name="nc_settings_warning">Opozorilo</string>
+    <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
+    <string name="nc_share_link">Objavi povezavo</string>
+    <string name="nc_share_link_via">Objavi povezavo prek</string>
+    <string name="nc_share_subject"> povabilo %1$s</string>
+    <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text_pass">\nGeslo: %1$s</string>
+    <string name="nc_start_conversation">Začni pogovor</string>
+    <string name="nc_start_time">Čas začetka</string>
+    <string name="nc_timeout_error">Časovni zamik</string>
+    <string name="nc_unauthorized_error">Neoverjeno</string>
+    <string name="nc_upload_choose_local_files">Izbor datotek</string>
+    <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
+    <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
+    <string name="nc_upload_failed">Pošiljanje je spodletelo.</string>
+    <string name="nc_upload_from_cloud">Souporaba %1$s</string>
+    <string name="nc_upload_in_progess">Poteka pošiljanje</string>
+    <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
+    <string name="nc_user">Uporabnik</string>
+    <string name="nc_username">Uporabniško ime</string>
+    <string name="nc_webinar">Spletinar</string>
+    <string name="nc_wrong_link">Povezava do pogovora ni veljavna</string>
+    <string name="nc_wrong_password">Napačno geslo</string>
+    <string name="nc_yes">Da</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
-    <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
-    <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
-
-    <string name="starred">Priljubljeno</string>
-    <string name="encrypted">Šifrirano</string>
+    <string name="open_in_files_app">Odpri v programu Datoteke</string>
     <string name="password_protected">Zaščiteno z geslom</string>
-
-    <string name="avatar">Podoba</string>
-    <string name="account_icon">Ikona računa</string>
-    <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
-    <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>
-    <string name="userinfo_error_text">Pridobivanje uporabniških podrobnosti je spodletelo.</string>
-    <string name="user_info_phone">Telefonska številka</string>
-    <string name="user_info_email">Elektronsko sporočilo</string>
-    <string name="user_info_address">Naslov</string>
-    <string name="user_info_website">Spletna stran</string>
-    <string name="user_info_twitter">Račun Twitter</string>
-    <string name="user_info_displayname">Polno ime</string>
-    <string name="file_list_folder">mapa</string>
-    <string name="file_list_loading">Poteka nalaganje …</string>
-    <string name="edit">Uredi</string>
     <string name="save">Shrani</string>
-    <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
-    <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
-    <string name="delete_avatar">Izbriši podobo</string>
-    <string name="scope_private_title">Zasebno</string>
-    <string name="scope_private_description">Vidno le uporabnikom povezanimi s programom Talk prek telefonske številke.</string>
-    <string name="lock_symbol">Simbol zaklepa</string>
-    <string name="scope_local_title">Krajevno</string>
-    <string name="scope_local_description">Vidno le krajevnim uporabnikom in povezanim gostom</string>
-    <string name="scope_federated_title">Zvezno</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
-    <string name="scope_published_title">Objavljeno</string>
+    <string name="scope_federated_title">Zvezno</string>
+    <string name="scope_local_description">Vidno le krajevnim uporabnikom in povezanim gostom</string>
+    <string name="scope_local_title">Krajevno</string>
+    <string name="scope_private_description">Vidno le uporabnikom povezanimi s programom Talk prek telefonske številke.</string>
+    <string name="scope_private_title">Zasebno</string>
     <string name="scope_published_description">Usklajuj z varnimi strežniki in splošnimi in javnimi imeniki</string>
+    <string name="scope_published_title">Objavljeno</string>
     <string name="scope_toggle">Preklop obsega</string>
     <string name="scope_toggle_description">Spremeni pravila zasebnosti za %1$s</string>
-
-    <!-- App Bar -->
-    <string name="appbar_search_in">Poišči v %s</string>
-
-    <string name="nc_action_open_main_menu">Odpri glavni meni</string>
-    <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
     <string name="selected_list_item">izbrano</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="nc_dialog_invalid_password">Neveljavno geslo</string>
-    <string name="nc_dialog_reauth_or_delete">Ali želite ponovno overiti ali odstraniti račun?</string>
+    <string name="send_to">Pošlji</string>
+    <string name="share">Souporaba</string>
+    <string name="starred">Priljubljeno</string>
+    <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
+    <string name="user_info_address">Naslov</string>
+    <string name="user_info_displayname">Polno ime</string>
+    <string name="user_info_email">Elektronsko sporočilo</string>
+    <string name="user_info_phone">Telefonska številka</string>
+    <string name="user_info_twitter">Račun Twitter</string>
+    <string name="user_info_website">Spletna stran</string>
+    <string name="userinfo_error_text">Pridobivanje uporabniških podrobnosti je spodletelo.</string>
+    <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
+    <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>
 </resources>

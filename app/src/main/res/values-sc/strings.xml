@@ -1,261 +1,202 @@
-<!--
-  ~ Nextcloud Talk application
-  ~
-  ~ @author Mario Danic
-  ~ @author Andy Scherzinger
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ at your option) any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
-
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Common -->
-    <string name="nc_yes">Eja</string>
-    <string name="nc_no">No</string>
-    <string name="nc_common_error_sorry">Ddoe at àpidu un\'errore!</string>
-
-    <!-- Bottom Navigation -->
-    <string name="nc_settings">Impostatziones</string>
-
-    <string name="nc_server_not_installed">Agabba %1$s s\'installatzione tua</string>
-    <string name="nc_server_db_upgrade_needed">Agiorna %1$s sa base de datos tua</string>
-    <string name="nc_server_maintenance">Porta su %1$s tuo a sa mantenidura</string>
-    <string name="nc_server_version">%1$s funtzionat isceti cun %2$s 13 e prus</string>
-    <string name="nc_server_import_account_plain">Importa contu</string>
-    <string name="nc_server_import_accounts_plain">Importa contos</string>
-    <string name="nc_server_import_account">Importa contu dae s\'aplicatzione %1$s </string>
-    <string name="nc_server_import_accounts">Importa contos dae s\'aplicatzione %1$s </string>
-    <string name="nc_server_failed_to_import_account">No at fatu a importare su contu seletzionadu</string>
+<?xml version="1.0" encoding="utf-8"?>
+  <resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Su contu seletzionadu est importadu e a disponimentu</string>
-    <string name="nc_get_from_provider">Non tenes ancora unu serbidore?\nIncarca inoghe pro dd\'otènnere dae unu frunidore.</string>
-
-    <!-- Account verification -->
-    <string name="nc_push_disabled">Notìficas push disativadas</string>
-    <string name="nc_capabilities_failed">Errore in su recùperu de is capatzidades, annullende</string>
-    <string name="nc_external_server_failed">Errore in su recùperu de sa cunfiguratzione</string>
-    <string name="nc_display_name_not_fetched">Errore in su recùperu de su nùmene ammustradu, annullende</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$s s\'aplicatzione no est installada in su serbidore, annullende</string>
-    <string name="nc_display_name_not_stored">No at fatu a sarvare su nùmene ammustradu, annullende</string>
-
-    <string name="nc_never">Mai aderidu</string>
-    <string name="nc_search">Chirca</string>
-
-    <string name="nc_certificate_dialog_title">Controlla su tzertificadu</string>
-    <string name="nc_certificate_dialog_text">Ti fidas de su tzertificadu SSL, disconnotu finas a immoe, frunidu dae %1$s pro %2$s, vàlidu dae %3$s a %4$s?</string>
-    <string name="nc_certificate_error">Sa cunfiguratzione SSL at refudadu sa connessione</string>
-
-    <!-- Settings -->
-    <string name="nc_settings_proxy_title">Proxy</string>
-    <string name="nc_settings_proxy_type_title">Genia de proxy</string>
-    <string name="nc_settings_proxy_host_title">Istrangiadore Proxy</string>
-    <string name="nc_settings_proxy_port_title">Ghenna de su proxy</string>
-    <string name="nc_settings_use_credentials_title">Imprea credentziales</string>
-    <string name="nc_settings_switch_account">Passa a àteros contos</string>
-    <string name="nc_settings_reauthorize">Torra a autorizare</string>
-    <string name="nc_client_cert_setup">Imposta tzertificadu cliente</string>
-    <string name="nc_client_cert_change">Càmbia tzertificadu cliente</string>
-    <string name="nc_settings_remove">Boga</string>
-    <string name="nc_settings_remove_confirmation">Cunfirma s\'intentzione tua de nde bogare su contu atuale.</string>
-    <string name="nc_settings_remove_account">Boga·nche su contu</string>
-    <string name="nc_settings_add_account">Agiunghe unu contu nou</string>
-    <string name="nc_add">Agiunghe</string>
-    <string name="nc_settings_wrong_account">Isceti su contu atuale si podet torrare a autorizare</string>
-    <string name="nc_settings_no_talk_installed"> S\'aplicatzione de mutidas no est installada in su serbidore a su chi as proadu a autenticare</string>
-    <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
-    <string name="nc_account_scheduled_for_deletion">Su contu at a èssere cantzelladu e non si podet cambiare</string>
-    <string name="nc_settings_notification_sounds">Sonu</string>
-    <string name="nc_settings_call_ringtone">Mutidas</string>
-    <string name="nc_settings_other_notifications_ringtone">Notìficas</string>
-    <string name="nc_settings_no_ringtone">Perunu sonu</string>
-    <string name="nc_settings_vibrate">Vibra</string>
-    <string name="nc_settings_vibrate_desc">Su telèfonu at a vibrare si no at a èssere sa muda</string>
-    <string name="nc_settings_appearance">Visibilidade</string>
-    <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_theme_key">tema</string>
-    <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
-    <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
-    <string name="nc_settings_theme_light">Craru</string>
-    <string name="nc_settings_theme_dark">Iscuru</string>
-    <string name="nc_settings_privacy">Riservadesa</string>
-    <string name="nc_settings_screen_lock_title">Blocu de ischermu</string>
-    <string name="nc_settings_screen_lock_desc">Bloca%1$s cun su blocu de ischermu Android o unu mètodu biomèricu suportadu</string>
-    <string name="nc_settings_screen_lock_timeout_title">Tempus de inatividade de su blocu de ischermu</string>
-    <string name="nc_none">Perunu</string>
-    <string name="nc_settings_screen_security_title">Seguresa ischermu</string>
-    <string name="nc_settings_screen_security_desc">Impedit is caturas de ischermu in sa lista reghente e a intro de s\'aplicatzione</string>
-    <string name="nc_settings_incognito_keyboard_title">Tastiera in incògnita</string>
-    <string name="nc_settings_incognito_keyboard_desc">Imparat a sa tastiera a disativare s\'imparu personale (chene garantzias)</string>
-    <string name="nc_settings_link_previews_title">Mustra anteprima de is ligòngios</string>
-    <string name="nc_settings_link_previews_desc">Permite anteprimas de cuntenutu dae ligòngios retzidos pro servìtzios suportados</string>
-    <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
-    <string name="nc_settings_read_privacy_title">Leghe istadu</string>
-
-    <string name="nc_screen_lock_timeout_30">30 segundos</string>
-    <string name="nc_screen_lock_timeout_60">1 minutu</string>
-    <string name="nc_screen_lock_timeout_300">5 minutos</string>
-    <string name="nc_screen_lock_timeout_600">10 minutos</string>
-    <string name="nc_screen_lock_timeout_thirty">30</string>
-    <string name="nc_screen_lock_timeout_sixty">60</string>
-    <string name="nc_screen_lock_timeout_three_hundred">300</string>
-    <string name="nc_screen_lock_timeout_six_hundred">600</string>
-
-    <string name="nc_biometric_unlock">Isbloca %1$s</string>
-    <string name="nc_cancel">Cantzella</string>
-
-    <string name="nc_no_proxy">Perunu proxy</string>
-    <string name="nc_username">Nùmene utente</string>
-    <string name="nc_password">Crae</string>
-    <string name="nc_conversation_link">Ligòngiu resonada</string>
-    <string name="nc_new_password">Crae noa</string>
-    <string name="nc_wrong_password">Crae isballiada</string>
     <string name="nc_about">In contu de</string>
-    <string name="nc_privacy">Riservadesa</string>
-    <string name="nc_get_source_code">Otene su còdighe fonte</string>
-    <string name="nc_license_title">Lissèntzia</string>
-    <string name="nc_license_summary">GNU General Public License, Versione 3</string>
-
-    <string name="nc_select_an_account">Seletziona unu contu</string>
-    <!-- Conversation menu -->
-    <string name="nc_start_conversation">Cumintza una tzarrada</string>
-    <string name="nc_configure_room">Cunfigura resonada</string>
-    <string name="nc_leave">Lassa resonada</string>
-    <string name="nc_rename">Torra a numenare sa resonada</string>
-    <string name="nc_set_password">Imposta una crae</string>
+    <string name="nc_account_scheduled_for_deletion">Su contu at a èssere cantzelladu e non si podet cambiare</string>
+    <string name="nc_add">Agiunghe</string>
+    <string name="nc_add_to_favorites">Agiunghe a preferidos</string>
+    <string name="nc_all_ok_operation">AB, fatu!</string>
+    <string name="nc_biometric_unlock">Isbloca %1$s</string>
+    <string name="nc_call_name">Nùmene resonada</string>
+    <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
+    <string name="nc_call_reconnecting">Torrende a connètere...</string>
+    <string name="nc_call_timeout">Peruna risposta in 45 segundos, toca pro torrare a proare</string>
+    <string name="nc_calling">Tzerriende...</string>
+    <string name="nc_camera_permission_permanently_denied">Pro ativare comunicatzione in vìdeu cunsenti is pemissos de \"Fotocàmera\" in sa cunfiguratzione de sistema.</string>
+    <string name="nc_cancel">Cantzella</string>
+    <string name="nc_capabilities_failed">Errore in su recùperu de is capatzidades, annullende</string>
+    <string name="nc_certificate_dialog_text">Ti fidas de su tzertificadu SSL, disconnotu finas a immoe, frunidu dae %1$s pro %2$s, vàlidu dae %3$s a %4$s?</string>
+    <string name="nc_certificate_dialog_title">Controlla su tzertificadu</string>
+    <string name="nc_certificate_error">Sa cunfiguratzione SSL at refudadu sa connessione</string>
+    <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
     <string name="nc_change_password">Càmbia crae</string>
     <string name="nc_clear_password">Isbòida crae</string>
-    <string name="nc_share_link">Cumpartzi ligòngiu</string>
-    <string name="nc_share_link_via">Cumpartzi ligòngiu tràmite</string>
-    <string name="nc_make_call_public">Faghe pùblica sa resonada</string>
-    <string name="nc_make_call_private">Faghe privada sa resonada</string>
-    <string name="nc_delete_call">Cantzella resonada</string>
+    <string name="nc_client_cert_change">Càmbia tzertificadu cliente</string>
+    <string name="nc_client_cert_setup">Imposta tzertificadu cliente</string>
+    <string name="nc_common_error_sorry">Ddoe at àpidu un\'errore!</string>
+    <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
+    <string name="nc_configure_room">Cunfigura resonada</string>
+    <string name="nc_connecting_call">Connetende...</string>
+    <string name="nc_contacts_done">Fatu</string>
+    <string name="nc_conversation_link">Ligòngiu resonada</string>
+    <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
+    <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
+    <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
+    <string name="nc_copy_message">Còpia</string>
+    <string name="nc_date_header_today">Oe</string>
+    <string name="nc_date_header_yesterday">Eris</string>
     <string name="nc_delete">Cantzella</string>
+    <string name="nc_delete_call">Cantzella resonada</string>
     <string name="nc_delete_conversation_more">Si cantzellas sa resonada, s\'at a cantzellare puru pro su restu de partetzipantes.</string>
-
-    <string name="nc_new_conversation">Resonada noa</string>
+    <string name="nc_delete_message">Cantzella</string>
+    <string name="nc_demote">Lea·ssi su permissu de moderare</string>
+    <string name="nc_description_more_menu_one_to_one">Menu pro tzarrada cun%1$s</string>
+    <string name="nc_description_send_message_button">Imbia messàgiu</string>
+    <string name="nc_display_name_not_fetched">Errore in su recùperu de su nùmene ammustradu, annullende</string>
+    <string name="nc_display_name_not_stored">No at fatu a sarvare su nùmene ammustradu, annullende</string>
+    <string name="nc_endless_cancel">Cantzelladu dae s\'utente.</string>
+    <string name="nc_endless_disabled">Non ddoe at àteros elementos de carrigare (cròmpidu a su màssimu).</string>
+    <string name="nc_endless_error">B\'at àpidu un\'errore carrighende àteros elementos.</string>
+    <string name="nc_external_server_failed">Errore in su recùperu de sa cunfiguratzione</string>
+    <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
+    <string name="nc_file_browser_back">In segus</string>
+    <string name="nc_formatted_message_you">Tue: %1$s</string>
+    <string name="nc_general_settings">Generale</string>
+    <string name="nc_get_from_provider">Non tenes ancora unu serbidore?\nIncarca inoghe pro dd\'otènnere dae unu frunidore.</string>
+    <string name="nc_get_source_code">Otene su còdighe fonte</string>
+    <string name="nc_groups">Grupos</string>
+    <string name="nc_hello">Salude</string>
+    <string name="nc_hint_enter_a_message">Inserta unu messàgiu...</string>
+    <string name="nc_important_conversation">Tzarrada importante</string>
+    <string name="nc_incoming_call">Mutida in intrada dae</string>
     <string name="nc_join_via_link">Intra cun unu ligòngiu</string>
     <string name="nc_join_via_web">Intra dae sa rete</string>
-    <string name="nc_add_to_favorites">Agiunghe a preferidos</string>
-    <string name="nc_remove_from_favorites">Boga dae preferidos</string>
-
-    <string name="nc_contacts_done">Fatu</string>
-
-    <!-- Permissions -->
-    <string name="nc_camera_permission_permanently_denied">Pro ativare comunicatzione in vìdeu cunsenti is pemissos de \"Fotocàmera\" in sa cunfiguratzione de sistema.</string>
-    <string name="nc_microphone_permission_permanently_denied">Pro ativare comunicatzione de boghe cunsenti is permissos de \"Micròfonu\" in sa cunfiguratzione de sistema.</string>
-    <string name="nc_permissions_settings">Aberi impostatziones</string>
-
-    <string name="nc_connecting_call">Connetende...</string>
-    <string name="nc_calling">Tzerriende...</string>
-    <string name="nc_incoming_call">Mutida in intrada dae</string>
-    <string name="nc_nick_guest">Persone invitada</string>
-    <string name="nc_public_call">Tzarrada pùblica noa</string>
-    <string name="nc_call_timeout">Peruna risposta in 45 segundos, toca pro torrare a proare</string>
-    <string name="nc_call_reconnecting">Torrende a connètere...</string>
-    <string name="nc_offline">Foras de lìnia, controlla sa connessione tua</string>
+    <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
+    <string name="nc_leave">Lassa resonada</string>
     <string name="nc_leaving_call">Lassende sa mutida...</string>
-    <!-- Notification channels -->
+    <string name="nc_license_summary">GNU General Public License, Versione 3</string>
+    <string name="nc_license_title">Lissèntzia</string>
+    <string name="nc_limit_hit">%s lìmite de caràteres lòmpidu</string>
+    <string name="nc_make_call_private">Faghe privada sa resonada</string>
+    <string name="nc_make_call_public">Faghe pùblica sa resonada</string>
+    <string name="nc_microphone_permission_permanently_denied">Pro ativare comunicatzione de boghe cunsenti is permissos de \"Micròfonu\" in sa cunfiguratzione de sistema.</string>
+    <string name="nc_mute_calls">Pone is mutidas a sa muda</string>
+    <string name="nc_mute_calls_desc">In mutidas in intrada ant a èssere a sa muda</string>
+    <string name="nc_never">Mai aderidu</string>
+    <string name="nc_new_conversation">Resonada noa</string>
+    <string name="nc_new_messages">Messàgios non lèghidos</string>
+    <string name="nc_new_password">Crae noa</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$s s\'aplicatzione no est installada in su serbidore, annullende</string>
+    <string name="nc_nick_guest">Persone invitada</string>
+    <string name="nc_no">No</string>
+    <string name="nc_no_connection_error">Peruna connnessione</string>
+    <string name="nc_no_messages_yet">Ancora perunu messàgiu</string>
+    <string name="nc_no_more_load_retry">Non ddoe at àteros elementos de carrigare. Agiorna pro torrare a proare</string>
+    <string name="nc_no_proxy">Perunu proxy</string>
+    <string name="nc_none">Perunu</string>
+    <string name="nc_not_defined_error">Errore disconnotu</string>
     <string name="nc_notification_channel">%1$s in %2$s canale de notìfica</string>
     <string name="nc_notification_channel_calls">Canale de notìfica de mutidas</string>
-    <string name="nc_notification_channel_messages">Canale de notìfica de messàgios</string>
     <string name="nc_notification_channel_calls_description">Mustra mutidas in intrada</string>
+    <string name="nc_notification_channel_messages">Canale de notìfica de messàgios</string>
     <string name="nc_notification_settings">Impostatziones de notìfica</string>
-    <string name="nc_plain_old_messages">Messàgios</string>
     <string name="nc_notify_me_always">Notificare semper</string>
     <string name="nc_notify_me_mention">Notificare cando mentovadu</string>
     <string name="nc_notify_me_never">Non notificare mai</string>
-    <string name="nc_mute_calls">Pone is mutidas a sa muda</string>
-    <string name="nc_mute_calls_desc">In mutidas in intrada ant a èssere a sa muda</string>
-    <string name="nc_important_conversation">Tzarrada importante</string>
-    <!-- Bottom sheet menu -->
-    <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
-    <string name="nc_all_ok_operation">AB, fatu!</string>
+    <string name="nc_offline">Foras de lìnia, controlla sa connessione tua</string>
     <string name="nc_ok">AB</string>
-    <string name="nc_call_name">Nùmene resonada</string>
+    <string name="nc_owner">Mere</string>
+    <string name="nc_participants">Partetzipantes</string>
+    <string name="nc_password">Crae</string>
+    <string name="nc_permissions_settings">Aberi impostatziones</string>
+    <string name="nc_plain_old_messages">Messàgios</string>
+    <string name="nc_privacy">Riservadesa</string>
     <string name="nc_proceed">Sighi</string>
-    <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
-    <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
-    <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_subject">%1$s invitu</string>
-    <string name="nc_share_text_pass">\nCrae: %1$s</string>
-
-    <!-- Magical stuff -->
+    <string name="nc_promote">Approva a moderadore</string>
+    <string name="nc_public_call">Tzarrada pùblica noa</string>
+    <string name="nc_push_disabled">Notìficas push disativadas</string>
     <string name="nc_push_to_talk">Cumandu de trasmissione</string>
     <string name="nc_push_to_talk_desc">Cun su micròfonu disativadu, mantene incarcadu&amp;pro impreare su cumandu de trasmissione</string>
-    <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
-    <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
-
-    <!-- Moderation -->
-    <string name="nc_demote">Lea·ssi su permissu de moderare</string>
-    <string name="nc_promote">Approva a moderadore</string>
+    <string name="nc_remove_from_favorites">Boga dae preferidos</string>
     <string name="nc_remove_participant"> Boga·nche partetzipante</string>
-    <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Inserta unu messàgiu...</string>
-    <string name="nc_date_header_yesterday">Eris</string>
-    <string name="nc_date_header_today">Oe</string>
-    <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
-    <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
-    <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
-    <string name="nc_new_messages">Messàgios non lèghidos</string>
-    <string name="nc_no_messages_yet">Ancora perunu messàgiu</string>
-    <string name="nc_sent_a_link" formatted="true">%1$s at imbiadu unu ligòngiu.</string>
-    <string name="nc_sent_a_gif" formatted="true">%1$s at imbiadu una GIF.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s at imbiadu un\'alligongiadu.</string>
-    <string name="nc_sent_an_audio" formatted="true">%1$s at imbiadu un\'àudiu.</string>
-    <string name="nc_sent_a_video" formatted="true">%1$s at imbiadu unu vìdeu.</string>
-    <string name="nc_sent_an_image" formatted="true">%1$s at imbiadu un\'immàgine.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">As imbiadu unu ligòngiu.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">As imbiadu una GIF.</string>
-    <string name="nc_sent_an_attachment_you">As imbiadu un\'alligongiadu.</string>
-    <string name="nc_sent_an_audio_you">As imbiadu un\'àudiu.</string>
-    <string name="nc_sent_a_video_you">As imbiadu unu vìdeu.</string>
-    <string name="nc_sent_an_image_you">As imbiadu un\'immàgine.</string>
-    <!-- When translating to German, please use non-formal variant -->
-    <string name="nc_formatted_message_you">Tue: %1$s</string>
-    <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">Non ddoe at àteros elementos de carrigare. Agiorna pro torrare a proare</string>
-    <string name="nc_endless_disabled">Non ddoe at àteros elementos de carrigare (cròmpidu a su màssimu).</string>
-    <string name="nc_endless_cancel">Cantzelladu dae s\'utente.</string>
-    <string name="nc_endless_error">B\'at àpidu un\'errore carrighende àteros elementos.</string>
-
-    <!-- Content descriptions -->
-    <string name="nc_description_more_menu_one_to_one">Menu pro tzarrada cun%1$s</string>
-    <string name="nc_description_send_message_button">Imbia messàgiu</string>
-
-    <string name="nc_hello">Salude</string>
-
-    <!-- Other -->
-    <string name="nc_limit_hit">%s lìmite de caràteres lòmpidu</string>
-    <string name="nc_groups">Grupos</string>
-    <string name="nc_participants">Partetzipantes</string>
-    <string name="nc_owner">Mere</string>
-    <string name="nc_file_browser_back">In segus</string>
-    <!-- Lobby -->
-    <string name="nc_webinar">Seminàriu in lìnia</string>
-    <string name="nc_start_time">Ora de cumintzu</string>
-    <!-- Errors -->
-    <string name="nc_no_connection_error">Peruna connnessione</string>
-    <string name="nc_not_defined_error">Errore disconnotu</string>
-    <string name="nc_unauthorized_error">Peruna autorizatzione</string>
-
-    <string name="nc_general_settings">Generale</string>
-    <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
-    <!-- Chat -->
-    <string name="nc_99_plus">99+</string>
-    <string name="nc_copy_message">Còpia</string>
+    <string name="nc_rename">Torra a numenare sa resonada</string>
     <string name="nc_reply">Risponde</string>
-    <string name="nc_delete_message">Cantzella</string>
-    <string name="nc_upload_local_file">Càrriga archìviu locale</string>
+    <string name="nc_screen_lock_timeout_30">30 segundos</string>
+    <string name="nc_screen_lock_timeout_300">5 minutos</string>
+    <string name="nc_screen_lock_timeout_60">1 minutu</string>
+    <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_thirty">30</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
+    <string name="nc_search">Chirca</string>
+    <string name="nc_select_an_account">Seletziona unu contu</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s at imbiadu una GIF.</string>
+    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">As imbiadu una GIF.</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s at imbiadu unu ligòngiu.</string>
+    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">As imbiadu unu ligòngiu.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s at imbiadu unu vìdeu.</string>
+    <string name="nc_sent_a_video_you">As imbiadu unu vìdeu.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s at imbiadu un\'alligongiadu.</string>
+    <string name="nc_sent_an_attachment_you">As imbiadu un\'alligongiadu.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s at imbiadu un\'àudiu.</string>
+    <string name="nc_sent_an_audio_you">As imbiadu un\'àudiu.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s at imbiadu un\'immàgine.</string>
+    <string name="nc_sent_an_image_you">As imbiadu un\'immàgine.</string>
+    <string name="nc_server_db_upgrade_needed">Agiorna %1$s sa base de datos tua</string>
+    <string name="nc_server_failed_to_import_account">No at fatu a importare su contu seletzionadu</string>
+    <string name="nc_server_import_account">Importa contu dae s\'aplicatzione %1$s </string>
+    <string name="nc_server_import_account_plain">Importa contu</string>
+    <string name="nc_server_import_accounts">Importa contos dae s\'aplicatzione %1$s </string>
+    <string name="nc_server_import_accounts_plain">Importa contos</string>
+    <string name="nc_server_maintenance">Porta su %1$s tuo a sa mantenidura</string>
+    <string name="nc_server_not_installed">Agabba %1$s s\'installatzione tua</string>
+    <string name="nc_server_version">%1$s funtzionat isceti cun %2$s 13 e prus</string>
+    <string name="nc_set_password">Imposta una crae</string>
+    <string name="nc_settings">Impostatziones</string>
+    <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
+    <string name="nc_settings_add_account">Agiunghe unu contu nou</string>
+    <string name="nc_settings_appearance">Visibilidade</string>
+    <string name="nc_settings_call_ringtone">Mutidas</string>
+    <string name="nc_settings_incognito_keyboard_desc">Imparat a sa tastiera a disativare s\'imparu personale (chene garantzias)</string>
+    <string name="nc_settings_incognito_keyboard_title">Tastiera in incògnita</string>
+    <string name="nc_settings_link_previews_desc">Permite anteprimas de cuntenutu dae ligòngios retzidos pro servìtzios suportados</string>
+    <string name="nc_settings_link_previews_title">Mustra anteprima de is ligòngios</string>
+    <string name="nc_settings_no_ringtone">Perunu sonu</string>
+    <string name="nc_settings_no_talk_installed"> S\'aplicatzione de mutidas no est installada in su serbidore a su chi as proadu a autenticare</string>
+    <string name="nc_settings_notification_sounds">Sonu</string>
+    <string name="nc_settings_other_notifications_ringtone">Notìficas</string>
+    <string name="nc_settings_privacy">Riservadesa</string>
+    <string name="nc_settings_proxy_host_title">Istrangiadore Proxy</string>
+    <string name="nc_settings_proxy_port_title">Ghenna de su proxy</string>
+    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_proxy_type_title">Genia de proxy</string>
+    <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
+    <string name="nc_settings_read_privacy_title">Leghe istadu</string>
+    <string name="nc_settings_reauthorize">Torra a autorizare</string>
+    <string name="nc_settings_remove">Boga</string>
+    <string name="nc_settings_remove_account">Boga·nche su contu</string>
+    <string name="nc_settings_remove_confirmation">Cunfirma s\'intentzione tua de nde bogare su contu atuale.</string>
+    <string name="nc_settings_screen_lock_desc">Bloca%1$s cun su blocu de ischermu Android o unu mètodu biomèricu suportadu</string>
+    <string name="nc_settings_screen_lock_timeout_title">Tempus de inatividade de su blocu de ischermu</string>
+    <string name="nc_settings_screen_lock_title">Blocu de ischermu</string>
+    <string name="nc_settings_screen_security_desc">Impedit is caturas de ischermu in sa lista reghente e a intro de s\'aplicatzione</string>
+    <string name="nc_settings_screen_security_title">Seguresa ischermu</string>
+    <string name="nc_settings_switch_account">Passa a àteros contos</string>
+    <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
+    <string name="nc_settings_theme_dark">Iscuru</string>
+    <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
+    <string name="nc_settings_theme_key">tema</string>
+    <string name="nc_settings_theme_light">Craru</string>
+    <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">Imprea credentziales</string>
+    <string name="nc_settings_vibrate">Vibra</string>
+    <string name="nc_settings_vibrate_desc">Su telèfonu at a vibrare si no at a èssere sa muda</string>
+    <string name="nc_settings_wrong_account">Isceti su contu atuale si podet torrare a autorizare</string>
+    <string name="nc_share_link">Cumpartzi ligòngiu</string>
+    <string name="nc_share_link_via">Cumpartzi ligòngiu tràmite</string>
+    <string name="nc_share_subject">%1$s invitu</string>
+    <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text_pass">\nCrae: %1$s</string>
+    <string name="nc_start_conversation">Cumintza una tzarrada</string>
+    <string name="nc_start_time">Ora de cumintzu</string>
+    <string name="nc_unauthorized_error">Peruna autorizatzione</string>
     <string name="nc_upload_choose_local_files">Sèbera documentos</string>
+    <string name="nc_upload_local_file">Càrriga archìviu locale</string>
+    <string name="nc_username">Nùmene utente</string>
+    <string name="nc_webinar">Seminàriu in lìnia</string>
+    <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
+    <string name="nc_wrong_password">Crae isballiada</string>
+    <string name="nc_yes">Eja</string>
     </resources>
