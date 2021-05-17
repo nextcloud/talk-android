@@ -142,6 +142,9 @@
     <string name="nc_license_summary">GNU General Public Lizentzia, 3. bertsioa</string>
 
     <string name="nc_select_an_account">Hautatu kontua bat</string>
+    <string name="nc_account_chooser_add_account">Gehitu kontua</string>
+    <string name="nc_account_chooser_active_user">Erabiltzaile aktiboa</string>
+
     <string name="nc_profile_personal_info_title">Informazio pertsonala</string>
 
     <!-- Conversation menu -->
@@ -166,6 +169,9 @@
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_participants">Hautatu parte-hartzaileak</string>
+    <string name="nc_add_participants">Gehitu parte-hartzaileak</string>
     <string name="nc_contacts_done">Egina</string>
 
     <!-- Permissions -->
@@ -190,6 +196,7 @@
     <string name="nc_offline">Lineaz kanpo zaude momentu honetan, mesedez egiaztatu zure konexioa</string>
     <string name="nc_leaving_call">Deia uzten...</string>
     <string name="nc_call_state_in_call">%1$s deian</string>
+    <string name="nc_call_state_with_phone">%1$s telefonoarekin</string>
     <string name="nc_call_state_with_video">%1$s bideoarekin</string>
 
     <!-- Notification channels -->
@@ -285,6 +292,7 @@
     <string name="nc_email">E-posta</string>
     <string name="nc_group">Taldea</string>
     <string name="nc_groups">Taldeak</string>
+    <string name="nc_circles">Zirkuluak</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_participants_add">Gehitu parte-hartzaileak</string>
 
@@ -328,6 +336,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopiatu</string>
     <string name="nc_reply">Erantzun</string>
+    <string name="nc_reply_privately">Erantzun pribatuki</string>
     <string name="nc_delete_message">Ezabatu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
 

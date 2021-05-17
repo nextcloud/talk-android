@@ -169,6 +169,9 @@
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_participants">Katılımcıları seçin</string>
+    <string name="nc_add_participants">Katılımcı ekle</string>
     <string name="nc_contacts_done">Tamam</string>
 
     <!-- Permissions -->
@@ -192,8 +195,9 @@
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_offline">Şu anda çevrimdışı, lütfen bağlantınızı denetleyin</string>
     <string name="nc_leaving_call">Arama sonlandırılıyor …</string>
-    <string name="nc_call_state_in_call">Görüşmede %1$s katılımcı var</string>
-    <string name="nc_call_state_with_video">Görüşmede %1$s görüntülü katılımcı var</string>
+    <string name="nc_call_state_in_call">%1$s kişi katılıyor</string>
+    <string name="nc_call_state_with_phone">%1$s kişi telefon ile</string>
+    <string name="nc_call_state_with_video">%1$s kişi görüntü ile</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
@@ -288,6 +292,7 @@
     <string name="nc_email">E-posta</string>
     <string name="nc_group">Grup</string>
     <string name="nc_groups">Gruplar</string>
+    <string name="nc_circles">Çevreler</string>
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
 
@@ -331,6 +336,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_reply">Yanıtla</string>
+    <string name="nc_reply_privately">Özel yanıt gönder</string>
     <string name="nc_delete_message">Sil</string>
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
 

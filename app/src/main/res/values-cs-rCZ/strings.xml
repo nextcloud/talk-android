@@ -142,6 +142,9 @@
     <string name="nc_license_summary">GNU General Public License, verze 3</string>
 
     <string name="nc_select_an_account">Vyberte účet</string>
+    <string name="nc_account_chooser_add_account">Přidat účet</string>
+    <string name="nc_account_chooser_active_user">Aktivní uživatel</string>
+
     <string name="nc_profile_personal_info_title">Osobní údaje</string>
 
     <!-- Conversation menu -->
@@ -166,6 +169,9 @@
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
 
+    <!-- Contacts -->
+    <string name="nc_select_participants">Vybrat účastníky</string>
+    <string name="nc_add_participants">Přidat účastníky</string>
     <string name="nc_contacts_done">Hotovo</string>
 
     <!-- Permissions -->
@@ -190,6 +196,7 @@
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_leaving_call">Opouštění hovoru…</string>
     <string name="nc_call_state_in_call">%1$s má hovor</string>
+    <string name="nc_call_state_with_phone">%1$s přes telefon</string>
     <string name="nc_call_state_with_video">%1$s s přenosem obrazu</string>
 
     <!-- Notification channels -->
@@ -285,6 +292,7 @@
     <string name="nc_email">E-mail</string>
     <string name="nc_group">Group</string>
     <string name="nc_groups">Skupiny</string>
+    <string name="nc_circles">Okruhy</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Přidat účastníky</string>
 
@@ -327,6 +335,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Zkopírovat</string>
     <string name="nc_reply">Odpovědět</string>
+    <string name="nc_reply_privately">Odpovědět soukromě</string>
     <string name="nc_delete_message">Smazat</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Zpráva úspěšně smazána, ale možná unikla do jiných služeb</string>
 
