@@ -54,8 +54,6 @@ import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -75,6 +73,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -459,12 +458,12 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         }).observeOn(Schedulers.io())
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(@NotNull ReadFilesystemOperation readFilesystemOperation) {
+                    public void onSuccess(@NonNull ReadFilesystemOperation readFilesystemOperation) {
                         DavResponse davResponse = readFilesystemOperation.readRemotePath();
                         if (davResponse.data != null) {
                             List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.data;
@@ -479,7 +478,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NonNull Throwable e) {
                     }
                 });
 

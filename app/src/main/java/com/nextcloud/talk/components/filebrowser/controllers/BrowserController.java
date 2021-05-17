@@ -45,7 +45,6 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
-import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
 
@@ -117,7 +116,7 @@ public abstract class BrowserController extends BaseController implements Listin
         selectedPaths = Collections.synchronizedSet(new TreeSet<>());
     }
 
-    @NotNull
+    @NonNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_browser, container, false);
