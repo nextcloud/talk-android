@@ -56,6 +56,6 @@ class OCSize private constructor(var ocSize: Long) : Property {
 
     companion object {
         @JvmField
-        val NAME:Property. Name = Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE)
+        val NAME: Property.Name = Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE)
     }
 }

@@ -459,7 +459,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
-
+                        // unused atm
                     }
 
                     @Override
@@ -479,6 +479,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
                     @Override
                     public void onError(@NonNull Throwable e) {
+                        Log.e(TAG, "Error reading file information", e);
                     }
                 });
 

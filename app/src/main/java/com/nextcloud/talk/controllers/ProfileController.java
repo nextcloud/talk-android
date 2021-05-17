@@ -183,6 +183,7 @@ public class ProfileController extends BaseController {
                             .subscribe(new Observer<UserProfileFieldsOverall>() {
                                 @Override
                                 public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                    // unused atm
                                 }
 
                                 @Override
@@ -198,7 +199,7 @@ public class ProfileController extends BaseController {
 
                                 @Override
                                 public void onComplete() {
-
+                                    // unused atm
                                 }
                             });
                 } else {
@@ -243,6 +244,7 @@ public class ProfileController extends BaseController {
                         .subscribe(new Observer<GenericOverall>() {
                             @Override
                             public void onSubscribe(@NonNull Disposable d) {
+                                // unused atm
                             }
 
                             @Override
@@ -260,7 +262,7 @@ public class ProfileController extends BaseController {
 
                             @Override
                             public void onComplete() {
-
+                                // unused atm
                             }
                         }));
 
@@ -273,6 +275,7 @@ public class ProfileController extends BaseController {
                 .subscribe(new Observer<UserProfileOverall>() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
@@ -291,7 +294,7 @@ public class ProfileController extends BaseController {
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
@@ -349,6 +352,7 @@ public class ProfileController extends BaseController {
                     .subscribe(new Observer<UserProfileFieldsOverall>() {
                         @Override
                         public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                            // unused atm
                         }
 
                         @Override
@@ -366,7 +370,7 @@ public class ProfileController extends BaseController {
 
                         @Override
                         public void onComplete() {
-
+                            // unused atm
                         }
                     });
         }
@@ -452,6 +456,7 @@ public class ProfileController extends BaseController {
                         .subscribe(new Observer<GenericOverall>() {
                             @Override
                             public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                // unused atm
                             }
 
                             @Override
@@ -477,7 +482,7 @@ public class ProfileController extends BaseController {
 
                             @Override
                             public void onComplete() {
-
+                                // unused atm
                             }
                         });
             }
@@ -533,7 +538,7 @@ public class ProfileController extends BaseController {
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-
+                // unused atm
             }
         });
     }
@@ -544,7 +549,6 @@ public class ProfileController extends BaseController {
         try {
             file = File.createTempFile("avatar", "png",
                     Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM));
-
 
             try (FileOutputStream out = new FileOutputStream(file)) {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
@@ -602,6 +606,7 @@ public class ProfileController extends BaseController {
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
@@ -612,11 +617,12 @@ public class ProfileController extends BaseController {
                     @Override
                     public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                         Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
+                        Log.e(TAG, "Error uploading avatar", e);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
@@ -634,6 +640,7 @@ public class ProfileController extends BaseController {
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
                     public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
@@ -649,7 +656,7 @@ public class ProfileController extends BaseController {
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
@@ -771,7 +778,7 @@ public class ProfileController extends BaseController {
             holder.text.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                    // unused atm
                 }
 
                 @Override
@@ -785,7 +792,7 @@ public class ProfileController extends BaseController {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-
+                    // unused atm
                 }
             });
 

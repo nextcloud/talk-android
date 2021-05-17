@@ -256,7 +256,6 @@ public class PushUtils {
                         if (((TextUtils.isEmpty(providerValue) || accountPushData == null) && !userEntity.getScheduledForDeletion()) ||
                                 (accountPushData != null && !accountPushData.getPushToken().equals(token) && !userEntity.getScheduledForDeletion())) {
 
-
                             Map<String, String> queryMap = new HashMap<>();
                             queryMap.put("format", "json");
                             queryMap.put("pushTokenHash", pushTokenHash);
@@ -271,7 +270,7 @@ public class PushUtils {
                                     .subscribe(new Observer<PushRegistrationOverall>() {
                                         @Override
                                         public void onSubscribe(@NonNull Disposable d) {
-
+                                            // unused atm
                                         }
 
                                         @Override
@@ -285,14 +284,13 @@ public class PushUtils {
                                             proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
                                                     .getData().getPublicKey());
 
-
                                             ncApi.registerDeviceForNotificationsWithProxy(
                                                     ApiUtils.getUrlPushProxy(), proxyMap)
                                                     .subscribeOn(Schedulers.io())
                                                     .subscribe(new Observer<Void>() {
                                                         @Override
                                                         public void onSubscribe(@NonNull Disposable d) {
-
+                                                            // unused atm
                                                         }
 
                                                         @Override
@@ -319,17 +317,17 @@ public class PushUtils {
                                                                         null, userEntity.getId(), null, null, null)
                                                                         .subscribe(new Observer<UserEntity>() {
                                                                             @Override
-                                                                            public void onSubscribe(Disposable d) {
-
+                                                                            public void onSubscribe(@NonNull Disposable d) {
+                                                                                // unused atm
                                                                             }
 
                                                                             @Override
-                                                                            public void onNext(UserEntity userEntity) {
+                                                                            public void onNext(@NonNull UserEntity userEntity) {
                                                                                 eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
                                                                             }
 
                                                                             @Override
-                                                                            public void onError(Throwable e) {
+                                                                            public void onError(@NonNull Throwable e) {
                                                                                 eventBus.post(new EventStatus
                                                                                         (userEntity.getId(),
                                                                                                 EventStatus.EventType
@@ -338,14 +336,12 @@ public class PushUtils {
 
                                                                             @Override
                                                                             public void onComplete() {
-
+                                                                                // unused atm
                                                                             }
                                                                         });
                                                             } catch (IOException e) {
-                                                                Log.e(TAG, "IOException while updating user");
+                                                                Log.e(TAG, "IOException while updating user", e);
                                                             }
-
-
                                                         }
 
                                                         @Override
@@ -356,7 +352,7 @@ public class PushUtils {
 
                                                         @Override
                                                         public void onComplete() {
-
+                                                            // unused atm
                                                         }
                                                     });
                                         }
@@ -365,11 +361,11 @@ public class PushUtils {
                                         public void onError(@NonNull Throwable e) {
                                             eventBus.post(new EventStatus(userEntity.getId(),
                                                     EventStatus.EventType.PUSH_REGISTRATION, false));
-
                                         }
 
                                         @Override
                                         public void onComplete() {
+                                            // unused atm
                                         }
                                     });
                         }
@@ -400,9 +396,9 @@ public class PushUtils {
             }
 
         } catch (NoSuchAlgorithmException e) {
-            Log.d("TAG", "No such algorithm while reading key from string");
+            Log.d(TAG, "No such algorithm while reading key from string");
         } catch (InvalidKeySpecException e) {
-            Log.d("TAG", "Invalid key spec while reading key from string");
+            Log.d(TAG, "Invalid key spec while reading key from string");
         }
 
         return null;
