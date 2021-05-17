@@ -34,6 +34,8 @@ import android.os.IBinder;
 
 public class AuthenticatorService extends Service {
 
+    private static Authenticator authenticator = null;
+
     private static class Authenticator extends AbstractAccountAuthenticator {
         public Authenticator(Context context) {
             super(context);
@@ -82,8 +84,6 @@ public class AuthenticatorService extends Service {
         }
 
     }
-
-    private static Authenticator authenticator = null;
 
     protected Authenticator getAuthenticator() {
         if (authenticator == null) {
