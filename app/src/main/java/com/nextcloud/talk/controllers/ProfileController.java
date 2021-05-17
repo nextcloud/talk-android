@@ -65,7 +65,6 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
-import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.io.File;
@@ -183,17 +182,17 @@ public class ProfileController extends BaseController {
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(new Observer<UserProfileFieldsOverall>() {
                                 @Override
-                                public void onSubscribe(@NotNull Disposable d) {
+                                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
                                 }
 
                                 @Override
-                                public void onNext(@NotNull UserProfileFieldsOverall userProfileFieldsOverall) {
+                                public void onNext(@io.reactivex.annotations.NonNull UserProfileFieldsOverall userProfileFieldsOverall) {
                                     editableFields = userProfileFieldsOverall.getOcs().getData();
                                     adapter.notifyDataSetChanged();
                                 }
 
                                 @Override
-                                public void onError(@NotNull Throwable e) {
+                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                     edit = false;
                                 }
 
@@ -243,11 +242,11 @@ public class ProfileController extends BaseController {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<GenericOverall>() {
                             @Override
-                            public void onSubscribe(@NotNull Disposable d) {
+                            public void onSubscribe(@NonNull Disposable d) {
                             }
 
                             @Override
-                            public void onNext(@NotNull GenericOverall genericOverall) {
+                            public void onNext(@NonNull GenericOverall genericOverall) {
                                 DisplayUtils.loadAvatarImage(
                                         currentUser,
                                         getActivity().findViewById(R.id.avatar_image),
@@ -255,7 +254,7 @@ public class ProfileController extends BaseController {
                             }
 
                             @Override
-                            public void onError(@NotNull Throwable e) {
+                            public void onError(@NonNull Throwable e) {
                                 Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG).show();
                             }
 
