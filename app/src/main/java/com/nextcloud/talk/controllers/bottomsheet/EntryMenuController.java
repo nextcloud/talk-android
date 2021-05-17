@@ -326,7 +326,12 @@ public class EntryMenuController extends BaseController {
                 break;
         }
 
-        textInputLayout.setPasswordVisibilityToggleEnabled(operationCode == 99 || operationCode == 4 || operationCode == 6 || operationCode == 7);
+        if (operationCode == 99 || operationCode == 4 || operationCode == 6 || operationCode == 7) {
+            textInputLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
+        } else {
+            textInputLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
+        }
+
         textInputLayout.setHint(labelText);
         textInputLayout.requestFocus();
     }
