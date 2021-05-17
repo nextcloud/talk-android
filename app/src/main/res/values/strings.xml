@@ -276,8 +276,8 @@
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">You sent a link.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">You sent a GIF.</string>
+    <string name="nc_sent_a_link_you">You sent a link.</string>
+    <string name="nc_sent_a_gif_you">You sent a GIF.</string>
     <string name="nc_sent_an_attachment_you">You sent an attachment.</string>
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_a_video_you">You sent a video.</string>
