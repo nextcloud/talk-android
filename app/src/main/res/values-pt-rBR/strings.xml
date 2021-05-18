@@ -23,6 +23,7 @@
     <string name="nc_add_attachment">Adicionar anexo</string>
     <string name="nc_add_emojis">Adicionar emojis</string>
     <string name="nc_add_file">Adicionar à conversa </string>
+    <string name="nc_add_participants">Adicionar participantes</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_allow_guests">Permitir convidados</string>
@@ -35,6 +36,8 @@
     <string name="nc_call_reconnecting">Reconectando...</string>
     <string name="nc_call_ringing">TOCANDO</string>
     <string name="nc_call_state_in_call">%1$s em chamada</string>
+    <string name="nc_call_state_in_call_with_audio">%1$sem chamada com áudio</string>
+    <string name="nc_call_state_with_phone">%1$scom telefone</string>
     <string name="nc_call_state_with_video">%1$s com vídeo</string>
     <string name="nc_call_timeout">45 segundos sem resposta, toque para retentar</string>
     <string name="nc_call_unknown">%s chamada</string>
@@ -49,6 +52,7 @@
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
     <string name="nc_change_password">Alterar a senha</string>
+    <string name="nc_circles">Círculos</string>
     <string name="nc_clear_password">Excluir a senha</string>
     <string name="nc_client_cert_change">Alterar certificado do cliente</string>
     <string name="nc_client_cert_setup">Configurar certificado do cliente</string>
@@ -70,7 +74,9 @@
     <string name="nc_date_header_yesterday">Ontem</string>
     <string name="nc_delete">Excluir</string>
     <string name="nc_delete_call">Excluir conversa</string>
+    <string name="nc_delete_conversation_default">Confirme sua intensão de remover a conversa.</string>
     <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para todos os outros participantes.</string>
+    <string name="nc_delete_conversation_one2one">Se você deletar a conversa, ela também será excluída para %1$s</string>
     <string name="nc_delete_message">Excluir</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
     <string name="nc_demote">Rebaixar de moderador</string>
@@ -119,6 +125,7 @@
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Você está esperando no lobby no momento.</string>
+    <string name="nc_lobby_waiting_with_date">Você está na lista de espera.\n Esta reunião está agendada para %1$s.</string>
     <string name="nc_locked">Indisponível</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
     <string name="nc_make_call_private">Fazer esta conversa privada</string>
@@ -177,6 +184,7 @@
     <string name="nc_remove_participant">Excluir participante</string>
     <string name="nc_rename">Renomear conversa</string>
     <string name="nc_reply">Responder</string>
+    <string name="nc_reply_privately">Responder privadamente</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -187,11 +195,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Persquisar</string>
     <string name="nc_select_an_account">Selecionar uma conta</string>
+    <string name="nc_select_contacts">Selecionar contatos</string>
     <string name="nc_select_files">Selecionar arquivos</string>
+    <string name="nc_select_participants">Selecionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou um GIF.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Você enviou um GIF.</string>
+    <string name="nc_sent_a_gif_you">Você enviou um GIF.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s enviou um link.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Você enviou um link.</string>
+    <string name="nc_sent_a_link_you">Você enviou um link.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou um vídeo.</string>
     <string name="nc_sent_a_video_you">Você enviou um vídeo.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s enviou um anexo.</string>

@@ -36,6 +36,7 @@
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
     <string name="nc_call_ringing">ZVONĚNÍ</string>
     <string name="nc_call_state_in_call">%1$s má hovor</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s má zvukový hovor</string>
     <string name="nc_call_state_with_phone">%1$s přes telefon</string>
     <string name="nc_call_state_with_video">%1$s s přenosem obrazu</string>
     <string name="nc_call_timeout">Žádná odezva po 45 sekundách, ťukněte, pokud chcete zkusit znovu</string>
@@ -73,7 +74,9 @@
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Smazat</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
+    <string name="nc_delete_conversation_default">Potvrďte, že chcete odebrat tuto konverzaci.</string>
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
+    <string name="nc_delete_conversation_one2one">Pokud konverzaci smažete, bude také smazána pro %1$s.</string>
     <string name="nc_delete_message">Smazat</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Zpráva úspěšně smazána, ale možná unikla do jiných služeb</string>
     <string name="nc_demote">Odebrat oprávnění moderátora</string>
@@ -122,6 +125,7 @@
     <string name="nc_limit_hit">byl dosažen limit %s znaků</string>
     <string name="nc_lobby">Čekárna</string>
     <string name="nc_lobby_waiting">V tuto chvíli se nacházíte v čekárně.</string>
+    <string name="nc_lobby_waiting_with_date">V tuto chvíli se nacházíte v čekárně.\n Toto setkání je naplánováno na %1$s.</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
@@ -191,12 +195,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Hledat</string>
     <string name="nc_select_an_account">Vyberte účet</string>
+    <string name="nc_select_contacts">Vybrat kontakty</string>
     <string name="nc_select_files">Vyberte soubory</string>
     <string name="nc_select_participants">Vybrat účastníky</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF animaci.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Odeslali jste GIF animaci.</string>
+    <string name="nc_sent_a_gif_you">Odeslali jste GIF animaci.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s poslal(a) odkaz.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Odeslali jste odkaz.</string>
+    <string name="nc_sent_a_link_you">Odeslali jste odkaz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
     <string name="nc_sent_a_video_you">Odeslali jste video.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s poslal(a) přílohu.</string>

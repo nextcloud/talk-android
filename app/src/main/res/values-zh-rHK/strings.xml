@@ -36,6 +36,7 @@
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s 音頻通話中</string>
     <string name="nc_call_state_with_phone">%1$s 電話對話中</string>
     <string name="nc_call_state_with_video">%1$s 視像對話中</string>
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
@@ -73,7 +74,9 @@
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_call">刪除對話</string>
+    <string name="nc_delete_conversation_default">請確認是否要清除目前的對話。</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
+    <string name="nc_delete_conversation_one2one">如果您刪除對話，它也將會從 %1$s 處刪除。</string>
     <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_demote">從主持人降級</string>
@@ -122,6 +125,7 @@
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
     <string name="nc_lobby">等候室</string>
     <string name="nc_lobby_waiting">您目前正在等候室等候。</string>
+    <string name="nc_lobby_waiting_with_date">您目前正在等候室等候。\n此會議定於%1$s開始。</string>
     <string name="nc_locked">上鎖</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
     <string name="nc_make_call_private">設成私密對話</string>
@@ -191,12 +195,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">搜尋</string>
     <string name="nc_select_an_account">選擇一個賬號</string>
+    <string name="nc_select_contacts">選擇聯絡人</string>
     <string name="nc_select_files">選擇檔案</string>
     <string name="nc_select_participants">選擇參與者</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF。</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">您傳送了一個 GIF 檔</string>
+    <string name="nc_sent_a_gif_you">您傳送了一個 GIF 檔</string>
     <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">您傳送了一個連結</string>
+    <string name="nc_sent_a_link_you">您傳送了一個連結</string>
     <string name="nc_sent_a_video" formatted="true">%1$s 傳送一個影片</string>
     <string name="nc_sent_a_video_you">您傳送了一個影片</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s 傳送一個附件</string>

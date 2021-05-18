@@ -36,6 +36,7 @@
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_call_state_in_call">%1$s kişi katılıyor</string>
+    <string name="nc_call_state_in_call_with_audio">Görüşmede %1$s sesli katılımcı var</string>
     <string name="nc_call_state_with_phone">%1$s kişi telefon ile</string>
     <string name="nc_call_state_with_video">%1$s kişi görüntü ile</string>
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
@@ -73,7 +74,9 @@
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_delete">Sil</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
+    <string name="nc_delete_conversation_default">Lütfen görüşmeyi silmek istediğinizi onaylayın.</string>
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
+    <string name="nc_delete_conversation_one2one">Görüşmeyi silerseniz %1$s için de silinecek.</string>
     <string name="nc_delete_message">Sil</string>
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
     <string name="nc_demote">Sorumluluktan çıkar</string>
@@ -122,6 +125,7 @@
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
     <string name="nc_lobby">Giriş</string>
     <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
+    <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu görüşme %1$s zamanında başlayacak.</string>
     <string name="nc_locked">Kilitli</string>
     <string name="nc_locked_tap_to_unlock">Kilidi açmak için dokunun</string>
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
@@ -191,12 +195,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Arama</string>
     <string name="nc_select_an_account">Bir hesap seçin</string>
+    <string name="nc_select_contacts">Kişileri seçin</string>
     <string name="nc_select_files">Dosyaları seçin</string>
     <string name="nc_select_participants">Katılımcıları seçin</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s bir GIF gönderdi.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Bir GIF gönderdiniz.</string>
+    <string name="nc_sent_a_gif_you">Bir GIF gönderdiniz.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s bir bağlantı gönderdi.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Bir bağlantı gönderdiniz.</string>
+    <string name="nc_sent_a_link_you">Bir bağlantı gönderdiniz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s bir görüntü gönderdi.</string>
     <string name="nc_sent_a_video_you">Bir görüntü gönderdiniz.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s bir ek dosya gönderdi.</string>
