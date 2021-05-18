@@ -274,7 +274,7 @@ public class ConversationsListController extends BaseController implements Searc
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
             if (getActivity() != null && getActivity() instanceof MainActivity) {
-                loadUserAvatar(((MainActivity) getActivity()).settingsButton);
+                loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
             }
             fetchData(false);
         }
@@ -331,7 +331,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         if (activity != null) {
-            activity.getSearchInputText().setOnClickListener(v -> {
+            activity.binding.searchText.setOnClickListener(v -> {
                 showSearchView(activity, searchView, searchItem);
                 if (getResources() != null) {
                     DisplayUtils.applyColorToStatusBar(
@@ -368,12 +368,12 @@ public class ConversationsListController extends BaseController implements Searc
                 searchView.onActionViewCollapsed();
                 MainActivity activity = (MainActivity) getActivity();
                 if (activity != null) {
-                    activity.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                            activity.appBar.getContext(),
+                    activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
+                            activity.binding.appBar.getContext(),
                             R.animator.appbar_elevation_off)
                                                         );
-                    activity.toolbar.setVisibility(View.GONE);
-                    activity.searchCardView.setVisibility(View.VISIBLE);
+                    activity.binding.toolbar.setVisibility(View.GONE);
+                    activity.binding.searchToolbar.setVisibility(View.VISIBLE);
                     if (getResources() != null) {
                         DisplayUtils.applyColorToStatusBar(
                                 activity,
@@ -398,11 +398,11 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     public void showSearchView(MainActivity activity, SearchView searchView, MenuItem searchItem) {
-        activity.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                activity.appBar.getContext(),
+        activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
+                activity.binding.appBar.getContext(),
                 R.animator.appbar_elevation_on));
-        activity.toolbar.setVisibility(View.VISIBLE);
-        activity.searchCardView.setVisibility(View.GONE);
+        activity.binding.toolbar.setVisibility(View.VISIBLE);
+        activity.binding.searchToolbar.setVisibility(View.GONE);
         searchItem.expandActionView();
     }
 
@@ -562,19 +562,17 @@ public class ConversationsListController extends BaseController implements Searc
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity) getActivity();
 
-            if (activity.settingsButton != null) {
-                activity.settingsButton.setOnClickListener(v -> {
-                    if (getResources() != null && getResources().getBoolean(R.bool.multiaccount_support)) {
-                        DialogFragment newFragment = ChooseAccountDialogFragment.newInstance();
-                        newFragment.show(((MainActivity) getActivity()).getSupportFragmentManager(),
-                                         "ChooseAccountDialogFragment");
-                    } else {
-                        getRouter().pushController((RouterTransaction.with(new SettingsController())
-                                .pushChangeHandler(new HorizontalChangeHandler())
-                                .popChangeHandler(new HorizontalChangeHandler())));
-                    }
-                });
-            }
+            activity.binding.switchAccountButton.setOnClickListener(v -> {
+                if (getResources() != null && getResources().getBoolean(R.bool.multiaccount_support)) {
+                    DialogFragment newFragment = ChooseAccountDialogFragment.newInstance();
+                    newFragment.show(((MainActivity) getActivity()).getSupportFragmentManager(),
+                                     "ChooseAccountDialogFragment");
+                } else {
+                    getRouter().pushController((RouterTransaction.with(new SettingsController())
+                            .pushChangeHandler(new HorizontalChangeHandler())
+                            .popChangeHandler(new HorizontalChangeHandler())));
+                }
+            });
         }
     }
 

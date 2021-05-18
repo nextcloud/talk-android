@@ -3,6 +3,8 @@
  *
  * @author Marcel Hibbe
  * @author Dariusz Olszewski
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Dariusz Olszewski
  *
@@ -28,22 +30,18 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
-import com.github.chrisbanes.photoview.PhotoView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.databinding.ActivityFullScreenImageBinding
 import pl.droidsonroids.gif.GifDrawable
-import pl.droidsonroids.gif.GifImageView
 import java.io.File
 
 class FullScreenImageActivity : AppCompatActivity() {
+    lateinit var binding: ActivityFullScreenImageBinding
 
     private lateinit var path: String
-    private lateinit var imageWrapperView: FrameLayout
-    private lateinit var photoView: PhotoView
-    private lateinit var gifView: GifImageView
 
     private var showFullscreen = false
 
@@ -77,42 +75,40 @@ class FullScreenImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_full_screen_image)
-        setSupportActionBar(findViewById(R.id.imageview_toolbar))
+        binding = ActivityFullScreenImageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.imageviewToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
 
-        imageWrapperView = findViewById(R.id.image_wrapper_view)
-        photoView = findViewById(R.id.photo_view)
-        gifView = findViewById(R.id.gif_view)
-
-        photoView.setOnPhotoTapListener { view, x, y ->
+        binding.photoView.setOnPhotoTapListener { view, x, y ->
             toggleFullscreen()
         }
-        photoView.setOnOutsidePhotoTapListener {
+        binding.photoView.setOnOutsidePhotoTapListener {
             toggleFullscreen()
         }
-        gifView.setOnClickListener {
+        binding.gifView.setOnClickListener {
             toggleFullscreen()
         }
 
         // Enable enlarging the image more than default 3x maximumScale.
         // Medium scale adapted to make double-tap behaviour more consistent.
-        photoView.maximumScale = 6.0f
-        photoView.mediumScale = 2.45f
+        binding.photoView.maximumScale = 6.0f
+        binding.photoView.mediumScale = 2.45f
 
         val fileName = intent.getStringExtra("FILE_NAME")
         val isGif = intent.getBooleanExtra("IS_GIF", false)
 
         path = applicationContext.cacheDir.absolutePath + "/" + fileName
         if (isGif) {
-            photoView.visibility = View.INVISIBLE
-            gifView.visibility = View.VISIBLE
+            binding.photoView.visibility = View.INVISIBLE
+            binding.gifView.visibility = View.VISIBLE
             val gifFromUri = GifDrawable(path)
-            gifView.setImageDrawable(gifFromUri)
+            binding.gifView.setImageDrawable(gifFromUri)
         } else {
-            gifView.visibility = View.INVISIBLE
-            photoView.visibility = View.VISIBLE
-            photoView.setImageURI(Uri.parse(path))
+            binding.gifView.visibility = View.INVISIBLE
+            binding.photoView.visibility = View.VISIBLE
+            binding.photoView.setImageURI(Uri.parse(path))
         }
     }
 
