@@ -801,7 +801,7 @@ class ChatController(args: Bundle) :
         val elevation = 6f
         resources?.let {
             val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
-            val presenter = MentionAutocompletePresenter(applicationContext, roomToken)
+            val presenter = MentionAutocompletePresenter(activity, roomToken)
             val callback = MentionAutocompleteCallback(
                 activity,
                 conversationUser, messageInput

@@ -21,6 +21,7 @@
 package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.view.View;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -34,6 +35,7 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import androidx.core.content.res.ResourcesCompat;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -47,12 +49,18 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
     private String displayName;
     private String source;
     private UserEntity currentUser;
+    private Context context;
 
-    public MentionAutocompleteItem(String objectId, String displayName, String source, UserEntity currentUser) {
+    public MentionAutocompleteItem(String objectId,
+                                   String displayName,
+                                   String source,
+                                   UserEntity currentUser,
+                                   Context activityContext) {
         this.objectId = objectId;
         this.displayName = displayName;
         this.source = source;
         this.currentUser = currentUser;
+        this.context = activityContext;
     }
 
     public String getSource() {
@@ -96,6 +104,9 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, UserItem.UserItemViewHolder holder, int position, List<Object> payloads) {
 
+        holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(context.getResources(),
+                                                                R.color.conversation_item_header,
+                                                                null));
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, displayName,
                     String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()

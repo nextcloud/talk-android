@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,9 +24,7 @@ package com.nextcloud.talk.presenters;
 
 import android.content.Context;
 import android.view.View;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-import autodagger.AutoInjector;
+
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -34,16 +34,23 @@ import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import autodagger.AutoInjector;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
@@ -103,11 +110,12 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                 .retry(3)
                 .subscribe(new Observer<MentionOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@NotNull Disposable d) {
+                        // no actions atm
                     }
 
                     @Override
-                    public void onNext(MentionOverall mentionOverall) {
+                    public void onNext(@NotNull MentionOverall mentionOverall) {
                         List<Mention> mentionsList = mentionOverall.getOcs().getData();
 
                         if (mentionsList.size() == 0) {
@@ -116,9 +124,12 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                             List<AbstractFlexibleItem> internalAbstractFlexibleItemList = new ArrayList<>();
                             for (Mention mention : mentionsList) {
                                 internalAbstractFlexibleItemList.add(
-                                        new MentionAutocompleteItem(mention.getId(),
-                                                mention.getLabel(), mention.getSource(),
-                                                currentUser));
+                                        new MentionAutocompleteItem(
+                                                mention.getId(),
+                                                mention.getLabel(),
+                                                mention.getSource(),
+                                                currentUser,
+                                                context));
                             }
 
                             if (adapter.getItemCount() != 0) {
@@ -130,17 +141,16 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NotNull Throwable e) {
                         adapter.clear();
                     }
 
                     @Override
                     public void onComplete() {
-
+                        // no actions atm
                     }
                 });
     }
-
 
     @Override
     public boolean onItemClick(View view, int position) {
