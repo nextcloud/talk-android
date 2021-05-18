@@ -134,9 +134,9 @@
     <string name="nc_select_an_account">계정 선택</string>
     <string name="nc_select_files">파일 선택</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s이(가) GIF를 보냈습니다.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">GIF를 보냈습니다.</string>
+    <string name="nc_sent_a_gif_you">GIF를 보냈습니다.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s이(가) 링크를 보냈습니다.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">링크를 보냈습니다.</string>
+    <string name="nc_sent_a_link_you">링크를 보냈습니다.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s이(가) 비디오 파일을 보냈습니다.</string>
     <string name="nc_sent_a_video_you">비디오 파일을 보냈습니다.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s이(가) 첨부 파일을 보냈습니다.</string>

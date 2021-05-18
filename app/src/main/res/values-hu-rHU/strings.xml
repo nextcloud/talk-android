@@ -6,16 +6,23 @@
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="edit">Szerkesztés</string>
+    <string name="encrypted">Tikosítva</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
     <string name="file_list_folder">mappa</string>
     <string name="file_list_loading">Betöltés…</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
     <string name="nc_about">Leírás</string>
+    <string name="nc_account_chooser_active_user">Aktív felhasználó</string>
+    <string name="nc_account_chooser_add_account">Fiók hozzáadása</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_action_open_main_menu">Főmenü megnyitása</string>
     <string name="nc_add">Hozzáadás</string>
+    <string name="nc_add_attachment">Melléklet hozzáadása</string>
+    <string name="nc_add_emojis">Emoji hozzáadása</string>
+    <string name="nc_add_participants">Résztvevők hozzáadása</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_allow_guests">Vendégek engedélyezése</string>
@@ -39,6 +46,7 @@
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
     <string name="nc_change_password">Jelszó megváltoztatása</string>
+    <string name="nc_circles">Körök</string>
     <string name="nc_clear_password">Jelszó törlése</string>
     <string name="nc_client_cert_change">Klienstanúsítvány módosítása</string>
     <string name="nc_client_cert_setup">Klienstanúsítvány beállítása</string>
@@ -60,7 +68,9 @@
     <string name="nc_date_header_yesterday">Tegnap</string>
     <string name="nc_delete">Törlés</string>
     <string name="nc_delete_call">Beszélgetés törlése</string>
+    <string name="nc_delete_conversation_default">Erősítse meg szándékát, hogy eltávolítja a beszélgetést.</string>
     <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
+    <string name="nc_delete_conversation_one2one">Ha törli a beszélgetést, akkor %1$s számára is törölve lesz.</string>
     <string name="nc_delete_message">Törlés</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Az üzenet törlése sikeresen megtörtént, de lehet, hogy az már megjelent más szolgáltatásokon</string>
     <string name="nc_demote">Lefokozás moderátorról</string>
@@ -68,8 +78,10 @@
     <string name="nc_description_more_menu_one_to_one">Menü a beszélgetéshez vele: %1$s</string>
     <string name="nc_description_more_menu_public">Menü a csoportbeszélgetéshez: %1$s</string>
     <string name="nc_description_send_message_button">Üzenet küldése</string>
+    <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
     <string name="nc_display_name_not_fetched">A megjelenítendő név nem kérhető le, megszakítás</string>
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
+    <string name="nc_email">E-mail</string>
     <string name="nc_empty_response_error">Üres válasz</string>
     <string name="nc_endless_cancel">Felhasználó által megszakítva.</string>
     <string name="nc_endless_disabled">Nincs több betöltésre váró elem (maximum elérve).</string>
@@ -86,6 +98,7 @@
     <string name="nc_general_settings">Általános</string>
     <string name="nc_get_from_provider">Nincs még saját kiszolgálója?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
     <string name="nc_get_source_code">Forráskód letöltése</string>
+    <string name="nc_group">Csoport</string>
     <string name="nc_groups">Csoportok</string>
     <string name="nc_guest">Vendég</string>
     <string name="nc_hello">Üdv</string>
@@ -105,9 +118,12 @@
     <string name="nc_limit_hit">%s karakteres korlát elérve</string>
     <string name="nc_lobby">Váró</string>
     <string name="nc_lobby_waiting">Jelenleg a váróban van.</string>
+    <string name="nc_lobby_waiting_with_date">Jelenleg a váróban van.\nA találkozó ekkorra van ütemezve: %1$s.</string>
+    <string name="nc_locked_tap_to_unlock">Koppintás a feloldáshoz</string>
     <string name="nc_make_call_private">Beszélgetés priváttá tétele</string>
     <string name="nc_make_call_public">Beszélgetés nyilvánossá tétele</string>
     <string name="nc_manual">Nincs megadva</string>
+    <string name="nc_message_sent">Üzenet elküldve</string>
     <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_mute_calls">Hívások némítása</string>
@@ -156,6 +172,7 @@
     <string name="nc_remove_participant">Résztvevő eltávolítása</string>
     <string name="nc_rename">Beszélgetés átnevezése</string>
     <string name="nc_reply">Válasz</string>
+    <string name="nc_reply_privately">Válasz privátban</string>
     <string name="nc_screen_lock_timeout_30">30 másodperc</string>
     <string name="nc_screen_lock_timeout_300">5 perc</string>
     <string name="nc_screen_lock_timeout_60">1 perc</string>
@@ -166,11 +183,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Keresés</string>
     <string name="nc_select_an_account">Válasszon fiókot</string>
+    <string name="nc_select_contacts">Névjegyek kiválasztása</string>
     <string name="nc_select_files">Fájlok kiválasztása</string>
+    <string name="nc_select_participants">Résztvevők kiválasztása</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s GIF képet küldött.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Ön GIF képet küldött.</string>
+    <string name="nc_sent_a_gif_you">Ön GIF képet küldött.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s hivatkozást küldött.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Ön hivatkozást küldött.</string>
+    <string name="nc_sent_a_link_you">Ön hivatkozást küldött.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s videót küldött.</string>
     <string name="nc_sent_a_video_you">Ön videót küldött.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s mellékletet küldött.</string>
@@ -239,6 +258,7 @@
     <string name="nc_settings_use_credentials_title">Hitelesítő adatok használata</string>
     <string name="nc_settings_vibrate">Rezgés</string>
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
+    <string name="nc_settings_warning">Figyelmeztetés</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
     <string name="nc_share_link">Hivatkozás megosztása</string>
     <string name="nc_share_link_via">Hivatkozás megosztása ezzel</string>
@@ -254,6 +274,7 @@
     <string name="nc_upload_confirm_send_single">Ezen fájl küldése ide: %1$s</string>
     <string name="nc_upload_failed">A feltöltés sikertelen</string>
     <string name="nc_upload_from_cloud">Megosztás innen: %1$s</string>
+    <string name="nc_upload_in_progess">Feltöltés</string>
     <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
     <string name="nc_user">Felhasználó</string>
     <string name="nc_username">Felhasználónév</string>
@@ -262,6 +283,7 @@
     <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_yes">Igen</string>
     <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>
+    <string name="password_protected">Jelszóval védett</string>
     <string name="save">Mentés</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
     <string name="scope_federated_title">Föderált</string>
@@ -273,6 +295,7 @@
     <string name="scope_published_title">Közzétett</string>
     <string name="scope_toggle">Hatókör váltása</string>
     <string name="selected_list_item">kiválasztott</string>
+    <string name="starred">Kedvenc</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_info_address">Cím</string>
     <string name="user_info_displayname">Teljes név</string>

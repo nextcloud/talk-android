@@ -36,6 +36,7 @@
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_call_state_in_call">%1$s ist in einem Gespräch</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s ist in einem Gespräch</string>
     <string name="nc_call_state_with_phone">%1$s per Telefon</string>
     <string name="nc_call_state_with_video">%1$s mit Video</string>
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
@@ -73,7 +74,9 @@
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
+    <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
+    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch für %1$s entfernt.</string>
     <string name="nc_delete_message">Löschen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_demote">Moderator absetzen</string>
@@ -122,6 +125,7 @@
     <string name="nc_limit_hit">%s-Zeichen-Limit wurde erreicht</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
+    <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses Meeting ist für %1$s geplant.</string>
     <string name="nc_locked">Gesperrt</string>
     <string name="nc_locked_tap_to_unlock">Zum Entsperren antippen</string>
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
@@ -191,12 +195,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Suchen</string>
     <string name="nc_select_an_account">Konto auswählen</string>
+    <string name="nc_select_contacts">Kontakte auswählen</string>
     <string name="nc_select_files">Dateien wählen</string>
     <string name="nc_select_participants">Teilnehmer auswählen</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s hat ein GIF gesendet.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Sie haben ein GIF gesendet.</string>
+    <string name="nc_sent_a_gif_you">Sie haben ein GIF gesendet.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s hat einen Link gesendet.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Sie haben einen Link gesendet.</string>
+    <string name="nc_sent_a_link_you">Sie haben einen Link gesendet.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s hat ein Video gesendet.</string>
     <string name="nc_sent_a_video_you">Sie haben ein Video gesendet.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s hat eine Datei gesendet.</string>

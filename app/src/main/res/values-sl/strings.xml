@@ -36,6 +36,7 @@
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_call_state_in_call">%1$s v klicu</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s v zvočnem klicu</string>
     <string name="nc_call_state_with_video">%1$s v video klicu</string>
     <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_unknown">Klic %s</string>
@@ -72,7 +73,9 @@
     <string name="nc_date_header_yesterday">Včeraj</string>
     <string name="nc_delete">Izbriši</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
+    <string name="nc_delete_conversation_default">Potrdite zahtevo, da želite odstraniti pogovor.</string>
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
+    <string name="nc_delete_conversation_one2one">Če izbrišete pogovor, bo ta izbrisan tudi za račun %1$s.</string>
     <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
     <string name="nc_demote">Ponižaj iz moderatorja</string>
@@ -121,6 +124,7 @@
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
     <string name="nc_lobby">Spletna čakalnica</string>
     <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
+    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\nsestanek je načrtovan za %1$s.</string>
     <string name="nc_locked">Zaklenjeno</string>
     <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
@@ -190,12 +194,13 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Poišči</string>
     <string name="nc_select_an_account">Izbor računa</string>
+    <string name="nc_select_contacts">Izbor stikov</string>
     <string name="nc_select_files">Izbor datotek</string>
     <string name="nc_select_participants">Izbor udeležencev</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s pošlje sličico GIF.</string>
-    <string name="nc_sent_a_gif_you" tools:ignore="ExtraTranslation">Pošljete sličico GIF</string>
+    <string name="nc_sent_a_gif_you">Pošljete sličico GIF</string>
     <string name="nc_sent_a_link" formatted="true">%1$s pošlje povezavo.</string>
-    <string name="nc_sent_a_link_you" tools:ignore="ExtraTranslation">Pošljete povezavo</string>
+    <string name="nc_sent_a_link_you">Pošljete povezavo</string>
     <string name="nc_sent_a_video" formatted="true">%1$s pošlje video datoteko.</string>
     <string name="nc_sent_a_video_you">Pošljete video sporočilo</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s pošlje prilogo.</string>
