@@ -27,7 +27,7 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 
 import java.util.List;
 
-public class TalkMessagesListAdapter<MESSAGE extends IMessage> extends MessagesListAdapter<MESSAGE> {
+public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAdapter<M> {
 
     public TalkMessagesListAdapter(String senderId, MessageHolders holders, ImageLoader imageLoader) {
         super(senderId, holders, imageLoader);

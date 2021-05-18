@@ -79,7 +79,6 @@ import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jetbrains.annotations.NotNull;
 import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
@@ -269,12 +268,12 @@ public class CallNotificationController extends BaseController {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<RoomOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
                         disposablesList.add(d);
                     }
 
                     @Override
-                    public void onNext(@NotNull RoomOverall roomOverall) {
+                    public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                         currentConversation = roomOverall.getOcs().data;
                         runAllThings();
 
@@ -294,7 +293,7 @@ public class CallNotificationController extends BaseController {
 
                     @SuppressLint("LongLogTag")
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                         Log.e(TAG, e.getMessage(), e);
                     }
 

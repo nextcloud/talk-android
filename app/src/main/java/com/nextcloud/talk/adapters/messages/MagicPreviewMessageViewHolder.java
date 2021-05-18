@@ -35,7 +35,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
@@ -69,14 +68,12 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
-
-import org.jetbrains.annotations.NotNull;
-
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
@@ -461,12 +458,12 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
         }).observeOn(Schedulers.io())
                 .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
+                    public void onSubscribe(@NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
-                    public void onSuccess(@NotNull ReadFilesystemOperation readFilesystemOperation) {
+                    public void onSuccess(@NonNull ReadFilesystemOperation readFilesystemOperation) {
                         DavResponse davResponse = readFilesystemOperation.readRemotePath();
                         if (davResponse.data != null) {
                             List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.data;
@@ -481,7 +478,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@NonNull Throwable e) {
+                        Log.e(TAG, "Error reading file information", e);
                     }
                 });
 

@@ -58,9 +58,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
-
-import org.jetbrains.annotations.NotNull;
-
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -99,7 +96,7 @@ public class ServerSelectionController extends BaseController {
 
     private Disposable statusQueryDisposable;
 
-    @NotNull
+    @NonNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_server_selection, container, false);

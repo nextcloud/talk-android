@@ -33,13 +33,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.biometric.BiometricPrompt;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.FragmentActivity;
-import autodagger.AutoInjector;
-import butterknife.OnClick;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -47,11 +41,18 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
-import org.jetbrains.annotations.NotNull;
-
-import javax.inject.Inject;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.biometric.BiometricPrompt;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentActivity;
+import autodagger.AutoInjector;
+import butterknife.OnClick;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class LockedController extends BaseController {
@@ -61,7 +62,7 @@ public class LockedController extends BaseController {
     @Inject
     AppPreferences appPreferences;
 
-    @NotNull
+    @NonNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_locked, container, false);

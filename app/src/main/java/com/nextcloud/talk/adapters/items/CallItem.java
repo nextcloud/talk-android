@@ -26,12 +26,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
-import androidx.emoji.widget.EmojiTextView;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -42,15 +37,20 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
+import androidx.emoji.widget.EmojiTextView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
 

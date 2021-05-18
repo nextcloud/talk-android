@@ -102,8 +102,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         try {
             val input: InputStream = context.contentResolver.openInputStream(sourcefileUri)!!
             val buf = ByteArray(input.available())
-            while (input.read(buf) != -1);
-            requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
+            while (input.read(buf) != -1)
+                requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
         } catch (e: Exception) {
             Log.e(javaClass.simpleName, "failed to create RequestBody for $sourcefileUri", e)
         }

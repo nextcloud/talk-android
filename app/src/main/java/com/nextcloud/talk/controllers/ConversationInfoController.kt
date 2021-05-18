@@ -261,8 +261,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
                     dateTimePicker(
                         minDateTime = Calendar.getInstance(),
-                        requireFutureDateTime =
-                        true,
+                        requireFutureDateTime = true,
                         currentDateTime = currentTimeCalendar,
                         show24HoursView = true,
                         dateTimeCallback = { _,
@@ -310,11 +309,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     fun submitLobbyChanges() {
         val state = if (
-            (
-                conversationInfoLobby.findViewById<View>(
-                    R.id.mp_checkable
-                ) as SwitchCompat
-                ).isChecked
+            (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
         ) 1 else 0
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
@@ -669,9 +664,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
-            Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (
-                !TextUtils.isEmpty(conversation!!.name)
-            ) {
+            Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
                 val draweeController = Fresco.newDraweeControllerBuilder()
                     .setOldController(conversationAvatarImageView.controller)
                     .setAutoPlayAnimations(true)

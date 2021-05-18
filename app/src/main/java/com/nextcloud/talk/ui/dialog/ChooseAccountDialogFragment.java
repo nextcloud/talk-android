@@ -49,14 +49,13 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import autodagger.AutoInjector;
@@ -82,7 +81,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private final List<AdvancedUserItem> userItems = new ArrayList<>();
 
     @SuppressLint("InflateParams")
-    @NotNull
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         binding = DialogChooseAccountBinding.inflate(LayoutInflater.from(requireContext()));
@@ -92,7 +91,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
@@ -183,7 +182,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return dialogView;
     }
 
@@ -211,12 +210,12 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                              null)
                         .subscribe(new Observer<UserEntity>() {
                             @Override
-                            public void onSubscribe(@NotNull Disposable d) {
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
                                 // unused at the moment
                             }
 
                             @Override
-                            public void onNext(@NotNull UserEntity userEntity) {
+                            public void onNext(@io.reactivex.annotations.NonNull UserEntity userEntity) {
                                 cookieManager.getCookieStore().removeAll();
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
                                 if (getActivity() != null) {
@@ -227,7 +226,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                             }
 
                             @Override
-                            public void onError(@NotNull Throwable e) {
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                 Log.w(TAG, "Error updating user", e);
                             }
 
