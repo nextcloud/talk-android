@@ -45,6 +45,9 @@ class FullScreenImageActivity : AppCompatActivity() {
 
     private var showFullscreen = false
 
+    private val maxScale = 6.0f
+    private val mediumScale = 2.45f
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
         return true
@@ -93,8 +96,8 @@ class FullScreenImageActivity : AppCompatActivity() {
 
         // Enable enlarging the image more than default 3x maximumScale.
         // Medium scale adapted to make double-tap behaviour more consistent.
-        binding.photoView.maximumScale = 6.0f
-        binding.photoView.mediumScale = 2.45f
+        binding.photoView.maximumScale = maxScale
+        binding.photoView.mediumScale = mediumScale
 
         val fileName = intent.getStringExtra("FILE_NAME")
         val isGif = intent.getBooleanExtra("IS_GIF", false)
