@@ -20,7 +20,7 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- Common -->
     <string name="nc_yes">Yes</string>
     <string name="nc_no">No</string>
