@@ -53,6 +53,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController;
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserForAvatarController;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.userprofile.Scope;
@@ -170,7 +171,7 @@ public class ProfileController extends BaseController {
                     getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
                     getActivity().findViewById(R.id.userinfo_list).setVisibility(View.VISIBLE);
 
-                    if (currentUser.isAvatarEndpointAvailable()) {
+                    if (CapabilitiesUtil.isAvatarEndpointAvailable(currentUser)) {
                         // TODO later avatar can also be checked via user fields, for now it is in Talk capability
                         getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.VISIBLE);
                     }
@@ -345,7 +346,7 @@ public class ProfileController extends BaseController {
         }
 
         // show edit button
-        if (currentUser.canEditScopes()) {
+        if (CapabilitiesUtil.canEditScopes(currentUser)) {
             ncApi.getEditableUserProfileFields(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                     ApiUtils.getUrlForUserFields(currentUser.getBaseUrl()))
                     .subscribeOn(Schedulers.io())

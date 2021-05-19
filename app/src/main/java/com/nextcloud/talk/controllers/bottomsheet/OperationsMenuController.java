@@ -34,8 +34,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -46,6 +44,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
@@ -69,6 +68,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import io.reactivex.Observer;
@@ -581,8 +581,10 @@ public class OperationsMenuController extends BaseController {
 
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {4, 1});
 
-        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
-            if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
+        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails"))) {
+            if ((localInvitedGroups.size() > 0 &&
+                    CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails"))) {
                 for (int i = 0; i < localInvitedGroups.size(); i++) {
                     final String groupId = localInvitedGroups.get(i);
                     retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(

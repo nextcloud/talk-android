@@ -99,6 +99,7 @@ import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
@@ -297,7 +298,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
-        val shouldRepeat = conversationUser?.hasSpreedFeatureCapability("webinary-lobby") ?: false
+        val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") ?:
+        false
         if (shouldRepeat) {
             checkingLobbyStatus = true
         }
@@ -540,7 +542,7 @@ class ChatController(args: Bundle) :
         })
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = conversationUser?.messageMaxLength ?: 1000
+        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(conversationUser) ?: 1000
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         messageInput?.filters = filters
@@ -765,7 +767,7 @@ class ChatController(args: Bundle) :
             require(files.isNotEmpty())
             val data: Data = Data.Builder()
                 .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, files.toTypedArray())
-                .putString(UploadAndShareFilesWorker.NC_TARGETPATH, conversationUser?.getAttachmentFolder())
+                .putString(UploadAndShareFilesWorker.NC_TARGETPATH, CapabilitiesUtil.getAttachmentFolder(conversationUser))
                 .putString(UploadAndShareFilesWorker.ROOM_TOKEN, roomToken)
                 .build()
             val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
@@ -851,9 +853,8 @@ class ChatController(args: Bundle) :
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" &&
-            conversationUser?.hasSpreedFeatureCapability("mention-flag") ?: false &&
-            activity != null
-        ) {
+            CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
+            activity != null) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
@@ -1489,7 +1490,7 @@ class ChatController(args: Bundle) :
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         conversationUser?.let {
-            if (it.hasSpreedFeatureCapability("read-only-rooms")) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(it, "read-only-rooms")) {
                 checkReadOnlyState()
             }
         }
@@ -1813,7 +1814,7 @@ class ChatController(args: Bundle) :
         }
         if (!isUserAllowedByPrivileges) return false
 
-        if (!conversationUser.hasSpreedFeatureCapability("delete-messages")) return false
+        if (!CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages")) return false
 
         return true
     }

@@ -128,7 +128,7 @@
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/webinar_settings"
+                android:layout_below="@+id/settings"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
@@ -180,21 +180,30 @@
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
-            <include
-                layout="@layout/notification_settings_item"
+            <LinearLayout
+                android:id="@+id/settings"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/otherRoomOptions"
-                android:visibility="gone"
-                tools:visibility="gone" />
+                android:orientation="vertical">
 
-            <include
-                layout="@layout/webinar_info_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/notification_settings"
-                android:visibility="gone"
-                tools:visibility="visible" />
+                <include
+                    android:id="@+id/notification_settings_view"
+                    layout="@layout/notification_settings_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <include
+                    android:id="@+id/webinar_info_view"
+                    layout="@layout/webinar_info_item"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
+
+            </LinearLayout>
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

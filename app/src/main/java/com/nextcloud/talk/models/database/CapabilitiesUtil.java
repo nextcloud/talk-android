@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
+ * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,55 +21,24 @@
  */
 package com.nextcloud.talk.models.database;
 
-import android.os.Parcelable;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
-import io.requery.Entity;
-import io.requery.Generated;
-import io.requery.Key;
-import io.requery.Persistable;
+import androidx.annotation.Nullable;
 
-@Entity
-public interface User extends Parcelable, Persistable, Serializable {
-    static final String TAG = "UserEntity";
+public abstract class CapabilitiesUtil {
+    private static final String TAG = CapabilitiesUtil.class.getSimpleName();
 
-    @Key
-    @Generated
-    long getId();
-
-    String getUserId();
-
-    String getUsername();
-
-    String getBaseUrl();
-
-    String getToken();
-
-    String getDisplayName();
-
-    String getPushConfigurationState();
-
-    String getCapabilities();
-
-    String getClientCertificate();
-
-    String getExternalSignalingServer();
-
-    boolean getCurrent();
-
-    boolean getScheduledForDeletion();
-
-    default boolean hasNotificationsCapability(String capabilityName) {
-        if (getCapabilities() != null) {
+    public static boolean hasNotificationsCapability(@Nullable UserEntity user, String capabilityName) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities.getNotificationsCapability() != null && capabilities.getNotificationsCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
                 }
@@ -78,10 +49,10 @@ public interface User extends Parcelable, Persistable, Serializable {
         return false;
     }
 
-    default boolean hasExternalCapability(String capabilityName) {
-        if (getCapabilities() != null) {
+    public static boolean hasExternalCapability(@Nullable UserEntity user, String capabilityName) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities.getExternalCapability() != null && capabilities.getExternalCapability().containsKey("v1")) {
                     return capabilities.getExternalCapability().get("v1").contains("capabilityName");
                 }
@@ -92,20 +63,20 @@ public interface User extends Parcelable, Persistable, Serializable {
         return false;
     }
 
-    default boolean isServerEOL() {
+    public static boolean isServerEOL(@Nullable UserEntity user) {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
-        return !hasSpreedFeatureCapability("no-ping");
+        return !hasSpreedFeatureCapability(user, "no-ping");
     }
 
-    default boolean isServerAlmostEOL() {
+    public static boolean isServerAlmostEOL(@Nullable UserEntity user) {
         // Capability is available since Talk 8 => Nextcloud 18 => January 2020
-        return !hasSpreedFeatureCapability("chat-replies");
+        return !hasSpreedFeatureCapability(user, "chat-replies");
     }
 
-    default boolean hasSpreedFeatureCapability(String capabilityName) {
-        if (getCapabilities() != null) {
+    public static boolean hasSpreedFeatureCapability(@Nullable UserEntity user, String capabilityName) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null && capabilities.getSpreedCapability() != null &&
                         capabilities.getSpreedCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
@@ -117,11 +88,10 @@ public interface User extends Parcelable, Persistable, Serializable {
         return false;
     }
 
-    default int getMessageMaxLength() {
-        if (getCapabilities() != null) {
-            Capabilities capabilities = null;
+    public static Integer getMessageMaxLength(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getConfig() != null
                         && capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
                     HashMap<String, String> chatConfigHashMap = capabilities.getSpreedCapability().getConfig().get("chat");
@@ -135,52 +105,49 @@ public interface User extends Parcelable, Persistable, Serializable {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to get capabilities for the user");
             }
         }
         return 1000;
     }
 
-    default boolean isPhoneBookIntegrationAvailable() {
-        if (getCapabilities() != null) {
-            Capabilities capabilities;
+    public static boolean isPhoneBookIntegrationAvailable(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 return capabilities != null &&
                         capabilities.getSpreedCapability() != null &&
                         capabilities.getSpreedCapability().getFeatures() != null &&
                         capabilities.getSpreedCapability().getFeatures().contains("phonebook-search");
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to get capabilities for the user");
             }
         }
         return false;
     }
 
-    default boolean isReadStatusAvailable() {
-        if (getCapabilities() != null) {
-            Capabilities capabilities;
+    public static boolean isReadStatusAvailable(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
                         capabilities.getSpreedCapability() != null &&
                         capabilities.getSpreedCapability().getConfig() != null &&
                         capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
-                    HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
+                    Map<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
                     return map != null && map.containsKey("read-privacy");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to get capabilities for the user");
             }
         }
         return false;
     }
 
-    default boolean isReadStatusPrivate() {
-        if (getCapabilities() != null) {
-            Capabilities capabilities;
+    public static boolean isReadStatusPrivate(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
                         capabilities.getSpreedCapability() != null &&
                         capabilities.getSpreedCapability().getConfig() != null &&
@@ -191,17 +158,16 @@ public interface User extends Parcelable, Persistable, Serializable {
                     }
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Failed to get capabilities for the user");
             }
         }
         return false;
     }
 
-    default String getAttachmentFolder() {
-        if (getCapabilities() != null) {
-            Capabilities capabilities;
+    public static String getAttachmentFolder(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
                         capabilities.getSpreedCapability() != null &&
                         capabilities.getSpreedCapability().getConfig() != null &&
@@ -218,11 +184,11 @@ public interface User extends Parcelable, Persistable, Serializable {
         return "/Talk";
     }
 
-    default String getServerName() {
-        if (getCapabilities() != null) {
+    public static String getServerName(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities;
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null && capabilities.getThemingCapability() != null) {
                     return capabilities.getThemingCapability().getName();
                 }
@@ -234,33 +200,33 @@ public interface User extends Parcelable, Persistable, Serializable {
     }
 
     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
-    default boolean isAvatarEndpointAvailable() {
-        if (getCapabilities() != null) {
+    public static boolean isAvatarEndpointAvailable(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities;
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 return (capabilities != null &&
                         capabilities.getSpreedCapability() != null &&
                         capabilities.getSpreedCapability().getFeatures() != null &&
                         capabilities.getSpreedCapability().getFeatures().contains("temp-user-avatar-api"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("User.java", "Failed to get server name", e);
             }
         }
         return false;
     }
 
-    default boolean canEditScopes() {
-        if (getCapabilities() != null) {
+    public static boolean canEditScopes(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities;
             try {
-                capabilities = LoganSquare.parse(getCapabilities(), Capabilities.class);
+                capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 return (capabilities != null &&
                         capabilities.getProvisioningCapability() != null &&
                         capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() != null &&
                         capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() > 1);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("User.java", "Failed to get server name", e);
             }
         }
         return false;

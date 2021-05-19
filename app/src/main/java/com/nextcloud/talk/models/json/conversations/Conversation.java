@@ -22,6 +22,7 @@ package com.nextcloud.talk.models.json.conversations;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter;
@@ -108,7 +109,8 @@ public class Conversation {
     }
 
     private boolean isLockedOneToOne(UserEntity conversationUser) {
-        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && conversationUser.hasSpreedFeatureCapability("locked-one-to-one-rooms"));
+        return (getType() == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "locked-one-to-one-rooms"));
     }
 
     public boolean canModerate(UserEntity conversationUser) {

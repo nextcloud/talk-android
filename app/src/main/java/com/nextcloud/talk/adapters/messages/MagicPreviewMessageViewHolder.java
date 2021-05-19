@@ -46,6 +46,7 @@ import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.utils.AccountUtils;
@@ -335,7 +336,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
         String baseUrl = message.activeUser.getBaseUrl();
         String userId = message.activeUser.getUserId();
-        String attachmentFolder = message.activeUser.getAttachmentFolder();
+        String attachmentFolder = CapabilitiesUtil.getAttachmentFolder(message.activeUser);
 
         String fileName = message.getSelectedIndividualHashMap().get("name");
         String mimetype = message.getSelectedIndividualHashMap().get("mimetype");

@@ -318,7 +318,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             } else {
                 ConductorRemapping.remapChatController(
                     router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
-                    intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN), intent.extras!!, false
+                    intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false
                 )
             }
         }

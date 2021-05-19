@@ -79,6 +79,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -280,13 +281,14 @@ public class ConversationsListController extends BaseController implements Searc
         currentUser = userUtils.getCurrentUser();
 
         if (currentUser != null) {
-            if (currentUser.isServerEOL()) {
+            if (CapabilitiesUtil.isServerEOL(currentUser)) {
                 showServerEOLDialog();
                 return;
             }
 
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-            shouldUseLastMessageLayout = currentUser.hasSpreedFeatureCapability("last-room-activity");
+            shouldUseLastMessageLayout = CapabilitiesUtil.hasSpreedFeatureCapability(currentUser,
+                                                                                     "last-room-activity");
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
             }
@@ -489,7 +491,7 @@ public class ConversationsListController extends BaseController implements Searc
                         }
                     }
 
-                    if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
+                    if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")) {
                         Collections.sort(callItems, (o1, o2) -> {
                             Conversation conversation1 = ((ConversationItem) o1).getModel();
                             Conversation conversation2 = ((ConversationItem) o2).getModel();
@@ -817,7 +819,7 @@ public class ConversationsListController extends BaseController implements Searc
         if (showShareToScreen) {
             Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.");
 
-        } else if (currentUser.hasSpreedFeatureCapability("last-room-activity")) {
+        } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")) {
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
                 Conversation conversation;

@@ -56,6 +56,7 @@ import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.jobs.AddParticipantsToConversation;
 import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall;
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser;
@@ -493,13 +494,13 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         if (!isAddingParticipantsView) {
             // groups
             shareTypesList.add("1");
-        } else if (currentUser.hasSpreedFeatureCapability("invite-groups-and-mails")) {
+        } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")) {
             // groups
             shareTypesList.add("1");
             // emails
             shareTypesList.add("4");
         }
-        if (currentUser.hasSpreedFeatureCapability("circles-support")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "circles-support")) {
             // circles
             shareTypesList.add("7");
         }
@@ -974,8 +975,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     }
                 }
 
-                if (currentUser.hasSpreedFeatureCapability("last-room-activity")
-                        && !currentUser.hasSpreedFeatureCapability("invite-groups-and-mails") &&
+                if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")
+                        && !CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
                         "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
                         participant.isSelected() &&
                         adapter.getSelectedItemCount() > 1) {

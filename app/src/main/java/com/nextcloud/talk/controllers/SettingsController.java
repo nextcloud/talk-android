@@ -68,6 +68,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.models.RingtoneSettings;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
@@ -317,7 +318,7 @@ public class SettingsController extends BaseController {
                     .popChangeHandler(new HorizontalChangeHandler()));
         });
 
-        if (userUtils.getCurrentUser().isPhoneBookIntegrationAvailable()) {
+        if (CapabilitiesUtil.isPhoneBookIntegrationAvailable(userUtils.getCurrentUser())) {
             phoneBookIntegrationPreference.setVisibility(View.VISIBLE);
         } else {
             phoneBookIntegrationPreference.setVisibility(View.GONE);
@@ -456,8 +457,8 @@ public class SettingsController extends BaseController {
             ((Checkable) incognitoKeyboardSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsKeyboardIncognito());
         }
 
-        if (userUtils.getCurrentUser().isReadStatusAvailable()) {
-            ((Checkable) readPrivacyPreference.findViewById(R.id.mp_checkable)).setChecked(!currentUser.isReadStatusPrivate());
+        if (CapabilitiesUtil.isReadStatusAvailable(userUtils.getCurrentUser())) {
+            ((Checkable) readPrivacyPreference.findViewById(R.id.mp_checkable)).setChecked(!CapabilitiesUtil.isReadStatusPrivate(currentUser));
         } else {
             readPrivacyPreference.setVisibility(View.GONE);
         }
@@ -537,12 +538,12 @@ public class SettingsController extends BaseController {
 
             baseUrlTextView.setText(Uri.parse(currentUser.getBaseUrl()).getHost());
 
-            if (currentUser.isServerEOL()) {
+            if (CapabilitiesUtil.isServerEOL(currentUser)) {
                 serverAgeTextView.setTextColor(ContextCompat.getColor(context, R.color.nc_darkRed));
                 serverAgeTextView.setText(R.string.nc_settings_server_eol);
                 serverAgeIcon.setColorFilter(ContextCompat.getColor(context, R.color.nc_darkRed),
                                              PorterDuff.Mode.SRC_IN);
-            } else if (currentUser.isServerAlmostEOL()) {
+            } else if (CapabilitiesUtil.isServerAlmostEOL(currentUser)) {
                 serverAgeTextView.setTextColor(ContextCompat.getColor(context, R.color.nc_darkYellow));
                 serverAgeTextView.setText(R.string.nc_settings_server_almost_eol);
                 serverAgeIcon.setColorFilter(ContextCompat.getColor(context, R.color.nc_darkYellow),
