@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <resources xmlns:tools="http://schemas.android.com/tools">
+  <resources>
     <string name="account_icon">Ikona konta</string>
     <string name="appbar_search_in">Szukaj w %s</string>
     <string name="avatar">Awatar</string>
@@ -206,9 +206,9 @@
     <string name="nc_sent_a_video_you">Wysłałeś plik wideo.</string>
     <string name="nc_sent_an_attachment" formatted="true">%1$s wysłał załącznik.</string>
     <string name="nc_sent_an_attachment_you">Wysłałeś załącznik.</string>
-    <string name="nc_sent_an_audio" formatted="true">%1$s wysłał plik dźwiękowy</string>
-    <string name="nc_sent_an_audio_you">Wysłałeś plik dźwiękowy</string>
-    <string name="nc_sent_an_image" formatted="true">%1$s wysłał plik graficzny</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s wysłał plik dźwiękowy.</string>
+    <string name="nc_sent_an_audio_you">Wysłałeś plik dźwiękowy.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s wysłał plik graficzny.</string>
     <string name="nc_sent_an_image_you">Wysłałeś plik graficzny.</string>
     <string name="nc_server_connect">Sprawdź połączenie z serwerem</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>

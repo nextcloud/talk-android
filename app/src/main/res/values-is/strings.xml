@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-  <resources xmlns:tools="http://schemas.android.com/tools">
+  <resources>
     <string name="nc_99_plus">99+</string>
     <string name="nc_about">Um hugbúnaðinn</string>
     <string name="nc_account_scheduled_for_deletion">Þessi aðgangur er merktur til eyðingar og er því ekki hægt að breyta honum</string>
