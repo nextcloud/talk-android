@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-  Nextcloud TAlk application
+  Nextcloud Talk application
 
   Copyright (C) 2016 Andy Scherzinger
   Copyright (C) 2016 Nextcloud
@@ -61,6 +61,7 @@
                 android:layout_height="18dp"
                 android:layout_gravity="bottom|end"
                 android:background="@drawable/round_bgnd"
+                android:contentDescription="@string/nc_account_chooser_active_user"
                 android:src="@drawable/ic_check_circle"
                 tools:visibility="gone" />
         </FrameLayout>

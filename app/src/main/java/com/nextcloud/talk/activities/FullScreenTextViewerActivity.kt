@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,21 +26,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.databinding.ActivityFullScreenTextBinding
 import io.noties.markwon.Markwon
 import java.io.File
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenTextViewerActivity : AppCompatActivity() {
+    lateinit var binding: ActivityFullScreenTextBinding
 
     private lateinit var path: String
-    private lateinit var textView: TextView
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -70,21 +72,22 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_full_screen_text)
-        setSupportActionBar(findViewById(R.id.textview_toolbar))
+        binding = ActivityFullScreenTextBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        setSupportActionBar(binding.textviewToolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        textView = findViewById(R.id.text_view)
 
         val fileName = intent.getStringExtra("FILE_NAME")
         val isMarkdown = intent.getBooleanExtra("IS_MARKDOWN", false)
         path = applicationContext.cacheDir.absolutePath + "/" + fileName
-        var text = readFile(path)
+        val text = readFile(path)
 
         if (isMarkdown) {
             val markwon = Markwon.create(applicationContext)
-            markwon.setMarkdown(textView, text)
+            markwon.setMarkdown(binding.textView, text)
         } else {
-            textView.text = text
+            binding.textView.text = text
         }
     }
 

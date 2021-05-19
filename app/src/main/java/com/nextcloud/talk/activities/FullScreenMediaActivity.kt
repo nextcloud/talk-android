@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,17 +34,17 @@ import autodagger.AutoInjector
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.databinding.ActivityFullScreenMediaBinding
 import java.io.File
 
 @AutoInjector(NextcloudTalkApplication::class)
 class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
+    lateinit var binding: ActivityFullScreenMediaBinding
 
     private lateinit var path: String
-    private lateinit var playerView: StyledPlayerView
     private lateinit var player: SimpleExoPlayer
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,20 +82,20 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
 
         path = applicationContext.cacheDir.absolutePath + "/" + fileName
 
-        setContentView(R.layout.activity_full_screen_media)
-        setSupportActionBar(findViewById(R.id.mediaview_toolbar))
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        binding = ActivityFullScreenMediaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        playerView = findViewById(R.id.player_view)
+        setSupportActionBar(binding.mediaviewToolbar)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-        playerView.showController()
+        binding.playerView.showController()
         if (isAudioOnly) {
-            playerView.controllerShowTimeoutMs = 0
+            binding.playerView.controllerShowTimeoutMs = 0
         }
 
-        playerView.setControllerVisibilityListener { v ->
+        binding.playerView.setControllerVisibilityListener { v ->
             if (v != 0) {
                 hideSystemUI()
                 supportActionBar?.hide()
@@ -121,7 +123,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
 
     private fun initializePlayer() {
         player = SimpleExoPlayer.Builder(applicationContext).build()
-        playerView.player = player
+        binding.playerView.player = player
         player.playWhenReady = true
         player.addListener(this)
     }
