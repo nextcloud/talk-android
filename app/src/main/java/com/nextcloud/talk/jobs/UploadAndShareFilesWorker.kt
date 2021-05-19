@@ -75,10 +75,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         if (!isStoragePermissionGranted(context)) {
             Log.w(
-                TAG, "Storage permission is not granted. As a developer please make sure you check for permissions " +
-                    "via UploadAndShareFilesWorker.isStoragePermissionGranted() and UploadAndShareFilesWorker" +
-                    ".requestStoragePermission() beforehand. If you already did but end up with this warning, the user " +
-                    "most likely revoked the permission"
+                TAG, "Storage permission is not granted. As a developer please make sure you check for" +
+                    "permissions via UploadAndShareFilesWorker.isStoragePermissionGranted() and " +
+                    "UploadAndShareFilesWorker.requestStoragePermission() beforehand. If you already " +
+                    "did but end up with this warning, the user most likely revoked the permission"
             )
         }
 

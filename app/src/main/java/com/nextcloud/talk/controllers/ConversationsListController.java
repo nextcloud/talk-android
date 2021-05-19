@@ -25,6 +25,7 @@ package com.nextcloud.talk.controllers;
 import android.animation.AnimatorInflater;
 import android.annotation.SuppressLint;
 import android.app.SearchManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -58,7 +59,6 @@ import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
@@ -98,13 +98,11 @@ import org.apache.commons.lang3.builder.CompareToBuilder;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -201,6 +199,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     private ArrayList<String> filesToShare;
     private Conversation selectedConversation;
+
+    private String textToPaste = "";
 
     public ConversationsListController() {
         super();
@@ -391,7 +391,7 @@ public class ConversationsListController extends BaseController implements Searc
                         activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
                                 activity.binding.appBar.getContext(),
                                 R.animator.appbar_elevation_off)
-                                                            );
+                                                                    );
                         activity.binding.toolbar.setVisibility(View.GONE);
                         activity.binding.searchToolbar.setVisibility(View.VISIBLE);
                         if (getResources() != null) {
@@ -749,7 +749,7 @@ public class ConversationsListController extends BaseController implements Searc
         if (selectedConversation != null && getActivity() != null) {
             if (showShareToScreen) {
                 shareToScreenWasShown = true;
-                showShareToConfirmDialog();
+                handleSharedData();
             } else {
                 openConversation();
             }
@@ -757,10 +757,19 @@ public class ConversationsListController extends BaseController implements Searc
         return true;
     }
 
-    private void showShareToConfirmDialog() {
-        if (UploadAndShareFilesWorker.Companion.isStoragePermissionGranted(context)) {
-            collectFilesToShareFromIntent();
+    private void handleSharedData() {
+        collectDataFromIntent();
+        if (!textToPaste.isEmpty()) {
+            openConversation(textToPaste);
+        } else if (filesToShare != null && !filesToShare.isEmpty()) {
+            showSendFilesConfirmDialog();
+        } else {
+            Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show();
+        }
+    }
 
+    private void showSendFilesConfirmDialog() {
+        if (UploadAndShareFilesWorker.Companion.isStoragePermissionGranted(context)) {
             StringBuilder fileNamesWithLineBreaks = new StringBuilder("\n");
 
             for (String file : filesToShare) {
@@ -824,21 +833,33 @@ public class ConversationsListController extends BaseController implements Searc
         }
     }
 
-    private void collectFilesToShareFromIntent() {
+    private void collectDataFromIntent() {
         filesToShare = new ArrayList<>();
         if (getActivity() != null && getActivity().getIntent() != null) {
             Intent intent = getActivity().getIntent();
             if (Intent.ACTION_SEND.equals(intent.getAction())
                     || Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
-                if (intent.getClipData() != null) {
-                    for (int i = 0; i < intent.getClipData().getItemCount(); i++) {
-                        filesToShare.add(intent.getClipData().getItemAt(i).getUri().toString());
+                try {
+                    if (intent.getClipData() != null) {
+                        for (int i = 0; i < intent.getClipData().getItemCount(); i++) {
+                            ClipData.Item item = intent.getClipData().getItemAt(i);
+                            if (item.getUri() != null) {
+                                filesToShare.add(intent.getClipData().getItemAt(i).getUri().toString());
+                            } else if (item.getText() != null) {
+                                textToPaste = intent.getClipData().getItemAt(i).getText().toString();
+                                break;
+                            } else {
+                                Log.w(TAG, "datatype not yet implemented for share-to");
+                            }
+                        }
+                    } else {
+                        filesToShare.add(intent.getData().toString());
                     }
-                } else {
-                    filesToShare.add(intent.getData().toString());
-                }
-                if (filesToShare.isEmpty()) {
-                    Log.e(TAG, "failed to get files from intent");
+                    if (filesToShare.isEmpty() && textToPaste.isEmpty()) {
+                        Log.e(TAG, "failed to get data from intent");
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Something went wrong when extracting data from intent");
                 }
             }
         }
@@ -881,17 +902,22 @@ public class ConversationsListController extends BaseController implements Searc
                 grantResults.length > 0 &&
                 grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "upload starting after permissions were granted");
-            showShareToConfirmDialog();
+            showSendFilesConfirmDialog();
         } else {
             Toast.makeText(context, context.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show();
         }
     }
 
     private void openConversation() {
+        openConversation("");
+    }
+
+    private void openConversation(String textToPaste) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
+        bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
 
         if (selectedConversation.hasPassword && selectedConversation.participantType ==
                 Participant.ParticipantType.GUEST ||

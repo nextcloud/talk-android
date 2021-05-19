@@ -65,4 +65,5 @@ object BundleKeys {
     val KEY_ACCOUNT = "KEY_ACCOUNT"
     val KEY_FILE_ID = "KEY_FILE_ID"
     val KEY_NOTIFICATION_ID = "KEY_NOTIFICATION_ID"
+    val KEY_SHARED_TEXT = "KEY_SHARED_TEXT"
 }

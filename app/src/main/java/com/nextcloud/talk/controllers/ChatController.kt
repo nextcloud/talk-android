@@ -265,6 +265,7 @@ class ChatController(args: Bundle) :
     var futurePreconditionFailed = false
 
     val filesToUpload: MutableList<String> = ArrayList()
+    var sharedText: String
 
     init {
         setHasOptionsMenu(true)
@@ -273,6 +274,7 @@ class ChatController(args: Bundle) :
         this.conversationUser = args.getParcelable(BundleKeys.KEY_USER_ENTITY)
         this.roomId = args.getString(BundleKeys.KEY_ROOM_ID, "")
         this.roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN, "")
+        this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
         if (args.containsKey(BundleKeys.KEY_ACTIVE_CONVERSATION)) {
             this.currentConversation =
@@ -550,7 +552,7 @@ class ChatController(args: Bundle) :
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length >= lengthFilter) {
                     messageInput?.error = String.format(
-                        Objects.requireNonNull<Resources> (resources).getString(R.string.nc_limit_hit),
+                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
                         Integer.toString(lengthFilter)
                     )
                 } else {
@@ -583,6 +585,7 @@ class ChatController(args: Bundle) :
             }
         })
 
+        messageInput?.setText(sharedText)
         messageInputView?.setAttachmentsListener {
             activity?.let { AttachmentDialog(it, this).show() }
         }
@@ -741,7 +744,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
             uploadFiles(filesToUpload)
@@ -1324,9 +1327,9 @@ class ChatController(args: Bundle) :
                             TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
                             chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
                             countGroupedMessages < 4 && DateFormatter.isSameDay(
-                                    chatMessageList[i].createdAt,
-                                    chatMessageList[i + 1].createdAt
-                                )
+                                chatMessageList[i].createdAt,
+                                chatMessageList[i + 1].createdAt
+                            )
                         ) {
                             chatMessageList[i].isGrouped = true
                             countGroupedMessages++
@@ -1637,7 +1640,8 @@ class ChatController(args: Bundle) :
                         true
                     }
                     R.id.action_reply_privately -> {
-                        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
+                        val apiVersion =
+                            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
                         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
                             apiVersion,
                             conversationUser?.baseUrl,
@@ -1686,6 +1690,7 @@ class ChatController(args: Bundle) :
                                             override fun onError(e: Throwable) {
                                                 Log.e(TAG, e.message, e)
                                             }
+
                                             override fun onComplete() {}
                                         })
                                 }
@@ -1693,6 +1698,7 @@ class ChatController(args: Bundle) :
                                 override fun onError(e: Throwable) {
                                     Log.e(TAG, e.message, e)
                                 }
+
                                 override fun onComplete() {}
                             })
                         true
