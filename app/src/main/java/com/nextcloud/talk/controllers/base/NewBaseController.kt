@@ -138,7 +138,8 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
                     activity.binding.searchToolbar.visibility = View.VISIBLE
                     activity.binding.searchText.hint = searchHint
                     activity.binding.toolbar.visibility = View.GONE
-                    //layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+                    // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+                    // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
                     layoutParams.scrollFlags = 0
                     activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
                         activity.binding.appBar.context,
@@ -157,14 +158,16 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
                 if (resources != null) {
                     if (showSearchBar) {
                         DisplayUtils.applyColorToStatusBar(
-                            activity, ResourcesCompat.getColor(
+                            activity,
+                            ResourcesCompat.getColor(
                                 resources!!,
                                 R.color.bg_default, null
                             )
                         )
                     } else {
                         DisplayUtils.applyColorToStatusBar(
-                            activity, ResourcesCompat.getColor(
+                            activity,
+                            ResourcesCompat.getColor(
                                 resources!!,
                                 R.color.appbar, null
                             )

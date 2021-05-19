@@ -88,7 +88,11 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoController(args: Bundle) : NewBaseController(R.layout.controller_conversation_info, args),
+class ConversationInfoController(args: Bundle) :
+    NewBaseController(
+        R.layout.controller_conversation_info,
+        args
+    ),
     FlexibleAdapter
     .OnItemClickListener {
     private val binding: ControllerConversationInfoBinding by viewBinding(ControllerConversationInfoBinding::bind)
@@ -387,17 +391,7 @@ class ConversationInfoController(args: Bundle) : NewBaseController(R.layout.cont
         adapter!!.updateDataSet(recyclerViewItems)
     }
 
-    /**
-    override fun getTitle(): String? {
-    return if (hasAvatarSpacing) {
-    " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-    } else {
-    resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-    }
-    }
-     */
-
-    override val title: String?
+    override val title: String
         get() =
             if (hasAvatarSpacing) {
                 " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)

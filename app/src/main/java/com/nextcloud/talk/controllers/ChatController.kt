@@ -298,8 +298,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
-        val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") ?:
-        false
+        val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
         }
