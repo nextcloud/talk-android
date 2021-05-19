@@ -39,7 +39,8 @@ public abstract class CapabilitiesUtil {
         if (user != null && user.getCapabilities() != null) {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
-                if (capabilities.getNotificationsCapability() != null && capabilities.getNotificationsCapability().getFeatures() != null) {
+                if (capabilities.getNotificationsCapability() != null &&
+                        capabilities.getNotificationsCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
                 }
             } catch (IOException e) {
@@ -53,7 +54,8 @@ public abstract class CapabilitiesUtil {
         if (user != null && user.getCapabilities() != null) {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
-                if (capabilities.getExternalCapability() != null && capabilities.getExternalCapability().containsKey("v1")) {
+                if (capabilities.getExternalCapability() != null &&
+                        capabilities.getExternalCapability().containsKey("v1")) {
                     return capabilities.getExternalCapability().get("v1").contains("capabilityName");
                 }
             } catch (IOException e) {
@@ -92,9 +94,14 @@ public abstract class CapabilitiesUtil {
         if (user != null && user.getCapabilities() != null) {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
-                if (capabilities != null && capabilities.getSpreedCapability() != null && capabilities.getSpreedCapability().getConfig() != null
-                        && capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
-                    HashMap<String, String> chatConfigHashMap = capabilities.getSpreedCapability().getConfig().get("chat");
+                if (capabilities != null &&
+                        capabilities.getSpreedCapability() != null &&
+                        capabilities.getSpreedCapability().getConfig() != null &&
+                        capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+                    HashMap<String, String> chatConfigHashMap = capabilities
+                            .getSpreedCapability()
+                            .getConfig()
+                            .get("chat");
                     if (chatConfigHashMap != null && chatConfigHashMap.containsKey("max-length")) {
                         int chatSize = Integer.parseInt(chatConfigHashMap.get("max-length"));
                         if (chatSize > 0) {

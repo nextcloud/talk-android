@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -20,14 +22,10 @@
 package com.nextcloud.talk.models.database
 
 import android.os.Parcelable
-import android.util.Log
-import com.bluelinelabs.logansquare.LoganSquare
-import com.nextcloud.talk.models.json.capabilities.Capabilities
 import io.requery.Entity
 import io.requery.Generated
 import io.requery.Key
 import io.requery.Persistable
-import java.io.IOException
 import java.io.Serializable
 
 @Entity
