@@ -565,7 +565,7 @@ public class OperationsMenuController extends BaseController {
         ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
         ApiUtils.getCallApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
         ApiUtils.getChatApiVersion(currentUser, new int[] {1});
-        ApiUtils.getSignalingApiVersion(currentUser, new int[] {2, 1});
+        ApiUtils.getSignalingApiVersion(currentUser, new int[] {ApiUtils.APIv3, 2, 1});
     }
 
     private void inviteUsersToAConversation() {

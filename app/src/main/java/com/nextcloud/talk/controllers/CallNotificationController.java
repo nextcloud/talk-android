@@ -385,8 +385,11 @@ public class CallNotificationController extends BaseController {
                 avatarImageView.setVisibility(View.VISIBLE);
 
                 ImageRequest imageRequest =
-                        DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                                                                                            currentConversation.getName(), R.dimen.avatar_size_very_big), null);
+                        DisplayUtils.getImageRequestForUrl(
+                                ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
+                                                                 currentConversation.getName(),
+                                                                 R.dimen.avatar_size_very_big),
+                                null);
 
                 ImagePipeline imagePipeline = Fresco.getImagePipeline();
                 DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
@@ -399,11 +402,12 @@ public class CallNotificationController extends BaseController {
                                                                     true);
 
                             if (getResources() != null) {
-                                incomingTextRelativeLayout.setBackground(getResources().getDrawable(R.drawable
-                                                                                                            .incoming_gradient));
+                                incomingTextRelativeLayout.setBackground(
+                                        getResources().getDrawable(R.drawable.incoming_gradient));
                             }
 
-                            if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 || AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
+                            if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 ||
+                                    AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
                                 if (getActivity() != null) {
                                     Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
                                     new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
@@ -425,6 +429,7 @@ public class CallNotificationController extends BaseController {
 
                     @Override
                     protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                        // unused atm
                     }
                 }, UiThreadImmediateExecutorService.getInstance());
 
@@ -467,10 +472,11 @@ public class CallNotificationController extends BaseController {
     }
 
     private void dispose() {
-        Disposable disposable;
-        for (int i = 0; i < disposablesList.size(); i++) {
-            if (!(disposable = disposablesList.get(i)).isDisposed()) {
-                disposable.dispose();
+        if (disposablesList != null) {
+            for (Disposable disposable : disposablesList) {
+                if (!disposable.isDisposed()) {
+                    disposable.dispose();
+                }
             }
         }
     }
@@ -486,7 +492,8 @@ public class CallNotificationController extends BaseController {
                                             "/raw/librem_by_feandesign_call");
         } else {
             try {
-                RingtoneSettings ringtoneSettings = LoganSquare.parse(callRingtonePreferenceString, RingtoneSettings.class);
+                RingtoneSettings ringtoneSettings = LoganSquare.parse(
+                        callRingtonePreferenceString, RingtoneSettings.class);
                 ringtoneUri = ringtoneSettings.getRingtoneUri();
             } catch (IOException e) {
                 Log.e(TAG, "Failed to parse ringtone settings");
@@ -501,8 +508,11 @@ public class CallNotificationController extends BaseController {
                 mediaPlayer.setDataSource(getActivity(), ringtoneUri);
 
                 mediaPlayer.setLooping(true);
-                AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(AudioAttributes
-                                                                                                       .CONTENT_TYPE_SONIFICATION).setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE).build();
+                AudioAttributes audioAttributes = new AudioAttributes
+                        .Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                        .build();
                 mediaPlayer.setAudioAttributes(audioAttributes);
 
                 mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());

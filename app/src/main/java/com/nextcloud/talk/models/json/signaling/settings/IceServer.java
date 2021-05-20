@@ -27,6 +27,7 @@ import java.util.List;
 
 @JsonObject
 public class IceServer {
+    @Deprecated
     @JsonField(name = "url")
     String url;
 
@@ -39,6 +40,7 @@ public class IceServer {
     @JsonField(name = "credential")
     String credential;
 
+    @Deprecated
     public String getUrl() {
         return this.url;
     }
