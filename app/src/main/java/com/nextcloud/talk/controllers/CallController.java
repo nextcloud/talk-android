@@ -1143,12 +1143,10 @@ public class CallController extends BaseController {
                                 List<IceServer> stunServers =
                                         signalingSettingsOverall.getOcs().getSettings().getStunServers();
                                 if (apiVersion == ApiUtils.APIv3) {
-                                    if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
-                                        for (IceServer stunServer : stunServers) {
-                                            if (stunServer.getUrls() != null) {
-                                                for (String url : stunServer.getUrls()) {
-                                                    iceServers.add(new PeerConnection.IceServer(url));
-                                                }
+                                    for (IceServer stunServer : stunServers) {
+                                        if (stunServer.getUrls() != null) {
+                                            for (String url : stunServer.getUrls()) {
+                                                iceServers.add(new PeerConnection.IceServer(url));
                                             }
                                         }
                                     }
