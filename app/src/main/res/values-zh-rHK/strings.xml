@@ -74,7 +74,7 @@
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_call">刪除對話</string>
-    <string name="nc_delete_conversation_default">請確認是否要清除目前的對話。</string>
+    <string name="nc_delete_conversation_default">請確認是否要清除的對話。</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
     <string name="nc_delete_conversation_one2one">如果您刪除對話，它也將會從 %1$s 處刪除。</string>
     <string name="nc_delete_message">刪除</string>
