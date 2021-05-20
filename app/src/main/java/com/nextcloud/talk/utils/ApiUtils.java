@@ -148,7 +148,7 @@ public class ApiUtils {
 
     public static int getSignalingApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
-            CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v" + version)) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v" + version)) {
                 return version;
             }
 
