@@ -121,6 +121,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -795,6 +796,14 @@ class ChatController(args: Bundle) :
 
     fun showShareLocationScreen(){
         Log.d(TAG, "showShareLocationScreen")
+
+        val bundle = Bundle()
+        bundle.putBoolean(KEY_NEW_CONVERSATION, true)
+        router.pushController(
+            RouterTransaction.with(LocationController(bundle))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
     }
 
     private fun showConversationInfoScreen() {

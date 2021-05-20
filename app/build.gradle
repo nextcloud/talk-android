@@ -286,6 +286,8 @@ dependencies {
     implementation 'com.github.tobiaskaminsky:ImagePicker:extraFile-SNAPSHOT'
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
+    implementation 'org.osmdroid:osmdroid-android:6.1.10'
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.11.0'
     testImplementation "org.powermock:powermock-core:${powermockVersion}"
