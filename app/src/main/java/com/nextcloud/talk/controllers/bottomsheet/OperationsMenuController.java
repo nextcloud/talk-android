@@ -51,6 +51,7 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
+import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
@@ -75,6 +76,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
+import retrofit2.Response;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class OperationsMenuController extends BaseController {
@@ -260,7 +262,8 @@ public class OperationsMenuController extends BaseController {
 
     @SuppressLint("LongLogTag")
     private void processOperation() {
-        OperationsObserver operationsObserver = new OperationsObserver();
+        RoomOperationsObserver roomOperationsObserver = new RoomOperationsObserver();
+        GenericOperationsObserver genericOperationsObserver = new GenericOperationsObserver();
 
         if (currentUser == null) {
             showResultImage(false, true);
@@ -279,7 +282,7 @@ public class OperationsMenuController extends BaseController {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .retry(1)
-                        .subscribe(operationsObserver);
+                        .subscribe(genericOperationsObserver);
                 break;
             case 3:
                 ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
@@ -287,7 +290,7 @@ public class OperationsMenuController extends BaseController {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .retry(1)
-                        .subscribe(operationsObserver);
+                        .subscribe(genericOperationsObserver);
                 break;
             case 4:
             case 5:
@@ -301,7 +304,7 @@ public class OperationsMenuController extends BaseController {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .retry(1)
-                        .subscribe(operationsObserver);
+                        .subscribe(genericOperationsObserver);
                 break;
             case 7:
                 // Operation 7 is sharing, so we handle this differently
@@ -313,7 +316,7 @@ public class OperationsMenuController extends BaseController {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .retry(1)
-                        .subscribe(operationsObserver);
+                        .subscribe(genericOperationsObserver);
                 break;
             case 10:
                 ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
@@ -477,7 +480,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
-                            .subscribe(operationsObserver);
+                            .subscribe(genericOperationsObserver);
                 } else {
                     ncApi.addConversationToFavorites(credentials,
                                                      ApiUtils.getUrlForRoomFavorite(apiVersion,
@@ -486,7 +489,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .retry(1)
-                            .subscribe(operationsObserver);
+                            .subscribe(genericOperationsObserver);
                 }
                 break;
             case 99:
@@ -497,7 +500,7 @@ public class OperationsMenuController extends BaseController {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .retry(1)
-                        .subscribe(operationsObserver);
+                        .subscribe(roomOperationsObserver);
                 break;
             default:
                 break;
@@ -690,41 +693,71 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private class OperationsObserver implements Observer {
+    private void handleObserverError(@io.reactivex.annotations.NonNull Throwable e) {
+        if (operationCode != 99 || !(e instanceof HttpException)) {
+            showResultImage(false, false);
+        } else {
+            Response<?> response = ((HttpException) e).response();
+            if (response != null && response.code() == 403) {
+                eventBus.post(new BottomSheetLockEvent(true, 0, false,
+                                                       false));
+                ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
+                getRouter().popCurrentController();
+            } else {
+                showResultImage(false, false);
+            }
+        }
+        dispose();
+    }
+
+    private class GenericOperationsObserver implements Observer<GenericOverall> {
 
         @Override
-        public void onSubscribe(Disposable d) {
+        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
             disposable = d;
         }
 
         @Override
-        public void onNext(Object o) {
+        public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
             if (operationCode != 99) {
-                RoomOverall roomOverall = (RoomOverall) o;
-                conversation = roomOverall.getOcs().getData();
                 showResultImage(true, false);
             } else {
-                RoomOverall roomOverall = (RoomOverall) o;
+                throw new IllegalArgumentException("Unsupported operation code observed!");
+            }
+        }
+
+        @Override
+        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+            handleObserverError(e);
+        }
+
+        @Override
+        public void onComplete() {
+            dispose();
+        }
+    }
+
+    private class RoomOperationsObserver implements Observer<RoomOverall> {
+
+        @Override
+        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+            disposable = d;
+        }
+
+        @Override
+        public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
+            conversation = roomOverall.getOcs().getData();
+            if (operationCode != 99) {
+                showResultImage(true, false);
+            } else {
                 conversation = roomOverall.getOcs().getData();
                 initiateConversation(true);
             }
         }
 
         @Override
-        public void onError(Throwable e) {
-            if (operationCode != 99 || !(e instanceof HttpException)) {
-                showResultImage(false, false);
-            } else {
-                if (((HttpException) e).response().code() == 403) {
-                    eventBus.post(new BottomSheetLockEvent(true, 0, false,
-                            false));
-                    ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
-                    getRouter().popCurrentController();
-                } else {
-                    showResultImage(false, false);
-                }
-            }
-            dispose();
+        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+            handleObserverError(e);
         }
 
         @Override
