@@ -177,7 +177,7 @@ configurations.all {
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.appcompat:appcompat:1.3.0'
     implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.github.vanniktech:Emoji:0.6.0'  // 0.7.0 has display issue - don't update to 0.7.0
