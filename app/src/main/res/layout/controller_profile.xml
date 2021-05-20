@@ -79,10 +79,10 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:tint="@color/black"
-                android:src="@drawable/upload"
                 android:background="@drawable/round_corner"
-                android:contentDescription="@string/upload_new_avatar_from_device" />
+                android:contentDescription="@string/upload_new_avatar_from_device"
+                android:src="@drawable/upload"
+                app:tint="@color/black" />
 
             <ImageButton
                 android:id="@+id/avatar_choose"
@@ -90,10 +90,10 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:src="@drawable/ic_mimetype_folder"
                 android:background="@drawable/round_corner"
-                android:tint="@color/colorPrimary"
-                android:contentDescription="@string/choose_avatar_from_cloud" />
+                android:contentDescription="@string/choose_avatar_from_cloud"
+                android:src="@drawable/ic_mimetype_folder"
+                app:tint="@color/colorPrimary" />
 
             <ImageButton
                 android:id="@+id/avatar_delete"
@@ -101,10 +101,10 @@
                 android:layout_height="30dp"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
-                android:src="@drawable/trashbin"
-                android:tint="@color/black"
                 android:background="@drawable/round_corner"
-                android:contentDescription="@string/delete_avatar" />
+                android:contentDescription="@string/delete_avatar"
+                android:src="@drawable/trashbin"
+                app:tint="@color/black" />
         </LinearLayout>
 
     </RelativeLayout>

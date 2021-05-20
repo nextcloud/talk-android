@@ -19,6 +19,7 @@
   -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -57,7 +58,7 @@
             android:layout_toStartOf="@id/messageSendButton"
             android:background="@color/transparent"
             android:src="@drawable/ic_insert_emoticon_black_24dp"
-            android:tint="@color/emoji_icons"
+            app:tint="@color/emoji_icons"
             android:contentDescription="@string/nc_add_emojis" />
 
         <ImageButton
@@ -85,6 +86,5 @@
             android:layout_below="@id/quotedChatMessageView"
             android:layout_toStartOf="@id/smileyButton" />
     </RelativeLayout>
-
 
 </merge>
