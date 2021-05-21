@@ -99,8 +99,9 @@
                     android:scaleType="fitCenter"
                     android:transitionName="userAvatar.transitionTag"
                     app:cornerRadius="@dimen/button_corner_radius"
+                    app:icon="@drawable/ic_user"
                     app:iconSize="@dimen/avatar_size_app_bar"
-                    tools:visibility="gone" />
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/searchProgressBar"
