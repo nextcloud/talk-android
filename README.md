@@ -39,7 +39,16 @@ If you want to [contribute](https://nextcloud.com/contribute/) to Nextcloud, you
 
 ## Contribution Guidelines :scroll:
 
-[GPLv3](https://github.com/nextcloud/talk-android/blob/master/LICENSE.txt).
+[GPLv3](https://github.com/nextcloud/talk-android/blob/master/LICENSE.txt). All contributions to this repository are considered to be licensed under the GNU GPLv3 or any later version.
+
+Please read the [Code of Conduct](https://nextcloud.com/community/code-of-conduct/). This document offers some guidance to ensure Nextcloud participants can cooperate effectively in a positive and inspiring atmosphere, and to explain how together we can strengthen and support each other.
+
+Please review the [guidelines for contributing](/CONTRIBUTING.md) to this repository.
+
+More information how to contribute: [https://nextcloud.com/contribute/](https://nextcloud.com/contribute/)
+
+
+### Apply a license :scroll:
 
 Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright belongs to all the individual contributors. Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
 
@@ -47,11 +56,24 @@ Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright b
 @copyright Copyright (c) <year>, <your name> (<your email address>)
 ```
 
-Please read the [Code of Conduct](https://nextcloud.com/community/code-of-conduct/). This document offers some guidance to ensure Nextcloud participants can cooperate effectively in a positive and inspiring atmosphere, and to explain how together we can strengthen and support each other.
+For further information on how to add or update the license header correctly please have a look at [our licensing HowTo][applyalicense].
 
-Please review the [guidelines for contributing](/CONTRIBUTING.md) to this repository.
 
-More information how to contribute: [https://nextcloud.com/contribute/](https://nextcloud.com/contribute/)
+### Sign your work :bookmark_tabs:
+
+We use the Developer Certificate of Origin (DCO) as a additional safeguard for the Nextcloud project.
+This is a well established and widely used mechanism to assure contributors have confirmed their right to license their contribution under the project's license.
+Please read [developer-certificate-of-origin][dcofile].
+If you can certify it, then just add a line to every git commit message:
+
+````
+  Signed-off-by: Random J Developer <random@developer.example.org>
+````
+
+Use your real name (sorry, no pseudonyms or anonymous contributions).
+If you set your `user.name` and `user.email` git configs, you can sign your commit automatically with `git commit -s`.
+You can also use git [aliases](https://git-scm.com/book/tr/v2/Git-Basics-Git-Aliases) like `git config --global alias.ci 'commit -s'`.
+Now you can commit with `git ci` and the commit will be signed.
 
 
 ## Start contributing :hammer_and_wrench:
@@ -99,41 +121,6 @@ If a beta was released that is newer than the alpha version, you will get the be
 
 In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com/android/talk-alpha/)
 Please make sure to remember that these versions might contain bugs and you don't use them in production.
-
-
-### Apply a license :scroll:
-
-All contributions to this repository are considered to be licensed under
-the GNU GPLv3 or any later version.
-
-Contributors to the Nextcloud Talk app retain their copyright. Therefore we recommend
-to add following line to the header of a file, if you changed it substantially:
-
-```
-@copyright Copyright (c) <year> <your name> (<your email address>)
-```
-
-For further information on how to add or update the license header correctly please have a look at [our licensing HowTo][applyalicense].
-
-
-### Sign your work :bookmark_tabs:
-
-We use the Developer Certificate of Origin (DCO) as a additional safeguard
-for the Nextcloud project. This is a well established and widely used
-mechanism to assure contributors have confirmed their right to license
-their contribution under the project's license.
-Please read [developer-certificate-of-origin][dcofile].
-If you can certify it, then just add a line to every git commit message:
-
-````
-  Signed-off-by: Random J Developer <random@developer.example.org>
-````
-
-Use your real name (sorry, no pseudonyms or anonymous contributions).
-If you set your `user.name` and `user.email` git configs, you can sign your
-commit automatically with `git commit -s`. You can also use git [aliases](https://git-scm.com/book/tr/v2/Git-Basics-Git-Aliases)
-like `git config --global alias.ci 'commit -s'`. Now you can commit with
-`git ci` and the commit will be signed.
 
 
 ## Support :rescue_worker_helmet:
