@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.PermissionChecker
@@ -47,9 +48,13 @@ class LocationController(args: Bundle) : BaseController(args) {
     @JvmField
     var btCenterMap: ImageButton? = null
 
+    @BindView(R.id.btn_select_location)
+    @JvmField
+    var btnSelectLocation: Button? = null
+
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context));
+        getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
@@ -61,24 +66,34 @@ class LocationController(args: Bundle) : BaseController(args) {
         drawMap()
     }
 
+    override fun onViewBound(view: View) {
+        btnSelectLocation?.setOnClickListener {
+            val selectedLat: Double? = map?.mapCenter?.latitude
+            val selectedLon: Double? = map?.mapCenter?.longitude
+            Toast.makeText(activity, "Lat: $selectedLat Lon: $selectedLon", Toast.LENGTH_LONG).show()
+        }
+    }
+
     fun drawMap(){
         if (!isFineLocationPermissionGranted()) {
-            requestFineLocationPermission();
+            requestFineLocationPermission()
         }
 
-        map?.setTileSource(TileSourceFactory.MAPNIK);
+        map?.setTileSource(TileSourceFactory.MAPNIK)
 
-        map?.onResume();
+        map?.onResume()
 
-        val copyrightOverlay = CopyrightOverlay(context);
-        map?.overlays?.add(copyrightOverlay);
+        val copyrightOverlay = CopyrightOverlay(context)
+        map?.overlays?.add(copyrightOverlay)
 
-        map?.setMultiTouchControls(true);
-        map?.isTilesScaledToDpi = true;
+        map?.setMultiTouchControls(true)
+        map?.isTilesScaledToDpi = true
 
-        val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map);
-        locationOverlay.enableFollowLocation();
-        locationOverlay.enableMyLocation();
+        val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
+        locationOverlay.enableFollowLocation()
+        locationOverlay.enableMyLocation()
+        // locationOverlay.setPersonIcon(
+        //     DisplayUtils.getBitmap(ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)))
         map?.overlays?.add(locationOverlay)
 
         val mapController = map?.controller
