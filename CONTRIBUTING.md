@@ -1,4 +1,4 @@
-# [Nextcloud](https://nextcloud.com) Android app
+# [Nextcloud](https://nextcloud.com) Talk for Android app
 
 
 # Index
