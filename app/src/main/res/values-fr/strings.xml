@@ -3,6 +3,7 @@
     <string name="account_icon">Icône du compte</string>
     <string name="appbar_search_in">Recherche dans %s</string>
     <string name="avatar">Avatar</string>
+    <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
     <string name="edit">Modifier</string>
     <string name="encrypted">Chiffré</string>
     <string name="file_list_folder">Dossier</string>
