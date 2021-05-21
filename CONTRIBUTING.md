@@ -116,6 +116,34 @@ There are three build variants
 * qa: based on pr and available as direct download within the pr for testing purposes
 
 
+### Apply a license
+
+Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright belongs to all the individual contributors. Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
+
+```
+@copyright Copyright (c) <year>, <your name> (<your email address>)
+```
+
+For further information on how to add or update the license header correctly please have a look at [our licensing HowTo][applyalicense].
+
+
+### Sign your work
+
+We use the Developer Certificate of Origin (DCO) as a additional safeguard for the Nextcloud project.
+This is a well established and widely used mechanism to assure contributors have confirmed their right to license their contribution under the project's license.
+Please read [developer-certificate-of-origin][dcofile].
+If you can certify it, then just add a line to every git commit message:
+
+````
+  Signed-off-by: Random J Developer <random@developer.example.org>
+````
+
+Use your real name (sorry, no pseudonyms or anonymous contributions).
+If you set your `user.name` and `user.email` git configs, you can sign your commit automatically with `git commit -s`.
+You can also use git [aliases](https://git-scm.com/book/tr/v2/Git-Basics-Git-Aliases) like `git config --global alias.ci 'commit -s'`.
+Now you can commit with `git ci` and the commit will be signed.
+
+
 ## Contribution process
 * Contribute your code in the branch ```master```. It will give us a better chance to test your code before merging it with stable code.
 * For your first contribution start a pull request on master.
