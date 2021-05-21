@@ -258,10 +258,12 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                        holder.dialogAvatar.setImageResource(R.drawable.ic_circular_group);
+                        holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
+                                                                                       R.drawable.ic_circular_group));
                     break;
                 case ROOM_PUBLIC_CALL:
-                        holder.dialogAvatar.setImageResource(R.drawable.ic_circular_link);
+                        holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
+                                                                                       R.drawable.ic_circular_link));
                     break;
                 default:
                     holder.dialogAvatar.setVisibility(View.GONE);
