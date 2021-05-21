@@ -1,12 +1,6 @@
-# Nextcloud Talk for Android
+# [Nextcloud](https://nextcloud.com) Talk for Android :speech_balloon:
 
-**Video & audio calls through Nextcloud on Android**
-
-Nextcloud Talk is a fully on-premises audio/video and chat communication service. It features web and mobile apps and is designed to offer the highest degree of security while being easy to use.
-
-Nextcloud Talk lowers the barrier for communication and lets your team connect any time, any where, on any device, with each other, customers or partners.
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/21a6fb22279e401baba31fb296b6f20e)](https://www.codacy.com/app/Nextcloud/talk-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/talk-android&amp;utm_campaign=Badge_Grade) [![irc](https://img.shields.io/badge/IRC-%23nextcloud--mobile%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=nextcloud-mobile)
+[![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/android/status.svg)](https://drone.nextcloud.com/nextcloud/android) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/21a6fb22279e401baba31fb296b6f20e)](https://www.codacy.com/app/Nextcloud/talk-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/talk-android&amp;utm_campaign=Badge_Grade) [![Releases](https://img.shields.io/github/release/nextcloud/talk-android.svg)](https://github.com/nextcloud/talk-android/releases/latest)
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" 
       alt="Download from Google Play" 
@@ -15,51 +9,99 @@ Nextcloud Talk lowers the barrier for communication and lets your team connect a
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
 
-Please note that Notifications won't work with the f-droid version due to missing Google Play Services.      
+Please note that Notifications won't work with the f-droid version due to missing Google Play Services.
 
-## Why is this so awesome?
+**Video & audio calls through Nextcloud on Android**
+
+Nextcloud Talk is a fully on-premises audio/video and chat communication service. It features web and mobile apps and is designed to offer the highest degree of security while being easy to use.
+
+Nextcloud Talk lowers the barrier for communication and lets your team connect any time, any where, on any device, with each other, customers or partners. 
+
+
+## Why is this so awesome? :sparkles:
+
 Because it is self hosted!!! Audio/video calls and text chat typically require a central server. Some projects go commendably far in trying to ensure they can't see the data, so nobody, not government, advertising company or somebody who broke in the servers, can follow conversations. But the servers still have to mediate every call and text message, allowing them to map out who talks to who and at what time. This 'metadata' [is as useful](https://www.wired.com/2015/03/data-and-goliath-nsa-metadata-spying-your-secrets/), if not more, to track people, than the full content, especially for mass surveillance purposes. Even if the data is not stored by the chat server, the hosting provider or a hacker could simply gather the data.
 
 By hosting your own server, all meta data stays on your server and thus under your control!
 
 If you have suggestions or problems, please [open an issue](https://github.com/nextcloud/talk-android/issues) or contribute directly :)
 
-## Contribution Guidelines
+
+## How to contribute :rocket:
+
+If you want to [contribute](https://nextcloud.com/contribute/) to Nextcloud, you are very welcome: 
+
+- on [our public Talk team conversation](https://cloud.nextcloud.com/call/c7fz9qpr)
+- our forum at https://help.nextcloud.com
+- for translations of the app on [Transifex](https://www.transifex.com/nextcloud/nextcloud/android-talk/)
+- opening issues and PRs (including a corresponding issue)
+
+
+## Contribution Guidelines :scroll:
+
+[GPLv3](https://github.com/nextcloud/talk-android/blob/master/LICENSE.txt).
+
+Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright belongs to all the individual contributors. Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
+
+```
+@copyright Copyright (c) <year>, <your name> (<your email address>)
+```
 
 Please read the [Code of Conduct](https://nextcloud.com/community/code-of-conduct/). This document offers some guidance to ensure Nextcloud participants can cooperate effectively in a positive and inspiring atmosphere, and to explain how together we can strengthen and support each other.
 
-For more information please review the [guidelines for contributing](https://github.com/nextcloud/talk-android/blob/master/CONTRIBUTING.md) to this repository.
+Please review the [guidelines for contributing](/CONTRIBUTING.md) to this repository.
 
-### Testing
+More information how to contribute: [https://nextcloud.com/contribute/](https://nextcloud.com/contribute/)
+
+
+## Start contributing :hammer_and_wrench:
+
+Make sure you read [SETUP.md](/SETUP.md) and [CONTRIBUTING.md](/CONTRIBUTING.md) before you start working on this project. But basically: fork this repository and contribute back using pull requests to the master branch.
+Easy starting points are also reviewing [pull requests](https://github.com/nextcloud/talk-android/pulls) and working on [starter issues](https://github.com/nextcloud/talk-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
+
+
+### Testing :test_tube:
 
 So you would like to contribute by testing? Awesome, we appreciate that very much. 
 
 To report a bug for the alpha or beta version, just create an issue on github like you would for the stable version and
  provide the version number. Please remember that Google Services are necessary to receive push notifications. 
  
-#### Beta versions (Release Candidates)
+ 
+#### Beta versions (Release Candidates) :package:
+
 
 ##### via Google Play
+
 Sign up at [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) to get Release
- Candidates via Google Play.
+ Can
+ didates via Google Play.
+
 
 ##### via github
+
 You can also get the Release Candidates at [github releases](https://github.com/nextcloud/talk-android/releases).
+
 
 #### Alpha versions
 
+
 ##### via Google Play
+
 To become an alpha tester you have to be signed up for the [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) 
 and additionally you have to join the [Alpha testing Google Group](https://groups.google.com/g/nextcloud-android-talk-alpha-testing). 
 After that you will receive the alpha versions via the Play Store (initially, this might take some minutes after
  signing up). However, in the Play Store the app will still be named "Nextcloud Talk (Beta)" even if you are an alpha tester, but you will receive the alpha versions.
 If a beta was released that is newer than the alpha version, you will get the beta in the alpha channel.
  
+ 
 ##### via Download page
+
 In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com/android/talk-alpha/)
 Please make sure to remember that these versions might contain bugs and you don't use them in production.
 
-### Apply a license
+
+### Apply a license :scroll:
 
 All contributions to this repository are considered to be licensed under
 the GNU GPLv3 or any later version.
@@ -73,7 +115,8 @@ to add following line to the header of a file, if you changed it substantially:
 
 For further information on how to add or update the license header correctly please have a look at [our licensing HowTo][applyalicense].
 
-### Sign your work
+
+### Sign your work :bookmark_tabs:
 
 We use the Developer Certificate of Origin (DCO) as a additional safeguard
 for the Nextcloud project. This is a well established and widely used
@@ -92,9 +135,16 @@ commit automatically with `git commit -s`. You can also use git [aliases](https:
 like `git config --global alias.ci 'commit -s'`. Now you can commit with
 `git ci` and the commit will be signed.
 
-## Credits
 
-### Ringtones
+## Support :rescue_worker_helmet:
+
+If you need assistance or want to ask a question about the Talk Android app, you are welcome to [ask for community help](https://help.nextcloud.com/c/support/talk/52) in our forums. If you have found a bug, feel free to [open a new issue on GitHub](https://github.com/nextcloud/talk-android/issues). Keep in mind, that this repository only manages the Nextcloud Talk for Android app. If you find bugs or have problems with the server/backend, you should ask the [Nextcloud server team](https://github.com/nextcloud/server) for help!
+
+
+## Credits :scroll:
+
+
+### Ringtones :bell:
 
 - [Ringtones by Librem](https://soundcloud.com/feandesign/sets/librem-5-sounds) 
   author: [feandesign](https://soundcloud.com/feandesign)
@@ -103,3 +153,8 @@ like `git config --global alias.ci 'commit -s'`. Now you can commit with
 
 [dcofile]: https://github.com/nextcloud/talk-android/blob/master/contribute/developer-certificate-of-origin
 [applyalicense]: https://github.com/nextcloud/talk-android/blob/master/contribute/HowToApplyALicense.md
+
+
+## Remarks :scroll:
+
+Google Play and the Google Play logo are trademarks of Google Inc.
