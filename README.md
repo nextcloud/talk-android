@@ -48,7 +48,7 @@ Please review the [guidelines for contributing](/CONTRIBUTING.md) to this reposi
 More information how to contribute: [https://nextcloud.com/contribute/](https://nextcloud.com/contribute/)
 
 
-### Apply a license :scroll:
+### Apply a license :balance_scale:
 
 Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright belongs to all the individual contributors. Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
 
