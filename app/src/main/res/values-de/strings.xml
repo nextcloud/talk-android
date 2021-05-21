@@ -37,7 +37,7 @@
     <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_call_state_in_call">%1$s ist in einem Gespräch</string>
     <string name="nc_call_state_in_call_with_audio">%1$s ist in einem Gespräch</string>
-    <string name="nc_call_state_with_phone">%1$s per Telefon</string>
+    <string name="nc_call_state_with_phone">%1$s mit Telefon</string>
     <string name="nc_call_state_with_video">%1$s mit Video</string>
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
     <string name="nc_call_unknown">%s Anruf</string>
