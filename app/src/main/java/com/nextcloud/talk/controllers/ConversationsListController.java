@@ -89,7 +89,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -860,7 +859,7 @@ public class ConversationsListController extends BaseController implements Searc
             bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
         }
 
-        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
+//        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
         bottomSheet.setOnDismissListener(dialog -> showSearchOrToolbar());
         bottomSheet.show();
     }

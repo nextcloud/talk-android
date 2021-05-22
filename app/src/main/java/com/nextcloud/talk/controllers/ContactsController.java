@@ -64,7 +64,6 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
-import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
@@ -801,8 +800,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-
-
     private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean showEntrySheet) {
         if (view == null) {
             view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
@@ -826,7 +823,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
         bottomSheet.setOnShowListener(dialog -> {
             if (showEntrySheet) {
-                new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true);
+//                new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true);
             } else {
                 eventBus.post(new BottomSheetLockEvent(false, 0,
                         false, false));

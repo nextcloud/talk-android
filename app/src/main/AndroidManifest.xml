@@ -97,7 +97,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/nc_app_name"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
