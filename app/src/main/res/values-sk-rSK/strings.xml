@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_icon">Ikona účtu</string>
+    <string name="avatar">Avatar</string>
+    <string name="delete_avatar">Zmazať avatara</string>
+    <string name="edit">Upraviť</string>
+    <string name="encrypted">Šifrované</string>
+    <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>
+    <string name="file_list_folder">priečinok</string>
+    <string name="file_list_loading">Načítavam…</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="lock_symbol">Symbol zámku</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Vybraný účet je teraz importovaný a dostupný</string>
     <string name="nc_about">O aplikácii</string>
