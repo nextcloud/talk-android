@@ -15,12 +15,15 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_about">Over</string>
+    <string name="nc_account_chooser_active_user">Actieve gebruiker</string>
+    <string name="nc_account_chooser_add_account">Toevoegen account </string>
     <string name="nc_account_scheduled_for_deletion">Het account is gemarkeerd voor verwijdering en kan niet worden gewijzigd</string>
     <string name="nc_action_open_main_menu">Openen hoofdmenu</string>
     <string name="nc_add">Toevoegen</string>
     <string name="nc_add_attachment">Toevoegen bijlage</string>
     <string name="nc_add_emojis">Toevoegen emojis</string>
     <string name="nc_add_file">Toevoegen aan gespek</string>
+    <string name="nc_add_participants">Toevoegen deelnemers </string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_all_ok_operation">OK, alles in orde!</string>
     <string name="nc_allow_guests">Laat gasten toe</string>
@@ -33,6 +36,8 @@
     <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s in gesprek met audio</string>
+    <string name="nc_call_state_with_phone">%1$s met telefoon</string>
     <string name="nc_call_state_with_video">%1$s met video</string>
     <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
     <string name="nc_call_unknown">%s oproep</string>
@@ -47,6 +52,7 @@
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
     <string name="nc_change_password">Wachtwoord wijzigen</string>
+    <string name="nc_circles">Kringen</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
@@ -68,7 +74,9 @@
     <string name="nc_date_header_yesterday">Gisteren</string>
     <string name="nc_delete">Verwijderen</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
+    <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
+    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook verwijderd voor %1$s.</string>
     <string name="nc_delete_message">verwijderen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
     <string name="nc_demote">Degradeer van moderator</string>
@@ -119,6 +127,7 @@ Kies er eentje van een provider.</string>
 %stekens limiet bereikt</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
+    <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\n Deze vergadering is ingepland voor %1$s.</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
@@ -177,6 +186,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_remove_participant">Verwijder deelnemer</string>
     <string name="nc_rename">Hernoem gesprek</string>
     <string name="nc_reply">Antwoord</string>
+    <string name="nc_reply_privately">Antwoord privé</string>
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>
@@ -187,7 +197,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Zoeken</string>
     <string name="nc_select_an_account">Selecteer een account</string>
+    <string name="nc_select_contacts">Selecteer contactpersonen</string>
     <string name="nc_select_files">Selecteer bestanden</string>
+    <string name="nc_select_participants">Selecteer deelnemers</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s verstuurde een GIF.</string>
     <string name="nc_sent_a_gif_you">Je verstuurde een GIF.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s verstuurde een link.</string>
