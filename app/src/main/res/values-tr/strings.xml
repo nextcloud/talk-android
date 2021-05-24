@@ -302,7 +302,7 @@
     <string name="password_protected">Parola korumalı</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnız güvenilen sunucular ile eşitlensin</string>
-    <string name="scope_federated_title">Birleşmiş</string>
+    <string name="scope_federated_title">Birleşik</string>
     <string name="scope_local_description">Yalnız bu kopyadaki kişiler ve konuklar görebilir</string>
     <string name="scope_local_title">Yerel</string>
     <string name="scope_private_description">Yalnız mobil aygıt üzerinde Talk telefon numarası bütünleştirmesi ile eşleşen kişiler görebilir</string>
