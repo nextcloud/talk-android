@@ -112,26 +112,34 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         holder.avatarImageView.setController(null);
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources().getColor(R.color.colorPrimary));
+            FlexibleUtils.highlightText(
+                    holder.contactDisplayName,
+                    participant.getDisplayName(),
+                    String.valueOf(adapter.getFilter(String.class)),
+                    NextcloudTalkApplication.Companion.getSharedApplication()
+                            .getResources()
+                            .getColor(R.color.colorPrimary));
         } else {
             holder.contactDisplayName.setText(participant.getDisplayName());
         }
 
         holder.serverUrl.setText((Uri.parse(userEntity.getBaseUrl()).getHost()));
 
-        if (userEntity != null && userEntity.getBaseUrl() != null && userEntity.getBaseUrl().startsWith("http://") || userEntity.getBaseUrl().startsWith("https://")) {
+        holder.avatarImageView.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
+        holder.avatarImageView.getHierarchy().setFailureImage(R.drawable.account_circle_48dp);
+
+        if (userEntity != null && userEntity.getBaseUrl() != null &&
+                userEntity.getBaseUrl().startsWith("http://") ||
+                userEntity.getBaseUrl().startsWith("https://")) {
             holder.avatarImageView.setVisibility(View.VISIBLE);
 
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                     .setOldController(holder.avatarImageView.getController())
                     .setAutoPlayAnimations(true)
                     .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            participant.getActorId(), R.dimen.avatar_size), null))
+                            participant.getActorId(), R.dimen.small_item_height), null))
                     .build();
             holder.avatarImageView.setController(draweeController);
-
         } else {
             holder.avatarImageView.setVisibility(View.GONE);
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
