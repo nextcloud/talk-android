@@ -9,7 +9,7 @@
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
 
-Please note that Notifications won't work with the f-droid version due to missing Google Play Services.
+Please note that Notifications won't work with the F-Droid version due to missing Google Play Services.
 
 **Video & audio calls through Nextcloud on Android**
 

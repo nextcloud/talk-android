@@ -43,23 +43,28 @@
 # Guidelines
 
 ## Issue reporting
+
 * [Report the issue](https://github.com/nextcloud/talk-android/issues/new/choose) and choose bug report or feature request. The template includes all the information we need to track down the issue.
 * This repository is *only* for issues within the Nextcloud Talk Android app code. Issues in other components should be reported in their own repositories, e.g. [Nextcloud server](https://github.com/nextcloud/server/issues)
 * Search the [existing issues](https://github.com/nextcloud/talk-android/issues) first, it's likely that your issue was already reported.
+
 If your issue appears to be a bug, and hasn't been reported, open a new issue.
 
 ## Labels
 
 ### Pull request
-* 2. developing
-* 3. to review
+
+* 2 developing
+* 3 to review
 
 ### Issue
+
 * nothing
 * approved
 * PR exists (and then the PR# should be shown in first post)
 
 ### Bug workflow
+
 Every bug should be triaged in approved/needs info in a given time.
 * approved: at least one other is able to reproduce it
 * needs info: something unclear, or not able to reproduce
@@ -67,6 +72,7 @@ Every bug should be triaged in approved/needs info in a given time.
 * pr exists: if bug is fixed, link to pr
 
 # Contributing to Source Code
+
 Thanks for wanting to contribute source code to Nextcloud. That's great!
 
 New contributions are added under GPL version 3+.
@@ -87,17 +93,18 @@ We are all about quality while not sacrificing speed so we use a very pragmatic 
 ### Branching model
 
 ![branching model](/doc/branching.png "Branching Model")
-* All contributions bug fix or feature PRs target the ```master``` branch
+* All contributions (bug fix or feature PRs) target the ```master``` branch
 * Feature releases will always be based on ```master```
 * Bug fix releases will always be based on their respective feature-release-bug-fix-branches
 * Bug fixes relevant for the most recent _and_ released feature (e.g. ```11.0.0```) or bugfix (e.g. ```11.2.1```) release will be backported to the respective bugfix branch (e.g. ```stable-11.0``` or ```stable-11.2```)
 * Hot fixes not relevant for an upcoming feature release but the latest release can target the bug fix branch directly
 
 ### Android Studio formatter setup
+
 Our formatter setup is rather simple:
 * Standard Android Studio
-* Line length 120 characters (Settings->Editor->Code Style->Right margin(columns): 120)
-* Auto optimize imports (Settings->Editor->Auto Import->Optimize imports on the fly)
+* Line length 120 characters (```Settings``` → ```Editor``` → ```Code Style``` → ```Right margin(columns)```: 120)
+* Auto optimize imports (```Settings``` → ```Editor``` → ```Auto Import``` → ```Optimize imports on the fly```)
 
 ### Build variants
 
@@ -108,7 +115,9 @@ There are three build variants
 
 ### Apply a license
 
-Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright belongs to all the individual contributors. Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
+Nextcloud doesn't require a CLA (Contributor License Agreement).
+The copyright belongs to all the individual contributors.
+Therefore we recommend that every contributor adds following line to the header of a file, if they changed it substantially:
 
 ```
 @copyright Copyright (c) <year>, <your name> (<your email address>)
@@ -301,7 +310,7 @@ and thereof we'd ask contributors to be mindful of their code testability:
 At the moment we are releasing the app in two app stores:
 
 * [Google Play Store](https://play.google.com/store/apps/details?id=com.nextcloud.talk2)
-* [f-droid](https://f-droid.org/en/packages/com.nextcloud.talk2/)
+* [F-Droid](https://f-droid.org/en/packages/com.nextcloud.talk2/)
 
 ## Types
 
