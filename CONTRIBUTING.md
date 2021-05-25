@@ -364,11 +364,12 @@ Beware that beta releases for an upcoming version will always use the minor and 
 
 ## Release cycle
 
-* Feature releases are planned every ~2 months, with 6 weeks of developing and 2 weeks of stabilising
+* major releases are linked to the corresponding [server-releases](https://apps.nextcloud.com/apps/spreed/releases) with aligned release date and version number (server version = 11 = client version)
+* feature releases are planned every ~2 months, with 6 weeks of developing and 2 weeks of stabilising
 * after feature freeze a public release candidate on play store and f-droid is released
 * ~2 weeks testing, bug fixing
 * release final version on f-droid and play store
-* Bugfix releases (dot releases, e.g. 3.2.1) are released 4 weeks after stable version from the branch created with first stable release (stable-3.2).
+* bugfix releases (dot releases, e.g. 3.2.1) are released 4 weeks after stable version from the branch created with first stable release (stable-3.2).
 
 Hotfixes as well as security fixes are released via bugfix releases (dot releases) but are released on demand in contrast to regular, scheduled bugfix releases.
 
