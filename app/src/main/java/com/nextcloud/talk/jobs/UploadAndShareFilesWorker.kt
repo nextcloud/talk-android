@@ -25,6 +25,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.PermissionChecker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -33,6 +34,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Controller
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
@@ -101,9 +103,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 uploadFile(currentUser, ncTargetpath, filename, roomToken, requestBody, sourcefileUri)
             }
         } catch (e: IllegalStateException) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
             return Result.failure()
         } catch (e: IllegalArgumentException) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
             return Result.failure()
         }
@@ -118,6 +124,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             while (input.read(buf) != -1)
                 requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
         } catch (e: Exception) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
             Log.e(javaClass.simpleName, "failed to create RequestBody for $sourcefileUri", e)
         }
         return requestBody
@@ -146,6 +154,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 }
 
                 override fun onError(e: Throwable) {
+                    Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                        .show()
                     Log.e(TAG, "failed to upload file $filename")
                 }
 

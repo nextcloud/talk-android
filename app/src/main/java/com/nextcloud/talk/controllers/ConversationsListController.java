@@ -856,9 +856,13 @@ public class ConversationsListController extends BaseController implements Searc
                         filesToShare.add(intent.getData().toString());
                     }
                     if (filesToShare.isEmpty() && textToPaste.isEmpty()) {
+                        Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
+                                       Toast.LENGTH_LONG).show();
                         Log.e(TAG, "failed to get data from intent");
                     }
                 } catch (Exception e) {
+                    Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
+                                   Toast.LENGTH_LONG).show();
                     Log.e(TAG, "Something went wrong when extracting data from intent");
                 }
             }
@@ -867,6 +871,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     private void upload() {
         if (selectedConversation == null) {
+            Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
+                           Toast.LENGTH_LONG).show();
             Log.e(TAG, "not able to upload any files because conversation was null.");
             return;
         }
