@@ -378,14 +378,14 @@ To get an idea which PRs and issues will be part of the next release simply chec
 
 ### Stable Release
 
-Stable releases are based on the git [stable-*](https://github.com/nextcloud/talk-android).
+Stable releases are based on the git [stable-*](https://github.com/nextcloud/talk-android/branches/all?query=stable-).
 
 1. Bump the version name and version code in the [/app/build.gradle](https://github.com/nextcloud/talk-android/blob/master/app/build.gradle), see chapter 'Version Name and number'.
 2. Create a [release/tag](https://github.com/nextcloud/talk-android/releases) in git. Tag name following the naming schema: ```stable-Mayor.Minor.Hotfix``` (e.g. stable-1.2.0) naming the version number following the [semantic versioning schema](http://semver.org/)
 
 ### Release Candidate Release
 
-Release Candidate releases are based on the git [stable-*](https://github.com/nextcloud/talk-android) and are before publishing stable releases.
+Release Candidate releases are based on the git [stable-*](https://github.com/nextcloud/talk-android/branches/all?query=stable-) and are before publishing stable releases.
 
 1. Bump the version name and version code in the [/app/build.gradle](https://github.com/nextcloud/talk-android/blob/master/app/build.gradle), see below the version name and code concept.
 2. Create a [release/tag](https://github.com/nextcloud/talk-android/releases) in git. Tag name following the naming schema: ```rc-Mayor.Minor.Hotfix-betaIncrement``` (e.g. rc-1.2.0-12) naming the version number following the [semantic versioning schema](http://semver.org/)
