@@ -20,15 +20,21 @@
 
 package com.nextcloud.talk.jobs
 
+import android.Manifest
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.util.Log
+import android.widget.Toast
+import androidx.core.content.PermissionChecker
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import autodagger.AutoInjector
+import com.bluelinelabs.conductor.Controller
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
@@ -69,6 +75,15 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        if (!isStoragePermissionGranted(context)) {
+            Log.w(
+                TAG, "Storage permission is not granted. As a developer please make sure you check for" +
+                    "permissions via UploadAndShareFilesWorker.isStoragePermissionGranted() and " +
+                    "UploadAndShareFilesWorker.requestStoragePermission() beforehand. If you already " +
+                    "did but end up with this warning, the user most likely revoked the permission"
+            )
+        }
+
         try {
             val currentUser = userUtils.currentUser
             val sourcefiles = inputData.getStringArray(DEVICE_SOURCEFILES)
@@ -88,9 +103,13 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 uploadFile(currentUser, ncTargetpath, filename, roomToken, requestBody, sourcefileUri)
             }
         } catch (e: IllegalStateException) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
             return Result.failure()
         } catch (e: IllegalArgumentException) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
             return Result.failure()
         }
@@ -105,6 +124,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             while (input.read(buf) != -1)
                 requestBody = RequestBody.create("application/octet-stream".toMediaTypeOrNull(), buf)
         } catch (e: Exception) {
+            Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                .show()
             Log.e(javaClass.simpleName, "failed to create RequestBody for $sourcefileUri", e)
         }
         return requestBody
@@ -133,6 +154,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 }
 
                 override fun onError(e: Throwable) {
+                    Toast.makeText(context, context.resources.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG)
+                        .show()
                     Log.e(TAG, "failed to upload file $filename")
                 }
 
@@ -172,8 +195,37 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     companion object {
         const val TAG = "UploadFileWorker"
+        const val REQUEST_PERMISSION = 3123
         const val DEVICE_SOURCEFILES = "DEVICE_SOURCEFILES"
         const val NC_TARGETPATH = "NC_TARGETPATH"
         const val ROOM_TOKEN = "ROOM_TOKEN"
+
+        fun isStoragePermissionGranted(context: Context): Boolean {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (PermissionChecker.checkSelfPermission(
+                        context,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ) == PermissionChecker.PERMISSION_GRANTED
+                ) {
+                    Log.d(TAG, "Permission is granted")
+                    return true
+                } else {
+                    Log.d(TAG, "Permission is revoked")
+                    return false
+                }
+            } else { //permission is automatically granted on sdk<23 upon installation
+                Log.d(TAG, "Permission is granted")
+                return true
+            }
+        }
+
+        fun requestStoragePermission(controller: Controller) {
+            controller.requestPermissions(
+                arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ),
+                REQUEST_PERMISSION
+            )
+        }
     }
 }
