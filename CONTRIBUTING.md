@@ -353,12 +353,14 @@ For _stable_ and _release candidate_ the version name follows the [semantic vers
 ![Version code schema](/docs/semantic_versioning_code.png "Semantic versioning code")
 
 Examples for different versions:
-* 1.0.0 ```10000099```
-* 8.12.2 ```80120290```
-* 9.8.4-Alpha18 ```90080418```
-* 11.2.0-rc1 ```110020051```
+version name|version code
+---|---
+1.0.0|```10000099```
+8.12.2|```80120290```
+9.8.4-Alpha18|```90080418```
+11.2.0-rc1|```110020051```
 
-beware, that beta releases for an upcoming version will always use the minor and hotfix version of the release they are targeting. So to make sure the version code of the upcoming stable release will always be higher stable releases set the 2 beta digits to '90'-'99' as seen above in the examples. For major versions, as we're not a library and thus 'incompatible API changes' is not something that happens, decisions are essentially marketing-based. If we deem a release to be very impactful, we might increase the major version number.
+Beware that beta releases for an upcoming version will always use the minor and hotfix version of the release they are targeting. So to make sure the version code of the upcoming stable release will always be higher stable releases set the 2 beta digits to '90'-'99' as seen above in the examples. For major versions, as we're not a library and thus 'incompatible API changes' is not something that happens, decisions are essentially marketing-based. If we deem a release to be very impactful, we might increase the major version number.
 
 ## Release cycle
 
