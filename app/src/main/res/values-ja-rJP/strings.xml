@@ -264,7 +264,7 @@
     <string name="nc_settings_switch_account">アカウントを切り替える</string>
     <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_dark">ダーク</string>
-    <string name="nc_settings_theme_follow_system">既定の設定を使用する</string>
+    <string name="nc_settings_theme_follow_system">デフォルトの設定を使用する</string>
     <string name="nc_settings_theme_key">テーマ</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_title">テーマ</string>
