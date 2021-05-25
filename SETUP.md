@@ -4,7 +4,6 @@ Sections 1) and 2) are common for any environment. The rest of the sections desc
 
 If you have any problem, remove the 'talk-android' folder, start again from 1) and work your way down. If something still does not work as described here, please open a new issue describing exactly what you did, what happened, and what should have happened.
 
-
 ### 0. Common software dependencies.
 
 There are some tools needed, no matter what is your specific IDE or build tool of preference.
@@ -35,7 +34,6 @@ Install any other package you consider interesting, such as emulators.
 
 After installing it, add the full path to the directories 'tools/' and 'platform-tools/' from your Android SDK installation into the PATH variable of your environment.
 
-
 ### 1. Fork and download the nextcloud/android repository.
 
 You will need [git][1] to access to the different versions of the Nextcloud's source code. The source code is hosted on GitHub and may be read by anybody, without a GitHub account. You will need one if you want to contribute to the development of the app with your own code.
@@ -52,7 +50,6 @@ The next steps will assume you have a GitHub account and that you will get the c
 
 At this point you can continue using different tools to build the project. Section 2 and 3 describe the existing alternatives.
 
-
 ### 2. Working with Android Studio.
 
 To set up the project in Android Studio follow the next steps:
@@ -60,7 +57,6 @@ To set up the project in Android Studio follow the next steps:
 * Open Android Studio and select 'Open an Existing Project'. Browse through your file system to the folder 'talk-android' where the project is located. The file chooser will show an Android face as the folder icon, which you can select to reopen the project.
 * Android Studio will try to build the project directly after importing it. To build it manually, just click the 'Play' button in the toolbar to build and run it in a mobile device or an emulator. The resulting APK file will be saved in the 'app/build/outputs/apk/' subdirectory in the project folder and being installed/launched in a configured emulator or if connected your physical device.
 * Check Android Studio editor configuration for the project: ```Settings``` → ```Editor``` → ```Code Style``` → ```Scheme: Project``` and ```Enable EditorConfig support``` (should be enabled by default)
-
 
 ### 3. Working in a terminal with Gradle:
 
@@ -74,7 +70,6 @@ To set up the project in Android Studio follow the next steps:
 The first time the Gradle wrapper is called, the correct Gradle version will be downloaded automatically. This requires a working Internet connection.
 
 The generated APK file is saved in app/build/outputs/apk as app-generic-debug.apk
-
 
 ### 4. App flavours
 
@@ -91,9 +86,7 @@ The app is currently equipped to be built with three flavours:
 [7]: https://gradle.org/
 [8]: https://docs.gradle.org/current/userguide/gradle_wrapper.html
 
-
 ### 5. Troubleshooting
-
 
 #### 1. Compilation fails with "java.lang.OutOfMemoryError: Java heap space" error
 The default settings for Gradle is to limit the compilation to 1GB of heap.

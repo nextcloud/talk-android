@@ -1,6 +1,5 @@
 # [Nextcloud](https://nextcloud.com) Talk for Android app
 
-
 # Index
 1. [Guidelines](#guidelines)
     1. [Issue reporting](#issue-reporting)
@@ -41,9 +40,7 @@
         1. [Release Candidate Release](#release-candidate-release)
         1. [Alpha Release](#alpha-release)
 
-
 # Guidelines
-
 
 ## Issue reporting
 * [Report the issue](https://github.com/nextcloud/talk-android/issues/new/choose) and choose bug report or feature request. The template includes all the information we need to track down the issue.
@@ -51,20 +48,16 @@
 * Search the [existing issues](https://github.com/nextcloud/talk-android/issues) first, it's likely that your issue was already reported.
 If your issue appears to be a bug, and hasn't been reported, open a new issue.
 
-
 ## Labels
-
 
 ### Pull request
 * 2. developing
 * 3. to review
 
-
 ### Issue
 * nothing
 * approved
 * PR exists (and then the PR# should be shown in first post)
-
 
 ### Bug workflow
 Every bug should be triaged in approved/needs info in a given time.
@@ -73,14 +66,13 @@ Every bug should be triaged in approved/needs info in a given time.
   * if no response within 1 months, bug will be closed
 * pr exists: if bug is fixed, link to pr
 
-
 # Contributing to Source Code
 Thanks for wanting to contribute source code to Nextcloud. That's great!
 
 New contributions are added under GPL version 3+.
 
-
 ## Developing process
+
 We are all about quality while not sacrificing speed so we use a very pragmatic workflow.
 
 * create an issue with feature request
@@ -92,8 +84,8 @@ We are all about quality while not sacrificing speed so we use a very pragmatic 
 * create [pull request](https://github.com/nextcloud/talk-android/pulls)
 * to assure the quality of the app, any PR gets reviewed, approved and tested before it will be merged to master
 
-
 ### Branching model
+
 ![branching model](/doc/branching.png "Branching Model")
 * All contributions bug fix or feature PRs target the ```master``` branch
 * Feature releases will always be based on ```master```
@@ -101,20 +93,18 @@ We are all about quality while not sacrificing speed so we use a very pragmatic 
 * Bug fixes relevant for the most recent _and_ released feature (e.g. ```11.0.0```) or bugfix (e.g. ```11.2.1```) release will be backported to the respective bugfix branch (e.g. ```stable-11.0``` or ```stable-11.2```)
 * Hot fixes not relevant for an upcoming feature release but the latest release can target the bug fix branch directly
 
-
 ### Android Studio formatter setup
 Our formatter setup is rather simple:
 * Standard Android Studio
 * Line length 120 characters (Settings->Editor->Code Style->Right margin(columns): 120)
 * Auto optimize imports (Settings->Editor->Auto Import->Optimize imports on the fly)
 
-
 ### Build variants
+
 There are three build variants
 * generic: no Google Stuff, used for F-Droid
 * gplay: with Google Stuff (Push notification), used for Google Play Store
 * qa: based on pr and available as direct download within the pr for testing purposes
-
 
 ### Apply a license
 
@@ -125,7 +115,6 @@ Nextcloud doesn't require a CLA (Contributor License Agreement). The copyright b
 ```
 
 For further information on how to add or update the license header correctly please have a look at [our licensing HowTo][applyalicense].
-
 
 ### Sign your work
 
@@ -143,24 +132,24 @@ If you set your `user.name` and `user.email` git configs, you can sign your comm
 You can also use git [aliases](https://git-scm.com/book/tr/v2/Git-Basics-Git-Aliases) like `git config --global alias.ci 'commit -s'`.
 Now you can commit with `git ci` and the commit will be signed.
 
-
 ## Contribution process
+
 * Contribute your code in the branch ```master```. It will give us a better chance to test your code before merging it with stable code.
 * For your first contribution start a pull request on master.
 
-
 ### Fork and download android repository:
+
 * Please follow [SETUP.md](/SETUP.md) to setup Nextcloud Talk Android app work environment.
 
-
 ### Create pull request:
+
 * Commit your changes locally: ```git commit -a```
 * Push your changes to your GitHub repo: ```git push```
 * Browse to <https://github.com/YOURGITHUBNAME/talk-android/pulls> and issue pull request
 * Enter description and send pull request.
 
-
 ### Create another pull request:
+
 To make sure your new pull request does not contain commits which are already contained in previous PRs, create a new branch which is a clone of upstream/master.
 
 * ```git fetch upstream```
@@ -169,17 +158,16 @@ To make sure your new pull request does not contain commits which are already co
 * Push branch to server: ```git push -u origin name_of_local_master_branch```
 * Use GitHub to issue PR
 
-
 ### Backport pull request:
+
 Use backport-bot via "/backport to stable-version", e.g. "/backport to stable-11.2".
 This will automatically add "backport-request" label to PR and bot will create a new PR to targeted branch once the base PR is merged.
 If automatic backport fails, it will create a comment.
 
-
 ### Adding new files
+
 If you create a new file it needs to contain a license header. We encourage you to use the same license (GPL3+) as we do.
 Copyright of Nextcloud GmbH is optional.
-
 
 Source code of app:
 ```java/kotlin
@@ -229,11 +217,9 @@ Source code of app:
 -->
 ```
 
-
 ## File naming
 
 The file naming patterns are inspired and based on [Ribot's Android Project And Code Guidelines](https://github.com/ribot/android-guidelines/blob/c1d8c9c904eb31bf01fe24aadb963b74281fe79a/project_and_code_guidelines.md).
-
 
 ### Menu files
 
@@ -249,18 +235,15 @@ Similar to layout files, menu files should match the name of the component. For 
 
 A good practice is to not include the word `menu` as part of the name because these files are already located in the `menu` directory. In case a component uses several menus in different places (via popup menus) then the resource name would be extended. For example, if the user profile activity has two popup menus for configuring the users settings and one for the handling group assignments then the file names for the menus would be: `activity_user_profile_user_settings.xml` and `activity_user_profile_group_assignments.xml`.
 
-
 ## Translations
 
 We manage translations via [Transifex](https://www.transifex.com/nextcloud/nextcloud/talk-android/). So just request joining the translation team for Android on the site and start translating. All translations will then be automatically pushed to this repository, there is no need for any pull request for translations.
 
 When submitting PRs with changed translations, please only submit changes to values/strings.xml and not changes to translated files. These will be overwritten by the next merge of transifex-but and would increase PR review efforts.
 
-
 ## Engineering practices
 
 This section contains some general guidelines for new contributors, based on common issues flagged during code review.
-
 
 ### Approach to technical debt
 
@@ -275,7 +258,6 @@ you found it"*. Simple, little improvements will sum up and will be very appreci
 
 We also promise to actively support and mentor contributors that help us to improve code quality, as we understand
 that this process is challenging and requires deep understanding of the application codebase.
-
 
 ### Dependency injection
 
@@ -302,7 +284,6 @@ This combination allows us to benefit from automation when it provides most valu
 to any specific framework and stimulates continuous code modernization through iterative refactoring of all minor
 elements.
 
-
 ### Testing
  
 TL;DR If we can't write a test for it, it's not good.
@@ -315,42 +296,44 @@ and thereof we'd ask contributors to be mindful of their code testability:
    should at least not make future efforts more challenging
 3. whenever possible, testability should be improved even if the code is not covered by tests
 
-
 # Releases
+
 At the moment we are releasing the app in two app stores:
 
 * [Google Play Store](https://play.google.com/store/apps/details?id=com.nextcloud.talk2)
 * [f-droid](https://f-droid.org/en/packages/com.nextcloud.talk2/)
 
-
 ## Types
+
 We do differentiate between three different kinds of releases:
 
-
 ### Stable
+
 Play store and f-droid releases for the masses.
 Pull Requests that have been tested and reviewed can go to master. After the last alpha release is out in the wild and no mayor errors get reported (by users or in the developer console) the master branch is ready for the stable release phase.
 So when we decide to go for a new release we freeze the master feature wise and a stable branch will be created.
 
 ### Release Candidate
+
 _stable beta_ releases done via the Beta program of the Google Play store.
 Whenever a PR is reviewed/approved we put it on master.
 Before releasing a new stable version there is at least one release candidate. It is based on the current stable-branch. After a beta testing phase a stable version will be released, which is identical to the latest release candidate.
 
-
 ### Alpha Release
+
 _alpha_ releases done via the Alpha program of the Google Play store.
 Whenever a PR is reviewed/approved we put it on master.
 Alpha releases are based on latest master and and we aim to release a new alpha version on a weekly basis. 
 
-
 ### QA Release
+
 Done as a standalone app that can be installed in parallel to the stable app.
 Any PR gets a QA build so users and reporters are able to easily test a change (feature or bugfix.
 
-
 ## Version Name and number
+
 ### Stable / Release candidate
+
 For _stable_ and _release candidate_ the version name follows the [semantic versioning schema](http://semver.org/) and the version number has several digits reserved to parts of the versioning schema inspired by the [jayway version numbering](https://www.jayway.com/2015/03/11/automatic-versioncode-generation-in-android-gradle/), where:
 
 * 2 digits for beta/alpha code as in release candidates starting at '01' (1-50=Alpha / 51-89=RC / 90-99=stable)
@@ -368,8 +351,8 @@ Examples for different versions:
 
 beware, that beta releases for an upcoming version will always use the minor and hotfix version of the release they are targeting. So to make sure the version code of the upcoming stable release will always be higher stable releases set the 2 beta digits to '90'-'99' as seen above in the examples. For major versions, as we're not a library and thus 'incompatible API changes' is not something that happens, decisions are essentially marketing-based. If we deem a release to be very impactful, we might increase the major version number.
 
-
 ## Release cycle
+
 * Releases are planned every ~2 months, with 6 weeks of developing and 2 weeks of stabilising
 * after feature freeze a public release candidate on play store and f-droid is released
 * ~2 weeks testing, bug fixing
@@ -382,22 +365,22 @@ To get an idea which PRs and issues will be part of the next release simply chec
 
 ## Release process
 
-
 ### Stable Release
+
 Stable releases are based on the git [stable-*](https://github.com/nextcloud/talk-android).
 
 1. Bump the version name and version code in the [/app/build.gradle](https://github.com/nextcloud/talk-android/blob/master/app/build.gradle), see chapter 'Version Name and number'.
 2. Create a [release/tag](https://github.com/nextcloud/talk-android/releases) in git. Tag name following the naming schema: ```stable-Mayor.Minor.Hotfix``` (e.g. stable-1.2.0) naming the version number following the [semantic versioning schema](http://semver.org/)
 
-
 ### Release Candidate Release
+
 Release Candidate releases are based on the git [stable-*](https://github.com/nextcloud/talk-android) and are before publishing stable releases.
 
 1. Bump the version name and version code in the [/app/build.gradle](https://github.com/nextcloud/talk-android/blob/master/app/build.gradle), see below the version name and code concept.
 2. Create a [release/tag](https://github.com/nextcloud/talk-android/releases) in git. Tag name following the naming schema: ```rc-Mayor.Minor.Hotfix-betaIncrement``` (e.g. rc-1.2.0-12) naming the version number following the [semantic versioning schema](http://semver.org/)
 
-
 ### Alpha Release
+
 Release Candidate releases are based on the git [master](https://github.com/nextcloud/talk-android) and are done between stable releases.
 
 1. Bump the version name and version code in the [/app/build.gradle](https://github.com/nextcloud/talk-android/blob/master/app/build.gradle), see below the version name and code concept.

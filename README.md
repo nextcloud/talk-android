@@ -17,7 +17,6 @@ Nextcloud Talk is a fully on-premises audio/video and chat communication service
 
 Nextcloud Talk lowers the barrier for communication and lets your team connect any time, any where, on any device, with each other, customers or partners. 
 
-
 ## Why is this so awesome? :sparkles:
 
 Because it is self hosted!!! Audio/video calls and text chat typically require a central server. Some projects go commendably far in trying to ensure they can't see the data, so nobody, not government, advertising company or somebody who broke in the servers, can follow conversations. But the servers still have to mediate every call and text message, allowing them to map out who talks to who and at what time. This 'metadata' [is as useful](https://www.wired.com/2015/03/data-and-goliath-nsa-metadata-spying-your-secrets/), if not more, to track people, than the full content, especially for mass surveillance purposes. Even if the data is not stored by the chat server, the hosting provider or a hacker could simply gather the data.
@@ -25,7 +24,6 @@ Because it is self hosted!!! Audio/video calls and text chat typically require a
 By hosting your own server, all meta data stays on your server and thus under your control!
 
 If you have suggestions or problems, please [open an issue](https://github.com/nextcloud/talk-android/issues) or contribute directly :)
-
 
 ## How to contribute :rocket:
 
@@ -35,7 +33,6 @@ If you want to [contribute](https://nextcloud.com/contribute/) to Nextcloud, you
 - our forum at https://help.nextcloud.com
 - for translations of the app on [Transifex](https://www.transifex.com/nextcloud/nextcloud/android-talk/)
 - opening issues and PRs (including a corresponding issue)
-
 
 ## Contribution Guidelines :scroll:
 
@@ -47,13 +44,11 @@ Please review the [guidelines for contributing](/CONTRIBUTING.md) to this reposi
 
 More information how to contribute: [https://nextcloud.com/contribute/](https://nextcloud.com/contribute/)
 
-
 ## Start contributing :hammer_and_wrench:
 
 Make sure you read [SETUP.md](/SETUP.md) and [CONTRIBUTING.md](/CONTRIBUTING.md) before you start working on this project.
 But basically: fork this repository and contribute back using pull requests to the master branch.
 Easy starting points are also reviewing [pull requests](https://github.com/nextcloud/talk-android/pulls) and working on [starter issues](https://github.com/nextcloud/talk-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
-
 
 ### Testing :test_tube:
 
@@ -62,22 +57,17 @@ So you would like to contribute by testing? Awesome, we appreciate that very muc
 To report a bug for the alpha or beta version, just create an issue on github like you would for the stable version and
  provide the version number. Please remember that Google Services are necessary to receive push notifications. 
  
- 
 #### Beta versions (Release Candidates) :package:
-
 
 ##### via Google Play
 
 Sign up at [Google Play Beta channel](https://play.google.com/apps/testing/com.nextcloud.talk2) to get Release Candidates via Google Play.
 
-
 ##### via github
 
 You can also get the Release Candidates at [github releases](https://github.com/nextcloud/talk-android/releases).
 
-
 #### Alpha versions
-
 
 ##### via Google Play
 
@@ -87,20 +77,16 @@ After that you will receive the alpha versions via the Play Store (initially, th
  signing up). However, in the Play Store the app will still be named "Nextcloud Talk (Beta)" even if you are an alpha tester, but you will receive the alpha versions.
 If a beta was released that is newer than the alpha version, you will get the beta in the alpha channel.
  
- 
 ##### via Download page
 
 In addition to google play, the alpha and beta apps can also be obtained from the Nextcloud [Download page](https://download.nextcloud.com/android/talk-alpha/)
 Please make sure to remember that these versions might contain bugs and you don't use them in production.
 
-
 ## Support :rescue_worker_helmet:
 
 If you need assistance or want to ask a question about the Talk Android app, you are welcome to [ask for community help](https://help.nextcloud.com/c/support/talk/52) in our forums. If you have found a bug, feel free to [open a new issue on GitHub](https://github.com/nextcloud/talk-android/issues). Keep in mind, that this repository only manages the Nextcloud Talk for Android app. If you find bugs or have problems with the server/backend, you should ask the [Nextcloud server team](https://github.com/nextcloud/server) for help!
 
-
 ## Credits :scroll:
-
 
 ### Ringtones :bell:
 
@@ -111,7 +97,6 @@ If you need assistance or want to ask a question about the Talk Android app, you
 
 [dcofile]: https://github.com/nextcloud/talk-android/blob/master/contribute/developer-certificate-of-origin
 [applyalicense]: https://github.com/nextcloud/talk-android/blob/master/contribute/HowToApplyALicense.md
-
 
 ## Remarks :scroll:
 
