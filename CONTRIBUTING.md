@@ -143,8 +143,8 @@ Now you can commit with `git ci` and the commit will be signed.
 
 ## Contribution process
 
-* Contribute your code in the branch ```master```. It will give us a better chance to test your code before merging it with stable code.
-* For your first contribution start a pull request on master.
+Contribute your code targeting/based-on the branch ```master```.
+It will give us a better chance to test your code before merging it with stable code.
 
 ### Fork and download android repository:
 
@@ -337,7 +337,7 @@ Alpha releases are based on latest master and and we aim to release a new alpha 
 ### QA Release
 
 Done as a standalone app that can be installed in parallel to the stable app.
-Any PR gets a QA build so users and reporters are able to easily test a change (feature or bugfix.
+Any PR gets a QA build so users and reporters are able to easily test the change (feature or bugfix).
 
 ## Version Name and number
 
@@ -364,7 +364,7 @@ Beware that beta releases for an upcoming version will always use the minor and 
 
 ## Release cycle
 
-* Releases are planned every ~2 months, with 6 weeks of developing and 2 weeks of stabilising
+* Feature releases are planned every ~2 months, with 6 weeks of developing and 2 weeks of stabilising
 * after feature freeze a public release candidate on play store and f-droid is released
 * ~2 weeks testing, bug fixing
 * release final version on f-droid and play store

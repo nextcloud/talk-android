@@ -34,7 +34,7 @@ Install any other package you consider interesting, such as emulators.
 
 After installing it, add the full path to the directories 'tools/' and 'platform-tools/' from your Android SDK installation into the PATH variable of your environment.
 
-### 1. Fork and download the nextcloud/android repository.
+### 1. Fork and download the nextcloud/talk-android repository.
 
 You will need [git][1] to access to the different versions of the Nextcloud's source code. The source code is hosted on GitHub and may be read by anybody, without a GitHub account. You will need one if you want to contribute to the development of the app with your own code.
 
