@@ -615,7 +615,11 @@ class ChatController(args: Bundle) :
 
     private fun checkReadOnlyState() {
         if (currentConversation != null) {
-            if (currentConversation?.shouldShowLobby(conversationUser) ?: false || currentConversation?.conversationReadOnlyState != null && currentConversation?.conversationReadOnlyState == Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY) {
+            if (currentConversation?.shouldShowLobby(conversationUser) ?: false ||
+                currentConversation?.conversationReadOnlyState != null &&
+                currentConversation?.conversationReadOnlyState ==
+                Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+            ) {
 
                 conversationVoiceCallMenuItem?.icon?.alpha = 99
                 conversationVideoMenuItem?.icon?.alpha = 99
@@ -745,7 +749,10 @@ class ChatController(args: Bundle) :
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION &&
+            grantResults.isNotEmpty() &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
             Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
             uploadFiles(filesToUpload)
         } else {
@@ -843,10 +850,11 @@ class ChatController(args: Bundle) :
         super.onAttach(view)
         eventBus?.register(this)
 
-        if (conversationUser?.userId != "?" && conversationUser?.hasSpreedFeatureCapability("mention-flag") ?: false && activity != null) {
-            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v ->
-                showConversationInfoScreen()
-            }
+        if (conversationUser?.userId != "?" &&
+            conversationUser?.hasSpreedFeatureCapability("mention-flag") ?: false &&
+            activity != null
+        ) {
+            activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
         isLeavingForConversation = false
@@ -1327,9 +1335,9 @@ class ChatController(args: Bundle) :
                             TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
                             chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
                             countGroupedMessages < 4 && DateFormatter.isSameDay(
-                                chatMessageList[i].createdAt,
-                                chatMessageList[i + 1].createdAt
-                            )
+                                    chatMessageList[i].createdAt,
+                                    chatMessageList[i + 1].createdAt
+                                )
                         ) {
                             chatMessageList[i].isGrouped = true
                             countGroupedMessages++
@@ -1373,7 +1381,11 @@ class ChatController(args: Bundle) :
                     chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
 
                     val shouldScroll =
-                        !isThereANewNotice && !shouldAddNewMessagesNotice && layoutManager?.findFirstVisibleItemPosition() == 0 || adapter != null && adapter?.itemCount == 0
+                        !isThereANewNotice &&
+                            !shouldAddNewMessagesNotice &&
+                            layoutManager?.findFirstVisibleItemPosition() == 0 ||
+                            adapter != null &&
+                            adapter?.itemCount == 0
 
                     if (!shouldAddNewMessagesNotice && !shouldScroll && popupBubble != null) {
                         if (!popupBubble!!.isShown) {

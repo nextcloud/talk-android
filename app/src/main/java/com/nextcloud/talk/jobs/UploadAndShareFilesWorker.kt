@@ -75,7 +75,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         if (!isStoragePermissionGranted(context)) {
             Log.w(
-                TAG, "Storage permission is not granted. As a developer please make sure you check for" +
+                TAG,
+                "Storage permission is not granted. As a developer please make sure you check for" +
                     "permissions via UploadAndShareFilesWorker.isStoragePermissionGranted() and " +
                     "UploadAndShareFilesWorker.requestStoragePermission() beforehand. If you already " +
                     "did but end up with this warning, the user most likely revoked the permission"
@@ -203,7 +204,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     Log.d(TAG, "Permission is revoked")
                     return false
                 }
-            } else { //permission is automatically granted on sdk<23 upon installation
+            } else { // permission is automatically granted on sdk<23 upon installation
                 Log.d(TAG, "Permission is granted")
                 return true
             }
