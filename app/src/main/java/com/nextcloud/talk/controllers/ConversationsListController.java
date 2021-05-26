@@ -885,7 +885,9 @@ public class ConversationsListController extends BaseController implements Searc
 
             Data data = new Data.Builder()
                     .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, filesToShareArray)
-                    .putString(UploadAndShareFilesWorker.NC_TARGETPATH, currentUser.getAttachmentFolder())
+                    .putString(
+                            UploadAndShareFilesWorker.NC_TARGETPATH,
+                            CapabilitiesUtil.getAttachmentFolder(currentUser))
                     .putString(UploadAndShareFilesWorker.ROOM_TOKEN, selectedConversation.getToken())
                     .build();
             OneTimeWorkRequest uploadWorker = new OneTimeWorkRequest.Builder(UploadAndShareFilesWorker.class)
