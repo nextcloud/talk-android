@@ -1105,6 +1105,7 @@ class ChatController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
 
                     override fun onNext(genericOverall: GenericOverall) {
@@ -1133,6 +1134,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onComplete() {
+                        // unused atm
                     }
                 })
         }
@@ -1227,9 +1229,11 @@ class ChatController(args: Bundle) :
                         }
 
                         override fun onError(e: Throwable) {
+                            // unused atm
                         }
 
                         override fun onComplete() {
+                            // unused atm
                         }
                     })
             } else {
@@ -1254,9 +1258,11 @@ class ChatController(args: Bundle) :
                         }
 
                         override fun onError(e: Throwable) {
+                            // unused atm
                         }
 
                         override fun onComplete() {
+                            // unused atm
                         }
                     })
             }
@@ -1662,7 +1668,9 @@ class ChatController(args: Bundle) :
                                         .subscribeOn(Schedulers.io())
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(object : Observer<RoomOverall> {
-                                            override fun onSubscribe(d: Disposable) {}
+                                            override fun onSubscribe(d: Disposable) {
+                                                // unused atm
+                                            }
                                             override fun onNext(roomOverall: RoomOverall) {
                                                 bundle.putParcelable(
                                                     KEY_ACTIVE_CONVERSATION,
@@ -1678,7 +1686,9 @@ class ChatController(args: Bundle) :
                                                 Log.e(TAG, e.message, e)
                                             }
 
-                                            override fun onComplete() {}
+                                            override fun onComplete() {
+                                                // unused atm
+                                            }
                                         })
                                 }
 
@@ -1686,7 +1696,9 @@ class ChatController(args: Bundle) :
                                     Log.e(TAG, e.message, e)
                                 }
 
-                                override fun onComplete() {}
+                                override fun onComplete() {
+                                    // unused atm
+                                }
                             })
                         true
                     }
@@ -1709,6 +1721,7 @@ class ChatController(args: Bundle) :
                             ?.observeOn(AndroidSchedulers.mainThread())
                             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                                 override fun onSubscribe(d: Disposable) {
+                                    // unused atm
                                 }
 
                                 override fun onNext(t: ChatOverallSingleMessage) {
@@ -1731,6 +1744,7 @@ class ChatController(args: Bundle) :
                                 }
 
                                 override fun onComplete() {
+                                    // unused atm
                                 }
                             })
                         true
@@ -1849,6 +1863,7 @@ class ChatController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<RoomOverall> {
                     override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
 
                     override fun onNext(roomOverall: RoomOverall) {
@@ -1884,9 +1899,12 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onError(e: Throwable) {
+                        // unused atm
                     }
 
-                    override fun onComplete() {}
+                    override fun onComplete() {
+                        // unused atm
+                    }
                 })
         }
     }

@@ -217,10 +217,11 @@ class ConversationInfoController(args: Bundle) :
                 }
             }
 
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).setOnCheckedChangeListener { _, _ ->
-                reconfigureLobbyTimerView()
-                submitLobbyChanges()
-            }
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+                .setOnCheckedChangeListener { _, _ ->
+                    reconfigureLobbyTimerView()
+                    submitLobbyChanges()
+                }
         } else {
             binding.webinarInfoView.webinarSettings.visibility = View.GONE
         }
@@ -228,7 +229,8 @@ class ConversationInfoController(args: Bundle) :
 
     fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
         val isChecked =
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+                .isChecked
 
         if (dateTime != null && isChecked) {
             conversation!!.lobbyTimer = (dateTime.timeInMillis - (dateTime.time.seconds * 1000)) / 1000
@@ -239,7 +241,11 @@ class ConversationInfoController(args: Bundle) :
         conversation!!.lobbyState = if (isChecked) Conversation.LobbyState
             .LOBBY_STATE_MODERATORS_ONLY else Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
 
-        if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE && conversation!!.lobbyTimer != 0L) {
+        if (
+            conversation!!.lobbyTimer != null &&
+            conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE &&
+            conversation!!.lobbyTimer != 0L
+        ) {
             binding.webinarInfoView.startTimePreferences.setSummary(
                 DateUtils.getLocalDateStringFromTimestampForLobby(
                     conversation!!.lobbyTimer
@@ -258,7 +264,8 @@ class ConversationInfoController(args: Bundle) :
 
     fun submitLobbyChanges() {
         val state = if (
-            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+                .isChecked
         ) 1 else 0
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
@@ -566,7 +573,10 @@ class ConversationInfoController(args: Bundle) :
 
     private fun adjustNotificationLevelUI() {
         if (conversation != null) {
-            if (conversationUser != null && CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
+            if (
+                conversationUser != null &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "notification-levels")
+            ) {
                 binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = true
                 binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = 1.0f
 
