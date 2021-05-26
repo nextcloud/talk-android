@@ -103,6 +103,19 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         return false;
     }
 
+    private boolean hasGeoLocation() {
+        if (messageParameters != null && messageParameters.size() > 0) {
+            for (String key : messageParameters.keySet()) {
+                Map<String, String> individualHashMap = messageParameters.get(key);
+                if (individualHashMap.get("type").equals("geo-location")) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     @Nullable
     @Override
     public String getImageUrl() {
@@ -132,6 +145,11 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         if (hasFileAttachment()) {
             return MessageType.SINGLE_NC_ATTACHMENT_MESSAGE;
         }
+
+        if (hasGeoLocation()) {
+            return MessageType.SINGLE_NC_GEOLOCATION_MESSAGE;
+        }
+
 
         return TextMatchers.getMessageTypeFromString(getText());
     }
@@ -548,6 +566,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
         SINGLE_LINK_IMAGE_MESSAGE,
         SINGLE_LINK_AUDIO_MESSAGE,
         SINGLE_NC_ATTACHMENT_MESSAGE,
+        SINGLE_NC_GEOLOCATION_MESSAGE,
     }
 
     public enum SystemMessageType {

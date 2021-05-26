@@ -177,7 +177,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             } catch (ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error when checking if worker already exists", e);
             }
-
+        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE) {
+            Log.d(TAG, "handle geolocation here");
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             messageText.setText("GIPHY");
             DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText);
