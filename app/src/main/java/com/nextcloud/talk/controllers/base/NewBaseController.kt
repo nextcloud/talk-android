@@ -251,7 +251,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         }
     }
 
-    val appBarLayoutType: AppBarLayoutType
+    open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
     val searchHint: String
         get() = context!!.getString(R.string.appbar_search_in, context!!.getString(R.string.nc_app_name))
