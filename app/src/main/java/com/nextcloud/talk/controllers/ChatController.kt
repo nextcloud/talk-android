@@ -1650,7 +1650,9 @@ class ChatController(args: Bundle) :
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe(object : Observer<RoomOverall> {
-                                override fun onSubscribe(d: Disposable) {}
+                                override fun onSubscribe(d: Disposable) {
+                                    // unused atm
+                                }
                                 override fun onNext(roomOverall: RoomOverall) {
                                     val bundle = Bundle()
                                     bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
