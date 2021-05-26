@@ -66,6 +66,7 @@
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
+    <string name="nc_settings_advanced_title">Advanced</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_key" translatable="false">proxy_type</string>
     <string name="nc_settings_proxy_type_title">Proxy type</string>
@@ -73,12 +74,14 @@
     <string name="nc_settings_proxy_host_title">Proxy host</string>
     <string name="nc_settings_proxy_port_key" translatable="false">proxy_port</string>
     <string name="nc_settings_proxy_port_title">Proxy port</string>
+    <string name="nc_settings_proxy_username_title">Proxy username</string>
     <string name="nc_settings_proxy_username_key" translatable="false">proxy_username</string>
+    <string name="nc_settings_proxy_password_title">Proxy password</string>
     <string name="nc_settings_proxy_password_key" translatable="false">proxy_password</string>
-    <string name="nc_settings_use_credentials_title">Use credentials</string>
+    <string name="nc_settings_use_credentials_title">Proxy requires credentials</string>
     <string name="nc_settings_use_credentials_key" translatable="false">proxy_credentials</string>
     <string name="nc_settings_switch_account">Switch between accounts</string>
-    <string name="nc_settings_reauthorize">Reauthorize</string>
+    <string name="nc_settings_reauthorize">Reauthorize account</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_settings_remove">Remove</string>
