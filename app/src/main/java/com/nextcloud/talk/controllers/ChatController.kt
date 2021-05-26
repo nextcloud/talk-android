@@ -3,8 +3,10 @@
  *
  * @author Mario Danic
  * @author Marcel Hibbe
- * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -708,7 +710,10 @@ class ChatController(args: Bundle) :
             require(files.isNotEmpty())
             val data: Data = Data.Builder()
                 .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, files.toTypedArray())
-                .putString(UploadAndShareFilesWorker.NC_TARGETPATH, CapabilitiesUtil.getAttachmentFolder(conversationUser))
+                .putString(
+                    UploadAndShareFilesWorker.NC_TARGETPATH,
+                    CapabilitiesUtil.getAttachmentFolder(conversationUser)
+                )
                 .putString(UploadAndShareFilesWorker.ROOM_TOKEN, roomToken)
                 .build()
             val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
@@ -1073,7 +1078,11 @@ class ChatController(args: Bundle) :
             val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
-                if (view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility == View.VISIBLE) replyMessageId else null
+                if (
+                    view
+                        ?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+                        ?.visibility == View.VISIBLE
+                ) replyMessageId else null
             )
             cancelReply()
         }
@@ -1546,7 +1555,9 @@ class ChatController(args: Bundle) :
         PopupMenu(
             ContextThemeWrapper(view?.context, R.style.appActionBarPopupMenu),
             view,
-            if (message?.user?.id == currentConversation?.actorType + "/" + currentConversation?.actorId) Gravity.END else Gravity.START
+            if (
+                message?.user?.id == currentConversation?.actorType + "/" + currentConversation?.actorId
+            ) Gravity.END else Gravity.START
         ).apply {
             setOnMenuItemClickListener { item ->
                 when (item?.itemId) {
@@ -1561,42 +1572,48 @@ class ChatController(args: Bundle) :
                     R.id.action_reply_to_message -> {
                         val chatMessage = message as ChatMessage?
                         chatMessage?.let {
-                            binding?.messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.GONE
-                            binding?.messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.GONE
+                            binding?.messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
+                                View.GONE
+                            binding?.messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility =
+                                View.GONE
                             binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
                                 View.VISIBLE
-                            binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.maxLines = 2
-                            binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.ellipsize =
-                                TextUtils.TruncateAt.END
-                            binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessage)?.text = it.text
+
+                            val quotedMessage = binding
+                                ?.messageInputView
+                                ?.findViewById<EmojiTextView>(R.id.quotedMessage)
+
+                            quotedMessage?.maxLines = 2
+                            quotedMessage?.ellipsize = TextUtils.TruncateAt.END
+                            quotedMessage?.text = it.text
                             binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
                                 it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
 
                             conversationUser?.let { currentUser ->
-
+                                val quotedMessageImage = binding
+                                    ?.messageInputView
+                                    ?.findViewById<ImageView>(R.id.quotedMessageImage)
                                 chatMessage.imageUrl?.let { previewImageUrl ->
-                                    binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility =
-                                        View.VISIBLE
+                                    quotedMessageImage?.visibility = View.VISIBLE
 
                                     val px = TypedValue.applyDimension(
                                         TypedValue.COMPLEX_UNIT_DIP,
                                         96f,
                                         resources?.displayMetrics
                                     )
-                                    binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.maxHeight =
-                                        px.toInt()
-                                    val layoutParams =
-                                        binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.layoutParams as FlexboxLayout.LayoutParams
+
+                                    quotedMessageImage?.maxHeight = px.toInt()
+                                    val layoutParams = quotedMessageImage?.layoutParams as FlexboxLayout.LayoutParams
                                     layoutParams.flexGrow = 0f
-                                    binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.layoutParams =
-                                        layoutParams
-                                    binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)
-                                        ?.load(previewImageUrl) {
-                                            addHeader("Authorization", credentials!!)
-                                        }
+                                    quotedMessageImage?.layoutParams = layoutParams
+                                    quotedMessageImage?.load(previewImageUrl) {
+                                        addHeader("Authorization", credentials!!)
+                                    }
                                 } ?: run {
-                                    binding?.messageInputView?.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility =
-                                        View.GONE
+                                    binding
+                                        ?.messageInputView
+                                        ?.findViewById<ImageView>(R.id.quotedMessageImage)
+                                        ?.visibility = View.GONE
                                 }
                             }
 
@@ -1760,7 +1777,9 @@ class ChatController(args: Bundle) :
         if (message.hasFileAttachment()) return false
 
         val sixHoursInMillis = 6 * 3600 * 1000
-        val isOlderThanSixHours = message.createdAt?.before(Date(System.currentTimeMillis() - sixHoursInMillis)) == true
+        val isOlderThanSixHours = message
+            .createdAt
+            ?.before(Date(System.currentTimeMillis() - sixHoursInMillis)) == true
         if (isOlderThanSixHours) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
