@@ -100,8 +100,7 @@ public class NotificationRichObject {
         final Object $type = this.getType();
         result = result * PRIME + ($type == null ? 43 : $type.hashCode());
         final Object $name = this.getName();
-        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
-        return result;
+        return result * PRIME + ($name == null ? 43 : $name.hashCode());
     }
 
     public String toString() {
