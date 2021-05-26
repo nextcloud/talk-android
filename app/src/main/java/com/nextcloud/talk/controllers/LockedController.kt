@@ -158,11 +158,12 @@ class LockedController : NewBaseController(R.layout.controller_locked) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
             if (resultCode == Activity.RESULT_OK) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)) {
-                        Log.d(TAG, "All went well, dismiss locked controller")
-                        router.popCurrentController()
-                    }
+                if (
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    SecurityUtils.checkIfWeAreAuthenticated(appPreferences!!.screenLockTimeout)
+                ) {
+                    Log.d(TAG, "All went well, dismiss locked controller")
+                    router.popCurrentController()
                 }
             } else {
                 Log.d(TAG, "Authorization failed")
