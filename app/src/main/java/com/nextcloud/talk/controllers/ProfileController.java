@@ -157,70 +157,67 @@ public class ProfileController extends BaseController {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.edit:
-                if (edit) {
-                    save();
+        if (item.getItemId() == R.id.edit) {
+            if (edit) {
+                save();
+            }
+
+            edit = !edit;
+
+            if (edit) {
+                item.setTitle(R.string.save);
+
+                getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
+                getActivity().findViewById(R.id.userinfo_list).setVisibility(View.VISIBLE);
+
+                if (CapabilitiesUtil.isAvatarEndpointAvailable(currentUser)) {
+                    // TODO later avatar can also be checked via user fields, for now it is in Talk capability
+                    getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.VISIBLE);
                 }
 
-                edit = !edit;
+                ncApi.getEditableUserProfileFields(
+                        ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
+                        ApiUtils.getUrlForUserFields(currentUser.getBaseUrl()))
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<UserProfileFieldsOverall>() {
+                            @Override
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                // unused atm
+                            }
 
-                if (edit) {
-                    item.setTitle(R.string.save);
+                            @Override
+                            public void onNext(@io.reactivex.annotations.NonNull UserProfileFieldsOverall userProfileFieldsOverall) {
+                                editableFields = userProfileFieldsOverall.getOcs().getData();
+                                adapter.notifyDataSetChanged();
+                            }
 
-                    getActivity().findViewById(R.id.emptyList).setVisibility(View.GONE);
-                    getActivity().findViewById(R.id.userinfo_list).setVisibility(View.VISIBLE);
+                            @Override
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                Log.e(TAG, "Error loading editable user profile from server", e);
+                                edit = false;
+                            }
 
-                    if (CapabilitiesUtil.isAvatarEndpointAvailable(currentUser)) {
-                        // TODO later avatar can also be checked via user fields, for now it is in Talk capability
-                        getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.VISIBLE);
-                    }
+                            @Override
+                            public void onComplete() {
+                                // unused atm
+                            }
+                        });
+            } else {
+                item.setTitle(R.string.edit);
+                getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.INVISIBLE);
 
-                    ncApi.getEditableUserProfileFields(
-                            ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
-                            ApiUtils.getUrlForUserFields(currentUser.getBaseUrl()))
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(new Observer<UserProfileFieldsOverall>() {
-                                @Override
-                                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                                    // unused atm
-                                }
-
-                                @Override
-                                public void onNext(@io.reactivex.annotations.NonNull UserProfileFieldsOverall userProfileFieldsOverall) {
-                                    editableFields = userProfileFieldsOverall.getOcs().getData();
-                                    adapter.notifyDataSetChanged();
-                                }
-
-                                @Override
-                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                    Log.e(TAG, "Error loading editable user profile from server", e);
-                                    edit = false;
-                                }
-
-                                @Override
-                                public void onComplete() {
-                                    // unused atm
-                                }
-                            });
-                } else {
-                    item.setTitle(R.string.edit);
-                    getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.INVISIBLE);
-
-                    if (adapter.filteredDisplayList.size() == 0) {
-                        getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
-                        getActivity().findViewById(R.id.userinfo_list).setVisibility(View.GONE);
-                    }
+                if (adapter.filteredDisplayList.size() == 0) {
+                    getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
+                    getActivity().findViewById(R.id.userinfo_list).setVisibility(View.GONE);
                 }
+            }
 
-                adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();
 
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

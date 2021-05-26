@@ -116,12 +116,10 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                return getRouter().popCurrentController();
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            return getRouter().popCurrentController();
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void prepareViews() {

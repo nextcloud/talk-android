@@ -436,20 +436,18 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getRouter().popCurrentController();
-                return true;
-            case R.id.contacts_selection_done:
-                selectionDone();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        int itemId = item.getItemId();
+        if (itemId == android.R.id.home) {
+            return getRouter().popCurrentController();
+        } else if (itemId == R.id.contacts_selection_done) {
+            selectionDone();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_contacts, menu);
         searchItem = menu.findItem(R.id.action_search);

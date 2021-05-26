@@ -145,13 +145,11 @@ public abstract class BrowserController extends BaseController implements Listin
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.files_selection_done:
-                onFileSelectionDone();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.files_selection_done) {
+            onFileSelectionDone();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
