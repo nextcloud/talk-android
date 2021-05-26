@@ -801,7 +801,8 @@ class ChatController(args: Bundle) :
 
         if (conversationUser?.userId != "?" &&
             CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
-            activity != null) {
+            activity != null
+        ) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
