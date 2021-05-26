@@ -194,6 +194,7 @@ public class ProfileController extends BaseController {
 
                                 @Override
                                 public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                    Log.e(TAG, "Error loading editable user profile from server", e);
                                     edit = false;
                                 }
 
@@ -365,6 +366,7 @@ public class ProfileController extends BaseController {
 
                         @Override
                         public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                            Log.e(TAG, "Error loading editable user profile from server", e);
                             edit = false;
                         }
 
