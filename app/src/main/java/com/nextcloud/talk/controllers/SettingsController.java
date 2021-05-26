@@ -107,6 +107,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.view.ViewCompat;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.work.OneTimeWorkRequest;
@@ -561,7 +562,7 @@ public class SettingsController extends BaseController {
             if (currentUser.getDisplayName() != null) {
                 displayNameTextView.setText(currentUser.getDisplayName());
             }
-
+            
             DisplayUtils.loadAvatarImage(currentUser, avatarImageView, false);
 
             profileQueryDisposable = ncApi.getUserProfile(credentials,

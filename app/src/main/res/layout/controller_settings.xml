@@ -23,6 +23,7 @@
 <com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_screen"
     android:layout_width="match_parent"
@@ -118,9 +119,11 @@
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"
                 android:layout_centerHorizontal="true"
+                android:src="@drawable/account_circle_96dp"
                 android:transitionName="userAvatar.transitionTag"
                 apc:roundAsCircle="true"
-                tools:src="@tools:sample/avatars[0]" />
+                fresco:failureImage="@drawable/account_circle_96dp"
+                fresco:placeholderImage="@drawable/account_circle_96dp" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_remove_account"
