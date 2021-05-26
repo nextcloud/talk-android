@@ -773,24 +773,26 @@ class ChatController(args: Bundle) :
     }
 
     private fun setupMentionAutocomplete() {
-        val elevation = 6f
-        resources?.let {
-            val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
-            val presenter = MentionAutocompletePresenter(activity, roomToken)
-            val callback = MentionAutocompleteCallback(
-                activity,
-                conversationUser,
-                binding?.messageInputView?.inputEditText
-            )
+        if (!isDestroyed && !isBeingDestroyed) {
+            val elevation = 6f
+            resources?.let {
+                val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
+                val presenter = MentionAutocompletePresenter(activity, roomToken)
+                val callback = MentionAutocompleteCallback(
+                    activity,
+                    conversationUser,
+                    binding?.messageInputView?.inputEditText
+                )
 
-            if (mentionAutocomplete == null && binding?.messageInputView?.inputEditText != null) {
-                mentionAutocomplete = Autocomplete.on<Mention>(binding?.messageInputView?.inputEditText)
-                    .with(elevation)
-                    .with(backgroundDrawable)
-                    .with(MagicCharPolicy('@'))
-                    .with(presenter)
-                    .with(callback)
-                    .build()
+                if (mentionAutocomplete == null && binding?.messageInputView?.inputEditText != null) {
+                    mentionAutocomplete = Autocomplete.on<Mention>(binding?.messageInputView?.inputEditText)
+                        .with(elevation)
+                        .with(backgroundDrawable)
+                        .with(MagicCharPolicy('@'))
+                        .with(presenter)
+                        .with(callback)
+                        .build()
+                }
             }
         }
     }
