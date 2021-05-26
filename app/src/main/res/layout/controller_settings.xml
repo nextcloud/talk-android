@@ -23,6 +23,7 @@
 <com.yarolegovich.mp.MaterialPreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:apc="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/settings_screen"
     android:layout_width="match_parent"
@@ -118,29 +119,17 @@
                 android:layout_width="@dimen/avatar_size_big"
                 android:layout_height="@dimen/avatar_size_big"
                 android:layout_centerHorizontal="true"
+                android:src="@drawable/account_circle_96dp"
                 android:transitionName="userAvatar.transitionTag"
                 apc:roundAsCircle="true"
-                tools:src="@tools:sample/avatars[0]" />
-
-            <com.yarolegovich.mp.MaterialStandardPreference
-                android:id="@+id/settings_reauthorize"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/server_age_warning_text_card"
-                apc:mp_title="@string/nc_settings_reauthorize" />
-
-            <com.yarolegovich.mp.MaterialStandardPreference
-                android:id="@+id/settings_client_cert"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/settings_reauthorize"
-                apc:mp_title="@string/nc_client_cert_setup" />
+                fresco:failureImage="@drawable/account_circle_96dp"
+                fresco:placeholderImage="@drawable/account_circle_96dp" />
 
             <com.yarolegovich.mp.MaterialStandardPreference
                 android:id="@+id/settings_remove_account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/settings_client_cert"
+                android:layout_below="@id/server_age_warning_text_card"
                 apc:mp_title="@string/nc_settings_remove_account" />
 
         </RelativeLayout>
@@ -279,7 +268,19 @@
         android:animateLayoutChanges="true"
         apc:cardBackgroundColor="@color/bg_default"
         apc:cardElevation="0dp"
-        apc:mpc_title="@string/nc_settings_proxy_title">
+        apc:mpc_title="@string/nc_settings_advanced_title">
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_reauthorize"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_title="@string/nc_settings_reauthorize" />
+
+        <com.yarolegovich.mp.MaterialStandardPreference
+            android:id="@+id/settings_client_cert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            apc:mp_title="@string/nc_client_cert_setup" />
 
         <com.yarolegovich.mp.MaterialChoicePreference
             android:id="@+id/settings_proxy_choice"
@@ -313,7 +314,7 @@
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_username_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_username" />
+            apc:mp_title="@string/nc_settings_proxy_username_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
             android:id="@+id/settings_proxy_password_edit"
@@ -321,7 +322,7 @@
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_password_key"
             apc:mp_show_value="onRight"
-            apc:mp_title="@string/nc_password" />
+            apc:mp_title="@string/nc_settings_proxy_password_title" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_proxy_use_credentials"

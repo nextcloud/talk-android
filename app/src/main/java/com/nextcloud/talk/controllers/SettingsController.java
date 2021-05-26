@@ -561,7 +561,7 @@ public class SettingsController extends BaseController {
             if (currentUser.getDisplayName() != null) {
                 displayNameTextView.setText(currentUser.getDisplayName());
             }
-
+            
             DisplayUtils.loadAvatarImage(currentUser, avatarImageView, false);
 
             profileQueryDisposable = ncApi.getUserProfile(credentials,

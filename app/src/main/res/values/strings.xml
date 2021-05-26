@@ -66,25 +66,25 @@
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
 
     <!-- Settings -->
-    <string name="nc_settings_proxy_title">Proxy</string>
+    <string name="nc_settings_advanced_title">Advanced</string>
     <string name="nc_settings_proxy_type_key" translatable="false">proxy_type</string>
     <string name="nc_settings_proxy_type_title">Proxy type</string>
     <string name="nc_settings_proxy_host_key" translatable="false">proxy_host</string>
     <string name="nc_settings_proxy_host_title">Proxy host</string>
     <string name="nc_settings_proxy_port_key" translatable="false">proxy_port</string>
     <string name="nc_settings_proxy_port_title">Proxy port</string>
+    <string name="nc_settings_proxy_username_title">Proxy username</string>
     <string name="nc_settings_proxy_username_key" translatable="false">proxy_username</string>
+    <string name="nc_settings_proxy_password_title">Proxy password</string>
     <string name="nc_settings_proxy_password_key" translatable="false">proxy_password</string>
-    <string name="nc_settings_use_credentials_title">Use credentials</string>
+    <string name="nc_settings_use_credentials_title">Proxy requires credentials</string>
     <string name="nc_settings_use_credentials_key" translatable="false">proxy_credentials</string>
-    <string name="nc_settings_switch_account">Switch between accounts</string>
-    <string name="nc_settings_reauthorize">Reauthorize</string>
+    <string name="nc_settings_reauthorize">Reauthorize account</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_settings_remove">Remove</string>
     <string name="nc_settings_remove_confirmation">Please confirm your intent to remove the current account.</string>
     <string name="nc_settings_remove_account">Remove account</string>
-    <string name="nc_settings_add_account">Add a new account</string>
     <string name="nc_settings_server_eol_title">Unsupported server</string>
     <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the Android app</string>
     <string name="nc_settings_server_almost_eol">The server version is very old and will not be supported in the next release!</string>
@@ -150,7 +150,6 @@
     <string name="nc_cancel">Cancel</string>
 
     <string name="nc_no_proxy">No proxy</string>
-    <string name="nc_username">Username</string>
     <string name="nc_password">Password</string>
     <string name="nc_conversation_link">Conversation link</string>
     <string name="nc_new_password">New password</string>
@@ -347,13 +346,11 @@
     <string name="nc_not_defined_error">Unknown error</string>
     <string name="nc_unauthorized_error">Unauthorized</string>
 
-    <string name="nc_general_settings">General</string>
     <string name="nc_allow_guests">Allow guests</string>
     <string name="nc_last_moderator_title">Could not leave conversation</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
 
     <!-- Chat -->
-    <string name="nc_99_plus">99+</string>
     <string name="nc_copy_message">Copy</string>
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
