@@ -77,6 +77,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.LeafletWebView
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
@@ -121,7 +122,6 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -797,13 +797,19 @@ class ChatController(args: Bundle) :
     fun showShareLocationScreen(){
         Log.d(TAG, "showShareLocationScreen")
 
-        val bundle = Bundle()
-        bundle.putBoolean(KEY_NEW_CONVERSATION, true)
-        router.pushController(
-            RouterTransaction.with(LocationController(bundle))
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
+        // val bundle = Bundle()
+        // bundle.putBoolean(KEY_NEW_CONVERSATION, true)
+        // router.pushController(
+        //     RouterTransaction.with(LocationController(bundle))
+        //         .pushChangeHandler(HorizontalChangeHandler())
+        //         .popChangeHandler(HorizontalChangeHandler())
+        // )
+
+        val leafletIntent = Intent(context, LeafletWebView::class.java)
+        leafletIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        // fullScreenImageIntent.putExtra("FILE_NAME", filename)
+        // fullScreenImageIntent.putExtra("IS_GIF", isGif(mimetype))
+        context!!.startActivity(leafletIntent)
     }
 
     private fun showConversationInfoScreen() {

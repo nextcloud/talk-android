@@ -141,6 +141,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
+        <activity
+            android:name=".activities.LeafletWebView">
+        </activity>
+
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
