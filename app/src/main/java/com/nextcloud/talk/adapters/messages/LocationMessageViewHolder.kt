@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.TextView
 import autodagger.AutoInjector
 import butterknife.BindView
@@ -20,9 +22,18 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private val TAG = "LocationMessageViewHolder"
 
+    var lon : String? = ""
+    var lat : String? = ""
+    var name : String? = ""
+    var id : String? = ""
+
     @JvmField
     @BindView(R.id.locationText)
     var messageText: TextView? = null
+
+    @JvmField
+    @BindView(R.id.webview)
+    var webview: WebView? = null
 
     @JvmField
     @Inject
@@ -35,20 +46,35 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
         )
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
-        if (message.messageType == ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE) {
-            Log.d(TAG, "handle geolocation here")
-            messageText!!.text = "geolocation..."
-        }
+        // if (message.messageType == ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE) {
+        //     Log.d(TAG, "handle geolocation here")
+        //     messageText!!.text = "geolocation..."
+        // }
         if (message.messageParameters != null && message.messageParameters.size > 0) {
             for (key in message.messageParameters.keys) {
                 val individualHashMap: Map<String, String> = message.messageParameters[key]!!
-                val lon = individualHashMap["longitude"]
-                val lat = individualHashMap["latitude"]
-                Log.d(TAG, "lon $lon lat $lat")
+                if (individualHashMap["type"] == "geo-location") {
+                    lon = individualHashMap["longitude"]
+                    lat = individualHashMap["latitude"]
+                    name = individualHashMap["name"]
+                    id = individualHashMap["id"]
+                    Log.d(TAG, "lon $lon lat $lat name $name id $id")
+                }
             }
         }
+
+
+        webview?.settings?.javaScriptEnabled = true
+
+        webview?.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                view?.loadUrl(url)
+                return true
+            }
+        }
+        webview?.loadUrl("file:///android_asset/index.html?$lat,$lon,$name");
     }
 }

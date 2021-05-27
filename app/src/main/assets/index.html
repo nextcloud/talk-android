@@ -20,19 +20,19 @@
 
             var queryString = window.location.search;
             queryString = queryString.substring(1);
-            var coords = queryString.split(",");
+            var params = queryString.split(",");
+            var lat = params[0]
+            var lon = params[1]
 
 
-            var map = L.map('map', { zoomControl: false }).setView([coords[0], coords[1]], 13);
+            var map = L.map('map', { zoomControl: false }).setView([lat, lon], 13);
             map.dragging.disable();
 
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
 
-            L.marker([coords[0], coords[1]]).addTo(map)
-                .bindPopup('popup')
-                .openPopup();
+            L.marker([lat, lon]).addTo(map);
         </script>
     </body>
 </html>
