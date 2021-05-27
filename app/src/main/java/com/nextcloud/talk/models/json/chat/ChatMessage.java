@@ -20,17 +20,18 @@
 package com.nextcloud.talk.models.json.chat;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.bluelinelabs.logansquare.annotation.JsonField;
 import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.interfaces.ExtendedIMessage;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.TextMatchers;
-import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
 
@@ -46,7 +47,9 @@ import androidx.annotation.Nullable;
 
 @Parcel
 @JsonObject
-public class ChatMessage implements IMessage, MessageContentType, MessageContentType.Image {
+public class ChatMessage implements ExtendedIMessage, MessageContentType, MessageContentType.Image {
+    private final String TAG = "ChatMessage";
+
     @JsonIgnore
     public boolean isGrouped;
     @JsonIgnore
@@ -87,9 +90,13 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
     public Enum<ReadStatus> readStatus = ReadStatus.NONE;
 
     @JsonIgnore
-    List<MessageType> messageTypesToIgnore = Arrays.asList(MessageType.REGULAR_TEXT_MESSAGE,
-            MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
-            MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
+    List<MessageType> messageTypesToIgnore = Arrays.asList(
+            MessageType.REGULAR_TEXT_MESSAGE,
+            MessageType.SYSTEM_MESSAGE,
+            MessageType.SINGLE_LINK_VIDEO_MESSAGE,
+            MessageType.SINGLE_LINK_AUDIO_MESSAGE,
+            MessageType.SINGLE_LINK_MESSAGE,
+            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE);
 
     public boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
@@ -108,6 +115,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = messageParameters.get(key);
                 if (individualHashMap.get("type").equals("geo-location")) {
+                    Log.d(TAG, "is geo-location");
                     return true;
                 }
             }
@@ -553,6 +561,11 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
 
     public String toString() {
         return "ChatMessage(isGrouped=" + this.isGrouped() + ", isOneToOneConversation=" + this.isOneToOneConversation() + ", activeUser=" + this.getActiveUser() + ", selectedIndividualHashMap=" + this.getSelectedIndividualHashMap() + ", isLinkPreviewAllowed=" + this.isLinkPreviewAllowed() + ", isDeleted=" + this.isDeleted() + ", jsonMessageId=" + this.getJsonMessageId() + ", token=" + this.getToken() + ", actorType=" + this.getActorType() + ", actorId=" + this.getActorId() + ", actorDisplayName=" + this.getActorDisplayName() + ", timestamp=" + this.getTimestamp() + ", message=" + this.getMessage() + ", messageParameters=" + this.getMessageParameters() + ", systemMessageType=" + this.getSystemMessageType() + ", replyable=" + this.isReplyable() + ", parentMessage=" + this.getParentMessage() + ", readStatus=" + this.getReadStatus() + ", messageTypesToIgnore=" + this.getMessageTypesToIgnore() + ")";
+    }
+
+    @Override
+    public boolean isLocationMessage() {
+        return hasGeoLocation();
     }
 
     public enum MessageType {

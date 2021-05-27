@@ -79,6 +79,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.LeafletWebView
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.adapters.messages.LocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
@@ -134,6 +135,9 @@ import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.messages.MessageHolders
+import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
+import com.stfalcon.chatkit.messages.MessageInput
+import com.stfalcon.chatkit.messages.MessagesList
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import com.vanniktech.emoji.EmojiPopup
@@ -164,7 +168,7 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
-    MessageHolders.ContentChecker<IMessage> {
+    ContentChecker<ChatMessage> {
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
     @Inject
@@ -406,9 +410,20 @@ class ChatController(args: Bundle) :
                 R.layout.item_custom_outcoming_preview_message
             )
 
+            // messageHolders.setIncomingLocationConfig(
+            //     LocationMessageViewHolder::class.java,
+            //     R.layout.item_custom_location_message
+            // )
+            // messageHolders.setOutcomingLocationConfig(
+            //     LocationMessageViewHolder::class.java,
+            //     R.layout.item_custom_location_message
+            // )
+
             messageHolders.registerContentType(
-                CONTENT_TYPE_SYSTEM_MESSAGE, MagicSystemMessageViewHolder::class.java,
-                R.layout.item_system_message, MagicSystemMessageViewHolder::class.java,
+                CONTENT_TYPE_SYSTEM_MESSAGE,
+                MagicSystemMessageViewHolder::class.java,
+                R.layout.item_system_message,
+                MagicSystemMessageViewHolder::class.java,
                 R.layout.item_system_message,
                 this
             )
@@ -419,6 +434,15 @@ class ChatController(args: Bundle) :
                 R.layout.item_date_header,
                 MagicUnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header, this
+            )
+
+            messageHolders.registerContentType(
+                CONTENT_TYPE_LOCATION,
+                LocationMessageViewHolder::class.java,
+                R.layout.item_custom_location_message,
+                LocationMessageViewHolder::class.java,
+                R.layout.item_custom_location_message,
+                this
             )
 
             var senderId = ""
@@ -794,7 +818,7 @@ class ChatController(args: Bundle) :
         )
     }
 
-    fun showShareLocationScreen(){
+    fun showShareLocationScreen() {
         Log.d(TAG, "showShareLocationScreen")
 
         // val bundle = Bundle()
@@ -1897,8 +1921,9 @@ class ChatController(args: Bundle) :
         return true
     }
 
-    override fun hasContentFor(message: IMessage, type: Byte): Boolean {
+    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         return when (type) {
+            CONTENT_TYPE_LOCATION -> return message.isLocationMessage()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             else -> false
@@ -2004,6 +2029,7 @@ class ChatController(args: Bundle) :
         private const val TAG = "ChatController"
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
+        private const val CONTENT_TYPE_LOCATION: Byte = 3
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val LOBBY_TIMER_DELAY: Long = 5000
