@@ -91,7 +91,7 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
             MessageType.SYSTEM_MESSAGE, MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE, MessageType.SINGLE_LINK_MESSAGE);
 
-    private boolean hasFileAttachment() {
+    public boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
             for (String key : messageParameters.keySet()) {
                 Map<String, String> individualHashMap = messageParameters.get(key);
@@ -100,7 +100,6 @@ public class ChatMessage implements IMessage, MessageContentType, MessageContent
                 }
             }
         }
-
         return false;
     }
 

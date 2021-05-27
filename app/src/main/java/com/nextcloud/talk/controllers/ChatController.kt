@@ -1697,6 +1697,8 @@ class ChatController(args: Bundle) :
 
         if (message.isDeleted) return false
 
+        if (message.hasFileAttachment()) return false
+
         val sixHoursInMillis = 6 * 3600 * 1000
         val isOlderThanSixHours = message.createdAt?.before(Date(System.currentTimeMillis() - sixHoursInMillis)) == true
         if (isOlderThanSixHours) return false
