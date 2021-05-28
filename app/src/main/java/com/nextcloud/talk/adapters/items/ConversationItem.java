@@ -124,18 +124,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
 
         if (conversation.getUnreadMessages() > 0) {
-            holder.dialogName.setTypeface(
-                    holder.dialogName.getTypeface(),
-                    Typeface.BOLD
-            );
-            holder.dialogDate.setTypeface(
-                    holder.dialogDate.getTypeface(),
-                    Typeface.BOLD
-            );
-            holder.dialogLastMessage.setTypeface(
-                    holder.dialogLastMessage.getTypeface(),
-                    Typeface.BOLD
-            );
+            holder.dialogName.setTypeface(holder.dialogName.getTypeface(), Typeface.BOLD);
+            holder.dialogDate.setTypeface(holder.dialogDate.getTypeface(), Typeface.BOLD);
+            holder.dialogLastMessage.setTypeface(holder.dialogLastMessage.getTypeface(), Typeface.BOLD);
             holder.dialogUnreadBubble.setVisibility(View.VISIBLE);
             if (conversation.getUnreadMessages() < 1000) {
                 holder.dialogUnreadBubble.setText(Long.toString(conversation.getUnreadMessages()));
@@ -153,18 +144,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         ContextCompat.getColor(context, R.color.conversation_unread_bubble_text));
             }
         } else {
-            holder.dialogName.setTypeface(
-                    holder.dialogName.getTypeface(),
-                    Typeface.NORMAL
-            );
-            holder.dialogDate.setTypeface(
-                    holder.dialogDate.getTypeface(),
-                    Typeface.NORMAL
-            );
-            holder.dialogLastMessage.setTypeface(
-                    holder.dialogLastMessage.getTypeface(),
-                    Typeface.NORMAL
-            );
+            holder.dialogName.setTypeface(null, Typeface.NORMAL);
+            holder.dialogDate.setTypeface(null, Typeface.NORMAL);
+            holder.dialogLastMessage.setTypeface(null, Typeface.NORMAL);
 
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
