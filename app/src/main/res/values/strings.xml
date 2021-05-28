@@ -323,8 +323,6 @@
     <string name="nc_following_link">User following a public link</string>
 
     <!-- Browser component -->
-    <string name="nc_file_browser">File browser"</string>
-    <string name="nc_select_files">Select files</string>
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_file_browser_refresh">Refresh</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
