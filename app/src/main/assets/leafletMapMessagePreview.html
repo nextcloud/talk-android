@@ -17,22 +17,25 @@
         <div id="map"></div>
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
         <script>
-
             var queryString = window.location.search;
-            queryString = queryString.substring(1);
-            var params = queryString.split(",");
-            var lat = params[0]
-            var lon = params[1]
 
+            const urlParams = new URLSearchParams(queryString);
+            var lat = urlParams.get('lat')
+            var lon = urlParams.get('lon')
+            var name = urlParams.get('name')
+            var mapProviderUrl = urlParams.get('mapProviderUrl')
+            var mapProviderAttribution = urlParams.get('mapProviderAttribution')
 
             var map = L.map('map', { zoomControl: false }).setView([lat, lon], 13);
             map.dragging.disable();
 
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            L.tileLayer(mapProviderUrl, {
+                attribution: '&copy; ' + mapProviderAttribution
             }).addTo(map);
 
             L.marker([lat, lon]).addTo(map);
+
+
         </script>
     </body>
 </html>

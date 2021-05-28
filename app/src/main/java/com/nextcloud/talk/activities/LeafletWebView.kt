@@ -26,7 +26,7 @@ class LeafletWebView : AppCompatActivity() {
                 return true
             }
         }
-        binding.webview.loadUrl("file:///android_asset/index.html?51.5263,13.0384");
+        binding.webview.loadUrl("file:///android_asset/leafletMapMessagePreview.html?51.5263,13.0384");
 
     }
 }

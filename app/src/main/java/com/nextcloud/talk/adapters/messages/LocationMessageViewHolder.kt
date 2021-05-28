@@ -2,6 +2,8 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.webkit.WebView
@@ -14,6 +16,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.stfalcon.chatkit.messages.MessageHolders
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -71,10 +74,25 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
 
         webview?.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                view?.loadUrl(url)
-                return true
+                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                    view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    true
+                } else {
+                    false
+                }
             }
         }
-        webview?.loadUrl("file:///android_asset/index.html?$lat,$lon,$name");
+
+        val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
+        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}" +
+            ".png"))
+        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode("<a href=\"https://www.openstreetmap" +
+            ".org/copyright\">OpenStreetMap</a> contributors"))
+        urlStringBuffer.append("&lat=" + URLEncoder.encode(lat))
+        urlStringBuffer.append("&lon=" + URLEncoder.encode(lon))
+        urlStringBuffer.append("&name=" + URLEncoder.encode(name))
+
+
+        webview?.loadUrl(urlStringBuffer.toString())
     }
 }
