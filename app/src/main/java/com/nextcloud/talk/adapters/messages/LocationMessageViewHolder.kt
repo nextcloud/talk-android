@@ -5,15 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.TextView
+import android.widget.Toast
 import autodagger.AutoInjector
 import butterknife.BindView
 import butterknife.ButterKnife
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
@@ -25,10 +28,13 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private val TAG = "LocationMessageViewHolder"
 
-    var lon : String? = ""
-    var lat : String? = ""
-    var name : String? = ""
-    var id : String? = ""
+    var mapProviderUrl: String = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    var mapProviderAttribution: String = "OpenStreetMap contributors"
+
+    var locationLon: String? = ""
+    var locationLat: String? = ""
+    var locationName: String? = ""
+    var locationGeoLink: String? = ""
 
     @JvmField
     @BindView(R.id.locationText)
@@ -49,9 +55,10 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
         )
     }
 
-    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled")
+    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        sharedApplication!!.componentApplication.inject(this)
         // if (message.messageType == ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE) {
         //     Log.d(TAG, "handle geolocation here")
         //     messageText!!.text = "geolocation..."
@@ -60,11 +67,10 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
             for (key in message.messageParameters.keys) {
                 val individualHashMap: Map<String, String> = message.messageParameters[key]!!
                 if (individualHashMap["type"] == "geo-location") {
-                    lon = individualHashMap["longitude"]
-                    lat = individualHashMap["latitude"]
-                    name = individualHashMap["name"]
-                    id = individualHashMap["id"]
-                    Log.d(TAG, "lon $lon lat $lat name $name id $id")
+                    locationLon = individualHashMap["longitude"]
+                    locationLat = individualHashMap["latitude"]
+                    locationName = individualHashMap["name"]
+                    locationGeoLink = individualHashMap["id"]
                 }
             }
         }
@@ -74,7 +80,8 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
 
         webview?.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))) {
+                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
+                ) {
                     view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     true
                 } else {
@@ -84,15 +91,38 @@ class LocationMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
-        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}" +
-            ".png"))
-        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode("<a href=\"https://www.openstreetmap" +
-            ".org/copyright\">OpenStreetMap</a> contributors"))
-        urlStringBuffer.append("&lat=" + URLEncoder.encode(lat))
-        urlStringBuffer.append("&lon=" + URLEncoder.encode(lon))
-        urlStringBuffer.append("&name=" + URLEncoder.encode(name))
-
+        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(mapProviderUrl))
+        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode(mapProviderAttribution))
+        urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
+        urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
+        urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
+        urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
 
         webview?.loadUrl(urlStringBuffer.toString())
+
+        webview?.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_UP -> openGeoLink()
+                }
+
+                return v?.onTouchEvent(event) ?: true
+            }
+        })
+    }
+
+    private fun openGeoLink() {
+        if (!locationGeoLink.isNullOrEmpty()) {
+            val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
+            context!!.startActivity(browserIntent)
+        } else {
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Log.e(TAG, "locationGeoLink was null or empty")
+        }
+    }
+
+    private fun addMarkerToGeoLink(locationGeoLink: String): String {
+        return locationGeoLink.replace("geo:", "geo:0,0?q=")
     }
 }
