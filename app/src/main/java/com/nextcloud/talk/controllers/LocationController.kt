@@ -17,9 +17,18 @@ import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
 import butterknife.BindView
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import org.osmdroid.config.Configuration.getInstance
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -31,6 +40,12 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class LocationController(args: Bundle) : BaseController(args) {
+
+    @Inject
+    lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var userUtils: UserUtils
 
     @Inject
     @JvmField
@@ -52,9 +67,13 @@ class LocationController(args: Bundle) : BaseController(args) {
     @JvmField
     var btnSelectLocation: Button? = null
 
+    var roomToken : String?
+
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
+
+        roomToken = args.getString(KEY_ROOM_TOKEN)
     }
 
     override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
@@ -70,7 +89,35 @@ class LocationController(args: Bundle) : BaseController(args) {
         btnSelectLocation?.setOnClickListener {
             val selectedLat: Double? = map?.mapCenter?.latitude
             val selectedLon: Double? = map?.mapCenter?.longitude
-            Toast.makeText(activity, "Lat: $selectedLat Lon: $selectedLon", Toast.LENGTH_LONG).show()
+
+            ncApi.sendLocation(
+                ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
+                ApiUtils.getUrlToSendLocation(userUtils.currentUser?.baseUrl, roomToken),
+                "geo-location",
+                "geo:$selectedLat,$selectedLon",
+                "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
+                    "\"longitude\":\"$selectedLon\",\"name\":\"examplePlace\"}"
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(t: GenericOverall) {
+                        Log.d(TAG, "shared location")
+                        router.popCurrentController()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "error when trying to share location", e)
+                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                        router.popCurrentController()
+                    }
+
+                    override fun onComplete() {
+                    }
+                })
         }
     }
 

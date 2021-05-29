@@ -406,4 +406,12 @@ public interface NcApi {
     @GET
     Call<ResponseBody> downloadResizedImage(@Header("Authorization") String authorization,
                                             @Url String url);
+
+    @FormUrlEncoded
+    @POST
+    Observable<GenericOverall> sendLocation(@Header("Authorization") String authorization,
+                                                        @Url String url,
+                                                        @Field("objectType") String objectType,
+                                                        @Field("objectId") String objectId,
+                                                        @Field("metaData") String metaData);
 }
