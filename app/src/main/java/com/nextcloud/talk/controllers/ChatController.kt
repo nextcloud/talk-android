@@ -828,12 +828,6 @@ class ChatController(args: Bundle) :
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler())
         )
-
-        // val leafletIntent = Intent(context, LeafletWebView::class.java)
-        // leafletIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        // // fullScreenImageIntent.putExtra("FILE_NAME", filename)
-        // // fullScreenImageIntent.putExtra("IS_GIF", isGif(mimetype))
-        // context!!.startActivity(leafletIntent)
     }
 
     private fun showConversationInfoScreen() {
