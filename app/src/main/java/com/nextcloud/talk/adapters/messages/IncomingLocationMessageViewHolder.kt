@@ -1,25 +1,6 @@
-/*
- * Nextcloud Talk application
- *
- * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package com.nextcloud.talk.adapters.messages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
@@ -28,11 +9,16 @@ import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
+import android.util.Log
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
@@ -45,17 +31,27 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
+class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
+.IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
+
+    private val TAG = "LocationMessageViewHolder"
+
+    var mapProviderUrl: String = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    var mapProviderAttribution: String = "OpenStreetMap contributors"
+
+    var locationLon: String? = ""
+    var locationLat: String? = ""
+    var locationName: String? = ""
+    var locationGeoLink: String? = ""
 
     @JvmField
     @BindView(R.id.messageAuthor)
@@ -101,6 +97,18 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
+    @JvmField
+    @BindView(R.id.webview)
+    var webview: WebView? = null
+
+    init {
+        ButterKnife.bind(
+            this,
+            itemView
+        )
+    }
+
+    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -176,11 +184,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
             for (key in messageParameters.keys) {
                 val individualHashMap = message.messageParameters[key]
                 if (individualHashMap != null) {
-                    if (
-                        individualHashMap["type"] == "user" ||
-                        individualHashMap["type"] == "guest" ||
-                        individualHashMap["type"] == "call"
-                    ) {
+                    if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
                         if (individualHashMap["id"] == message.activeUser!!.userId) {
                             messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
                                 messageText!!.context,
@@ -252,10 +256,67 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
             quotedChatMessageView?.visibility = View.GONE
         }
 
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+        // geo-location
+
+        if (message.messageParameters != null && message.messageParameters.size > 0) {
+            for (key in message.messageParameters.keys) {
+                val individualHashMap: Map<String, String> = message.messageParameters[key]!!
+                if (individualHashMap["type"] == "geo-location") {
+                    locationLon = individualHashMap["longitude"]
+                    locationLat = individualHashMap["latitude"]
+                    locationName = individualHashMap["name"]
+                    locationGeoLink = individualHashMap["id"]
+                }
+            }
+        }
+
+        webview?.settings?.javaScriptEnabled = true
+
+        webview?.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
+                ) {
+                    view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+
+        val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
+        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(mapProviderUrl))
+        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode(mapProviderAttribution))
+        urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
+        urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
+        urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
+        urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
+
+        webview?.loadUrl(urlStringBuffer.toString())
+
+        webview?.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_UP -> openGeoLink()
+                }
+
+                return v?.onTouchEvent(event) ?: true
+            }
+        })
     }
 
-    init {
-        ButterKnife.bindthis, itemView)
+    private fun openGeoLink() {
+        if (!locationGeoLink.isNullOrEmpty()) {
+            val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
+            context!!.startActivity(browserIntent)
+        } else {
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Log.e(TAG, "locationGeoLink was null or empty")
+        }
+    }
+
+    private fun addMarkerToGeoLink(locationGeoLink: String): String {
+        return locationGeoLink.replace("geo:", "geo:0,0?q=")
     }
 }

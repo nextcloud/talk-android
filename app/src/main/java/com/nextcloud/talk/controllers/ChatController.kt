@@ -78,12 +78,13 @@ import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
-import com.nextcloud.talk.adapters.messages.LocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -437,10 +438,10 @@ class ChatController(args: Bundle) :
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_LOCATION,
-                LocationMessageViewHolder::class.java,
-                R.layout.item_custom_location_message,
-                LocationMessageViewHolder::class.java,
-                R.layout.item_custom_location_message,
+                IncomingLocationMessageViewHolder::class.java,
+                R.layout.item_custom_incoming_location_message,
+                OutcomingLocationMessageViewHolder::class.java,
+                R.layout.item_custom_outcoming_location_message,
                 this
             )
 
