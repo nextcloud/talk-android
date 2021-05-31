@@ -55,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:textColor="@color/textColorMaxContrast"
+            android:textIsSelectable="false"
             android:textSize="12sp" />
 
         <androidx.emoji.widget.EmojiTextView
@@ -62,7 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true" />
@@ -73,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
+            android:textIsSelectable="false"
             app:layout_alignSelf="center" />
 
     </com.google.android.flexbox.FlexboxLayout>

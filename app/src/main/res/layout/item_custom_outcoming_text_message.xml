@@ -50,8 +50,8 @@
             android:layout_alignWithParentIfMissing="true"
             android:lineSpacingMultiplier="1.2"
             android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="true"
-            tools:text="Talk to ayou later!" />
+            android:textIsSelectable="false"
+            tools:text="Talk to you later!" />
 
         <TextView
             android:id="@id/messageTime"
@@ -59,6 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
+            android:textIsSelectable="false"
             app:layout_alignSelf="center"
             tools:text="10:35" />
 
@@ -68,8 +69,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
-            app:layout_alignSelf="center"
-            android:contentDescription="@null" />
+            android:contentDescription="@null"
+            app:layout_alignSelf="center" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
