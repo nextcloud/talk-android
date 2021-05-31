@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="80dp">
-        <SearchView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:queryHint="Search for places">
-        </SearchView>
-
-    </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,18 +16,25 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 
-        <ImageButton
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+        <androidx.cardview.widget.CardView
             android:id="@+id/ic_center_map"
-            android:src="@drawable/ic_baseline_gps_fixed_24"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="#00ffffff"
-            android:cropToPadding="true"
-            android:contentDescription="go to current location" />
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="5dp"
+            android:elevation="10dp"
+            app:cardCornerRadius="25dp"
+            app:cardBackgroundColor="@color/appbar">
+
+            <ImageView
+                android:id="@+id/roundedImageView"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_baseline_gps_fixed_24"
+                android:layout_gravity="center"
+                />
+        </androidx.cardview.widget.CardView>
 
         <View
             android:id="@+id/locationpicker_anchor"
@@ -57,15 +54,40 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/share_location"
         android:layout_width="match_parent"
-        android:layout_height="80dp">
-        <Button
-            android:id="@+id/btn_select_location"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Share location">
+        android:layout_height="70dp"
+        android:orientation="horizontal">
 
-        </Button>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:height="60dp"
+            android:minWidth="50dp"
+            android:padding="10dp"
+            android:textAlignment="textStart"
+            app:srcCompat="@drawable/ic_baseline_location_on_24">
+        </ImageView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/share_location_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center_vertical">
+            </TextView>
+            <TextView
+                android:id="@+id/gps_accuracy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+            </TextView>
+        </LinearLayout>
+
 
     </LinearLayout>
 

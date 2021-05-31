@@ -3,15 +3,19 @@ package com.nextcloud.talk.controllers
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.cardview.widget.CardView
 import androidx.core.content.PermissionChecker
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
@@ -30,6 +34,10 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.osmdroid.config.Configuration.getInstance
+import org.osmdroid.events.DelayedMapListener
+import org.osmdroid.events.MapListener
+import org.osmdroid.events.ScrollEvent
+import org.osmdroid.events.ZoomEvent
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -61,15 +69,27 @@ class LocationController(args: Bundle) : BaseController(args) {
 
     @BindView(R.id.ic_center_map)
     @JvmField
-    var btCenterMap: ImageButton? = null
+    var btCenterMap: CardView? = null
 
-    @BindView(R.id.btn_select_location)
+    @BindView(R.id.share_location)
     @JvmField
-    var btnSelectLocation: Button? = null
+    var shareLocation: LinearLayout? = null
 
-    var roomToken : String?
+    @BindView(R.id.gps_accuracy)
+    @JvmField
+    var gpsAccuracy: TextView? = null
+
+    @BindView(R.id.share_location_description)
+    @JvmField
+    var shareLocationDescription: TextView? = null
+
+    var roomToken: String?
+
+    var moveToCurrentLocationWasClicked: Boolean = true
+    var readyToShareLocation: Boolean = false
 
     init {
+        setHasOptionsMenu(true)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
@@ -82,46 +102,44 @@ class LocationController(args: Bundle) : BaseController(args) {
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        drawMap()
+        initMap()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
+        // searchItem = menu.findItem(R.id.action_search)
+        // initSearchView()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        Log.d(TAG, "onPrepareOptionsMenu")
+        hideSearchBar()
+        actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)));
+        actionBar.title = "Share location"
+
+        // searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+        // showShareToScreen = !shareToScreenWasShown && hasActivityActionSendIntent()
+        // if (showShareToScreen) {
+        //     hideSearchBar()
+        //     actionBar.setTitle(R.string.send_to_three_dots)
+        // }
     }
 
     override fun onViewBound(view: View) {
-        btnSelectLocation?.setOnClickListener {
-            val selectedLat: Double? = map?.mapCenter?.latitude
-            val selectedLon: Double? = map?.mapCenter?.longitude
-
-            ncApi.sendLocation(
-                ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
-                ApiUtils.getUrlToSendLocation(userUtils.currentUser?.baseUrl, roomToken),
-                "geo-location",
-                "geo:$selectedLat,$selectedLon",
-                "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
-                    "\"longitude\":\"$selectedLon\",\"name\":\"examplePlace\"}"
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
-                    override fun onNext(t: GenericOverall) {
-                        Log.d(TAG, "shared location")
-                        router.popCurrentController()
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "error when trying to share location", e)
-                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-                        router.popCurrentController()
-                    }
-
-                    override fun onComplete() {
-                    }
-                })
+        setCurrentLocationDescription()
+        shareLocation?.isClickable = false
+        shareLocation?.setOnClickListener {
+            if(readyToShareLocation){
+                shareLocation()
+            } else {
+                Log.d(TAG, "readyToShareLocation was false while user tried to share location.")
+            }
         }
     }
 
-    fun drawMap(){
+    private fun initMap() {
         if (!isFineLocationPermissionGranted()) {
             requestFineLocationPermission()
         }
@@ -137,7 +155,7 @@ class LocationController(args: Bundle) : BaseController(args) {
         map?.isTilesScaledToDpi = true
 
         val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
-        locationOverlay.enableFollowLocation()
+        // locationOverlay.enableFollowLocation()
         locationOverlay.enableMyLocation()
         // locationOverlay.setPersonIcon(
         //     DisplayUtils.getBitmap(ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)))
@@ -147,7 +165,7 @@ class LocationController(args: Bundle) : BaseController(args) {
         mapController?.setZoom(12.0)
 
         var myLocation: GeoPoint
-        myLocation = GeoPoint(52.0 , 13.0)
+        myLocation = GeoPoint(52.0, 13.0)
 
         locationOverlay.runOnFirstFix(Runnable {
             activity!!.runOnUiThread {
@@ -158,7 +176,70 @@ class LocationController(args: Bundle) : BaseController(args) {
 
         btCenterMap?.setOnClickListener(View.OnClickListener {
             map?.controller?.animateTo(myLocation)
+            setCurrentLocationDescription()
+            moveToCurrentLocationWasClicked = true
         })
+
+        map?.addMapListener(DelayedMapListener(object : MapListener {
+            override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
+                if (moveToCurrentLocationWasClicked) {
+                    moveToCurrentLocationWasClicked = false
+                } else {
+                    shareLocation?.isClickable = true
+                    shareLocationDescription?.text = "Share this location"
+                    gpsAccuracy?.text = ""
+                }
+                readyToShareLocation = true
+                return true
+            }
+
+            override fun onZoom(event: ZoomEvent): Boolean {
+                return false
+            }
+        }))
+    }
+
+    private fun setCurrentLocationDescription() {
+        shareLocationDescription?.text = "Share current location"
+        gpsAccuracy?.text = "Accuracy: xx m"
+    }
+
+    private fun shareLocation() {
+        val selectedLat: Double? = map?.mapCenter?.latitude
+        val selectedLon: Double? = map?.mapCenter?.longitude
+        val name = ""
+        val objectId = "geo:$selectedLat,$selectedLon"
+        val metaData: String =
+            "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
+                "\"longitude\":\"$selectedLon\",\"name\":\"$name\"}"
+
+        ncApi.sendLocation(
+            ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
+            ApiUtils.getUrlToSendLocation(userUtils.currentUser?.baseUrl, roomToken),
+            "geo-location",
+            objectId,
+            metaData
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(t: GenericOverall) {
+                    Log.d(TAG, "shared location")
+                    router.popCurrentController()
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error when trying to share location", e)
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    router.popCurrentController()
+                }
+
+                override fun onComplete() {
+                }
+            })
     }
 
     private fun isFineLocationPermissionGranted(): Boolean {
@@ -191,7 +272,7 @@ class LocationController(args: Bundle) : BaseController(args) {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            drawMap()
+            initMap()
         } else {
             Toast.makeText(context, "location permission required!", Toast.LENGTH_LONG).show()
         }
