@@ -200,6 +200,13 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
                     return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_an_attachment),
                             !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
                 }
+            } else if (getMessageType().equals(MessageType.SINGLE_NC_GEOLOCATION_MESSAGE)) {
+                if (getActorId().equals(getActiveUser().getUserId())) {
+                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_location_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_location),
+                                          !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
+                }
             /*} else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
                 if (getActorId().equals(getActiveUser().getUserId())) {
                     return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_link_you));
