@@ -46,6 +46,7 @@
         android:layout_toEndOf="@id/quoteColoredView"
         android:ellipsize="end"
         android:textColor="@color/textColorMaxContrast"
+        android:textIsSelectable="false"
         android:textSize="12sp"
         tools:text="Jane Doe" />
 
@@ -82,6 +83,7 @@
             android:layout_below="@id/quotedMessageImage"
             android:layout_alignStart="@id/quotedMessageAuthor"
             android:lineSpacingMultiplier="1.2"
+            android:textIsSelectable="false"
             android:textSize="14sp"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
