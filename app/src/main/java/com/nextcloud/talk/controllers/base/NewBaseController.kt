@@ -23,7 +23,9 @@
 package com.nextcloud.talk.controllers.base
 
 import android.animation.AnimatorInflater
+import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -52,6 +54,7 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SwitchAccountController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.util.ArrayList
@@ -126,61 +129,87 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     }
 
     protected fun showSearchOrToolbar() {
-        if (activity != null && activity is MainActivity) {
+        if (isValidActivity(activity)) {
             val showSearchBar = appBarLayoutType == AppBarLayoutType.SEARCH_BAR
-            val activity = activity as MainActivity?
+            val activity = activity as MainActivity
+
             if (appBarLayoutType == AppBarLayoutType.EMPTY) {
-                activity!!.binding.toolbar.visibility = View.GONE
-                activity.binding.searchToolbar.visibility = View.GONE
+                hideBars(activity.binding)
             } else {
-                val layoutParams = activity!!.binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
                 if (showSearchBar) {
-                    activity.binding.searchToolbar.visibility = View.VISIBLE
-                    activity.binding.searchText.hint = searchHint
-                    activity.binding.toolbar.visibility = View.GONE
-                    // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
-                    // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
-                    layoutParams.scrollFlags = 0
-                    activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-                        activity.binding.appBar.context,
-                        R.animator.appbar_elevation_off
-                    )
+                    showSearchBar(activity.binding)
                 } else {
-                    activity.binding.searchToolbar.visibility = View.GONE
-                    activity.binding.toolbar.visibility = View.VISIBLE
-                    layoutParams.scrollFlags = 0
-                    activity.binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
-                        activity.binding.appBar.context,
-                        R.animator.appbar_elevation_on
-                    )
+                    showToolbar(activity.binding)
                 }
-                activity.binding.searchToolbar.layoutParams = layoutParams
-                if (resources != null) {
-                    if (showSearchBar) {
-                        DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(
-                                resources!!,
-                                R.color.bg_default, null
-                            )
-                        )
-                    } else {
-                        DisplayUtils.applyColorToStatusBar(
-                            activity,
-                            ResourcesCompat.getColor(
-                                resources!!,
-                                R.color.appbar, null
-                            )
-                        )
-                    }
-                }
+                colorizeStatusBar(showSearchBar, activity, resources)
             }
-            if (resources != null) {
-                DisplayUtils.applyColorToNavigationBar(
-                    activity.window,
-                    ResourcesCompat.getColor(resources!!, R.color.bg_default, null)
+
+            colorizeNavigationBar(activity, resources)
+        }
+    }
+
+    private fun isValidActivity(activity: Activity?): Boolean {
+        return activity != null && activity is MainActivity
+    }
+
+    private fun showSearchBar(binding: ActivityMainBinding) {
+        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        binding.searchToolbar.visibility = View.VISIBLE
+        binding.searchText.hint = searchHint
+        binding.toolbar.visibility = View.GONE
+        // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
+        // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
+        layoutParams.scrollFlags = 0
+        binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            binding.appBar.context,
+            R.animator.appbar_elevation_off
+        )
+        binding.searchToolbar.layoutParams = layoutParams
+    }
+
+    private fun showToolbar(binding: ActivityMainBinding) {
+        val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
+        binding.searchToolbar.visibility = View.GONE
+        binding.toolbar.visibility = View.VISIBLE
+        layoutParams.scrollFlags = 0
+        binding.appBar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
+            binding.appBar.context,
+            R.animator.appbar_elevation_on
+        )
+        binding.searchToolbar.layoutParams = layoutParams
+    }
+
+    private fun hideBars(binding: ActivityMainBinding) {
+        binding.toolbar.visibility = View.GONE
+        binding.searchToolbar.visibility = View.GONE
+    }
+
+    private fun colorizeStatusBar(showSearchBar: Boolean, activity: Activity?, resources: Resources?) {
+        if (activity != null && resources != null) {
+            if (showSearchBar) {
+                DisplayUtils.applyColorToStatusBar(
+                    activity,
+                    ResourcesCompat.getColor(
+                        resources, R.color.bg_default, null
+                    )
+                )
+            } else {
+                DisplayUtils.applyColorToStatusBar(
+                    activity,
+                    ResourcesCompat.getColor(
+                        resources, R.color.appbar, null
+                    )
                 )
             }
+        }
+    }
+
+    private fun colorizeNavigationBar(activity: Activity?, resources: Resources?) {
+        if (activity != null && resources != null) {
+            DisplayUtils.applyColorToNavigationBar(
+                activity.window,
+                ResourcesCompat.getColor(resources, R.color.bg_default, null)
+            )
         }
     }
 
