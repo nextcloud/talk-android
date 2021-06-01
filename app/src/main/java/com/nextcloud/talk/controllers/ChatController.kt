@@ -161,7 +161,7 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
     MessageHolders.ContentChecker<IMessage> {
-    private val binding: ControllerChatBinding? by viewBinding(ControllerChatBinding::bind)
+    private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
     @Inject
     @JvmField
@@ -372,7 +372,7 @@ class ChatController(args: Bundle) :
         var adapterWasNull = false
 
         if (adapter == null) {
-            binding?.progressBar?.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
 
             adapterWasNull = true
 
@@ -433,19 +433,19 @@ class ChatController(args: Bundle) :
                 }
             )
         } else {
-            binding?.messagesListView?.visibility = View.VISIBLE
+            binding.messagesListView.visibility = View.VISIBLE
         }
 
-        binding?.messagesListView?.setAdapter(adapter)
+        binding.messagesListView.setAdapter(adapter)
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
 
-        layoutManager = binding?.messagesListView?.layoutManager as LinearLayoutManager?
+        layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
 
-        binding?.popupBubbleView?.setRecyclerView(binding?.messagesListView)
+        binding.popupBubbleView.setRecyclerView(binding.messagesListView)
 
-        binding?.popupBubbleView?.setPopupBubbleListener { context ->
+        binding.popupBubbleView.setPopupBubbleListener { context ->
             if (newMessagesCount != 0) {
                 val scrollPosition: Int
                 if (newMessagesCount - 1 < 0) {
@@ -453,20 +453,20 @@ class ChatController(args: Bundle) :
                 } else {
                     scrollPosition = newMessagesCount - 1
                 }
-                Handler().postDelayed({ binding?.messagesListView?.smoothScrollToPosition(scrollPosition) }, 200)
+                Handler().postDelayed({ binding.messagesListView.smoothScrollToPosition(scrollPosition) }, 200)
             }
         }
 
         if (args.containsKey("showToggleChat") && args.getBoolean("showToggleChat")) {
-            binding?.callControlToggleChat?.visibility = View.VISIBLE
+            binding.callControlToggleChat.visibility = View.VISIBLE
             wasDetached = true
         }
 
-        binding?.callControlToggleChat?.setOnClickListener {
+        binding.callControlToggleChat.setOnClickListener {
             (activity as MagicCallActivity).showCall()
         }
 
-        binding?.messagesListView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
 
@@ -475,8 +475,8 @@ class ChatController(args: Bundle) :
                         if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
 
-                            if (binding?.popupBubbleView?.isShown == true) {
-                                binding?.popupBubbleView?.hide()
+                            if (binding.popupBubbleView.isShown == true) {
+                                binding.popupBubbleView.hide()
                             }
                         }
                     }
@@ -488,26 +488,26 @@ class ChatController(args: Bundle) :
         val lengthFilter = CapabilitiesUtil.getMessageMaxLength(conversationUser) ?: 1000
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
-        binding?.messageInputView?.inputEditText?.filters = filters
+        binding.messageInputView.inputEditText?.filters = filters
 
-        binding?.messageInputView?.inputEditText?.addTextChangedListener(object : TextWatcher {
+        binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.length >= lengthFilter) {
-                    binding?.messageInputView?.inputEditText?.error = String.format(
+                    binding.messageInputView.inputEditText?.error = String.format(
                         Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
                         Integer.toString(lengthFilter)
                     )
                 } else {
-                    binding?.messageInputView?.inputEditText?.error = null
+                    binding.messageInputView.inputEditText?.error = null
                 }
 
-                val editable = binding?.messageInputView?.inputEditText?.editableText
-                if (editable != null && binding?.messageInputView?.inputEditText != null) {
+                val editable = binding.messageInputView.inputEditText?.editableText
+                if (editable != null && binding.messageInputView.inputEditText != null) {
                     val mentionSpans = editable.getSpans(
-                        0, binding?.messageInputView?.inputEditText!!.length(),
+                        0, binding.messageInputView.inputEditText!!.length(),
                         Spans.MentionChipSpan::class.java
                     )
                     var mentionSpan: Spans.MentionChipSpan
@@ -530,14 +530,14 @@ class ChatController(args: Bundle) :
             }
         })
 
-        binding?.messageInputView?.inputEditText?.setText(sharedText)
-        binding?.messageInputView?.setAttachmentsListener {
+        binding.messageInputView.inputEditText?.setText(sharedText)
+        binding.messageInputView.setAttachmentsListener {
             activity?.let { AttachmentDialog(it, this).show() }
         }
 
-        binding?.messageInputView?.button?.setOnClickListener { v -> submitMessage() }
+        binding.messageInputView.button.setOnClickListener { v -> submitMessage() }
 
-        binding?.messageInputView?.button?.contentDescription = resources?.getString(
+        binding.messageInputView.button.contentDescription = resources?.getString(
             R.string
                 .nc_description_send_message_button
         )
@@ -568,7 +568,7 @@ class ChatController(args: Bundle) :
 
                 conversationVoiceCallMenuItem?.icon?.alpha = 99
                 conversationVideoMenuItem?.icon?.alpha = 99
-                binding?.messageInputView?.visibility = View.GONE
+                binding.messageInputView.visibility = View.GONE
             } else {
                 if (conversationVoiceCallMenuItem != null) {
                     conversationVoiceCallMenuItem?.icon?.alpha = 255
@@ -580,9 +580,9 @@ class ChatController(args: Bundle) :
 
                 if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)
                 ) {
-                    binding?.messageInputView?.visibility = View.GONE
+                    binding.messageInputView.visibility = View.GONE
                 } else {
-                    binding?.messageInputView?.visibility = View.VISIBLE
+                    binding.messageInputView.visibility = View.VISIBLE
                 }
             }
         }
@@ -596,15 +596,15 @@ class ChatController(args: Bundle) :
             }
 
             if (currentConversation?.shouldShowLobby(conversationUser) ?: false) {
-                binding?.lobby?.lobbyView?.visibility = View.VISIBLE
-                binding?.messagesListView?.visibility = View.GONE
-                binding?.messageInputView?.visibility = View.GONE
-                binding?.progressBar?.visibility = View.GONE
+                binding.lobby.lobbyView.visibility = View.VISIBLE
+                binding.messagesListView.visibility = View.GONE
+                binding.messageInputView.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
 
                 if (currentConversation?.lobbyTimer != null && currentConversation?.lobbyTimer !=
                     0L
                 ) {
-                    binding?.lobby?.lobbyTextView?.text = String.format(
+                    binding.lobby.lobbyTextView.text = String.format(
                         resources!!.getString(R.string.nc_lobby_waiting_with_date),
                         DateUtils.getLocalDateStringFromTimestampForLobby(
                             currentConversation?.lobbyTimer
@@ -612,12 +612,12 @@ class ChatController(args: Bundle) :
                         )
                     )
                 } else {
-                    binding?.lobby?.lobbyTextView?.setText(R.string.nc_lobby_waiting)
+                    binding.lobby.lobbyTextView.setText(R.string.nc_lobby_waiting)
                 }
             } else {
-                binding?.lobby?.lobbyView?.visibility = View.GONE
-                binding?.messagesListView?.visibility = View.VISIBLE
-                binding?.messageInputView?.inputEditText?.visibility = View.VISIBLE
+                binding.lobby.lobbyView.visibility = View.GONE
+                binding.messagesListView.visibility = View.VISIBLE
+                binding.messageInputView.inputEditText?.visibility = View.VISIBLE
                 if (isFirstMessagesProcessing && pastPreconditionFailed) {
                     pastPreconditionFailed = false
                     pullChatMessages(0)
@@ -627,9 +627,9 @@ class ChatController(args: Bundle) :
                 }
             }
         } else {
-            binding?.lobby?.lobbyView?.visibility = View.GONE
-            binding?.messagesListView?.visibility = View.VISIBLE
-            binding?.messageInputView?.inputEditText?.visibility = View.VISIBLE
+            binding.lobby.lobbyView.visibility = View.GONE
+            binding.messagesListView.visibility = View.VISIBLE
+            binding.messageInputView.inputEditText?.visibility = View.VISIBLE
         }
     }
 
@@ -781,11 +781,11 @@ class ChatController(args: Bundle) :
                 val callback = MentionAutocompleteCallback(
                     activity,
                     conversationUser,
-                    binding?.messageInputView?.inputEditText
+                    binding.messageInputView.inputEditText
                 )
 
-                if (mentionAutocomplete == null && binding?.messageInputView?.inputEditText != null) {
-                    mentionAutocomplete = Autocomplete.on<Mention>(binding?.messageInputView?.inputEditText)
+                if (mentionAutocomplete == null && binding.messageInputView.inputEditText != null) {
+                    mentionAutocomplete = Autocomplete.on<Mention>(binding.messageInputView.inputEditText)
                         .with(elevation)
                         .with(backgroundDrawable)
                         .with(MagicCharPolicy('@'))
@@ -816,9 +816,9 @@ class ChatController(args: Bundle) :
 
         isLinkPreviewAllowed = appPreferences?.areLinkPreviewsAllowed ?: false
 
-        val smileyButton = binding?.messageInputView?.findViewById<ImageButton>(R.id.smileyButton)
+        val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
 
-        emojiPopup = binding?.messageInputView?.inputEditText?.let {
+        emojiPopup = binding.messageInputView.inputEditText?.let {
             EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
                 if (resources != null) {
                     smileyButton?.setColorFilter(
@@ -833,7 +833,7 @@ class ChatController(args: Bundle) :
                 )
             }.setOnEmojiClickListener { emoji,
                 imageView ->
-                binding?.messageInputView?.inputEditText?.editableText?.append(" ")
+                binding.messageInputView.inputEditText?.editableText?.append(" ")
             }.build(it)
         }
 
@@ -841,7 +841,7 @@ class ChatController(args: Bundle) :
             emojiPopup?.toggle()
         }
 
-        binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
+        binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
             cancelReply()
         }
 
@@ -861,9 +861,9 @@ class ChatController(args: Bundle) :
     }
 
     private fun cancelReply() {
-        binding?.messageInputView?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility = View.GONE
-        binding?.messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
-        binding?.messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.VISIBLE
+        binding.messageInputView.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility = View.GONE
+        binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
+        binding.messageInputView.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.VISIBLE
     }
 
     private fun cancelNotificationsForCurrentConversation() {
@@ -1061,8 +1061,8 @@ class ChatController(args: Bundle) :
     }
 
     private fun submitMessage() {
-        if (binding?.messageInputView?.inputEditText != null) {
-            val editable = binding?.messageInputView?.inputEditText!!.editableText
+        if (binding.messageInputView.inputEditText != null) {
+            val editable = binding.messageInputView.inputEditText!!.editableText
             val mentionSpans = editable.getSpans(
                 0, editable.length,
                 Spans.MentionChipSpan::class.java
@@ -1077,7 +1077,7 @@ class ChatController(args: Bundle) :
                 editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
             }
 
-            binding?.messageInputView?.inputEditText?.setText("")
+            binding.messageInputView.inputEditText?.setText("")
             val replyMessageId: Int? = view?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int?
             sendMessage(
                 editable,
@@ -1113,11 +1113,11 @@ class ChatController(args: Bundle) :
                     override fun onNext(genericOverall: GenericOverall) {
                         myFirstMessage = message
 
-                        if (binding?.popupBubbleView?.isShown == true) {
-                            binding?.popupBubbleView?.hide()
+                        if (binding.popupBubbleView.isShown == true) {
+                            binding.popupBubbleView.hide()
                         }
 
-                        binding?.messagesListView?.smoothScrollToPosition(0)
+                        binding.messagesListView.smoothScrollToPosition(0)
                     }
 
                     override fun onError(e: Throwable) {
@@ -1126,11 +1126,11 @@ class ChatController(args: Bundle) :
                             if (Integer.toString(code).startsWith("2")) {
                                 myFirstMessage = message
 
-                                if (binding?.popupBubbleView?.isShown == true) {
-                                    binding?.popupBubbleView?.hide()
+                                if (binding.popupBubbleView.isShown == true) {
+                                    binding.popupBubbleView.hide()
                                 }
 
-                                binding?.messagesListView?.smoothScrollToPosition(0)
+                                binding.messagesListView.smoothScrollToPosition(0)
                             }
                         }
                     }
@@ -1300,9 +1300,9 @@ class ChatController(args: Bundle) :
                 cancelNotificationsForCurrentConversation()
 
                 isFirstMessagesProcessing = false
-                binding?.progressBar?.visibility = View.GONE
+                binding.progressBar?.visibility = View.GONE
 
-                binding?.messagesListView?.visibility = View.VISIBLE
+                binding.messagesListView?.visibility = View.VISIBLE
             }
 
             var countGroupedMessages = 0
@@ -1367,10 +1367,10 @@ class ChatController(args: Bundle) :
                             adapter?.itemCount == 0
 
                     if (!shouldAddNewMessagesNotice && !shouldScroll) {
-                        if (!binding?.popupBubbleView?.isShown!!) {
+                        if (!binding.popupBubbleView?.isShown!!) {
                             newMessagesCount = 1
-                            binding?.popupBubbleView?.show()
-                        } else if (binding?.popupBubbleView?.isShown == true) {
+                            binding.popupBubbleView?.show()
+                        } else if (binding.popupBubbleView?.isShown == true) {
                             newMessagesCount++
                         }
                     } else {
@@ -1393,7 +1393,7 @@ class ChatController(args: Bundle) :
                 if (shouldAddNewMessagesNotice && adapter != null) {
                     layoutManager?.scrollToPositionWithOffset(
                         adapter!!.getMessagePositionByIdInReverse("-1"),
-                        binding!!.messagesListView.height / 2
+                        binding.messagesListView.height / 2
                     )
                 }
             }
@@ -1422,7 +1422,7 @@ class ChatController(args: Bundle) :
                 cancelNotificationsForCurrentConversation()
 
                 isFirstMessagesProcessing = false
-                binding?.progressBar?.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
             }
 
             historyRead = true
@@ -1581,27 +1581,27 @@ class ChatController(args: Bundle) :
                     R.id.action_reply_to_message -> {
                         val chatMessage = message as ChatMessage?
                         chatMessage?.let {
-                            binding?.messageInputView?.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
+                            binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
                                 View.GONE
-                            binding?.messageInputView?.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility =
+                            binding.messageInputView.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility =
                                 View.GONE
-                            binding?.messageInputView?.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
+                            binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
                                 View.VISIBLE
 
                             val quotedMessage = binding
-                                ?.messageInputView
-                                ?.findViewById<EmojiTextView>(R.id.quotedMessage)
+                                .messageInputView
+                                .findViewById<EmojiTextView>(R.id.quotedMessage)
 
                             quotedMessage?.maxLines = 2
                             quotedMessage?.ellipsize = TextUtils.TruncateAt.END
                             quotedMessage?.text = it.text
-                            binding?.messageInputView?.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
+                            binding.messageInputView.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
                                 it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
 
                             conversationUser?.let { currentUser ->
                                 val quotedMessageImage = binding
-                                    ?.messageInputView
-                                    ?.findViewById<ImageView>(R.id.quotedMessageImage)
+                                    .messageInputView
+                                    .findViewById<ImageView>(R.id.quotedMessageImage)
                                 chatMessage.imageUrl?.let { previewImageUrl ->
                                     quotedMessageImage?.visibility = View.VISIBLE
 
@@ -1614,21 +1614,21 @@ class ChatController(args: Bundle) :
                                     quotedMessageImage?.maxHeight = px.toInt()
                                     val layoutParams = quotedMessageImage?.layoutParams as FlexboxLayout.LayoutParams
                                     layoutParams.flexGrow = 0f
-                                    quotedMessageImage?.layoutParams = layoutParams
-                                    quotedMessageImage?.load(previewImageUrl) {
+                                    quotedMessageImage.layoutParams = layoutParams
+                                    quotedMessageImage.load(previewImageUrl) {
                                         addHeader("Authorization", credentials!!)
                                     }
                                 } ?: run {
                                     binding
-                                        ?.messageInputView
-                                        ?.findViewById<ImageView>(R.id.quotedMessageImage)
+                                        .messageInputView
+                                        .findViewById<ImageView>(R.id.quotedMessageImage)
                                         ?.visibility = View.GONE
                                 }
                             }
 
                             val quotedChatMessageView = binding
-                                ?.messageInputView
-                                ?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+                                .messageInputView
+                                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
                             quotedChatMessageView?.tag = message?.jsonMessageId
                             quotedChatMessageView?.visibility = View.VISIBLE
                         }
