@@ -4,7 +4,7 @@
  * @author Marcel Hibbe
  * @author Dariusz Olszewski
  * @author Andy Scherzinger
- * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Dariusz Olszewski
  *
@@ -54,7 +54,10 @@ class FullScreenImageActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.share) {
+        return if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            true
+        } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(
                 this,
                 BuildConfig.APPLICATION_ID,
@@ -82,7 +85,6 @@ class FullScreenImageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.imageviewToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         binding.photoView.setOnPhotoTapListener { view, x, y ->
             toggleFullscreen()
@@ -101,6 +103,9 @@ class FullScreenImageActivity : AppCompatActivity() {
 
         val fileName = intent.getStringExtra("FILE_NAME")
         val isGif = intent.getBooleanExtra("IS_GIF", false)
+
+        supportActionBar?.title = fileName
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         path = applicationContext.cacheDir.absolutePath + "/" + fileName
         if (isGif) {

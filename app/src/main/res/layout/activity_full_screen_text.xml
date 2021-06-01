@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Marcel Hibbe
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -18,27 +20,47 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:background="@color/bg_default"
     tools:context=".activities.FullScreenTextViewerActivity">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/textview_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:elevation="4dp"
-            android:theme="@style/ThemeOverlay.AppCompat.Light"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-        <TextView
-            android:id="@+id/text_view"
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            tools:text="Lorem Ipsum"/>
+            android:clipChildren="true"
+            android:clipToPadding="false"
+            android:windowContentOverlay="@null">
 
-</FrameLayout>
+                <com.google.android.material.appbar.MaterialToolbar
+                    android:id="@+id/textview_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:theme="@style/appActionBarPopupMenu"
+                    app:layout_scrollFlags="scroll|enterAlways|snap"
+                    app:navigationIconTint="@color/fontAppbar"
+                    app:popupTheme="@style/appActionBarPopupMenu"
+                    app:titleTextColor="@color/fontAppbar"
+                    tools:title="Text File Preview" />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <TextView
+                    android:id="@+id/text_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/standard_padding"
+                    tools:text="Lorem Ipsum" />
+
+        </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

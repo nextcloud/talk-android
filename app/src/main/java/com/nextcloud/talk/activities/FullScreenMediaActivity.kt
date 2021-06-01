@@ -3,7 +3,7 @@
  *
  * @author Marcel Hibbe
  * @author Andy Scherzinger
- * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -53,7 +53,10 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.share) {
+        return if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            true
+        } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(
                 this,
                 BuildConfig.APPLICATION_ID,
@@ -86,7 +89,8 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
         setContentView(binding.root)
 
         setSupportActionBar(binding.mediaviewToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
+        supportActionBar?.title = fileName
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 

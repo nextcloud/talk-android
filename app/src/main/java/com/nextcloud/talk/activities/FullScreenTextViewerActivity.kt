@@ -3,7 +3,7 @@
  *
  * @author Marcel Hibbe
  * @author Andy Scherzinger
- * Copyright (C) 2021 Andy Scherzinger (infoi@andy-scherzinger.de)
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -28,11 +28,13 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityFullScreenTextBinding
+import com.nextcloud.talk.utils.DisplayUtils
 import io.noties.markwon.Markwon
 import java.io.File
 
@@ -48,7 +50,10 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == R.id.share) {
+        return if (item.itemId == android.R.id.home) {
+            onBackPressed()
+            true
+        } else if (item.itemId == R.id.share) {
             val shareUri = FileProvider.getUriForFile(
                 this,
                 BuildConfig.APPLICATION_ID,
@@ -76,7 +81,6 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setSupportActionBar(binding.textviewToolbar)
-        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         val fileName = intent.getStringExtra("FILE_NAME")
         val isMarkdown = intent.getBooleanExtra("IS_MARKDOWN", false)
@@ -88,6 +92,21 @@ class FullScreenTextViewerActivity : AppCompatActivity() {
             markwon.setMarkdown(binding.textView, text)
         } else {
             binding.textView.text = text
+        }
+
+        supportActionBar?.title = fileName
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        if (resources != null) {
+            DisplayUtils.applyColorToStatusBar(
+                this,
+                ResourcesCompat.getColor(resources, R.color.appbar, null)
+            )
+
+            DisplayUtils.applyColorToNavigationBar(
+                this.window,
+                ResourcesCompat.getColor(resources, R.color.bg_default, null)
+            )
         }
     }
 
