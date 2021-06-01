@@ -262,6 +262,7 @@ class ChatController(args: Bundle) :
                         disposableList.add(d)
                     }
 
+                    @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         currentConversation = roomOverall.ocs.data
                         loadAvatarForStatusBar()
@@ -969,6 +970,7 @@ class ChatController(args: Bundle) :
                         disposableList.add(d)
                     }
 
+                    @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs.data.sessionId
@@ -1126,14 +1128,21 @@ class ChatController(args: Bundle) :
                         // unused atm
                     }
 
+                    @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(genericOverall: GenericOverall) {
                         myFirstMessage = message
 
-                        if (binding.popupBubbleView.isShown == true) {
-                            binding.popupBubbleView.hide()
-                        }
+                        try {
+                            if (binding.popupBubbleView.isShown == true) {
+                                binding.popupBubbleView.hide()
+                            }
 
-                        binding.messagesListView.smoothScrollToPosition(0)
+                            binding.messagesListView.smoothScrollToPosition(0)
+                        } catch (npe: NullPointerException) {
+                            // view binding can be null
+                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            Log.i(TAG, "UI destroyed - view binding already gone")
+                        }
                     }
 
                     override fun onError(e: Throwable) {
@@ -1236,13 +1245,20 @@ class ChatController(args: Bundle) :
                             disposableList.add(d)
                         }
 
+                        @Suppress("Detekt.TooGenericExceptionCaught")
                         override fun onNext(response: Response<*>) {
-                            if (response.code() == 304) {
-                                pullChatMessages(1, setReadMarker, xChatLastCommonRead)
-                            } else if (response.code() == 412) {
-                                futurePreconditionFailed = true
-                            } else {
-                                processMessages(response, true, finalTimeout)
+                            try {
+                                if (response.code() == 304) {
+                                    pullChatMessages(1, setReadMarker, xChatLastCommonRead)
+                                } else if (response.code() == 412) {
+                                    futurePreconditionFailed = true
+                                } else {
+                                    processMessages(response, true, finalTimeout)
+                                }
+                            } catch (npe: NullPointerException) {
+                                // view binding can be null
+                                // since this is called asynchrously and UI might have been destroyed in the meantime
+                                Log.i(TAG, "UI destroyed - view binding already gone")
                             }
                         }
 
@@ -1267,11 +1283,18 @@ class ChatController(args: Bundle) :
                             disposableList.add(d)
                         }
 
+                        @Suppress("Detekt.TooGenericExceptionCaught")
                         override fun onNext(response: Response<*>) {
-                            if (response.code() == 412) {
-                                pastPreconditionFailed = true
-                            } else {
-                                processMessages(response, false, 0)
+                            try {
+                                if (response.code() == 412) {
+                                    pastPreconditionFailed = true
+                                } else {
+                                    processMessages(response, false, 0)
+                                }
+                            } catch (npe: NullPointerException) {
+                                // view binding can be null
+                                // since this is called asynchrously and UI might have been destroyed in the meantime
+                                Log.i(TAG, "UI destroyed - view binding already gone")
                             }
                         }
 
@@ -1316,9 +1339,9 @@ class ChatController(args: Bundle) :
                 cancelNotificationsForCurrentConversation()
 
                 isFirstMessagesProcessing = false
-                binding.progressBar?.visibility = View.GONE
+                binding.progressBar.visibility = View.GONE
 
-                binding.messagesListView?.visibility = View.VISIBLE
+                binding.messagesListView.visibility = View.VISIBLE
             }
 
             var countGroupedMessages = 0
@@ -1383,10 +1406,10 @@ class ChatController(args: Bundle) :
                             adapter?.itemCount == 0
 
                     if (!shouldAddNewMessagesNotice && !shouldScroll) {
-                        if (!binding.popupBubbleView?.isShown!!) {
+                        if (!binding.popupBubbleView.isShown) {
                             newMessagesCount = 1
-                            binding.popupBubbleView?.show()
-                        } else if (binding.popupBubbleView?.isShown == true) {
+                            binding.popupBubbleView.show()
+                        } else if (binding.popupBubbleView.isShown == true) {
                             newMessagesCount++
                         }
                     } else {
@@ -1671,13 +1694,14 @@ class ChatController(args: Bundle) :
                                 override fun onSubscribe(d: Disposable) {
                                     // unused atm
                                 }
+
                                 override fun onNext(roomOverall: RoomOverall) {
                                     val bundle = Bundle()
                                     bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                                     bundle.putString(KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
                                     bundle.putString(KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
 
-                                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
+                                    // FIXME once APIv2+ is used only, the createRoom already returns all the data
                                     ncApi!!.getRoom(
                                         credentials,
                                         ApiUtils.getUrlForRoom(
@@ -1691,6 +1715,7 @@ class ChatController(args: Bundle) :
                                             override fun onSubscribe(d: Disposable) {
                                                 // unused atm
                                             }
+
                                             override fun onNext(roomOverall: RoomOverall) {
                                                 bundle.putParcelable(
                                                     KEY_ACTIVE_CONVERSATION,
@@ -1844,7 +1869,11 @@ class ChatController(args: Bundle) :
         switch (webSocketCommunicationEvent.getType()) {
             case "refreshChat":
 
-                if (webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_INTERNAL_USER_ID).equals(Long.toString(conversationUser.getId()))) {
+                if (
+                webSocketCommunicationEvent
+                .getHashMap().get(BundleKeys.KEY_INTERNAL_USER_ID)
+                .equals(Long.toString(conversationUser.getId()))
+                ) {
                     if (roomToken.equals(webSocketCommunicationEvent.getHashMap().get(BundleKeys.KEY_ROOM_TOKEN))) {
                         pullChatMessages(2);
                     }
