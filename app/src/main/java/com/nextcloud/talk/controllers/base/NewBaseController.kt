@@ -101,6 +101,10 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         cleanTempCertPreference()
     }
 
+    fun isAlive(): Boolean {
+        return !isDestroyed && !isBeingDestroyed
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup,

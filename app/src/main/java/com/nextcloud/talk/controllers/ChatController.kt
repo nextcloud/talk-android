@@ -267,12 +267,18 @@ class ChatController(args: Bundle) :
                         loadAvatarForStatusBar()
 
                         setTitle()
-                        setupMentionAutocomplete()
-                        checkReadOnlyState()
-                        checkLobbyState()
+                        try {
+                            setupMentionAutocomplete()
+                            checkReadOnlyState()
+                            checkLobbyState()
 
-                        if (!inConversation) {
-                            joinRoomWithPassword()
+                            if (!inConversation) {
+                                joinRoomWithPassword()
+                            }
+                        } catch (npe: NullPointerException) {
+                            // view binding can be null
+                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            Log.i(TAG, "UI destroyed - view binding already gone")
                         }
                     }
 
@@ -559,7 +565,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun checkReadOnlyState() {
-        if (currentConversation != null) {
+        if (currentConversation != null && isAlive()) {
             if (currentConversation?.shouldShowLobby(conversationUser) ?: false ||
                 currentConversation?.conversationReadOnlyState != null &&
                 currentConversation?.conversationReadOnlyState ==
@@ -589,7 +595,10 @@ class ChatController(args: Bundle) :
     }
 
     private fun checkLobbyState() {
-        if (currentConversation != null && currentConversation?.isLobbyViewApplicable(conversationUser) ?: false) {
+        if (currentConversation != null &&
+            currentConversation?.isLobbyViewApplicable(conversationUser) ?: false &&
+            isAlive()
+        ) {
 
             if (!checkingLobbyStatus) {
                 getRoomInfo()
@@ -773,7 +782,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun setupMentionAutocomplete() {
-        if (!isDestroyed && !isBeingDestroyed) {
+        if (isAlive()) {
             val elevation = 6f
             resources?.let {
                 val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
@@ -968,7 +977,14 @@ class ChatController(args: Bundle) :
                             currentConversation?.sessionId
 
                         setupWebsocket()
-                        checkLobbyState()
+
+                        try {
+                            checkLobbyState()
+                        } catch (npe: NullPointerException) {
+                            // view binding can be null
+                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            Log.i(TAG, "UI destroyed - view binding already gone")
+                        }
 
                         if (isFirstMessagesProcessing) {
                             pullChatMessages(0)
