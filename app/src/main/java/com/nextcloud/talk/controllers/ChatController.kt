@@ -824,7 +824,7 @@ class ChatController(args: Bundle) :
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_ROOM_TOKEN,roomToken)
         router.pushController(
-            RouterTransaction.with(LocationController(bundle))
+            RouterTransaction.with(LocationPickerController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler())
         )

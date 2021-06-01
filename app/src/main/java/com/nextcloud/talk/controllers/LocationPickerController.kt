@@ -1,31 +1,40 @@
 package com.nextcloud.talk.controllers
 
 import android.Manifest
+import android.app.SearchManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
 import androidx.core.content.PermissionChecker
+import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
 import butterknife.BindView
+import com.bluelinelabs.conductor.RouterTransaction
+import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -47,7 +56,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class LocationController(args: Bundle) : BaseController(args) {
+class LocationPickerController(args: Bundle) : BaseController(args), SearchView.OnQueryTextListener {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -87,6 +96,8 @@ class LocationController(args: Bundle) : BaseController(args) {
 
     var moveToCurrentLocationWasClicked: Boolean = true
     var readyToShareLocation: Boolean = false
+    var searchItem: MenuItem? = null
+    var searchView: SearchView? = null
 
     init {
         setHasOptionsMenu(true)
@@ -107,36 +118,67 @@ class LocationController(args: Bundle) : BaseController(args) {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_conversation_plus_filter, menu)
-        // searchItem = menu.findItem(R.id.action_search)
-        // initSearchView()
+        inflater.inflate(R.menu.menu_locationpicker, menu)
+        searchItem = menu.findItem(R.id.location_action_search)
+        initSearchView()
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         Log.d(TAG, "onPrepareOptionsMenu")
         hideSearchBar()
-        actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)));
+        actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
         actionBar.title = "Share location"
-
-        // searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-        // showShareToScreen = !shareToScreenWasShown && hasActivityActionSendIntent()
-        // if (showShareToScreen) {
-        //     hideSearchBar()
-        //     actionBar.setTitle(R.string.send_to_three_dots)
-        // }
     }
 
     override fun onViewBound(view: View) {
         setCurrentLocationDescription()
         shareLocation?.isClickable = false
         shareLocation?.setOnClickListener {
-            if(readyToShareLocation){
+            if (readyToShareLocation) {
                 shareLocation()
             } else {
                 Log.d(TAG, "readyToShareLocation was false while user tried to share location.")
             }
         }
+    }
+
+    private fun initSearchView() {
+        if (activity != null) {
+            val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+            if (searchItem != null) {
+                searchView = MenuItemCompat.getActionView(searchItem) as SearchView
+                searchView?.setMaxWidth(Int.MAX_VALUE)
+                searchView?.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER)
+                var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+                    imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
+                }
+                searchView?.setImeOptions(imeOptions)
+                searchView?.setQueryHint(resources!!.getString(R.string.nc_search))
+                if (searchManager != null) {
+                    searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
+                }
+                searchView?.setOnQueryTextListener(this)
+            }
+        }
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        if (!query.isNullOrEmpty()) {
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_GEOCODING_QUERY, query)
+            router.pushController(
+                RouterTransaction.with(GeocodingController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        return true
     }
 
     private fun initMap() {
@@ -279,7 +321,7 @@ class LocationController(args: Bundle) : BaseController(args) {
     }
 
     companion object {
-        private val TAG = "LocationController"
+        private val TAG = "LocationPickerController"
         private val REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     }
 }
