@@ -193,16 +193,16 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         fun isStoragePermissionGranted(context: Context): Boolean {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (PermissionChecker.checkSelfPermission(
+                return if (PermissionChecker.checkSelfPermission(
                         context,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE
                     ) == PermissionChecker.PERMISSION_GRANTED
                 ) {
                     Log.d(TAG, "Permission is granted")
-                    return true
+                    true
                 } else {
                     Log.d(TAG, "Permission is revoked")
-                    return false
+                    false
                 }
             } else { // permission is automatically granted on sdk<23 upon installation
                 Log.d(TAG, "Permission is granted")

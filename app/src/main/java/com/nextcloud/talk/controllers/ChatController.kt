@@ -292,7 +292,7 @@ class ChatController(args: Bundle) :
                                 lobbyTimerHandler = Handler()
                             }
 
-                            lobbyTimerHandler?.postDelayed({ getRoomInfo() }, 5000)
+                            lobbyTimerHandler?.postDelayed({ getRoomInfo() }, LOBBY_TIMER_DELAY)
                         }
                     }
                 })
@@ -460,7 +460,12 @@ class ChatController(args: Bundle) :
                 } else {
                     scrollPosition = newMessagesCount - 1
                 }
-                Handler().postDelayed({ binding.messagesListView.smoothScrollToPosition(scrollPosition) }, 200)
+                Handler().postDelayed(
+                    {
+                        binding.messagesListView.smoothScrollToPosition(scrollPosition)
+                    },
+                    NEW_MESSAGES_POPUP_BUBBLE_DELAY
+                )
             }
         }
 
@@ -492,7 +497,7 @@ class ChatController(args: Bundle) :
         })
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(conversationUser) ?: 1000
+        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(conversationUser) ?: MESSAGE_MAX_LENGTH
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
@@ -1330,7 +1335,7 @@ class ChatController(args: Bundle) :
             }
         }
 
-        if (response.code() == 200) {
+        if (response.code() == HTTP_CODE_OK) {
 
             val chatOverall = response.body() as ChatOverall?
             val chatMessageList = setDeletionFlagsAndRemoveInfomessages(chatOverall?.ocs!!.data)
@@ -1836,10 +1841,9 @@ class ChatController(args: Bundle) :
 
         if (message.hasFileAttachment()) return false
 
-        val sixHoursInMillis = 6 * 3600 * 1000
         val isOlderThanSixHours = message
             .createdAt
-            ?.before(Date(System.currentTimeMillis() - sixHoursInMillis)) == true
+            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
         if (isOlderThanSixHours) return false
 
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
@@ -1855,12 +1859,11 @@ class ChatController(args: Bundle) :
     }
 
     override fun hasContentFor(message: IMessage, type: Byte): Boolean {
-        when (type) {
-            CONTENT_TYPE_SYSTEM_MESSAGE -> return !TextUtils.isEmpty(message.systemMessage)
-            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> return message.id == "-1"
+        return when (type) {
+            CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
+            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
+            else -> false
         }
-
-        return false
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -1942,7 +1945,7 @@ class ChatController(args: Bundle) :
                                         router.popCurrentController()
                                     }
                                 },
-                                100
+                                POP_CURRENT_CONTROLLER_DELAY
                             )
                         }
                     }
@@ -1959,9 +1962,15 @@ class ChatController(args: Bundle) :
     }
 
     companion object {
-        private val TAG = "ChatController"
-        private val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
-        private val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
-        val REQUEST_CODE_CHOOSE_FILE: Int = 555
+        private const val TAG = "ChatController"
+        private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
+        private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
+        private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
+        private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
+        private const val LOBBY_TIMER_DELAY: Long = 5000
+        private const val HTTP_CODE_OK: Int = 200
+        private const val MESSAGE_MAX_LENGTH: Int = 1000
+        private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
+        private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
     }
 }

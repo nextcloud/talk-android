@@ -181,10 +181,7 @@ class ConversationInfoController(args: Bundle) :
 
     private fun setupWebinaryView() {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
-            (
-                conversation!!.type == Conversation.ConversationType.ROOM_GROUP_CALL ||
-                    conversation!!.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
-                ) &&
+            webinaryRoomType(conversation!!) &&
             conversation!!.canModerate(conversationUser)
         ) {
             binding.webinarInfoView.webinarSettings.visibility = View.VISIBLE
@@ -225,6 +222,11 @@ class ConversationInfoController(args: Bundle) :
         } else {
             binding.webinarInfoView.webinarSettings.visibility = View.GONE
         }
+    }
+
+    private fun webinaryRoomType(conversation: Conversation): Boolean {
+        return conversation.type == Conversation.ConversationType.ROOM_GROUP_CALL ||
+            conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
     }
 
     fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
@@ -595,7 +597,7 @@ class ConversationInfoController(args: Bundle) :
                 }
             } else {
                 binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = false
-                binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = 0.38f
+                binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = LOW_EMPHASIS_OPACITY
                 setProperNotificationValue(conversation)
             }
         }
@@ -963,9 +965,9 @@ class ConversationInfoController(args: Bundle) :
     }
 
     companion object {
-
         private const val TAG = "ConversationInfoController"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
+        private val LOW_EMPHASIS_OPACITY: Float = 0.38f
     }
 
     /**

@@ -78,6 +78,7 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     protected open val title: String?
         get() = null
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     protected val actionBar: ActionBar?
         get() {
             var actionBarProvider: ActionBarProvider? = null
@@ -224,18 +225,30 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     }
 
     protected fun setTitle() {
-        if (title != null && actionBar != null) {
+        if (isTitleSetable()) {
             run {
-                var parentController = parentController
-                while (parentController != null) {
-                    if (parentController is BaseController && parentController.title != null) {
-                        return
-                    }
-                    parentController = parentController.parentController
-                }
+                calculateValidParentController()
             }
             actionBar!!.title = title
         }
+    }
+
+    private fun calculateValidParentController() {
+        var parentController = parentController
+        while (parentController != null) {
+            if (isValidController(parentController)) {
+                return
+            }
+            parentController = parentController.parentController
+        }
+    }
+
+    private fun isValidController(parentController: Controller): Boolean {
+        return parentController is BaseController && parentController.title != null
+    }
+
+    private fun isTitleSetable(): Boolean {
+        return title != null && actionBar != null
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
