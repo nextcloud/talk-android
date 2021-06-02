@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">Port del Proxy</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Tipus de Proxy</string>
-    <string name="nc_settings_reauthorize">Re-autoritza</string>
     <string name="nc_settings_remove">Suprimeix</string>
     <string name="nc_settings_remove_account">Suprimeix el compte</string>
     <string name="nc_settings_remove_confirmation">Si us plau, confirmeu la vostra intenció de suprimir el compte actual.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">Bloqueig de pantalla</string>
     <string name="nc_settings_screen_security_desc">Impedeix captures de pantalla a la llista recent i dins de l\'aplicació</string>
     <string name="nc_settings_screen_security_title">Seguretat de la pantalla</string>
-    <string name="nc_settings_switch_account">Canvia entre els comptes</string>
     <string name="nc_settings_theme_battery_saver">Configura l\'Estalvi de Bateria</string>
     <string name="nc_settings_theme_dark">Fosc</string>
     <string name="nc_settings_theme_follow_system">Fes servir el predeterminat del sistema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Clar</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Feu servir les credencials</string>
     <string name="nc_settings_vibrate_desc">El telèfon vibrarà si no està silenciat</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
     <string name="nc_share_link">Comparteix un enllaç</string>

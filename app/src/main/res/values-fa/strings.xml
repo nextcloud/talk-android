@@ -171,7 +171,6 @@
     <string name="nc_settings_proxy_port_title">پورت پروکسی</string>
     <string name="nc_settings_proxy_title">پروکسی</string>
     <string name="nc_settings_proxy_type_title">نوع پروکسی</string>
-    <string name="nc_settings_reauthorize">مجوز مجدد</string>
     <string name="nc_settings_remove">حذف</string>
     <string name="nc_settings_remove_account">حذف حساب کاربری</string>
     <string name="nc_settings_remove_confirmation">لطفاً قصد خود را برای حذف حساب جاری تأیید کنید.</string>
@@ -180,14 +179,12 @@
     <string name="nc_settings_screen_lock_title">قفل صفحه</string>
     <string name="nc_settings_screen_security_desc">از گرفتن عکسهای صفحه در لیست اخیر و داخل برنامه جلوگیری می کند</string>
     <string name="nc_settings_screen_security_title">امنیت صفحه نمایش</string>
-    <string name="nc_settings_switch_account">بین حساب‌ها جابجا شوید</string>
     <string name="nc_settings_theme_battery_saver">تنظیم شده توسط ذخیره نیرو</string>
     <string name="nc_settings_theme_dark">تیره</string>
     <string name="nc_settings_theme_follow_system">از پیش‌فرض سیستم استفاده کنید</string>
     <string name="nc_settings_theme_key">تم</string>
     <string name="nc_settings_theme_light">روشن</string>
     <string name="nc_settings_theme_title">تم</string>
-    <string name="nc_settings_use_credentials_title">از اعتبارنامه استفاده کنید</string>
     <string name="nc_settings_vibrate">لرزش</string>
     <string name="nc_settings_vibrate_desc">تلفن لرزش خواهد کرد مگر اینکه در حالت سکوت باشد</string>
     <string name="nc_settings_wrong_account">فقط حساب کاربری فعلی قابل گرفتن مجوز مجدد است</string>

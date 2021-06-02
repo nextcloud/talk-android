@@ -190,7 +190,7 @@
     <string name="nc_server_connect">Test de la connexion au serveur</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
-    <string name="nc_server_helper_text">Le lien vers votre interface Web %1$s quand vous l\'ouvrez dans le navigateur.</string>
+    <string name="nc_server_helper_text">Adresse URL visible dans la barre d\'adresse de votre navigateur Web lorsque vous êtes connecté à %1$s.</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
     <string name="nc_server_import_account_plain">Importer le compte</string>
     <string name="nc_server_import_accounts">Importer les comptes depuis l\'application %1$s</string>
@@ -224,7 +224,6 @@
     <string name="nc_settings_proxy_type_title">Type du proxy</string>
     <string name="nc_settings_read_privacy_desc">Partager mon statut de lecture et afficher le statut de lecture des autres</string>
     <string name="nc_settings_read_privacy_title">Statut de lecture</string>
-    <string name="nc_settings_reauthorize">Réautoriser</string>
     <string name="nc_settings_remove">Effacer</string>
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
@@ -233,14 +232,12 @@
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_security_desc">Empêche les captures d\'écran dans la liste récente et dans l\'application</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>
-    <string name="nc_settings_switch_account">Changer de compte</string>
     <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_dark">Sombre</string>
     <string name="nc_settings_theme_follow_system">Utiliser les paramètres du système</string>
     <string name="nc_settings_theme_key">thème</string>
     <string name="nc_settings_theme_light">Clair</string>
     <string name="nc_settings_theme_title">Thème</string>
-    <string name="nc_settings_use_credentials_title">Utiliser les informations d’identification</string>
     <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_vibrate_desc">Le téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_settings_warning">Attention</string>
@@ -272,7 +269,6 @@
     <string name="scope_local_title">Local</string>
     <string name="scope_private_title">Privé</string>
     <string name="scope_published_title">Publier</string>
-    <string name="selected_list_item">sélectionné</string>
     <string name="share">Partage</string>
     <string name="starred">Favori</string>
     <string name="user_info_address">Adresse</string>

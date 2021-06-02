@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">proxy類型</string>
     <string name="nc_settings_read_privacy_desc">分享我的閱讀狀態並顯示其他人的閱讀狀態</string>
     <string name="nc_settings_read_privacy_title">閱讀狀態</string>
-    <string name="nc_settings_reauthorize">重新授權</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除賬號</string>
     <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的賬號</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">伺服器版本非常舊，下一發布將不再支持版本！</string>
     <string name="nc_settings_server_eol">伺服器版本太舊，此版本的Android應用程式不支持該伺服器版本</string>
     <string name="nc_settings_server_eol_title">不支援伺服器</string>
-    <string name="nc_settings_switch_account">切換賬號</string>
     <string name="nc_settings_theme_battery_saver">由省電模式設定</string>
     <string name="nc_settings_theme_dark">暗色</string>
     <string name="nc_settings_theme_follow_system">使用系統預設</string>
     <string name="nc_settings_theme_key">佈景主題</string>
     <string name="nc_settings_theme_light">亮色</string>
     <string name="nc_settings_theme_title">佈景主題</string>
-    <string name="nc_settings_use_credentials_title">使用身分驗證</string>
     <string name="nc_settings_vibrate">顫動</string>
     <string name="nc_settings_vibrate_desc">除非靜音，否則手機會震動</string>
     <string name="nc_settings_warning">警告</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="password_protected">密碼保護</string>
+    <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="save">儲存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>
@@ -311,8 +309,8 @@
     <string name="scope_published_title">已發佈</string>
     <string name="scope_toggle">切換範圍</string>
     <string name="scope_toggle_description">更改 %1$s 的私隱級別</string>
-    <string name="selected_list_item">已選擇</string>
     <string name="send_to">傳送到</string>
+    <string name="send_to_three_dots">傳送到 ...</string>
     <string name="share">分享</string>
     <string name="starred">我的最愛</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新頭像</string>

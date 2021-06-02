@@ -250,7 +250,6 @@
     <string name="nc_settings_proxy_type_title">Vrsta posredniškega strežnika</string>
     <string name="nc_settings_read_privacy_desc">Objavi moje stanje branja in pokaži tudi stanja drugih uporabnikov</string>
     <string name="nc_settings_read_privacy_title">Stanje branja</string>
-    <string name="nc_settings_reauthorize">Ponovno overi dostop</string>
     <string name="nc_settings_remove">Odstrani</string>
     <string name="nc_settings_remove_account">Odstrani račun</string>
     <string name="nc_settings_remove_confirmation">Potrdite zahtevo za odstranitev trenutnega računa.</string>
@@ -262,14 +261,12 @@
     <string name="nc_settings_server_almost_eol">Različica strežnika je zastarela in ne bo več podprta z naslenjo različico programa.</string>
     <string name="nc_settings_server_eol">Različica strežnika je zastarela in ni več podprta v tej različici programa za okolje Android.</string>
     <string name="nc_settings_server_eol_title">Nepodprta različica strežnika</string>
-    <string name="nc_settings_switch_account">Preklopi med računi</string>
     <string name="nc_settings_theme_battery_saver">Nastavljeno prek zunanjega programa</string>
     <string name="nc_settings_theme_dark">Temna</string>
     <string name="nc_settings_theme_follow_system">Uporabi sistemsko privzeto možnost</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Svetla</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Uporabi poverila</string>
     <string name="nc_settings_vibrate">Tresenje</string>
     <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
     <string name="nc_settings_warning">Opozorilo</string>
@@ -310,7 +307,6 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_toggle">Preklop obsega</string>
     <string name="scope_toggle_description">Spremeni pravila zasebnosti za %1$s</string>
-    <string name="selected_list_item">izbrano</string>
     <string name="send_to">Pošlji</string>
     <string name="share">Souporaba</string>
     <string name="starred">Priljubljeno</string>

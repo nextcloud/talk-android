@@ -161,7 +161,6 @@
     <string name="nc_settings_proxy_port_title">Įgaliotojo serverio prievadas</string>
     <string name="nc_settings_proxy_title">Įgaliotasis serveris</string>
     <string name="nc_settings_proxy_type_title">Įgaliotojo serverio tipas</string>
-    <string name="nc_settings_reauthorize">Įgalioti iš naujo</string>
     <string name="nc_settings_remove">Šalinti</string>
     <string name="nc_settings_remove_account">Šalinti paskyrą</string>
     <string name="nc_settings_remove_confirmation">Patvirtinkite savo ketinimą pašalinti esamą paskyrą.</string>
@@ -169,7 +168,6 @@
     <string name="nc_settings_screen_lock_title">Ekrano užraktas</string>
     <string name="nc_settings_screen_security_desc">Neleidžia daryti ekrano kopijų paskiausiųjų sąraše ir programėlės viduje</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
-    <string name="nc_settings_switch_account">Perjungti tarp paskyrų</string>
     <string name="nc_settings_theme_battery_saver">Nustatytas baterijos taupytojo</string>
     <string name="nc_settings_theme_dark">Tamsus</string>
     <string name="nc_settings_theme_follow_system">Naudoti sistemos numatytąjį</string>

@@ -240,7 +240,6 @@
     <string name="nc_settings_proxy_type_title">Тип прокси-сервера</string>
     <string name="nc_settings_read_privacy_desc">Просматривать и показывать отчёт о прочтении сообщений</string>
     <string name="nc_settings_read_privacy_title">Отчёт о прочтении</string>
-    <string name="nc_settings_reauthorize">Повторный вход в систему</string>
     <string name="nc_settings_remove">Удалить</string>
     <string name="nc_settings_remove_account">Удалить учётную запись</string>
     <string name="nc_settings_remove_confirmation">Пожалуйста, подтвердите удаление текущего аккаунта.</string>
@@ -249,14 +248,12 @@
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_security_desc">Предотвращает сохранение скриншотов внутри приложения и в списке недавних приложений</string>
     <string name="nc_settings_screen_security_title">Безопасность экрана</string>
-    <string name="nc_settings_switch_account">Переключение учётных записей</string>
     <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
     <string name="nc_settings_theme_dark">Тёмное</string>
     <string name="nc_settings_theme_follow_system">Как в системе</string>
     <string name="nc_settings_theme_key">стиль оформления</string>
     <string name="nc_settings_theme_light">Светлое</string>
     <string name="nc_settings_theme_title">Оформление</string>
-    <string name="nc_settings_use_credentials_title">Использовать учётные данные</string>
     <string name="nc_settings_vibrate">Вибрация</string>
     <string name="nc_settings_vibrate_desc">Телефон будет вибрировать, если он не отключен</string>
     <string name="nc_settings_warning">Предупреждение</string>
@@ -297,7 +294,6 @@
     <string name="scope_published_title">Опубликовано</string>
     <string name="scope_toggle">Переключить область видимости</string>
     <string name="scope_toggle_description">Изменить уровень конфиденциальности %1$s</string>
-    <string name="selected_list_item">выбрано</string>
     <string name="send_to">Отправить в</string>
     <string name="share">Поделиться</string>
     <string name="starred">Избранное</string>

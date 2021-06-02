@@ -159,7 +159,6 @@
     <string name="nc_settings_proxy_title">Välityspalvelin</string>
     <string name="nc_settings_proxy_type_title">Välityspalvelimen tyyppi</string>
     <string name="nc_settings_read_privacy_title">Lue tila</string>
-    <string name="nc_settings_reauthorize">Valtuuta uudelleen</string>
     <string name="nc_settings_remove">Poista</string>
     <string name="nc_settings_remove_account">Poista tili</string>
     <string name="nc_settings_remove_confirmation">Vahvista nykyisen tilin poistaminen.</string>
@@ -167,14 +166,12 @@
     <string name="nc_settings_screen_lock_title">Näytönlukitus</string>
     <string name="nc_settings_screen_security_desc">Estää näyttökuvat viimeisimmät listassa sovelluksen sisällä</string>
     <string name="nc_settings_screen_security_title">Näytön turvallisuus</string>
-    <string name="nc_settings_switch_account">Vaihda tilien välillä</string>
     <string name="nc_settings_theme_battery_saver">Asetettu akunsäästäjän toimesta</string>
     <string name="nc_settings_theme_dark">Tumma</string>
     <string name="nc_settings_theme_follow_system">Käytä järjestelmän oletusta</string>
     <string name="nc_settings_theme_key">teema</string>
     <string name="nc_settings_theme_light">Vaalea</string>
     <string name="nc_settings_theme_title">Teema</string>
-    <string name="nc_settings_use_credentials_title">Käytä kirjautumistietoja</string>
     <string name="nc_settings_vibrate">Värinä</string>
     <string name="nc_settings_vibrate_desc">Puhelin värisee ellei se ole äänettömänä</string>
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>

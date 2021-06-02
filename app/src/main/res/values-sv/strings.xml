@@ -104,7 +104,7 @@
     <string name="nc_notify_me_always">Meddela alltid</string>
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>
     <string name="nc_notify_me_never">Meddela aldrig</string>
-    <string name="nc_offline">För närvarande offline, kontrollera din anslutning</string>
+    <string name="nc_offline">För närvarande frånkopplad, kontrollera din anslutning</string>
     <string name="nc_ok">OK</string>
     <string name="nc_owner">Ägare</string>
     <string name="nc_participants">Deltagare</string>
@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">Proxy-port</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy-typ</string>
-    <string name="nc_settings_reauthorize">Återautentisera</string>
     <string name="nc_settings_remove">Ta bort</string>
     <string name="nc_settings_remove_account">Ta bort konto</string>
     <string name="nc_settings_remove_confirmation">Bekräfta att du vill radera aktuellt konto.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">Skärmlås</string>
     <string name="nc_settings_screen_security_desc">Förhindrar skärmdumpar i den senaste listan och inuti appen</string>
     <string name="nc_settings_screen_security_title">Skärmsäkerhet</string>
-    <string name="nc_settings_switch_account">Växla mellan konton</string>
     <string name="nc_settings_theme_battery_saver">Satt av batterisparare</string>
     <string name="nc_settings_theme_dark">Mörk</string>
     <string name="nc_settings_theme_follow_system">Använd systemets standard</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Ljus</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Använd uppgifter</string>
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
     <string name="nc_settings_wrong_account">Bara nuvarande konto kan återautentiseras</string>
     <string name="nc_share_link">Dela länk</string>

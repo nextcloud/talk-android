@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">Proxy-Typ</string>
     <string name="nc_settings_read_privacy_desc">Ihren Lesestatus teilen und den Lesestatus von anderen anzeigen</string>
     <string name="nc_settings_read_privacy_title">Lesestatus</string>
-    <string name="nc_settings_reauthorize">Erneut autorisieren</string>
     <string name="nc_settings_remove">Entfernen</string>
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_remove_confirmation">Bitte bestätigen Sie, dass Sie dieses Konto entfernen möchten.</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">Die Serverversion ist sehr alt und wird ab dem nächsten Update nicht mehr unterstützt</string>
     <string name="nc_settings_server_eol">Die Serverversion ist zu alt und wird von dieser Version der Android-App nicht unterstützt</string>
     <string name="nc_settings_server_eol_title">Nicht unterstützter Server</string>
-    <string name="nc_settings_switch_account">Zwischen Konten wechseln</string>
     <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus gesetzt</string>
     <string name="nc_settings_theme_dark">Dunkel</string>
     <string name="nc_settings_theme_follow_system">Systemstandard verwenden</string>
     <string name="nc_settings_theme_key">Design</string>
     <string name="nc_settings_theme_light">Hell</string>
     <string name="nc_settings_theme_title">Design</string>
-    <string name="nc_settings_use_credentials_title">Anmeldeinformationen verwenden</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_warning">Warnung</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="password_protected">Passwortgeschützt</string>
+    <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>
     <string name="scope_federated_title">Federated</string>
@@ -311,8 +309,8 @@
     <string name="scope_published_title">Veröffentlicht</string>
     <string name="scope_toggle">Bereich umschalten</string>
     <string name="scope_toggle_description">Ändere Datenschutzstufe von %1$s</string>
-    <string name="selected_list_item">ausgewählt</string>
     <string name="send_to">Senden an</string>
+    <string name="send_to_three_dots">Senden an …</string>
     <string name="share">Freigabe</string>
     <string name="starred">Favorit</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>

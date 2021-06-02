@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">Port posrednika</string>
     <string name="nc_settings_proxy_title">Posrednik</string>
     <string name="nc_settings_proxy_type_title">Tip posrednika</string>
-    <string name="nc_settings_reauthorize">Ponovi autorizaciju</string>
     <string name="nc_settings_remove">Ukloni</string>
     <string name="nc_settings_remove_account">Ukloni nalog</string>
     <string name="nc_settings_remove_confirmation">Potvrdite da želite da uklonite trenutni nalog.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">Zaključavanje ekrana</string>
     <string name="nc_settings_screen_security_desc">Zabrani snimke ekrana u skorašnjoj listi i unutar aplikacije</string>
     <string name="nc_settings_screen_security_title">Bezbednost ekrana</string>
-    <string name="nc_settings_switch_account">Prebacivanje između naloga</string>
     <string name="nc_settings_theme_battery_saver">Postavlja štednja baterije</string>
     <string name="nc_settings_theme_dark">Tamna</string>
     <string name="nc_settings_theme_follow_system">Koristi sistemske podrazumevane</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Svetla</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Koristi akreditive</string>
     <string name="nc_settings_vibrate_desc">Telefon će vibrirati osim ako nije utišan</string>
     <string name="nc_settings_wrong_account">Samo trenutni nalog se može ponovo autorizovati</string>
     <string name="nc_share_link">Podeli vezu</string>

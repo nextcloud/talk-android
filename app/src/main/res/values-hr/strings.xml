@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">Proxy port</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Vrsta proxy poslužitelja</string>
-    <string name="nc_settings_reauthorize">Ponovno autoriziraj</string>
     <string name="nc_settings_remove">Ukloni</string>
     <string name="nc_settings_remove_account">Izbriši račun</string>
     <string name="nc_settings_remove_confirmation">Potvrdite namjeru uklanjanja predmetnog računa.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">Zaključavanje zaslona</string>
     <string name="nc_settings_screen_security_desc">Sprječava snimke zaslona na nedavnom popisu i unutar aplikacije</string>
     <string name="nc_settings_screen_security_title">Sigurnost zaslona</string>
-    <string name="nc_settings_switch_account">Promijeni račun</string>
     <string name="nc_settings_theme_battery_saver">Postavlja alat za uštedu baterije</string>
     <string name="nc_settings_theme_dark">Tamno</string>
     <string name="nc_settings_theme_follow_system">Koristi zadanu postavku sustava</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Svijetlo</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Koristi vjerodajnice</string>
     <string name="nc_settings_vibrate_desc">Telefon će vibrirati ako nije utišan</string>
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
     <string name="nc_share_link">Dijeli poveznicu</string>

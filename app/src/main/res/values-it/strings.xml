@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">Tipo proxy</string>
     <string name="nc_settings_read_privacy_desc">Condividi il mio stato di lettura e mostra lo stato di lettura degli altri</string>
     <string name="nc_settings_read_privacy_title">Stato di lettura</string>
-    <string name="nc_settings_reauthorize">Autorizza nuovamente</string>
     <string name="nc_settings_remove">Rimuovi</string>
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_remove_confirmation">Conferma la tua intenzione di rimuovere l\'account attuale.</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">La versione del server è molto datata e non sarà più supportata nella prossima versione!</string>
     <string name="nc_settings_server_eol">La versione del server è troppo datata e non supportata da questa versione dell\'applicazione Android</string>
     <string name="nc_settings_server_eol_title">Server non supportato</string>
-    <string name="nc_settings_switch_account">Cambia account</string>
     <string name="nc_settings_theme_battery_saver">Impostato dal risparmio della batteria</string>
     <string name="nc_settings_theme_dark">Scuro</string>
     <string name="nc_settings_theme_follow_system">Usa valori predefiniti di sistema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Chiaro</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Usa credenziali</string>
     <string name="nc_settings_vibrate">Vibrazione</string>
     <string name="nc_settings_vibrate_desc">Il telefono vibrerà a meno che non sia silenziato</string>
     <string name="nc_settings_warning">Avviso</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
     <string name="open_in_files_app">Apri nell\'applicazione File</string>
     <string name="password_protected">Protetto da password</string>
+    <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="save">Salva</string>
     <string name="scope_federated_description">Sincronizza solo con server fidati</string>
     <string name="scope_federated_title">Federato</string>
@@ -311,8 +309,8 @@
     <string name="scope_published_title">Pubblicato</string>
     <string name="scope_toggle">Cambio di ambito</string>
     <string name="scope_toggle_description">Cambia livello di privacy di %1$s</string>
-    <string name="selected_list_item">selezionati</string>
     <string name="send_to">Invia a</string>
+    <string name="send_to_three_dots">Invia a…</string>
     <string name="share">Condividi</string>
     <string name="starred">Preferito</string>
     <string name="upload_new_avatar_from_device">Carica nuovo avatar dal dispositivo</string>

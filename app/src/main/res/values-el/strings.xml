@@ -178,7 +178,6 @@
     <string name="nc_settings_proxy_type_title">Τύπος διαμεσολαβητή</string>
     <string name="nc_settings_read_privacy_desc">Διαμοιρασμός της κατάστασης-ανάγνωσης μου και εμφάνιση της κατάστασης-ανάγνωσης άλλων</string>
     <string name="nc_settings_read_privacy_title">Κατάσταση ανάγνωσης</string>
-    <string name="nc_settings_reauthorize">Επαναπιστοποίηση</string>
     <string name="nc_settings_remove">Αφαίρεση</string>
     <string name="nc_settings_remove_account">Αφαίρεση λογαριασμού</string>
     <string name="nc_settings_remove_confirmation">Παρακαλώ επιβεβαιώστε την πρόθεσή σας να αφαιρέσετε το λογαριασμό,</string>
@@ -187,14 +186,12 @@
     <string name="nc_settings_screen_lock_title">Κλείδωμα οθόνης</string>
     <string name="nc_settings_screen_security_desc">Αποτρέπει εικόνες στιγμιότυπων στην πρόσφατη λίστα και μέσα στην εφαρμογή</string>
     <string name="nc_settings_screen_security_title">Ασφάλεια οθόνης</string>
-    <string name="nc_settings_switch_account">Εναλλαγή λογαριασμών</string>
     <string name="nc_settings_theme_battery_saver">Ορισμός από Διαχείριση Μπαταρίας</string>
     <string name="nc_settings_theme_dark">Σκούρο</string>
     <string name="nc_settings_theme_follow_system">Χρησιμοποιήστε το προεπιλεγμένο σύστημα</string>
     <string name="nc_settings_theme_key">θέμα</string>
     <string name="nc_settings_theme_light">Φωτεινό</string>
     <string name="nc_settings_theme_title">Θέμα</string>
-    <string name="nc_settings_use_credentials_title">Χρήση διαπιστευτηρίων</string>
     <string name="nc_settings_vibrate">Δόνηση</string>
     <string name="nc_settings_vibrate_desc">Το τηλέφωνο θα δονείται έως τη σίγαση του</string>
     <string name="nc_settings_wrong_account">Μόνο ο παρόν λογαριασμός μπορεί να επαναεγκριθεί</string>

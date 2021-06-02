@@ -188,7 +188,6 @@
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartir o meu estado de lectura e amosar o estado de lectura doutras persoas</string>
     <string name="nc_settings_read_privacy_title">Estado de lectura</string>
-    <string name="nc_settings_reauthorize">Volver autorizar</string>
     <string name="nc_settings_remove">Retirar</string>
     <string name="nc_settings_remove_account">Retirar a conta</string>
     <string name="nc_settings_remove_confirmation">Confirme a súa intención de retirar a conta actual.</string>
@@ -197,14 +196,12 @@
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_security_desc">Evita capturas de pantalla na lista recente e dentro da aplicación</string>
     <string name="nc_settings_screen_security_title">Seguridade da pantalla</string>
-    <string name="nc_settings_switch_account">Cambiar entre contas</string>
     <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Usar credenciais</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
     <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>

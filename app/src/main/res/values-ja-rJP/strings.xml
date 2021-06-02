@@ -91,9 +91,9 @@
     <string name="nc_endless_disabled">ロードする項目がなくなりました（最大に到達）。</string>
     <string name="nc_endless_error">多くのアイテムの読み込み中にエラーが発生しました。</string>
     <string name="nc_external_server_failed">シグナリング設定を取得できませんでした</string>
-    <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザ経由で会話への参加を試みてください。</string>
+    <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
-    <string name="nc_file_browser">ファイルブラウザ</string>
+    <string name="nc_file_browser">ファイルブラウザー</string>
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_file_browser_refresh">更新</string>
     <string name="nc_file_browser_reshare_forbidden">このファイルの再共有を許可されていません</string>
@@ -211,7 +211,7 @@
     <string name="nc_server_connect">サーバー接続テスト</string>
     <string name="nc_server_db_upgrade_needed">%1$sデータベースをアップグレードしてください</string>
     <string name="nc_server_failed_to_import_account">選択したアカウントのインポートに失敗しました</string>
-    <string name="nc_server_helper_text">%1$sをWeb画面でブラウザで開くときのURL</string>
+    <string name="nc_server_helper_text">%1$sをWeb画面でブラウザーで開くときのURL</string>
     <string name="nc_server_import_account">%1$sアプリからアカウントをインポートする</string>
     <string name="nc_server_import_account_plain">アカウントをインポート</string>
     <string name="nc_server_import_accounts">%1$sアプリからアカウントをインポートする</string>
@@ -249,7 +249,6 @@
     <string name="nc_settings_proxy_type_title">プロキシタイプ</string>
     <string name="nc_settings_read_privacy_desc">自分の読み取りステータスを共有し、他の人の読み取り状態を表示します</string>
     <string name="nc_settings_read_privacy_title">読み取りステータス</string>
-    <string name="nc_settings_reauthorize">再認証する</string>
     <string name="nc_settings_remove">削除</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_remove_confirmation">現在のアカウントを削除する目的を確認してください。</string>
@@ -261,14 +260,12 @@
     <string name="nc_settings_server_almost_eol">サーバーバージョンが古すぎるため、次のリリースのバージョンではサポートされません。</string>
     <string name="nc_settings_server_eol">サーバーのバージョンが古く、このAndroidバージョンで対応していません。</string>
     <string name="nc_settings_server_eol_title">サポートされてないサーバーです</string>
-    <string name="nc_settings_switch_account">アカウントを切り替える</string>
     <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_dark">ダーク</string>
     <string name="nc_settings_theme_follow_system">デフォルトの設定を使用する</string>
     <string name="nc_settings_theme_key">テーマ</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_title">テーマ</string>
-    <string name="nc_settings_use_credentials_title">資格情報を使用する</string>
     <string name="nc_settings_vibrate">バイブレーション通知</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
     <string name="nc_settings_warning">警告</string>
@@ -309,7 +306,6 @@
     <string name="scope_published_title">公開されました</string>
     <string name="scope_toggle">公開範囲を切替</string>
     <string name="scope_toggle_description">プライバシーレベルを%1$sに変更</string>
-    <string name="selected_list_item">選択済</string>
     <string name="send_to">送信</string>
     <string name="share">共有</string>
     <string name="starred">お気に入り</string>

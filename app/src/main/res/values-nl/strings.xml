@@ -253,7 +253,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_proxy_type_title">Proxy type</string>
     <string name="nc_settings_read_privacy_desc">Deel mijn lees-status en toon de lees-status van anderen</string>
     <string name="nc_settings_read_privacy_title">Lees-status</string>
-    <string name="nc_settings_reauthorize">Opnieuw autoriseren</string>
     <string name="nc_settings_remove">Verwijderen</string>
     <string name="nc_settings_remove_account">Verwijder account</string>
     <string name="nc_settings_remove_confirmation">Bevestig dat je het huidige account wilt verwijderen.</string>
@@ -265,14 +264,12 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_server_almost_eol">De serverversie is heel oud en wordt niet meer ondersteund in de volgende release.</string>
     <string name="nc_settings_server_eol">De serverversie is te oud en wordt niet meer ondersteund door deze versie van de Android app</string>
     <string name="nc_settings_server_eol_title">Niet-ondersteunde server</string>
-    <string name="nc_settings_switch_account">Omschakelen tussen accounts</string>
     <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_dark">Donker</string>
     <string name="nc_settings_theme_follow_system">Gebruik systeem standaarden</string>
     <string name="nc_settings_theme_key">thema</string>
     <string name="nc_settings_theme_light">Licht</string>
     <string name="nc_settings_theme_title">Thema</string>
-    <string name="nc_settings_use_credentials_title">Gebruik inloggegevens</string>
     <string name="nc_settings_vibrate">Trillen</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_warning">Waarschuwing</string>
@@ -313,7 +310,6 @@ Kies er eentje van een provider.</string>
     <string name="scope_published_title">Gepubliceerd</string>
     <string name="scope_toggle">Scope omschakelen</string>
     <string name="scope_toggle_description">Wijzigen privacyniveau van %1$s</string>
-    <string name="selected_list_item">geselecteerd</string>
     <string name="send_to">Versturen naar</string>
     <string name="share">Delen</string>
     <string name="starred">Favoriet</string>

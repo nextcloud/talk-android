@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">Vekil sunucu türü</string>
     <string name="nc_settings_read_privacy_desc">Okundu durumumu paylaş ve diğerlerinin okundu durumunu görüntüle</string>
     <string name="nc_settings_read_privacy_title">Okundu durumu</string>
-    <string name="nc_settings_reauthorize">Yeniden izin ver</string>
     <string name="nc_settings_remove">Sil</string>
     <string name="nc_settings_remove_account">Hesabı sil</string>
     <string name="nc_settings_remove_confirmation">Lütfen geçerli hesabı silmek istediğinizi onaylayın.</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">Sunucu sürümü çok eski ve gelecek sürümde artık desteklenmeyecek</string>
     <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
     <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
-    <string name="nc_settings_switch_account">Hesaplar arasında geçiş yap</string>
     <string name="nc_settings_theme_battery_saver">Pil Koruyucu Tarafından</string>
     <string name="nc_settings_theme_dark">Koyu</string>
     <string name="nc_settings_theme_follow_system">Sistem varsayılanı kullanılsın</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Açık</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Kullanıcı bilgileri</string>
     <string name="nc_settings_vibrate">Titreşim</string>
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_warning">Uyarı</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="password_protected">Parola korumalı</string>
+    <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnız güvenilen sunucular ile eşitlensin</string>
     <string name="scope_federated_title">Birleşik</string>
@@ -311,8 +309,8 @@
     <string name="scope_published_title">Yayınlanmış</string>
     <string name="scope_toggle">Ölçeği değiştir</string>
     <string name="scope_toggle_description">%1$s gizlilik düzeyini değiştir</string>
-    <string name="selected_list_item">seçilmiş</string>
     <string name="send_to">Şuraya gönder</string>
+    <string name="send_to_three_dots">Şuraya gönder …</string>
     <string name="share">Paylaş</string>
     <string name="starred">Sık Kullanılanlara Ekle</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>

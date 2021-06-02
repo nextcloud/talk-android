@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">פתחת מתווך</string>
     <string name="nc_settings_proxy_title">מתווך</string>
     <string name="nc_settings_proxy_type_title">סוג מתווך</string>
-    <string name="nc_settings_reauthorize">אימות מחדש</string>
     <string name="nc_settings_remove">הסרה</string>
     <string name="nc_settings_remove_account">הסרת חשבון</string>
     <string name="nc_settings_remove_confirmation">נא לאשר את כוונתך להסיר את החשבון הנוכחי.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">נעילת מסך</string>
     <string name="nc_settings_screen_security_desc">מונע צילומי מסך ברשימה האחרונה ובתוך האפליקציה</string>
     <string name="nc_settings_screen_security_title">אבטחת מסך</string>
-    <string name="nc_settings_switch_account">החלפה בין חשבונות</string>
     <string name="nc_settings_theme_battery_saver">הוגדרה על ידי חוסך הסוללה</string>
     <string name="nc_settings_theme_dark">כהה</string>
     <string name="nc_settings_theme_follow_system">להשתמש בבררת המחדל של המערכת</string>
     <string name="nc_settings_theme_key">ערכת עיצוב</string>
     <string name="nc_settings_theme_light">בהירה</string>
     <string name="nc_settings_theme_title">ערכת עיצוב</string>
-    <string name="nc_settings_use_credentials_title">שימוש בפרטי גישה</string>
     <string name="nc_settings_vibrate_desc">הטלפון ירטוט אלמלא הוא על מצב שקט</string>
     <string name="nc_settings_wrong_account">ניתן לאמת רק את החשבון הנוכחי</string>
     <string name="nc_share_link">לשתף קישור</string>

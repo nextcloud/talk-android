@@ -239,7 +239,6 @@
     <string name="nc_settings_proxy_type_title">Proxy típusa</string>
     <string name="nc_settings_read_privacy_desc">Saját olvasási állapot megosztása, és a mások olvasási állapotának megjelenítése</string>
     <string name="nc_settings_read_privacy_title">Olvasási állapot</string>
-    <string name="nc_settings_reauthorize">Újraengedélyezés</string>
     <string name="nc_settings_remove">Eltávolítás</string>
     <string name="nc_settings_remove_account">Fiók eltávolítása</string>
     <string name="nc_settings_remove_confirmation">Erősítse meg szándékát, hogy eltávolítja a jelenlegi fiókot.</string>
@@ -248,14 +247,12 @@
     <string name="nc_settings_screen_lock_title">Képernyőzár</string>
     <string name="nc_settings_screen_security_desc">Megakadályozza a képernyőképek készítését az alkalmazáson belül és a nemrég használt alkalmazások közt.</string>
     <string name="nc_settings_screen_security_title">Képernyőbiztonság</string>
-    <string name="nc_settings_switch_account">Fiókok közti váltás</string>
     <string name="nc_settings_theme_battery_saver">Energiagazdálkodás által beállítva</string>
     <string name="nc_settings_theme_dark">Sötét</string>
     <string name="nc_settings_theme_follow_system">Rendszer alapértelmezésének használata</string>
     <string name="nc_settings_theme_key">téma</string>
     <string name="nc_settings_theme_light">Világos</string>
     <string name="nc_settings_theme_title">Téma</string>
-    <string name="nc_settings_use_credentials_title">Hitelesítő adatok használata</string>
     <string name="nc_settings_vibrate">Rezgés</string>
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
     <string name="nc_settings_warning">Figyelmeztetés</string>
@@ -294,7 +291,6 @@
     <string name="scope_published_description">Szinkronizálás a megbízható kiszolgálókkal, valamint a globális és nyilvános címjegyzékkel</string>
     <string name="scope_published_title">Közzétett</string>
     <string name="scope_toggle">Hatókör váltása</string>
-    <string name="selected_list_item">kiválasztott</string>
     <string name="starred">Kedvenc</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_info_address">Cím</string>

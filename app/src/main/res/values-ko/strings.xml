@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">프록시 포트</string>
     <string name="nc_settings_proxy_title">프록시</string>
     <string name="nc_settings_proxy_type_title">프록시 종류</string>
-    <string name="nc_settings_reauthorize">다시 인증</string>
     <string name="nc_settings_remove">제거</string>
     <string name="nc_settings_remove_account">계정 삭제</string>
     <string name="nc_settings_remove_confirmation">현재 계정을 삭제하려는 의사를 확인해주십시오.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">화면 잠금</string>
     <string name="nc_settings_screen_security_desc">현재 리스트와 앱 내부에서 스크린샷이 제한됩니다.</string>
     <string name="nc_settings_screen_security_title">화면 보안</string>
-    <string name="nc_settings_switch_account">계정간 전환</string>
     <string name="nc_settings_theme_battery_saver">배터리 보호기에 의해 설정</string>
     <string name="nc_settings_theme_dark">어두움</string>
     <string name="nc_settings_theme_follow_system">시스템 기본 설정 사용</string>
     <string name="nc_settings_theme_key">테마</string>
     <string name="nc_settings_theme_light">밝음</string>
     <string name="nc_settings_theme_title">테마</string>
-    <string name="nc_settings_use_credentials_title">인증 정보 사용</string>
     <string name="nc_settings_vibrate_desc">유음 모드라면 진동이 울릴 것입니다.</string>
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
     <string name="nc_share_link">링크 공유</string>

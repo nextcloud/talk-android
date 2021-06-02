@@ -40,9 +40,9 @@
     <string name="nc_call_state_with_phone">%1$s z telefonem</string>
     <string name="nc_call_state_with_video">%1$s z wideo</string>
     <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, stuknij aby spróbować ponownie</string>
-    <string name="nc_call_unknown">%s rozmowa</string>
-    <string name="nc_call_video">%s rozmowa wideo</string>
-    <string name="nc_call_voice">%s rozmowa głosowa</string>
+    <string name="nc_call_unknown">%s połączenie</string>
+    <string name="nc_call_video">%s połączenie wideo</string>
+    <string name="nc_call_voice">%s połączenie głosowe</string>
     <string name="nc_calling">Łączenie…</string>
     <string name="nc_camera_permission_permanently_denied">Aby włączyć komunikację wideo, należy udzielić dostępu dla \"Aparat\" w ustawieniach systemu.</string>
     <string name="nc_cancel">Anuluj</string>
@@ -239,7 +239,7 @@
     <string name="nc_settings_notification_sounds">Dźwięk</string>
     <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talk z aplikacją kontaktów systemowych</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić numer telefonu, inni użytkownicy będą mogli go znaleźć</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić swój numer telefonu, aby inni użytkownicy mogli Ciebie znaleźć</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numer telefonu ustawiony pomyślnie</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Numer telefonu</string>
@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">Typ proxy</string>
     <string name="nc_settings_read_privacy_desc">Udostępnij mój status odczytu i pokaż innym</string>
     <string name="nc_settings_read_privacy_title">Status odczytu</string>
-    <string name="nc_settings_reauthorize">Reautoryzacja</string>
     <string name="nc_settings_remove">Usuń</string>
     <string name="nc_settings_remove_account">Usuń konto</string>
     <string name="nc_settings_remove_confirmation">Potwierdź zamiar usunięcia bieżącego konta.</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">Wersja serwerowa jest bardzo stara i nie będzie obsługiwana w następnej wersji!</string>
     <string name="nc_settings_server_eol">Wersja serwera jest zbyt stara i nie jest obsługiwana przez tę wersję aplikacji na Androida</string>
     <string name="nc_settings_server_eol_title">Niewspierany serwer</string>
-    <string name="nc_settings_switch_account">Przełącz konta</string>
     <string name="nc_settings_theme_battery_saver">Ustawiony według oszczędzania baterii</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
     <string name="nc_settings_theme_follow_system">Użyj domyślnych ustawień systemu</string>
     <string name="nc_settings_theme_key">motyw</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_title">Motyw</string>
-    <string name="nc_settings_use_credentials_title">Użyj poświadczeń</string>
     <string name="nc_settings_vibrate">Wibracja</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować pod warunkiem, że nie zostanie wyciszony</string>
     <string name="nc_settings_warning">Ostrzeżenie</string>
@@ -284,7 +281,7 @@
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_timeout_error">Przekroczono limit czasu</string>
     <string name="nc_unauthorized_error">Nieautoryzowany</string>
-    <string name="nc_upload_choose_local_files">Wybierz plik</string>
+    <string name="nc_upload_choose_local_files">Wybierz pliki</string>
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
     <string name="nc_upload_failed">Wysyłanie nie powiodło się</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="password_protected">Zabezpieczone hasłem</string>
+    <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
     <string name="scope_federated_title">Sfederowane</string>
@@ -309,10 +307,10 @@
     <string name="scope_private_title">Prywatne</string>
     <string name="scope_published_description">Synchronizuj z zaufanymi serwerami oraz globalną i publiczną książką adresową</string>
     <string name="scope_published_title">Opublikowane</string>
-    <string name="scope_toggle">Przełącznik zakresu</string>
+    <string name="scope_toggle">Przełącz zakres</string>
     <string name="scope_toggle_description">Zmień poziom prywatności %1$s</string>
-    <string name="selected_list_item">wybrany</string>
     <string name="send_to">Wyślij do</string>
+    <string name="send_to_three_dots">Wyślij do…</string>
     <string name="share">Udostępnij</string>
     <string name="starred">Ulubione</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>

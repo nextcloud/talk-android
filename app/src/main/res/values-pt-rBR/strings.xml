@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartilhar meu status de leitura e mostrá-los a outros</string>
     <string name="nc_settings_read_privacy_title">Status de leitura</string>
-    <string name="nc_settings_reauthorize">Reautorizar</string>
     <string name="nc_settings_remove">Excluir</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor sem suporte</string>
-    <string name="nc_settings_switch_account">Alternar entre contas</string>
     <string name="nc_settings_theme_battery_saver">Definido por Battery Saver</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Use o padrão do sistema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Usar autenticação</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O telefone vai vibrar a menos que esteja silenciado</string>
     <string name="nc_settings_warning">Aviso</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="password_protected">Protegido por senha</string>
+    <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões </string>
     <string name="save">Salvar</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis </string>
     <string name="scope_federated_title">Federada</string>
@@ -311,8 +309,8 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_toggle">Alternância de escopo</string>
     <string name="scope_toggle_description">Alterar o nível de privacidade %1$s</string>
-    <string name="selected_list_item">selecionado</string>
     <string name="send_to">Enviar para</string>
+    <string name="send_to_three_dots">Enviar para …</string>
     <string name="share">Compartilhar </string>
     <string name="starred">Favorito</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>

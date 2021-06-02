@@ -164,7 +164,6 @@
     <string name="nc_settings_proxy_type_title">Genia de proxy</string>
     <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
     <string name="nc_settings_read_privacy_title">Leghe istadu</string>
-    <string name="nc_settings_reauthorize">Torra a autorizare</string>
     <string name="nc_settings_remove">Boga</string>
     <string name="nc_settings_remove_account">Boga·nche su contu</string>
     <string name="nc_settings_remove_confirmation">Cunfirma s\'intentzione tua de nde bogare su contu atuale.</string>
@@ -173,14 +172,12 @@
     <string name="nc_settings_screen_lock_title">Blocu de ischermu</string>
     <string name="nc_settings_screen_security_desc">Impedit is caturas de ischermu in sa lista reghente e a intro de s\'aplicatzione</string>
     <string name="nc_settings_screen_security_title">Seguresa ischermu</string>
-    <string name="nc_settings_switch_account">Passa a àteros contos</string>
     <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
     <string name="nc_settings_theme_dark">Iscuru</string>
     <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Craru</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_use_credentials_title">Imprea credentziales</string>
     <string name="nc_settings_vibrate">Vibra</string>
     <string name="nc_settings_vibrate_desc">Su telèfonu at a vibrare si no at a èssere sa muda</string>
     <string name="nc_settings_wrong_account">Isceti su contu atuale si podet torrare a autorizare</string>

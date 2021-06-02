@@ -169,7 +169,6 @@
     <string name="nc_settings_proxy_port_title">Порт посредника</string>
     <string name="nc_settings_proxy_title">Посредник</string>
     <string name="nc_settings_proxy_type_title">Тип посредника</string>
-    <string name="nc_settings_reauthorize">Понови ауторизацију</string>
     <string name="nc_settings_remove">Уклони</string>
     <string name="nc_settings_remove_account">Уклони налог</string>
     <string name="nc_settings_remove_confirmation">Потврдите да желите да уклоните тренутни налог.</string>
@@ -178,14 +177,12 @@
     <string name="nc_settings_screen_lock_title">Закључавање екрана</string>
     <string name="nc_settings_screen_security_desc">Забрани снимке екрана у скорашњој листи и унутар апликације</string>
     <string name="nc_settings_screen_security_title">Безбедност екрана</string>
-    <string name="nc_settings_switch_account">Пребацивање између налога</string>
     <string name="nc_settings_theme_battery_saver">Поставља штедња батерије</string>
     <string name="nc_settings_theme_dark">Тамна</string>
     <string name="nc_settings_theme_follow_system">Користи системске подразумеване</string>
     <string name="nc_settings_theme_key">тема</string>
     <string name="nc_settings_theme_light">Светла</string>
     <string name="nc_settings_theme_title">Тема</string>
-    <string name="nc_settings_use_credentials_title">Користи акредитиве</string>
     <string name="nc_settings_vibrate_desc">Телефон ће вибрирати осим ако није утишан</string>
     <string name="nc_settings_wrong_account">Само тренутни налог се може поново ауторизовати</string>
     <string name="nc_share_link">Подели везу</string>

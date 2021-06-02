@@ -230,7 +230,6 @@
     <string name="nc_settings_proxy_type_title">نوع البروكسي</string>
     <string name="nc_settings_read_privacy_desc">شارك حالتي و أظهر الحالة للآخرين</string>
     <string name="nc_settings_read_privacy_title">قراءة الحالة</string>
-    <string name="nc_settings_reauthorize">إعادة تفويض</string>
     <string name="nc_settings_remove">حذف</string>
     <string name="nc_settings_remove_account">حذف حساب</string>
     <string name="nc_settings_remove_confirmation">يرجى تأكيد رغبتك لإزالة الحساب الحالي.</string>
@@ -239,14 +238,12 @@
     <string name="nc_settings_screen_lock_title">قفل الشاشة</string>
     <string name="nc_settings_screen_security_desc">يمنع اخذ لقطات الشاشة في القائمة الأخيرة وداخل التطبيق</string>
     <string name="nc_settings_screen_security_title">أمان الشاشة</string>
-    <string name="nc_settings_switch_account">تبديل بين الحسابات</string>
     <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
     <string name="nc_settings_theme_key">المظهر</string>
     <string name="nc_settings_theme_light">فاتح</string>
     <string name="nc_settings_theme_title">المظهر</string>
-    <string name="nc_settings_use_credentials_title">استخدم بيانات الاعتماد</string>
     <string name="nc_settings_vibrate">اهتزاز</string>
     <string name="nc_settings_vibrate_desc">سيهتز الهاتف ما لم يتم وضعه على الصامت</string>
     <string name="nc_settings_warning">تحذير</string>
@@ -278,7 +275,6 @@
     <string name="scope_local_title">المحلي</string>
     <string name="scope_private_title">خاص بك</string>
     <string name="scope_published_title">نشرت</string>
-    <string name="selected_list_item">تم تحديد</string>
     <string name="starred">المفضلة</string>
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>

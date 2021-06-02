@@ -190,7 +190,6 @@
     <string name="nc_settings_proxy_port_title">Proxy port</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Typ proxy</string>
-    <string name="nc_settings_reauthorize">Znova prihlásiť</string>
     <string name="nc_settings_remove">Odstrániť</string>
     <string name="nc_settings_remove_account">Odstrániť účet</string>
     <string name="nc_settings_remove_confirmation">Potvrďte prosím, že naozaj chcete odstrániť súčasné konto.</string>
@@ -199,14 +198,12 @@
     <string name="nc_settings_screen_lock_title">Zámok obrazovky</string>
     <string name="nc_settings_screen_security_desc">Nepovolí screenshot v zozname posledných aplikácií a v aplikácii</string>
     <string name="nc_settings_screen_security_title">Zabezpečenie obrazovky</string>
-    <string name="nc_settings_switch_account">Prepínať medzi účtami</string>
     <string name="nc_settings_theme_battery_saver">Nastavené pomocou Šetriča batérie</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_theme_follow_system">Použiť systémové nastavenia</string>
     <string name="nc_settings_theme_key">motív vzhľadu</string>
     <string name="nc_settings_theme_light">Svetlý</string>
     <string name="nc_settings_theme_title">Motív vzhľadu</string>
-    <string name="nc_settings_use_credentials_title">Použi prihlasovacie údaje</string>
     <string name="nc_settings_vibrate">Vibrovať</string>
     <string name="nc_settings_vibrate_desc">Telefón bude vibrovať, pokiaľ nebude stíšený.</string>
     <string name="nc_settings_wrong_account">Iba aktuálny účet môže byť znova prihlásený</string>

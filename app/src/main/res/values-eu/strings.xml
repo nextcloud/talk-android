@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">Proxy mota</string>
     <string name="nc_settings_read_privacy_desc">Partekatu nire irakurtze-egoera eta erakutsi besteen irakurtze-egoera</string>
     <string name="nc_settings_read_privacy_title">Irakurtze egoera</string>
-    <string name="nc_settings_reauthorize">Berrbaimendu</string>
     <string name="nc_settings_remove">Ezabatu</string>
     <string name="nc_settings_remove_account">Ezabatu kontua</string>
     <string name="nc_settings_remove_confirmation">Mesedez, berretsi oraingo kontua ezabatzeko asmoa duzula.</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">Zerbitzariaren bertsioa zaharregia da eta ez da hurrengo argitalpenean onartuko!</string>
     <string name="nc_settings_server_eol">Zerbitzariaren bertsioa zaharregia da eta Android aplikazio honek ez du onartzen</string>
     <string name="nc_settings_server_eol_title">Ez da zerbitzaria onartzen</string>
-    <string name="nc_settings_switch_account">Aldatu kontuen artean</string>
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
     <string name="nc_settings_theme_key">Gaia</string>
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_title">Gaia</string>
-    <string name="nc_settings_use_credentials_title">Erabili kredentzialak</string>
     <string name="nc_settings_vibrate">Bibratu</string>
     <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_warning">Oharra</string>
@@ -311,7 +308,6 @@
     <string name="scope_published_title">Argitaratuta</string>
     <string name="scope_toggle">Irismen etengailua</string>
     <string name="scope_toggle_description">Aldatu %1$s(r)en pribatutasun maila</string>
-    <string name="selected_list_item">hautatuta</string>
     <string name="send_to">Bidali honi:</string>
     <string name="share">Partekatu</string>
     <string name="starred">Gogokoa</string>

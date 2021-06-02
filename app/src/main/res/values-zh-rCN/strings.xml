@@ -251,7 +251,6 @@
     <string name="nc_settings_proxy_type_title">代理类型</string>
     <string name="nc_settings_read_privacy_desc">共享我的消息读取状态，并显示其他人的消息读取状态</string>
     <string name="nc_settings_read_privacy_title">消息读取状态</string>
-    <string name="nc_settings_reauthorize">重新认证</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除账号</string>
     <string name="nc_settings_remove_confirmation">请确认您真要移除当前账号。</string>
@@ -263,14 +262,12 @@
     <string name="nc_settings_server_almost_eol">服务器版本很旧，下一个版本将不受支持!</string>
     <string name="nc_settings_server_eol">服务器版本太旧，不受这个版本的安卓应用程序支持</string>
     <string name="nc_settings_server_eol_title">不受支持的服务器</string>
-    <string name="nc_settings_switch_account">在账号之间切换</string>
     <string name="nc_settings_theme_battery_saver">由电池电源管理决定</string>
     <string name="nc_settings_theme_dark">深色主题</string>
     <string name="nc_settings_theme_follow_system">系统默认</string>
     <string name="nc_settings_theme_key">主题</string>
     <string name="nc_settings_theme_light">浅色主题</string>
     <string name="nc_settings_theme_title">主题</string>
-    <string name="nc_settings_use_credentials_title">使用凭据</string>
     <string name="nc_settings_vibrate">振动</string>
     <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_warning">警告</string>
@@ -300,6 +297,7 @@
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
     <string name="password_protected">受密码保护</string>
+    <string name="read_storage_no_permission">如果没有权限，不能共享来自存储的文件</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>
     <string name="scope_federated_title">联合云 </string>
@@ -311,8 +309,8 @@
     <string name="scope_published_title">已发布</string>
     <string name="scope_toggle">范围切换</string>
     <string name="scope_toggle_description">更改 %1$s 的隐私级别</string>
-    <string name="selected_list_item">已选中</string>
     <string name="send_to">发送到</string>
+    <string name="send_to_three_dots">发送到 …</string>
     <string name="share">分享</string>
     <string name="starred">收藏</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
