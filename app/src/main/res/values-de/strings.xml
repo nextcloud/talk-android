@@ -228,6 +228,7 @@
     <string name="nc_settings">Einstellungen</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
     <string name="nc_settings_add_account">Konto hinzufügen</string>
+    <string name="nc_settings_advanced_title">Erweitert</string>
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
@@ -246,11 +247,14 @@
     <string name="nc_settings_phone_book_integration_title">Rufnummernintegration</string>
     <string name="nc_settings_privacy">Datenschutz</string>
     <string name="nc_settings_proxy_host_title">Proxy-Host</string>
+    <string name="nc_settings_proxy_password_title">Proxy-Passwort</string>
     <string name="nc_settings_proxy_port_title">Proxy-Port</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy-Typ</string>
+    <string name="nc_settings_proxy_username_title">Proxy-Benutzername</string>
     <string name="nc_settings_read_privacy_desc">Ihren Lesestatus teilen und den Lesestatus von anderen anzeigen</string>
     <string name="nc_settings_read_privacy_title">Lesestatus</string>
+    <string name="nc_settings_reauthorize">Konto erneut autorisieren</string>
     <string name="nc_settings_remove">Entfernen</string>
     <string name="nc_settings_remove_account">Konto entfernen</string>
     <string name="nc_settings_remove_confirmation">Bitte bestätigen Sie, dass Sie dieses Konto entfernen möchten.</string>
@@ -268,6 +272,7 @@
     <string name="nc_settings_theme_key">Design</string>
     <string name="nc_settings_theme_light">Hell</string>
     <string name="nc_settings_theme_title">Design</string>
+    <string name="nc_settings_use_credentials_title">Proxy erfordert eine Authentifizierung</string>
     <string name="nc_settings_vibrate">Vibrieren</string>
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_warning">Warnung</string>
@@ -309,6 +314,7 @@
     <string name="scope_published_title">Veröffentlicht</string>
     <string name="scope_toggle">Bereich umschalten</string>
     <string name="scope_toggle_description">Ändere Datenschutzstufe von %1$s</string>
+    <string name="selected_list_item">Ausgewählt</string>
     <string name="send_to">Senden an</string>
     <string name="send_to_three_dots">Senden an …</string>
     <string name="share">Freigabe</string>

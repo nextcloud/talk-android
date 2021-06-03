@@ -228,6 +228,7 @@
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">已經更新了您現有的賬戶，而不是添加新的賬戶</string>
     <string name="nc_settings_add_account">新增一個賬號</string>
+    <string name="nc_settings_advanced_title">進階</string>
     <string name="nc_settings_appearance">外觀</string>
     <string name="nc_settings_call_ringtone">通話</string>
     <string name="nc_settings_incognito_keyboard_desc">指示鍵盤禁用個性化學習（無保證）</string>
@@ -246,11 +247,14 @@
     <string name="nc_settings_phone_book_integration_title">電話號碼整合</string>
     <string name="nc_settings_privacy">私隱</string>
     <string name="nc_settings_proxy_host_title">proxy代理主機</string>
+    <string name="nc_settings_proxy_password_title">Proxy 代理伺服器密碼</string>
     <string name="nc_settings_proxy_port_title">proxy連接埠</string>
     <string name="nc_settings_proxy_title">proxy代理</string>
     <string name="nc_settings_proxy_type_title">proxy類型</string>
+    <string name="nc_settings_proxy_username_title">Proxy 代理伺服器用戶名</string>
     <string name="nc_settings_read_privacy_desc">分享我的閱讀狀態並顯示其他人的閱讀狀態</string>
     <string name="nc_settings_read_privacy_title">閱讀狀態</string>
+    <string name="nc_settings_reauthorize">重新授權賬戶</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除賬號</string>
     <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的賬號</string>
@@ -268,6 +272,7 @@
     <string name="nc_settings_theme_key">佈景主題</string>
     <string name="nc_settings_theme_light">亮色</string>
     <string name="nc_settings_theme_title">佈景主題</string>
+    <string name="nc_settings_use_credentials_title">代理需要身份驗證</string>
     <string name="nc_settings_vibrate">顫動</string>
     <string name="nc_settings_vibrate_desc">除非靜音，否則手機會震動</string>
     <string name="nc_settings_warning">警告</string>
@@ -309,6 +314,7 @@
     <string name="scope_published_title">已發佈</string>
     <string name="scope_toggle">切換範圍</string>
     <string name="scope_toggle_description">更改 %1$s 的私隱級別</string>
+    <string name="selected_list_item">已選擇</string>
     <string name="send_to">傳送到</string>
     <string name="send_to_three_dots">傳送到 ...</string>
     <string name="share">分享</string>

@@ -251,6 +251,7 @@
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartilhar meu status de leitura e mostrá-los a outros</string>
     <string name="nc_settings_read_privacy_title">Status de leitura</string>
+    <string name="nc_settings_reauthorize">Reautorizar conta</string>
     <string name="nc_settings_remove">Excluir</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
@@ -268,6 +269,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">O proxy requer credenciais</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O telefone vai vibrar a menos que esteja silenciado</string>
     <string name="nc_settings_warning">Aviso</string>
@@ -309,6 +311,7 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_toggle">Alternância de escopo</string>
     <string name="scope_toggle_description">Alterar o nível de privacidade %1$s</string>
+    <string name="selected_list_item">Selecionado</string>
     <string name="send_to">Enviar para</string>
     <string name="send_to_three_dots">Enviar para …</string>
     <string name="share">Compartilhar </string>

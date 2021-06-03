@@ -228,6 +228,7 @@
     <string name="nc_settings">Ustawienia</string>
     <string name="nc_settings_account_updated">Zamiast dodawać nowe, zaktualizowano Twoje istniejące konto</string>
     <string name="nc_settings_add_account">Dodaj nowe konto</string>
+    <string name="nc_settings_advanced_title">Zaawansowane</string>
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_call_ringtone">Połączenia</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
@@ -246,11 +247,14 @@
     <string name="nc_settings_phone_book_integration_title">Integracja numeru telefonu</string>
     <string name="nc_settings_privacy">Prywatność</string>
     <string name="nc_settings_proxy_host_title">Host proxy</string>
+    <string name="nc_settings_proxy_password_title">Hasło proxy</string>
     <string name="nc_settings_proxy_port_title">Port proxy</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Typ proxy</string>
+    <string name="nc_settings_proxy_username_title">Nazwa użytkownika proxy</string>
     <string name="nc_settings_read_privacy_desc">Udostępnij mój status odczytu i pokaż innym</string>
     <string name="nc_settings_read_privacy_title">Status odczytu</string>
+    <string name="nc_settings_reauthorize">Ponownie autoryzuj konto</string>
     <string name="nc_settings_remove">Usuń</string>
     <string name="nc_settings_remove_account">Usuń konto</string>
     <string name="nc_settings_remove_confirmation">Potwierdź zamiar usunięcia bieżącego konta.</string>
@@ -268,6 +272,7 @@
     <string name="nc_settings_theme_key">motyw</string>
     <string name="nc_settings_theme_light">Jasny</string>
     <string name="nc_settings_theme_title">Motyw</string>
+    <string name="nc_settings_use_credentials_title">Wymagane poświadczenie proxy</string>
     <string name="nc_settings_vibrate">Wibracja</string>
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować pod warunkiem, że nie zostanie wyciszony</string>
     <string name="nc_settings_warning">Ostrzeżenie</string>
@@ -309,6 +314,7 @@
     <string name="scope_published_title">Opublikowane</string>
     <string name="scope_toggle">Przełącz zakres</string>
     <string name="scope_toggle_description">Zmień poziom prywatności %1$s</string>
+    <string name="selected_list_item">Wybrany</string>
     <string name="send_to">Wyślij do</string>
     <string name="send_to_three_dots">Wyślij do…</string>
     <string name="share">Udostępnij</string>

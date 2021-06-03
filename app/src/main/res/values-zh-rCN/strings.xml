@@ -228,6 +228,7 @@
     <string name="nc_settings">设置</string>
     <string name="nc_settings_account_updated">已经更新了您现有的账号，而不是添加新的账号</string>
     <string name="nc_settings_add_account">添加一个新账号</string>
+    <string name="nc_settings_advanced_title">高级</string>
     <string name="nc_settings_appearance">外观</string>
     <string name="nc_settings_call_ringtone">通话</string>
     <string name="nc_settings_incognito_keyboard_desc">通知键盘禁用个性化学习（不保证键盘会执行）</string>
@@ -246,11 +247,14 @@
     <string name="nc_settings_phone_book_integration_title">电话号码集成 </string>
     <string name="nc_settings_privacy">隐私</string>
     <string name="nc_settings_proxy_host_title">代理主机</string>
+    <string name="nc_settings_proxy_password_title">代理密码</string>
     <string name="nc_settings_proxy_port_title">代理端口</string>
     <string name="nc_settings_proxy_title">代理</string>
     <string name="nc_settings_proxy_type_title">代理类型</string>
+    <string name="nc_settings_proxy_username_title">代理用户名</string>
     <string name="nc_settings_read_privacy_desc">共享我的消息读取状态，并显示其他人的消息读取状态</string>
     <string name="nc_settings_read_privacy_title">消息读取状态</string>
+    <string name="nc_settings_reauthorize">重新授权账户</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除账号</string>
     <string name="nc_settings_remove_confirmation">请确认您真要移除当前账号。</string>
@@ -268,6 +272,7 @@
     <string name="nc_settings_theme_key">主题</string>
     <string name="nc_settings_theme_light">浅色主题</string>
     <string name="nc_settings_theme_title">主题</string>
+    <string name="nc_settings_use_credentials_title">代理需要凭据</string>
     <string name="nc_settings_vibrate">振动</string>
     <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_warning">警告</string>
@@ -309,6 +314,7 @@
     <string name="scope_published_title">已发布</string>
     <string name="scope_toggle">范围切换</string>
     <string name="scope_toggle_description">更改 %1$s 的隐私级别</string>
+    <string name="selected_list_item">已选中</string>
     <string name="send_to">发送到</string>
     <string name="send_to_three_dots">发送到 …</string>
     <string name="share">分享</string>
