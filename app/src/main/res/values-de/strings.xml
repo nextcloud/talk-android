@@ -266,6 +266,7 @@
     <string name="nc_settings_server_almost_eol">Die Serverversion ist sehr alt und wird ab dem nächsten Update nicht mehr unterstützt</string>
     <string name="nc_settings_server_eol">Die Serverversion ist zu alt und wird von dieser Version der Android-App nicht unterstützt</string>
     <string name="nc_settings_server_eol_title">Nicht unterstützter Server</string>
+    <string name="nc_settings_switch_account">Zwischen Konten wechseln</string>
     <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus gesetzt</string>
     <string name="nc_settings_theme_dark">Dunkel</string>
     <string name="nc_settings_theme_follow_system">Systemstandard verwenden</string>

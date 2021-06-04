@@ -254,6 +254,7 @@
     <string name="nc_settings_proxy_username_title">Uživatelské jméno pro proxy</string>
     <string name="nc_settings_read_privacy_desc">Sdílet mé oznámení o přečtení a zobrazit oznámení o přečtení ostatních</string>
     <string name="nc_settings_read_privacy_title">Oznámení o přečtení</string>
+    <string name="nc_settings_reauthorize">Znovu získat pověření účtu</string>
     <string name="nc_settings_remove">Odebrat</string>
     <string name="nc_settings_remove_account">Odebrat účet</string>
     <string name="nc_settings_remove_confirmation">Potvrďte, že chcete stávající účet odebrat.</string>
@@ -265,6 +266,7 @@
     <string name="nc_settings_server_almost_eol">Verze serveru je příliš stará a v příštím vydání této aplikace už nebude podporována!</string>
     <string name="nc_settings_server_eol">Verze serveru je příliš stará a nepodporovaná touto verzí aplikace pro Android</string>
     <string name="nc_settings_server_eol_title">Nepodporovaný server</string>
+    <string name="nc_settings_switch_account">Přepnout mezi účty</string>
     <string name="nc_settings_theme_battery_saver">Nastaveno úsporou akumulátoru</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_theme_follow_system">Použít systémový výchozí</string>
@@ -313,6 +315,7 @@
     <string name="scope_published_title">Zveřejněno</string>
     <string name="scope_toggle">Přepnout pohled</string>
     <string name="scope_toggle_description">Změnit úroveň soukromí pro %1$s</string>
+    <string name="selected_list_item">Vybráno</string>
     <string name="send_to">Odeslat k</string>
     <string name="send_to_three_dots">Odeslat k…</string>
     <string name="share">Sdílet</string>

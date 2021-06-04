@@ -266,6 +266,7 @@
     <string name="nc_settings_server_almost_eol">服务器版本很旧，下一个版本将不受支持!</string>
     <string name="nc_settings_server_eol">服务器版本太旧，不受这个版本的安卓应用程序支持</string>
     <string name="nc_settings_server_eol_title">不受支持的服务器</string>
+    <string name="nc_settings_switch_account">在不同账户间切换</string>
     <string name="nc_settings_theme_battery_saver">由电池电源管理决定</string>
     <string name="nc_settings_theme_dark">深色主题</string>
     <string name="nc_settings_theme_follow_system">系统默认</string>
