@@ -14,6 +14,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.AdapterView
 import android.widget.ListView
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
@@ -76,7 +77,7 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
         initAdapter(geocodingResults)
     }
 
-    private fun initAdapter(addresses : List<Address>) {
+    private fun initAdapter(addresses: List<Address>) {
         adapter = GeocodingAdapter(context!!, addresses)
         geocodingResultListView?.adapter = adapter
     }
@@ -92,6 +93,11 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
             searchLocation()
         } else {
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
+        }
+
+        geocodingResultListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            val address: Address = adapter.getItem(position) as Address
+            // TODO: directly share location? or post loaction to LocationPickerConttroller?
         }
     }
 
