@@ -228,6 +228,7 @@
     <string name="nc_settings">Impostazioni</string>
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
     <string name="nc_settings_add_account">Aggiungi un nuovo account</string>
+    <string name="nc_settings_advanced_title">Avanzate</string>
     <string name="nc_settings_appearance">Aspetto</string>
     <string name="nc_settings_call_ringtone">Chiamate</string>
     <string name="nc_settings_incognito_keyboard_desc">Ordina alla tastiera di disattivare l\'apprendimento personalizzato (senza garanzie)</string>
@@ -246,11 +247,13 @@
     <string name="nc_settings_phone_book_integration_title">Integrazione numero di telefono</string>
     <string name="nc_settings_privacy">Riservatezza</string>
     <string name="nc_settings_proxy_host_title">Host proxy</string>
+    <string name="nc_settings_proxy_password_title">Password proxy</string>
     <string name="nc_settings_proxy_port_title">Porta proxy</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Tipo proxy</string>
     <string name="nc_settings_read_privacy_desc">Condividi il mio stato di lettura e mostra lo stato di lettura degli altri</string>
     <string name="nc_settings_read_privacy_title">Stato di lettura</string>
+    <string name="nc_settings_reauthorize">Autorizza nuovamente</string>
     <string name="nc_settings_remove">Rimuovi</string>
     <string name="nc_settings_remove_account">Rimuovi account</string>
     <string name="nc_settings_remove_confirmation">Conferma la tua intenzione di rimuovere l\'account attuale.</string>
@@ -309,6 +312,7 @@
     <string name="scope_published_title">Pubblicato</string>
     <string name="scope_toggle">Cambio di ambito</string>
     <string name="scope_toggle_description">Cambia livello di privacy di %1$s</string>
+    <string name="selected_list_item">Selezionati</string>
     <string name="send_to">Invia a</string>
     <string name="send_to_three_dots">Invia a…</string>
     <string name="share">Condividi</string>

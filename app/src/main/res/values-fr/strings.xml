@@ -232,6 +232,7 @@
     <string name="nc_settings_screen_lock_title">Écran de verrouillage</string>
     <string name="nc_settings_screen_security_desc">Empêche les captures d\'écran dans la liste récente et dans l\'application</string>
     <string name="nc_settings_screen_security_title">Sécurité de l\'écran</string>
+    <string name="nc_settings_switch_account">Changer de compte</string>
     <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_dark">Sombre</string>
     <string name="nc_settings_theme_follow_system">Utiliser les paramètres du système</string>

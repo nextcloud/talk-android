@@ -266,6 +266,7 @@
     <string name="nc_settings_server_almost_eol">Sunucu sürümü çok eski ve gelecek sürümde artık desteklenmeyecek</string>
     <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
     <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
+    <string name="nc_settings_switch_account">Hesaplar arasında geçiş yap</string>
     <string name="nc_settings_theme_battery_saver">Pil koruyucu tarafından ayarlandı</string>
     <string name="nc_settings_theme_dark">Koyu</string>
     <string name="nc_settings_theme_follow_system">Sistem varsayılanı kullanılsın</string>

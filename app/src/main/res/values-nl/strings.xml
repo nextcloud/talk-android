@@ -264,6 +264,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_server_almost_eol">De serverversie is heel oud en wordt niet meer ondersteund in de volgende release.</string>
     <string name="nc_settings_server_eol">De serverversie is te oud en wordt niet meer ondersteund door deze versie van de Android app</string>
     <string name="nc_settings_server_eol_title">Niet-ondersteunde server</string>
+    <string name="nc_settings_switch_account">Omschakelen tussen accounts</string>
     <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_dark">Donker</string>
     <string name="nc_settings_theme_follow_system">Gebruik systeem standaarden</string>
@@ -310,6 +311,7 @@ Kies er eentje van een provider.</string>
     <string name="scope_published_title">Gepubliceerd</string>
     <string name="scope_toggle">Scope omschakelen</string>
     <string name="scope_toggle_description">Wijzigen privacyniveau van %1$s</string>
+    <string name="selected_list_item">Geselecteerd</string>
     <string name="send_to">Versturen naar</string>
     <string name="share">Delen</string>
     <string name="starred">Favoriet</string>

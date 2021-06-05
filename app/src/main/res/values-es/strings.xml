@@ -263,6 +263,7 @@
     <string name="nc_settings_server_almost_eol">¡La versión del servidor es muy antigua y no será compatible con la próxima versión!</string>
     <string name="nc_settings_server_eol">La versión del servidor es demasiado antigua y no es compatible con esta versión de la app para Android</string>
     <string name="nc_settings_server_eol_title">Servidor no soportado</string>
+    <string name="nc_settings_switch_account">Cambiar entre cuentas</string>
     <string name="nc_settings_theme_battery_saver">Ajustar Ahorro de batería</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
     <string name="nc_settings_theme_follow_system">Usar valores predeterminados del sistema</string>
@@ -310,6 +311,7 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_toggle">Alternar vista</string>
     <string name="scope_toggle_description">Cambiar el nivel de privacidad de %1$s</string>
+    <string name="selected_list_item">Seleccionado</string>
     <string name="send_to">Enviar a</string>
     <string name="send_to_three_dots">Enviar a …</string>
     <string name="share">Compartir</string>
