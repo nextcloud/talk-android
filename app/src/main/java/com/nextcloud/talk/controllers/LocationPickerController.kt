@@ -38,10 +38,23 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import fr.dudie.nominatim.client.JsonNominatimClient
+import fr.dudie.nominatim.model.Address
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.apache.http.client.HttpClient
+import org.apache.http.conn.ClientConnectionManager
+import org.apache.http.conn.scheme.Scheme
+import org.apache.http.conn.scheme.SchemeRegistry
+import org.apache.http.conn.ssl.SSLSocketFactory
+import org.apache.http.impl.client.DefaultHttpClient
+import org.apache.http.impl.conn.SingleClientConnManager
 import org.osmdroid.config.Configuration.getInstance
 import org.osmdroid.events.DelayedMapListener
 import org.osmdroid.events.MapListener
@@ -92,6 +105,8 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
     @BindView(R.id.share_location_description)
     @JvmField
     var shareLocationDescription: TextView? = null
+
+    var nominatimClient: JsonNominatimClient? = null
 
     var roomToken: String?
 
@@ -285,11 +300,24 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         }
     }
 
-    private fun shareLocation(selectedLat: Double?, selectedLon: Double?, name: String?) {
+    private fun shareLocation(selectedLat: Double?, selectedLon: Double?, locationName: String?) {
+        if (selectedLat != null || selectedLon != null) {
+
+            var name = locationName
+            if (name.isNullOrEmpty()) {
+                initGeocoder()
+                searchPlaceNameForCoordinates(selectedLat!!, selectedLon!!)
+            } else {
+                executeShareLocation(selectedLat, selectedLon, locationName)
+            }
+        }
+    }
+
+    private fun executeShareLocation(selectedLat: Double?, selectedLon: Double?, locationName: String?) {
         val objectId = "geo:$selectedLat,$selectedLon"
         val metaData: String =
             "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
-                "\"longitude\":\"$selectedLon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$selectedLon\",\"name\":\"$locationName\"}"
 
         ncApi.sendLocation(
             ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
@@ -360,6 +388,39 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         geocodedLat = lat
         geocodedLon = lon
         geocodedName = name
+    }
+
+    private fun initGeocoder() {
+        val registry = SchemeRegistry()
+        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), 443))
+        val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
+        val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
+        val baseUrl = "https://nominatim.openstreetmap.org/"
+        val email = "android@nextcloud.com"
+        nominatimClient = JsonNominatimClient(baseUrl, httpClient, email)
+    }
+
+    private fun searchPlaceNameForCoordinates(lat: Double, lon: Double): Boolean {
+        CoroutineScope(Dispatchers.IO).launch {
+            executeGeocodingRequest(lat, lon)
+        }
+        return true
+    }
+
+    private suspend fun executeGeocodingRequest(lat: Double, lon: Double) {
+        var address: Address? = null
+        try {
+            address = nominatimClient!!.getAddress(lon, lat)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to get geocoded addresses", e)
+        }
+        updateResultOnMainThread(lat, lon, address?.displayName)
+    }
+
+    private suspend fun updateResultOnMainThread(lat: Double, lon: Double, addressName: String?) {
+        withContext(Dispatchers.Main) {
+            executeShareLocation(lat, lon, addressName)
+        }
     }
 
     companion object {
