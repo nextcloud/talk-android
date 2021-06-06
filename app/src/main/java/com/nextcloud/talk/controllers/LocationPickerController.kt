@@ -56,7 +56,8 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class LocationPickerController(args: Bundle) : BaseController(args), SearchView.OnQueryTextListener {
+class LocationPickerController(args: Bundle) : BaseController(args), SearchView.OnQueryTextListener,
+    GeocodingController.GeocodingResultListener {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -84,9 +85,9 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
     @JvmField
     var shareLocation: LinearLayout? = null
 
-    @BindView(R.id.gps_accuracy)
+    @BindView(R.id.place_name)
     @JvmField
-    var gpsAccuracy: TextView? = null
+    var placeName: TextView? = null
 
     @BindView(R.id.share_location_description)
     @JvmField
@@ -98,6 +99,11 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
     var readyToShareLocation: Boolean = false
     var searchItem: MenuItem? = null
     var searchView: SearchView? = null
+
+    var receivedChosenGeocodingResult: Boolean = false
+    var geocodedLat: Double = 0.0
+    var geocodedLon: Double = 0.0
+    var geocodedName: String = ""
 
     init {
         setHasOptionsMenu(true)
@@ -132,11 +138,15 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
     }
 
     override fun onViewBound(view: View) {
-        setCurrentLocationDescription()
+        setLocationDescription(false, receivedChosenGeocodingResult)
         shareLocation?.isClickable = false
         shareLocation?.setOnClickListener {
             if (readyToShareLocation) {
-                shareLocation()
+                shareLocation(
+                    map?.mapCenter?.latitude,
+                    map?.mapCenter?.longitude,
+                    placeName?.text.toString()
+                )
             } else {
                 Log.d(TAG, "readyToShareLocation was false while user tried to share location.")
             }
@@ -170,7 +180,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
             bundle.putString(BundleKeys.KEY_GEOCODING_QUERY, query)
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             router.pushController(
-                RouterTransaction.with(GeocodingController(bundle))
+                RouterTransaction.with(GeocodingController(bundle, this))
                     .pushChangeHandler(HorizontalChangeHandler())
                     .popChangeHandler(HorizontalChangeHandler())
             )
@@ -205,32 +215,48 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         map?.overlays?.add(locationOverlay)
 
         val mapController = map?.controller
-        mapController?.setZoom(12.0)
+
+        if (receivedChosenGeocodingResult) {
+            mapController?.setZoom(14.0)
+        } else {
+            mapController?.setZoom(12.0)
+        }
 
         var myLocation: GeoPoint
-        myLocation = GeoPoint(52.0, 13.0)
+        myLocation = GeoPoint(13.0, 52.0)
 
+        var zoomToCurrentPositionAllowed = !receivedChosenGeocodingResult
         locationOverlay.runOnFirstFix(Runnable {
-            activity!!.runOnUiThread {
-                myLocation = locationOverlay.myLocation
-                mapController?.setCenter(myLocation)
+            myLocation = locationOverlay.myLocation
+            if (zoomToCurrentPositionAllowed) {
+                activity!!.runOnUiThread {
+                    mapController?.setZoom(12.0)
+                    mapController?.setCenter(myLocation)
+                }
             }
         })
 
+        if (receivedChosenGeocodingResult && geocodedLat != 0.0 && geocodedLon != 0.0) {
+            mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
+        }
+
         btCenterMap?.setOnClickListener(View.OnClickListener {
-            map?.controller?.animateTo(myLocation)
-            setCurrentLocationDescription()
+            mapController?.animateTo(myLocation)
             moveToCurrentLocationWasClicked = true
         })
 
         map?.addMapListener(DelayedMapListener(object : MapListener {
             override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
                 if (moveToCurrentLocationWasClicked) {
+                    setLocationDescription(true, false)
                     moveToCurrentLocationWasClicked = false
+                } else if (receivedChosenGeocodingResult) {
+                    shareLocation?.isClickable = true
+                    setLocationDescription(false, true)
+                    receivedChosenGeocodingResult = false
                 } else {
                     shareLocation?.isClickable = true
-                    shareLocationDescription?.text = "Share this location"
-                    gpsAccuracy?.text = ""
+                    setLocationDescription(false, false)
                 }
                 readyToShareLocation = true
                 return true
@@ -242,15 +268,24 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         }))
     }
 
-    private fun setCurrentLocationDescription() {
-        shareLocationDescription?.text = "Share current location"
-        gpsAccuracy?.text = "Accuracy: xx m"
+    private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
+        when {
+            isGpsLocation -> {
+                shareLocationDescription?.text = "Share current location"
+                placeName?.text = ""
+            }
+            isGeocodedResult -> {
+                shareLocationDescription?.text = "Share this location"
+                placeName?.text = geocodedName
+            }
+            else -> {
+                shareLocationDescription?.text = "Share this location"
+                placeName?.text = ""
+            }
+        }
     }
 
-    private fun shareLocation() {
-        val selectedLat: Double? = map?.mapCenter?.latitude
-        val selectedLon: Double? = map?.mapCenter?.longitude
-        val name = ""
+    private fun shareLocation(selectedLat: Double?, selectedLon: Double?, name: String?) {
         val objectId = "geo:$selectedLat,$selectedLon"
         val metaData: String =
             "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
@@ -297,7 +332,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
                 Log.d(TAG, "Permission is revoked")
                 return false
             }
-        } else { //permission is automatically granted on sdk<23 upon installation
+        } else {
             Log.d(TAG, "Permission is granted")
             return true
         }
@@ -318,6 +353,13 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         } else {
             Toast.makeText(context, "location permission required!", Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun receiveChosenGeocodingResult(lat: Double, lon: Double, name: String) {
+        receivedChosenGeocodingResult = true
+        geocodedLat = lat
+        geocodedLon = lon
+        geocodedName = name
     }
 
     companion object {
