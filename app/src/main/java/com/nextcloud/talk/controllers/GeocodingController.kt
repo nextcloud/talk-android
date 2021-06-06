@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
@@ -23,12 +24,20 @@ import autodagger.AutoInjector
 import butterknife.BindView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.GeocodingAdapter
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.model.Address
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -52,6 +61,12 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
     var context: Context? = null
 
     @Inject
+    lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var userUtils: UserUtils
+
+    @Inject
     @JvmField
     var appPreferences: AppPreferences? = null
 
@@ -59,6 +74,7 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
     @JvmField
     var geocodingResultListView: ListView? = null
 
+    var roomToken: String?
     var nominatimClient: JsonNominatimClient? = null
 
     var searchItem: MenuItem? = null
@@ -73,6 +89,7 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
         query = args.getString(BundleKeys.KEY_GEOCODING_QUERY)
+        roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
 
         initAdapter(geocodingResults)
     }
@@ -97,7 +114,7 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
 
         geocodingResultListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val address: Address = adapter.getItem(position) as Address
-            // TODO: directly share location? or post loaction to LocationPickerConttroller?
+            shareLocation(address.latitude, address.longitude, address.displayName)
         }
     }
 
@@ -197,6 +214,40 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
         withContext(Main) {
             initAdapter(results)
         }
+    }
+
+    private fun shareLocation(selectedLat: Double?, selectedLon: Double?, name : String?) {
+        val objectId = "geo:$selectedLat,$selectedLon"
+        val metaData: String =
+            "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
+                "\"longitude\":\"$selectedLon\",\"name\":\"$name\"}"
+
+        ncApi.sendLocation(
+            ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
+            ApiUtils.getUrlToSendLocation(userUtils.currentUser?.baseUrl, roomToken),
+            "geo-location",
+            objectId,
+            metaData
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(t: GenericOverall) {
+                    router.popCurrentController()
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error when trying to share location", e)
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    router.popCurrentController()
+                }
+
+                override fun onComplete() {
+                }
+            })
     }
 
     companion object {

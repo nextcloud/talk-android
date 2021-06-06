@@ -168,6 +168,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         if (!query.isNullOrEmpty()) {
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_GEOCODING_QUERY, query)
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
             router.pushController(
                 RouterTransaction.with(GeocodingController(bundle))
                     .pushChangeHandler(HorizontalChangeHandler())
@@ -269,7 +270,6 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
                 }
 
                 override fun onNext(t: GenericOverall) {
-                    Log.d(TAG, "shared location")
                     router.popCurrentController()
                 }
 
@@ -322,6 +322,6 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
 
     companion object {
         private val TAG = "LocationPickerController"
-        private val REQUEST_PERMISSIONS_REQUEST_CODE = 1;
+        private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
     }
 }
