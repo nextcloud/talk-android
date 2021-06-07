@@ -36,5 +36,3 @@ class GeocodingAdapter(context: Context, val dataSource: List<Address>) : BaseAd
         return rowView
     }
 }
-
-

@@ -69,7 +69,9 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class LocationPickerController(args: Bundle) : BaseController(args), SearchView.OnQueryTextListener,
+class LocationPickerController(args: Bundle) :
+    BaseController(args),
+    SearchView.OnQueryTextListener,
     GeocodingController.GeocodingResultListener {
 
     @Inject
@@ -257,27 +259,30 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
             moveToCurrentLocationWasClicked = true
         }
 
-        map?.addMapListener(DelayedMapListener(object : MapListener {
-            override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
-                if (moveToCurrentLocationWasClicked) {
-                    setLocationDescription(true, false)
-                    moveToCurrentLocationWasClicked = false
-                } else if (receivedChosenGeocodingResult) {
-                    shareLocation?.isClickable = true
-                    setLocationDescription(false, true)
-                    receivedChosenGeocodingResult = false
-                } else {
-                    shareLocation?.isClickable = true
-                    setLocationDescription(false, false)
-                }
-                readyToShareLocation = true
-                return true
-            }
+        map?.addMapListener(
+            DelayedMapListener(
+                object : MapListener {
+                    override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
+                        if (moveToCurrentLocationWasClicked) {
+                            setLocationDescription(true, false)
+                            moveToCurrentLocationWasClicked = false
+                        } else if (receivedChosenGeocodingResult) {
+                            shareLocation?.isClickable = true
+                            setLocationDescription(false, true)
+                            receivedChosenGeocodingResult = false
+                        } else {
+                            shareLocation?.isClickable = true
+                            setLocationDescription(false, false)
+                        }
+                        readyToShareLocation = true
+                        return true
+                    }
 
-            override fun onZoom(event: ZoomEvent): Boolean {
-                return false
-            }
-        }))
+                    override fun onZoom(event: ZoomEvent): Boolean {
+                        return false
+                    }
+                })
+        )
     }
 
     private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
@@ -376,7 +381,8 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             initMap()
         } else {
-            Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG)
+                .show()
         }
     }
 

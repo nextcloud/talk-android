@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import androidx.annotation.Nullable;
+import kotlin.text.Charsets;
 
 @Parcel
 @JsonObject
@@ -104,8 +105,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
                 if(MessageDigest.isEqual(
-                        Objects.requireNonNull(individualHashMap.get("type")).getBytes(),
-                        ("file").getBytes())) {
+                        Objects.requireNonNull(individualHashMap.get("type")).getBytes(Charsets.UTF_8),
+                        ("file").getBytes(Charsets.UTF_8))) {
                     return true;
                 }
             }
@@ -119,8 +120,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
                 Map<String, String> individualHashMap = entry.getValue();
 
                 if(MessageDigest.isEqual(
-                        Objects.requireNonNull(individualHashMap.get("type")).getBytes(),
-                        ("geo-location").getBytes())) {
+                        Objects.requireNonNull(individualHashMap.get("type")).getBytes(Charsets.UTF_8),
+                        ("geo-location").getBytes(Charsets.UTF_8))) {
                     return true;
                 }
             }
@@ -136,8 +137,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
                 if(MessageDigest.isEqual(
-                        Objects.requireNonNull(individualHashMap.get("type")).getBytes(),
-                        ("file").getBytes())) {
+                        Objects.requireNonNull(individualHashMap.get("type")).getBytes(Charsets.UTF_8),
+                        ("file").getBytes(Charsets.UTF_8))) {
                     selectedIndividualHashMap = individualHashMap;
                     return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
                             individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size)));

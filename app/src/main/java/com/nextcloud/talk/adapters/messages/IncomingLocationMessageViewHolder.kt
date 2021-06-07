@@ -182,7 +182,9 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             for (key in messageParameters.keys) {
                 val individualHashMap = message.messageParameters[key]
                 if (individualHashMap != null) {
-                    if (individualHashMap["type"] == "user" || individualHashMap["type"] == "guest" || individualHashMap["type"] == "call") {
+                    if (individualHashMap["type"] == "user"
+                        || individualHashMap["type"] == "guest"
+                        || individualHashMap["type"] == "call") {
                         if (individualHashMap["id"] == message.activeUser!!.userId) {
                             messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
                                 messageText!!.context,

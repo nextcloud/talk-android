@@ -107,8 +107,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
                 val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
                 if (individualHashMap != null) {
                     if (individualHashMap["type"] == "user" || (
-                            individualHashMap["type"] == "guest"
-                            ) || individualHashMap["type"] == "call"
+                            individualHashMap["type"] == "guest") || individualHashMap["type"] == "call"
                     ) {
                         messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
                             messageText!!.context,
@@ -242,8 +241,14 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
         urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url)))
-        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode(context!!.getString(R.string
-            .osm_tile_server_attributation)))
+        urlStringBuffer.append(
+            "&mapProviderAttribution=" + URLEncoder.encode(
+                context!!.getString(
+                    R.string
+                        .osm_tile_server_attributation
+                )
+            )
+        )
         urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
         urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
         urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
