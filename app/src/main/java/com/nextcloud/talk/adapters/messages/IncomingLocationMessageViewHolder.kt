@@ -19,6 +19,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
@@ -122,8 +123,8 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context?.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context?.getDrawable(R.drawable.ic_launcher_foreground)
+                layers[0] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_background)
+                layers[1] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 messageUserAvatarView?.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else if (message.actorType == "bots") {

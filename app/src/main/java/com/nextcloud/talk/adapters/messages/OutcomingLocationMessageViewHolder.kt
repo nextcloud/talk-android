@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
@@ -203,7 +204,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         readStatusDrawableInt?.let { drawableInt ->
-            context?.resources?.getDrawable(drawableInt, null)?.let {
+            AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 checkMark?.setImageDrawable(it)
             }

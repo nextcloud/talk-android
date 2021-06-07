@@ -238,7 +238,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         myLocation = GeoPoint(13.0, 52.0)
 
         var zoomToCurrentPositionAllowed = !receivedChosenGeocodingResult
-        locationOverlay.runOnFirstFix(Runnable {
+        locationOverlay.runOnFirstFix {
             myLocation = locationOverlay.myLocation
             if (zoomToCurrentPositionAllowed) {
                 activity!!.runOnUiThread {
@@ -246,16 +246,16 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
                     mapController?.setCenter(myLocation)
                 }
             }
-        })
+        }
 
         if (receivedChosenGeocodingResult && geocodedLat != 0.0 && geocodedLon != 0.0) {
             mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
         }
 
-        btCenterMap?.setOnClickListener(View.OnClickListener {
+        btCenterMap?.setOnClickListener {
             mapController?.animateTo(myLocation)
             moveToCurrentLocationWasClicked = true
-        })
+        }
 
         map?.addMapListener(DelayedMapListener(object : MapListener {
             override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
@@ -422,7 +422,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
     }
 
     companion object {
-        private val TAG = "LocationPickerController"
-        private val REQUEST_PERMISSIONS_REQUEST_CODE = 1
+        private const val TAG = "LocationPicker"
+        private const val REQUEST_PERMISSIONS_REQUEST_CODE = 1
     }
 }

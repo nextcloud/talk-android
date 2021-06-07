@@ -49,6 +49,8 @@ buildscript {
 configurations.all {
     // check for updates every build
     resolutionStrategy.cacheChangingModulesFor 3600, 'seconds'
+    exclude module: 'httpclient'
+    exclude module: 'commons-logging'
 }
 
 allprojects {
