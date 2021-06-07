@@ -146,10 +146,9 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        Log.d(TAG, "onPrepareOptionsMenu")
         hideSearchBar()
         actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
-        actionBar.title = "Share location"
+        actionBar.title = context!!.getString(R.string.nc_share_location)
     }
 
     override fun onViewBound(view: View) {
@@ -163,7 +162,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
                     placeName?.text.toString()
                 )
             } else {
-                Log.d(TAG, "readyToShareLocation was false while user tried to share location.")
+                Log.w(TAG, "readyToShareLocation was false while user tried to share location.")
             }
         }
     }
@@ -181,9 +180,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
                 }
                 searchView?.setImeOptions(imeOptions)
                 searchView?.setQueryHint(resources!!.getString(R.string.nc_search))
-                if (searchManager != null) {
-                    searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
-                }
+                searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
                 searchView?.setOnQueryTextListener(this)
             }
         }
@@ -286,15 +283,15 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
     private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
         when {
             isGpsLocation -> {
-                shareLocationDescription?.text = "Share current location"
+                shareLocationDescription?.text = context!!.getText(R.string.nc_share_current_location)
                 placeName?.text = ""
             }
             isGeocodedResult -> {
-                shareLocationDescription?.text = "Share this location"
+                shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
                 placeName?.text = geocodedName
             }
             else -> {
-                shareLocationDescription?.text = "Share this location"
+                shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
                 placeName?.text = ""
             }
         }
@@ -379,7 +376,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             initMap()
         } else {
-            Toast.makeText(context, "location permission required!", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -395,8 +392,8 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
         registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), 443))
         val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
         val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
-        val baseUrl = "https://nominatim.openstreetmap.org/"
-        val email = "android@nextcloud.com"
+        val baseUrl = context!!.getString(R.string.osm_geocoder_url)
+        val email = context!!.getString(R.string.osm_geocoder_contact)
         nominatimClient = JsonNominatimClient(baseUrl, httpClient, email)
     }
 
@@ -413,6 +410,7 @@ class LocationPickerController(args: Bundle) : BaseController(args), SearchView.
             address = nominatimClient!!.getAddress(lon, lat)
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get geocoded addresses", e)
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
         updateResultOnMainThread(lat, lon, address?.displayName)
     }

@@ -43,9 +43,6 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private val TAG = "LocationMessageViewHolder"
 
-    var mapProviderUrl: String = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    var mapProviderAttribution: String = "OpenStreetMap contributors"
-
     var locationLon: String? = ""
     var locationLat: String? = ""
     var locationName: String? = ""
@@ -243,8 +240,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
-        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(mapProviderUrl))
-        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode(mapProviderAttribution))
+        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url)))
+        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode(context!!.getString(R.string
+            .osm_tile_server_attributation)))
         urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
         urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
         urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))

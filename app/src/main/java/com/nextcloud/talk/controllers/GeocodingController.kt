@@ -16,6 +16,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.ListView
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
@@ -111,7 +112,6 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
 
         geocodingResultListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val address: Address = adapter.getItem(position) as Address
-
             val listener: GeocodingResultListener? = targetController as GeocodingResultListener?
             listener?.receiveChosenGeocodingResult(address.latitude, address.longitude, address.displayName)
             router.popCurrentController()
@@ -133,7 +133,6 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
         super.onPrepareOptionsMenu(menu)
         hideSearchBar()
         actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
-        actionBar.title = "Share location"
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -152,17 +151,16 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
             val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                searchView?.setMaxWidth(Int.MAX_VALUE)
-                searchView?.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER)
+                searchView?.maxWidth = Int.MAX_VALUE
+                searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
                     imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
                 }
-                searchView?.setImeOptions(imeOptions)
-                searchView?.setQueryHint(resources!!.getString(R.string.nc_search))
+                searchView?.imeOptions = imeOptions
+                searchView?.queryHint = resources!!.getString(R.string.nc_search)
                 searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
                 searchView?.setOnQueryTextListener(this)
-
 
                 searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                     override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
@@ -183,8 +181,8 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
         registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), 443))
         val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
         val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
-        val baseUrl = "https://nominatim.openstreetmap.org/"
-        val email = "android@nextcloud.com"
+        val baseUrl = context!!.getString(R.string.osm_geocoder_url)
+        val email = context!!.getString(R.string.osm_geocoder_contact)
         nominatimClient = JsonNominatimClient(baseUrl, httpClient, email)
     }
 
@@ -206,6 +204,7 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
             }
         } catch (e: Exception) {
             Log.e(TAG, "Failed to get geocoded addresses", e)
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
         updateResultsOnMainThread(results)
     }
