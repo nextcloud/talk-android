@@ -42,7 +42,7 @@ import javax.inject.Inject
 class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 .OutcomingTextMessageViewHolder<ChatMessage>(incomingView) {
 
-    private val TAG = "LocationMessageViewHolder"
+    private val TAG = "LocMessageView"
 
     var locationLon: String? = ""
     var locationLat: String? = ""

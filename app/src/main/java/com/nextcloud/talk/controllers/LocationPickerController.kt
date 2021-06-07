@@ -428,7 +428,7 @@ class LocationPickerController(args: Bundle) :
     }
 
     companion object {
-        private const val TAG = "LocationPicker"
+        private const val TAG = "LocPicker"
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 1
     }
 }
