@@ -463,7 +463,7 @@ class ChatController(args: Bundle) :
             )
 
             val itemTouchHelper = ItemTouchHelper(messageSwipeController)
-            itemTouchHelper.attachToRecyclerView(messagesListView)
+            itemTouchHelper.attachToRecyclerView(binding.messagesListView)
         }
 
         layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
