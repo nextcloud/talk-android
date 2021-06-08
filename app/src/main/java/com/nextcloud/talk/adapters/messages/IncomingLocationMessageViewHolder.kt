@@ -6,8 +6,6 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextUtils
 import android.util.Log
 import android.util.TypedValue
@@ -34,7 +32,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
@@ -174,59 +171,14 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         itemView.isSelected = false
         messageTimeView!!.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
 
-        var messageString: Spannable = SpannableString(message.text)
-
-        var textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
-
-        if (messageParameters != null && messageParameters.size > 0) {
-            for (key in messageParameters.keys) {
-                val individualHashMap = message.messageParameters[key]
-                if (individualHashMap != null) {
-                    if (individualHashMap["type"] == "user"
-                        || individualHashMap["type"] == "guest"
-                        || individualHashMap["type"] == "call") {
-                        if (individualHashMap["id"] == message.activeUser!!.userId) {
-                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                messageText!!.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser!!,
-                                R.xml.chip_you
-                            )
-                        } else {
-                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                messageText!!.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser!!,
-                                R.xml.chip_others
-                            )
-                        }
-                    } else if (individualHashMap["type"] == "file") {
-                        itemView.setOnClickListener { v ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context!!.startActivity(browserIntent)
-                        }
-                    }
-                }
-            }
-        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-            textSize = (textSize * 2.5).toFloat()
-            itemView.isSelected = true
-            messageAuthor!!.visibility = View.GONE
-        }
-
+        val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        messageText!!.text = messageString
+        messageText!!.text = message.text
 
         // parent message handling
 
         if (!message.isDeleted && message.parentMessage != null) {
-            var parentChatMessage = message.parentMessage
+            val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE

@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
 import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -32,10 +30,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.TextMatchers
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
-import java.util.HashMap
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -95,45 +91,14 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
-        val messageParameters: HashMap<String, HashMap<String, String>>? = message.messageParameters
-        var messageString: Spannable = SpannableString(message.text)
+
         realView.isSelected = false
         messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.white60))
         val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
-        var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
-        if (messageParameters != null && messageParameters.size > 0) {
-            for (key in messageParameters.keys) {
-                val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
-                if (individualHashMap != null) {
-                    if (individualHashMap["type"] == "user" || (
-                            individualHashMap["type"] == "guest") || individualHashMap["type"] == "call"
-                    ) {
-                        messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                            messageText!!.context,
-                            messageString,
-                            individualHashMap["id"]!!,
-                            individualHashMap["name"]!!,
-                            individualHashMap["type"]!!,
-                            message.activeUser,
-                            R.xml.chip_others
-                        )
-                    } else if (individualHashMap["type"] == "file") {
-                        realView.setOnClickListener(
-                            View.OnClickListener { v: View? ->
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                                context!!.startActivity(browserIntent)
-                            }
-                        )
-                    }
-                }
-            }
-        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-            textSize = (textSize * 2.5).toFloat()
-            layoutParams.isWrapBefore = true
-            messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
-            realView.isSelected = true
-        }
+
+        val textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
+
         val resources = sharedApplication!!.resources
         val bgBubbleColor = if (message.isDeleted) {
             resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
@@ -159,12 +124,12 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         }
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         messageTimeView!!.layoutParams = layoutParams
-        messageText!!.text = messageString
+        messageText!!.text = message.text
 
         // parent message handling
 
         if (!message.isDeleted && message.parentMessage != null) {
-            var parentChatMessage = message.parentMessage
+            val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
                 quotedMessagePreview?.visibility = View.VISIBLE
