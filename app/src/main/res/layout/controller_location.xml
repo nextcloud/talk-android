@@ -2,6 +2,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -49,14 +50,14 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="0dp"
             android:layout_above="@id/locationpicker_anchor"
-            android:contentDescription="your location">
+            android:contentDescription="@string/nc_location_current_position_description">
         </ImageView>
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/share_location"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
+        android:layout_height="60dp"
         android:orientation="horizontal">
 
         <ImageView
@@ -69,22 +70,26 @@
             app:srcCompat="@drawable/ic_baseline_location_on_24">
         </ImageView>
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
             <TextView
                 android:id="@+id/share_location_description"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="20dp"
-                android:layout_marginTop="10dp"
-                android:gravity="center_vertical">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                tools:text="Share this location">
             </TextView>
             <TextView
                 android:id="@+id/place_name"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                tools:text="Brandenburg, Germany">
             </TextView>
         </LinearLayout>
 

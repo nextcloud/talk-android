@@ -289,14 +289,17 @@ class LocationPickerController(args: Bundle) :
         when {
             isGpsLocation -> {
                 shareLocationDescription?.text = context!!.getText(R.string.nc_share_current_location)
+                placeName?.visibility = View.GONE
                 placeName?.text = ""
             }
             isGeocodedResult -> {
                 shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
+                placeName?.visibility = View.VISIBLE
                 placeName?.text = geocodedName
             }
             else -> {
                 shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
+                placeName?.visibility = View.GONE
                 placeName?.text = ""
             }
         }
