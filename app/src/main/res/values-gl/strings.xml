@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_icon">Icona da conta</string>
+    <string name="appbar_search_in">Buscar en %s</string>
+    <string name="avatar">Avatar</string>
+    <string name="edit">Editar</string>
+    <string name="encrypted">Cifrado</string>
+    <string name="file_list_folder">cartafol</string>
+    <string name="file_list_loading">Cargando...</string>
+    <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
     <string name="nc_about">Sobre</string>
+    <string name="nc_account_chooser_active_user">Usuario activo</string>
+    <string name="nc_account_chooser_add_account">Engadir unha conta</string>
     <string name="nc_account_scheduled_for_deletion">A conta está programada para a súa eliminación e non pode ser cambiada</string>
     <string name="nc_add">Engadir</string>
+    <string name="nc_add_attachment">Engadir o anexo</string>
+    <string name="nc_add_emojis">Engadir emojis</string>
+    <string name="nc_add_participants">Engadir participantes</string>
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_all_ok_operation">Conforme, todo feito!</string>
     <string name="nc_allow_guests">Permitir convidados</string>
@@ -25,6 +38,7 @@
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
     <string name="nc_change_password">Cambiar o contrasinal</string>
+    <string name="nc_circles">Círculos</string>
     <string name="nc_clear_password">Limpar o contrasinal</string>
     <string name="nc_client_cert_change">Cambiar o certificado do cliente</string>
     <string name="nc_client_cert_setup">Estabelecer o certificado do cliente</string>
@@ -39,12 +53,16 @@
     <string name="nc_conversation_menu_conversation_info">Información da conversa</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
     <string name="nc_conversation_menu_voice_call">Chamada de voz</string>
+    <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova</string>
+    <string name="nc_conversations_empty_details">Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_date_header_today">Hoxe</string>
     <string name="nc_date_header_yesterday">Onte</string>
     <string name="nc_delete">Eliminar</string>
     <string name="nc_delete_call">Eliminar a conversa</string>
+    <string name="nc_delete_conversation_default">Confirme a súa intención de retirar a conversa.</string>
     <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
+    <string name="nc_delete_conversation_one2one">Se elimina a conversa, tamén se eliminará para %1$s.</string>
     <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">A mensaxe foi eliminada correctamente, pero é posíbel que se filtrase a outros servizos</string>
     <string name="nc_demote">Relegar de moderador</string>
@@ -52,13 +70,16 @@
     <string name="nc_description_more_menu_one_to_one">Menú para a conversa con %1$s</string>
     <string name="nc_description_more_menu_public">Menú para a conversa de grupo %1$s</string>
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>
+    <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
     <string name="nc_display_name_not_fetched">Non foi posíbel obter o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
+    <string name="nc_email">Correo-e</string>
     <string name="nc_empty_response_error">Resposta baleira</string>
     <string name="nc_endless_cancel">Cancelada polo usuario.</string>
     <string name="nc_endless_disabled">Non hai máis elementos que cargar acadouse o máximo.</string>
     <string name="nc_endless_error">Produciuse un erro ao cargar máis elementos.</string>
     <string name="nc_external_server_failed">Produciuse un fallo ao obter os axustes da sinalización</string>
+    <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
     <string name="nc_file_browser">Navegador de ficheiros</string>
     <string name="nc_file_browser_back">Atrás</string>
@@ -68,11 +89,13 @@
     <string name="nc_general_settings">Xeral</string>
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedo</string>
     <string name="nc_get_source_code">Obter o código fonte</string>
+    <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_hello">Ola</string>
     <string name="nc_hint_enter_a_message">Introduza unha mensaxe…</string>
     <string name="nc_important_conversation">Conversa importante</string>
+    <string name="nc_important_conversation_desc">As notificacións nesta conversa serán anuladas Axustes de Non molestar</string>
     <string name="nc_incoming_call">Chamada entrante de</string>
     <string name="nc_join_via_link">Unirse a través dunha ligazón</string>
     <string name="nc_join_via_web">Unirse a través da web</string>
@@ -86,6 +109,9 @@
     <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
     <string name="nc_lobby">Ástrago</string>
     <string name="nc_lobby_waiting">Actualmente está agardando no ástrago.</string>
+    <string name="nc_lobby_waiting_with_date">Actualmente está agardando no ástrago.\n Esta xuntanza está programada para %1$s.</string>
+    <string name="nc_locked">Bloqueado</string>
+    <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
     <string name="nc_make_call_private">Facer privada a conversa</string>
     <string name="nc_make_call_public">Facer pública a conversa</string>
     <string name="nc_manual">Sen estabelecer</string>
@@ -118,13 +144,17 @@
     <string name="nc_ok">Aceptar</string>
     <string name="nc_owner">Propietario</string>
     <string name="nc_participants">Participantes</string>
+    <string name="nc_participants_add">Engadir participantes</string>
     <string name="nc_password">Contrasinal</string>
     <string name="nc_permissions_settings">Abrir os axustes</string>
+    <string name="nc_phone_book_integration_account_not_found">Non se atopou a conta</string>
     <string name="nc_plain_old_messages">Mensaxes</string>
     <string name="nc_privacy">Privacidade</string>
     <string name="nc_proceed">Continuar</string>
+    <string name="nc_profile_personal_info_title">Información persoal</string>
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_public_call">Nova conversa pública</string>
+    <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fora mediante unha ligazón creada especialmente.</string>
     <string name="nc_push_disabled">Desactivadas as notificacións do servidor</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
@@ -132,6 +162,7 @@
     <string name="nc_remove_participant">Retirar participante</string>
     <string name="nc_rename">Renomear a conversa</string>
     <string name="nc_reply">Responder</string>
+    <string name="nc_reply_privately">Responder en privado</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
@@ -142,7 +173,9 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Buscar</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
+    <string name="nc_select_contacts">Seleccionar contactos</string>
     <string name="nc_select_files">Seleccionar ficheiros</string>
+    <string name="nc_select_participants">Seleccionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
     <string name="nc_sent_a_gif_you">Vostede enviou un GIF.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s enviou unha ligazón.</string>
@@ -155,19 +188,25 @@
     <string name="nc_sent_an_audio_you">Vostede enviou un ficheiro de son.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
     <string name="nc_sent_an_image_you">Vostede enviou unha imaxe.</string>
+    <string name="nc_server_connect">Probar a conexión co servidor</string>
     <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
+    <string name="nc_server_helper_text">A ligazón á súa interface web %1$s cando a abre no navegador.</string>
     <string name="nc_server_import_account">Importar unha conta dende a aplicación %1$s</string>
     <string name="nc_server_import_account_plain">Importar unha conta</string>
     <string name="nc_server_import_accounts">Importar contas dende a aplicación%1$s</string>
     <string name="nc_server_import_accounts_plain">Importar contas</string>
     <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
     <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
+    <string name="nc_server_testing_connection">Probando a conexión</string>
+    <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Talk</string>
+    <string name="nc_server_url">Enderezo do servidor https://…</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
     <string name="nc_set_password">Estabelecer un contrasinal</string>
     <string name="nc_settings">Axustes</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_settings_add_account">Engadir unha conta nova</string>
+    <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Aparencia</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
@@ -178,6 +217,8 @@
     <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_notification_sounds">Son</string>
     <string name="nc_settings_other_notifications_ringtone">Notificacións</string>
+    <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na axenda telefónica</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode establecer o seu número de teléfono para que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de teléfono</string>
@@ -196,6 +237,7 @@
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_security_desc">Evita capturas de pantalla na lista recente e dentro da aplicación</string>
     <string name="nc_settings_screen_security_title">Seguridade da pantalla</string>
+    <string name="nc_settings_switch_account">Cambiar entre contas</string>
     <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o redeterminado do sistema</string>
@@ -204,6 +246,7 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_vibrate_desc">O teléfono vibrará, a non ser que estea silenciado</string>
+    <string name="nc_settings_warning">Aviso</string>
     <string name="nc_settings_wrong_account">Só pode volver autorizarse a conta actual</string>
     <string name="nc_share_link">Compartir a ligazón</string>
     <string name="nc_share_link_via">Compartir a ligazón mediante</string>
@@ -218,6 +261,7 @@
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
     <string name="nc_upload_failed">Sentímolo, produciuse un fallo no envío</string>
+    <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_upload_local_file">Enviar un ficheiro local</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_username">Nome de usuario</string>
@@ -225,4 +269,21 @@
     <string name="nc_wrong_link">A ligazón da conversa non é válida</string>
     <string name="nc_wrong_password">Contrasinal incorrecto </string>
     <string name="nc_yes">Si</string>
-    </resources>
+    <string name="password_protected">Protexido con contrasinal</string>
+    <string name="save">Gardar</string>
+    <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>
+    <string name="scope_federated_title">Federado</string>
+    <string name="scope_local_title">Local</string>
+    <string name="scope_private_title">Privado</string>
+    <string name="selected_list_item">Seleccionado</string>
+    <string name="share">Compartir</string>
+    <string name="starred">Favorito</string>
+    <string name="user_info_address">Enderezo</string>
+    <string name="user_info_displayname">Nome completo</string>
+    <string name="user_info_email">Correo-e</string>
+    <string name="user_info_phone">Número de teléfono</string>
+    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_website">Sitio web</string>
+    <string name="userinfo_no_info_headline">Non se estabeleceu a información persoal</string>
+    <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
+</resources>

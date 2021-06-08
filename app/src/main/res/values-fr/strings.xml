@@ -205,6 +205,7 @@
     <string name="nc_settings">Paramètres</string>
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_settings_add_account">Ajouter un nouveau compte</string>
+    <string name="nc_settings_advanced_title">Avancé</string>
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_call_ringtone">Appels</string>
     <string name="nc_settings_incognito_keyboard_desc">Indique au clavier de désactiver l\'apprentissage personnalisé (sans garantie)</string>
@@ -270,6 +271,7 @@
     <string name="scope_local_title">Local</string>
     <string name="scope_private_title">Privé</string>
     <string name="scope_published_title">Publier</string>
+    <string name="selected_list_item">Sélectionné</string>
     <string name="share">Partage</string>
     <string name="starred">Favori</string>
     <string name="user_info_address">Adresse</string>

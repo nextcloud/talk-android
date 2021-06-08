@@ -217,6 +217,7 @@
     <string name="nc_settings">Параметры</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>
     <string name="nc_settings_add_account">Добавить учётную запись</string>
+    <string name="nc_settings_advanced_title">Дополнительно</string>
     <string name="nc_settings_appearance">Внешний вид</string>
     <string name="nc_settings_call_ringtone">Вызовы</string>
     <string name="nc_settings_incognito_keyboard_desc">Указывает клавиатуре отключить персонализированное обучение (без гарантий)</string>
@@ -248,6 +249,7 @@
     <string name="nc_settings_screen_lock_title">Блокировка экрана</string>
     <string name="nc_settings_screen_security_desc">Предотвращает сохранение скриншотов внутри приложения и в списке недавних приложений</string>
     <string name="nc_settings_screen_security_title">Безопасность экрана</string>
+    <string name="nc_settings_switch_account">Переключение учётных записей</string>
     <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
     <string name="nc_settings_theme_dark">Тёмное</string>
     <string name="nc_settings_theme_follow_system">Как в системе</string>
@@ -294,6 +296,7 @@
     <string name="scope_published_title">Опубликовано</string>
     <string name="scope_toggle">Переключить область видимости</string>
     <string name="scope_toggle_description">Изменить уровень конфиденциальности %1$s</string>
+    <string name="selected_list_item">Выбрано</string>
     <string name="send_to">Отправить в</string>
     <string name="share">Поделиться</string>
     <string name="starred">Избранное</string>

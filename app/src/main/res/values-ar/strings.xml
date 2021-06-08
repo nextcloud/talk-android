@@ -207,6 +207,7 @@
     <string name="nc_settings">الإعدادات</string>
     <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>
     <string name="nc_settings_add_account">إضافة حساب جديد</string>
+    <string name="nc_settings_advanced_title">تعديلات متقدمه</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
@@ -238,6 +239,7 @@
     <string name="nc_settings_screen_lock_title">قفل الشاشة</string>
     <string name="nc_settings_screen_security_desc">يمنع اخذ لقطات الشاشة في القائمة الأخيرة وداخل التطبيق</string>
     <string name="nc_settings_screen_security_title">أمان الشاشة</string>
+    <string name="nc_settings_switch_account">تبديل بين الحسابات</string>
     <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
@@ -270,11 +272,14 @@
     <string name="nc_wrong_password">كلمة سرية خاطئة</string>
     <string name="nc_yes">نعم</string>
     <string name="password_protected">محمي بكلمة السر</string>
+    <string name="save">Save</string>
     <string name="scope_federated_description">قم فقط بالمزامنة مع الخوادم الموثوقة</string>
     <string name="scope_federated_title">المتحدة</string>
     <string name="scope_local_title">المحلي</string>
     <string name="scope_private_title">خاص بك</string>
     <string name="scope_published_title">نشرت</string>
+    <string name="selected_list_item">تم تحديد</string>
+    <string name="share">شاركه</string>
     <string name="starred">المفضلة</string>
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>

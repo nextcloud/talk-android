@@ -228,6 +228,7 @@
     <string name="nc_settings">Configurações</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_settings_add_account">Adicionar uma conta</string>
+    <string name="nc_settings_advanced_title">Avançada</string>
     <string name="nc_settings_appearance">Aparência</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
@@ -246,9 +247,11 @@
     <string name="nc_settings_phone_book_integration_title">Integração de número de telefone</string>
     <string name="nc_settings_privacy">Privacidade</string>
     <string name="nc_settings_proxy_host_title">Endereço do proxy</string>
+    <string name="nc_settings_proxy_password_title">Senha do proxy</string>
     <string name="nc_settings_proxy_port_title">Porta do proxy</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
+    <string name="nc_settings_proxy_username_title">Nome de usuário proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartilhar meu status de leitura e mostrá-los a outros</string>
     <string name="nc_settings_read_privacy_title">Status de leitura</string>
     <string name="nc_settings_reauthorize">Reautorizar conta</string>
@@ -263,6 +266,7 @@
     <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor sem suporte</string>
+    <string name="nc_settings_switch_account">Alternar entre contas</string>
     <string name="nc_settings_theme_battery_saver">Definido por Battery Saver</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Use o padrão do sistema</string>

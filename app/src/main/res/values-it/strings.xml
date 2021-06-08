@@ -265,6 +265,7 @@
     <string name="nc_settings_server_almost_eol">La versione del server è molto datata e non sarà più supportata nella prossima versione!</string>
     <string name="nc_settings_server_eol">La versione del server è troppo datata e non supportata da questa versione dell\'applicazione Android</string>
     <string name="nc_settings_server_eol_title">Server non supportato</string>
+    <string name="nc_settings_switch_account">Cambia account</string>
     <string name="nc_settings_theme_battery_saver">Impostato dal risparmio della batteria</string>
     <string name="nc_settings_theme_dark">Scuro</string>
     <string name="nc_settings_theme_follow_system">Usa valori predefiniti di sistema</string>

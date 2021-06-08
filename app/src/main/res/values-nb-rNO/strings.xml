@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name="account_icon">Kontoikon</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt slettet, og kan ikke endres.</string>
