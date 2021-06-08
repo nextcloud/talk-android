@@ -98,7 +98,9 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         return false
     }
 
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        // unused atm
+    }
 
     override fun convertToAbsoluteDirection(flags: Int, layoutDirection: Int): Int {
         if (swipeBack) {
@@ -185,26 +187,26 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
             } else {
                 SCALE_PROGRESS_MULTIPLIER -
                     SCALE_PROGRESS_BOTTOM_THRESHOLD *
-                    ((replyButtonProgress - SCALE_PROGRESS_TOP_THRESHOLD) /  SCALE_PROGRESS_BOTTOM_THRESHOLD)
+                    ((replyButtonProgress - SCALE_PROGRESS_TOP_THRESHOLD) / SCALE_PROGRESS_BOTTOM_THRESHOLD)
             }
             alpha = min(FULLY_OPAQUE, FULLY_OPAQUE * (replyButtonProgress / SCALE_PROGRESS_TOP_THRESHOLD)).toInt()
         } else {
             scale = replyButtonProgress
             alpha = min(FULLY_OPAQUE, FULLY_OPAQUE * replyButtonProgress).toInt()
         }
-        shareRound.alpha = alpha
-        imageDrawable.alpha = alpha
 
-        if (startTracking) {
-            if (!isVibrate && view.translationX >= convertToDp(REPLY_POINT)) {
-                view.performHapticFeedback(
-                    HapticFeedbackConstants.KEYBOARD_TAP,
-                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                )
-                isVibrate = true
-            }
+        if (startTracking && !isVibrate && view.translationX >= convertToDp(REPLY_POINT)) {
+            view.performHapticFeedback(
+                HapticFeedbackConstants.KEYBOARD_TAP,
+                HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
+            )
+            isVibrate = true
         }
 
+        drawReplyIcon(alpha, scale, canvas)
+    }
+
+    private fun drawReplyIcon(alpha: Int, scale: Float, canvas: Canvas) {
         val x: Int = if (view.translationX > convertToDp(SWIPE_LIMIT)) {
             convertToDp(SWIPE_LIMIT) / AXIS_BASE
         } else {
@@ -212,6 +214,10 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         }
 
         val y = (view.top + view.measuredHeight / AXIS_BASE).toFloat()
+
+        shareRound.alpha = alpha
+        imageDrawable.alpha = alpha
+
         shareRound.colorFilter = PorterDuffColorFilter(
             ContextCompat.getColor(context, R.color.bg_message_list_incoming_bubble),
             PorterDuff.Mode.SRC_IN
@@ -256,6 +262,7 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkDisplaySize(context: Context) {
         try {
             density = context.resources.displayMetrics.density
@@ -266,28 +273,28 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
 
     companion object {
         const val TAG = "MessageSwipeCallback"
-        const val NO_SWIPE_FLAG : Int = 0
-        const val FULLY_OPAQUE : Float = 255f
-        const val FULLY_OPAQUE_INT : Int = 255
-        const val DENSITY_DEFAULT : Float = 1f
-        const val DENSITY_ZERO : Float = 0f
-        const val DENSITY_ZERO_INT : Int = 0
-        const val REPLY_POINT : Int = 100
-        const val SWIPE_LIMIT : Int = 130
-        const val SHOW_REPLY_ICON_POINT : Int = 30
-        const val MIN_ANIMATION_TIME_IN_MILLIS : Long = 17
-        const val FULL_PROGRESS : Float = 1.0f
-        const val NO_PROGRESS : Float = 0.0f
-        const val PROGRESS_THRESHOLD : Float = 0.1f
-        const val PROGRESS_CALCULATION_TIME_BASE : Float = 180.0f
-        const val SCALE_PROGRESS_MULTIPLIER : Float = 1.2f
-        const val SCALE_PROGRESS_TOP_THRESHOLD : Float = 0.8f
-        const val SCALE_PROGRESS_BOTTOM_THRESHOLD : Float = 0.2f
-        const val AXIS_BASE : Int = 2
-        const val BACKGROUND_BOUNDS_PIXEL : Int = 18
-        const val ICON_BOUNDS_PIXEL_LEFT : Int = 12
-        const val ICON_BOUNDS_PIXEL_TOP : Int = 13
-        const val ICON_BOUNDS_PIXEL_RIGHT : Int = 12
-        const val ICON_BOUNDS_PIXEL_BOTTOM : Int = 11
+        const val NO_SWIPE_FLAG: Int = 0
+        const val FULLY_OPAQUE: Float = 255f
+        const val FULLY_OPAQUE_INT: Int = 255
+        const val DENSITY_DEFAULT: Float = 1f
+        const val DENSITY_ZERO: Float = 0f
+        const val DENSITY_ZERO_INT: Int = 0
+        const val REPLY_POINT: Int = 100
+        const val SWIPE_LIMIT: Int = 130
+        const val SHOW_REPLY_ICON_POINT: Int = 30
+        const val MIN_ANIMATION_TIME_IN_MILLIS: Long = 17
+        const val FULL_PROGRESS: Float = 1.0f
+        const val NO_PROGRESS: Float = 0.0f
+        const val PROGRESS_THRESHOLD: Float = 0.1f
+        const val PROGRESS_CALCULATION_TIME_BASE: Float = 180.0f
+        const val SCALE_PROGRESS_MULTIPLIER: Float = 1.2f
+        const val SCALE_PROGRESS_TOP_THRESHOLD: Float = 0.8f
+        const val SCALE_PROGRESS_BOTTOM_THRESHOLD: Float = 0.2f
+        const val AXIS_BASE: Int = 2
+        const val BACKGROUND_BOUNDS_PIXEL: Int = 18
+        const val ICON_BOUNDS_PIXEL_LEFT: Int = 12
+        const val ICON_BOUNDS_PIXEL_TOP: Int = 13
+        const val ICON_BOUNDS_PIXEL_RIGHT: Int = 12
+        const val ICON_BOUNDS_PIXEL_BOTTOM: Int = 11
     }
 }
