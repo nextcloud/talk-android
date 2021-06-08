@@ -310,6 +310,7 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         if (!locationGeoLink.isNullOrEmpty()) {
             val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context!!.startActivity(browserIntent)
         } else {
             Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
