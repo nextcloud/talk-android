@@ -125,6 +125,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         messageTimeView!!.layoutParams = layoutParams
         messageText!!.text = message.text
+        messageText!!.isEnabled = false
 
         // parent message handling
 

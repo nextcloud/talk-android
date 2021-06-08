@@ -174,6 +174,7 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
         messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         messageText!!.text = message.text
+        messageText!!.isEnabled = false
 
         // parent message handling
 
