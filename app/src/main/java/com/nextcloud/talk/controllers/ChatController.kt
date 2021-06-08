@@ -58,6 +58,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiTextView
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
@@ -107,6 +108,8 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
+import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
+import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
@@ -447,6 +450,21 @@ class ChatController(args: Bundle) :
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
+
+        if (context != null) {
+            val messageSwipeController = MessageSwipeCallback(
+                activity!!,
+                object : MessageSwipeActions {
+                    override fun showReplyUI(position: Int) {
+                        val chatMessage = adapter?.items?.get(position)?.item as ChatMessage?
+                        replyToMessage(chatMessage, chatMessage?.jsonMessageId)
+                    }
+                }
+            )
+
+            val itemTouchHelper = ItemTouchHelper(messageSwipeController)
+            itemTouchHelper.attachToRecyclerView(binding.messagesListView)
+        }
 
         layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
 
@@ -1357,10 +1375,8 @@ class ChatController(args: Bundle) :
                         if (TextUtils.isEmpty(chatMessageList[i].systemMessage) &&
                             TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
                             chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                            countGroupedMessages < 4 && DateFormatter.isSameDay(
-                                    chatMessageList[i].createdAt,
-                                    chatMessageList[i + 1].createdAt
-                                )
+                            countGroupedMessages < 4 &&
+                            DateFormatter.isSameDay(chatMessageList[i].createdAt, chatMessageList[i + 1].createdAt)
                         ) {
                             chatMessageList[i].isGrouped = true
                             countGroupedMessages++
@@ -1624,58 +1640,7 @@ class ChatController(args: Bundle) :
                     }
                     R.id.action_reply_to_message -> {
                         val chatMessage = message as ChatMessage?
-                        chatMessage?.let {
-                            binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
-                                View.GONE
-                            binding.messageInputView.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility =
-                                View.GONE
-                            binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
-                                View.VISIBLE
-
-                            val quotedMessage = binding
-                                .messageInputView
-                                .findViewById<EmojiTextView>(R.id.quotedMessage)
-
-                            quotedMessage?.maxLines = 2
-                            quotedMessage?.ellipsize = TextUtils.TruncateAt.END
-                            quotedMessage?.text = it.text
-                            binding.messageInputView.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
-                                it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
-
-                            conversationUser?.let { currentUser ->
-                                val quotedMessageImage = binding
-                                    .messageInputView
-                                    .findViewById<ImageView>(R.id.quotedMessageImage)
-                                chatMessage.imageUrl?.let { previewImageUrl ->
-                                    quotedMessageImage?.visibility = View.VISIBLE
-
-                                    val px = TypedValue.applyDimension(
-                                        TypedValue.COMPLEX_UNIT_DIP,
-                                        96f,
-                                        resources?.displayMetrics
-                                    )
-
-                                    quotedMessageImage?.maxHeight = px.toInt()
-                                    val layoutParams = quotedMessageImage?.layoutParams as FlexboxLayout.LayoutParams
-                                    layoutParams.flexGrow = 0f
-                                    quotedMessageImage.layoutParams = layoutParams
-                                    quotedMessageImage.load(previewImageUrl) {
-                                        addHeader("Authorization", credentials!!)
-                                    }
-                                } ?: run {
-                                    binding
-                                        .messageInputView
-                                        .findViewById<ImageView>(R.id.quotedMessageImage)
-                                        ?.visibility = View.GONE
-                                }
-                            }
-
-                            val quotedChatMessageView = binding
-                                .messageInputView
-                                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-                            quotedChatMessageView?.tag = message?.jsonMessageId
-                            quotedChatMessageView?.visibility = View.VISIBLE
-                        }
+                        replyToMessage(chatMessage, message?.jsonMessageId)
                         true
                     }
                     R.id.action_reply_privately -> {
@@ -1817,6 +1782,61 @@ class ChatController(args: Bundle) :
                 }
                 show()
             }
+        }
+    }
+
+    private fun replyToMessage(chatMessage: ChatMessage?, jsonMessageId: Int?) {
+        chatMessage?.let {
+            binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
+                View.GONE
+            binding.messageInputView.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility =
+                View.GONE
+            binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
+                View.VISIBLE
+
+            val quotedMessage = binding
+                .messageInputView
+                .findViewById<EmojiTextView>(R.id.quotedMessage)
+
+            quotedMessage?.maxLines = 2
+            quotedMessage?.ellipsize = TextUtils.TruncateAt.END
+            quotedMessage?.text = it.text
+            binding.messageInputView.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
+                it.actorDisplayName ?: context!!.getText(R.string.nc_nick_guest)
+
+            conversationUser?.let { currentUser ->
+                val quotedMessageImage = binding
+                    .messageInputView
+                    .findViewById<ImageView>(R.id.quotedMessageImage)
+                chatMessage.imageUrl?.let { previewImageUrl ->
+                    quotedMessageImage?.visibility = View.VISIBLE
+
+                    val px = TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP,
+                        96f,
+                        resources?.displayMetrics
+                    )
+
+                    quotedMessageImage?.maxHeight = px.toInt()
+                    val layoutParams = quotedMessageImage?.layoutParams as FlexboxLayout.LayoutParams
+                    layoutParams.flexGrow = 0f
+                    quotedMessageImage.layoutParams = layoutParams
+                    quotedMessageImage.load(previewImageUrl) {
+                        addHeader("Authorization", credentials!!)
+                    }
+                } ?: run {
+                    binding
+                        .messageInputView
+                        .findViewById<ImageView>(R.id.quotedMessageImage)
+                        ?.visibility = View.GONE
+                }
+            }
+
+            val quotedChatMessageView = binding
+                .messageInputView
+                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+            quotedChatMessageView?.tag = jsonMessageId
+            quotedChatMessageView?.visibility = View.VISIBLE
         }
     }
 
