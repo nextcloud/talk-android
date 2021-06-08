@@ -5,6 +5,9 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType
@@ -74,6 +77,7 @@ import javax.inject.Inject
 class LocationPickerController(args: Bundle) :
     BaseController(args),
     SearchView.OnQueryTextListener,
+    LocationListener,
     GeocodingController.GeocodingResultListener {
 
     @Inject
@@ -114,6 +118,10 @@ class LocationPickerController(args: Bundle) :
 
     var roomToken: String?
 
+    var myLocation: GeoPoint = GeoPoint(0.0, 0.0)
+    private var locationManager: LocationManager? = null
+    private lateinit var locationOverlay: MyLocationNewOverlay
+
     var moveToCurrentLocationWasClicked: Boolean = true
     var readyToShareLocation: Boolean = false
     var searchItem: MenuItem? = null
@@ -139,6 +147,16 @@ class LocationPickerController(args: Bundle) :
     override fun onAttach(view: View) {
         super.onAttach(view)
         initMap()
+    }
+
+    override fun onDetach(view: View) {
+        super.onDetach(view)
+        try {
+            locationManager!!.removeUpdates(this)
+        } catch (e: Exception) {
+            Log.e(TAG, "error when trying to remove updates for location Manager", e)
+        }
+        locationOverlay.disableMyLocation()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -217,14 +235,19 @@ class LocationPickerController(args: Bundle) :
 
         map?.onResume()
 
+        locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        try {
+            locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, this)
+        } catch (ex: SecurityException) {
+        }
+
         val copyrightOverlay = CopyrightOverlay(context)
         map?.overlays?.add(copyrightOverlay)
 
         map?.setMultiTouchControls(true)
         map?.isTilesScaledToDpi = true
 
-        val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
-        // locationOverlay.enableFollowLocation()
+        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
         locationOverlay.enableMyLocation()
         locationOverlay.setPersonHotspot(20.0F,20.0F)
         locationOverlay.setPersonIcon(
@@ -239,13 +262,10 @@ class LocationPickerController(args: Bundle) :
             mapController?.setZoom(12.0)
         }
 
-        var myLocation: GeoPoint
-        myLocation = GeoPoint(52.0, 13.0)
-
-        var zoomToCurrentPositionAllowed = !receivedChosenGeocodingResult
+        val zoomToCurrentPositionOnFirstFix = !receivedChosenGeocodingResult
         locationOverlay.runOnFirstFix {
             myLocation = locationOverlay.myLocation
-            if (zoomToCurrentPositionAllowed) {
+            if (zoomToCurrentPositionOnFirstFix) {
                 activity!!.runOnUiThread {
                     mapController?.setZoom(12.0)
                     mapController?.setCenter(myLocation)
@@ -431,6 +451,22 @@ class LocationPickerController(args: Bundle) :
         withContext(Dispatchers.Main) {
             executeShareLocation(lat, lon, addressName)
         }
+    }
+
+    override fun onLocationChanged(location: Location?) {
+        myLocation = GeoPoint(location)
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        // empty
+    }
+
+    override fun onProviderEnabled(provider: String?) {
+        // empty
+    }
+
+    override fun onProviderDisabled(provider: String?) {
+        // empty
     }
 
     companion object {
