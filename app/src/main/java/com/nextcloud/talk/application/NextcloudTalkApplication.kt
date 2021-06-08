@@ -77,7 +77,16 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@AutoComponent(modules = [BusModule::class, ContextModule::class, DatabaseModule::class, RestModule::class, UserModule::class, ArbitraryStorageModule::class])
+@AutoComponent(
+    modules = [
+        BusModule::class,
+        ContextModule::class,
+        DatabaseModule::class,
+        RestModule::class,
+        UserModule::class,
+        ArbitraryStorageModule::class
+    ]
+)
 @Singleton
 @AutoInjector(NextcloudTalkApplication::class)
 class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {

@@ -71,8 +71,10 @@ class PackageReplacedReceiver : BroadcastReceiver() {
                     }
 
                     if (!appPreferences.isNotificationChannelUpgradedToV3 && packageInfo.versionCode > 51) {
-                        notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2)
-                        notificationManager.deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2)
+                        notificationManager
+                            .deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V2)
+                        notificationManager
+                            .deleteNotificationChannel(NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V2)
                         appPreferences.setNotificationChannelIsUpgradedToV3(true)
                     }
 

@@ -85,7 +85,10 @@ object NotificationUtils {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationManager.getNotificationChannel(channelId) == null) {
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+            notificationManager.getNotificationChannel(channelId) == null
+        ) {
 
             val channel = NotificationChannel(
                 channelId, channelName,
@@ -156,9 +159,9 @@ object NotificationUtils {
                 notification = statusBarNotification.notification
 
                 if (notification != null && !notification.extras.isEmpty) {
-                    if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) && notificationId == notification.extras.getLong(
-                            BundleKeys.KEY_NOTIFICATION_ID
-                        )
+                    if (
+                        conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
+                        notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
                     ) {
                         notificationManager.cancel(statusBarNotification.id)
                     }
@@ -184,9 +187,9 @@ object NotificationUtils {
                 notification = statusBarNotification.notification
 
                 if (notification != null && !notification.extras.isEmpty) {
-                    if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) && roomTokenOrId == statusBarNotification.notification.extras.getString(
-                            BundleKeys.KEY_ROOM_TOKEN
-                        )
+                    if (
+                        conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
+                        roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
                     ) {
                         return statusBarNotification
                     }
@@ -202,7 +205,9 @@ object NotificationUtils {
         conversationUser: UserEntity,
         roomTokenOrId: String
     ) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
+        if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+            conversationUser.id != -1L &&
             context != null
         ) {
 
@@ -215,9 +220,7 @@ object NotificationUtils {
 
                 if (notification != null && !notification.extras.isEmpty) {
                     if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                        roomTokenOrId == statusBarNotification.notification.extras.getString(
-                                BundleKeys.KEY_ROOM_TOKEN
-                            )
+                        roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
                     ) {
                         notificationManager.cancel(statusBarNotification.id)
                     }

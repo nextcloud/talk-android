@@ -26,6 +26,7 @@ import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -76,7 +77,7 @@ public class DatabaseStorageModule implements StorageModule {
         if (!key.equals("message_notification_level")) {
             arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, value, conversationToken);
         } else {
-            if (conversationUser.hasSpreedFeatureCapability("notification-levels")) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "notification-levels")) {
                 if (!TextUtils.isEmpty(messageNotificationLevel) && !messageNotificationLevel.equals(value)) {
                     int intValue;
                     switch (value) {

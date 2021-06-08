@@ -34,8 +34,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -46,6 +44,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall;
@@ -69,6 +68,7 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import io.reactivex.Observer;
@@ -157,6 +157,7 @@ public class OperationsMenuController extends BaseController {
 
     }
 
+    @NonNull
     @Override
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_operations_menu, container, false);
@@ -222,17 +223,23 @@ public class OperationsMenuController extends BaseController {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<CapabilitiesOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
                     }
 
                     @SuppressLint("LongLogTag")
                     @Override
-                    public void onNext(CapabilitiesOverall capabilitiesOverall) {
+                    public void onNext(@io.reactivex.annotations.NonNull CapabilitiesOverall capabilitiesOverall) {
                         currentUser = new UserEntity();
                         currentUser.setBaseUrl(baseUrl);
                         currentUser.setUserId("?");
                         try {
-                            currentUser.setCapabilities(LoganSquare.serialize(capabilitiesOverall.getOcs().getData().getCapabilities()));
+                            currentUser.setCapabilities(
+                                    LoganSquare
+                                            .serialize(
+                                                    capabilitiesOverall
+                                                            .getOcs()
+                                                            .getData()
+                                                            .getCapabilities()));
                         } catch (IOException e) {
                             Log.e("OperationsMenu", "Failed to serialize capabilities");
                         }
@@ -248,7 +255,7 @@ public class OperationsMenuController extends BaseController {
 
                     @SuppressLint("LongLogTag")
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                         showResultImage(false, false);
                         Log.e(TAG, "Error fetching capabilities for guest", e);
                     }
@@ -325,12 +332,12 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
-                            public void onSubscribe(Disposable d) {
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
                                 disposable = d;
                             }
 
                             @Override
-                            public void onNext(RoomOverall roomOverall) {
+                            public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                                 conversation = roomOverall.getOcs().getData();
                                 if (conversation.isHasPassword() && conversation.isGuest()) {
                                     eventBus.post(new BottomSheetLockEvent(true, 0,
@@ -358,25 +365,27 @@ public class OperationsMenuController extends BaseController {
                                             .observeOn(AndroidSchedulers.mainThread())
                                             .subscribe(new Observer<RoomOverall>() {
                                                 @Override
-                                                public void onSubscribe(Disposable d) {
-
+                                                public void onSubscribe(
+                                                        @io.reactivex.annotations.NonNull Disposable d
+                                                                       ) {
                                                 }
 
                                                 @Override
-                                                public void onNext(RoomOverall roomOverall) {
+                                                public void onNext(
+                                                        @io.reactivex.annotations.NonNull RoomOverall roomOverall
+                                                                  ) {
                                                     conversation = roomOverall.getOcs().getData();
                                                     initiateConversation(false);
                                                 }
 
                                                 @Override
-                                                public void onError(Throwable e) {
+                                                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                                     showResultImage(false, false);
                                                     dispose();
                                                 }
 
                                                 @Override
                                                 public void onComplete() {
-
                                                 }
                                             });
                                 } else {
@@ -385,7 +394,7 @@ public class OperationsMenuController extends BaseController {
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                 showResultImage(false, false);
                                 dispose();
                             }
@@ -418,12 +427,12 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(new Observer<RoomOverall>() {
                             @Override
-                            public void onSubscribe(Disposable d) {
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
 
                             }
 
                             @Override
-                            public void onNext(RoomOverall roomOverall) {
+                            public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                                 conversation = roomOverall.getOcs().getData();
 
                                 ncApi.getRoom(credentials,
@@ -433,18 +442,20 @@ public class OperationsMenuController extends BaseController {
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(new Observer<RoomOverall>() {
                                             @Override
-                                            public void onSubscribe(Disposable d) {
+                                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
 
                                             }
 
                                             @Override
-                                            public void onNext(RoomOverall roomOverall) {
+                                            public void onNext(
+                                                    @io.reactivex.annotations.NonNull RoomOverall roomOverall
+                                                              ) {
                                                 conversation = roomOverall.getOcs().getData();
                                                 inviteUsersToAConversation();
                                             }
 
                                             @Override
-                                            public void onError(Throwable e) {
+                                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                                 showResultImage(false, false);
                                                 dispose();
                                             }
@@ -458,7 +469,7 @@ public class OperationsMenuController extends BaseController {
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                 showResultImage(false, false);
                                 dispose();
                             }
@@ -510,12 +521,16 @@ public class OperationsMenuController extends BaseController {
     private void showResultImage(boolean everythingOK, boolean isGuestSupportError) {
         progressBar.setVisibility(View.GONE);
 
-        if (everythingOK) {
-            resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
-                    .ic_check_circle_black_24dp, R.color.nc_darkGreen));
-        } else {
-            resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
-                    .ic_cancel_black_24dp, R.color.nc_darkRed));
+        if (getResources() != null) {
+            if (everythingOK) {
+                resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(),
+                                                                                R.drawable.ic_check_circle_black_24dp,
+                                                                                R.color.nc_darkGreen));
+            } else {
+                resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(),
+                                                                                R.drawable.ic_cancel_black_24dp,
+                                                                                R.color.nc_darkRed));
+            }
         }
 
         resultImageView.setVisibility(View.VISIBLE);
@@ -581,59 +596,81 @@ public class OperationsMenuController extends BaseController {
 
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {4, 1});
 
-        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
-            if ((localInvitedGroups.size() > 0 && currentUser.hasSpreedFeatureCapability("invite-groups-and-mails"))) {
-                for (int i = 0; i < localInvitedGroups.size(); i++) {
-                    final String groupId = localInvitedGroups.get(i);
-                    retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
-                            apiVersion,
-                            currentUser.getBaseUrl(),
-                            conversation.getToken(),
-                            "groups",
-                            groupId
-                                                                                          );
+        if (localInvitedUsers.size() > 0 || (localInvitedGroups.size() > 0 &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails"))) {
+            addGroupsToConversation(localInvitedUsers, localInvitedGroups, apiVersion);
+            addUsersToConversation(localInvitedUsers, localInvitedGroups, apiVersion);
+        } else {
+            initiateConversation(true);
+        }
+    }
 
-                    ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .retry(1)
-                            .subscribe(new Observer<AddParticipantOverall>() {
-                                @Override
-                                public void onSubscribe(Disposable d) {
+    private void addUsersToConversation(
+            ArrayList<String> localInvitedUsers,
+            ArrayList<String> localInvitedGroups,
+            int apiVersion)
+    {
+        RetrofitBucket retrofitBucket;
+        for (int i = 0; i < localInvitedUsers.size(); i++) {
+            final String userId = invitedUsers.get(i);
+            retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion,
+                                                                         currentUser.getBaseUrl(),
+                                                                         conversation.getToken(),
+                                                                         userId);
 
-                                }
+            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(1)
+                    .subscribe(new Observer<AddParticipantOverall>() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
 
-                                @Override
-                                public void onNext(AddParticipantOverall addParticipantOverall) {
-                                }
+                        }
 
-                                @Override
-                                public void onError(Throwable e) {
-                                    dispose();
-                                }
+                        @Override
+                        public void onNext(
+                                @io.reactivex.annotations.NonNull AddParticipantOverall addParticipantOverall
+                                          ) {
+                        }
 
-                                @Override
-                                public void onComplete() {
-                                    synchronized (localInvitedGroups) {
-                                        localInvitedGroups.remove(groupId);
-                                    }
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                            dispose();
+                        }
 
-                                    if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
-                                        initiateConversation(true);
-                                    }
-                                    dispose();
-                                }
-                            });
+                        @Override
+                        public void onComplete() {
+                            synchronized (localInvitedUsers) {
+                                localInvitedUsers.remove(userId);
+                            }
 
-                }
-            }
+                            if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
+                                initiateConversation(true);
+                            }
+                            dispose();
+                        }
+                    });
+        }
+    }
 
-            for (int i = 0; i < localInvitedUsers.size(); i++) {
-                final String userId = invitedUsers.get(i);
-                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(apiVersion,
-                                                                             currentUser.getBaseUrl(),
-                                                                             conversation.getToken(),
-                                                                             userId);
+    private void addGroupsToConversation(
+            ArrayList<String> localInvitedUsers,
+            ArrayList<String> localInvitedGroups,
+            int apiVersion)
+    {
+        RetrofitBucket retrofitBucket;
+        if ((localInvitedGroups.size() > 0 &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails"))) {
+            for (int i = 0; i < localInvitedGroups.size(); i++) {
+                final String groupId = localInvitedGroups.get(i);
+                retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
+                        apiVersion,
+                        currentUser.getBaseUrl(),
+                        conversation.getToken(),
+                        "groups",
+                        groupId
+                                                                                      );
 
                 ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                         .subscribeOn(Schedulers.io())
@@ -641,23 +678,25 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(new Observer<AddParticipantOverall>() {
                             @Override
-                            public void onSubscribe(Disposable d) {
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
 
                             }
 
                             @Override
-                            public void onNext(AddParticipantOverall addParticipantOverall) {
+                            public void onNext(
+                                    @io.reactivex.annotations.NonNull AddParticipantOverall addParticipantOverall
+                                              ) {
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                 dispose();
                             }
 
                             @Override
                             public void onComplete() {
-                                synchronized (localInvitedUsers) {
-                                    localInvitedUsers.remove(userId);
+                                synchronized (localInvitedGroups) {
+                                    localInvitedGroups.remove(groupId);
                                 }
 
                                 if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
@@ -666,9 +705,8 @@ public class OperationsMenuController extends BaseController {
                                 dispose();
                             }
                         });
+
             }
-        } else {
-            initiateConversation(true);
         }
     }
 

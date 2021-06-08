@@ -26,7 +26,9 @@
     android:animateLayoutChanges="true"
     android:background="@color/bg_default">
 
-    <include layout="@layout/lobby_view"
+    <include
+        android:id="@+id/lobby"
+        layout="@layout/lobby_view"
         android:visibility="gone"
         tools:visibility="visible"/>
 

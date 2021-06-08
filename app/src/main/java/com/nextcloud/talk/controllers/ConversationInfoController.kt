@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,26 +23,19 @@
 package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
-import android.widget.ProgressBar
 import androidx.appcompat.widget.SwitchCompat
-import androidx.emoji.widget.EmojiTextView
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.content.ContextCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import butterknife.BindView
-import butterknife.OnClick
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -48,17 +43,19 @@ import com.afollestad.materialdialogs.datetime.dateTimePicker
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.UserItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.databinding.ControllerConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
+import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -75,11 +72,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler
 import com.yarolegovich.lovelydialog.LovelyStandardDialog
-import com.yarolegovich.mp.MaterialChoicePreference
-import com.yarolegovich.mp.MaterialPreferenceCategory
-import com.yarolegovich.mp.MaterialPreferenceScreen
-import com.yarolegovich.mp.MaterialStandardPreference
-import com.yarolegovich.mp.MaterialSwitchPreference
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import io.reactivex.Observer
@@ -96,70 +88,22 @@ import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleAdapter.OnItemClickListener {
+class ConversationInfoController(args: Bundle) :
+    NewBaseController(
+        R.layout.controller_conversation_info,
+        args
+    ),
+    FlexibleAdapter
+    .OnItemClickListener {
+    private val binding: ControllerConversationInfoBinding by viewBinding(ControllerConversationInfoBinding::bind)
 
-    @BindView(R.id.notification_settings)
-    lateinit var notificationsPreferenceScreen: MaterialPreferenceScreen
+    @Inject
+    @JvmField
+    var ncApi: NcApi? = null
 
-    @BindView(R.id.progressBar)
-    lateinit var progressBar: ProgressBar
-
-    @BindView(R.id.conversation_info_message_notifications)
-    lateinit var messageNotificationLevel: MaterialChoicePreference
-
-    @BindView(R.id.webinar_settings)
-    lateinit var conversationInfoWebinar: MaterialPreferenceScreen
-
-    @BindView(R.id.conversation_info_lobby)
-    lateinit var conversationInfoLobby: MaterialSwitchPreference
-
-    @BindView(R.id.conversation_info_name)
-    lateinit var nameCategoryView: MaterialPreferenceCategory
-
-    @BindView(R.id.start_time_preferences)
-    lateinit var startTimeView: MaterialStandardPreference
-
-    @BindView(R.id.avatar_image)
-    lateinit var conversationAvatarImageView: SimpleDraweeView
-
-    @BindView(R.id.display_name_text)
-    lateinit var conversationDisplayName: EmojiTextView
-
-    @BindView(R.id.conversation_description)
-    lateinit var descriptionCategoryView: MaterialPreferenceCategory
-
-    @BindView(R.id.description_text)
-    lateinit var conversationDescription: EmojiTextView
-
-    @BindView(R.id.participants_list_category)
-    lateinit var participantsListCategory: MaterialPreferenceCategory
-
-    @BindView(R.id.addParticipantsAction)
-    lateinit var addParticipantsAction: MaterialStandardPreference
-
-    @BindView(R.id.recycler_view)
-    lateinit var recyclerView: RecyclerView
-
-    @BindView(R.id.deleteConversationAction)
-    lateinit var deleteConversationAction: MaterialStandardPreference
-
-    @BindView(R.id.leaveConversationAction)
-    lateinit var leaveConversationAction: MaterialStandardPreference
-
-    @BindView(R.id.ownOptions)
-    lateinit var ownOptionsCategory: MaterialPreferenceCategory
-
-    @BindView(R.id.muteCalls)
-    lateinit var muteCalls: MaterialSwitchPreference
-
-    @set:Inject
-    lateinit var ncApi: NcApi
-
-    @set:Inject
-    lateinit var context: Context
-
-    @set:Inject
-    lateinit var eventBus: EventBus
+    @Inject
+    @JvmField
+    var eventBus: EventBus? = null
 
     private val conversationToken: String?
     private val conversationUser: UserEntity?
@@ -207,20 +151,20 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
-    override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.controller_conversation_info, container, false)
-    }
-
     override fun onAttach(view: View) {
         super.onAttach(view)
-        eventBus.register(this)
+        eventBus?.register(this)
 
         if (databaseStorageModule == null) {
             databaseStorageModule = DatabaseStorageModule(conversationUser!!, conversationToken)
         }
 
-        notificationsPreferenceScreen.setStorageModule(databaseStorageModule)
-        conversationInfoWebinar.setStorageModule(databaseStorageModule)
+        binding.notificationSettingsView.notificationSettings.setStorageModule(databaseStorageModule)
+        binding.webinarInfoView.webinarSettings.setStorageModule(databaseStorageModule)
+
+        binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog(null) }
+        binding.leaveConversationAction.setOnClickListener { leaveConversation() }
+        binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
         fetchRoomInfo()
     }
@@ -232,27 +176,24 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             saveStateHandler = LovelySaveStateHandler()
         }
 
-        addParticipantsAction.visibility = View.GONE
+        binding.addParticipantsAction.visibility = View.GONE
     }
 
     private fun setupWebinaryView() {
-        if (conversationUser!!.hasSpreedFeatureCapability("webinary-lobby") &&
-            (
-                conversation!!.type == Conversation.ConversationType.ROOM_GROUP_CALL ||
-                    conversation!!.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
-                ) &&
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
+            webinaryRoomType(conversation!!) &&
             conversation!!.canModerate(conversationUser)
         ) {
-            conversationInfoWebinar.visibility = View.VISIBLE
+            binding.webinarInfoView.webinarSettings.visibility = View.VISIBLE
 
             val isLobbyOpenToModeratorsOnly =
                 conversation!!.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
-            (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .isChecked = isLobbyOpenToModeratorsOnly
 
             reconfigureLobbyTimerView()
 
-            startTimeView.setOnClickListener {
+            binding.webinarInfoView.startTimePreferences.setOnClickListener {
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
@@ -273,17 +214,25 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 }
             }
 
-            (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).setOnCheckedChangeListener { _, _ ->
-                reconfigureLobbyTimerView()
-                submitLobbyChanges()
-            }
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+                .setOnCheckedChangeListener { _, _ ->
+                    reconfigureLobbyTimerView()
+                    submitLobbyChanges()
+                }
         } else {
-            conversationInfoWebinar.visibility = View.GONE
+            binding.webinarInfoView.webinarSettings.visibility = View.GONE
         }
     }
 
+    private fun webinaryRoomType(conversation: Conversation): Boolean {
+        return conversation.type == Conversation.ConversationType.ROOM_GROUP_CALL ||
+            conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
+    }
+
     fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
-        val isChecked = (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
+        val isChecked =
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+                .isChecked
 
         if (dateTime != null && isChecked) {
             conversation!!.lobbyTimer = (dateTime.timeInMillis - (dateTime.time.seconds * 1000)) / 1000
@@ -294,35 +243,44 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         conversation!!.lobbyState = if (isChecked) Conversation.LobbyState
             .LOBBY_STATE_MODERATORS_ONLY else Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
 
-        if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE && conversation!!.lobbyTimer != 0L) {
-            startTimeView.setSummary(DateUtils.getLocalDateStringFromTimestampForLobby(conversation!!.lobbyTimer))
+        if (
+            conversation!!.lobbyTimer != null &&
+            conversation!!.lobbyTimer != java.lang.Long.MIN_VALUE &&
+            conversation!!.lobbyTimer != 0L
+        ) {
+            binding.webinarInfoView.startTimePreferences.setSummary(
+                DateUtils.getLocalDateStringFromTimestampForLobby(
+                    conversation!!.lobbyTimer
+                )
+            )
         } else {
-            startTimeView.setSummary(R.string.nc_manual)
+            binding.webinarInfoView.startTimePreferences.setSummary(R.string.nc_manual)
         }
 
         if (isChecked) {
-            startTimeView.visibility = View.VISIBLE
+            binding.webinarInfoView.startTimePreferences.visibility = View.VISIBLE
         } else {
-            startTimeView.visibility = View.GONE
+            binding.webinarInfoView.startTimePreferences.visibility = View.GONE
         }
     }
 
     fun submitLobbyChanges() {
         val state = if (
-            (conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat).isChecked
+            (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
+                .isChecked
         ) 1 else 0
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        ncApi.setLobbyForConversation(
+        ncApi?.setLobbyForConversation(
             ApiUtils.getCredentials(conversationUser!!.username, conversationUser.token),
             ApiUtils.getUrlForRoomWebinaryLobby(apiVersion, conversationUser.baseUrl, conversation!!.token),
             state,
             conversation!!.lobbyTimer
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
                 override fun onComplete() {
                 }
 
@@ -352,7 +310,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        eventBus.unregister(this)
+        eventBus?.unregister(this)
     }
 
     private fun showDeleteConversationDialog(savedInstanceState: Bundle?) {
@@ -397,9 +355,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             }
 
             val layoutManager = SmoothScrollLinearLayoutManager(activity)
-            recyclerView.layoutManager = layoutManager
-            recyclerView.setHasFixedSize(true)
-            recyclerView.adapter = adapter
+            binding.recyclerView.layoutManager = layoutManager
+            binding.recyclerView.setHasFixedSize(true)
+            binding.recyclerView.adapter = adapter
 
             adapter!!.addListener(this)
         }
@@ -438,17 +396,17 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
         setupAdapter()
 
-        participantsListCategory.visibility = View.VISIBLE
+        binding.participantsListCategory.visibility = View.VISIBLE
         adapter!!.updateDataSet(recyclerViewItems)
     }
 
-    override fun getTitle(): String? {
-        return if (hasAvatarSpacing) {
-            " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-        } else {
-            resources!!.getString(R.string.nc_conversation_menu_conversation_info)
-        }
-    }
+    override val title: String
+        get() =
+            if (hasAvatarSpacing) {
+                " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+            } else {
+                resources!!.getString(R.string.nc_conversation_menu_conversation_info)
+            }
 
     private fun getListOfParticipants() {
         var apiVersion = 1
@@ -457,13 +415,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
-        ncApi.getPeersForCall(
+        ncApi?.getPeersForCall(
             credentials,
             ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken)
         )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<ParticipantsOverall> {
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<ParticipantsOverall> {
                 override fun onSubscribe(d: Disposable) {
                     participantsDisposable = d
                 }
@@ -481,7 +439,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             })
     }
 
-    @OnClick(R.id.addParticipantsAction)
     internal fun addParticipants() {
         val bundle = Bundle()
         val existingParticipantsId = arrayListOf<String>()
@@ -511,8 +468,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         )
     }
 
-    @OnClick(R.id.leaveConversationAction)
-    internal fun leaveConversation() {
+    private fun leaveConversation() {
         workerData?.let {
             WorkManager.getInstance().enqueue(
                 OneTimeWorkRequest.Builder(
@@ -535,11 +491,6 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
     }
 
-    @OnClick(R.id.deleteConversationAction)
-    internal fun deleteConversationClick() {
-        showDeleteConversationDialog(null)
-    }
-
     private fun popTwoLastControllers() {
         var backstack = router.backstack
         backstack = backstack.subList(0, backstack.size - 2)
@@ -553,10 +504,10 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
-        ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<RoomOverall> {
+        ncApi?.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser!!.baseUrl, conversationToken))
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<RoomOverall> {
                 override fun onSubscribe(d: Disposable) {
                     roomDisposable = d
                 }
@@ -567,49 +518,49 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     val conversationCopy = conversation
 
                     if (conversationCopy!!.canModerate(conversationUser)) {
-                        addParticipantsAction.visibility = View.VISIBLE
+                        binding.addParticipantsAction.visibility = View.VISIBLE
                     } else {
-                        addParticipantsAction.visibility = View.GONE
+                        binding.addParticipantsAction.visibility = View.GONE
                     }
 
                     if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                        ownOptionsCategory.visibility = View.VISIBLE
+                        binding.ownOptions.visibility = View.VISIBLE
 
                         setupWebinaryView()
 
                         if (!conversation!!.canLeave(conversationUser)) {
-                            leaveConversationAction.visibility = View.GONE
+                            binding.leaveConversationAction.visibility = View.GONE
                         } else {
-                            leaveConversationAction.visibility = View.VISIBLE
+                            binding.leaveConversationAction.visibility = View.VISIBLE
                         }
 
                         if (!conversation!!.canDelete(conversationUser)) {
-                            deleteConversationAction.visibility = View.GONE
+                            binding.deleteConversationAction.visibility = View.GONE
                         } else {
-                            deleteConversationAction.visibility = View.VISIBLE
+                            binding.deleteConversationAction.visibility = View.VISIBLE
                         }
 
                         if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                            muteCalls.visibility = View.GONE
+                            binding.notificationSettingsView.muteCalls.visibility = View.GONE
                         }
 
                         getListOfParticipants()
 
-                        progressBar.visibility = View.GONE
+                        binding.progressBar.visibility = View.GONE
 
-                        nameCategoryView.visibility = View.VISIBLE
+                        binding.conversationInfoName.visibility = View.VISIBLE
 
-                        conversationDisplayName.text = conversation!!.displayName
+                        binding.displayNameText.text = conversation!!.displayName
 
                         if (conversation!!.description != null && !conversation!!.description.isEmpty()) {
-                            conversationDescription.text = conversation!!.description
-                            descriptionCategoryView.visibility = View.VISIBLE
+                            binding.descriptionText.text = conversation!!.description
+                            binding.conversationDescription.visibility = View.VISIBLE
                         }
 
                         loadConversationAvatar()
                         adjustNotificationLevelUI()
 
-                        notificationsPreferenceScreen.visibility = View.VISIBLE
+                        binding.notificationSettingsView.notificationSettings.visibility = View.VISIBLE
                     }
                 }
 
@@ -624,9 +575,12 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
 
     private fun adjustNotificationLevelUI() {
         if (conversation != null) {
-            if (conversationUser != null && conversationUser.hasSpreedFeatureCapability("notification-levels")) {
-                messageNotificationLevel.isEnabled = true
-                messageNotificationLevel.alpha = 1.0f
+            if (
+                conversationUser != null &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "notification-levels")
+            ) {
+                binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = true
+                binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = 1.0f
 
                 if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
                     val stringValue: String =
@@ -637,13 +591,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                             else -> "mention"
                         }
 
-                    messageNotificationLevel.value = stringValue
+                    binding.notificationSettingsView.conversationInfoMessageNotifications.value = stringValue
                 } else {
                     setProperNotificationValue(conversation)
                 }
             } else {
-                messageNotificationLevel.isEnabled = false
-                messageNotificationLevel.alpha = 0.38f
+                binding.notificationSettingsView.conversationInfoMessageNotifications.isEnabled = false
+                binding.notificationSettingsView.conversationInfoMessageNotifications.alpha = LOW_EMPHASIS_OPACITY
                 setProperNotificationValue(conversation)
             }
         }
@@ -652,13 +606,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     private fun setProperNotificationValue(conversation: Conversation?) {
         if (conversation!!.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             // hack to see if we get mentioned always or just on mention
-            if (conversationUser!!.hasSpreedFeatureCapability("mention-flag")) {
-                messageNotificationLevel.value = "always"
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "mention-flag")) {
+                binding.notificationSettingsView.conversationInfoMessageNotifications.value = "always"
             } else {
-                messageNotificationLevel.value = "mention"
+                binding.notificationSettingsView.conversationInfoMessageNotifications.value = "mention"
             }
         } else {
-            messageNotificationLevel.value = "mention"
+            binding.notificationSettingsView.conversationInfoMessageNotifications.value = "mention"
         }
     }
 
@@ -666,7 +620,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         when (conversation!!.type) {
             Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
                 val draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(conversationAvatarImageView.controller)
+                    .setOldController(binding.avatarImage.controller)
                     .setAutoPlayAnimations(true)
                     .setImageRequest(
                         DisplayUtils.getImageRequestForUrl(
@@ -678,20 +632,20 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                         )
                     )
                     .build()
-                conversationAvatarImageView.controller = draweeController
+                binding.avatarImage.controller = draweeController
             }
-            Conversation.ConversationType.ROOM_GROUP_CALL -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
+            Conversation.ConversationType.ROOM_GROUP_CALL -> binding.avatarImage.hierarchy.setPlaceholderImage(
                 R.drawable.ic_circular_group
             )
-            Conversation.ConversationType.ROOM_PUBLIC_CALL -> conversationAvatarImageView.hierarchy.setPlaceholderImage(
+            Conversation.ConversationType.ROOM_PUBLIC_CALL -> binding.avatarImage.hierarchy.setPlaceholderImage(
                 R.drawable.ic_circular_link
             )
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground)
+                layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
+                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
-                conversationAvatarImageView.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
+                binding.avatarImage.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
             }
 
             else -> {
@@ -720,7 +674,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         if (participant.type == Participant.ParticipantType.MODERATOR ||
             participant.type == Participant.ParticipantType.GUEST_MODERATOR
         ) {
-            ncApi.demoteAttendeeFromModerator(
+            ncApi?.demoteAttendeeFromModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -729,13 +683,13 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ),
                 participant.attendeeId
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(subscriber)
         } else if (participant.type == Participant.ParticipantType.USER ||
             participant.type == Participant.ParticipantType.GUEST
         ) {
-            ncApi.promoteAttendeeToModerator(
+            ncApi?.promoteAttendeeToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -744,9 +698,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ),
                 participant.attendeeId
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(subscriber)
         }
     }
 
@@ -769,7 +723,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
         }
 
         if (participant.type == Participant.ParticipantType.MODERATOR) {
-            ncApi.demoteModeratorToUser(
+            ncApi?.demoteModeratorToUser(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -778,11 +732,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ),
                 participant.userId
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(subscriber)
         } else if (participant.type == Participant.ParticipantType.USER) {
-            ncApi.promoteUserToModerator(
+            ncApi?.promoteUserToModerator(
                 credentials,
                 ApiUtils.getUrlForRoomModerators(
                     apiVersion,
@@ -791,15 +745,15 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ),
                 participant.userId
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(subscriber)
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(subscriber)
         }
     }
 
     fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
         if (apiVersion >= ApiUtils.APIv4) {
-            ncApi.removeAttendeeFromConversation(
+            ncApi?.removeAttendeeFromConversation(
                 credentials,
                 ApiUtils.getUrlForAttendees(
                     apiVersion,
@@ -808,9 +762,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 ),
                 participant.attendeeId
             )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) {
                     }
 
@@ -830,7 +784,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             if (participant.type == Participant.ParticipantType.GUEST ||
                 participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK
             ) {
-                ncApi.removeParticipantFromConversation(
+                ncApi?.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
                         conversationUser!!.baseUrl,
@@ -839,9 +793,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     ),
                     participant.sessionId
                 )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<GenericOverall> {
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
                         }
 
@@ -858,7 +812,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                         }
                     })
             } else {
-                ncApi.removeParticipantFromConversation(
+                ncApi?.removeParticipantFromConversation(
                     credentials,
                     ApiUtils.getUrlForRemovingParticipantFromConversation(
                         conversationUser!!.baseUrl,
@@ -867,9 +821,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                     ),
                     participant.userId
                 )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(object : Observer<GenericOverall> {
+                    ?.subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
                         }
 
@@ -904,7 +858,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
                 val items = mutableListOf(
                     BasicListItemWithImage(
                         R.drawable.ic_lock_grey600_24px,
-                        context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+                        context!!.getString(R.string.nc_attendee_pin, participant.attendeePin)
                     )
                 )
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
@@ -930,7 +884,7 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
-                    context.getString(R.string.nc_remove_group_and_members)
+                    context!!.getString(R.string.nc_remove_group_and_members)
                 )
             )
             MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
@@ -946,16 +900,16 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             return true
         }
 
-        var items = mutableListOf(
+        val items = mutableListOf(
             BasicListItemWithImage(
                 R.drawable.ic_lock_grey600_24px,
-                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+                context!!.getString(R.string.nc_attendee_pin, participant.attendeePin)
             ),
-            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_promote)),
-            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context.getString(R.string.nc_demote)),
+            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context!!.getString(R.string.nc_promote)),
+            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context!!.getString(R.string.nc_demote)),
             BasicListItemWithImage(
                 R.drawable.ic_delete_grey600_24dp,
-                context.getString(R.string.nc_remove_participant)
+                context!!.getString(R.string.nc_remove_participant)
             )
         )
 
@@ -1011,9 +965,9 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
     }
 
     companion object {
-
         private const val TAG = "ConversationInfoController"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
+        private val LOW_EMPHASIS_OPACITY: Float = 0.38f
     }
 
     /**
@@ -1025,7 +979,11 @@ class ConversationInfoController(args: Bundle) : BaseController(args), FlexibleA
             val rightIsGroup = right.model.actorType == GROUPS
             if (leftIsGroup != rightIsGroup) {
                 // Groups below participants
-                return if (rightIsGroup) { -1 } else { 1 }
+                return if (rightIsGroup) {
+                    -1
+                } else {
+                    1
+                }
             }
 
             if (left.isOnline && !right.isOnline) {

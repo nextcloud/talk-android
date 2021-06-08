@@ -64,6 +64,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.CallNotificationClick;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
@@ -278,7 +279,9 @@ public class CallNotificationController extends BaseController {
                         runAllThings();
 
                         if (apiVersion >= 3) {
-                            boolean hasCallFlags = userBeingCalled.hasSpreedFeatureCapability("conversation-call-flags");
+                            boolean hasCallFlags =
+                                    CapabilitiesUtil.hasSpreedFeatureCapability(userBeingCalled,
+                                                                                "conversation-call-flags");
                             if (hasCallFlags) {
                                 if (isInCallWithVideo(currentConversation.callFlag)) {
                                     incomingCallVoiceOrVideoTextView.setText(String.format(getResources().getString(R.string.nc_call_video),

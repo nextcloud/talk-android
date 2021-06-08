@@ -84,13 +84,11 @@ public abstract class BaseController extends ButterKnifeController {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                getRouter().popCurrentController();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            getRouter().popCurrentController();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     private void cleanTempCertPreference() {

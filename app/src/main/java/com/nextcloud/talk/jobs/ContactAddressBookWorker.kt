@@ -241,7 +241,10 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         fun hasLinkedAccount(id: String): Boolean {
             var hasLinkedAccount = false
             val where =
-                ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + " = ?"
+                ContactsContract.Data.MIMETYPE +
+                    " = ? AND " +
+                    ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID +
+                    " = ?"
             val params = arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, id)
 
             val rawContactUri = ContactsContract.Data.CONTENT_URI
@@ -393,7 +396,10 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
     private fun getDisplayNameFromDeviceContact(id: String?): String? {
         var displayName: String? = null
         val whereName =
-            ContactsContract.Data.MIMETYPE + " = ? AND " + ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID + " = ?"
+            ContactsContract.Data.MIMETYPE +
+                " = ? AND " +
+                ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID +
+                " = ?"
         val whereNameParams = arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, id)
         val nameCursor = context.contentResolver.query(
             ContactsContract.Data.CONTENT_URI,
@@ -405,7 +411,9 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         if (nameCursor != null) {
             while (nameCursor.moveToNext()) {
                 displayName =
-                    nameCursor.getString(nameCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME))
+                    nameCursor.getString(
+                        nameCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME)
+                    )
             }
             nameCursor.close()
         }
@@ -424,7 +432,11 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
 
         if (phonesNumbersCursor != null) {
             while (phonesNumbersCursor.moveToNext()) {
-                numbers.add(phonesNumbersCursor.getString(phonesNumbersCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)))
+                numbers.add(
+                    phonesNumbersCursor.getString(
+                        phonesNumbersCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                    )
+                )
             }
             phonesNumbersCursor.close()
         }

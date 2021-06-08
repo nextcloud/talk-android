@@ -48,6 +48,7 @@ import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.LeaveConversationWorker;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -151,7 +152,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
             if (conversation.isFavorite()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
-            } else if (currentUser.hasSpreedFeatureCapability("favorites")) {
+            } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "favorites")) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites)
                         , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
             }
