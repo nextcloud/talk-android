@@ -22,6 +22,7 @@ import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.cardview.widget.CardView
 import androidx.core.content.PermissionChecker
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
@@ -34,6 +35,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.BaseController
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -224,8 +226,9 @@ class LocationPickerController(args: Bundle) :
         val locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
         // locationOverlay.enableFollowLocation()
         locationOverlay.enableMyLocation()
-        // locationOverlay.setPersonIcon(
-        //     DisplayUtils.getBitmap(ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)))
+        locationOverlay.setPersonHotspot(20.0F,20.0F)
+        locationOverlay.setPersonIcon(
+             DisplayUtils.getBitmap(ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)))
         map?.overlays?.add(locationOverlay)
 
         val mapController = map?.controller
@@ -237,7 +240,7 @@ class LocationPickerController(args: Bundle) :
         }
 
         var myLocation: GeoPoint
-        myLocation = GeoPoint(13.0, 52.0)
+        myLocation = GeoPoint(52.0, 13.0)
 
         var zoomToCurrentPositionAllowed = !receivedChosenGeocodingResult
         locationOverlay.runOnFirstFix {

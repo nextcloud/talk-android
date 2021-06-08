@@ -48,7 +48,7 @@
             android:layout_height="50dp"
             android:src="@drawable/ic_baseline_location_on_red_24"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="-10dp"
             android:layout_above="@id/locationpicker_anchor"
             android:contentDescription="@string/nc_location_current_position_description">
         </ImageView>
