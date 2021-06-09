@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -9,7 +10,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/ic_baseline_location_on_24"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
 
     <TextView
         android:id="@+id/name"
@@ -17,6 +18,6 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/geocoding_result_text_size"
         android:layout_gravity="center"
-        android:text="bbb"/>
+        tools:text="Brandenburg, Germany"/>
 
 </LinearLayout>
