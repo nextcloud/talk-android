@@ -67,6 +67,7 @@
     <color name="fg_inverse">#FFFFFF</color>
 
     <color name="bg_default">#FFFFFF</color>
+    <color name="bg_default_semitransparent">#99FFFFFF</color>
     <color name="bg_inverse">@color/grey950</color>
     <color name="bg_dark_mention_chips">#333333</color>
 

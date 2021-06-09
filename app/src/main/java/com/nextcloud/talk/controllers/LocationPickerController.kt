@@ -32,43 +32,39 @@ import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.cardview.widget.CardView
 import androidx.core.content.PermissionChecker
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
-import butterknife.BindView
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.databinding.ControllerLocationBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.UserUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.controller_location.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -87,7 +83,6 @@ import org.osmdroid.events.ScrollEvent
 import org.osmdroid.events.ZoomEvent
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
@@ -95,44 +90,20 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class LocationPickerController(args: Bundle) :
-    BaseController(args),
+    NewBaseController(
+        R.layout.controller_location,
+        args
+    ),
     SearchView.OnQueryTextListener,
     LocationListener,
     GeocodingController.GeocodingResultListener {
+    private val binding: ControllerLocationBinding by viewBinding(ControllerLocationBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
 
     @Inject
     lateinit var userUtils: UserUtils
-
-    @Inject
-    @JvmField
-    var appPreferences: AppPreferences? = null
-
-    @Inject
-    @JvmField
-    var context: Context? = null
-
-    @BindView(R.id.map)
-    @JvmField
-    var map: MapView? = null
-
-    @BindView(R.id.ic_center_map)
-    @JvmField
-    var btCenterMap: CardView? = null
-
-    @BindView(R.id.share_location)
-    @JvmField
-    var shareLocation: LinearLayout? = null
-
-    @BindView(R.id.place_name)
-    @JvmField
-    var placeName: TextView? = null
-
-    @BindView(R.id.share_location_description)
-    @JvmField
-    var shareLocationDescription: TextView? = null
 
     var nominatimClient: JsonNominatimClient? = null
 
@@ -160,10 +131,6 @@ class LocationPickerController(args: Bundle) :
         roomToken = args.getString(KEY_ROOM_TOKEN)
     }
 
-    override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.controller_location, container, false)
-    }
-
     override fun onAttach(view: View) {
         super.onAttach(view)
         initMap()
@@ -188,20 +155,20 @@ class LocationPickerController(args: Bundle) :
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        hideSearchBar()
-        actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
-        actionBar.title = context!!.getString(R.string.nc_share_location)
+        showToolbar()
+        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        actionBar?.title = context!!.getString(R.string.nc_share_location)
     }
 
     override fun onViewBound(view: View) {
         setLocationDescription(false, receivedChosenGeocodingResult)
-        shareLocation?.isClickable = false
-        shareLocation?.setOnClickListener {
+        binding.shareLocation.isClickable = false
+        binding.shareLocation.setOnClickListener {
             if (readyToShareLocation) {
                 shareLocation(
-                    map?.mapCenter?.latitude,
-                    map?.mapCenter?.longitude,
-                    placeName?.text.toString()
+                    binding.map.mapCenter?.latitude,
+                    binding.map.mapCenter?.longitude,
+                    binding.placeName.text.toString()
                 )
             } else {
                 Log.w(TAG, "readyToShareLocation was false while user tried to share location.")
@@ -214,14 +181,14 @@ class LocationPickerController(args: Bundle) :
             val searchManager = activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
             if (searchItem != null) {
                 searchView = MenuItemCompat.getActionView(searchItem) as SearchView
-                searchView?.setMaxWidth(Int.MAX_VALUE)
-                searchView?.setInputType(InputType.TYPE_TEXT_VARIATION_FILTER)
+                searchView?.maxWidth = Int.MAX_VALUE
+                searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
                 var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
                     imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
                 }
-                searchView?.setImeOptions(imeOptions)
-                searchView?.setQueryHint(resources!!.getString(R.string.nc_search))
+                searchView?.imeOptions = imeOptions
+                searchView?.queryHint = resources!!.getString(R.string.nc_search)
                 searchView?.setSearchableInfo(searchManager.getSearchableInfo(activity!!.componentName))
                 searchView?.setOnQueryTextListener(this)
             }
@@ -251,9 +218,9 @@ class LocationPickerController(args: Bundle) :
             requestFineLocationPermission()
         }
 
-        map?.setTileSource(TileSourceFactory.MAPNIK)
+        binding.map.setTileSource(TileSourceFactory.MAPNIK)
 
-        map?.onResume()
+        binding.map.onResume()
 
         locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         try {
@@ -262,19 +229,19 @@ class LocationPickerController(args: Bundle) :
         }
 
         val copyrightOverlay = CopyrightOverlay(context)
-        map?.overlays?.add(copyrightOverlay)
+        binding.map.overlays?.add(copyrightOverlay)
 
-        map?.setMultiTouchControls(true)
-        map?.isTilesScaledToDpi = true
+        binding.map.setMultiTouchControls(true)
+        binding.map.isTilesScaledToDpi = true
 
-        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
+        locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding.map)
         locationOverlay.enableMyLocation()
         locationOverlay.setPersonHotspot(20.0F,20.0F)
         locationOverlay.setPersonIcon(
              DisplayUtils.getBitmap(ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)))
-        map?.overlays?.add(locationOverlay)
+        binding.map.overlays?.add(locationOverlay)
 
-        val mapController = map?.controller
+        val mapController = binding.map.controller
 
         if (receivedChosenGeocodingResult) {
             mapController?.setZoom(14.0)
@@ -297,25 +264,29 @@ class LocationPickerController(args: Bundle) :
             mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
         }
 
-        btCenterMap?.setOnClickListener {
+        binding.centerMapButton.setOnClickListener {
             mapController?.animateTo(myLocation)
             moveToCurrentLocationWasClicked = true
         }
 
-        map?.addMapListener(
+        binding.map.addMapListener(
             DelayedMapListener(
                 object : MapListener {
                     override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
-                        if (moveToCurrentLocationWasClicked) {
-                            setLocationDescription(true, false)
-                            moveToCurrentLocationWasClicked = false
-                        } else if (receivedChosenGeocodingResult) {
-                            shareLocation?.isClickable = true
-                            setLocationDescription(false, true)
-                            receivedChosenGeocodingResult = false
-                        } else {
-                            shareLocation?.isClickable = true
-                            setLocationDescription(false, false)
+                        when {
+                            moveToCurrentLocationWasClicked -> {
+                                setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
+                                moveToCurrentLocationWasClicked = false
+                            }
+                            receivedChosenGeocodingResult -> {
+                                binding.shareLocation.isClickable = true
+                                setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
+                                receivedChosenGeocodingResult = false
+                            }
+                            else -> {
+                                binding.shareLocation.isClickable = true
+                                setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+                            }
                         }
                         readyToShareLocation = true
                         return true
@@ -331,19 +302,19 @@ class LocationPickerController(args: Bundle) :
     private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
         when {
             isGpsLocation -> {
-                shareLocationDescription?.text = context!!.getText(R.string.nc_share_current_location)
-                placeName?.visibility = View.GONE
-                placeName?.text = ""
+                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_current_location)
+                binding.placeName.visibility = View.GONE
+                binding.placeName.text = ""
             }
             isGeocodedResult -> {
-                shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
-                placeName?.visibility = View.VISIBLE
-                placeName?.text = geocodedName
+                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
+                binding.placeName.visibility = View.VISIBLE
+                binding.placeName.text = geocodedName
             }
             else -> {
-                shareLocationDescription?.text = context!!.getText(R.string.nc_share_this_location)
-                placeName?.visibility = View.GONE
-                placeName?.text = ""
+                binding.shareLocationDescription.text = context!!.getText(R.string.nc_share_this_location)
+                binding.placeName.visibility = View.GONE
+                binding.placeName.text = ""
             }
         }
     }
@@ -351,7 +322,7 @@ class LocationPickerController(args: Bundle) :
     private fun shareLocation(selectedLat: Double?, selectedLon: Double?, locationName: String?) {
         if (selectedLat != null || selectedLon != null) {
 
-            var name = locationName
+            val name = locationName
             if (name.isNullOrEmpty()) {
                 initGeocoder()
                 searchPlaceNameForCoordinates(selectedLat!!, selectedLon!!)

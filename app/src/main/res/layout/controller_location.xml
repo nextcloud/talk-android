@@ -3,6 +3,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Marcel Hibbe
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -32,29 +34,32 @@
         android:layout_height="0dp"
         android:layout_weight="1">
 
-        <org.osmdroid.views.MapView android:id="@+id/map"
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/ic_center_map"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/centerMapButton"
+            style="@style/Widget.AppTheme.Button.IconButton"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_margin="5dp"
-            android:elevation="10dp"
-            app:cardCornerRadius="25dp"
-            app:cardBackgroundColor="@color/appbar">
-
-            <ImageView
-                android:id="@+id/roundedImageView"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:src="@drawable/ic_baseline_gps_fixed_24"
-                android:layout_gravity="center"
-                />
-        </androidx.cardview.widget.CardView>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:backgroundTint="@color/bg_default_semitransparent"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:elevation="0dp"
+            app:icon="@drawable/ic_baseline_gps_fixed_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/high_emphasis_text" />
 
         <View
             android:id="@+id/locationpicker_anchor"
@@ -65,42 +70,43 @@
         <ImageView
             android:layout_width="30dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_baseline_location_on_red_24"
+            android:layout_above="@id/locationpicker_anchor"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-10dp"
-            android:layout_above="@id/locationpicker_anchor"
-            android:contentDescription="@string/nc_location_current_position_description">
-        </ImageView>
+            android:contentDescription="@string/nc_location_current_position_description"
+            android:src="@drawable/ic_baseline_location_on_red_24" />
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/share_location"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="72dp"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:height="60dp"
-            android:minWidth="50dp"
-            android:padding="10dp"
-            android:textAlignment="textStart"
-            app:srcCompat="@drawable/ic_baseline_location_on_24">
-        </ImageView>
+            android:id="@+id/roundedImageView"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_gravity="top"
+            android:layout_margin="@dimen/standard_margin"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_circular_location" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
             <TextView
                 android:id="@+id/share_location_description"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textSize="20sp"
-                tools:text="Share this location">
-            </TextView>
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="16sp"
+                tools:text="Share this location" />
+
             <TextView
                 android:id="@+id/place_name"
                 android:layout_width="match_parent"
@@ -108,10 +114,10 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
-                tools:text="Brandenburg, Germany">
-            </TextView>
+                android:textColor="@color/medium_emphasis_text"
+                android:textSize="14sp"
+                tools:text="Brandenburg, Germany" />
         </LinearLayout>
-
 
     </LinearLayout>
 
