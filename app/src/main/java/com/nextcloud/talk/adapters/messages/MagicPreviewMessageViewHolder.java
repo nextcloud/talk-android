@@ -84,7 +84,7 @@ import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
-    private static String TAG = "MagicPreviewMessageViewHolder";
+    private static final String TAG = "MagicPreviewMessageViewHolder";
 
     @BindView(R.id.messageText)
     EmojiTextView messageText;
