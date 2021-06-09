@@ -80,12 +80,12 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
             for (String key : message.messageParameters.keySet()) {
                 Map<String, String> individualHashMap = message.messageParameters.get(key);
                 if (individualHashMap != null &&
-                        (individualHashMap.get("type").equals("user") ||
-                                individualHashMap.get("type").equals("guest") ||
-                                individualHashMap.get("type").equals("call"))) {
+                        ("user".equals(individualHashMap.get("type")) ||
+                                "guest".equals(individualHashMap.get("type")) ||
+                                "call".equals(individualHashMap.get("type"))
+                        )) {
                     messageString = DisplayUtils.searchAndColor(
-                            messageString, "@" + individualHashMap.get("name"),
-                            mentionColor);
+                            messageString, "@" + individualHashMap.get("name"), mentionColor);
                 }
             }
         }
