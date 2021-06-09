@@ -172,15 +172,6 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         binding.searchToolbar.layoutParams = layoutParams
     }
 
-    protected fun showToolbar() {
-        if (isValidActivity(activity)) {
-            val activity = activity as MainActivity
-            showToolbar(activity.binding)
-            colorizeStatusBar(false, activity, resources)
-            colorizeNavigationBar(activity, resources)
-        }
-    }
-
     private fun showToolbar(binding: ActivityMainBinding) {
         val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         binding.searchToolbar.visibility = View.GONE

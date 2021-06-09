@@ -155,10 +155,13 @@ class LocationPickerController(args: Bundle) :
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        showToolbar()
-        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
         actionBar?.title = context!!.getString(R.string.nc_share_location)
     }
+
+    override val title: String
+        get() =
+            resources!!.getString(R.string.nc_share_location)
+
 
     override fun onViewBound(view: View) {
         setLocationDescription(false, receivedChosenGeocodingResult)

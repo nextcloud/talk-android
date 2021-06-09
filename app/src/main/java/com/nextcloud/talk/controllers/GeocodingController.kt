@@ -137,12 +137,6 @@ class GeocodingController(args: Bundle) :
         searchView?.clearFocus()
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
-        showToolbar()
-        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
-    }
-
     override fun onQueryTextSubmit(query: String?): Boolean {
         this.query = query
         searchLocation()
