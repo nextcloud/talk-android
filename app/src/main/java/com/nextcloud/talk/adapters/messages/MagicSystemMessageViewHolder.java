@@ -41,6 +41,8 @@ import javax.inject.Inject;
 import androidx.core.view.ViewCompat;
 import autodagger.AutoInjector;
 
+import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_VIEW_TAG;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
@@ -54,7 +56,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         super(itemView);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
-
+    
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
@@ -63,7 +65,6 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         int normalColor = resources.getColor(R.color.bg_message_list_incoming_bubble);
         int pressedColor;
         int mentionColor;
-
 
         pressedColor = normalColor;
         mentionColor = resources.getColor(R.color.textColorMaxContrast);
@@ -77,13 +78,20 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         if (message.messageParameters != null && message.messageParameters.size() > 0) {
             for (String key : message.messageParameters.keySet()) {
-                Map<String, String> individualHashMap = message.messageParameters.get(key);
-                if (individualHashMap != null && (individualHashMap.get("type").equals("user") || individualHashMap.get("type").equals("guest") || individualHashMap.get("type").equals("call"))) {
-                    messageString = DisplayUtils.searchAndColor(messageString, "@" + individualHashMap.get("name"), mentionColor);
+                Map<String, String> individualMap = message.messageParameters.get(key);
+                if (individualMap != null &&
+                        ("user".equals(individualMap.get("type")) ||
+                                "guest".equals(individualMap.get("type")) ||
+                                "call".equals(individualMap.get("type"))
+                        )) {
+                    messageString = DisplayUtils.searchAndColor(
+                            messageString, "@" + individualMap.get("name"), mentionColor);
                 }
             }
         }
 
         text.setText(messageString);
+
+        itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
     }
 }
