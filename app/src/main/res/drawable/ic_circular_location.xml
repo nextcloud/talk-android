@@ -1,0 +1,34 @@
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <path
+      android:fillColor="#DBDBDB"
+      android:fillType="nonZero"
+      android:pathData="M12,0C5.4168,0 0,5.4168 0,12C0,18.5832 5.4168,24 12,24C18.5832,24 24,18.5832 24,12C24,5.4168 18.5832,0 12,0Z" />
+  <path
+      android:fillColor="#ffffff"
+      android:fillType="nonZero"
+      android:pathData="M12,11.6989C11.1743,11.6989 10.4943,11.0189 10.4943,10.1932C10.4943,9.3675 11.1743,8.6875 12,8.6875C12.8257,8.6875 13.5057,9.3675 13.5057,10.1932C13.5057,11.0189 12.8257,11.6989 12,11.6989M12,5.9774C9.6873,5.9774 7.7842,7.8805 7.7842,10.1932C7.7842,13.3551 12,18.0226 12,18.0226C12,18.0226 16.2158,13.3551 16.2158,10.1932C16.2158,7.8805 14.3127,5.9774 12,5.9774Z" />
+</vector>
