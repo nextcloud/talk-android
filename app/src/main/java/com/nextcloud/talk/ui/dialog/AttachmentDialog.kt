@@ -70,7 +70,9 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             String.format(it.getString(R.string.nc_upload_from_cloud), serverName)
         }
 
-        if (chatController.conversationUser?.hasSpreedFeatureCapability("geo-location-sharing") != true){
+        if (!CapabilitiesUtil.hasSpreedFeatureCapability(
+                chatController.conversationUser,
+                "geo-location-sharing")){
             shareLocationItem?.visibility = View.GONE
         }
 
