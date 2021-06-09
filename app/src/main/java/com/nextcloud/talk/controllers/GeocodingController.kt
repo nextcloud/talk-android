@@ -27,29 +27,26 @@ import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
-import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
-import butterknife.BindView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.GeocodingAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.base.BaseController
+import com.nextcloud.talk.controllers.base.NewBaseController
+import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.databinding.ControllerGeocodingBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import fr.dudie.nominatim.client.JsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
@@ -68,25 +65,19 @@ import org.osmdroid.config.Configuration
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQueryTextListener {
-
-    @Inject
-    @JvmField
-    var context: Context? = null
+class GeocodingController(args: Bundle) :
+    NewBaseController(
+        R.layout.controller_geocoding,
+        args
+    ),
+    SearchView.OnQueryTextListener {
+    private val binding: ControllerGeocodingBinding by viewBinding(ControllerGeocodingBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
 
     @Inject
     lateinit var userUtils: UserUtils
-
-    @Inject
-    @JvmField
-    var appPreferences: AppPreferences? = null
-
-    @BindView(R.id.geocoding_results)
-    @JvmField
-    var geocodingResultListView: ListView? = null
 
     var roomToken: String?
     var nominatimClient: JsonNominatimClient? = null
@@ -111,12 +102,8 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
     }
 
     private fun initAdapter(addresses: List<Address>) {
-        adapter = GeocodingAdapter(geocodingResultListView?.context!!, addresses)
-        geocodingResultListView?.adapter = adapter
-    }
-
-    override fun inflateView(inflater: LayoutInflater, container: ViewGroup): View {
-        return inflater.inflate(R.layout.controller_geocoding, container, false)
+        adapter = GeocodingAdapter(binding.geocodingResults.context!!, addresses)
+        binding.geocodingResults.adapter = adapter
     }
 
     override fun onAttach(view: View) {
@@ -131,7 +118,7 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
             Log.e(TAG, "search string that was passed to GeocodingController was null or empty")
         }
 
-        geocodingResultListView?.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        binding.geocodingResults.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
             val address: Address = adapter.getItem(position) as Address
             val listener: GeocodingResultListener? = targetController as GeocodingResultListener?
             listener?.receiveChosenGeocodingResult(address.latitude, address.longitude, address.displayName)
@@ -152,8 +139,8 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        hideSearchBar()
-        actionBar.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        showToolbar()
+        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
