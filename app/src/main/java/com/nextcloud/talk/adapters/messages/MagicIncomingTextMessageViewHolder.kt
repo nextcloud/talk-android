@@ -45,6 +45,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
@@ -53,8 +54,8 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
+class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
+.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
 
     @JvmField
     @BindView(R.id.messageAuthor)
@@ -101,10 +102,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
     var appPreferences: AppPreferences? = null
 
     init {
-        ButterKnife.bind(
-            this,
-            itemView
-        )
+        ButterKnife.bind(this, itemView)
     }
 
     override fun onBind(message: ChatMessage) {
@@ -257,5 +255,7 @@ class MagicIncomingTextMessageViewHolder(incomingView: View) : MessageHolders
         } else {
             quotedChatMessageView?.visibility = View.GONE
         }
+
+        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
     }
 }

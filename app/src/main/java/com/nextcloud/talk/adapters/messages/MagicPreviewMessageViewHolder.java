@@ -79,6 +79,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 
+import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_VIEW_TAG;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
@@ -194,6 +196,8 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             }
             messageText.setText("");
         }
+
+        itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
     }
 
     private void openOrDownloadFile(ChatMessage message) {

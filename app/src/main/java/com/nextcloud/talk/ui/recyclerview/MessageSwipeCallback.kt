@@ -43,9 +43,6 @@ import androidx.recyclerview.widget.ItemTouchHelper.ACTION_STATE_SWIPE
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.min
@@ -76,11 +73,10 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
     private var startTracking = false
 
     override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        if (viewHolder is MagicPreviewMessageViewHolder ||
-            viewHolder is MagicIncomingTextMessageViewHolder ||
-            viewHolder is MagicOutcomingTextMessageViewHolder
+        view = viewHolder.itemView
+        if (viewHolder.itemView.getTag(REPLYABLE_VIEW_TAG) != null &&
+            viewHolder.itemView.getTag(REPLYABLE_VIEW_TAG) as Boolean
         ) {
-            view = viewHolder.itemView
             imageDrawable = AppCompatResources.getDrawable(context, R.drawable.ic_reply)!!
             shareRound = AppCompatResources.getDrawable(context, R.drawable.round_bgnd)!!
             return makeMovementFlags(ACTION_STATE_IDLE, RIGHT)
@@ -296,5 +292,6 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         const val ICON_BOUNDS_PIXEL_TOP: Int = 13
         const val ICON_BOUNDS_PIXEL_RIGHT: Int = 12
         const val ICON_BOUNDS_PIXEL_BOTTOM: Int = 11
+        const val REPLYABLE_VIEW_TAG: Int = R.string.replyable_message_view_tag
     }
 }

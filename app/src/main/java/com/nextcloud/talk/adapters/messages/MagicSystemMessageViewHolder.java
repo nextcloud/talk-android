@@ -41,6 +41,8 @@ import javax.inject.Inject;
 import androidx.core.view.ViewCompat;
 import autodagger.AutoInjector;
 
+import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_VIEW_TAG;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMessageViewHolder<ChatMessage> {
 
@@ -85,5 +87,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         }
 
         text.setText(messageString);
+
+        itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
     }
 }

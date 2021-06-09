@@ -42,6 +42,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
+import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils.getMessageSelector
 import com.nextcloud.talk.utils.DisplayUtils.searchAndReplaceWithMentionSpan
@@ -89,6 +90,12 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     var context: Context? = null
 
     private val realView: View
+
+    init {
+        ButterKnife.bind(this, itemView)
+        this.realView = itemView
+    }
+
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -208,10 +215,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         }
 
         checkMark?.setContentDescription(readStatusContentDescriptionString)
-    }
 
-    init {
-        ButterKnife.bind(this, itemView)
-        this.realView = itemView
+        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
     }
 }
