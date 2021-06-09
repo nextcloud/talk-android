@@ -108,12 +108,10 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
         query = args.getString(BundleKeys.KEY_GEOCODING_QUERY)
         roomToken = args.getString(BundleKeys.KEY_ROOM_TOKEN)
-
-        initAdapter(geocodingResults)
     }
 
     private fun initAdapter(addresses: List<Address>) {
-        adapter = GeocodingAdapter(context!!, addresses)
+        adapter = GeocodingAdapter(geocodingResultListView?.context!!, addresses)
         geocodingResultListView?.adapter = adapter
     }
 
@@ -123,6 +121,9 @@ class GeocodingController(args: Bundle) : BaseController(args), SearchView.OnQue
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+
+        initAdapter(geocodingResults)
+
         initGeocoder()
         if (!query.isNullOrEmpty()) {
             searchLocation()
