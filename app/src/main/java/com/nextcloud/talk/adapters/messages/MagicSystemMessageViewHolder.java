@@ -56,7 +56,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         super(itemView);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
-
+    
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
@@ -78,14 +78,14 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         if (message.messageParameters != null && message.messageParameters.size() > 0) {
             for (String key : message.messageParameters.keySet()) {
-                Map<String, String> individualHashMap = message.messageParameters.get(key);
-                if (individualHashMap != null &&
-                        ("user".equals(individualHashMap.get("type")) ||
-                                "guest".equals(individualHashMap.get("type")) ||
-                                "call".equals(individualHashMap.get("type"))
+                Map<String, String> individualMap = message.messageParameters.get(key);
+                if (individualMap != null &&
+                        ("user".equals(individualMap.get("type")) ||
+                                "guest".equals(individualMap.get("type")) ||
+                                "call".equals(individualMap.get("type"))
                         )) {
                     messageString = DisplayUtils.searchAndColor(
-                            messageString, "@" + individualHashMap.get("name"), mentionColor);
+                            messageString, "@" + individualMap.get("name"), mentionColor);
                 }
             }
         }
