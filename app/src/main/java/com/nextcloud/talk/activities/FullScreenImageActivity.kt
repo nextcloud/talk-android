@@ -25,28 +25,25 @@
 package com.nextcloud.talk.activities
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ActivityFullScreenImageBinding
+import com.nextcloud.talk.utils.BitmapShrinker
 import pl.droidsonroids.gif.GifDrawable
 import java.io.File
 
 class FullScreenImageActivity : AppCompatActivity() {
     lateinit var binding: ActivityFullScreenImageBinding
-
     private lateinit var path: String
-
     private var showFullscreen = false
-
-    private val maxScale = 6.0f
-    private val mediumScale = 2.45f
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_preview, menu)
@@ -98,8 +95,8 @@ class FullScreenImageActivity : AppCompatActivity() {
 
         // Enable enlarging the image more than default 3x maximumScale.
         // Medium scale adapted to make double-tap behaviour more consistent.
-        binding.photoView.maximumScale = maxScale
-        binding.photoView.mediumScale = mediumScale
+        binding.photoView.maximumScale = MAX_SCALE
+        binding.photoView.mediumScale = MEDIUM_SCALE
 
         val fileName = intent.getStringExtra("FILE_NAME")
         val isGif = intent.getBooleanExtra("IS_GIF", false)
@@ -116,7 +113,25 @@ class FullScreenImageActivity : AppCompatActivity() {
         } else {
             binding.gifView.visibility = View.INVISIBLE
             binding.photoView.visibility = View.VISIBLE
-            binding.photoView.setImageURI(Uri.parse(path))
+            displayImage(path)
+        }
+    }
+
+    private fun displayImage(path: String) {
+        val displayMetrics = applicationContext.resources.displayMetrics
+        val doubleScreenWidth = displayMetrics.widthPixels * 2
+        val doubleScreenHeight = displayMetrics.heightPixels * 2
+
+        val bitmap = BitmapShrinker.shrinkBitmap(path, doubleScreenWidth, doubleScreenHeight)
+
+        val bitmapSize: Int = bitmap.byteCount
+
+        // info that 100MB is the limit comes from https://stackoverflow.com/a/53334563
+        if (bitmapSize > HUNDRED_MB) {
+            Log.e(TAG, "bitmap will be too large to display. It won't be displayed to avoid RuntimeException")
+            Toast.makeText(this, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+        } else {
+            binding.photoView.setImageBitmap(bitmap)
         }
     }
 
@@ -148,5 +163,12 @@ class FullScreenImageActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
             )
+    }
+
+    companion object {
+        private val TAG = "FullScreenImageActivity"
+        private const val HUNDRED_MB = 100 * 1024 * 1024
+        private const val MAX_SCALE = 6.0f
+        private const val MEDIUM_SCALE = 2.45f
     }
 }
