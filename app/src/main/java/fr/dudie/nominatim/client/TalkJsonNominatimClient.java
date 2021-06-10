@@ -64,11 +64,6 @@ public final class TalkJsonNominatimClient implements NominatimClient {
     private static final String TAG = "TalkNominationClient";
 
     /**
-     * The default nominatim base URL.
-     */
-    private static final String DEFAULT_BASE_URL = "https://nominatim.openstreetmap.org/";
-
-    /**
      * UTF-8 encoding.
      */
     public static final String ENCODING_UTF_8 = "UTF-8";
@@ -99,27 +94,6 @@ public final class TalkJsonNominatimClient implements NominatimClient {
      * The default search options.
      */
     private final NominatimOptions defaults;
-
-    /**
-     * Creates the json nominatim client with the default base URL ({@value #DEFAULT_BASE_URL}.
-     *
-     * @param httpClient an HTTP client
-     * @param email      an email to add in the HTTP requests parameters to "sign" them
-     */
-    public TalkJsonNominatimClient(final OkHttpClient httpClient, final String email) {
-        this(DEFAULT_BASE_URL, httpClient, email, new NominatimOptions());
-    }
-
-    /**
-     * Creates the json nominatim client with the default base URL ({@value #DEFAULT_BASE_URL}.
-     *
-     * @param httpClient an HTTP client
-     * @param email      an email to add in the HTTP requests parameters to "sign" them
-     * @param defaults   defaults options, they override null valued requests options
-     */
-    public TalkJsonNominatimClient(final OkHttpClient httpClient, final String email, final NominatimOptions defaults) {
-        this(DEFAULT_BASE_URL, httpClient, email, defaults);
-    }
 
     /**
      * Creates the json nominatim client.
@@ -307,7 +281,7 @@ public final class TalkJsonNominatimClient implements NominatimClient {
     @Override
     public Address getAddress(final int longitudeE6, final int latitudeE6) throws IOException {
 
-        return this.getAddress((double) (longitudeE6 / 1E6), (double) (latitudeE6 / 1E6));
+        return this.getAddress((longitudeE6 / 1E6), (latitudeE6 / 1E6));
     }
 
     /**
