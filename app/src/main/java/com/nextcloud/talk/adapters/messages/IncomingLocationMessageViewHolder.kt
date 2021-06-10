@@ -208,9 +208,12 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
-        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url)))
-        urlStringBuffer.append("&mapProviderAttribution=" + URLEncoder.encode(context!!.getString(R.string
-            .osm_tile_server_attributation)))
+        urlStringBuffer.append(
+            "?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url))
+        )
+        urlStringBuffer.append(
+            "&mapProviderAttribution=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_attributation))
+        )
         urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
         urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
         urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))

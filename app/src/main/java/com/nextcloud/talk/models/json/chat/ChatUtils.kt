@@ -33,7 +33,7 @@ class ChatUtils {
                     val type = individualHashMap?.get("type")
                     if (type == "user" || type == "guest" || type == "call") {
                         resultMessage = resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
-                    } else if(type == "geo-location"){
+                    } else if (type == "geo-location") {
                         resultMessage = individualHashMap.get("name")
                     } else if (individualHashMap?.containsKey("link") == true) {
                         resultMessage = if (type == "file") {

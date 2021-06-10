@@ -24,7 +24,6 @@ import android.Manifest
 import android.app.SearchManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -64,7 +63,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.controller_location.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -163,7 +161,6 @@ class LocationPickerController(args: Bundle) :
         get() =
             resources!!.getString(R.string.nc_share_location)
 
-
     override fun onViewBound(view: View) {
         setLocationDescription(false, receivedChosenGeocodingResult)
         binding.shareLocation.isClickable = false
@@ -240,9 +237,12 @@ class LocationPickerController(args: Bundle) :
 
         locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding.map)
         locationOverlay.enableMyLocation()
-        locationOverlay.setPersonHotspot(20.0F,20.0F)
+        locationOverlay.setPersonHotspot(20.0F, 20.0F)
         locationOverlay.setPersonIcon(
-             DisplayUtils.getBitmap(ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)))
+            DisplayUtils.getBitmap(
+                ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)
+            )
+        )
         binding.map.overlays?.add(locationOverlay)
 
         val mapController = binding.map.controller

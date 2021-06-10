@@ -24,6 +24,5 @@ import com.stfalcon.chatkit.commons.models.IMessage
 
 interface ExtendedIMessage : IMessage {
 
-    fun isLocationMessage() : Boolean
-
+    fun isLocationMessage(): Boolean
 }

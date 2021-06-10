@@ -72,7 +72,9 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
 
         if (!CapabilitiesUtil.hasSpreedFeatureCapability(
                 chatController.conversationUser,
-                "geo-location-sharing")){
+                "geo-location-sharing"
+            )
+        ) {
             shareLocationItem?.visibility = View.GONE
         }
 

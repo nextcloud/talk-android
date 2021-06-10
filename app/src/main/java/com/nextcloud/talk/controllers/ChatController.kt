@@ -813,7 +813,7 @@ class ChatController(args: Bundle) :
         Log.d(TAG, "showShareLocationScreen")
 
         val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN,roomToken)
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
         router.pushController(
             RouterTransaction.with(LocationPickerController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
