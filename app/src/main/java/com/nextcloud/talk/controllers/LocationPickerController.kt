@@ -136,6 +136,7 @@ class LocationPickerController(args: Bundle) :
         initMap()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onDetach(view: View) {
         super.onDetach(view)
         try {
@@ -430,6 +431,7 @@ class LocationPickerController(args: Bundle) :
         return true
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun executeGeocodingRequest(lat: Double, lon: Double) {
         var address: Address? = null
         try {

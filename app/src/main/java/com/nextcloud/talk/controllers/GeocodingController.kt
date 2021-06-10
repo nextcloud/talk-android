@@ -195,6 +195,7 @@ class GeocodingController(args: Bundle) :
         return true
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun executeGeocodingRequest() {
         var results: ArrayList<Address> = ArrayList()
         try {
