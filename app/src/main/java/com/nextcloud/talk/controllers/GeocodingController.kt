@@ -46,20 +46,14 @@ import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerGeocodingBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
-import fr.dudie.nominatim.client.JsonNominatimClient
+import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.apache.http.client.HttpClient
-import org.apache.http.conn.ClientConnectionManager
-import org.apache.http.conn.scheme.Scheme
-import org.apache.http.conn.scheme.SchemeRegistry
-import org.apache.http.conn.ssl.SSLSocketFactory
-import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.impl.conn.SingleClientConnManager
+import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration
 import javax.inject.Inject
 
@@ -78,8 +72,11 @@ class GeocodingController(args: Bundle) :
     @Inject
     lateinit var userUtils: UserUtils
 
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
     var roomToken: String?
-    var nominatimClient: JsonNominatimClient? = null
+    var nominatimClient: TalkJsonNominatimClient? = null
 
     var searchItem: MenuItem? = null
     var searchView: SearchView? = null
@@ -178,13 +175,9 @@ class GeocodingController(args: Bundle) :
     }
 
     private fun initGeocoder() {
-        val registry = SchemeRegistry()
-        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT))
-        val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
-        val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
         val baseUrl = context!!.getString(R.string.osm_geocoder_url)
         val email = context!!.getString(R.string.osm_geocoder_contact)
-        nominatimClient = JsonNominatimClient(baseUrl, httpClient, email)
+        nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
     }
 
     private fun searchLocation(): Boolean {
@@ -223,6 +216,5 @@ class GeocodingController(args: Bundle) :
 
     companion object {
         private const val TAG = "GeocodingController"
-        private const val HTTPS_PORT: Int = 443
     }
 }

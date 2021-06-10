@@ -57,7 +57,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.UserUtils
-import fr.dudie.nominatim.client.JsonNominatimClient
+import fr.dudie.nominatim.client.TalkJsonNominatimClient
 import fr.dudie.nominatim.model.Address
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -67,13 +67,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.apache.http.client.HttpClient
-import org.apache.http.conn.ClientConnectionManager
-import org.apache.http.conn.scheme.Scheme
-import org.apache.http.conn.scheme.SchemeRegistry
-import org.apache.http.conn.ssl.SSLSocketFactory
-import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.http.impl.conn.SingleClientConnManager
+import okhttp3.OkHttpClient
 import org.osmdroid.config.Configuration.getInstance
 import org.osmdroid.events.DelayedMapListener
 import org.osmdroid.events.MapListener
@@ -103,7 +97,10 @@ class LocationPickerController(args: Bundle) :
     @Inject
     lateinit var userUtils: UserUtils
 
-    var nominatimClient: JsonNominatimClient? = null
+    @Inject
+    lateinit var okHttpClient: OkHttpClient
+
+    var nominatimClient: TalkJsonNominatimClient? = null
 
     var roomToken: String?
 
@@ -425,13 +422,9 @@ class LocationPickerController(args: Bundle) :
     }
 
     private fun initGeocoder() {
-        val registry = SchemeRegistry()
-        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT))
-        val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
-        val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
         val baseUrl = context!!.getString(R.string.osm_geocoder_url)
         val email = context!!.getString(R.string.osm_geocoder_contact)
-        nominatimClient = JsonNominatimClient(baseUrl, httpClient, email)
+        nominatimClient = TalkJsonNominatimClient(baseUrl, okHttpClient, email)
     }
 
     private fun searchPlaceNameForCoordinates(lat: Double, lon: Double): Boolean {
@@ -483,6 +476,5 @@ class LocationPickerController(args: Bundle) :
         private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
         private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
         private const val GEOCODE_ZERO: Double = 0.0
-        private const val HTTPS_PORT: Int = 443
     }
 }
