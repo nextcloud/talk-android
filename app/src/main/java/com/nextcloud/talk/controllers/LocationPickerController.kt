@@ -482,7 +482,7 @@ class LocationPickerController(args: Bundle) :
         private const val PERSON_HOT_SPOT_Y: Float = 20.0F
         private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
         private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
-        private const val GEOCODE_ZERO : Double = 0.0
+        private const val GEOCODE_ZERO: Double = 0.0
         private const val HTTPS_PORT: Int = 443
     }
 }
