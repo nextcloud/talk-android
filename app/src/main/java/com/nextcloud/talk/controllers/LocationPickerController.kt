@@ -375,16 +375,16 @@ class LocationPickerController(args: Bundle) :
 
     private fun isFineLocationPermissionGranted(): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PermissionChecker.checkSelfPermission(
+            return if (PermissionChecker.checkSelfPermission(
                     context!!,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PermissionChecker.PERMISSION_GRANTED
             ) {
                 Log.d(TAG, "Permission is granted")
-                return true
+                true
             } else {
                 Log.d(TAG, "Permission is revoked")
-                return false
+                false
             }
         } else {
             Log.d(TAG, "Permission is granted")

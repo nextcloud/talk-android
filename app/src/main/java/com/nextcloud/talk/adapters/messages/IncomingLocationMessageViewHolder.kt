@@ -74,7 +74,7 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
-    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled", "ClickableViewAccessibility")
+    @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -194,6 +194,7 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         }
     }
 
+    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     private fun setLocationDataOnMessageItem(message: ChatMessage) {
         if (message.messageParameters != null && message.messageParameters.size > 0) {
             for (key in message.messageParameters.keys) {

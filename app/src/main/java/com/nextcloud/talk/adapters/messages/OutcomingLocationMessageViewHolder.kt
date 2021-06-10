@@ -67,7 +67,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var context: Context? = null
 
-    @SuppressLint("SetTextI18n", "SetJavaScriptEnabled", "ClickableViewAccessibility")
+    @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -79,64 +79,14 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         val textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
 
-        val resources = sharedApplication!!.resources
-        val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
-        } else {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble)
-        }
-        if (message.isGrouped) {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                resources.getColor(R.color.transparent),
-                bgBubbleColor,
-                R.drawable.shape_grouped_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        } else {
-            val bubbleDrawable = DisplayUtils.getMessageSelector(
-                bgBubbleColor,
-                resources.getColor(R.color.transparent),
-                bgBubbleColor,
-                R.drawable.shape_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+        colorizeMessageBubble(message)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.text = message.text
         binding.messageText.isEnabled = false
 
         // parent message handling
-
-        if (!message.isDeleted && message.parentMessage != null) {
-            val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
-            parentChatMessage.imageUrl?.let {
-                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-                binding.messageQuote.quotedMessageImage.load(it) {
-                    addHeader(
-                        "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
-                    )
-                }
-            } ?: run {
-                binding.messageQuote.quotedMessageImage.visibility = View.GONE
-            }
-            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
-            binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(
-                context!!.resources.getColor(R.color.nc_outcoming_text_default)
-            )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
-
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
-
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-        }
+        setParentMessageDataOnMessageItem(message)
 
         val readStatusDrawableInt = when (message.readStatus) {
             ReadStatus.READ -> R.drawable.ic_check_all
@@ -160,7 +110,11 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
         // geo-location
+        setLocationDataOnMessageItem(message)
+    }
 
+    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
+    private fun setLocationDataOnMessageItem(message: ChatMessage) {
         if (message.messageParameters != null && message.messageParameters.size > 0) {
             for (key in message.messageParameters.keys) {
                 val individualHashMap: Map<String, String> = message.messageParameters[key]!!
@@ -215,6 +169,63 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
                 return v?.onTouchEvent(event) ?: true
             }
         })
+    }
+
+    private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
+        if (!message.isDeleted && message.parentMessage != null) {
+            val parentChatMessage = message.parentMessage
+            parentChatMessage.activeUser = message.activeUser
+            parentChatMessage.imageUrl?.let {
+                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                binding.messageQuote.quotedMessageImage.load(it) {
+                    addHeader(
+                        "Authorization",
+                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                    )
+                }
+            } ?: run {
+                binding.messageQuote.quotedMessageImage.visibility = View.GONE
+            }
+            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
+                ?: context!!.getText(R.string.nc_nick_guest)
+            binding.messageQuote.quotedMessage.text = parentChatMessage.text
+            binding.messageQuote.quotedMessage.setTextColor(
+                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+            )
+            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
+
+            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
+
+            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+        } else {
+            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+        }
+    }
+
+    private fun colorizeMessageBubble(message: ChatMessage) {
+        val resources = sharedApplication!!.resources
+        val bgBubbleColor = if (message.isDeleted) {
+            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
+        } else {
+            resources.getColor(R.color.bg_message_list_outcoming_bubble)
+        }
+        if (message.isGrouped) {
+            val bubbleDrawable = DisplayUtils.getMessageSelector(
+                bgBubbleColor,
+                resources.getColor(R.color.transparent),
+                bgBubbleColor,
+                R.drawable.shape_grouped_outcoming_message
+            )
+            ViewCompat.setBackground(bubble, bubbleDrawable)
+        } else {
+            val bubbleDrawable = DisplayUtils.getMessageSelector(
+                bgBubbleColor,
+                resources.getColor(R.color.transparent),
+                bgBubbleColor,
+                R.drawable.shape_outcoming_message
+            )
+            ViewCompat.setBackground(bubble, bubbleDrawable)
+        }
     }
 
     private fun openGeoLink() {
