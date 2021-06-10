@@ -41,13 +41,15 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <include layout="@layout/item_message_quote" android:visibility="gone"/>
+        <include
+            android:id="@+id/message_quote"
+            layout="@layout/item_message_quote"
+            android:visibility="gone" />
 
         <WebView
             android:id="@+id/webview"
             android:layout_width="400dp"
-            android:layout_height="200dp"
-            />
+            android:layout_height="200dp" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/messageText"

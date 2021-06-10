@@ -3,8 +3,10 @@
  *
  * @author Mario Danic
  * @author Marcel Hibbe
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,6 +37,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
@@ -45,6 +48,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
+import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -70,8 +74,6 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.annotations.NonNull;
@@ -82,14 +84,9 @@ import okhttp3.OkHttpClient;
 import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_VIEW_TAG;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
+public abstract class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
     private static final String TAG = "PreviewMsgViewHolder";
-
-    @BindView(R.id.messageText)
-    EmojiTextView messageText;
-
-    View progressBar;
 
     @Inject
     Context context;
@@ -99,8 +96,6 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
     public MagicPreviewMessageViewHolder(View itemView) {
         super(itemView);
-        ButterKnife.bind(this, itemView);
-        progressBar = itemView.findViewById(R.id.progress_bar);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
@@ -131,7 +126,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
         if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
             String fileName = message.getSelectedIndividualHashMap().get("name");
-            messageText.setText(fileName);
+            getMessageText().setText(fileName);
             if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
                 String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
                 int drawableResourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(mimetype);
@@ -165,7 +160,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             try {
                 for (WorkInfo workInfo : workers.get()) {
                     if (workInfo.getState() == WorkInfo.State.RUNNING || workInfo.getState() == WorkInfo.State.ENQUEUED) {
-                        progressBar.setVisibility(View.VISIBLE);
+                        getProgressBar().setVisibility(View.VISIBLE);
 
                         String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
 
@@ -178,11 +173,11 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                 Log.e(TAG, "Error when checking if worker already exists", e);
             }
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
-            messageText.setText("GIPHY");
-            DisplayUtils.setClickableString("GIPHY", "https://giphy.com", messageText);
+            getMessageText().setText("GIPHY");
+            DisplayUtils.setClickableString("GIPHY", "https://giphy.com", getMessageText());
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {
-            messageText.setText("Tenor");
-            DisplayUtils.setClickableString("Tenor", "https://tenor.com", messageText);
+            getMessageText().setText("Tenor");
+            DisplayUtils.setClickableString("Tenor", "https://tenor.com", getMessageText());
         } else {
             if (message.getMessageType().equals(ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
                 image.setOnClickListener(v -> {
@@ -193,11 +188,15 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             } else {
                 image.setOnClickListener(null);
             }
-            messageText.setText("");
+            getMessageText().setText("");
         }
 
         itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
     }
+
+    public abstract EmojiTextView getMessageText();
+
+    public abstract ProgressBar getProgressBar();
 
     private void openOrDownloadFile(ChatMessage message) {
         String filename = message.getSelectedIndividualHashMap().get("name");
@@ -388,7 +387,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
 
         WorkManager.getInstance().enqueue(downloadWorker);
 
-        progressBar.setVisibility(View.VISIBLE);
+        getProgressBar().setVisibility(View.VISIBLE);
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.getId()).observeForever(workInfo -> {
             updateViewsByProgress(fileName, mimetype, workInfo);
@@ -400,7 +399,7 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
             case RUNNING:
                 int progress = workInfo.getProgress().getInt(DownloadFileToCacheWorker.PROGRESS, -1);
                 if (progress > -1) {
-                    messageText.setText(String.format(context.getResources().getString(R.string.filename_progress), fileName, progress));
+                    getMessageText().setText(String.format(context.getResources().getString(R.string.filename_progress), fileName, progress));
                 }
                 break;
 
@@ -411,13 +410,13 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                     Log.d(TAG, "file " + fileName + " was downloaded but it's not opened because view is not shown on" +
                             " screen");
                 }
-                messageText.setText(fileName);
-                progressBar.setVisibility(View.GONE);
+                getMessageText().setText(fileName);
+                getProgressBar().setVisibility(View.GONE);
                 break;
 
             case FAILED:
-                messageText.setText(fileName);
-                progressBar.setVisibility(View.GONE);
+                getMessageText().setText(fileName);
+                getProgressBar().setVisibility(View.GONE);
                 break;
             default:
                 // do nothing
@@ -486,6 +485,5 @@ public class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageM
                         Log.e(TAG, "Error reading file information", e);
                     }
                 });
-
     }
 }

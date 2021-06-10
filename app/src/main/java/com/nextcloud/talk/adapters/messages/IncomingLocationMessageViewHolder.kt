@@ -3,8 +3,10 @@
  *
  * @author Mario Danic
  * @author Marcel Hibbe
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -35,22 +37,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
-import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
-import butterknife.BindView
-import butterknife.ButterKnife
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
-import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.databinding.ItemCustomIncomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -62,6 +58,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
+    private val binding: ItemCustomIncomingLocationMessageBinding = ItemCustomIncomingLocationMessageBinding.bind(itemView)
 
     private val TAG = "LocMessageView"
 
@@ -71,42 +68,6 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     var locationGeoLink: String? = ""
 
     @JvmField
-    @BindView(R.id.messageAuthor)
-    var messageAuthor: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.messageText)
-    var messageText: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.messageUserAvatar)
-    var messageUserAvatarView: SimpleDraweeView? = null
-
-    @JvmField
-    @BindView(R.id.messageTime)
-    var messageTimeView: TextView? = null
-
-    @JvmField
-    @BindView(R.id.quotedChatMessageView)
-    var quotedChatMessageView: RelativeLayout? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessageAuthor)
-    var quotedUserName: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessageImage)
-    var quotedMessagePreview: ImageView? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessage)
-    var quotedMessage: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.quoteColoredView)
-    var quoteColoredView: View? = null
-
-    @JvmField
     @Inject
     var context: Context? = null
 
@@ -114,30 +75,19 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
-    @JvmField
-    @BindView(R.id.webview)
-    var webview: WebView? = null
-
-    init {
-        ButterKnife.bind(
-            this,
-            itemView
-        )
-    }
-
     @SuppressLint("SetTextI18n", "SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
         val author: String = message.actorDisplayName
         if (!TextUtils.isEmpty(author)) {
-            messageAuthor!!.text = author
+            binding.messageAuthor.text = author
         } else {
-            messageAuthor!!.setText(R.string.nc_nick_guest)
+            binding.messageAuthor.setText(R.string.nc_nick_guest)
         }
 
         if (!message.isGrouped && !message.isOneToOneConversation) {
-            messageUserAvatarView!!.visibility = View.VISIBLE
+            binding.messageUserAvatar.visibility = View.VISIBLE
             if (message.actorType == "guests") {
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
@@ -145,7 +95,7 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
                 layers[0] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_background)
                 layers[1] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
-                messageUserAvatarView?.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else if (message.actorType == "bots") {
                 val drawable = TextDrawable.builder()
                     .beginConfig()
@@ -155,16 +105,16 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
                         ">",
                         context!!.resources.getColor(R.color.black)
                     )
-                messageUserAvatarView!!.visibility = View.VISIBLE
-                messageUserAvatarView?.setImageDrawable(drawable)
+                binding.messageUserAvatar.visibility = View.VISIBLE
+                binding.messageUserAvatar.setImageDrawable(drawable)
             }
         } else {
             if (message.isOneToOneConversation) {
-                messageUserAvatarView!!.visibility = View.GONE
+                binding.messageUserAvatar.visibility = View.GONE
             } else {
-                messageUserAvatarView!!.visibility = View.INVISIBLE
+                binding.messageUserAvatar.visibility = View.INVISIBLE
             }
-            messageAuthor!!.visibility = View.GONE
+            binding.messageAuthor.visibility = View.GONE
         }
 
         val resources = itemView.resources
@@ -188,47 +138,45 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
 
-        val messageParameters = message.messageParameters
-
         itemView.isSelected = false
-        messageTimeView!!.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
 
         val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
-        messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        messageText!!.text = message.text
-        messageText!!.isEnabled = false
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        binding.messageText.text = message.text
+        binding.messageText.isEnabled = false
 
         // parent message handling
-
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
-                quotedMessagePreview?.visibility = View.VISIBLE
-                quotedMessagePreview?.load(it) {
+                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
                         ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
                     )
                 }
             } ?: run {
-                quotedMessagePreview?.visibility = View.GONE
+                binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
-            quotedUserName?.text = parentChatMessage.actorDisplayName
+            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
-            quotedMessage?.text = parentChatMessage.text
+            binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
-            quotedUserName?.setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
+            binding.messageQuote.quotedMessageAuthor
+                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
-                quoteColoredView?.setBackgroundResource(R.color.colorPrimary)
+                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
             } else {
-                quoteColoredView?.setBackgroundResource(R.color.textColorMaxContrast)
+                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
             }
 
-            quotedChatMessageView?.visibility = View.VISIBLE
+            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
-            quotedChatMessageView?.visibility = View.GONE
+            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
         // geo-location
@@ -245,9 +193,9 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             }
         }
 
-        webview?.settings?.javaScriptEnabled = true
+        binding.webview.settings?.javaScriptEnabled = true
 
-        webview?.webViewClient = object : WebViewClient() {
+        binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
                 ) {
@@ -268,9 +216,9 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
         urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
 
-        webview?.loadUrl(urlStringBuffer.toString())
+        binding.webview.loadUrl(urlStringBuffer.toString())
 
-        webview?.setOnTouchListener(object : View.OnTouchListener {
+        binding.webview.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
                     MotionEvent.ACTION_UP -> openGeoLink()

@@ -33,21 +33,16 @@ import android.view.MotionEvent
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
-import androidx.emoji.widget.EmojiTextView
 import autodagger.AutoInjector
-import butterknife.BindView
-import butterknife.ButterKnife
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.databinding.ItemCustomOutcomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.utils.ApiUtils
@@ -59,6 +54,9 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 .OutcomingTextMessageViewHolder<ChatMessage>(incomingView) {
+    private val binding: ItemCustomOutcomingLocationMessageBinding =
+        ItemCustomOutcomingLocationMessageBinding.bind(itemView)
+    private val realView: View = itemView
 
     private val TAG = "LocMessageView"
 
@@ -68,46 +66,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     var locationGeoLink: String? = ""
 
     @JvmField
-    @BindView(R.id.messageText)
-    var messageText: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.messageTime)
-    var messageTimeView: TextView? = null
-
-    @JvmField
-    @BindView(R.id.quotedChatMessageView)
-    var quotedChatMessageView: RelativeLayout? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessageAuthor)
-    var quotedUserName: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessageImage)
-    var quotedMessagePreview: ImageView? = null
-
-    @JvmField
-    @BindView(R.id.quotedMessage)
-    var quotedMessage: EmojiTextView? = null
-
-    @JvmField
-    @BindView(R.id.quoteColoredView)
-    var quoteColoredView: View? = null
-
-    @JvmField
-    @BindView(R.id.checkMark)
-    var checkMark: ImageView? = null
-
-    @JvmField
     @Inject
     var context: Context? = null
-
-    @JvmField
-    @BindView(R.id.webview)
-    var webview: WebView? = null
-
-    private val realView: View
 
     @SuppressLint("SetTextI18n", "SetJavaScriptEnabled", "ClickableViewAccessibility")
     override fun onBind(message: ChatMessage) {
@@ -115,8 +75,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         sharedApplication!!.componentApplication.inject(this)
 
         realView.isSelected = false
-        messageTimeView!!.setTextColor(context!!.resources.getColor(R.color.white60))
-        val layoutParams = messageTimeView!!.layoutParams as FlexboxLayout.LayoutParams
+        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
+        val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
 
         val textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
@@ -144,10 +104,10 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             )
             ViewCompat.setBackground(bubble, bubbleDrawable)
         }
-        messageText!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        messageTimeView!!.layoutParams = layoutParams
-        messageText!!.text = message.text
-        messageText!!.isEnabled = false
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        binding.messageTime.layoutParams = layoutParams
+        binding.messageText.text = message.text
+        binding.messageText.isEnabled = false
 
         // parent message handling
 
@@ -155,27 +115,27 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
-                quotedMessagePreview?.visibility = View.VISIBLE
-                quotedMessagePreview?.load(it) {
+                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
                         ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
                     )
                 }
             } ?: run {
-                quotedMessagePreview?.visibility = View.GONE
+                binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
-            quotedUserName?.text = parentChatMessage.actorDisplayName
+            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
-            quotedMessage?.text = parentChatMessage.text
-            quotedMessage?.setTextColor(context!!.resources.getColor(R.color.nc_outcoming_text_default))
-            quotedUserName?.setTextColor(context!!.resources.getColor(R.color.nc_grey))
+            binding.messageQuote.quotedMessage.text = parentChatMessage.text
+            binding.messageQuote.quotedMessage.setTextColor(context!!.resources.getColor(R.color.nc_outcoming_text_default))
+            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
 
-            quoteColoredView?.setBackgroundResource(R.color.white)
+            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
 
-            quotedChatMessageView?.visibility = View.VISIBLE
+            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
-            quotedChatMessageView?.visibility = View.GONE
+            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
         val readStatusDrawableInt = when (message.readStatus) {
@@ -193,11 +153,11 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
                 it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
-                checkMark?.setImageDrawable(it)
+                binding.checkMark.setImageDrawable(it)
             }
         }
 
-        checkMark?.setContentDescription(readStatusContentDescriptionString)
+        binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
         // geo-location
 
@@ -213,9 +173,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             }
         }
 
-        webview?.settings?.javaScriptEnabled = true
+        binding.webview.settings?.javaScriptEnabled = true
 
-        webview?.webViewClient = object : WebViewClient() {
+        binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
                 ) {
@@ -242,9 +202,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
         urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
 
-        webview?.loadUrl(urlStringBuffer.toString())
+        binding.webview.loadUrl(urlStringBuffer.toString())
 
-        webview?.setOnTouchListener(object : View.OnTouchListener {
+        binding.webview.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 when (event?.action) {
                     MotionEvent.ACTION_UP -> openGeoLink()
@@ -269,10 +229,5 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private fun addMarkerToGeoLink(locationGeoLink: String): String {
         return locationGeoLink.replace("geo:", "geo:0,0?q=")
-    }
-
-    init {
-        ButterKnife.bind(this, itemView)
-        this.realView = itemView
     }
 }

@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -47,7 +49,10 @@
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
 
-        <include layout="@layout/item_message_quote" android:visibility="gone"/>
+        <include
+            android:id="@+id/message_quote"
+            layout="@layout/item_message_quote"
+            android:visibility="gone" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@+id/messageAuthor"

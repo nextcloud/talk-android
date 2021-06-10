@@ -79,12 +79,13 @@ import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -400,22 +401,14 @@ class ChatController(args: Bundle) :
             )
 
             messageHolders.setIncomingImageConfig(
-                MagicPreviewMessageViewHolder::class.java,
+                IncomingPreviewMessageViewHolder::class.java,
                 R.layout.item_custom_incoming_preview_message
             )
+
             messageHolders.setOutcomingImageConfig(
-                MagicPreviewMessageViewHolder::class.java,
+                OutcomingPreviewMessageViewHolder::class.java,
                 R.layout.item_custom_outcoming_preview_message
             )
-
-            // messageHolders.setIncomingLocationConfig(
-            //     LocationMessageViewHolder::class.java,
-            //     R.layout.item_custom_location_message
-            // )
-            // messageHolders.setOutcomingLocationConfig(
-            //     LocationMessageViewHolder::class.java,
-            //     R.layout.item_custom_location_message
-            // )
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_SYSTEM_MESSAGE,
