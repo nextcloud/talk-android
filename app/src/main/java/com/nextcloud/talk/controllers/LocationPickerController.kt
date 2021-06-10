@@ -227,6 +227,7 @@ class LocationPickerController(args: Bundle) :
         try {
             locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, this)
         } catch (ex: SecurityException) {
+            Log.w(TAG, "Error requesting location updates", ex)
         }
 
         val copyrightOverlay = CopyrightOverlay(context)
@@ -237,7 +238,7 @@ class LocationPickerController(args: Bundle) :
 
         locationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), binding.map)
         locationOverlay.enableMyLocation()
-        locationOverlay.setPersonHotspot(20.0F, 20.0F)
+        locationOverlay.setPersonHotspot(PERSON_HOT_SPOT_X, PERSON_HOT_SPOT_Y)
         locationOverlay.setPersonIcon(
             DisplayUtils.getBitmap(
                 ResourcesCompat.getDrawable(resources!!, R.drawable.current_location_circle, null)
@@ -248,9 +249,9 @@ class LocationPickerController(args: Bundle) :
         val mapController = binding.map.controller
 
         if (receivedChosenGeocodingResult) {
-            mapController?.setZoom(14.0)
+            mapController?.setZoom(ZOOM_LEVEL_RECEIVED_RESULT)
         } else {
-            mapController?.setZoom(12.0)
+            mapController?.setZoom(ZOOM_LEVEL_DEFAULT)
         }
 
         val zoomToCurrentPositionOnFirstFix = !receivedChosenGeocodingResult
@@ -258,13 +259,13 @@ class LocationPickerController(args: Bundle) :
             myLocation = locationOverlay.myLocation
             if (zoomToCurrentPositionOnFirstFix) {
                 activity!!.runOnUiThread {
-                    mapController?.setZoom(12.0)
+                    mapController?.setZoom(ZOOM_LEVEL_DEFAULT)
                     mapController?.setCenter(myLocation)
                 }
             }
         }
 
-        if (receivedChosenGeocodingResult && geocodedLat != 0.0 && geocodedLon != 0.0) {
+        if (receivedChosenGeocodingResult && geocodedLat != GEOCODE_ZERO && geocodedLon != GEOCODE_ZERO) {
             mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
         }
 
@@ -353,6 +354,7 @@ class LocationPickerController(args: Bundle) :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(t: GenericOverall) {
@@ -366,6 +368,7 @@ class LocationPickerController(args: Bundle) :
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -398,8 +401,15 @@ class LocationPickerController(args: Bundle) :
         )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE &&
+            grantResults.size > 0 &&
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        ) {
             initMap()
         } else {
             Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG)
@@ -416,7 +426,7 @@ class LocationPickerController(args: Bundle) :
 
     private fun initGeocoder() {
         val registry = SchemeRegistry()
-        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), 443))
+        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT))
         val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
         val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
         val baseUrl = context!!.getString(R.string.osm_geocoder_url)
@@ -468,5 +478,11 @@ class LocationPickerController(args: Bundle) :
     companion object {
         private const val TAG = "LocPicker"
         private const val REQUEST_PERMISSIONS_REQUEST_CODE = 1
+        private const val PERSON_HOT_SPOT_X: Float = 20.0F
+        private const val PERSON_HOT_SPOT_Y: Float = 20.0F
+        private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
+        private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
+        private const val GEOCODE_ZERO : Double = 0.0
+        private const val HTTPS_PORT: Int = 443
     }
 }

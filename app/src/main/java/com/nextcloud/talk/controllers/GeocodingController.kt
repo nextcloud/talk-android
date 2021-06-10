@@ -179,7 +179,7 @@ class GeocodingController(args: Bundle) :
 
     private fun initGeocoder() {
         val registry = SchemeRegistry()
-        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), 443))
+        registry.register(Scheme("https", SSLSocketFactory.getSocketFactory(), HTTPS_PORT))
         val connexionManager: ClientConnectionManager = SingleClientConnManager(null, registry)
         val httpClient: HttpClient = DefaultHttpClient(connexionManager, null)
         val baseUrl = context!!.getString(R.string.osm_geocoder_url)
@@ -222,6 +222,7 @@ class GeocodingController(args: Bundle) :
     }
 
     companion object {
-        private val TAG = "GeocodingController"
+        private const val TAG = "GeocodingController"
+        private const val HTTPS_PORT: Int = 443
     }
 }

@@ -58,8 +58,6 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         ItemCustomOutcomingLocationMessageBinding.bind(itemView)
     private val realView: View = itemView
 
-    private val TAG = "LocMessageView"
-
     var locationLon: String? = ""
     var locationLat: String? = ""
     var locationName: String? = ""
@@ -128,7 +126,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(context!!.resources.getColor(R.color.nc_outcoming_text_default))
+            binding.messageQuote.quotedMessage.setTextColor(
+                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+            )
             binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
 
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
@@ -188,7 +188,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
-        urlStringBuffer.append("?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url)))
+        urlStringBuffer.append(
+            "?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url))
+        )
         urlStringBuffer.append(
             "&mapProviderAttribution=" + URLEncoder.encode(
                 context!!.getString(
@@ -229,5 +231,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private fun addMarkerToGeoLink(locationGeoLink: String): String {
         return locationGeoLink.replace("geo:", "geo:0,0?q=")
+    }
+
+    companion object {
+        private const val TAG = "LocOutMessageView"
     }
 }

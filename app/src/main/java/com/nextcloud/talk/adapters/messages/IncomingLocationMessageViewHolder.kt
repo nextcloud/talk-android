@@ -58,9 +58,8 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
-    private val binding: ItemCustomIncomingLocationMessageBinding = ItemCustomIncomingLocationMessageBinding.bind(itemView)
-
-    private val TAG = "LocMessageView"
+    private val binding: ItemCustomIncomingLocationMessageBinding =
+        ItemCustomIncomingLocationMessageBinding.bind(itemView)
 
     var locationLon: String? = ""
     var locationLat: String? = ""
@@ -79,6 +78,27 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
+
+        setAvatarAndAuthorOnMessageItem(message)
+
+        colorizeMessageBubble(message)
+
+        itemView.isSelected = false
+        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+
+        val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        binding.messageText.text = message.text
+        binding.messageText.isEnabled = false
+
+        // parent message handling
+        setParentMessageDataOnMessageItem(message)
+
+        // geo-location
+        setLocationDataOnMessageItem(message)
+    }
+
+    private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
         val author: String = message.actorDisplayName
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
@@ -116,14 +136,10 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             }
             binding.messageAuthor.visibility = View.GONE
         }
+    }
 
+    private fun colorizeMessageBubble(message: ChatMessage) {
         val resources = itemView.resources
-
-        val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
-        } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
-        }
 
         var bubbleResource = R.drawable.shape_incoming_message
 
@@ -131,22 +147,20 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             bubbleResource = R.drawable.shape_grouped_incoming_message
         }
 
+        val bgBubbleColor = if (message.isDeleted) {
+            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+        } else {
+            resources.getColor(R.color.bg_message_list_incoming_bubble)
+        }
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
             resources.getColor(R.color.transparent),
             bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
+    }
 
-        itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
-
-        val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
-        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageText.text = message.text
-        binding.messageText.isEnabled = false
-
-        // parent message handling
+    private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
@@ -178,9 +192,9 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         } else {
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
+    }
 
-        // geo-location
-
+    private fun setLocationDataOnMessageItem(message: ChatMessage) {
         if (message.messageParameters != null && message.messageParameters.size > 0) {
             for (key in message.messageParameters.keys) {
                 val individualHashMap: Map<String, String> = message.messageParameters[key]!!
@@ -246,5 +260,9 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private fun addMarkerToGeoLink(locationGeoLink: String): String {
         return locationGeoLink.replace("geo:", "geo:0,0?q=")
+    }
+
+    companion object {
+        private const val TAG = "LocInMessageView"
     }
 }

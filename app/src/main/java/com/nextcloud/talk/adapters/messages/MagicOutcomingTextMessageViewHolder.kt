@@ -146,7 +146,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(context!!.resources.getColor(R.color.nc_outcoming_text_default))
+            binding.messageQuote.quotedMessage.setTextColor(
+                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+            )
             binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
 
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
