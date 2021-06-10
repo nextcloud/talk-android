@@ -256,6 +256,6 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
     }
 
     init {
-        ButterKnife.bindthis, itemView)
+        ButterKnife.bind(this, itemView)
     }
 }
