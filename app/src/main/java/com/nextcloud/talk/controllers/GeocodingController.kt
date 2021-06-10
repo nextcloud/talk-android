@@ -22,7 +22,6 @@ package com.nextcloud.talk.controllers
 
 import android.app.SearchManager
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.InputType

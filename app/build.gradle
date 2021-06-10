@@ -97,6 +97,8 @@ android {
                 ]
             }
         }
+
+        useLibrary 'org.apache.http.legacy'
     }
 
     dexOptions {
@@ -113,6 +115,7 @@ android {
     packagingOptions {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/rxjava.properties'
@@ -292,6 +295,10 @@ dependencies {
 
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
     implementation 'fr.dudie:nominatim-api:3.4'
+
+    //noinspection DuplicatePlatformClasses
+    api 'org.apache.httpcomponents:httpclient:4.5.9' // Android comes with its own httpclient
+    // nominatim-api uses httpclient
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.11.0'
