@@ -294,12 +294,8 @@ dependencies {
     implementation 'com.elyeproj.libraries:loaderviewlibrary:2.0.0'
 
     implementation 'org.osmdroid:osmdroid-android:6.1.10'
+    //noinspection DuplicatePlatformClasses
     implementation 'fr.dudie:nominatim-api:3.4'
-
-    // noinspection DuplicatePlatformClasses
-    api group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.9'
-    // nominatim-api uses httpclient
-    // Android comes with its own httpclient
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:3.11.0'
