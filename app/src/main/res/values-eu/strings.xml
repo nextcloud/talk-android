@@ -228,6 +228,7 @@
     <string name="nc_settings">Ezarpenak</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
     <string name="nc_settings_add_account">Kontu berria gehitu</string>
+    <string name="nc_settings_advanced_title">Aurreratua</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
@@ -308,6 +309,7 @@
     <string name="scope_published_title">Argitaratuta</string>
     <string name="scope_toggle">Irismen etengailua</string>
     <string name="scope_toggle_description">Aldatu %1$s(r)en pribatutasun maila</string>
+    <string name="selected_list_item">Hautatua</string>
     <string name="send_to">Bidali honi:</string>
     <string name="share">Partekatu</string>
     <string name="starred">Gogokoa</string>
