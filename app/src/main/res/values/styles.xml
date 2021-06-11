@@ -34,12 +34,19 @@
         <item name="android:textColorPrimary">@color/high_emphasis_text</item>
         <item name="android:textColorSecondary">@color/medium_emphasis_text</item>
         <item name="android:textColorTertiary">@color/low_emphasis_text</item>
-        <item name="android:popupMenuStyle">@style/appActionBarPopupMenu</item>
-        <item name="actionOverflowMenuStyle">@style/appActionBarPopupMenu</item>
-        <item name="actionBarPopupTheme">@style/appActionBarPopupMenu</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppTheme.PopupMenu</item>
         <item name="android:actionMenuTextAppearance">@style/menuTextAppearance</item>
         <item name="searchViewStyle">@style/SearchView</item>
         <item name="android:navigationBarColor">@color/bg_default</item>
+    </style>
+
+    <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.MaterialComponents.Dark">
+        <item name="android:colorBackground">@color/bg_default</item>
+        <item name="android:textColorPrimary">@color/high_emphasis_text</item>
+        <item name="android:textColor">@color/high_emphasis_text</item>
+        <item name="android:textColorSecondary">@color/fontAppbar</item>
+        <item name="android:textColorHint">@color/fontSecondaryAppbar</item>
+        <item name="iconTint">@color/fontAppbar</item>
     </style>
 
     <style name="CallTheme" parent="AppTheme">
