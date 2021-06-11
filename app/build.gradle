@@ -159,7 +159,7 @@ android {
 ext {
     butterknifeVersion = "10.2.3"
     coilKtVersion = "1.2.2"
-    daggerVersion = "2.36"
+    daggerVersion = "2.37"
     okhttpVersion = "4.9.1"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
