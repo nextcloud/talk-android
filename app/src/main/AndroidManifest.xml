@@ -70,6 +70,9 @@
     <!-- This permission is deprecated in Android P  -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="true"

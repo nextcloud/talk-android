@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Marcel Hibbe
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/centerMapButton"
+            style="@style/Widget.AppTheme.Button.IconButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:padding="0dp"
+            app:backgroundTint="@color/bg_default_semitransparent"
+            app:cornerRadius="@dimen/button_corner_radius"
+            app:elevation="0dp"
+            app:icon="@drawable/ic_baseline_gps_fixed_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="24dp"
+            app:iconTint="@color/high_emphasis_text" />
+
+        <View
+            android:id="@+id/locationpicker_anchor"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerInParent="true" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_above="@id/locationpicker_anchor"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-10dp"
+            android:contentDescription="@string/nc_location_current_position_description"
+            android:src="@drawable/ic_baseline_location_on_red_24" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/share_location"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/roundedImageView"
+            android:layout_width="@dimen/avatar_size"
+            android:layout_height="@dimen/avatar_size"
+            android:layout_gravity="top"
+            android:layout_margin="@dimen/standard_margin"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_circular_location" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/share_location_description"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="16sp"
+                tools:text="Share this location" />
+
+            <TextView
+                android:id="@+id/place_name"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/medium_emphasis_text"
+                android:textSize="14sp"
+                tools:text="Brandenburg, Germany" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -2,8 +2,10 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * @author Andy Scherzinger
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,16 +24,21 @@
 
 package com.nextcloud.talk.adapters.messages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
-import android.text.Spannable
-import android.text.SpannableString
 import android.text.TextUtils
+import android.util.Log
 import android.util.TypedValue
+import android.view.MotionEvent
 import android.view.View
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import android.widget.Toast
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
@@ -39,21 +46,25 @@ import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
+import com.nextcloud.talk.databinding.ItemCustomIncomingLocationMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import java.net.URLEncoder
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
+class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
+.IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
+    private val binding: ItemCustomIncomingLocationMessageBinding =
+        ItemCustomIncomingLocationMessageBinding.bind(itemView)
 
-    private val binding: ItemCustomIncomingTextMessageBinding = ItemCustomIncomingTextMessageBinding.bind(itemView)
+    var locationLon: String? = ""
+    var locationLat: String? = ""
+    var locationName: String? = ""
+    var locationGeoLink: String? = ""
 
     @JvmField
     @Inject
@@ -63,9 +74,31 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
+    @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
+
+        setAvatarAndAuthorOnMessageItem(message)
+
+        colorizeMessageBubble(message)
+
+        itemView.isSelected = false
+        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+
+        val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        binding.messageText.text = message.text
+        binding.messageText.isEnabled = false
+
+        // parent message handling
+        setParentMessageDataOnMessageItem(message)
+
+        // geo-location
+        setLocationDataOnMessageItem(message)
+    }
+
+    private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
         val author: String = message.actorDisplayName
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
@@ -79,8 +112,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
                 val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context?.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context?.getDrawable(R.drawable.ic_launcher_foreground)
+                layers[0] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_background)
+                layers[1] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_foreground)
                 val layerDrawable = LayerDrawable(layers)
                 binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else if (message.actorType == "bots") {
@@ -103,14 +136,10 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
             }
             binding.messageAuthor.visibility = View.GONE
         }
+    }
 
+    private fun colorizeMessageBubble(message: ChatMessage) {
         val resources = itemView.resources
-
-        val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
-        } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
-        }
 
         var bubbleResource = R.drawable.shape_incoming_message
 
@@ -118,70 +147,20 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
             bubbleResource = R.drawable.shape_grouped_incoming_message
         }
 
+        val bgBubbleColor = if (message.isDeleted) {
+            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+        } else {
+            resources.getColor(R.color.bg_message_list_incoming_bubble)
+        }
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
             resources.getColor(R.color.transparent),
             bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
+    }
 
-        val messageParameters = message.messageParameters
-
-        itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
-
-        var messageString: Spannable = SpannableString(message.text)
-
-        var textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
-
-        if (messageParameters != null && messageParameters.size > 0) {
-            for (key in messageParameters.keys) {
-                val individualHashMap = message.messageParameters[key]
-                if (individualHashMap != null) {
-                    if (
-                        individualHashMap["type"] == "user" ||
-                        individualHashMap["type"] == "guest" ||
-                        individualHashMap["type"] == "call"
-                    ) {
-                        if (individualHashMap["id"] == message.activeUser!!.userId) {
-                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                binding.messageText.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser!!,
-                                R.xml.chip_you
-                            )
-                        } else {
-                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                binding.messageText.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser!!,
-                                R.xml.chip_others
-                            )
-                        }
-                    } else if (individualHashMap["type"] == "file") {
-                        itemView.setOnClickListener { v ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context!!.startActivity(browserIntent)
-                        }
-                    }
-                }
-            }
-        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-            textSize = (textSize * 2.5).toFloat()
-            itemView.isSelected = true
-            binding.messageAuthor.visibility = View.GONE
-        }
-
-        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageText.text = messageString
-
-        // parent message handling
+    private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
@@ -213,7 +192,78 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
         } else {
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
+    }
 
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+    @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
+    private fun setLocationDataOnMessageItem(message: ChatMessage) {
+        if (message.messageParameters != null && message.messageParameters.size > 0) {
+            for (key in message.messageParameters.keys) {
+                val individualHashMap: Map<String, String> = message.messageParameters[key]!!
+                if (individualHashMap["type"] == "geo-location") {
+                    locationLon = individualHashMap["longitude"]
+                    locationLat = individualHashMap["latitude"]
+                    locationName = individualHashMap["name"]
+                    locationGeoLink = individualHashMap["id"]
+                }
+            }
+        }
+
+        binding.webview.settings?.javaScriptEnabled = true
+
+        binding.webview.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
+                ) {
+                    view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+
+        val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
+        urlStringBuffer.append(
+            "?mapProviderUrl=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_url))
+        )
+        urlStringBuffer.append(
+            "&mapProviderAttribution=" + URLEncoder.encode(context!!.getString(R.string.osm_tile_server_attributation))
+        )
+        urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
+        urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
+        urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
+        urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
+
+        binding.webview.loadUrl(urlStringBuffer.toString())
+
+        binding.webview.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                when (event?.action) {
+                    MotionEvent.ACTION_UP -> openGeoLink()
+                }
+
+                return v?.onTouchEvent(event) ?: true
+            }
+        })
+    }
+
+    private fun openGeoLink() {
+        if (!locationGeoLink.isNullOrEmpty()) {
+            val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context!!.startActivity(browserIntent)
+        } else {
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+            Log.e(TAG, "locationGeoLink was null or empty")
+        }
+    }
+
+    private fun addMarkerToGeoLink(locationGeoLink: String): String {
+        return locationGeoLink.replace("geo:", "geo:0,0?q=")
+    }
+
+    companion object {
+        private const val TAG = "LocInMessageView"
     }
 }
