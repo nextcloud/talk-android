@@ -276,6 +276,7 @@ class LocationPickerController(args: Bundle) :
         binding.map.addMapListener(
             DelayedMapListener(
                 object : MapListener {
+                    @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
                         try {
                             when {
