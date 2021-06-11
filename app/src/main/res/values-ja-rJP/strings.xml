@@ -6,11 +6,12 @@
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="edit">編集</string>
-    <string name="encrypted">暗号済</string>
-    <string name="failed_to_save">%1$sを保存できませんでした</string>
+    <string name="encrypted">暗号化済み</string>
+    <string name="failed_to_save">%1$sの保存に失敗しました</string>
     <string name="file_list_folder">フォルダー</string>
     <string name="file_list_loading">読み込み中…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="lock_symbol">鍵の記号</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_about">バージョン情報</string>
@@ -26,6 +27,7 @@
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
     <string name="nc_allow_guests">ゲストを許可する</string>
+    <string name="nc_attendee_pin">ピン: %1$s</string>
     <string name="nc_bad_response_error">不正なレスポンス</string>
     <string name="nc_biometric_unlock">%1$sを解除</string>
     <string name="nc_call_incoming">呼び出し中</string>
@@ -35,6 +37,7 @@
     <string name="nc_call_ringing">呼び出し中</string>
     <string name="nc_call_state_in_call">%1$s着信</string>
     <string name="nc_call_state_in_call_with_audio">%1$sから音声付きで着信</string>
+    <string name="nc_call_state_with_phone">%1$sと電話</string>
     <string name="nc_call_state_with_video">%1$sと映像で</string>
     <string name="nc_call_timeout">45秒以内に応答がありませんでした。タップして再試行してください</string>
     <string name="nc_call_unknown">%s通話</string>
@@ -184,8 +187,7 @@
     <string name="nc_reply_privately">個人的に返信する</string>
     <string name="nc_screen_lock_timeout_30">30 秒</string>
     <string name="nc_screen_lock_timeout_300">5分</string>
-    <string name="nc_screen_lock_timeout_60">1 分間
-</string>
+    <string name="nc_screen_lock_timeout_60">1 分</string>
     <string name="nc_screen_lock_timeout_600">10分</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
@@ -226,6 +228,7 @@
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_settings_add_account">新規アカウント追加</string>
+    <string name="nc_settings_advanced_title">高度な</string>
     <string name="nc_settings_appearance">表示</string>
     <string name="nc_settings_call_ringtone">呼び出し</string>
     <string name="nc_settings_incognito_keyboard_desc">カスタマイズされた入力が認識されないようにする（保証なし）</string>
@@ -244,11 +247,14 @@
     <string name="nc_settings_phone_book_integration_title">電話番号を統合</string>
     <string name="nc_settings_privacy">プライバシー</string>
     <string name="nc_settings_proxy_host_title">プロキシホスト</string>
+    <string name="nc_settings_proxy_password_title">プロキシのパスワード</string>
     <string name="nc_settings_proxy_port_title">プロキシポート</string>
     <string name="nc_settings_proxy_title">プロキシ</string>
     <string name="nc_settings_proxy_type_title">プロキシタイプ</string>
+    <string name="nc_settings_proxy_username_title">プロキシのユーザー名</string>
     <string name="nc_settings_read_privacy_desc">自分の読み取りステータスを共有し、他の人の読み取り状態を表示します</string>
     <string name="nc_settings_read_privacy_title">読み取りステータス</string>
+    <string name="nc_settings_reauthorize">アカウントの再認証</string>
     <string name="nc_settings_remove">削除</string>
     <string name="nc_settings_remove_account">アカウントを削除</string>
     <string name="nc_settings_remove_confirmation">現在のアカウントを削除する目的を確認してください。</string>
@@ -260,12 +266,14 @@
     <string name="nc_settings_server_almost_eol">サーバーバージョンが古すぎるため、次のリリースのバージョンではサポートされません。</string>
     <string name="nc_settings_server_eol">サーバーのバージョンが古く、このAndroidバージョンで対応していません。</string>
     <string name="nc_settings_server_eol_title">サポートされてないサーバーです</string>
+    <string name="nc_settings_switch_account">アカウントを切り替える</string>
     <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_dark">ダーク</string>
     <string name="nc_settings_theme_follow_system">デフォルトの設定を使用する</string>
     <string name="nc_settings_theme_key">テーマ</string>
     <string name="nc_settings_theme_light">ライト</string>
     <string name="nc_settings_theme_title">テーマ</string>
+    <string name="nc_settings_use_credentials_title">プロキシは資格情報を必要とします</string>
     <string name="nc_settings_vibrate">バイブレーション通知</string>
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
     <string name="nc_settings_warning">警告</string>
@@ -273,7 +281,7 @@
     <string name="nc_share_link">リンクの共有</string>
     <string name="nc_share_link_via">経由でリンクを共有</string>
     <string name="nc_share_subject">%1$s を招待</string>
-    <string name="nc_share_text">%1$s/index.php/%2$s の会話に参加する</string>
+    <string name="nc_share_text">%1$s/index.php/call/%2$s での会話に参加する</string>
     <string name="nc_share_text_pass">\nパスワード：%1$s</string>
     <string name="nc_start_conversation">会話を開始する</string>
     <string name="nc_start_time">開始時刻</string>
@@ -295,6 +303,7 @@
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="open_in_files_app">アプリでファイルを開く</string>
     <string name="password_protected">パスワード保護</string>
+    <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
     <string name="scope_federated_title">連携</string>
@@ -306,7 +315,9 @@
     <string name="scope_published_title">公開されました</string>
     <string name="scope_toggle">公開範囲を切替</string>
     <string name="scope_toggle_description">プライバシーレベルを%1$sに変更</string>
+    <string name="selected_list_item">選択済み</string>
     <string name="send_to">送信</string>
+    <string name="send_to_three_dots">送信...</string>
     <string name="share">共有</string>
     <string name="starred">お気に入り</string>
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
