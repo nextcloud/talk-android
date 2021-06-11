@@ -1889,6 +1889,8 @@ class ChatController(args: Bundle) :
 
         if (message.hasFileAttachment()) return false
 
+        if (OBJECT_MESSAGE.equals(message.message)) return false
+
         val isOlderThanSixHours = message
             .createdAt
             ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
@@ -2022,5 +2024,6 @@ class ChatController(args: Bundle) :
         private const val MESSAGE_MAX_LENGTH: Int = 1000
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
+        private const val OBJECT_MESSAGE: String = "{object}"
     }
 }
