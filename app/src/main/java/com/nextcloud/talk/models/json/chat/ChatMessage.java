@@ -50,8 +50,6 @@ import kotlin.text.Charsets;
 @Parcel
 @JsonObject
 public class ChatMessage implements ExtendedIMessage, MessageContentType, MessageContentType.Image {
-    private final String TAG = "ChatMessage";
-
     @JsonIgnore
     public boolean isGrouped;
     @JsonIgnore

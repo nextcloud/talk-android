@@ -48,7 +48,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
-import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
