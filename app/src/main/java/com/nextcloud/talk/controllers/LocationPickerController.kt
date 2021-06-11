@@ -24,6 +24,7 @@ import android.Manifest
 import android.app.SearchManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -151,6 +152,7 @@ class LocationPickerController(args: Bundle) :
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
+        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
         actionBar?.title = context!!.getString(R.string.nc_share_location)
     }
 
