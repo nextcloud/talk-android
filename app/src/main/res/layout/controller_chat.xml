@@ -76,10 +76,10 @@
         android:layout_alignParentBottom="true"
         android:inputType="textLongMessage|textAutoComplete"
         android:maxLength="1000"
-        app:attachmentButtonDefaultBgColor="@color/colorPrimary"
-        app:attachmentButtonDefaultIconColor="@color/white"
-        app:attachmentButtonHeight="36dp"
-        app:attachmentButtonWidth="36dp"
+        app:showAttachmentButton="true"
+        app:attachmentButtonIcon="@drawable/ic_baseline_attach_file_24"
+        app:attachmentButtonHeight="44dp"
+        app:attachmentButtonWidth="44dp"
         app:inputButtonDefaultBgColor="@color/colorPrimary"
         app:inputButtonHeight="36dp"
         app:inputButtonMargin="8dp"
@@ -87,7 +87,7 @@
         app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/nc_incoming_text_default"
         app:inputTextSize="16sp"
-        app:showAttachmentButton="true" />
+        app:delayTypingStatus="200"/>
 
     <com.stfalcon.chatkit.messages.MessagesList
         android:id="@+id/messagesListView"

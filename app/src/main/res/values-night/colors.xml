@@ -39,6 +39,7 @@
     <color name="low_emphasis_text">#61ffffff</color>
 
     <color name="bg_default">#121212</color>
+    <color name="bg_default_semitransparent">#99121212</color>
     <color name="bg_inverse">@color/grey950</color>
 
     <color name="fg_default">#FFFFFF</color>

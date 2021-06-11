@@ -389,4 +389,8 @@ public class ApiUtils {
     public static String getUrlForUserFields(String baseUrl) {
         return baseUrl + ocsApiVersion + "/cloud/user/fields";
     }
+
+    public static String getUrlToSendLocation(String baseUrl, String roomToken) {
+        return baseUrl + ocsApiVersion + "/apps/spreed/api/v1/chat/" + roomToken + "/share";
+    }
 }

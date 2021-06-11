@@ -46,16 +46,17 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.widget.AbsListView
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
-import android.widget.Space
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.widget.doAfterTextChanged
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -78,11 +79,14 @@ import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicIncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicOutcomingTextMessageViewHolder
-import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicSystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -133,6 +137,7 @@ import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.ImageLoader
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.stfalcon.chatkit.messages.MessageHolders
+import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import com.vanniktech.emoji.EmojiPopup
@@ -141,6 +146,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.view_message_input.view.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -163,7 +169,7 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
-    MessageHolders.ContentChecker<IMessage> {
+    ContentChecker<ChatMessage> {
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
     @Inject
@@ -397,17 +403,20 @@ class ChatController(args: Bundle) :
             )
 
             messageHolders.setIncomingImageConfig(
-                MagicPreviewMessageViewHolder::class.java,
+                IncomingPreviewMessageViewHolder::class.java,
                 R.layout.item_custom_incoming_preview_message
             )
+
             messageHolders.setOutcomingImageConfig(
-                MagicPreviewMessageViewHolder::class.java,
+                OutcomingPreviewMessageViewHolder::class.java,
                 R.layout.item_custom_outcoming_preview_message
             )
 
             messageHolders.registerContentType(
-                CONTENT_TYPE_SYSTEM_MESSAGE, MagicSystemMessageViewHolder::class.java,
-                R.layout.item_system_message, MagicSystemMessageViewHolder::class.java,
+                CONTENT_TYPE_SYSTEM_MESSAGE,
+                MagicSystemMessageViewHolder::class.java,
+                R.layout.item_system_message,
+                MagicSystemMessageViewHolder::class.java,
                 R.layout.item_system_message,
                 this
             )
@@ -418,6 +427,15 @@ class ChatController(args: Bundle) :
                 R.layout.item_date_header,
                 MagicUnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header, this
+            )
+
+            messageHolders.registerContentType(
+                CONTENT_TYPE_LOCATION,
+                IncomingLocationMessageViewHolder::class.java,
+                R.layout.item_custom_incoming_location_message,
+                OutcomingLocationMessageViewHolder::class.java,
+                R.layout.item_custom_outcoming_location_message,
+                this
             )
 
             var senderId = ""
@@ -559,6 +577,108 @@ class ChatController(args: Bundle) :
             override fun afterTextChanged(s: Editable) {
             }
         })
+
+        binding.messageInputView.messageSendButton.visibility = View.GONE
+        binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+
+        binding.messageInputView.messageInput.doAfterTextChanged {
+            if(binding.messageInputView.messageInput.text.isEmpty()){
+                binding.messageInputView.messageSendButton.visibility = View.GONE
+                binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+            } else {
+                binding.messageInputView.messageSendButton.visibility = View.VISIBLE
+                binding.messageInputView.recordAudioButton.visibility = View.GONE
+            }
+        }
+
+
+        var sliderInitX = 0F
+        var downX = 0f
+        var deltaX = 0f
+
+        binding.messageInputView.recordAudioButton.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+
+                when (event?.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        Log.d(TAG, "ACTION_DOWN.")
+
+                        downX = event.x
+                        Log.d(TAG, "downX " + downX)
+
+                        Log.d(TAG, "----------")
+
+                        binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
+                        binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
+                        binding.messageInputView.slideToCancelDescription.visibility = View.VISIBLE
+                        binding.messageInputView.attachmentButton.visibility = View.GONE
+                        binding.messageInputView.smileyButton.visibility = View.GONE
+                        binding.messageInputView.messageInput.visibility = View.GONE
+                    }
+                    MotionEvent.ACTION_CANCEL -> Log.d(TAG, "ACTION_CANCEL. same as for UP")
+                    MotionEvent.ACTION_UP -> {
+                        Log.d(TAG, "ACTION_UP. stop recording??")
+                        binding.messageInputView.microphoneEnabledInfo.visibility = View.GONE
+                        binding.messageInputView.audioRecordDuration.visibility = View.GONE
+                        binding.messageInputView.slideToCancelDescription.visibility = View.GONE
+                        binding.messageInputView.attachmentButton.visibility = View.VISIBLE
+                        binding.messageInputView.smileyButton.visibility = View.VISIBLE
+                        binding.messageInputView.messageInput.visibility = View.VISIBLE
+
+                        binding.messageInputView.slideToCancelDescription.x = sliderInitX
+
+                        Log.d(TAG, "----------")
+
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        Log.d(TAG, "ACTION_MOVE.")
+                        binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
+                        binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
+                        binding.messageInputView.slideToCancelDescription.visibility = View.VISIBLE
+                        binding.messageInputView.attachmentButton.visibility = View.GONE
+                        binding.messageInputView.smileyButton.visibility = View.GONE
+                        binding.messageInputView.messageInput.visibility = View.GONE
+
+                        if (sliderInitX == 0.0F){
+                            sliderInitX = binding.messageInputView.slideToCancelDescription.x
+                            Log.d(TAG, "sliderInitX " + sliderInitX)
+                        }
+
+                        var movedX : Float = event.x
+                        deltaX = movedX - downX
+
+                        // only allow slide to left
+                        if (binding.messageInputView.slideToCancelDescription.x > sliderInitX) {
+                            binding.messageInputView.slideToCancelDescription.x = sliderInitX
+                        }
+
+                        if (binding.messageInputView.slideToCancelDescription.x < -50){
+                            Log.d(TAG, "cancel")
+                        } else {
+                            Log.d(TAG, "downX " + downX)
+                            Log.d(TAG, "movedX " + movedX)
+                            Log.d(TAG, "deltaX " + deltaX)
+
+                            Log.d(TAG, "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x)
+
+                            binding.messageInputView.slideToCancelDescription.x = binding.messageInputView
+                                .slideToCancelDescription.x + deltaX
+
+                            Log.d(TAG, "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x)
+
+                            Log.d(TAG, "----------")
+
+                            downX = movedX
+                        }
+                    }
+                }
+
+                return v?.onTouchEvent(event) ?: true
+            }
+        })
+
+        binding.messageInputView.attachmentButtonSpace.visibility = View.GONE
+        binding.messageInputView.sendButtonSpace.visibility = View.GONE
 
         binding.messageInputView.inputEditText?.setText(sharedText)
         binding.messageInputView.setAttachmentsListener {
@@ -793,6 +913,18 @@ class ChatController(args: Bundle) :
         )
     }
 
+    fun showShareLocationScreen() {
+        Log.d(TAG, "showShareLocationScreen")
+
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        router.pushController(
+            RouterTransaction.with(LocationPickerController(bundle))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
+    }
+
     private fun showConversationInfoScreen() {
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
@@ -896,7 +1028,6 @@ class ChatController(args: Bundle) :
     private fun cancelReply() {
         binding.messageInputView.findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.visibility = View.GONE
         binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
-        binding.messageInputView.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility = View.VISIBLE
     }
 
     private fun cancelNotificationsForCurrentConversation() {
@@ -1188,6 +1319,9 @@ class ChatController(args: Bundle) :
                     }
                 })
         }
+
+        binding.messageInputView.messageSendButton.visibility = View.GONE
+        binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
     }
 
     private fun setupWebsocket() {
@@ -1789,8 +1923,6 @@ class ChatController(args: Bundle) :
         chatMessage?.let {
             binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
                 View.GONE
-            binding.messageInputView.findViewById<Space>(R.id.attachmentButtonSpace)?.visibility =
-                View.GONE
             binding.messageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
                 View.VISIBLE
 
@@ -1861,6 +1993,8 @@ class ChatController(args: Bundle) :
 
         if (message.hasFileAttachment()) return false
 
+        if (OBJECT_MESSAGE.equals(message.message)) return false
+
         val isOlderThanSixHours = message
             .createdAt
             ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
@@ -1878,8 +2012,9 @@ class ChatController(args: Bundle) :
         return true
     }
 
-    override fun hasContentFor(message: IMessage, type: Byte): Boolean {
+    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         return when (type) {
+            CONTENT_TYPE_LOCATION -> return message.isLocationMessage()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             else -> false
@@ -1985,6 +2120,7 @@ class ChatController(args: Bundle) :
         private const val TAG = "ChatController"
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
         private const val CONTENT_TYPE_UNREAD_NOTICE_MESSAGE: Byte = 2
+        private const val CONTENT_TYPE_LOCATION: Byte = 3
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val POP_CURRENT_CONTROLLER_DELAY: Long = 100
         private const val LOBBY_TIMER_DELAY: Long = 5000
@@ -1992,5 +2128,6 @@ class ChatController(args: Bundle) :
         private const val MESSAGE_MAX_LENGTH: Int = 1000
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
+        private const val OBJECT_MESSAGE: String = "{object}"
     }
 }

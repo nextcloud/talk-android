@@ -20,32 +20,24 @@
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout android:layout_height="wrap_content" android:layout_width="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <include layout="@layout/item_message_quote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:visibility="gone"/>
 
-        <androidx.emoji.widget.EmojiEditText
-            android:id="@id/messageInput"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/quotedChatMessageView"
-            android:layout_centerHorizontal="true"
-            android:layout_toStartOf="@id/sendButtonSpace"
-            android:layout_toEndOf="@id/attachmentButtonSpace"
-            android:imeOptions="actionDone"
-            android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
-            android:lineSpacingMultiplier="1.2" />
-
         <ImageButton
             android:id="@id/attachmentButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_below="@id/quotedChatMessageView"
             android:scaleType="centerInside"
             android:contentDescription="@string/nc_add_attachment" />
@@ -55,22 +47,87 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_below="@id/quotedChatMessageView"
-            android:layout_toStartOf="@id/messageSendButton"
+            android:layout_toEndOf="@id/attachmentButton"
             android:background="@color/transparent"
             android:src="@drawable/ic_insert_emoticon_black_24dp"
             app:tint="@color/emoji_icons"
             android:contentDescription="@string/nc_add_emojis" />
 
+        <androidx.emoji.widget.EmojiEditText
+            android:id="@id/messageInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/quotedChatMessageView"
+            android:layout_centerHorizontal="true"
+            android:layout_toEndOf="@id/smileyButton"
+            android:layout_toStartOf="@id/messageSendButton"
+            android:imeOptions="actionDone"
+            android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
+            android:lineSpacingMultiplier="1.2" />
+
+        <TextView
+            android:id="@+id/slideToCancelDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_toStartOf="@id/recordAudioButton"
+            android:layout_toEndOf="@id/audioRecordDuration"
+            android:layout_centerInParent="true"
+            android:textAlignment="center"
+            android:textSize="16sp"
+            android:text="&lt;&lt; Slide to cancel"
+            android:visibility="gone"
+            tools:visibility="visible">
+        </TextView>
+
+        <ImageView
+            android:id="@+id/microphoneEnabledInfo"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:scaleType="centerInside"
+            android:layout_alignParentStart="true"
+            android:background="@color/bg_default"
+            android:src="@drawable/ic_baseline_mic_24"
+            android:contentDescription="@string/nc_description_record_voice"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/audioRecordDuration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_toEndOf="@id/microphoneEnabledInfo"
+            android:layout_centerVertical="true"
+            android:textSize="16sp"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:background="@color/bg_default"
+            android:text="10:22"
+            android:visibility="gone"
+            tools:visibility="visible">
+        </TextView>
+
         <ImageButton
             android:id="@id/messageSendButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
             android:layout_below="@id/quotedChatMessageView"
+            android:layout_alignParentEnd="true"
             android:adjustViewBounds="true"
-            android:padding="4dp"
             android:scaleType="centerInside"
             android:contentDescription="@string/nc_description_send_message_button" />
+
+        <ImageButton
+            android:id="@+id/recordAudioButton"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_alignParentEnd="true"
+            android:background="@color/transparent"
+            android:src="@drawable/ic_baseline_mic_24"
+            android:contentDescription="@string/nc_description_record_voice" />
 
         <Space
             android:id="@id/attachmentButtonSpace"

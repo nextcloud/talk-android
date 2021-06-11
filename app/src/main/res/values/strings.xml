@@ -275,12 +275,14 @@
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
+    <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
     <string name="nc_sent_a_link_you">You sent a link.</string>
     <string name="nc_sent_a_gif_you">You sent a GIF.</string>
     <string name="nc_sent_an_attachment_you">You sent an attachment.</string>
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_a_video_you">You sent a video.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
+    <string name="nc_sent_location_you">You sent a location.</string>
     <string name="nc_formatted_message" translatable="false">%1$s: %2$s</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <!-- When translating to German, please use non-formal variant -->
@@ -371,6 +373,13 @@
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
     <string name="nc_upload_in_progess">Uploading</string>
 
+    <!-- location sharing -->
+    <string name="nc_share_location">Share location</string>
+    <string name="nc_location_permission_required">location permission is required</string>
+    <string name="nc_share_current_location">Share current location</string>
+    <string name="nc_share_this_location">Share this location</string>
+    <string name="nc_location_current_position_description">Your current location</string>
+
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
@@ -430,4 +439,5 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
+    <string name="nc_description_record_voice">Record voice</string>
 </resources>

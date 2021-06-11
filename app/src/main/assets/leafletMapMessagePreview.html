@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv='content-Type' content='text/html; charset=UTF-8' />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <style>
+            html, body, #map {
+                height: 100%;
+            }
+            body {
+                padding: 0;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="map" ></div>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <script>
+            var queryString = window.location.search;
+
+            const urlParams = new URLSearchParams(queryString);
+            var locationLat = urlParams.get('locationLat')
+            var locationLon = urlParams.get('locationLon')
+            var locationGeoLink = urlParams.get('locationGeoLink')
+            var mapProviderUrl = urlParams.get('mapProviderUrl')
+            var mapProviderAttribution = urlParams.get('mapProviderAttribution')
+
+            var map = L.map('map', {
+                    zoomControl: false,
+                    scrollWheelZoom: false
+                }).setView([locationLat, locationLon], 13);
+            map.dragging.disable();
+
+            L.tileLayer(mapProviderUrl, {
+                attribution: '&copy; ' + mapProviderAttribution
+            }).addTo(map);
+
+            L.marker([locationLat, locationLon]).addTo(map);
+        </script>
+    </body>
+</html>

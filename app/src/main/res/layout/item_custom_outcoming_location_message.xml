@@ -32,8 +32,8 @@
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
         app:alignContent="stretch"
@@ -46,6 +46,11 @@
             layout="@layout/item_message_quote"
             android:visibility="gone" />
 
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="400dp"
+            android:layout_height="200dp" />
+
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
@@ -53,8 +58,8 @@
             android:layout_alignWithParentIfMissing="true"
             android:lineSpacingMultiplier="1.2"
             android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="false"
-            tools:text="Talk to you later!" />
+            android:textIsSelectable="true"
+            tools:text="Talk to ayou later!" />
 
         <TextView
             android:id="@id/messageTime"
@@ -62,7 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
-            android:textIsSelectable="false"
             app:layout_alignSelf="center"
             tools:text="10:35" />
 
@@ -72,8 +76,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
-            android:contentDescription="@null"
-            app:layout_alignSelf="center" />
+            app:layout_alignSelf="center"
+            android:contentDescription="@null" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
