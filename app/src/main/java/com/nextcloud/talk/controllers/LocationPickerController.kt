@@ -212,8 +212,8 @@ class LocationPickerController(args: Bundle) :
     }
 
     private fun initMap() {
-        if (!isFineLocationPermissionGranted()) {
-            requestFineLocationPermission()
+        if (!isLocationPermissionsGranted()) {
+            requestLocationPermissions()
         }
 
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
@@ -370,29 +370,31 @@ class LocationPickerController(args: Bundle) :
             })
     }
 
-    private fun isFineLocationPermissionGranted(): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return if (PermissionChecker.checkSelfPermission(
-                    context!!,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PermissionChecker.PERMISSION_GRANTED
-            ) {
-                Log.d(TAG, "Permission is granted")
-                true
-            } else {
-                Log.d(TAG, "Permission is revoked")
-                false
-            }
+    private fun isLocationPermissionsGranted(): Boolean {
+        fun isCoarseLocationGranted(): Boolean {
+            return PermissionChecker.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PermissionChecker.PERMISSION_GRANTED
+        }
+
+        fun isFineLocationGranted() : Boolean {
+            return PermissionChecker.checkSelfPermission(
+                context!!,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PermissionChecker.PERMISSION_GRANTED
+        }
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+             isCoarseLocationGranted() && isFineLocationGranted()
         } else {
-            Log.d(TAG, "Permission is granted")
-            return true
+            true
         }
     }
 
-    private fun requestFineLocationPermission() {
+    private fun requestLocationPermissions() {
         requestPermissions(
             arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION
             ),
             REQUEST_PERMISSIONS_REQUEST_CODE
         )
