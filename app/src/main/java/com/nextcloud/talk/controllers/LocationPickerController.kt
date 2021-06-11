@@ -277,21 +277,26 @@ class LocationPickerController(args: Bundle) :
             DelayedMapListener(
                 object : MapListener {
                     override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
-                        when {
-                            moveToCurrentLocationWasClicked -> {
-                                setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
-                                moveToCurrentLocationWasClicked = false
+                        try {
+                            when {
+                                moveToCurrentLocationWasClicked -> {
+                                    setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
+                                    moveToCurrentLocationWasClicked = false
+                                }
+                                receivedChosenGeocodingResult -> {
+                                    binding.shareLocation.isClickable = true
+                                    setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
+                                    receivedChosenGeocodingResult = false
+                                }
+                                else -> {
+                                    binding.shareLocation.isClickable = true
+                                    setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+                                }
                             }
-                            receivedChosenGeocodingResult -> {
-                                binding.shareLocation.isClickable = true
-                                setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
-                                receivedChosenGeocodingResult = false
-                            }
-                            else -> {
-                                binding.shareLocation.isClickable = true
-                                setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
-                            }
+                        } catch (e: NullPointerException) {
+                            Log.d(TAG, "UI already closed")
                         }
+
                         readyToShareLocation = true
                         return true
                     }
