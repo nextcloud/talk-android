@@ -317,7 +317,7 @@
     <string name="scope_toggle_description">プライバシーレベルを%1$sに変更</string>
     <string name="selected_list_item">選択済み</string>
     <string name="send_to">送信</string>
-    <string name="send_to_three_dots">送信...</string>
+    <string name="send_to_three_dots">送信…</string>
     <string name="share">共有</string>
     <string name="starred">お気に入り</string>
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
