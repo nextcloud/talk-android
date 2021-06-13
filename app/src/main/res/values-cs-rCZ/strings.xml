@@ -126,6 +126,8 @@
     <string name="nc_lobby">Čekárna</string>
     <string name="nc_lobby_waiting">V tuto chvíli se nacházíte v čekárně.</string>
     <string name="nc_lobby_waiting_with_date">V tuto chvíli se nacházíte v čekárně.\n Toto setkání je naplánováno na %1$s.</string>
+    <string name="nc_location_current_position_description">Vaše stávající umístění</string>
+    <string name="nc_location_permission_required">vyžadováno oprávnění pro přístup k údaji o poloze</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázek. </string>
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
+    <string name="nc_sent_location" formatted="true">%1$s poslal(a) umístění</string>
+    <string name="nc_sent_location_you">Odeslali jste umístění.</string>
     <string name="nc_server_connect">Vyzkoušet připojení k serveru</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
     <string name="nc_server_failed_to_import_account">Zvolený účet se nepodařilo naimportovat</string>
@@ -278,11 +282,14 @@
     <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_warning">Varování</string>
     <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
+    <string name="nc_share_current_location">Sdílet stávající umístění</string>
     <string name="nc_share_link">Sdílet odkaz</string>
     <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>
+    <string name="nc_share_location">Sdílet umístění</string>
     <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
+    <string name="nc_share_this_location">Sdílet toto umístění</string>
     <string name="nc_start_conversation">Začněte konverzaci</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_timeout_error">Časový limit</string>

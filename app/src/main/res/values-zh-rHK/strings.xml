@@ -126,6 +126,8 @@
     <string name="nc_lobby">等候室</string>
     <string name="nc_lobby_waiting">您目前正在等候室等候。</string>
     <string name="nc_lobby_waiting_with_date">您目前正在等候室等候。\n此會議定於%1$s開始。</string>
+    <string name="nc_location_current_position_description">您目前的位置</string>
+    <string name="nc_location_permission_required">需要位置權限</string>
     <string name="nc_locked">上鎖</string>
     <string name="nc_locked_tap_to_unlock">點擊可解除鎖定</string>
     <string name="nc_make_call_private">設成私密對話</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">您傳送了一個聲音檔</string>
     <string name="nc_sent_an_image" formatted="true">%1$s 傳送一個圖片</string>
     <string name="nc_sent_an_image_you">你傳送了一張圖片</string>
+    <string name="nc_sent_location" formatted="true">%1$s 傳送一個位置。</string>
+    <string name="nc_sent_location_you">您傳送了一個位置。</string>
     <string name="nc_server_connect">測試伺服器連線</string>
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s數據庫</string>
     <string name="nc_server_failed_to_import_account">無法匯入所選的賬戶</string>
@@ -278,11 +282,14 @@
     <string name="nc_settings_vibrate_desc">除非靜音，否則手機會震動</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">只有特定賬號可以被重新授權</string>
+    <string name="nc_share_current_location">分享目前位置</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_share_link_via">透過以下方式分享連結</string>
+    <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s 邀請</string>
     <string name="nc_share_text">加入於 %1$s/index。php/call/%2$s 的對話</string>
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
+    <string name="nc_share_this_location">分享此位置</string>
     <string name="nc_start_conversation">新對話</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_timeout_error">逾時</string>

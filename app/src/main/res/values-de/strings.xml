@@ -126,6 +126,8 @@
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
     <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses Meeting ist für %1$s geplant.</string>
+    <string name="nc_location_current_position_description">Ihre aktuelle Position</string>
+    <string name="nc_location_permission_required">Standort-Berechtigungen wird benötigt</string>
     <string name="nc_locked">Gesperrt</string>
     <string name="nc_locked_tap_to_unlock">Zum Entsperren antippen</string>
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">Sie haben eine Audio-Datei gesendet.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s hat ein Bild gesendet.</string>
     <string name="nc_sent_an_image_you">Sie haben ein Bild gesendet.</string>
+    <string name="nc_sent_location" formatted="true">%1$s hat einen Ort gesendet.</string>
+    <string name="nc_sent_location_you">Sie haben einen Ort gesendet.</string>
     <string name="nc_server_connect">Prüfe Verbindung zum Server</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
     <string name="nc_server_failed_to_import_account">Das Importieren des ausgewählten Kontos ist fehlgeschlagen</string>
@@ -278,11 +282,14 @@
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_warning">Warnung</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
+    <string name="nc_share_current_location">Aktuelle Position teilen</string>
     <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_link_via">Link teilen über</string>
+    <string name="nc_share_location">Ort teilen</string>
     <string name="nc_share_subject">%1$s Einladung </string>
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
+    <string name="nc_share_this_location">Diesen Ort teilen</string>
     <string name="nc_start_conversation">Starte eine Unterhaltung</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_timeout_error">Zeitüberschreitung</string>

@@ -126,6 +126,8 @@
     <string name="nc_lobby">休息室</string>
     <string name="nc_lobby_waiting">您当前正在休息室等待。</string>
     <string name="nc_lobby_waiting_with_date">您当前正在休息室等待。\n 此会议定于 %1$s 举行。</string>
+    <string name="nc_location_current_position_description">你当前位置</string>
+    <string name="nc_location_permission_required">需要位置权限</string>
     <string name="nc_locked">已锁定</string>
     <string name="nc_locked_tap_to_unlock">轻按解锁</string>
     <string name="nc_make_call_private">设置会话为私有</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">你已发送一段音频</string>
     <string name="nc_sent_an_image" formatted="true">%1$s发送一张图片</string>
     <string name="nc_sent_an_image_you">你已发送一张图片</string>
+    <string name="nc_sent_location" formatted="true">%1$s发送了一个位置</string>
+    <string name="nc_sent_location_you">你发送了一个位置</string>
     <string name="nc_server_connect">测试服务端连接 </string>
     <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_failed_to_import_account">选择的账号导入失败</string>
@@ -278,11 +282,14 @@
     <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">仅当前账号可以重新授权</string>
+    <string name="nc_share_current_location">分享当前位置</string>
     <string name="nc_share_link">共享链接</string>
     <string name="nc_share_link_via">共享链接通过</string>
+    <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s邀请</string>
     <string name="nc_share_text">加入在 %1$s/index.php/call/%2$s 中的会话</string>
     <string name="nc_share_text_pass">\n密码： %1$s</string>
+    <string name="nc_share_this_location">分享这个位置</string>
     <string name="nc_start_conversation">发起会话</string>
     <string name="nc_start_time">开始时间</string>
     <string name="nc_timeout_error">超时</string>
