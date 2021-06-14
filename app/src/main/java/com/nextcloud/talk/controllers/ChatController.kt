@@ -594,16 +594,13 @@ class ChatController(args: Bundle) :
             }
         })
 
-        binding.messageInputView.messageSendButton.visibility = View.GONE
-        binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+        showMicrophoneButton(true)
 
         binding.messageInputView.messageInput.doAfterTextChanged {
             if (binding.messageInputView.messageInput.text.isEmpty()) {
-                binding.messageInputView.messageSendButton.visibility = View.GONE
-                binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+                showMicrophoneButton(true)
             } else {
-                binding.messageInputView.messageSendButton.visibility = View.VISIBLE
-                binding.messageInputView.recordAudioButton.visibility = View.GONE
+                showMicrophoneButton(false)
             }
         }
 
@@ -816,7 +813,6 @@ class ChatController(args: Bundle) :
 
     private fun stopAndSendAudioRecording() {
         stopAudioRecording()
-        Toast.makeText(context, "save...", Toast.LENGTH_LONG).show()
 
         var uri = Uri.fromFile(File(currentVoiceRecordFile))
 
@@ -1499,9 +1495,7 @@ class ChatController(args: Bundle) :
                     }
                 })
         }
-
-        binding.messageInputView.messageSendButton.visibility = View.GONE
-        binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+        showMicrophoneButton(true)
     }
 
     private fun setupWebsocket() {
@@ -2149,6 +2143,16 @@ class ChatController(args: Bundle) :
                 .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
             quotedChatMessageView?.tag = jsonMessageId
             quotedChatMessageView?.visibility = View.VISIBLE
+        }
+    }
+
+    private fun showMicrophoneButton(show : Boolean) {
+        if (show && CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")){
+            binding.messageInputView.messageSendButton.visibility = View.GONE
+            binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
+        } else {
+            binding.messageInputView.messageSendButton.visibility = View.VISIBLE
+            binding.messageInputView.recordAudioButton.visibility = View.GONE
         }
     }
 
