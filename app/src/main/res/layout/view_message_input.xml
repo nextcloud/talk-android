@@ -81,19 +81,30 @@
         </TextView>
 
         <ImageView
-            android:id="@+id/microphoneEnabledInfo"
+            android:id="@+id/microphoneEnabledInfoBackground"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_below="@id/quotedChatMessageView"
             android:scaleType="centerInside"
             android:layout_alignParentStart="true"
             android:background="@color/bg_default"
-            android:src="@drawable/ic_baseline_mic_24"
             android:contentDescription="@string/nc_description_record_voice"
             android:visibility="gone"
             tools:visibility="visible"/>
 
-        <TextView
+        <ImageView
+            android:id="@+id/microphoneEnabledInfo"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:scaleType="centerInside"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_baseline_mic_red_24"
+            android:contentDescription="@string/nc_description_record_voice"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <Chronometer
             android:id="@+id/audioRecordDuration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,10 +115,8 @@
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:background="@color/bg_default"
-            android:text="10:22"
             android:visibility="gone"
-            tools:visibility="visible">
-        </TextView>
+            tools:visibility="visible" />
 
         <ImageButton
             android:id="@id/messageSendButton"

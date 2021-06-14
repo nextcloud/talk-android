@@ -24,6 +24,7 @@
 
 package com.nextcloud.talk.controllers
 
+import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Context
@@ -33,9 +34,14 @@ import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaRecorder
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.SystemClock
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
@@ -48,6 +54,9 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.view.animation.LinearInterpolator
 import android.widget.AbsListView
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -55,6 +64,7 @@ import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji.text.EmojiCompat
@@ -153,6 +163,8 @@ import org.greenrobot.eventbus.ThreadMode
 import org.parceler.Parcels
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.File
+import java.io.IOException
 import java.net.HttpURLConnection
 import java.util.ArrayList
 import java.util.Date
@@ -225,6 +237,10 @@ class ChatController(args: Bundle) :
 
     val filesToUpload: MutableList<String> = ArrayList()
     var sharedText: String
+    var isVoiceRecordingInProgress: Boolean = false
+    var currentVoiceRecordFile: String = ""
+
+    private var recorder: MediaRecorder? = null
 
     init {
         setHasOptionsMenu(true)
@@ -582,7 +598,7 @@ class ChatController(args: Bundle) :
         binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
 
         binding.messageInputView.messageInput.doAfterTextChanged {
-            if(binding.messageInputView.messageInput.text.isEmpty()){
+            if (binding.messageInputView.messageInput.text.isEmpty()) {
                 binding.messageInputView.messageSendButton.visibility = View.GONE
                 binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
             } else {
@@ -590,7 +606,6 @@ class ChatController(args: Bundle) :
                 binding.messageInputView.recordAudioButton.visibility = View.GONE
             }
         }
-
 
         var sliderInitX = 0F
         var downX = 0f
@@ -601,6 +616,16 @@ class ChatController(args: Bundle) :
 
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
+
+                        if (!isRecordAudioPermissionGranted()) {
+                            requestRecordAudioPermissions()
+                            return true
+                        }
+                        isVoiceRecordingInProgress = true
+
+                        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/talkrecording.wav"
+                        startAudioRecording(currentVoiceRecordFile)
+
                         Log.d(TAG, "ACTION_DOWN.")
 
                         downX = event.x
@@ -608,43 +633,39 @@ class ChatController(args: Bundle) :
 
                         Log.d(TAG, "----------")
 
-                        binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
-                        binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
-                        binding.messageInputView.slideToCancelDescription.visibility = View.VISIBLE
-                        binding.messageInputView.attachmentButton.visibility = View.GONE
-                        binding.messageInputView.smileyButton.visibility = View.GONE
-                        binding.messageInputView.messageInput.visibility = View.GONE
+                        showRecordAudioUi(true)
                     }
                     MotionEvent.ACTION_CANCEL -> Log.d(TAG, "ACTION_CANCEL. same as for UP")
                     MotionEvent.ACTION_UP -> {
                         Log.d(TAG, "ACTION_UP. stop recording??")
-                        binding.messageInputView.microphoneEnabledInfo.visibility = View.GONE
-                        binding.messageInputView.audioRecordDuration.visibility = View.GONE
-                        binding.messageInputView.slideToCancelDescription.visibility = View.GONE
-                        binding.messageInputView.attachmentButton.visibility = View.VISIBLE
-                        binding.messageInputView.smileyButton.visibility = View.VISIBLE
-                        binding.messageInputView.messageInput.visibility = View.VISIBLE
 
+                        if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
+                            return true
+                        }
+                        isVoiceRecordingInProgress = false
+
+                        stopAndSendAudioRecording()
+
+                        showRecordAudioUi(false)
                         binding.messageInputView.slideToCancelDescription.x = sliderInitX
 
                         Log.d(TAG, "----------")
-
                     }
                     MotionEvent.ACTION_MOVE -> {
                         Log.d(TAG, "ACTION_MOVE.")
-                        binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
-                        binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
-                        binding.messageInputView.slideToCancelDescription.visibility = View.VISIBLE
-                        binding.messageInputView.attachmentButton.visibility = View.GONE
-                        binding.messageInputView.smileyButton.visibility = View.GONE
-                        binding.messageInputView.messageInput.visibility = View.GONE
 
-                        if (sliderInitX == 0.0F){
+                        if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
+                            return true
+                        }
+
+                        showRecordAudioUi(true)
+
+                        if (sliderInitX == 0.0F) {
                             sliderInitX = binding.messageInputView.slideToCancelDescription.x
                             Log.d(TAG, "sliderInitX " + sliderInitX)
                         }
 
-                        var movedX : Float = event.x
+                        var movedX: Float = event.x
                         deltaX = movedX - downX
 
                         // only allow slide to left
@@ -652,19 +673,30 @@ class ChatController(args: Bundle) :
                             binding.messageInputView.slideToCancelDescription.x = sliderInitX
                         }
 
-                        if (binding.messageInputView.slideToCancelDescription.x < -50){
+                        if (binding.messageInputView.slideToCancelDescription.x < -50) {
                             Log.d(TAG, "cancel")
+                            isVoiceRecordingInProgress = false
+                            stopAndDiscardAudioRecording()
+                            showRecordAudioUi(false)
+                            binding.messageInputView.slideToCancelDescription.x = sliderInitX
+                            return true
                         } else {
                             Log.d(TAG, "downX " + downX)
                             Log.d(TAG, "movedX " + movedX)
                             Log.d(TAG, "deltaX " + deltaX)
 
-                            Log.d(TAG, "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x)
+                            Log.d(
+                                TAG,
+                                "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x
+                            )
 
                             binding.messageInputView.slideToCancelDescription.x = binding.messageInputView
                                 .slideToCancelDescription.x + deltaX
 
-                            Log.d(TAG, "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x)
+                            Log.d(
+                                TAG,
+                                "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x
+                            )
 
                             Log.d(TAG, "----------")
 
@@ -706,6 +738,147 @@ class ChatController(args: Bundle) :
             }
         }
         super.onViewBound(view)
+    }
+
+    private fun showRecordAudioUi(show: Boolean) {
+        if (show) {
+            binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
+            binding.messageInputView.microphoneEnabledInfoBackground.visibility = View.VISIBLE
+            binding.messageInputView.audioRecordDuration.visibility = View.VISIBLE
+            binding.messageInputView.slideToCancelDescription.visibility = View.VISIBLE
+            binding.messageInputView.attachmentButton.visibility = View.GONE
+            binding.messageInputView.smileyButton.visibility = View.GONE
+            binding.messageInputView.messageInput.visibility = View.GONE
+            binding.messageInputView.messageInput.hint = ""
+        } else {
+            binding.messageInputView.microphoneEnabledInfo.visibility = View.GONE
+            binding.messageInputView.microphoneEnabledInfoBackground.visibility = View.GONE
+            binding.messageInputView.audioRecordDuration.visibility = View.GONE
+            binding.messageInputView.slideToCancelDescription.visibility = View.GONE
+            binding.messageInputView.attachmentButton.visibility = View.VISIBLE
+            binding.messageInputView.smileyButton.visibility = View.VISIBLE
+            binding.messageInputView.messageInput.visibility = View.VISIBLE
+            binding.messageInputView.messageInput.hint =
+                context?.resources?.getString(R.string.nc_hint_enter_a_message)
+        }
+    }
+
+    private fun isRecordAudioPermissionGranted(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PermissionChecker.checkSelfPermission(
+                context!!,
+                Manifest.permission.RECORD_AUDIO
+            ) == PermissionChecker.PERMISSION_GRANTED
+        } else {
+            true
+        }
+    }
+
+    private fun startAudioRecording(file: String) {
+        binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime();
+        binding.messageInputView.audioRecordDuration.start()
+
+        val animation: Animation = AlphaAnimation(1.0f, 0.0f)
+        animation.duration = 750
+        animation.interpolator = LinearInterpolator()
+        animation.repeatCount = Animation.INFINITE
+        animation.repeatMode = Animation.REVERSE
+        binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
+
+        recorder = MediaRecorder().apply {
+            // setAudioSource(MediaRecorder.AudioSource.MIC)
+            // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+            // setAudioSource(MediaRecorder.AudioSource.MIC)
+            // setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            // setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+
+            // WAV
+            setAudioSource(MediaRecorder.AudioSource.MIC)
+            setOutputFile(file)
+            setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+            // setAudioSource(MediaRecorder.AudioSource.MIC)
+            // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+
+            try {
+                prepare()
+            } catch (e: IOException) {
+                Log.e(TAG, "prepare for audio recording failed")
+            }
+            vibrate()
+            start()
+        }
+    }
+
+    private fun stopAndSendAudioRecording() {
+        stopAudioRecording()
+        Toast.makeText(context, "save...", Toast.LENGTH_LONG).show()
+
+        var uri = Uri.fromFile(File(currentVoiceRecordFile))
+
+        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+            uploadFiles(mutableListOf(uri.toString()))
+        } else {
+            UploadAndShareFilesWorker.requestStoragePermission(this)
+        }
+
+        // var player: MediaPlayer? = null
+        // player = MediaPlayer().apply {
+        //     try {
+        //         setDataSource(currentVoiceRecordFile)
+        //         prepare()
+        //         start()
+        //     } catch (e: IOException) {
+        //         Log.e(TAG, "prepare for audio playback failed")
+        //     }
+        // }
+
+    }
+
+    private fun stopAndDiscardAudioRecording() {
+        stopAudioRecording()
+
+        val cachedFile = File(currentVoiceRecordFile)
+        cachedFile.delete()
+    }
+
+    private fun stopAudioRecording() {
+        binding.messageInputView.audioRecordDuration.stop()
+
+        binding.messageInputView.microphoneEnabledInfo.clearAnimation()
+
+        recorder?.apply {
+            try {
+                stop()
+            } catch (e: RuntimeException) {
+                Log.e(TAG, "error while stopping recorder!")
+            }
+            vibrate()
+            release()
+        }
+        recorder = null
+    }
+
+    fun vibrate(){
+        val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        if (Build.VERSION.SDK_INT >= 26) {
+            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            vibrator.vibrate(20)
+        }
+    }
+
+    private fun requestRecordAudioPermissions() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.RECORD_AUDIO
+            ),
+            REQUEST_RECORD_AUDIO_PERMISSION
+        )
     }
 
     private fun checkReadOnlyState() {
@@ -847,14 +1020,21 @@ class ChatController(args: Bundle) :
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION &&
-            grantResults.isNotEmpty() &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
-            Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
-            uploadFiles(filesToUpload)
-        } else {
-            Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show()
+        if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
+                uploadFiles(filesToUpload)
+            } else {
+                Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
+                    .show()
+            }
+        } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Toast.makeText(context, "permission for audio recording granted", Toast.LENGTH_LONG).show()
+            } else {
+                // Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "not permission for audio recording", Toast.LENGTH_LONG).show()
+            }
         }
     }
 
@@ -2128,6 +2308,7 @@ class ChatController(args: Bundle) :
         private const val MESSAGE_MAX_LENGTH: Int = 1000
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
+        private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val OBJECT_MESSAGE: String = "{object}"
     }
 }
