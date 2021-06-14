@@ -85,6 +85,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
 
     lateinit var handler: Handler
 
+    lateinit var test: TestInterface
+
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -121,6 +123,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (mediaPlayer != null && fromUser) {
                     mediaPlayer!!.seekTo(progress * SEEKBAR_BASE)
+                    test.test(progress)
                 }
             }
         })
@@ -392,6 +395,10 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             else -> {
             }
         }
+    }
+
+    fun assignAdapter(test: TestInterface) {
+        this.test = test
     }
 
     companion object {

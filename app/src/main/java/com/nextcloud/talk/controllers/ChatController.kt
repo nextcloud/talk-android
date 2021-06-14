@@ -102,6 +102,7 @@ import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.TestInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
@@ -186,7 +187,7 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
-    ContentChecker<ChatMessage> {
+    ContentChecker<ChatMessage>, TestInterface {
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
     @Inject
@@ -488,8 +489,7 @@ class ChatController(args: Bundle) :
                         .setAutoPlayAnimations(true)
                         .build()
                     imageView.controller = draweeController
-                }
-            )
+                }, this)
         } else {
             binding.messagesListView.visibility = View.VISIBLE
         }
@@ -2321,6 +2321,10 @@ class ChatController(args: Bundle) :
                     }
                 })
         }
+    }
+
+    override fun test(progress: Int) {
+        Log.d("Chat Controller", "TEST interface: $progress")
     }
 
     companion object {
