@@ -126,6 +126,8 @@
     <string name="nc_lobby">Sarrera</string>
     <string name="nc_lobby_waiting">Sarreran itxaroten zabiltza momentu honetan.</string>
     <string name="nc_lobby_waiting_with_date">Sarreran itxatoren ari zara momentu honetan.\n Bilera hau %1$s(r)(e)tan dago antolatuta.</string>
+    <string name="nc_location_current_position_description">Zure uneko kokalekua</string>
+    <string name="nc_location_permission_required">Kokalekua atzitzeko baimena beharrezkoa da</string>
     <string name="nc_locked">Blokeatuta</string>
     <string name="nc_locked_tap_to_unlock">Sakatu desblokeatzeko</string>
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">Audio bat bidali duzu.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s-k irudi bat bidali du.</string>
     <string name="nc_sent_an_image_you">Irudi bat bidali duzu.</string>
+    <string name="nc_sent_location" formatted="true">%1$s-k kokaleku bat bidali du.</string>
+    <string name="nc_sent_location_you">Kokaleku bat bidali duzu.</string>
     <string name="nc_server_connect">Probatu zerbitzariaren konexioa</string>
     <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
     <string name="nc_server_failed_to_import_account">Ezin izan da aukeratutako kontua inportatu</string>
@@ -247,11 +251,14 @@
     <string name="nc_settings_phone_book_integration_title">Telefono zenbaki integrazioa</string>
     <string name="nc_settings_privacy">Pribatutasuna</string>
     <string name="nc_settings_proxy_host_title">Proxy ostalaria</string>
+    <string name="nc_settings_proxy_password_title">Proxy-pasahitza</string>
     <string name="nc_settings_proxy_port_title">Proxy portua</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy mota</string>
+    <string name="nc_settings_proxy_username_title">Proxy erabiltzaile-izena</string>
     <string name="nc_settings_read_privacy_desc">Partekatu nire irakurtze-egoera eta erakutsi besteen irakurtze-egoera</string>
     <string name="nc_settings_read_privacy_title">Irakurtze egoera</string>
+    <string name="nc_settings_reauthorize">Berriro baimendu kontua</string>
     <string name="nc_settings_remove">Ezabatu</string>
     <string name="nc_settings_remove_account">Ezabatu kontua</string>
     <string name="nc_settings_remove_confirmation">Mesedez, berretsi oraingo kontua ezabatzeko asmoa duzula.</string>
@@ -263,21 +270,26 @@
     <string name="nc_settings_server_almost_eol">Zerbitzariaren bertsioa zaharregia da eta ez da hurrengo argitalpenean onartuko!</string>
     <string name="nc_settings_server_eol">Zerbitzariaren bertsioa zaharregia da eta Android aplikazio honek ez du onartzen</string>
     <string name="nc_settings_server_eol_title">Ez da zerbitzaria onartzen</string>
+    <string name="nc_settings_switch_account">Aldatu kontuen artean</string>
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
     <string name="nc_settings_theme_key">Gaia</string>
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_title">Gaia</string>
+    <string name="nc_settings_use_credentials_title">Proxyak egiaztagiriak behar ditu</string>
     <string name="nc_settings_vibrate">Bibratu</string>
     <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_warning">Oharra</string>
     <string name="nc_settings_wrong_account">Oraingo kontua baino ezin da berrbaimendu</string>
+    <string name="nc_share_current_location">Partekatu uneko kokapena</string>
     <string name="nc_share_link">Partekatu esteka</string>
     <string name="nc_share_link_via">Partekatu esteka...</string>
+    <string name="nc_share_location">Partekatu kokapena</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
+    <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_start_conversation">Hasi elkarrizketa bat</string>
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_timeout_error">Denbora-muga</string>
@@ -298,6 +310,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
     <string name="password_protected">Pasahitz bidez babestuta</string>
+    <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
     <string name="scope_federated_title">Federatua</string>
@@ -311,6 +324,7 @@
     <string name="scope_toggle_description">Aldatu %1$s(r)en pribatutasun maila</string>
     <string name="selected_list_item">Hautatua</string>
     <string name="send_to">Bidali honi:</string>
+    <string name="send_to_three_dots">Bidali honi ...</string>
     <string name="share">Partekatu</string>
     <string name="starred">Gogokoa</string>
     <string name="upload_new_avatar_from_device">Kargatu avatar berria gailutik</string>

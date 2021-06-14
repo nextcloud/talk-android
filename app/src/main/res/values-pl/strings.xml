@@ -126,6 +126,8 @@
     <string name="nc_lobby">Poczekalnia</string>
     <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>
     <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie jest zaplanowane na %1$s.</string>
+    <string name="nc_location_current_position_description">Twoja obecna lokalizacja</string>
+    <string name="nc_location_permission_required">uprawnienie do lokalizacji jest wymagane</string>
     <string name="nc_locked">Zablokowany</string>
     <string name="nc_locked_tap_to_unlock">Dotknij, aby odblokować</string>
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">Wysłałeś plik dźwiękowy.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s wysłał plik graficzny.</string>
     <string name="nc_sent_an_image_you">Wysłałeś plik graficzny.</string>
+    <string name="nc_sent_location" formatted="true">%1$s wysłał lokalizację.</string>
+    <string name="nc_sent_location_you">Wysłałeś lokalizację.</string>
     <string name="nc_server_connect">Sprawdź połączenie z serwerem</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>
     <string name="nc_server_failed_to_import_account">Nie udało się zaimportować wybranego konta</string>
@@ -278,11 +282,14 @@
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować pod warunkiem, że nie zostanie wyciszony</string>
     <string name="nc_settings_warning">Ostrzeżenie</string>
     <string name="nc_settings_wrong_account">Tylko bieżące konto można ponownie autoryzować</string>
+    <string name="nc_share_current_location">Udostępnij obecną lokalizację</string>
     <string name="nc_share_link">Udostępnij link</string>
     <string name="nc_share_link_via">Udostępnij link przez</string>
+    <string name="nc_share_location">Udostępnij lokalizację</string>
     <string name="nc_share_subject">zaproszenie %1$s</string>
     <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nHasło: %1$s</string>
+    <string name="nc_share_this_location">Udostępnij tę lokalizację</string>
     <string name="nc_start_conversation">Rozpocznij rozmowę</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_timeout_error">Przekroczono limit czasu</string>
