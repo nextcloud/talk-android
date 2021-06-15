@@ -832,18 +832,6 @@ class ChatController(args: Bundle) :
         } else {
             UploadAndShareFilesWorker.requestStoragePermission(this)
         }
-
-        // var player: MediaPlayer? = null
-        // player = MediaPlayer().apply {
-        //     try {
-        //         setDataSource(currentVoiceRecordFile)
-        //         prepare()
-        //         start()
-        //     } catch (e: IOException) {
-        //         Log.e(TAG, "prepare for audio playback failed")
-        //     }
-        // }
-
     }
 
     private fun stopAndDiscardAudioRecording() {

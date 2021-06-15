@@ -25,14 +25,23 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
+import android.media.MediaPlayer
+import android.os.Handler
 import android.text.TextUtils
-import android.util.TypedValue
+import android.util.Log
 import android.view.View
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -40,16 +49,21 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingVoiceMessageBinding
+import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
+import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import java.io.File
+import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
 .IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
+
     private val binding: ItemCustomIncomingVoiceMessageBinding =
         ItemCustomIncomingVoiceMessageBinding.bind(itemView)
 
@@ -61,10 +75,16 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
+    lateinit var activity: Activity
+
+    var mediaPlayer: MediaPlayer? = null
+
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
+
+        initMediaPlayer(message)
 
         setAvatarAndAuthorOnMessageItem(message)
 
@@ -73,13 +93,43 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         itemView.isSelected = false
         binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
 
-        val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
-        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageText.text = message.text
-        binding.messageText.isEnabled = false
-
         // parent message handling
         setParentMessageDataOnMessageItem(message)
+
+        binding.playBtn.setOnClickListener {
+            openOrDownloadFile(message)
+        }
+
+        binding.pauseBtn.setOnClickListener {
+            pausePlayback()
+        }
+
+        activity = itemView.context as Activity
+
+        binding.seekbar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                if (mediaPlayer != null && fromUser) {
+                    mediaPlayer!!.seekTo(progress * 1000)
+                }
+            }
+        })
+    }
+
+    private fun initMediaPlayer(message: ChatMessage) {
+        val fileName = message.getSelectedIndividualHashMap()["name"]
+        val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
+        mediaPlayer = MediaPlayer()
+        mediaPlayer!!.setDataSource(absolutePath)
+        mediaPlayer!!.prepare()
+        binding.seekbar.max = mediaPlayer!!.duration / 1000
+
+        mediaPlayer!!.setOnCompletionListener {
+            binding.playBtn.visibility = View.VISIBLE
+            binding.pauseBtn.visibility = View.GONE
+            mediaPlayer!!.seekTo(0)
+        }
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
@@ -175,6 +225,137 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+        }
+    }
+
+    private fun openOrDownloadFile(message: ChatMessage) {
+        val filename = message.getSelectedIndividualHashMap()["name"]
+        val file = File(context!!.cacheDir, filename!!)
+        if (file.exists()) {
+            startPlayback()
+        } else {
+            downloadFileToCache(message)
+        }
+    }
+
+    private fun startPlayback() {
+        if (!mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.start();
+        }
+
+        val mHandler = Handler()
+        activity.runOnUiThread(object : Runnable {
+            override fun run() {
+                val currentPosition: Int = mediaPlayer!!.currentPosition / 1000
+                binding.seekbar.progress = currentPosition
+                mHandler.postDelayed(this, 1000)
+            }
+        })
+
+        binding.playBtn.visibility = View.GONE
+        binding.pauseBtn.visibility = View.VISIBLE
+    }
+
+    private fun pausePlayback() {
+        mediaPlayer!!.pause()
+
+        binding.playBtn.visibility = View.VISIBLE
+        binding.pauseBtn.visibility = View.GONE
+    }
+
+    @SuppressLint("LongLogTag")
+    private fun downloadFileToCache(message: ChatMessage) {
+        val baseUrl = message.activeUser.baseUrl
+        val userId = message.activeUser.userId
+        val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(message.activeUser)
+        val fileName = message.getSelectedIndividualHashMap()["name"]
+        var size = message.getSelectedIndividualHashMap()["size"]
+        if (size == null) {
+            size = "-1"
+        }
+        val fileSize = Integer.valueOf(size)
+        val fileId = message.getSelectedIndividualHashMap()["id"]
+        val path = message.getSelectedIndividualHashMap()["path"]
+
+        // check if download worker is already running
+        val workers = WorkManager.getInstance(
+            context!!
+        ).getWorkInfosByTag(fileId!!)
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
+                    Log.d(
+                        TAG, "Download worker for " + fileId + " is already running or " +
+                            "scheduled"
+                    )
+                    return
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(TAG, "Error when checking if worker already exsists", e)
+        } catch (e: InterruptedException) {
+            Log.e(TAG, "Error when checking if worker already exsists", e)
+        }
+        val data: Data
+        val downloadWorker: OneTimeWorkRequest
+        data = Data.Builder()
+            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, baseUrl)
+            .putString(DownloadFileToCacheWorker.KEY_USER_ID, userId)
+            .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
+            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
+            .build()
+        downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
+            .setInputData(data)
+            .addTag(fileId)
+            .build()
+        WorkManager.getInstance().enqueue(downloadWorker)
+
+        // getProgressBar().setVisibility(View.VISIBLE)
+
+        WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
+            .observeForever { workInfo: WorkInfo ->
+                updateViewsByProgress(
+                    fileName,
+                    workInfo
+                )
+            }
+    }
+
+    private fun updateViewsByProgress(fileName: String?, workInfo: WorkInfo) {
+        when (workInfo.state) {
+            WorkInfo.State.RUNNING -> {
+                val progress = workInfo.progress.getInt(DownloadFileToCacheWorker.PROGRESS, -1)
+                if (progress > -1) {
+                    // getMessageText().setText(
+                    //     String.format(
+                    //         context!!.resources.getString(R.string.filename_progress),
+                    //         fileName,
+                    //         progress
+                    //     )
+                    // )
+                }
+            }
+            WorkInfo.State.SUCCEEDED -> {
+                // if (image.isShown()) {
+                //     openFile(fileName, mimetype)
+                // } else {
+                //     Log.d(
+                //         TAG,
+                //         "file " + fileName + " was downloaded but it's not opened because view is not shown on" +
+                //             " screen"
+                //     )
+                // }
+                // getMessageText().setText(fileName)
+                // getProgressBar().setVisibility(View.GONE)
+            }
+            WorkInfo.State.FAILED -> {
+                // getMessageText().setText(fileName)
+                // getProgressBar().setVisibility(View.GONE)
+            }
+            else -> {
+            }
         }
     }
 

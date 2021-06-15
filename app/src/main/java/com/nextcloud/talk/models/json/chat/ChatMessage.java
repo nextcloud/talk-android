@@ -133,9 +133,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     @Nullable
     @Override
     public String getImageUrl() {
-        if(isVoiceMessage()){
-            return null;
-        }
+
 
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
@@ -144,8 +142,10 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
                         Objects.requireNonNull(individualHashMap.get("type")).getBytes(Charsets.UTF_8),
                         ("file").getBytes(Charsets.UTF_8))) {
                     selectedIndividualHashMap = individualHashMap;
-                    return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
-                            individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
+                    if(!isVoiceMessage()){
+                        return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
+                                                                        individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
+                    }
                 }
             }
         }

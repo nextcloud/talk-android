@@ -64,26 +64,35 @@
                     android:textColor="@color/textColorMaxContrast"
                     android:textSize="12sp" />
 
-                <ImageButton
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_baseline_play_arrow_24">
-                </ImageButton>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-                <SeekBar
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                </SeekBar>
+                        <ImageButton
+                            android:id="@+id/playBtn"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/ic_baseline_play_arrow_24"
+                            android:visibility="visible">
+                        </ImageButton>
 
-                <androidx.emoji.widget.EmojiTextView
-                    android:id="@id/messageText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingMultiplier="1.2"
-                    android:textIsSelectable="true"
-                    app:layout_alignSelf="flex_start"
-                    app:layout_flexGrow="1"
-                    app:layout_wrapBefore="true" />
+                        <ImageButton
+                            android:id="@+id/pauseBtn"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/ic_baseline_pause_24"
+                            android:visibility="gone">
+                        </ImageButton>
+
+                        <SeekBar
+                            android:id="@+id/seekbar"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content">
+                        </SeekBar>
+
+                </LinearLayout>
 
                 <TextView
                     android:id="@id/messageTime"
