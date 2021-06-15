@@ -88,6 +88,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
     @JsonField(name = "parent")
     public ChatMessage parentMessage;
     public Enum<ReadStatus> readStatus = ReadStatus.NONE;
+    @JsonField(name = "messageType")
+    public String messageType;
 
     @JsonIgnore
     List<MessageType> messageTypesToIgnore = Arrays.asList(
@@ -96,7 +98,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
             MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE,
             MessageType.SINGLE_LINK_MESSAGE,
-            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE);
+            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
+            MessageType.VOICE_MESSAGE);
 
     public boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
@@ -131,6 +134,10 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
     @Nullable
     @Override
     public String getImageUrl() {
+        if(isVoiceMessage()){
+            return null;
+        }
+        
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
@@ -154,6 +161,10 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
     public MessageType getMessageType() {
         if (!TextUtils.isEmpty(getSystemMessage())) {
             return MessageType.SYSTEM_MESSAGE;
+        }
+
+        if (isVoiceMessage()){
+            return MessageType.VOICE_MESSAGE;
         }
 
         if (hasFileAttachment()) {
@@ -211,6 +222,13 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
                     return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_location_you));
                 } else {
                     return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_location),
+                                          !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
+                }
+            } else if (MessageType.VOICE_MESSAGE == getMessageType()) {
+                if (getActorId().equals(getActiveUser().getUserId())) {
+                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_voice_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_voice),
                                           !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
                 }
             /*} else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
@@ -437,6 +455,10 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         this.messageTypesToIgnore = messageTypesToIgnore;
     }
 
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
@@ -581,6 +603,11 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         return hasGeoLocation();
     }
 
+    @Override
+    public boolean isVoiceMessage(){
+        return "voice-message".equals(messageType);
+    }
+
     public enum MessageType {
         REGULAR_TEXT_MESSAGE,
         SYSTEM_MESSAGE,
@@ -593,6 +620,7 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         SINGLE_LINK_AUDIO_MESSAGE,
         SINGLE_NC_ATTACHMENT_MESSAGE,
         SINGLE_NC_GEOLOCATION_MESSAGE,
+        VOICE_MESSAGE
     }
 
     public enum SystemMessageType {
