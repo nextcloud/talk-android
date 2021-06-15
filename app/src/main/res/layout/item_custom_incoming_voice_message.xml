@@ -70,6 +70,13 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
 
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"/>
+
                         <ImageButton
                             android:id="@+id/playBtn"
                             android:layout_width="44dp"

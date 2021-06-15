@@ -75,16 +75,19 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
+    lateinit var message: ChatMessage
+
     lateinit var activity: Activity
 
     var mediaPlayer: MediaPlayer? = null
 
+    lateinit var handler: Handler
+
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        this.message = message
         sharedApplication!!.componentApplication.inject(this)
-
-        initMediaPlayer(message)
 
         setAvatarAndAuthorOnMessageItem(message)
 
@@ -115,20 +118,32 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
                 }
             }
         })
-    }
 
-    private fun initMediaPlayer(message: ChatMessage) {
-        val fileName = message.getSelectedIndividualHashMap()["name"]
-        val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
-        mediaPlayer = MediaPlayer()
-        mediaPlayer!!.setDataSource(absolutePath)
-        mediaPlayer!!.prepare()
-        binding.seekbar.max = mediaPlayer!!.duration / 1000
+        // check if download worker is already running
+        val fileId = message.getSelectedIndividualHashMap()["id"]
+        val workers = WorkManager.getInstance(
+            context!!
+        ).getWorkInfosByTag(fileId!!)
 
-        mediaPlayer!!.setOnCompletionListener {
-            binding.playBtn.visibility = View.VISIBLE
-            binding.pauseBtn.visibility = View.GONE
-            mediaPlayer!!.seekTo(0)
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.playBtn.visibility = View.GONE
+                    WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(workInfo.id)
+                        .observeForever { info: WorkInfo? ->
+                            if (info != null) {
+                                updateViewsByProgress(
+                                    info
+                                )
+                            }
+                        }
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        } catch (e: InterruptedException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
         }
     }
 
@@ -232,35 +247,69 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         val filename = message.getSelectedIndividualHashMap()["name"]
         val file = File(context!!.cacheDir, filename!!)
         if (file.exists()) {
-            startPlayback()
+            binding.progressBar.visibility = View.GONE
+            startPlayback(message)
         } else {
+            binding.playBtn.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
             downloadFileToCache(message)
         }
     }
 
-    private fun startPlayback() {
+    private fun startPlayback(message: ChatMessage) {
+        initMediaPlayer(message)
+
         if (!mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.start();
+            mediaPlayer!!.start()
         }
 
-        val mHandler = Handler()
+        handler = Handler()
         activity.runOnUiThread(object : Runnable {
             override fun run() {
-                val currentPosition: Int = mediaPlayer!!.currentPosition / 1000
-                binding.seekbar.progress = currentPosition
-                mHandler.postDelayed(this, 1000)
+                if (mediaPlayer != null) {
+                    val currentPosition: Int = mediaPlayer!!.currentPosition / 1000
+                    binding.seekbar.progress = currentPosition
+                }
+                handler.postDelayed(this, 1000)
             }
         })
 
+        binding.progressBar.visibility = View.GONE
         binding.playBtn.visibility = View.GONE
         binding.pauseBtn.visibility = View.VISIBLE
     }
 
     private fun pausePlayback() {
-        mediaPlayer!!.pause()
+        if (mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.pause()
+        }
 
         binding.playBtn.visibility = View.VISIBLE
         binding.pauseBtn.visibility = View.GONE
+    }
+
+    private fun initMediaPlayer(message: ChatMessage) {
+        val fileName = message.getSelectedIndividualHashMap()["name"]
+        val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
+
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(absolutePath)
+                prepare()
+            }
+        }
+
+        binding.seekbar.max = mediaPlayer!!.duration / 1000
+
+        mediaPlayer!!.setOnCompletionListener {
+            binding.playBtn.visibility = View.VISIBLE
+            binding.pauseBtn.visibility = View.GONE
+            binding.seekbar.progress = 0
+            handler.removeCallbacksAndMessages(null)
+            mediaPlayer?.stop()
+            mediaPlayer?.release()
+            mediaPlayer = null
+        }
     }
 
     @SuppressLint("LongLogTag")
@@ -312,47 +361,29 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             .build()
         WorkManager.getInstance().enqueue(downloadWorker)
 
-        // getProgressBar().setVisibility(View.VISIBLE)
-
         WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo ->
                 updateViewsByProgress(
-                    fileName,
                     workInfo
                 )
             }
     }
 
-    private fun updateViewsByProgress(fileName: String?, workInfo: WorkInfo) {
+    private fun updateViewsByProgress(workInfo: WorkInfo) {
         when (workInfo.state) {
             WorkInfo.State.RUNNING -> {
                 val progress = workInfo.progress.getInt(DownloadFileToCacheWorker.PROGRESS, -1)
                 if (progress > -1) {
-                    // getMessageText().setText(
-                    //     String.format(
-                    //         context!!.resources.getString(R.string.filename_progress),
-                    //         fileName,
-                    //         progress
-                    //     )
-                    // )
+                    binding.playBtn.visibility = View.GONE
+                    binding.progressBar.visibility = View.VISIBLE
                 }
             }
             WorkInfo.State.SUCCEEDED -> {
-                // if (image.isShown()) {
-                //     openFile(fileName, mimetype)
-                // } else {
-                //     Log.d(
-                //         TAG,
-                //         "file " + fileName + " was downloaded but it's not opened because view is not shown on" +
-                //             " screen"
-                //     )
-                // }
-                // getMessageText().setText(fileName)
-                // getProgressBar().setVisibility(View.GONE)
+                startPlayback(message)
             }
             WorkInfo.State.FAILED -> {
-                // getMessageText().setText(fileName)
-                // getProgressBar().setVisibility(View.GONE)
+                binding.progressBar.visibility = View.GONE
+                binding.playBtn.visibility = View.VISIBLE
             }
             else -> {
             }
