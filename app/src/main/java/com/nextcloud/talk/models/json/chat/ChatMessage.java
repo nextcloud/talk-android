@@ -26,7 +26,6 @@ import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.interfaces.ExtendedIMessage;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -49,7 +48,7 @@ import kotlin.text.Charsets;
 
 @Parcel
 @JsonObject
-public class ChatMessage implements ExtendedIMessage, MessageContentType, MessageContentType.Image {
+public class ChatMessage implements MessageContentType, MessageContentType.Image {
     @JsonIgnore
     public boolean isGrouped;
     @JsonIgnore
@@ -115,7 +114,7 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         return false;
     }
 
-    private boolean hasGeoLocation() {
+    public boolean hasGeoLocation() {
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
@@ -137,7 +136,7 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         if(isVoiceMessage()){
             return null;
         }
-        
+
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
@@ -598,12 +597,6 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         return "ChatMessage(isGrouped=" + this.isGrouped() + ", isOneToOneConversation=" + this.isOneToOneConversation() + ", activeUser=" + this.getActiveUser() + ", selectedIndividualHashMap=" + this.getSelectedIndividualHashMap() + ", isLinkPreviewAllowed=" + this.isLinkPreviewAllowed() + ", isDeleted=" + this.isDeleted() + ", jsonMessageId=" + this.getJsonMessageId() + ", token=" + this.getToken() + ", actorType=" + this.getActorType() + ", actorId=" + this.getActorId() + ", actorDisplayName=" + this.getActorDisplayName() + ", timestamp=" + this.getTimestamp() + ", message=" + this.getMessage() + ", messageParameters=" + this.getMessageParameters() + ", systemMessageType=" + this.getSystemMessageType() + ", replyable=" + this.isReplyable() + ", parentMessage=" + this.getParentMessage() + ", readStatus=" + this.getReadStatus() + ", messageTypesToIgnore=" + this.getMessageTypesToIgnore() + ")";
     }
 
-    @Override
-    public boolean isLocationMessage() {
-        return hasGeoLocation();
-    }
-
-    @Override
     public boolean isVoiceMessage(){
         return "voice-message".equals(messageType);
     }

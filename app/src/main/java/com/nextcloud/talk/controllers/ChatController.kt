@@ -783,7 +783,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun startAudioRecording(file: String) {
-        binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime();
+        binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime()
         binding.messageInputView.audioRecordDuration.start()
 
         val animation: Animation = AlphaAnimation(1.0f, 0.0f)
@@ -2209,7 +2209,7 @@ class ChatController(args: Bundle) :
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         return when (type) {
-            CONTENT_TYPE_LOCATION -> return message.isLocationMessage()
+            CONTENT_TYPE_LOCATION -> return message.hasGeoLocation()
             CONTENT_TYPE_VOICE_MESSAGE -> return message.isVoiceMessage()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
