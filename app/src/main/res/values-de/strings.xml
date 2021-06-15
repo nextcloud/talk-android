@@ -127,7 +127,7 @@
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
     <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses Meeting ist für %1$s geplant.</string>
     <string name="nc_location_current_position_description">Ihre aktuelle Position</string>
-    <string name="nc_location_permission_required">Standort-Berechtigungen wird benötigt</string>
+    <string name="nc_location_permission_required">Standort-Berechtigung wird benötigt</string>
     <string name="nc_locked">Gesperrt</string>
     <string name="nc_locked_tap_to_unlock">Zum Entsperren antippen</string>
     <string name="nc_make_call_private">Unterhaltung privat machen</string>
