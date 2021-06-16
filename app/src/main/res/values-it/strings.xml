@@ -126,6 +126,7 @@
     <string name="nc_lobby">Ingresso</string>
     <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
     <string name="nc_lobby_waiting_with_date">Stai attualmente aspettando nell\'ingresso.\nQuesta riunione è pianificata per %1$s.</string>
+    <string name="nc_location_current_position_description">La tua posizione attuale</string>
     <string name="nc_locked">Bloccato</string>
     <string name="nc_locked_tap_to_unlock">Tocca per sbloccare</string>
     <string name="nc_make_call_private">Rendi privata la conversazione</string>
@@ -280,6 +281,7 @@
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
     <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_share_link_via">Condividi collegamento tramite</string>
+    <string name="nc_share_location">Condividi posizione</string>
     <string name="nc_share_subject">%1$s invito</string>
     <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPassword: %1$s</string>

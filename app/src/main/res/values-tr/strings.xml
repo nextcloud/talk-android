@@ -126,6 +126,8 @@
     <string name="nc_lobby">Giriş</string>
     <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
     <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu görüşme %1$s zamanında başlayacak.</string>
+    <string name="nc_location_current_position_description">Geçerli konumunuz</string>
+    <string name="nc_location_permission_required">konum izinleri gerekli</string>
     <string name="nc_locked">Kilitli</string>
     <string name="nc_locked_tap_to_unlock">Kilidi açmak için dokunun</string>
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
@@ -210,6 +212,8 @@
     <string name="nc_sent_an_audio_you">Bir ses gönderdiniz.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s bir görsel gönderdi.</string>
     <string name="nc_sent_an_image_you">Bir görsel gönderdiniz.</string>
+    <string name="nc_sent_location" formatted="true">%1$s bir konum gönderdi.</string>
+    <string name="nc_sent_location_you">Bir konum gönderdiniz.</string>
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veritabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
@@ -278,11 +282,14 @@
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_warning">Uyarı</string>
     <string name="nc_settings_wrong_account">Yalnız geçerli hesaba yeniden izin verilebilir</string>
+    <string name="nc_share_current_location">Geçerli konumu paylaş</string>
     <string name="nc_share_link">Paylaşım bağlantısı</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
+    <string name="nc_share_location">Konumu paylaş</string>
     <string name="nc_share_subject">%1$s çağrısı</string>
     <string name="nc_share_text">Görüşmeye şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
+    <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_timeout_error">Zaman aşımı</string>

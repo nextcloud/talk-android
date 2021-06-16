@@ -311,7 +311,7 @@
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="password_protected">密碼保護</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
-    <string name="save">儲存</string>
+    <string name="save">保存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>
     <string name="scope_local_description">僅對此安裝的人和來賓可見</string>
