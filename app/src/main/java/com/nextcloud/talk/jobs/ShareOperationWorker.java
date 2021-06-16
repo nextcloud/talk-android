@@ -21,25 +21,29 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.work.Data;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-import autodagger.AutoInjector;
+import android.util.Log;
+
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.work.Data;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
+import autodagger.AutoInjector;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ShareOperationWorker extends Worker {
@@ -47,6 +51,7 @@ public class ShareOperationWorker extends Worker {
     UserUtils userUtils;
     @Inject
     NcApi ncApi;
+    private final String TAG = "ShareOperationWorker";
     private long userId;
     private UserEntity operationsUser;
     private String roomToken;
@@ -70,12 +75,16 @@ public class ShareOperationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
+
+        String metaData = "{\"messageType\":\"voice-message\"}";
+
         for (int i = 0; i < filesArray.size(); i++) {
             ncApi.createRemoteShare(credentials,
                     ApiUtils.getSharingUrl(baseUrl),
                     filesArray.get(i),
                     roomToken,
-                    "10")
+                    "10",
+                     metaData)
                     .subscribeOn(Schedulers.io())
                     .blockingSubscribe(new Observer<Void>() {
                         @Override
@@ -90,7 +99,7 @@ public class ShareOperationWorker extends Worker {
 
                         @Override
                         public void onError(Throwable e) {
-
+                            Log.e(TAG, "", e);
                         }
 
                         @Override

@@ -168,6 +168,7 @@ import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
+import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Date
 import java.util.HashMap
@@ -631,7 +632,14 @@ class ChatController(args: Bundle) :
                         }
                         isVoiceRecordingInProgress = true
 
-                        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/talkrecording.wav"
+                        val pattern = "yyyy-MM-dd HH-mm-ss"
+                        val simpleDateFormat = SimpleDateFormat(pattern)
+                        val date: String = simpleDateFormat.format(Date())
+
+                        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$date (${currentConversation!!
+                        .displayName})" +
+                            ".wav"
+                        Log.d(TAG, "currentVoiceRecordFile: " + currentVoiceRecordFile)
                         startAudioRecording(currentVoiceRecordFile)
 
                         Log.d(TAG, "ACTION_DOWN.")
@@ -643,20 +651,25 @@ class ChatController(args: Bundle) :
 
                         showRecordAudioUi(true)
                     }
-                    MotionEvent.ACTION_CANCEL -> Log.d(TAG, "ACTION_CANCEL. same as for UP")
-                    MotionEvent.ACTION_UP -> {
-                        Log.d(TAG, "ACTION_UP. stop recording??")
-
+                    MotionEvent.ACTION_CANCEL -> {
+                        Log.d(TAG, "ACTION_CANCEL. same as for UP")
                         if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
                             return true
                         }
                         isVoiceRecordingInProgress = false
-
-                        stopAndSendAudioRecording()
-
+                        stopAndDiscardAudioRecording()
                         showRecordAudioUi(false)
                         binding.messageInputView.slideToCancelDescription.x = sliderInitX
-
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        Log.d(TAG, "ACTION_UP. stop recording??")
+                        if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
+                            return true
+                        }
+                        isVoiceRecordingInProgress = false
+                        stopAndSendAudioRecording()
+                        showRecordAudioUi(false)
+                        binding.messageInputView.slideToCancelDescription.x = sliderInitX
                         Log.d(TAG, "----------")
                     }
                     MotionEvent.ACTION_MOVE -> {
