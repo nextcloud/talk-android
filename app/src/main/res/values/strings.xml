@@ -382,6 +382,9 @@
     <string name="nc_share_this_location">Share this location</string>
     <string name="nc_location_current_position_description">Your current location</string>
 
+    <!-- voice messages -->
+    <string name="nc_voice_message_filename">Talk recording from</string>
+
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>

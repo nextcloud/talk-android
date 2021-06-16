@@ -620,35 +620,24 @@ class ChatController(args: Bundle) :
         var downX = 0f
         var deltaX = 0f
 
+        var voiceRecordStartTime : Long = 0L
+        var voiceRecordEndTime : Long = 0L
+
         binding.messageInputView.recordAudioButton.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
 
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
-
                         if (!isRecordAudioPermissionGranted()) {
                             requestRecordAudioPermissions()
                             return true
                         }
-                        isVoiceRecordingInProgress = true
 
-                        val pattern = "yyyy-MM-dd HH-mm-ss"
-                        val simpleDateFormat = SimpleDateFormat(pattern)
-                        val date: String = simpleDateFormat.format(Date())
+                        voiceRecordStartTime = System.currentTimeMillis()
 
-                        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/Talk recording from $date (${currentConversation!!
-                        .displayName})" +
-                            ".mp3"
-                        Log.d(TAG, "currentVoiceRecordFile: " + currentVoiceRecordFile)
+                        setVoiceRecordFileName()
                         startAudioRecording(currentVoiceRecordFile)
-
-                        Log.d(TAG, "ACTION_DOWN.")
-
                         downX = event.x
-                        Log.d(TAG, "downX " + downX)
-
-                        Log.d(TAG, "----------")
-
                         showRecordAudioUi(true)
                     }
                     MotionEvent.ACTION_CANCEL -> {
@@ -656,7 +645,7 @@ class ChatController(args: Bundle) :
                         if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
                             return true
                         }
-                        isVoiceRecordingInProgress = false
+
                         stopAndDiscardAudioRecording()
                         showRecordAudioUi(false)
                         binding.messageInputView.slideToCancelDescription.x = sliderInitX
@@ -666,11 +655,25 @@ class ChatController(args: Bundle) :
                         if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
                             return true
                         }
-                        isVoiceRecordingInProgress = false
-                        stopAndSendAudioRecording()
+
+
                         showRecordAudioUi(false)
+
+                        voiceRecordEndTime = System.currentTimeMillis()
+                        var voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
+                        if(voiceRecordDuration < 2000 ){
+                            Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
+                            Toast.makeText(context, "hold longer", Toast.LENGTH_LONG)
+                                .show()
+                            stopAndDiscardAudioRecording()
+                            return true
+                        }else{
+                            voiceRecordStartTime = 0L
+                            voiceRecordEndTime = 0L
+                            stopAndSendAudioRecording()
+                        }
+
                         binding.messageInputView.slideToCancelDescription.x = sliderInitX
-                        Log.d(TAG, "----------")
                     }
                     MotionEvent.ACTION_MOVE -> {
                         Log.d(TAG, "ACTION_MOVE.")
@@ -683,7 +686,6 @@ class ChatController(args: Bundle) :
 
                         if (sliderInitX == 0.0F) {
                             sliderInitX = binding.messageInputView.slideToCancelDescription.x
-                            Log.d(TAG, "sliderInitX " + sliderInitX)
                         }
 
                         var movedX: Float = event.x
@@ -695,32 +697,14 @@ class ChatController(args: Bundle) :
                         }
 
                         if (binding.messageInputView.slideToCancelDescription.x < -50) {
-                            Log.d(TAG, "cancel")
-                            isVoiceRecordingInProgress = false
+                            Log.d(TAG, "stopping recording because slider was moved to left")
                             stopAndDiscardAudioRecording()
                             showRecordAudioUi(false)
                             binding.messageInputView.slideToCancelDescription.x = sliderInitX
                             return true
                         } else {
-                            Log.d(TAG, "downX " + downX)
-                            Log.d(TAG, "movedX " + movedX)
-                            Log.d(TAG, "deltaX " + deltaX)
-
-                            Log.d(
-                                TAG,
-                                "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x
-                            )
-
                             binding.messageInputView.slideToCancelDescription.x = binding.messageInputView
                                 .slideToCancelDescription.x + deltaX
-
-                            Log.d(
-                                TAG,
-                                "binding.messageInputView.slideToCancelDescription.x " + binding.messageInputView.slideToCancelDescription.x
-                            )
-
-                            Log.d(TAG, "----------")
-
                             downX = movedX
                         }
                     }
@@ -761,6 +745,18 @@ class ChatController(args: Bundle) :
         super.onViewBound(view)
     }
 
+    private fun setVoiceRecordFileName() {
+        val pattern = "yyyy-MM-dd HH-mm-ss"
+        val simpleDateFormat = SimpleDateFormat(pattern)
+        val date: String = simpleDateFormat.format(Date())
+
+        val talkRecordingFrom = context!!.getString(R.string.nc_voice_message_filename)
+
+        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$talkRecordingFrom $date " +
+            "(${currentConversation!!.displayName})" +
+            ".mp3"
+    }
+
     private fun showRecordAudioUi(show: Boolean) {
         if (show) {
             binding.messageInputView.microphoneEnabledInfo.visibility = View.VISIBLE
@@ -771,6 +767,13 @@ class ChatController(args: Bundle) :
             binding.messageInputView.smileyButton.visibility = View.GONE
             binding.messageInputView.messageInput.visibility = View.GONE
             binding.messageInputView.messageInput.hint = ""
+
+            val animation: Animation = AlphaAnimation(1.0f, 0.0f)
+            animation.duration = 750
+            animation.interpolator = LinearInterpolator()
+            animation.repeatCount = Animation.INFINITE
+            animation.repeatMode = Animation.REVERSE
+            binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
         } else {
             binding.messageInputView.microphoneEnabledInfo.visibility = View.GONE
             binding.messageInputView.microphoneEnabledInfoBackground.visibility = View.GONE
@@ -781,6 +784,8 @@ class ChatController(args: Bundle) :
             binding.messageInputView.messageInput.visibility = View.VISIBLE
             binding.messageInputView.messageInput.hint =
                 context?.resources?.getString(R.string.nc_hint_enter_a_message)
+
+            binding.messageInputView.microphoneEnabledInfo.clearAnimation()
         }
     }
 
@@ -799,43 +804,24 @@ class ChatController(args: Bundle) :
         binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime()
         binding.messageInputView.audioRecordDuration.start()
 
-        val animation: Animation = AlphaAnimation(1.0f, 0.0f)
-        animation.duration = 750
-        animation.interpolator = LinearInterpolator()
-        animation.repeatCount = Animation.INFINITE
-        animation.repeatMode = Animation.REVERSE
-        binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
-
         recorder = MediaRecorder().apply {
-            // setAudioSource(MediaRecorder.AudioSource.MIC)
-            // setOutputFile(file)
-            // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
-            // geht wenn man in android neu herunterlädt, geht in web !!!!!!!!!!
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFile(file)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
             setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-
-            // WAV
-            // setAudioSource(MediaRecorder.AudioSource.MIC)
-            // setOutputFile(file)
-            // setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
-            // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
-            // geht wenn man in android neu herunterlädt, geht in web aber nicht
-            // setAudioSource(MediaRecorder.AudioSource.MIC);
-            // setOutputFile(file)
-            // setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-            // setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
 
             try {
                 prepare()
             } catch (e: IOException) {
                 Log.e(TAG, "prepare for audio recording failed")
             }
-            start()
+
+            try {
+                start()
+                isVoiceRecordingInProgress = true
+            } catch (e: IllegalStateException){
+                Log.e(TAG, "start for audio recording failed")
+            }
 
             vibrate()
         }
@@ -844,7 +830,7 @@ class ChatController(args: Bundle) :
     private fun stopAndSendAudioRecording() {
         stopAudioRecording()
 
-        var uri = Uri.fromFile(File(currentVoiceRecordFile))
+        val uri = Uri.fromFile(File(currentVoiceRecordFile))
 
         if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
             uploadFiles(mutableListOf(uri.toString()))
@@ -863,20 +849,23 @@ class ChatController(args: Bundle) :
     private fun stopAudioRecording() {
         binding.messageInputView.audioRecordDuration.stop()
 
-        binding.messageInputView.microphoneEnabledInfo.clearAnimation()
+        if(isVoiceRecordingInProgress){
+            recorder?.apply {
+                try {
+                    stop()
+                    release()
+                    isVoiceRecordingInProgress = false
+                    Log.d(TAG, "stopped recorder. isVoiceRecordingInProgress = false")
+                } catch (e: RuntimeException) {
+                    Log.w(TAG, "error while stopping recorder!")
+                }
 
-        recorder?.apply {
-            try {
-                stop()
-            } catch (e: RuntimeException) {
-                Log.e(TAG, "error while stopping recorder!")
+                vibrate()
             }
-            reset()
-            release()
-
-            vibrate()
+            recorder = null
+        } else {
+            Log.e(TAG, "tried to stop audio recorder but it was not recording")
         }
-        recorder = null
     }
 
     fun vibrate(){
