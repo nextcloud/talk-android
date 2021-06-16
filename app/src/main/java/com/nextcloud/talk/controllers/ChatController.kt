@@ -638,7 +638,7 @@ class ChatController(args: Bundle) :
 
                         currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$date (${currentConversation!!
                         .displayName})" +
-                            ".wav"
+                            ".mp3"
                         Log.d(TAG, "currentVoiceRecordFile: " + currentVoiceRecordFile)
                         startAudioRecording(currentVoiceRecordFile)
 
@@ -811,15 +811,16 @@ class ChatController(args: Bundle) :
             // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
-            // setAudioSource(MediaRecorder.AudioSource.MIC)
-            // setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            // setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
-
-            // WAV
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFile(file)
-            setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+
+            // WAV
+            // setAudioSource(MediaRecorder.AudioSource.MIC)
+            // setOutputFile(file)
+            // setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
+            // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
             // setAudioSource(MediaRecorder.AudioSource.MIC)
             // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
