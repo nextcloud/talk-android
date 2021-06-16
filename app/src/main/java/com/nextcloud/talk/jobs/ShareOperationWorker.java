@@ -99,7 +99,7 @@ public class ShareOperationWorker extends Worker {
 
                         @Override
                         public void onError(Throwable e) {
-                            Log.e(TAG, "error while creating RemoteShare", e);
+                            Log.w(TAG, "error while creating RemoteShare", e);
                         }
 
                         @Override

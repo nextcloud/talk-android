@@ -384,6 +384,7 @@
 
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from</string>
+    <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
 
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>

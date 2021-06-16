@@ -620,8 +620,8 @@ class ChatController(args: Bundle) :
         var downX = 0f
         var deltaX = 0f
 
-        var voiceRecordStartTime : Long = 0L
-        var voiceRecordEndTime : Long = 0L
+        var voiceRecordStartTime = 0L
+        var voiceRecordEndTime = 0L
 
         binding.messageInputView.recordAudioButton.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
@@ -655,16 +655,16 @@ class ChatController(args: Bundle) :
                         if (!isVoiceRecordingInProgress || !isRecordAudioPermissionGranted()) {
                             return true
                         }
-
-
                         showRecordAudioUi(false)
 
                         voiceRecordEndTime = System.currentTimeMillis()
                         var voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
-                        if(voiceRecordDuration < 2000 ){
+                        if(voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION ){
                             Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
-                            Toast.makeText(context, "hold longer", Toast.LENGTH_LONG)
-                                .show()
+                            Toast.makeText(
+                                context,
+                                context!!.getString(R.string.nc_voice_message_hold_to_record_info),
+                                Toast.LENGTH_SHORT).show()
                             stopAndDiscardAudioRecording()
                             return true
                         }else{
@@ -696,7 +696,7 @@ class ChatController(args: Bundle) :
                             binding.messageInputView.slideToCancelDescription.x = sliderInitX
                         }
 
-                        if (binding.messageInputView.slideToCancelDescription.x < -50) {
+                        if (binding.messageInputView.slideToCancelDescription.x < VOICE_RECORD_CANCEL_SLIDER_X) {
                             Log.d(TAG, "stopping recording because slider was moved to left")
                             stopAndDiscardAudioRecording()
                             showRecordAudioUi(false)
@@ -767,13 +767,6 @@ class ChatController(args: Bundle) :
             binding.messageInputView.smileyButton.visibility = View.GONE
             binding.messageInputView.messageInput.visibility = View.GONE
             binding.messageInputView.messageInput.hint = ""
-
-            val animation: Animation = AlphaAnimation(1.0f, 0.0f)
-            animation.duration = 750
-            animation.interpolator = LinearInterpolator()
-            animation.repeatCount = Animation.INFINITE
-            animation.repeatMode = Animation.REVERSE
-            binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
         } else {
             binding.messageInputView.microphoneEnabledInfo.visibility = View.GONE
             binding.messageInputView.microphoneEnabledInfoBackground.visibility = View.GONE
@@ -784,8 +777,6 @@ class ChatController(args: Bundle) :
             binding.messageInputView.messageInput.visibility = View.VISIBLE
             binding.messageInputView.messageInput.hint =
                 context?.resources?.getString(R.string.nc_hint_enter_a_message)
-
-            binding.messageInputView.microphoneEnabledInfo.clearAnimation()
         }
     }
 
@@ -803,6 +794,13 @@ class ChatController(args: Bundle) :
     private fun startAudioRecording(file: String) {
         binding.messageInputView.audioRecordDuration.base = SystemClock.elapsedRealtime()
         binding.messageInputView.audioRecordDuration.start()
+
+        val animation: Animation = AlphaAnimation(1.0f, 0.0f)
+        animation.duration = 750
+        animation.interpolator = LinearInterpolator()
+        animation.repeatCount = Animation.INFINITE
+        animation.repeatMode = Animation.REVERSE
+        binding.messageInputView.microphoneEnabledInfo.startAnimation(animation)
 
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -833,7 +831,7 @@ class ChatController(args: Bundle) :
         val uri = Uri.fromFile(File(currentVoiceRecordFile))
 
         if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-            uploadFiles(mutableListOf(uri.toString()))
+            uploadFiles(mutableListOf(uri.toString()), false)
         } else {
             UploadAndShareFilesWorker.requestStoragePermission(this)
         }
@@ -848,6 +846,7 @@ class ChatController(args: Bundle) :
 
     private fun stopAudioRecording() {
         binding.messageInputView.audioRecordDuration.stop()
+        binding.messageInputView.microphoneEnabledInfo.clearAnimation()
 
         if(isVoiceRecordingInProgress){
             recorder?.apply {
@@ -1004,7 +1003,7 @@ class ChatController(args: Bundle) :
                         .setMessage(filenamesWithLinebreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { v ->
                             if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                                uploadFiles(filesToUpload)
+                                uploadFiles(filesToUpload, true)
                             } else {
                                 UploadAndShareFilesWorker.requestStoragePermission(this)
                             }
@@ -1028,7 +1027,7 @@ class ChatController(args: Bundle) :
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
-                uploadFiles(filesToUpload)
+                uploadFiles(filesToUpload, true)
             } else {
                 Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
                     .show()
@@ -1043,7 +1042,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>) {
+    private fun uploadFiles(files: MutableList<String>, showToast: Boolean) {
         try {
             require(files.isNotEmpty())
             val data: Data = Data.Builder()
@@ -1059,10 +1058,12 @@ class ChatController(args: Bundle) :
                 .build()
             WorkManager.getInstance().enqueue(uploadWorker)
 
-            Toast.makeText(
-                context, context?.getString(R.string.nc_upload_in_progess),
-                Toast.LENGTH_LONG
-            ).show()
+            if(showToast){
+                Toast.makeText(
+                    context, context?.getString(R.string.nc_upload_in_progess),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         } catch (e: IllegalArgumentException) {
             Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG).show()
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -2325,5 +2326,7 @@ class ChatController(args: Bundle) :
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val OBJECT_MESSAGE: String = "{object}"
+        private const val MINIMUM_VOICE_RECORD_DURATION: Int = 500
+        private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
     }
 }
