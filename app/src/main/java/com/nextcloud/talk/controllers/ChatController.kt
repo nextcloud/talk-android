@@ -632,6 +632,10 @@ class ChatController(args: Bundle) :
                             requestRecordAudioPermissions()
                             return true
                         }
+                        if (!UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                            UploadAndShareFilesWorker.requestStoragePermission(this@ChatController)
+                            return true
+                        }
 
                         voiceRecordStartTime = System.currentTimeMillis()
 
@@ -659,15 +663,16 @@ class ChatController(args: Bundle) :
 
                         voiceRecordEndTime = System.currentTimeMillis()
                         var voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
-                        if(voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION ){
+                        if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
                             Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
                             Toast.makeText(
                                 context,
                                 context!!.getString(R.string.nc_voice_message_hold_to_record_info),
-                                Toast.LENGTH_SHORT).show()
+                                Toast.LENGTH_SHORT
+                            ).show()
                             stopAndDiscardAudioRecording()
                             return true
-                        }else{
+                        } else {
                             voiceRecordStartTime = 0L
                             voiceRecordEndTime = 0L
                             stopAndSendAudioRecording()
@@ -817,7 +822,7 @@ class ChatController(args: Bundle) :
             try {
                 start()
                 isVoiceRecordingInProgress = true
-            } catch (e: IllegalStateException){
+            } catch (e: IllegalStateException) {
                 Log.e(TAG, "start for audio recording failed")
             }
 
@@ -827,14 +832,8 @@ class ChatController(args: Bundle) :
 
     private fun stopAndSendAudioRecording() {
         stopAudioRecording()
-
         val uri = Uri.fromFile(File(currentVoiceRecordFile))
-
-        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-            uploadFiles(mutableListOf(uri.toString()), false)
-        } else {
-            UploadAndShareFilesWorker.requestStoragePermission(this)
-        }
+        uploadFiles(mutableListOf(uri.toString()), false)
     }
 
     private fun stopAndDiscardAudioRecording() {
@@ -848,7 +847,7 @@ class ChatController(args: Bundle) :
         binding.messageInputView.audioRecordDuration.stop()
         binding.messageInputView.microphoneEnabledInfo.clearAnimation()
 
-        if(isVoiceRecordingInProgress){
+        if (isVoiceRecordingInProgress) {
             recorder?.apply {
                 try {
                     stop()
@@ -867,7 +866,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    fun vibrate(){
+    fun vibrate() {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= 26) {
             vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
@@ -1027,7 +1026,9 @@ class ChatController(args: Bundle) :
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
-                uploadFiles(filesToUpload, true)
+                if (filesToUpload.isNotEmpty()) {
+                    uploadFiles(filesToUpload, true)
+                }
             } else {
                 Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
                     .show()
@@ -1058,7 +1059,7 @@ class ChatController(args: Bundle) :
                 .build()
             WorkManager.getInstance().enqueue(uploadWorker)
 
-            if(showToast){
+            if (showToast) {
                 Toast.makeText(
                     context, context?.getString(R.string.nc_upload_in_progess),
                     Toast.LENGTH_LONG
@@ -2156,8 +2157,8 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun showMicrophoneButton(show : Boolean) {
-        if (show && CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")){
+    private fun showMicrophoneButton(show: Boolean) {
+        if (show && CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
             binding.messageInputView.messageSendButton.visibility = View.GONE
             binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
         } else {
