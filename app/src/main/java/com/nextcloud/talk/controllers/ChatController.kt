@@ -636,7 +636,7 @@ class ChatController(args: Bundle) :
                         val simpleDateFormat = SimpleDateFormat(pattern)
                         val date: String = simpleDateFormat.format(Date())
 
-                        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$date (${currentConversation!!
+                        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/Talk recording from $date (${currentConversation!!
                         .displayName})" +
                             ".mp3"
                         Log.d(TAG, "currentVoiceRecordFile: " + currentVoiceRecordFile)
@@ -808,9 +808,11 @@ class ChatController(args: Bundle) :
 
         recorder = MediaRecorder().apply {
             // setAudioSource(MediaRecorder.AudioSource.MIC)
+            // setOutputFile(file)
             // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
+            // geht wenn man in android neu herunterlädt, geht in web !!!!!!!!!!
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFile(file)
             setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
@@ -822,17 +824,20 @@ class ChatController(args: Bundle) :
             // setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
             // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
 
-            // setAudioSource(MediaRecorder.AudioSource.MIC)
-            // setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            // setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            // geht wenn man in android neu herunterlädt, geht in web aber nicht
+            // setAudioSource(MediaRecorder.AudioSource.MIC);
+            // setOutputFile(file)
+            // setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
+            // setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
 
             try {
                 prepare()
             } catch (e: IOException) {
                 Log.e(TAG, "prepare for audio recording failed")
             }
-            vibrate()
             start()
+
+            vibrate()
         }
     }
 
@@ -866,8 +871,10 @@ class ChatController(args: Bundle) :
             } catch (e: RuntimeException) {
                 Log.e(TAG, "error while stopping recorder!")
             }
-            vibrate()
+            reset()
             release()
+
+            vibrate()
         }
         recorder = null
     }
