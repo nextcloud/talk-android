@@ -755,11 +755,11 @@ class ChatController(args: Bundle) :
         val simpleDateFormat = SimpleDateFormat(pattern)
         val date: String = simpleDateFormat.format(Date())
 
-        val talkRecordingFrom = context!!.getString(R.string.nc_voice_message_filename)
+        val fileNameWithoutSuffix = String.format(context!!.resources.getString(R.string.nc_voice_message_filename),
+        date, currentConversation!!.displayName)
+        val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
 
-        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$talkRecordingFrom $date " +
-            "(${currentConversation!!.displayName})" +
-            ".mp3"
+        currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$fileName"
     }
 
     private fun showRecordAudioUi(show: Boolean) {
@@ -2336,5 +2336,6 @@ class ChatController(args: Bundle) :
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 500
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
+        private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
     }
 }

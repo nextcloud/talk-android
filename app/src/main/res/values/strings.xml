@@ -383,7 +383,7 @@
     <string name="nc_location_current_position_description">Your current location</string>
 
     <!-- voice messages -->
-    <string name="nc_voice_message_filename">Talk recording from</string>
+    <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
 
     <!-- Phonebook Integration -->
