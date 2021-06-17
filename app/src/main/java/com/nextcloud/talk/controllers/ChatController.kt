@@ -833,7 +833,7 @@ class ChatController(args: Bundle) :
     private fun stopAndSendAudioRecording() {
         stopAudioRecording()
         val uri = Uri.fromFile(File(currentVoiceRecordFile))
-        uploadFiles(mutableListOf(uri.toString()), false)
+        uploadFiles(mutableListOf(uri.toString()), true)
     }
 
     private fun stopAndDiscardAudioRecording() {
@@ -1002,7 +1002,7 @@ class ChatController(args: Bundle) :
                         .setMessage(filenamesWithLinebreaks.toString())
                         .setPositiveButton(R.string.nc_yes) { v ->
                             if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                                uploadFiles(filesToUpload, true)
+                                uploadFiles(filesToUpload, false)
                             } else {
                                 UploadAndShareFilesWorker.requestStoragePermission(this)
                             }
@@ -1027,7 +1027,7 @@ class ChatController(args: Bundle) :
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Log.d(ConversationsListController.TAG, "upload starting after permissions were granted")
                 if (filesToUpload.isNotEmpty()) {
-                    uploadFiles(filesToUpload, true)
+                    uploadFiles(filesToUpload, false)
                 }
             } else {
                 Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
@@ -1043,7 +1043,12 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun uploadFiles(files: MutableList<String>, showToast: Boolean) {
+    private fun uploadFiles(files: MutableList<String>, isVoiceMessage: Boolean) {
+        var metaData = ""
+        if (isVoiceMessage) {
+            metaData = VOICE_MESSAGE_META_DATA
+        }
+
         try {
             require(files.isNotEmpty())
             val data: Data = Data.Builder()
@@ -1053,13 +1058,14 @@ class ChatController(args: Bundle) :
                     CapabilitiesUtil.getAttachmentFolder(conversationUser)
                 )
                 .putString(UploadAndShareFilesWorker.ROOM_TOKEN, roomToken)
+                .putString(UploadAndShareFilesWorker.META_DATA, metaData)
                 .build()
             val uploadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(UploadAndShareFilesWorker::class.java)
                 .setInputData(data)
                 .build()
             WorkManager.getInstance().enqueue(uploadWorker)
 
-            if (showToast) {
+            if (!isVoiceMessage) {
                 Toast.makeText(
                     context, context?.getString(R.string.nc_upload_in_progess),
                     Toast.LENGTH_LONG
@@ -2329,5 +2335,6 @@ class ChatController(args: Bundle) :
         private const val OBJECT_MESSAGE: String = "{object}"
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 500
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
+        private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
     }
 }

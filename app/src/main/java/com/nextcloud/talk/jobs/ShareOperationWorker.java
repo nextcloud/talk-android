@@ -58,6 +58,7 @@ public class ShareOperationWorker extends Worker {
     private List<String> filesArray = new ArrayList<>();
     private String credentials;
     private String baseUrl;
+    private String metaData;
 
     public ShareOperationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -65,6 +66,7 @@ public class ShareOperationWorker extends Worker {
         Data data = workerParams.getInputData();
         userId = data.getLong(BundleKeys.INSTANCE.getKEY_INTERNAL_USER_ID(), 0);
         roomToken = data.getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN());
+        metaData = data.getString(BundleKeys.INSTANCE.getKEY_META_DATA());
         Collections.addAll(filesArray, data.getStringArray(BundleKeys.INSTANCE.getKEY_FILE_PATHS()));
         operationsUser = userUtils.getUserWithId(userId);
         credentials = ApiUtils.getCredentials(operationsUser.getUsername(), operationsUser.getToken());
@@ -75,8 +77,6 @@ public class ShareOperationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-
-        String metaData = "{\"messageType\":\"voice-message\"}";
 
         for (int i = 0; i < filesArray.size(); i++) {
             ncApi.createRemoteShare(credentials,
