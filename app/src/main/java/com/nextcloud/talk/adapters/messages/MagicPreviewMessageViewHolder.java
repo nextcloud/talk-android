@@ -33,6 +33,7 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -58,7 +59,9 @@ import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -123,10 +126,20 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             }
         }
 
+
         if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
+
             String fileName = message.getSelectedIndividualHashMap().get("name");
             getMessageText().setText(fileName);
-            if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
+            if (message.getSelectedIndividualHashMap().containsKey("contact-name")) {
+                getMessageText().setText(message.getSelectedIndividualHashMap().get("contact-name"));
+            }
+
+            if (message.getSelectedIndividualHashMap().containsKey("contact-photo")) {
+                Drawable drawable = getDrawableFromContactDetails(context,
+                                                                  message.getSelectedIndividualHashMap().get("contact-photo"));
+                image.getHierarchy().setPlaceholderImage(drawable);
+            } else if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
                 String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
                 int drawableResourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(mimetype);
                 Drawable drawable = ContextCompat.getDrawable(context, drawableResourceId);
@@ -191,6 +204,25 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         }
 
         itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
+    }
+
+
+    private Drawable getDrawableFromContactDetails(Context context, String base64) {
+        Drawable drawable = null;
+        if (!base64.equals("")) {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                    Base64.decode(base64.getBytes(), Base64.DEFAULT));
+            drawable = Drawable.createFromResourceStream(context.getResources(),
+                                                    null, inputStream, null, null);
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                int drawableResourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType("text/vcard");
+                drawable = ContextCompat.getDrawable(context, drawableResourceId);
+            }
+        }
+
+        return drawable;
     }
 
     public abstract EmojiTextView getMessageText();
