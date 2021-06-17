@@ -2333,7 +2333,7 @@ class ChatController(args: Bundle) :
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val OBJECT_MESSAGE: String = "{object}"
-        private const val MINIMUM_VOICE_RECORD_DURATION: Int = 500
+        private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
