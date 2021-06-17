@@ -52,6 +52,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import java.io.File
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
@@ -220,25 +221,17 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
     }
 
     private fun openOrDownloadFile(message: ChatMessage) {
-        // TODO: file is always downloaded because it can not be handled by mediaplayer right after it was copied to
-        //  cache after recording
-        // Reason for this is, there is an InvocationTargetException
-        // whenever setDataSource is called on mediaPlayer when the file was copied to cache with
-        // UploadAndShareFileWorker.
-        // However when the file is downloaded from the cloud into cache, setDataSource would not complain.
-        // Because of this it's always downloaded for now!
+        val filename = message.getSelectedIndividualHashMap()["name"]
+        val file = File(context!!.cacheDir, filename!!)
 
-        //val filename = message.getSelectedIndividualHashMap()["name"]
-        // val file = File(context!!.cacheDir, filename!!)
-
-        // if (file.exists()) {
-        //     binding.progressBar.visibility = View.GONE
-        //     startPlayback(message)
-        // } else {
+        if (file.exists()) {
+            binding.progressBar.visibility = View.GONE
+            startPlayback(message)
+        } else {
             binding.playBtn.visibility = View.GONE
             binding.progressBar.visibility = View.VISIBLE
             downloadFileToCache(message)
-        // }
+        }
     }
 
     private fun startPlayback(message: ChatMessage) {

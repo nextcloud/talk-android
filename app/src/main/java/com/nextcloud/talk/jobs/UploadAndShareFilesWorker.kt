@@ -162,12 +162,17 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun copyFileToCache(sourceFileUri: Uri, filename: String) {
         val cachedFile = File(context.cacheDir, filename)
-        val outputStream = FileOutputStream(cachedFile)
-        val inputStream: InputStream = context.contentResolver.openInputStream(sourceFileUri)!!
 
-        inputStream.use { input ->
-            outputStream.use { output ->
-                input.copyTo(output)
+        if (cachedFile.exists()) {
+            Log.d(TAG, "file is already in cache")
+        } else {
+            val outputStream = FileOutputStream(cachedFile)
+            val inputStream: InputStream = context.contentResolver.openInputStream(sourceFileUri)!!
+
+            inputStream.use { input ->
+                outputStream.use { output ->
+                    input.copyTo(output)
+                }
             }
         }
     }
