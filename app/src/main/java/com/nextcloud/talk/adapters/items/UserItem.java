@@ -226,6 +226,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                         if (participant.getActorType() == Participant.ActorType.GROUPS) {
                             userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_group);
                         }
+                        if (participant.getActorType() == Participant.ActorType.CIRCLES) {
+                            userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_circle);
+                        }
                         break;
                     case 4:
                         userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);

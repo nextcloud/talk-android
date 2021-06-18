@@ -62,6 +62,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
@@ -900,6 +901,26 @@ class ConversationInfoController(args: Bundle) :
             return true
         }
 
+        if (participant.getActorType() == CIRCLES) {
+            val items = mutableListOf(
+                BasicListItemWithImage(
+                    R.drawable.ic_delete_grey600_24dp,
+                    context!!.getString(R.string.nc_remove_circle_and_members)
+                )
+            )
+            MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
+                cornerRadius(res = R.dimen.corner_radius)
+
+                title(text = participant.displayName)
+                listItemsWithImage(items = items) { dialog, index, _ ->
+                    if (index == 0) {
+                        removeAttendeeFromConversation(apiVersion, participant)
+                    }
+                }
+            }
+            return true
+        }
+
         val items = mutableListOf(
             BasicListItemWithImage(
                 R.drawable.ic_lock_grey600_24px,
@@ -975,8 +996,8 @@ class ConversationInfoController(args: Bundle) :
      */
     class UserItemComparator : Comparator<UserItem> {
         override fun compare(left: UserItem, right: UserItem): Int {
-            val leftIsGroup = left.model.actorType == GROUPS
-            val rightIsGroup = right.model.actorType == GROUPS
+            val leftIsGroup = left.model.actorType == GROUPS || left.model.actorType == CIRCLES
+            val rightIsGroup = right.model.actorType == GROUPS || right.model.actorType == CIRCLES
             if (leftIsGroup != rightIsGroup) {
                 // Groups below participants
                 return if (rightIsGroup) {
