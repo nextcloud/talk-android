@@ -32,7 +32,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaRecorder
 import android.net.Uri
@@ -64,6 +63,7 @@ import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.widget.doAfterTextChanged
@@ -755,8 +755,10 @@ class ChatController(args: Bundle) :
         val simpleDateFormat = SimpleDateFormat(pattern)
         val date: String = simpleDateFormat.format(Date())
 
-        val fileNameWithoutSuffix = String.format(context!!.resources.getString(R.string.nc_voice_message_filename),
-        date, currentConversation!!.displayName)
+        val fileNameWithoutSuffix = String.format(
+            context!!.resources.getString(R.string.nc_voice_message_filename),
+            date, currentConversation!!.displayName
+        )
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
 
         currentVoiceRecordFile = "${context!!.cacheDir.absolutePath}/$fileName"
@@ -1179,16 +1181,12 @@ class ChatController(args: Bundle) :
         emojiPopup = binding.messageInputView.inputEditText?.let {
             EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
                 if (resources != null) {
-                    smileyButton?.setColorFilter(
-                        resources!!.getColor(R.color.colorPrimary),
-                        PorterDuff.Mode.SRC_IN
-                    )
+                    smileyButton?.setImageDrawable(
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24))
                 }
             }.setOnEmojiPopupDismissListener {
-                smileyButton?.setColorFilter(
-                    resources!!.getColor(R.color.emoji_icons),
-                    PorterDuff.Mode.SRC_IN
-                )
+                smileyButton?.setImageDrawable(
+                    ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp))
             }.setOnEmojiClickListener { emoji,
                 imageView ->
                 binding.messageInputView.inputEditText?.editableText?.append(" ")
