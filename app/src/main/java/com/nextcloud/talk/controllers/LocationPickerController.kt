@@ -105,7 +105,7 @@ class LocationPickerController(args: Bundle) :
 
     var roomToken: String?
 
-    var myLocation: GeoPoint = GeoPoint(0.0, 0.0)
+    var myLocation: GeoPoint = GeoPoint(COORDINATE_ZERO, COORDINATE_ZERO)
     private var locationManager: LocationManager? = null
     private lateinit var locationOverlay: MyLocationNewOverlay
 
@@ -214,19 +214,54 @@ class LocationPickerController(args: Bundle) :
     }
 
     private fun initMap() {
-        if (!isLocationPermissionsGranted()) {
-            requestLocationPermissions()
-        }
-
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
-
         binding.map.onResume()
 
         locationManager = activity!!.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        try {
-            locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0L, 0f, this)
-        } catch (ex: SecurityException) {
-            Log.w(TAG, "Error requesting location updates", ex)
+
+        if (!isLocationPermissionsGranted()) {
+            requestLocationPermissions()
+        } else {
+            try {
+                when {
+                    locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> {
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_LOCATION_UPDATE_TIME,
+                            MIN_LOCATION_UPDATE_DISTANCE,
+                            this
+                        )
+                    }
+                    locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) -> {
+                        locationManager!!.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            MIN_LOCATION_UPDATE_TIME,
+                            MIN_LOCATION_UPDATE_DISTANCE,
+                            this
+                        )
+                        Log.d(
+                            TAG, "Using LocationManager.GPS_PROVIDER because LocationManager.NETWORK_PROVIDER" +
+                                " was not available"
+                        )
+                    }
+                    else -> {
+                        Log.e(
+                            TAG,
+                            "Error requesting location updates. Probably this is a phone without google services" +
+                                " and there is no alternative like UnifiedNlp installed. Furthermore no GPS is " +
+                                "supported."
+                        )
+                        Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG)
+                            .show()
+                    }
+                }
+            } catch (e: SecurityException) {
+                Log.e(TAG, "Error when requesting location updates. Permissions may be missing.", e)
+                Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+            } catch (e: Exception) {
+                Log.e(TAG, "Error when requesting location updates.", e)
+                Toast.makeText(context, context?.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show()
+            }
         }
 
         val copyrightOverlay = CopyrightOverlay(context)
@@ -255,22 +290,32 @@ class LocationPickerController(args: Bundle) :
 
         val zoomToCurrentPositionOnFirstFix = !receivedChosenGeocodingResult
         locationOverlay.runOnFirstFix {
-            myLocation = locationOverlay.myLocation
-            if (zoomToCurrentPositionOnFirstFix) {
-                activity!!.runOnUiThread {
-                    mapController?.setZoom(ZOOM_LEVEL_DEFAULT)
-                    mapController?.setCenter(myLocation)
+            if (locationOverlay.myLocation != null) {
+                myLocation = locationOverlay.myLocation
+                if (zoomToCurrentPositionOnFirstFix) {
+                    activity!!.runOnUiThread {
+                        mapController?.setZoom(ZOOM_LEVEL_DEFAULT)
+                        mapController?.setCenter(myLocation)
+                    }
                 }
+            } else {
+                // locationOverlay.myLocation was null. might be an osmdroid bug?
+                // However that seems to be okay because runOnFirstFix is called twice somehow and the second time
+                // locationOverlay.myLocation is not null.
             }
         }
 
-        if (receivedChosenGeocodingResult && geocodedLat != GEOCODE_ZERO && geocodedLon != GEOCODE_ZERO) {
+        if (receivedChosenGeocodingResult && geocodedLat != COORDINATE_ZERO && geocodedLon != COORDINATE_ZERO) {
             mapController?.setCenter(GeoPoint(geocodedLat, geocodedLon))
         }
 
         binding.centerMapButton.setOnClickListener {
-            mapController?.animateTo(myLocation)
-            moveToCurrentLocationWasClicked = true
+            if (myLocation.latitude == COORDINATE_ZERO && myLocation.longitude == COORDINATE_ZERO) {
+                Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+            } else {
+                mapController?.animateTo(myLocation)
+                moveToCurrentLocationWasClicked = true
+            }
         }
 
         binding.map.addMapListener(
@@ -415,10 +460,15 @@ class LocationPickerController(args: Bundle) :
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE &&
-            grantResults.size > 0 &&
-            grantResults[0] == PackageManager.PERMISSION_GRANTED
-        ) {
+        fun areAllGranted(grantResults: IntArray): Boolean {
+            if (grantResults.isEmpty()) return false
+            grantResults.forEach {
+                if (it == PackageManager.PERMISSION_DENIED) return false
+            }
+            return true
+        }
+
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && areAllGranted(grantResults)) {
             initMap()
         } else {
             Toast.makeText(context, context!!.getString(R.string.nc_location_permission_required), Toast.LENGTH_LONG)
@@ -487,6 +537,8 @@ class LocationPickerController(args: Bundle) :
         private const val PERSON_HOT_SPOT_Y: Float = 20.0F
         private const val ZOOM_LEVEL_RECEIVED_RESULT: Double = 14.0
         private const val ZOOM_LEVEL_DEFAULT: Double = 14.0
-        private const val GEOCODE_ZERO: Double = 0.0
+        private const val COORDINATE_ZERO: Double = 0.0
+        private const val MIN_LOCATION_UPDATE_TIME: Long = 30 * 1000L
+        private const val MIN_LOCATION_UPDATE_DISTANCE: Float = 0f
     }
 }
