@@ -719,9 +719,6 @@ class ChatController(args: Bundle) :
             }
         })
 
-        binding.messageInputView.attachmentButtonSpace.visibility = View.GONE
-        binding.messageInputView.sendButtonSpace.visibility = View.GONE
-
         binding.messageInputView.inputEditText?.setText(sharedText)
         binding.messageInputView.setAttachmentsListener {
             activity?.let { AttachmentDialog(it, this).show() }

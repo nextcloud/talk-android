@@ -36,21 +36,25 @@
 
         <ImageButton
             android:id="@id/attachmentButton"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_below="@id/quotedChatMessageView"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="5dp"
             android:contentDescription="@string/nc_add_attachment" />
 
         <ImageButton
             android:id="@+id/smileyButton"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
             android:layout_below="@id/quotedChatMessageView"
             android:layout_toEndOf="@id/attachmentButton"
             android:background="@color/transparent"
             android:src="@drawable/ic_insert_emoticon_black_24dp"
-            app:tint="@color/emoji_icons"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="8dp"
+            app:tint="?attr/colorControlNormal"
             android:contentDescription="@string/nc_add_emojis" />
 
         <androidx.emoji.widget.EmojiEditText
@@ -75,15 +79,17 @@
             android:layout_centerInParent="true"
             android:textAlignment="center"
             android:textSize="16sp"
-            android:text="&lt;&lt; Slide to cancel"
+            android:textStyle="bold"
+            android:textColor="@color/low_emphasis_text"
+            android:text="@string/nc_voice_message_slide_to_cancel"
             android:visibility="gone"
             tools:visibility="visible">
         </TextView>
 
         <ImageView
             android:id="@+id/microphoneEnabledInfoBackground"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_below="@id/quotedChatMessageView"
             android:scaleType="centerInside"
             android:layout_alignParentStart="true"
@@ -92,10 +98,14 @@
             android:visibility="gone"
             tools:visibility="visible"/>
 
+        <!-- the height of this ImageView is used to define the overall height of the
+         parent layout whenever the voice recording mode is enabled. parent layout has
+         height=wrap_content because it must enlarge whenever user types a message with
+          linebreaks. -->
         <ImageView
             android:id="@+id/microphoneEnabledInfo"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="35dp"
+            android:layout_height="43dp"
             android:layout_below="@id/quotedChatMessageView"
             android:scaleType="centerInside"
             android:layout_alignParentStart="true"
@@ -112,6 +122,8 @@
             android:layout_toEndOf="@id/microphoneEnabledInfo"
             android:layout_centerVertical="true"
             android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/low_emphasis_text"
             android:paddingStart="5dp"
             android:paddingEnd="5dp"
             android:background="@color/bg_default"
@@ -143,7 +155,8 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_below="@id/quotedChatMessageView"
-            android:layout_toEndOf="@id/attachmentButton" />
+            android:layout_toEndOf="@id/attachmentButton"
+            android:visibility="gone"/>
 
         <Space
             android:id="@id/sendButtonSpace"
