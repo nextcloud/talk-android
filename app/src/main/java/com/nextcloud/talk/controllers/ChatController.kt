@@ -25,6 +25,7 @@
 package com.nextcloud.talk.controllers
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
 import android.content.ClipData
 import android.content.Context
@@ -625,7 +626,7 @@ class ChatController(args: Bundle) :
 
         binding.messageInputView.recordAudioButton.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-
+                view.performClick()
                 when (event?.action) {
                     MotionEvent.ACTION_DOWN -> {
                         if (!isRecordAudioPermissionGranted()) {
@@ -747,6 +748,7 @@ class ChatController(args: Bundle) :
         super.onViewBound(view)
     }
 
+    @SuppressLint("SimpleDateFormat")
     private fun setVoiceRecordFileName() {
         val pattern = "yyyy-MM-dd HH-mm-ss"
         val simpleDateFormat = SimpleDateFormat(pattern)

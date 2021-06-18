@@ -94,9 +94,9 @@
             android:scaleType="centerInside"
             android:layout_alignParentStart="true"
             android:background="@color/bg_default"
-            android:contentDescription="@string/nc_description_record_voice"
             android:visibility="gone"
-            tools:visibility="visible"/>
+            tools:visibility="visible"
+            android:contentDescription="@null" />
 
         <!-- the height of this ImageView is used to define the overall height of the
          parent layout whenever the voice recording mode is enabled. parent layout has
@@ -110,7 +110,7 @@
             android:scaleType="centerInside"
             android:layout_alignParentStart="true"
             android:src="@drawable/ic_baseline_mic_red_24"
-            android:contentDescription="@string/nc_description_record_voice"
+            android:contentDescription="@null"
             android:visibility="gone"
             tools:visibility="visible"/>
 
