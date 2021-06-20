@@ -128,6 +128,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\n Deze vergadering is ingepland voor %1$s.</string>
+    <string name="nc_location_current_position_description">Je huidige locatie</string>
+    <string name="nc_location_permission_required">Locatiepermissie vereist</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
@@ -212,6 +214,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_sent_an_audio_you">Je verstuurde een geluidsbestand.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s verstuurde een afbeelding</string>
     <string name="nc_sent_an_image_you">Je verstuurde een afbeelding.</string>
+    <string name="nc_sent_location" formatted="true">%1$s verstuurde een locatie.</string>
+    <string name="nc_sent_location_you">Je verstuurde een locatie.</string>
     <string name="nc_server_connect">Testen serververbinding</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_failed_to_import_account">Kon het geselecteerde account niet importeren</string>
@@ -280,11 +284,14 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_warning">Waarschuwing</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
+    <string name="nc_share_current_location">Deel huidige locatie</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_link_via">Deel link via</string>
+    <string name="nc_share_location">Deel locatie</string>
     <string name="nc_share_subject">%1$s uitnodiging</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
+    <string name="nc_share_this_location">Deel deze locatie</string>
     <string name="nc_start_conversation">Begin een gesprek</string>
     <string name="nc_start_time">Begintijd</string>
     <string name="nc_timeout_error">Time-out</string>
