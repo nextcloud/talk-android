@@ -37,6 +37,8 @@ import android.view.View
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -94,7 +96,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+        binding.messageTime.setTextColor(ResourcesCompat.getColor(context?.resources!!, R.color.warm_grey_four, null))
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -172,7 +174,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
                     .endConfig()
                     .buildRound(
                         ">",
-                        context!!.resources.getColor(R.color.black)
+                        ResourcesCompat.getColor(context!!.resources, R.color.black, null)
                     )
                 binding.messageUserAvatar.visibility = View.VISIBLE
                 binding.messageUserAvatar.setImageDrawable(drawable)
@@ -197,13 +199,13 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
         } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
         }
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
-            resources.getColor(R.color.transparent),
+            ResourcesCompat.getColor(resources, R.color.transparent, null),
             bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
@@ -229,7 +231,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
+                .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
