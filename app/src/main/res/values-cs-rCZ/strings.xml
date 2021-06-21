@@ -179,7 +179,7 @@
     <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím k tomu vytvořeného odkazu.</string>
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
     <string name="nc_push_to_talk">Vysílačka</string>
-    <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a držte, jako u vysílačky</string>
+    <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
     <string name="nc_remote_audio_off">Ztlumení mikrofonu na dálku</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>
@@ -210,7 +210,7 @@
     <string name="nc_sent_an_attachment_you">Odeslali jste přílohu.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s poslal(a) zvuk.</string>
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
-    <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázek. </string>
+    <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázek.</string>
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal(a) umístění</string>
     <string name="nc_sent_location_you">Odeslali jste umístění.</string>
