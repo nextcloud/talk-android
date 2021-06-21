@@ -33,12 +33,14 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.FullScreenImageActivity;
@@ -58,7 +60,9 @@ import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -86,12 +90,24 @@ import static com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback.REPLYABLE_
 public abstract class MagicPreviewMessageViewHolder extends MessageHolders.IncomingImageMessageViewHolder<ChatMessage> {
 
     private static final String TAG = "PreviewMsgViewHolder";
+    public static final String KEY_CONTACT_NAME = "contact-name";
+    public static final String KEY_CONTACT_PHOTO = "contact-photo";
+    public static final String KEY_MIMETYPE = "mimetype";
+    public static final String KEY_ID = "id";
+    public static final String KEY_PATH = "path";
+    public static final String ACTOR_TYPE_BOTS = "bots";
+    public static final String ACTOR_ID_CHANGELOG = "changelog";
+    public static final String KEY_NAME = "name";
 
     @Inject
     Context context;
 
     @Inject
     OkHttpClient okHttpClient;
+
+    ProgressBar progressBar;
+
+    View clickView;
 
     public MagicPreviewMessageViewHolder(View itemView) {
         super(itemView);
@@ -112,34 +128,62 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
 
-                if ("bots".equals(message.actorType) && "changelog".equals(message.actorId)) {
-                    Drawable[] layers = new Drawable[2];
-                    layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
-                    layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
-                    LayerDrawable layerDrawable = new LayerDrawable(layers);
+                if (ACTOR_TYPE_BOTS.equals(message.actorType) && ACTOR_ID_CHANGELOG.equals(message.actorId)) {
+                    if (context != null) {
+                        Drawable[] layers = new Drawable[2];
+                        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
+                        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
+                        LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-                    userAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+                        userAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+                    }
                 }
             }
         }
 
+        progressBar = getProgressBar();
+        image = getImage();
+        clickView = getImage();
+        getMessageText().setVisibility(View.VISIBLE);
+
         if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
-            String fileName = message.getSelectedIndividualHashMap().get("name");
+
+            String fileName = message.getSelectedIndividualHashMap().get(KEY_NAME);
             getMessageText().setText(fileName);
-            if (message.getSelectedIndividualHashMap().containsKey("mimetype")) {
-                String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
+            if (message.getSelectedIndividualHashMap().containsKey(KEY_CONTACT_NAME)) {
+                getPreviewContainer().setVisibility(View.GONE);
+                getPreviewContactName().setText(message.getSelectedIndividualHashMap().get(KEY_CONTACT_NAME));
+                progressBar = getPreviewContactProgressBar();
+                getMessageText().setVisibility(View.INVISIBLE);
+                clickView = getPreviewContactContainer();
+            } else {
+                getPreviewContainer().setVisibility(View.VISIBLE);
+                getPreviewContactContainer().setVisibility(View.GONE);
+            }
+
+            if (message.getSelectedIndividualHashMap().containsKey(KEY_CONTACT_PHOTO)) {
+                image = getPreviewContactPhoto();
+                Drawable drawable = getDrawableFromContactDetails(
+                        context,
+                        message.getSelectedIndividualHashMap().get(KEY_CONTACT_PHOTO));
+                image.getHierarchy().setPlaceholderImage(drawable);
+            } else if (message.getSelectedIndividualHashMap().containsKey(KEY_MIMETYPE)) {
+                String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
                 int drawableResourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(mimetype);
                 Drawable drawable = ContextCompat.getDrawable(context, drawableResourceId);
                 image.getHierarchy().setPlaceholderImage(drawable);
             } else {
-                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get("path"), message.activeUser);
+                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get(KEY_PATH), message.activeUser);
             }
 
             String accountString =
-                    message.activeUser.getUsername() + "@" + message.activeUser.getBaseUrl().replace("https://", "").replace("http://", "");
+                    message.activeUser.getUsername() + "@" +
+                            message.activeUser.getBaseUrl()
+                                    .replace("https://", "")
+                                    .replace("http://", "");
 
-            image.setOnClickListener(v -> {
-                String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
+            clickView.setOnClickListener(v -> {
+                String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
                 if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileName)) {
                     openOrDownloadFile(message);
                 } else {
@@ -147,25 +191,27 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 }
             });
 
-            image.setOnLongClickListener(l -> {
+            clickView.setOnLongClickListener(l -> {
                 onMessageViewLongClick(message, accountString);
                 return true;
             });
 
             // check if download worker is already running
-            String fileId = message.getSelectedIndividualHashMap().get("id");
+            String fileId = message.getSelectedIndividualHashMap().get(KEY_ID);
             ListenableFuture<List<WorkInfo>> workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId);
 
             try {
                 for (WorkInfo workInfo : workers.get()) {
-                    if (workInfo.getState() == WorkInfo.State.RUNNING || workInfo.getState() == WorkInfo.State.ENQUEUED) {
-                        getProgressBar().setVisibility(View.VISIBLE);
+                    if (workInfo.getState() == WorkInfo.State.RUNNING ||
+                            workInfo.getState() == WorkInfo.State.ENQUEUED) {
+                        progressBar.setVisibility(View.VISIBLE);
 
-                        String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
+                        String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
 
-                        WorkManager.getInstance(context).getWorkInfoByIdLiveData(workInfo.getId()).observeForever(info -> {
-                            updateViewsByProgress(fileName, mimetype, info);
-                        });
+                        WorkManager
+                                .getInstance(context)
+                                .getWorkInfoByIdLiveData(workInfo.getId())
+                                .observeForever(info -> updateViewsByProgress(fileName, mimetype, info));
                     }
                 }
             } catch (ExecutionException | InterruptedException e) {
@@ -179,13 +225,13 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             DisplayUtils.setClickableString("Tenor", "https://tenor.com", getMessageText());
         } else {
             if (message.getMessageType().equals(ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE)) {
-                image.setOnClickListener(v -> {
+                clickView.setOnClickListener(v -> {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getImageUrl()));
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(browserIntent);
                 });
             } else {
-                image.setOnClickListener(null);
+                clickView.setOnClickListener(null);
             }
             getMessageText().setText("");
         }
@@ -193,13 +239,44 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
     }
 
+
+    private Drawable getDrawableFromContactDetails(Context context, String base64) {
+        Drawable drawable = null;
+        if (!base64.equals("")) {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(
+                    Base64.decode(base64.getBytes(), Base64.DEFAULT));
+            drawable = Drawable.createFromResourceStream(context.getResources(),
+                                                    null, inputStream, null, null);
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                int drawableResourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType("text/vcard");
+                drawable = ContextCompat.getDrawable(context, drawableResourceId);
+            }
+        }
+
+        return drawable;
+    }
+
     public abstract EmojiTextView getMessageText();
 
     public abstract ProgressBar getProgressBar();
 
+    public abstract SimpleDraweeView getImage();
+
+    public abstract View getPreviewContainer();
+
+    public abstract View getPreviewContactContainer();
+
+    public abstract SimpleDraweeView getPreviewContactPhoto();
+
+    public abstract EmojiTextView getPreviewContactName();
+
+    public abstract ProgressBar getPreviewContactProgressBar();
+
     private void openOrDownloadFile(ChatMessage message) {
-        String filename = message.getSelectedIndividualHashMap().get("name");
-        String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
+        String filename = message.getSelectedIndividualHashMap().get(KEY_NAME);
+        String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
         File file = new File(context.getCacheDir(), filename);
         if (file.exists()) {
             openFile(filename, mimetype);
@@ -302,22 +379,31 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
     private void openFileInFilesApp(ChatMessage message, String accountString) {
         if (AccountUtils.INSTANCE.canWeOpenFilesApp(context, accountString)) {
             Intent filesAppIntent = new Intent(Intent.ACTION_VIEW, null);
-            final ComponentName componentName = new ComponentName(context.getString(R.string.nc_import_accounts_from), "com.owncloud.android.ui.activity.FileDisplayActivity");
+            final ComponentName componentName = new ComponentName(
+                    context.getString(R.string.nc_import_accounts_from),
+                    "com.owncloud.android.ui.activity.FileDisplayActivity"
+            );
             filesAppIntent.setComponent(componentName);
             filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             filesAppIntent.setPackage(context.getString(R.string.nc_import_accounts_from));
             filesAppIntent.putExtra(BundleKeys.INSTANCE.getKEY_ACCOUNT(), accountString);
-            filesAppIntent.putExtra(BundleKeys.INSTANCE.getKEY_FILE_ID(), message.getSelectedIndividualHashMap().get("id"));
+            filesAppIntent.putExtra(
+                    BundleKeys.INSTANCE.getKEY_FILE_ID(),
+                    message.getSelectedIndividualHashMap().get(KEY_ID)
+                                   );
             context.startActivity(filesAppIntent);
         } else {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(message.getSelectedIndividualHashMap().get("link")));
+            Intent browserIntent = new Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse(message.getSelectedIndividualHashMap().get("link"))
+            );
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(browserIntent);
         }
     }
 
     private void onMessageViewLongClick(ChatMessage message, String accountString) {
-        if (isSupportedForInternalViewer(message.getSelectedIndividualHashMap().get("mimetype"))) {
+        if (isSupportedForInternalViewer(message.getSelectedIndividualHashMap().get(KEY_MIMETYPE))) {
             return;
         }
 
@@ -339,8 +425,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         String userId = message.activeUser.getUserId();
         String attachmentFolder = CapabilitiesUtil.getAttachmentFolder(message.activeUser);
 
-        String fileName = message.getSelectedIndividualHashMap().get("name");
-        String mimetype = message.getSelectedIndividualHashMap().get("mimetype");
+        String fileName = message.getSelectedIndividualHashMap().get(KEY_NAME);
+        String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
 
         String size = message.getSelectedIndividualHashMap().get("size");
 
@@ -349,8 +435,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         }
         Integer fileSize = Integer.valueOf(size);
 
-        String fileId = message.getSelectedIndividualHashMap().get("id");
-        String path = message.getSelectedIndividualHashMap().get("path");
+        String fileId = message.getSelectedIndividualHashMap().get(KEY_ID);
+        String path = message.getSelectedIndividualHashMap().get(KEY_PATH);
 
         // check if download worker is already running
         ListenableFuture<List<WorkInfo>> workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId);
@@ -386,7 +472,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
         WorkManager.getInstance().enqueue(downloadWorker);
 
-        getProgressBar().setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.getId()).observeForever(workInfo -> {
             updateViewsByProgress(fileName, mimetype, workInfo);
@@ -406,16 +492,16 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 if (image.isShown()) {
                     openFile(fileName, mimetype);
                 } else {
-                    Log.d(TAG, "file " + fileName + " was downloaded but it's not opened because view is not shown on" +
-                            " screen");
+                    Log.d(TAG, "file " + fileName +
+                            " was downloaded but it's not opened because view is not shown on screen");
                 }
                 getMessageText().setText(fileName);
-                getProgressBar().setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 break;
 
             case FAILED:
                 getMessageText().setText(fileName);
-                getProgressBar().setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
                 break;
             default:
                 // do nothing
@@ -471,7 +557,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                             List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.data;
                             if (!browserFileList.isEmpty()) {
                                 new Handler(context.getMainLooper()).post(() -> {
-                                    int resourceId = DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFileList.get(0).mimeType);
+                                    int resourceId = DrawableUtils
+                                            .INSTANCE
+                                            .getDrawableResourceIdForMimeType(browserFileList.get(0).mimeType);
                                     Drawable drawable = ContextCompat.getDrawable(context, resourceId);
                                     image.getHierarchy().setPlaceholderImage(drawable);
                                 });
