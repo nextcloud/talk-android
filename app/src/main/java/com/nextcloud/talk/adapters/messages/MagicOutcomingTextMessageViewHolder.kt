@@ -100,7 +100,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             textSize = (textSize * 2.5).toFloat()
             layoutParams.isWrapBefore = true
             binding.messageTime.setTextColor(
-                ResourcesCompat.getColor(context!!.resources, R.color.warm_grey_four, null))
+                ResourcesCompat.getColor(context!!.resources, R.color.warm_grey_four, null)
+            )
             realView.isSelected = true
         }
         val resources = sharedApplication!!.resources
