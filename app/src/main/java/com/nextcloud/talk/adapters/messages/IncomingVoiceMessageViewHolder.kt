@@ -335,21 +335,17 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         try {
             for (workInfo in workers.get()) {
                 if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    Log.d(
-                        TAG, "Download worker for " + fileId + " is already running or " +
-                            "scheduled"
-                    )
+                    Log.d(TAG, "Download worker for " + fileId + " is already running or scheduled")
                     return
                 }
             }
         } catch (e: ExecutionException) {
-            Log.e(TAG, "Error when checking if worker already exsists", e)
+            Log.e(TAG, "Error when checking if worker already exists", e)
         } catch (e: InterruptedException) {
-            Log.e(TAG, "Error when checking if worker already exsists", e)
+            Log.e(TAG, "Error when checking if worker already exists", e)
         }
-        val data: Data
-        val downloadWorker: OneTimeWorkRequest
-        data = Data.Builder()
+
+        val data: Data = Data.Builder()
             .putString(DownloadFileToCacheWorker.KEY_BASE_URL, baseUrl)
             .putString(DownloadFileToCacheWorker.KEY_USER_ID, userId)
             .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
@@ -357,10 +353,12 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
             .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
             .build()
-        downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
+
+        val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(fileId)
             .build()
+
         WorkManager.getInstance().enqueue(downloadWorker)
 
         WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
