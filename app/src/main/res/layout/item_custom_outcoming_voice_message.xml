@@ -2,8 +2,10 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Marcel Hibbe
   ~ @author Andy Scherzinger
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -60,32 +62,37 @@
                 android:progressTint="@color/fontAppbar"
                 android:visibility="gone"/>
 
-            <ImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/playBtn"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:background="@drawable/ic_baseline_play_arrow_voice_message_24"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/play_voice_message"
                 android:visibility="visible"
-                android:contentDescription="@string/play_voice_message">
-            </ImageButton>
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                app:iconSize="40dp"
+                app:iconTint="@color/nc_outcoming_text_default" />
 
-            <ImageButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/pauseBtn"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:background="@drawable/ic_baseline_pause_voice_message_24"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/pause_voice_message"
                 android:visibility="gone"
-                android:contentDescription="@string/pause_voice_message">
-            </ImageButton>
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_baseline_pause_voice_message_24"
+                app:iconSize="40dp"
+                app:iconTint="@color/nc_outcoming_text_default" />
 
             <SeekBar
                 android:id="@+id/seekbar"
+                style="@style/Nextcloud.Material.Outgoing.SeekBar"
                 android:layout_width="200dp"
                 android:layout_height="40dp"
-                android:progressDrawable="@drawable/voice_message_outgoing_seek_bar_ruler"
                 android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
-                tools:progress="50">
-            </SeekBar>
+                tools:progress="50" />
 
         </LinearLayout>
 

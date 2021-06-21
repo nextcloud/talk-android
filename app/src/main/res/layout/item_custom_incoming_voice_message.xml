@@ -24,6 +24,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
@@ -77,29 +78,35 @@
                             android:layout_gravity="center"
                             android:visibility="gone"/>
 
-                        <ImageButton
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/playBtn"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/ic_baseline_play_arrow_voice_message_24"
+                            style="@style/Widget.AppTheme.Button.IconButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/play_voice_message"
                             android:visibility="visible"
-                            android:contentDescription="@string/play_voice_message">
-                        </ImageButton>
+                            app:cornerRadius="@dimen/button_corner_radius"
+                            app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                            app:iconSize="40dp"
+                            app:iconTint="@color/nc_incoming_text_default" />
 
-                        <ImageButton
+                        <com.google.android.material.button.MaterialButton
                             android:id="@+id/pauseBtn"
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/ic_baseline_pause_voice_message_24"
+                            style="@style/Widget.AppTheme.Button.IconButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/pause_voice_message"
                             android:visibility="gone"
-                            android:contentDescription="@string/pause_voice_message">
-                        </ImageButton>
+                            app:cornerRadius="@dimen/button_corner_radius"
+                            app:icon="@drawable/ic_baseline_pause_voice_message_24"
+                            app:iconSize="40dp"
+                            app:iconTint="@color/nc_incoming_text_default" />
 
                         <SeekBar
                             android:id="@+id/seekbar"
+                            style="@style/Nextcloud.Material.Incoming.SeekBar"
                             android:layout_width="200dp"
-                            android:layout_height="wrap_content">
-                        </SeekBar>
+                            android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
@@ -109,7 +116,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/messageText"
                     android:layout_marginStart="8dp"
-                    app:layout_alignSelf="center" />
+                    app:layout_alignSelf="center"
+                    tools:text="12:38"/>
 
         </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

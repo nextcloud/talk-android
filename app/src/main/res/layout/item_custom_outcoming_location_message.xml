@@ -59,7 +59,7 @@
             android:lineSpacingMultiplier="1.2"
             android:textColorHighlight="@color/nc_grey"
             android:textIsSelectable="true"
-            tools:text="Talk to ayou later!" />
+            tools:text="Talk to you later!" />
 
         <TextView
             android:id="@id/messageTime"
