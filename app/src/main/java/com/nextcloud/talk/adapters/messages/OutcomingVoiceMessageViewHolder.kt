@@ -89,7 +89,7 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
