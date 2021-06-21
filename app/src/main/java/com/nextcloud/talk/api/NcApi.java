@@ -359,7 +359,8 @@ public interface NcApi {
     Observable<Void> createRemoteShare(@Nullable @Header("Authorization") String authorization, @Url String url,
                                        @Field("path") String remotePath,
                                        @Field("shareWith") String roomToken,
-                                       @Field("shareType") String shareType);
+                                       @Field("shareType") String shareType,
+                                       @Field("talkMetaData") String talkMetaData);
 
     @FormUrlEncoded
     @PUT
