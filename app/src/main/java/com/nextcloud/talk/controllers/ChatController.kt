@@ -67,6 +67,7 @@ import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
+import androidx.core.widget.doAfterTextChanged
 import androidx.emoji.text.EmojiCompat
 import androidx.emoji.widget.EmojiTextView
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -76,6 +77,7 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
+import coil.load
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
