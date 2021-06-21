@@ -23,6 +23,7 @@ package com.nextcloud.talk.adapters.messages;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 
 import androidx.emoji.widget.EmojiTextView;
@@ -35,11 +36,43 @@ public class IncomingPreviewMessageViewHolder extends MagicPreviewMessageViewHol
         binding = ItemCustomIncomingPreviewMessageBinding.bind(itemView);
     }
 
-    public EmojiTextView getMessageText()  {
+    @Override
+    public EmojiTextView getMessageText() {
         return binding.messageText;
     }
 
+    @Override
     public ProgressBar getProgressBar() {
         return binding.progressBar;
+    }
+
+    @Override
+    public SimpleDraweeView getImage() {
+        return binding.image;
+    }
+
+    @Override
+    public View getPreviewContainer() {
+        return binding.previewContainer;
+    }
+
+    @Override
+    public View getPreviewContactContainer() {
+        return binding.contactContainer;
+    }
+
+    @Override
+    public SimpleDraweeView getPreviewContactPhoto() {
+        return binding.contactPhoto;
+    }
+
+    @Override
+    public EmojiTextView getPreviewContactName() {
+        return binding.contactName;
+    }
+
+    @Override
+    public ProgressBar getPreviewContactProgressBar() {
+        return binding.contactProgressBar;
     }
 }
