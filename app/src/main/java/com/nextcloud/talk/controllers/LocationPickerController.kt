@@ -239,10 +239,7 @@ class LocationPickerController(args: Bundle) :
                             MIN_LOCATION_UPDATE_DISTANCE,
                             this
                         )
-                        Log.d(
-                            TAG, "Using LocationManager.GPS_PROVIDER because LocationManager.NETWORK_PROVIDER" +
-                                " was not available"
-                        )
+                        Log.d(TAG, "LocationManager.NETWORK_PROVIDER falling back to LocationManager.GPS_PROVIDER")
                     }
                     else -> {
                         Log.e(

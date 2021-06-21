@@ -182,7 +182,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         currentUser: UserEntity,
         ncTargetpath: String?,
         filename: String?,
-        metaData: String?) {
+        metaData: String?
+    ) {
 
         val paths: MutableList<String> = ArrayList()
         paths.add("$ncTargetpath/$filename")

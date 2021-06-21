@@ -1031,15 +1031,19 @@ class ChatController(args: Bundle) :
                     uploadFiles(filesToUpload, false)
                 }
             } else {
-                Toast.makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
+                Toast
+                    .makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
                     .show()
             }
         } else if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // do nothing. user will tap on the microphone again if he wants to record audio..
             } else {
-                Toast.makeText(context, context!!.getString(R.string.nc_voice_message_missing_audio_permission), Toast
-                    .LENGTH_LONG).show()
+                Toast.makeText(
+                    context,
+                    context!!.getString(R.string.nc_voice_message_missing_audio_permission),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -1181,11 +1185,13 @@ class ChatController(args: Bundle) :
             EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
                 if (resources != null) {
                     smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24))
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24)
+                    )
                 }
             }.setOnEmojiPopupDismissListener {
                 smileyButton?.setImageDrawable(
-                    ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp))
+                    ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp)
+                )
             }.setOnEmojiClickListener { emoji,
                 imageView ->
                 binding.messageInputView.inputEditText?.editableText?.append(" ")
