@@ -37,6 +37,7 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
 import android.os.Handler
 import android.os.SystemClock
@@ -663,7 +664,7 @@ class ChatController(args: Bundle) :
                         showRecordAudioUi(false)
 
                         voiceRecordEndTime = System.currentTimeMillis()
-                        var voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
+                        val voiceRecordDuration = voiceRecordEndTime - voiceRecordStartTime
                         if (voiceRecordDuration < MINIMUM_VOICE_RECORD_DURATION) {
                             Log.d(TAG, "voiceRecordDuration: " + voiceRecordDuration)
                             Toast.makeText(
@@ -694,7 +695,7 @@ class ChatController(args: Bundle) :
                             sliderInitX = binding.messageInputView.slideToCancelDescription.x
                         }
 
-                        var movedX: Float = event.x
+                        val movedX: Float = event.x
                         deltaX = movedX - downX
 
                         // only allow slide to left
@@ -844,6 +845,7 @@ class ChatController(args: Bundle) :
         cachedFile.delete()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun stopAudioRecording() {
         binding.messageInputView.audioRecordDuration.stop()
         binding.messageInputView.microphoneEnabledInfo.clearAnimation()
@@ -869,10 +871,10 @@ class ChatController(args: Bundle) :
 
     fun vibrate() {
         val vibrator = context?.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= 26) {
-            vibrator.vibrate(VibrationEffect.createOneShot(20, VibrationEffect.DEFAULT_AMPLITUDE))
+        if (Build.VERSION.SDK_INT >= O) {
+            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            vibrator.vibrate(20)
+            vibrator.vibrate(SHORT_VIBRATE)
         }
     }
 
@@ -893,16 +895,16 @@ class ChatController(args: Bundle) :
                 Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
             ) {
 
-                conversationVoiceCallMenuItem?.icon?.alpha = 99
-                conversationVideoMenuItem?.icon?.alpha = 99
+                conversationVoiceCallMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
+                conversationVideoMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
                 binding.messageInputView.visibility = View.GONE
             } else {
                 if (conversationVoiceCallMenuItem != null) {
-                    conversationVoiceCallMenuItem?.icon?.alpha = 255
+                    conversationVoiceCallMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
                 }
 
                 if (conversationVideoMenuItem != null) {
-                    conversationVideoMenuItem?.icon?.alpha = 255
+                    conversationVideoMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
                 }
 
                 if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)
@@ -1869,14 +1871,14 @@ class ChatController(args: Bundle) :
                 return true
             }
             R.id.conversation_video_call -> {
-                if (conversationVideoMenuItem?.icon?.alpha == 255) {
+                if (conversationVideoMenuItem?.icon?.alpha == FULLY_OPAQUE_INT) {
                     startACall(false)
                     return true
                 }
                 return false
             }
             R.id.conversation_voice_call -> {
-                if (conversationVoiceCallMenuItem?.icon?.alpha == 255) {
+                if (conversationVoiceCallMenuItem?.icon?.alpha == FULLY_OPAQUE_INT) {
                     startACall(true)
                     return true
                 }
@@ -2218,8 +2220,8 @@ class ChatController(args: Bundle) :
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         return when (type) {
-            CONTENT_TYPE_LOCATION -> return message.hasGeoLocation()
-            CONTENT_TYPE_VOICE_MESSAGE -> return message.isVoiceMessage()
+            CONTENT_TYPE_LOCATION -> message.hasGeoLocation()
+            CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             else -> false
@@ -2340,5 +2342,8 @@ class ChatController(args: Bundle) :
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+        private const val SHORT_VIBRATE: Long = 20
+        private const val FULLY_OPAQUE_INT: Int = 255
+        private const val SEMI_TRANSPARENT_INT: Int = 99
     }
 }
