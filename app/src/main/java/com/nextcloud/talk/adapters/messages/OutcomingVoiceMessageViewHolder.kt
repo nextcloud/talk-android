@@ -105,8 +105,12 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         activity = itemView.context as Activity
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                // unused atm
+            }
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                // unused atm
+            }
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (mediaPlayer != null && fromUser) {
                     mediaPlayer!!.seekTo(progress * SEEKBAR_BASE)
