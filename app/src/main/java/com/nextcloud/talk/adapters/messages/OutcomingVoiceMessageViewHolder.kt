@@ -109,7 +109,7 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             override fun onStartTrackingTouch(seekBar: SeekBar) {}
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 if (mediaPlayer != null && fromUser) {
-                    mediaPlayer!!.seekTo(progress * 1000)
+                    mediaPlayer!!.seekTo(progress * SEEKBAR_BASE)
                 }
             }
         })
@@ -245,10 +245,10 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         activity.runOnUiThread(object : Runnable {
             override fun run() {
                 if (mediaPlayer != null) {
-                    val currentPosition: Int = mediaPlayer!!.currentPosition / 1000
+                    val currentPosition: Int = mediaPlayer!!.currentPosition / SEEKBAR_BASE
                     binding.seekbar.progress = currentPosition
                 }
-                handler.postDelayed(this, 1000)
+                handler.postDelayed(this, SECOND)
             }
         })
 
@@ -277,12 +277,12 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             }
         }
 
-        binding.seekbar.max = mediaPlayer!!.duration / 1000
+        binding.seekbar.max = mediaPlayer!!.duration / SEEKBAR_BASE
 
         mediaPlayer!!.setOnCompletionListener {
             binding.playBtn.visibility = View.VISIBLE
             binding.pauseBtn.visibility = View.GONE
-            binding.seekbar.progress = 0
+            binding.seekbar.progress = SEEKBAR_START
             handler.removeCallbacksAndMessages(null)
             mediaPlayer?.stop()
             mediaPlayer?.release()
@@ -368,5 +368,8 @@ class OutcomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
 
     companion object {
         private const val TAG = "VoiceOutMessageView"
+        private const val SECOND: Long = 1000
+        private const val SEEKBAR_BASE: Int = 1000
+        private const val SEEKBAR_START: Int = 0
     }
 }
