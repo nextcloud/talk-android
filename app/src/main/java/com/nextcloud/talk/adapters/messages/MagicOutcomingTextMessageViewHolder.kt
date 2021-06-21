@@ -150,9 +150,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
             binding.messageQuote.quotedMessage.setTextColor(
-                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+                ContextCompat.getColor(context!!, R.color.nc_outcoming_text_default)
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
+            binding.messageQuote.quotedMessageAuthor.setTextColor(ContextCompat.getColor(context!!, R.color.nc_grey))
 
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
 
@@ -174,7 +174,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         }
 
         readStatusDrawableInt?.let { drawableInt ->
-            ContextCompat.getDrawable(context!!, drawableInt)?.let {
+            ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
                 it.setColorFilter(ContextCompat.getColor(context!!, R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
             }

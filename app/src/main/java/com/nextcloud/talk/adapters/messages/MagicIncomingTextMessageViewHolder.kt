@@ -32,6 +32,8 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
@@ -78,11 +80,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
             if (message.actorType == "guests") {
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
-                val layers = arrayOfNulls<Drawable>(2)
-                layers[0] = context?.getDrawable(R.drawable.ic_launcher_background)
-                layers[1] = context?.getDrawable(R.drawable.ic_launcher_foreground)
-                val layerDrawable = LayerDrawable(layers)
-                binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                if (context != null) {
+                    val layers = arrayOfNulls<Drawable>(2)
+                    layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
+                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                    val layerDrawable = LayerDrawable(layers)
+                    binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                }
             } else if (message.actorType == "bots") {
                 val drawable = TextDrawable.builder()
                     .beginConfig()
@@ -90,7 +94,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
                     .endConfig()
                     .buildRound(
                         ">",
-                        context!!.resources.getColor(R.color.black)
+                        ResourcesCompat.getColor(context!!.resources, R.color.black, null)
                     )
                 binding.messageUserAvatar.visibility = View.VISIBLE
                 binding.messageUserAvatar.setImageDrawable(drawable)
@@ -107,9 +111,9 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
         val resources = itemView.resources
 
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
         } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble, null)
         }
 
         var bubbleResource = R.drawable.shape_incoming_message
@@ -120,7 +124,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
 
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
-            resources.getColor(R.color.transparent),
+            ResourcesCompat.getColor(resources, R.color.transparent, null),
             bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
@@ -128,7 +132,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
         val messageParameters = message.messageParameters
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+        binding.messageTime.setTextColor(ResourcesCompat.getColor(resources, R.color.warm_grey_four, null))
 
         var messageString: Spannable = SpannableString(message.text)
 
@@ -201,7 +205,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
+                .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
             if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
