@@ -84,4 +84,8 @@
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#D7D7D7</color>
     <color name="nc_shimmer_darker_color">#B4B4B4</color>
+
+    <!-- voicemessage -->
+    <color name="nc_voice_message_outgoing_controls">#606060</color>
+
 </resources>
