@@ -40,6 +40,8 @@
         <item name="android:actionMenuTextAppearance">@style/menuTextAppearance</item>
         <item name="searchViewStyle">@style/SearchView</item>
         <item name="android:navigationBarColor">@color/bg_default</item>
+        <item name="android:seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
+        <item name="seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
     </style>
 
     <style name="CallTheme" parent="AppTheme">
