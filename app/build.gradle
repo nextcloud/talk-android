@@ -300,7 +300,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.5.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.11.1'
+    testImplementation 'org.mockito:mockito-core:3.11.2'
     testImplementation "org.powermock:powermock-core:${powermockVersion}"
     testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
     testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
