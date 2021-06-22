@@ -52,10 +52,10 @@ android {
         targetSdkVersion 29
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // mayor.minor.hotfix.increment (for increment: 1-50=Alpha / 51-89=RC / 90-99=stable)
+        // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 120000016
-        versionName "12.0.0 Alpha 16"
+        versionCode 120020001
+        versionName "12.2.0 Alpha 1"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
