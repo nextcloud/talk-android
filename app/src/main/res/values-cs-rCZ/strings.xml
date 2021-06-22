@@ -217,7 +217,7 @@
     <string name="nc_server_connect">Vyzkoušet připojení k serveru</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
     <string name="nc_server_failed_to_import_account">Zvolený účet se nepodařilo naimportovat</string>
-    <string name="nc_server_helper_text">Odkaz k vašemu %1$s webovému rozhraní k otevření v internetovém prohlížeči.</string>
+    <string name="nc_server_helper_text">Odkaz na webové rozhraní vámi využívané instance %1$s, když ho otevíráte ve webovém prohlížeči.</string>
     <string name="nc_server_import_account">Importovat účet z aplikace %1$s</string>
     <string name="nc_server_import_account_plain">Importovat účet</string>
     <string name="nc_server_import_accounts">Importovat účty z aplikace %1$s</string>
