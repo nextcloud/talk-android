@@ -257,6 +257,7 @@
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_remove_participant">Remove participant</string>
+    <string name="nc_remove_circle_and_members">Remove circle and members</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
 
@@ -315,6 +316,7 @@
     <string name="nc_limit_hit">%s characters limit has been hit</string>
     <string name="nc_email">Email</string>
     <string name="nc_group">Group</string>
+    <string name="nc_circle">Circle</string>
     <string name="nc_groups">Groups</string>
     <string name="nc_circles">Circles</string>
     <string name="nc_participants">Participants</string>
