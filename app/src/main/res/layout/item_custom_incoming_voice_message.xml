@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ @author Marcel Hibbe
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="16dp"
+    android:layout_marginTop="2dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="2dp">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@id/messageUserAvatar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginEnd="8dp"
+            app:roundAsCircle="true" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:id="@id/bubble"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
+            android:layout_toEndOf="@id/messageUserAvatar"
+            android:orientation="vertical"
+            app:alignContent="stretch"
+            app:alignItems="stretch"
+            app:flexWrap="wrap"
+            app:justifyContent="flex_end">
+
+                <include
+                    android:id="@+id/message_quote"
+                    layout="@layout/item_message_quote"
+                    android:visibility="gone" />
+
+                <androidx.emoji.widget.EmojiTextView
+                    android:id="@+id/messageAuthor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:textColor="@color/textColorMaxContrast"
+                    android:textSize="12sp" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:visibility="gone"/>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/playBtn"
+                            style="@style/Widget.AppTheme.Button.IconButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/play_voice_message"
+                            android:visibility="visible"
+                            app:cornerRadius="@dimen/button_corner_radius"
+                            app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                            app:iconSize="40dp"
+                            app:iconTint="@color/nc_incoming_text_default" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/pauseBtn"
+                            style="@style/Widget.AppTheme.Button.IconButton"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:contentDescription="@string/pause_voice_message"
+                            android:visibility="gone"
+                            app:cornerRadius="@dimen/button_corner_radius"
+                            app:icon="@drawable/ic_baseline_pause_voice_message_24"
+                            app:iconSize="40dp"
+                            app:iconTint="@color/nc_incoming_text_default" />
+
+                        <SeekBar
+                            android:id="@+id/seekbar"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            tools:progress="50" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@id/messageTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/messageText"
+                    android:layout_marginStart="8dp"
+                    app:layout_alignSelf="center"
+                    tools:text="12:38"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+</RelativeLayout>

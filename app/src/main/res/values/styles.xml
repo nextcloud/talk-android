@@ -38,6 +38,8 @@
         <item name="android:actionMenuTextAppearance">@style/menuTextAppearance</item>
         <item name="searchViewStyle">@style/SearchView</item>
         <item name="android:navigationBarColor">@color/bg_default</item>
+        <item name="android:seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
+        <item name="seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.MaterialComponents.Dark">
@@ -177,4 +179,18 @@
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="Nextcloud.Material.Incoming.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">@color/medium_emphasis_text</item>
+        <item name="android:progressTint">@color/colorPrimary</item>
+        <item name="android:colorControlActivated">@color/colorPrimary</item>
+    </style>
+
+    <style name="Nextcloud.Material.Outgoing.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressBackgroundTint">#deffffff</item>
+        <item name="android:progressTint">#ffffff</item>
+        <item name="android:colorControlActivated">#ffffff</item>
+        <item name="android:colorControlNormal">#ffffff</item>
+    </style>
+
 </resources>

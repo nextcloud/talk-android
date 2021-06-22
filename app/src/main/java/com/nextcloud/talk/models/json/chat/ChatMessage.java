@@ -26,7 +26,6 @@ import com.bluelinelabs.logansquare.annotation.JsonIgnore;
 import com.bluelinelabs.logansquare.annotation.JsonObject;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.interfaces.ExtendedIMessage;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -49,7 +48,7 @@ import kotlin.text.Charsets;
 
 @Parcel
 @JsonObject
-public class ChatMessage implements ExtendedIMessage, MessageContentType, MessageContentType.Image {
+public class ChatMessage implements MessageContentType, MessageContentType.Image {
     @JsonIgnore
     public boolean isGrouped;
     @JsonIgnore
@@ -88,6 +87,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
     @JsonField(name = "parent")
     public ChatMessage parentMessage;
     public Enum<ReadStatus> readStatus = ReadStatus.NONE;
+    @JsonField(name = "messageType")
+    public String messageType;
 
     @JsonIgnore
     List<MessageType> messageTypesToIgnore = Arrays.asList(
@@ -96,7 +97,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
             MessageType.SINGLE_LINK_VIDEO_MESSAGE,
             MessageType.SINGLE_LINK_AUDIO_MESSAGE,
             MessageType.SINGLE_LINK_MESSAGE,
-            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE);
+            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
+            MessageType.VOICE_MESSAGE);
 
     public boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {
@@ -112,7 +114,7 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         return false;
     }
 
-    private boolean hasGeoLocation() {
+    public boolean hasGeoLocation() {
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
@@ -131,6 +133,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
     @Nullable
     @Override
     public String getImageUrl() {
+
+
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
@@ -138,8 +142,10 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
                         Objects.requireNonNull(individualHashMap.get("type")).getBytes(Charsets.UTF_8),
                         ("file").getBytes(Charsets.UTF_8))) {
                     selectedIndividualHashMap = individualHashMap;
-                    return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
-                            individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
+                    if(!isVoiceMessage()){
+                        return (ApiUtils.getUrlForFilePreviewWithFileId(getActiveUser().getBaseUrl(),
+                                                                        individualHashMap.get("id"), NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size)));
+                    }
                 }
             }
         }
@@ -154,6 +160,10 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
     public MessageType getMessageType() {
         if (!TextUtils.isEmpty(getSystemMessage())) {
             return MessageType.SYSTEM_MESSAGE;
+        }
+
+        if (isVoiceMessage()){
+            return MessageType.VOICE_MESSAGE;
         }
 
         if (hasFileAttachment()) {
@@ -211,6 +221,13 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
                     return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_location_you));
                 } else {
                     return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_location),
+                                          !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
+                }
+            } else if (MessageType.VOICE_MESSAGE == getMessageType()) {
+                if (getActorId().equals(getActiveUser().getUserId())) {
+                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_voice_you));
+                } else {
+                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_voice),
                                           !TextUtils.isEmpty(getActorDisplayName()) ? getActorDisplayName() : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
                 }
             /*} else if (getMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
@@ -437,6 +454,10 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         this.messageTypesToIgnore = messageTypesToIgnore;
     }
 
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
+    }
+
     public boolean equals(final Object o) {
         if (o == this) {
             return true;
@@ -576,9 +597,8 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         return "ChatMessage(isGrouped=" + this.isGrouped() + ", isOneToOneConversation=" + this.isOneToOneConversation() + ", activeUser=" + this.getActiveUser() + ", selectedIndividualHashMap=" + this.getSelectedIndividualHashMap() + ", isLinkPreviewAllowed=" + this.isLinkPreviewAllowed() + ", isDeleted=" + this.isDeleted() + ", jsonMessageId=" + this.getJsonMessageId() + ", token=" + this.getToken() + ", actorType=" + this.getActorType() + ", actorId=" + this.getActorId() + ", actorDisplayName=" + this.getActorDisplayName() + ", timestamp=" + this.getTimestamp() + ", message=" + this.getMessage() + ", messageParameters=" + this.getMessageParameters() + ", systemMessageType=" + this.getSystemMessageType() + ", replyable=" + this.isReplyable() + ", parentMessage=" + this.getParentMessage() + ", readStatus=" + this.getReadStatus() + ", messageTypesToIgnore=" + this.getMessageTypesToIgnore() + ")";
     }
 
-    @Override
-    public boolean isLocationMessage() {
-        return hasGeoLocation();
+    public boolean isVoiceMessage(){
+        return "voice-message".equals(messageType);
     }
 
     public enum MessageType {
@@ -593,6 +613,7 @@ public class ChatMessage implements ExtendedIMessage, MessageContentType, Messag
         SINGLE_LINK_AUDIO_MESSAGE,
         SINGLE_NC_ATTACHMENT_MESSAGE,
         SINGLE_NC_GEOLOCATION_MESSAGE,
+        VOICE_MESSAGE
     }
 
     public enum SystemMessageType {

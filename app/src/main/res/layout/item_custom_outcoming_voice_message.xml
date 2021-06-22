@@ -2,8 +2,10 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Marcel Hibbe
   ~ @author Andy Scherzinger
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -46,20 +48,55 @@
             layout="@layout/item_message_quote"
             android:visibility="gone" />
 
-        <WebView
-            android:id="@+id/webview"
-            android:layout_width="400dp"
-            android:layout_height="200dp" />
-
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@id/messageText"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignWithParentIfMissing="true"
-            android:lineSpacingMultiplier="1.2"
-            android:textColorHighlight="@color/nc_grey"
-            android:textIsSelectable="true"
-            tools:text="Talk to you later!" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:progressTint="@color/fontAppbar"
+                android:visibility="gone"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/playBtn"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/play_voice_message"
+                android:visibility="visible"
+                app:rippleColor="#1FFFFFFF"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
+                app:iconSize="40dp"
+                app:iconTint="@color/nc_outcoming_text_default" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/pauseBtn"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:contentDescription="@string/pause_voice_message"
+                android:visibility="gone"
+                app:rippleColor="#1FFFFFFF"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:icon="@drawable/ic_baseline_pause_voice_message_24"
+                app:iconSize="40dp"
+                app:iconTint="@color/nc_outcoming_text_default" />
+
+            <SeekBar
+                android:id="@+id/seekbar"
+                style="@style/Nextcloud.Material.Outgoing.SeekBar"
+                android:layout_width="200dp"
+                android:layout_height="40dp"
+                android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
+                tools:progress="50" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@id/messageTime"

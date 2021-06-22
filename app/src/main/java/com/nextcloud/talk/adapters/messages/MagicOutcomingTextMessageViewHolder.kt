@@ -2,8 +2,10 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * @author Andy Scherzinger
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,6 +31,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.util.TypedValue
 import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
@@ -71,9 +75,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             for (key in messageParameters.keys) {
                 val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
                 if (individualHashMap != null) {
-                    if (individualHashMap["type"] == "user" || (
-                        individualHashMap["type"] == "guest"
-                        ) || individualHashMap["type"] == "call"
+                    if (individualHashMap["type"] == "user" ||
+                        individualHashMap["type"] == "guest" ||
+                        individualHashMap["type"] == "call"
                     ) {
                         messageString = searchAndReplaceWithMentionSpan(
                             binding.messageText.context,
@@ -85,31 +89,31 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                             R.xml.chip_others
                         )
                     } else if (individualHashMap["type"] == "file") {
-                        realView.setOnClickListener(
-                            View.OnClickListener { v: View? ->
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                                context!!.startActivity(browserIntent)
-                            }
-                        )
+                        realView.setOnClickListener { v: View? ->
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                            context!!.startActivity(browserIntent)
+                        }
                     }
                 }
             }
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * 2.5).toFloat()
             layoutParams.isWrapBefore = true
-            binding.messageTime.setTextColor(context!!.resources.getColor(R.color.warm_grey_four))
+            binding.messageTime.setTextColor(
+                ResourcesCompat.getColor(context!!.resources, R.color.warm_grey_four, null)
+            )
             realView.isSelected = true
         }
         val resources = sharedApplication!!.resources
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_outcoming_bubble_deleted, null)
         } else {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble)
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_outcoming_bubble, null)
         }
         if (message.isGrouped) {
             val bubbleDrawable = getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_grouped_outcoming_message
             )
@@ -117,7 +121,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         } else {
             val bubbleDrawable = getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_outcoming_message
             )
@@ -130,7 +134,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         // parent message handling
 
         if (!message.isDeleted && message.parentMessage != null) {
-            var parentChatMessage = message.parentMessage
+            val parentChatMessage = message.parentMessage
             parentChatMessage.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
@@ -147,9 +151,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
             binding.messageQuote.quotedMessage.setTextColor(
-                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+                ContextCompat.getColor(context!!, R.color.nc_outcoming_text_default)
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
+            binding.messageQuote.quotedMessageAuthor.setTextColor(ContextCompat.getColor(context!!, R.color.nc_grey))
 
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
 
@@ -171,8 +175,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         }
 
         readStatusDrawableInt?.let { drawableInt ->
-            context?.resources?.getDrawable(drawableInt, null)?.let {
-                it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
+            ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
+                it.setColorFilter(ContextCompat.getColor(context!!, R.color.white60), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
             }
         }
