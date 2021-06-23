@@ -128,6 +128,7 @@
     <string name="nc_lobby_waiting_with_date">Sarreran itxatoren ari zara momentu honetan.\n Bilera hau %1$s(r)(e)tan dago antolatuta.</string>
     <string name="nc_location_current_position_description">Zure uneko kokalekua</string>
     <string name="nc_location_permission_required">Kokalekua atzitzeko baimena beharrezkoa da</string>
+    <string name="nc_location_unknown">Kokapen ezezaguna</string>
     <string name="nc_locked">Blokeatuta</string>
     <string name="nc_locked_tap_to_unlock">Sakatu desblokeatzeko</string>
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
