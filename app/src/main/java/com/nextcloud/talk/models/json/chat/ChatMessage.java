@@ -285,6 +285,9 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
             public String getAvatar() {
                 if (getActorType().equals("users")) {
                     return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), actorId, R.dimen.avatar_size);
+                } else if (getActorType().equals("bridged")) {
+                    return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), "bridge-bot",
+                                                            R.dimen.avatar_size);
                 } else {
                     String apiId =
                             NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
