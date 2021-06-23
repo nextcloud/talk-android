@@ -128,6 +128,7 @@
     <string name="nc_lobby_waiting_with_date">Você está na lista de espera.\n Esta reunião está agendada para %1$s.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
     <string name="nc_location_permission_required">permissão de localização é necessária</string>
+    <string name="nc_location_unknown">Posição desconhecida </string>
     <string name="nc_locked">Indisponível</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
     <string name="nc_make_call_private">Fazer esta conversa privada</string>

@@ -128,6 +128,7 @@
     <string name="nc_lobby_waiting_with_date">您当前正在休息室等待。\n 此会议定于 %1$s 举行。</string>
     <string name="nc_location_current_position_description">你当前位置</string>
     <string name="nc_location_permission_required">需要位置权限</string>
+    <string name="nc_location_unknown">位置未知</string>
     <string name="nc_locked">已锁定</string>
     <string name="nc_locked_tap_to_unlock">轻按解锁</string>
     <string name="nc_make_call_private">设置会话为私有</string>

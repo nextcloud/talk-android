@@ -128,6 +128,7 @@
     <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie jest zaplanowane na %1$s.</string>
     <string name="nc_location_current_position_description">Twoja obecna lokalizacja</string>
     <string name="nc_location_permission_required">uprawnienie do lokalizacji jest wymagane</string>
+    <string name="nc_location_unknown">Pozycja nieznana</string>
     <string name="nc_locked">Zablokowany</string>
     <string name="nc_locked_tap_to_unlock">Dotknij, aby odblokować</string>
     <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>

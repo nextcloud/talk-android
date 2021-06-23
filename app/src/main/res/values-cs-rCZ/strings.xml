@@ -128,6 +128,7 @@
     <string name="nc_lobby_waiting_with_date">V tuto chvíli se nacházíte v čekárně.\n Toto setkání je naplánováno na %1$s.</string>
     <string name="nc_location_current_position_description">Vaše stávající umístění</string>
     <string name="nc_location_permission_required">vyžadováno oprávnění pro přístup k údaji o poloze</string>
+    <string name="nc_location_unknown">Pozice neznámá</string>
     <string name="nc_locked">Uzamčeno</string>
     <string name="nc_locked_tap_to_unlock">Odemkněte klepnutím</string>
     <string name="nc_make_call_private">Udělat konverzaci neveřejnou</string>
