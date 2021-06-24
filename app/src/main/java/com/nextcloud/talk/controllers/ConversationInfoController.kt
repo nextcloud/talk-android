@@ -94,8 +94,8 @@ class ConversationInfoController(args: Bundle) :
         R.layout.controller_conversation_info,
         args
     ),
-    FlexibleAdapter
-    .OnItemClickListener {
+    FlexibleAdapter.OnItemClickListener {
+
     private val binding: ControllerConversationInfoBinding by viewBinding(ControllerConversationInfoBinding::bind)
 
     @Inject
@@ -855,7 +855,7 @@ class ConversationInfoController(args: Bundle) :
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
         if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
-            if (participant.attendeePin.isNotEmpty()) {
+            if (participant.attendeePin?.isNotEmpty() == true) {
                 val items = mutableListOf(
                     BasicListItemWithImage(
                         R.drawable.ic_lock_grey600_24px,
@@ -948,7 +948,7 @@ class ConversationInfoController(args: Bundle) :
             items.removeAt(1)
         }
 
-        if (participant.attendeePin.isEmpty()) {
+        if (participant.attendeePin == null || participant.attendeePin.isEmpty()) {
             items.removeAt(0)
         }
 
@@ -959,7 +959,7 @@ class ConversationInfoController(args: Bundle) :
                 title(text = participant.displayName)
                 listItemsWithImage(items = items) { dialog, index, _ ->
                     var actionToTrigger = index
-                    if (participant.attendeePin.isEmpty()) {
+                    if (participant.attendeePin == null || participant.attendeePin.isEmpty()) {
                         actionToTrigger++
                     }
                     if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
