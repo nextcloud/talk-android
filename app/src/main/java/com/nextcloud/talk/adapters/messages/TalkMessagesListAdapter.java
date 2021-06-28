@@ -20,7 +20,9 @@
 
 package com.nextcloud.talk.adapters.messages;
 
+import com.nextcloud.talk.controllers.ChatController;
 import com.stfalcon.chatkit.commons.ImageLoader;
+import com.stfalcon.chatkit.commons.ViewHolder;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.messages.MessageHolders;
 import com.stfalcon.chatkit.messages.MessagesListAdapter;
@@ -28,12 +30,32 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter;
 import java.util.List;
 
 public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAdapter<M> {
+    private final ChatController chatController;
 
-    public TalkMessagesListAdapter(String senderId, MessageHolders holders, ImageLoader imageLoader) {
+    public TalkMessagesListAdapter(
+            String senderId,
+            MessageHolders holders,
+            ImageLoader imageLoader,
+            ChatController chatController) {
         super(senderId, holders, imageLoader);
+        this.chatController = chatController;
     }
     
     public List<MessagesListAdapter.Wrapper> getItems() {
         return items;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        super.onBindViewHolder(holder, position);
+
+        if (holder instanceof IncomingVoiceMessageViewHolder) {
+            ((IncomingVoiceMessageViewHolder) holder).assignAdapter(chatController);
+        }
+
+        if (holder instanceof OutcomingVoiceMessageViewHolder) {
+            ((OutcomingVoiceMessageViewHolder) holder).assignAdapter(chatController);
+        }
+
     }
 }
