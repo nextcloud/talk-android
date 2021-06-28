@@ -34,6 +34,7 @@ import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Build
@@ -76,6 +77,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
@@ -102,6 +104,7 @@ import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
@@ -112,6 +115,7 @@ import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
+import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
@@ -175,6 +179,7 @@ import java.util.ArrayList
 import java.util.Date
 import java.util.HashMap
 import java.util.Objects
+import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -186,7 +191,8 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
-    ContentChecker<ChatMessage> {
+    ContentChecker<ChatMessage>, VoiceMessageInterface {
+
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
     @Inject
@@ -246,6 +252,10 @@ class ChatController(args: Bundle) :
     var currentVoiceRecordFile: String = ""
 
     private var recorder: MediaRecorder? = null
+
+    var mediaPlayer: MediaPlayer? = null
+    lateinit var mediaPlayerHandler: Handler
+    var currentlyPlayedVoiceMessage: ChatMessage? = null
 
     init {
         setHasOptionsMenu(true)
@@ -488,7 +498,7 @@ class ChatController(args: Bundle) :
                         .setAutoPlayAnimations(true)
                         .build()
                     imageView.controller = draweeController
-                }
+                }, this
             )
         } else {
             binding.messagesListView.visibility = View.VISIBLE
@@ -498,6 +508,22 @@ class ChatController(args: Bundle) :
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
+
+        adapter?.registerViewClickListener(
+            R.id.playPauseBtn
+        ) { view, message ->
+            val filename = message.getSelectedIndividualHashMap()["name"]
+            val file = File(context!!.cacheDir, filename!!)
+            if (file.exists()) {
+                if (message.isPlayingVoiceMessage) {
+                    pausePlayback(message)
+                } else {
+                    startPlayback(message)
+                }
+            } else {
+                downloadFileToCache(message)
+            }
+        }
 
         if (context != null) {
             val messageSwipeController = MessageSwipeCallback(
@@ -747,6 +773,151 @@ class ChatController(args: Bundle) :
             }
         }
         super.onViewBound(view)
+    }
+
+    private fun startPlayback(message: ChatMessage) {
+
+        if (!this.isAttached) {
+            // don't begin to play voice message if screen is not visible anymore.
+            // this situation might happen if file is downloading but user already left the chatview.
+            // If user returns to chatview, the old chatview instance is not attached anymore
+            // and he has to click the play button again (which is considered to be okay)
+            return
+        }
+
+        initMediaPlayer(message)
+
+        if (!mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.start()
+        }
+
+        mediaPlayerHandler = Handler()
+        activity?.runOnUiThread(object : Runnable {
+            override fun run() {
+                if (mediaPlayer != null) {
+                    val currentPosition: Int = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
+                    message.voiceMessagePlayedSeconds = currentPosition
+                    adapter?.update(message)
+                }
+                mediaPlayerHandler.postDelayed(this, SECOND)
+            }
+        })
+
+        message.isDownloadingVoiceMessage = false
+        message.isPlayingVoiceMessage = true
+        adapter?.update(message)
+    }
+
+    private fun pausePlayback(message: ChatMessage) {
+        if (mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.pause()
+        }
+
+        message.isPlayingVoiceMessage = false
+        adapter?.update(message)
+    }
+
+    private fun initMediaPlayer(message: ChatMessage) {
+        if (message != currentlyPlayedVoiceMessage) {
+            currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
+        }
+
+        if (mediaPlayer == null) {
+            val fileName = message.getSelectedIndividualHashMap()["name"]
+            val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
+            mediaPlayer = MediaPlayer().apply {
+                setDataSource(absolutePath)
+                prepare()
+            }
+            currentlyPlayedVoiceMessage = message
+            message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
+
+            mediaPlayer!!.setOnCompletionListener {
+                stopMediaPlayer(message)
+            }
+        } else {
+            Log.e(TAG, "mediaPlayer was not null. This should not happen!")
+        }
+    }
+
+    private fun stopMediaPlayer(message: ChatMessage) {
+        message.isPlayingVoiceMessage = false
+        message.resetVoiceMessage = true
+        adapter?.update(message)
+
+        currentlyPlayedVoiceMessage = null
+
+        mediaPlayerHandler.removeCallbacksAndMessages(null)
+
+        mediaPlayer?.stop()
+        mediaPlayer?.release()
+        mediaPlayer = null
+    }
+
+    override fun updateMediaPlayerProgressBySlider(messageWithSlidedProgress: ChatMessage, progress: Int) {
+        if (mediaPlayer != null) {
+            if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
+                mediaPlayer!!.seekTo(progress * VOICE_MESSAGE_SEEKBAR_BASE)
+            }
+        }
+    }
+
+    @SuppressLint("LongLogTag")
+    private fun downloadFileToCache(message: ChatMessage) {
+        message.isDownloadingVoiceMessage = true
+        adapter?.update(message)
+
+        val baseUrl = message.activeUser.baseUrl
+        val userId = message.activeUser.userId
+        val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(message.activeUser)
+        val fileName = message.getSelectedIndividualHashMap()["name"]
+        var size = message.getSelectedIndividualHashMap()["size"]
+        if (size == null) {
+            size = "-1"
+        }
+        val fileSize = Integer.valueOf(size)
+        val fileId = message.getSelectedIndividualHashMap()["id"]
+        val path = message.getSelectedIndividualHashMap()["path"]
+
+        // check if download worker is already running
+        val workers = WorkManager.getInstance(
+            context!!
+        ).getWorkInfosByTag(fileId!!)
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
+                    Log.d(TAG, "Download worker for " + fileId + " is already running or scheduled")
+                    return
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        } catch (e: InterruptedException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        }
+
+        val data: Data = Data.Builder()
+            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, baseUrl)
+            .putString(DownloadFileToCacheWorker.KEY_USER_ID, userId)
+            .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
+            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
+            .build()
+
+        val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
+            .setInputData(data)
+            .addTag(fileId)
+            .build()
+
+        WorkManager.getInstance().enqueue(downloadWorker)
+
+        WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
+            .observeForever { workInfo: WorkInfo ->
+                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    startPlayback(message)
+                }
+            }
     }
 
     @SuppressLint("SimpleDateFormat")
@@ -1265,6 +1436,8 @@ class ChatController(args: Bundle) :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
     }
 
     override val title: String
@@ -2345,5 +2518,7 @@ class ChatController(args: Bundle) :
         private const val SHORT_VIBRATE: Long = 20
         private const val FULLY_OPAQUE_INT: Int = 255
         private const val SEMI_TRANSPARENT_INT: Int = 99
+        private const val VOICE_MESSAGE_SEEKBAR_BASE: Int = 1000
+        private const val SECOND: Long = 1000
     }
 }

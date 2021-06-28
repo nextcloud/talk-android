@@ -79,7 +79,7 @@
                             android:visibility="gone"/>
 
                         <com.google.android.material.button.MaterialButton
-                            android:id="@+id/playBtn"
+                            android:id="@+id/playPauseBtn"
                             style="@style/Widget.AppTheme.Button.IconButton"
                             android:layout_width="48dp"
                             android:layout_height="48dp"
@@ -87,18 +87,6 @@
                             android:visibility="visible"
                             app:cornerRadius="@dimen/button_corner_radius"
                             app:icon="@drawable/ic_baseline_play_arrow_voice_message_24"
-                            app:iconSize="40dp"
-                            app:iconTint="@color/nc_incoming_text_default" />
-
-                        <com.google.android.material.button.MaterialButton
-                            android:id="@+id/pauseBtn"
-                            style="@style/Widget.AppTheme.Button.IconButton"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:contentDescription="@string/pause_voice_message"
-                            android:visibility="gone"
-                            app:cornerRadius="@dimen/button_corner_radius"
-                            app:icon="@drawable/ic_baseline_pause_voice_message_24"
                             app:iconSize="40dp"
                             app:iconTint="@color/nc_incoming_text_default" />
 
