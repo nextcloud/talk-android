@@ -199,15 +199,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             switch (objectType) {
                 case "share:password":
                     shouldLoadAvatar = false;
-                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
-                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_file_password_request)), 100, true);
+                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
+                                                                                   R.drawable.ic_circular_lock));
                     break;
                 case "file":
                     shouldLoadAvatar = false;
-                    holder.dialogAvatar.getHierarchy().setImage(new BitmapDrawable(DisplayUtils
-                            .getRoundedBitmapFromVectorDrawableResource(context.getResources(),
-                                    R.drawable.ic_file_icon)), 100, true);
+                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
+                                                                                   R.drawable.ic_circular_document));
                     break;
                 default:
                     break;
