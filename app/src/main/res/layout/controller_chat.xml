@@ -46,20 +46,21 @@
         tools:visibility="visible"
         />
 
-    <ProgressBar
+    <LinearLayout
         android:id="@+id/progressBar"
-        android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
-        android:indeterminateTintMode="src_in"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/standard_padding"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible">
+
+        <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+
+        <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+
+        <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+    </LinearLayout>
 
     <View
         android:id="@+id/separator"
