@@ -90,21 +90,12 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     @JsonField(name = "messageType")
     public String messageType;
 
-
     public boolean isDownloadingVoiceMessage;
     public boolean resetVoiceMessage;
     public boolean isPlayingVoiceMessage;
     public int voiceMessageDuration;
     public int voiceMessagePlayedSeconds;
-    public VoiceMessageDownloadState voiceMessageDownloadState;
     public int voiceMessageDownloadProgress;
-
-    public enum VoiceMessageDownloadState {
-        NOT_STARTED,
-        RUNNING,
-        SUCCEEDED,
-        FAILED
-    }
 
     @JsonIgnore
     List<MessageType> messageTypesToIgnore = Arrays.asList(
@@ -115,8 +106,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
             MessageType.SINGLE_LINK_MESSAGE,
             MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
             MessageType.VOICE_MESSAGE);
-
-
 
     public boolean hasFileAttachment() {
         if (messageParameters != null && messageParameters.size() > 0) {

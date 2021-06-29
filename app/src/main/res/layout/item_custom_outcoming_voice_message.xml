@@ -68,7 +68,7 @@
                 style="@style/Widget.AppTheme.Button.IconButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:contentDescription="@string/play_voice_message"
+                android:contentDescription="@string/play_pause_voice_message"
                 android:visibility="visible"
                 app:rippleColor="#1FFFFFFF"
                 app:cornerRadius="@dimen/button_corner_radius"

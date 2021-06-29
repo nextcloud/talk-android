@@ -91,7 +91,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
-
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
 
@@ -103,10 +102,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             binding.seekbar.progress = message.voiceMessagePlayedSeconds
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!, R.drawable
-                    .ic_baseline_play_arrow_voice_message_24
-            )
+            binding.playPauseBtn.icon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_play_arrow_voice_message_24)
         }
 
         if (message.isDownloadingVoiceMessage) {
@@ -125,9 +122,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
         }
-
-        activity = itemView.context as Activity
-
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
@@ -159,7 +153,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
                     WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(workInfo.id)
                         .observeForever { info: WorkInfo? ->
                             if (info != null) {
-
                                 when (info.state) {
                                     WorkInfo.State.RUNNING -> {
                                         Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
