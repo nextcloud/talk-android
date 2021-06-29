@@ -102,10 +102,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
             binding.seekbar.progress = message.voiceMessagePlayedSeconds
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!, R.drawable
-                    .ic_baseline_play_arrow_voice_message_24
-            )
+            binding.playPauseBtn.icon =
+                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_play_arrow_voice_message_24)
         }
 
         if (message.isDownloadingVoiceMessage) {
@@ -124,9 +122,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
         }
-
-        activity = itemView.context as Activity
-
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
