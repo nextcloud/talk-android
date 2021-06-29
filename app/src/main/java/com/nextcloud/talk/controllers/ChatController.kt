@@ -1436,8 +1436,6 @@ class ChatController(args: Bundle) :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
-
-        currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
     }
 
     override val title: String
@@ -1458,6 +1456,8 @@ class ChatController(args: Bundle) :
         if (actionBar != null) {
             actionBar?.setIcon(null)
         }
+
+        currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
 
         adapter = null
         inConversation = false
