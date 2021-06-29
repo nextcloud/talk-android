@@ -30,7 +30,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp">
 
         <include layout="@layout/item_message_quote"
             android:layout_width="match_parent"
@@ -42,9 +43,10 @@
             android:id="@id/attachmentButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="10dp"
+            android:padding="12dp"
             android:layout_below="@id/quotedChatMessageView"
             android:background="@color/transparent"
+            android:src="@drawable/ic_baseline_attach_file_24"
             app:tint="?attr/colorControlNormal"
             android:scaleType="centerCrop"
             android:contentDescription="@string/nc_add_attachment" />
@@ -53,7 +55,7 @@
             android:id="@+id/smileyButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:padding="10dp"
+            android:padding="12dp"
             android:layout_below="@id/quotedChatMessageView"
             android:layout_toEndOf="@id/attachmentButton"
             android:background="@color/transparent"
@@ -140,6 +142,7 @@
             android:id="@id/messageSendButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:padding="12dp"
             android:layout_below="@id/quotedChatMessageView"
             android:layout_alignParentEnd="true"
             android:adjustViewBounds="true"
