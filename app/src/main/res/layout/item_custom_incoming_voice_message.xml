@@ -66,7 +66,7 @@
                     android:textSize="12sp" />
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:gravity="center_vertical">
@@ -92,7 +92,7 @@
 
                         <SeekBar
                             android:id="@+id/seekbar"
-                            android:layout_width="200dp"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             tools:progress="50" />
 
