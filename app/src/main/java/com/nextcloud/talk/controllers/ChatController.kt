@@ -1270,7 +1270,11 @@ class ChatController(args: Bundle) :
     override val title: String
         get() =
             if (currentConversation?.displayName != null) {
-                " " + EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
+                try {
+                    " " + EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
+                } catch (e: IllegalStateException) {
+                    " " + currentConversation?.displayName
+                }
             } else {
                 ""
             }
