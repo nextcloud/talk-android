@@ -60,7 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:progressTint="@color/fontAppbar"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                android:indeterminateTint="@color/nc_outcoming_text_default"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/playPauseBtn"
