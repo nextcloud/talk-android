@@ -191,7 +191,8 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnLoadMoreListener,
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
-    ContentChecker<ChatMessage>, VoiceMessageInterface {
+    ContentChecker<ChatMessage>,
+    VoiceMessageInterface {
 
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
@@ -498,7 +499,8 @@ class ChatController(args: Bundle) :
                         .setAutoPlayAnimations(true)
                         .build()
                     imageView.controller = draweeController
-                }, this
+                },
+                this
             )
         } else {
             binding.messagesListView.visibility = View.VISIBLE
