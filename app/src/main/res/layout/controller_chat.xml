@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -78,14 +80,14 @@
         android:inputType="textLongMessage|textAutoComplete"
         android:maxLength="1000"
         app:showAttachmentButton="true"
-        app:attachmentButtonHeight="28dp"
-        app:attachmentButtonWidth="28dp"
+        app:attachmentButtonHeight="48dp"
+        app:attachmentButtonWidth="48dp"
         app:attachmentButtonIcon="@drawable/ic_baseline_attach_file_24"
         app:attachmentButtonBackground="@color/transparent"
         app:inputButtonDefaultBgColor="@color/colorPrimary"
-        app:inputButtonHeight="35dp"
+        app:inputButtonHeight="48dp"
         app:inputButtonMargin="8dp"
-        app:inputButtonWidth="36dp"
+        app:inputButtonWidth="48dp"
         app:inputHint="@string/nc_hint_enter_a_message"
         app:inputTextColor="@color/nc_incoming_text_default"
         app:inputTextSize="16sp"
