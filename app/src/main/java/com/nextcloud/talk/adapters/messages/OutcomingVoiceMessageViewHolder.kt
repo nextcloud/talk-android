@@ -57,7 +57,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
 
     private val binding: ItemCustomOutcomingVoiceMessageBinding =
         ItemCustomOutcomingVoiceMessageBinding.bind(itemView)
-    private val realView: View = itemView
 
     @JvmField
     @Inject
