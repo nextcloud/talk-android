@@ -35,7 +35,6 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
-import com.nextcloud.talk.utils.LoggingUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.webrtc.DataChannel;
@@ -275,8 +274,6 @@ public class MagicPeerConnectionWrapper {
             data.get(bytes);
             String strData = new String(bytes);
             Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "Got msg: " + strData + " over " + peerConnection.hashCode() + " " + sessionId);
 
             try {
                 DataChannelMessage dataChannelMessage = LoganSquare.parse(strData, DataChannelMessage.class);
@@ -350,8 +347,6 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
             peerIceConnectionState = iceConnectionState;
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "iceConnectionChangeTo: " + iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
@@ -441,17 +436,13 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onCreateFailure(String s) {
-            Log.d(TAG, s);
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "SDPObserver createFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
+            Log.d(TAG, "SDPObserver createFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
 
         }
 
         @Override
         public void onSetFailure(String s) {
-            Log.d(TAG, s);
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "SDPObserver setFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
+            Log.d(TAG,"SDPObserver setFailure: " + s + " over " + peerConnection.hashCode() + " " + sessionId);
         }
 
         @Override
