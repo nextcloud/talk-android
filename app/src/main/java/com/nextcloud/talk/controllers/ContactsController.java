@@ -815,7 +815,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         } else if (isNewConversationView) {
             return getResources().getString(R.string.nc_select_participants);
         } else {
-            return getResources().getString(R.string.nc_app_name);
+            return getResources().getString(R.string.nc_app_product_name);
         }
     }
 

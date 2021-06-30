@@ -39,7 +39,7 @@
             android:id="@+id/appLogo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/nc_app_name"
+            android:contentDescription="@string/nc_app_product_name"
             android:src="@drawable/ic_logo" />
 
         <ImageView

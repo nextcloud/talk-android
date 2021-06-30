@@ -260,6 +260,6 @@ public abstract class BaseController extends ButterKnifeController {
     }
 
     public String getSearchHint() {
-        return context.getString(R.string.appbar_search_in, context.getString(R.string.nc_app_name));
+        return context.getString(R.string.appbar_search_in, context.getString(R.string.nc_app_product_name));
     }
 }

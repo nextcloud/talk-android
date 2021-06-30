@@ -133,7 +133,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         shareIntent = new Intent(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
         shareIntent.putExtra(Intent.EXTRA_SUBJECT, String.format(getResources().getString(R.string.nc_share_subject),
-                getResources().getString(R.string.nc_app_name)));
+                getResources().getString(R.string.nc_app_product_name)));
     }
 
     private void prepareMenu() {

@@ -2145,7 +2145,10 @@ class ChatController(args: Bundle) :
                     R.id.action_copy_message -> {
                         val clipboardManager =
                             activity?.getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
-                        val clipData = ClipData.newPlainText(resources?.getString(R.string.nc_app_name), message?.text)
+                        val clipData = ClipData.newPlainText(
+                            resources?.getString(R.string.nc_app_product_name),
+                            message?.text
+                        )
                         clipboardManager.setPrimaryClip(clipData)
                         true
                     }

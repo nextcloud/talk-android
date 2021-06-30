@@ -737,7 +737,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     protected String getTitle() {
-        return getResources().getString(R.string.nc_app_name);
+        return getResources().getString(R.string.nc_app_product_name);
     }
 
     @Override

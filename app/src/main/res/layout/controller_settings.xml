@@ -368,7 +368,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_summary="v0.1"
-            apc:mp_title="@string/nc_app_name" />
+            apc:mp_title="@string/nc_app_product_name" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 
