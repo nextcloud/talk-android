@@ -226,7 +226,6 @@ public class RestModule {
             loggingInterceptor.redactHeader("Proxy-Authorization");
             httpClient.addInterceptor(loggingInterceptor);
         } else if (context.getResources().getBoolean(R.bool.nc_is_debug)) {
-
             HttpLoggingInterceptor.Logger fileLogger =
                     s -> LoggingUtils.INSTANCE.writeLogEntryToFile(context, s);
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(fileLogger);
