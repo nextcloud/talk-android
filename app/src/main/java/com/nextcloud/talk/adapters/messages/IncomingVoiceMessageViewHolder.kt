@@ -97,13 +97,17 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         if (message.isPlayingVoiceMessage) {
             binding.progressBar.visibility = View.GONE
             binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon =
-                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_pause_voice_message_24)
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_pause_voice_message_24
+            )
             binding.seekbar.progress = message.voiceMessagePlayedSeconds
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon =
-                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_play_arrow_voice_message_24)
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_play_arrow_voice_message_24
+            )
         }
 
         if (message.isDownloadingVoiceMessage) {
@@ -115,8 +119,10 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
 
         if (message.resetVoiceMessage) {
             binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon =
-                ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_play_arrow_voice_message_24)
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_play_arrow_voice_message_24
+            )
             binding.seekbar.progress = SEEKBAR_START
             message.resetVoiceMessage = false
         }
