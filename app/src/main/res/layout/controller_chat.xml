@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -18,125 +20,136 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/bg_default">
+    android:background="@color/bg_default"
+    android:orientation="vertical">
 
-    <include
-        android:id="@+id/lobby"
-        layout="@layout/lobby_view"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/callControlToggleChat"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_margin="16dp"
-        android:layout_alignParentEnd="true"
-        app:backgroundImage="@color/call_buttons_background"
-        app:placeholderImage="@drawable/ic_call_black_24dp"
-        app:roundAsCircle="true"
-        android:elevation="10dp"
-        android:visibility="gone"
-        tools:visibility="visible"
-        />
+        <include
+            android:id="@+id/lobby"
+            layout="@layout/lobby_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/callControlToggleChat"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="16dp"
+            android:elevation="10dp"
+            android:visibility="gone"
+            app:backgroundImage="@color/call_buttons_background"
+            app:placeholderImage="@drawable/ic_call_black_24dp"
+            app:roundAsCircle="true"
+            tools:visibility="visible" />
+
+        <LinearLayout
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/standard_padding"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+
+            <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+
+            <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+        </LinearLayout>
+
+        <com.stfalcon.chatkit.messages.MessagesList
+            android:id="@+id/messagesListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="0dp"
+            android:visibility="gone"
+            app:dateHeaderTextSize="13sp"
+            app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
+            app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
+            app:incomingBubblePaddingRight="@dimen/message_bubble_corners_padding"
+            app:incomingBubblePaddingTop="@dimen/message_bubble_corners_padding"
+            app:incomingDefaultBubbleColor="@color/bg_message_list_incoming_bubble"
+            app:incomingDefaultBubblePressedColor="@color/bg_message_list_incoming_bubble"
+            app:incomingDefaultBubbleSelectedColor="@color/transparent"
+            app:incomingImageTimeTextSize="12sp"
+            app:incomingTextColor="@color/nc_incoming_text_default"
+            app:incomingTextLinkColor="@color/nc_incoming_text_default"
+            app:incomingTextSize="@dimen/chat_text_size"
+            app:incomingTimeTextSize="12sp"
+            app:outcomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
+            app:outcomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
+            app:outcomingBubblePaddingRight="@dimen/message_bubble_corners_padding"
+            app:outcomingBubblePaddingTop="@dimen/message_bubble_corners_padding"
+            app:outcomingDefaultBubbleColor="@color/colorPrimary"
+            app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
+            app:outcomingDefaultBubbleSelectedColor="@color/transparent"
+            app:outcomingImageTimeTextSize="12sp"
+            app:outcomingTextColor="@color/nc_outcoming_text_default"
+            app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
+            app:outcomingTextSize="@dimen/chat_text_size"
+            app:outcomingTimeTextSize="12sp"
+            app:textAutoLink="all" />
+
+        <com.webianks.library.PopupBubble
+            android:id="@+id/popupBubbleView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="16dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="8dp"
+            app:pb_backgroundColor="@color/colorPrimary"
+            app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
+            app:pb_text="@string/nc_new_messages"
+            app:pb_textColor="@color/textColorOnPrimaryBackground" />
+
+    </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="@dimen/standard_padding"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:orientation="vertical">
 
-        <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+        <View
+            android:id="@+id/separator"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/controller_chat_separator" />
 
-        <include layout="@layout/item_custom_incoming_text_message_shimmer" />
-
-        <include layout="@layout/item_custom_incoming_text_message_shimmer" />
+        <com.stfalcon.chatkit.messages.MessageInput
+            android:id="@+id/messageInputView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:inputType="textLongMessage|textAutoComplete"
+            android:maxLength="1000"
+            app:attachmentButtonBackground="@color/transparent"
+            app:attachmentButtonHeight="48dp"
+            app:attachmentButtonIcon="@drawable/ic_baseline_attach_file_24"
+            app:attachmentButtonMargin="0dp"
+            app:attachmentButtonWidth="48dp"
+            app:delayTypingStatus="200"
+            app:inputButtonDefaultBgColor="@color/transparent"
+            app:inputButtonDefaultIconColor="@color/colorPrimary"
+            app:inputButtonHeight="48dp"
+            app:inputButtonMargin="0dp"
+            app:inputButtonWidth="48dp"
+            app:inputHint="@string/nc_hint_enter_a_message"
+            app:inputTextColor="@color/nc_incoming_text_default"
+            app:inputTextSize="16sp"
+            app:showAttachmentButton="true" />
     </LinearLayout>
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_above="@+id/messageInputView"
-        android:background="@color/controller_chat_separator" />
-
-    <com.stfalcon.chatkit.messages.MessageInput
-        android:id="@+id/messageInputView"
-        android:animateLayoutChanges="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:inputType="textLongMessage|textAutoComplete"
-        android:maxLength="1000"
-        app:showAttachmentButton="true"
-        app:attachmentButtonHeight="28dp"
-        app:attachmentButtonWidth="28dp"
-        app:attachmentButtonIcon="@drawable/ic_baseline_attach_file_24"
-        app:attachmentButtonBackground="@color/transparent"
-        app:inputButtonDefaultBgColor="@color/colorPrimary"
-        app:inputButtonHeight="35dp"
-        app:inputButtonMargin="8dp"
-        app:inputButtonWidth="36dp"
-        app:inputHint="@string/nc_hint_enter_a_message"
-        app:inputTextColor="@color/nc_incoming_text_default"
-        app:inputTextSize="16sp"
-        app:delayTypingStatus="200"/>
-
-    <com.stfalcon.chatkit.messages.MessagesList
-        android:id="@+id/messagesListView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/messageInputView"
-        android:visibility="gone"
-        app:dateHeaderTextSize="13sp"
-        android:paddingBottom="4dp"
-        app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
-        app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
-        app:incomingBubblePaddingRight="@dimen/message_bubble_corners_padding"
-        app:incomingBubblePaddingTop="@dimen/message_bubble_corners_padding"
-        app:incomingDefaultBubbleColor="@color/bg_message_list_incoming_bubble"
-        app:incomingDefaultBubblePressedColor="@color/bg_message_list_incoming_bubble"
-        app:incomingDefaultBubbleSelectedColor="@color/transparent"
-        app:incomingImageTimeTextSize="12sp"
-        app:incomingTextColor="@color/nc_incoming_text_default"
-        app:incomingTextLinkColor="@color/nc_incoming_text_default"
-        app:incomingTextSize="@dimen/chat_text_size"
-        app:incomingTimeTextSize="12sp"
-        app:outcomingBubblePaddingBottom="@dimen/message_bubble_corners_padding"
-        app:outcomingBubblePaddingLeft="@dimen/message_bubble_corners_padding"
-        app:outcomingBubblePaddingRight="@dimen/message_bubble_corners_padding"
-        app:outcomingBubblePaddingTop="@dimen/message_bubble_corners_padding"
-        app:outcomingDefaultBubbleColor="@color/colorPrimary"
-        app:outcomingDefaultBubblePressedColor="@color/colorPrimary"
-        app:outcomingDefaultBubbleSelectedColor="@color/transparent"
-        app:outcomingImageTimeTextSize="12sp"
-        app:outcomingTextColor="@color/nc_outcoming_text_default"
-        app:outcomingTextLinkColor="@color/nc_outcoming_text_default"
-        app:outcomingTextSize="@dimen/chat_text_size"
-        app:outcomingTimeTextSize="12sp"
-        app:textAutoLink="all" />
-
-    <com.webianks.library.PopupBubble
-        android:id="@+id/popupBubbleView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/separator"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="16dp"
-        android:paddingStart="0dp"
-        android:paddingEnd="8dp"
-        app:pb_backgroundColor="@color/colorPrimary"
-        app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
-        app:pb_text="@string/nc_new_messages"
-        app:pb_textColor="@color/textColorOnPrimaryBackground" />
-
-</RelativeLayout>
+</LinearLayout>

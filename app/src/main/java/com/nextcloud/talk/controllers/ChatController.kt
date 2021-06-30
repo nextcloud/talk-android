@@ -563,6 +563,8 @@ class ChatController(args: Bundle) :
             }
         }
 
+        binding.messageInputView.setPadding(0, 0, 0, 0)
+
         if (args.containsKey("showToggleChat") && args.getBoolean("showToggleChat")) {
             binding.callControlToggleChat.visibility = View.VISIBLE
             wasDetached = true
