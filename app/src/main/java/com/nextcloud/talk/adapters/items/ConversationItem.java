@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -105,6 +106,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         return new ConversationItemViewHolder(view, adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
         Context appContext =

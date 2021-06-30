@@ -90,6 +90,13 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     @JsonField(name = "messageType")
     public String messageType;
 
+    public boolean isDownloadingVoiceMessage;
+    public boolean resetVoiceMessage;
+    public boolean isPlayingVoiceMessage;
+    public int voiceMessageDuration;
+    public int voiceMessagePlayedSeconds;
+    public int voiceMessageDownloadProgress;
+
     @JsonIgnore
     List<MessageType> messageTypesToIgnore = Arrays.asList(
             MessageType.REGULAR_TEXT_MESSAGE,
@@ -133,8 +140,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     @Nullable
     @Override
     public String getImageUrl() {
-
-
         if (messageParameters != null && messageParameters.size() > 0) {
             for (HashMap.Entry<String, HashMap<String, String>> entry : messageParameters.entrySet()) {
                 Map<String, String> individualHashMap = entry.getValue();
