@@ -25,7 +25,6 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
@@ -70,8 +69,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
     var appPreferences: AppPreferences? = null
 
     lateinit var message: ChatMessage
-
-    lateinit var activity: Activity
 
     lateinit var voiceMessageInterface: VoiceMessageInterface
 

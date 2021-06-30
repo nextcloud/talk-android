@@ -23,10 +23,8 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.PorterDuff
-import android.media.MediaPlayer
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -67,10 +65,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     var appPreferences: AppPreferences? = null
 
     lateinit var message: ChatMessage
-
-    lateinit var activity: Activity
-
-    var mediaPlayer: MediaPlayer? = null
 
     lateinit var handler: Handler
 
