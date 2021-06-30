@@ -95,8 +95,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         binding.seekbar.max = message.voiceMessageDuration
 
         if (message.isPlayingVoiceMessage) {
-            binding.progressBar.visibility = View.GONE
-            binding.playPauseBtn.visibility = View.VISIBLE
+            showPlayButton()
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 context!!,
                 R.drawable.ic_baseline_pause_voice_message_24
@@ -111,8 +110,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         }
 
         if (message.isDownloadingVoiceMessage) {
-            binding.playPauseBtn.visibility = View.GONE
-            binding.progressBar.visibility = View.VISIBLE
+            showVoiceMessageLoading()
         } else {
             binding.progressBar.visibility = View.GONE
         }
@@ -152,26 +150,22 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         try {
             for (workInfo in workers.get()) {
                 if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    binding.progressBar.visibility = View.VISIBLE
-                    binding.playPauseBtn.visibility = View.GONE
+                    showVoiceMessageLoading()
                     WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(workInfo.id)
                         .observeForever { info: WorkInfo? ->
                             if (info != null) {
                                 when (info.state) {
                                     WorkInfo.State.RUNNING -> {
                                         Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
-                                        binding.playPauseBtn.visibility = View.GONE
-                                        binding.progressBar.visibility = View.VISIBLE
+                                        showVoiceMessageLoading()
                                     }
                                     WorkInfo.State.SUCCEEDED -> {
                                         Log.d(TAG, "WorkInfo.State.SUCCEEDED in ViewHolder")
-                                        binding.playPauseBtn.visibility = View.VISIBLE
-                                        binding.progressBar.visibility = View.GONE
+                                        showPlayButton()
                                     }
                                     WorkInfo.State.FAILED -> {
                                         Log.d(TAG, "WorkInfo.State.FAILED in ViewHolder")
-                                        binding.playPauseBtn.visibility = View.VISIBLE
-                                        binding.progressBar.visibility = View.GONE
+                                        showPlayButton()
                                     }
                                     else -> {
                                     }
@@ -185,6 +179,16 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         } catch (e: InterruptedException) {
             Log.e(TAG, "Error when checking if worker already exists", e)
         }
+    }
+
+    private fun showPlayButton() {
+        binding.playPauseBtn.visibility = View.VISIBLE
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showVoiceMessageLoading() {
+        binding.playPauseBtn.visibility = View.GONE
+        binding.progressBar.visibility = View.VISIBLE
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
