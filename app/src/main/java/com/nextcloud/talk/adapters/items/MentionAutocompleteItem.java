@@ -45,17 +45,20 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {
 
+    public static final String SOURCE_CALLS = "calls";
+    public static final String SOURCE_GUESTS = "guests";
     private String objectId;
     private String displayName;
     private String source;
     private UserEntity currentUser;
     private Context context;
 
-    public MentionAutocompleteItem(String objectId,
-                                   String displayName,
-                                   String source,
-                                   UserEntity currentUser,
-                                   Context activityContext) {
+    public MentionAutocompleteItem(
+            String objectId,
+            String displayName,
+            String source,
+            UserEntity currentUser,
+            Context activityContext) {
         this.objectId = objectId;
         this.displayName = displayName;
         this.source = source;
@@ -102,19 +105,27 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, UserItem.UserItemViewHolder holder, int position, List<Object> payloads) {
+    public void bindViewHolder(
+            FlexibleAdapter<IFlexible> adapter,
+            UserItem.UserItemViewHolder holder,
+            int position,
+            List<Object> payloads) {
 
         holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(context.getResources(),
-                                                                R.color.conversation_item_header,
-                                                                null));
+                                                                        R.color.conversation_item_header,
+                                                                        null));
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.contactDisplayName, displayName,
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources().getColor(R.color.colorPrimary));
+            FlexibleUtils.highlightText(holder.contactDisplayName,
+                                        displayName,
+                                        String.valueOf(adapter.getFilter(String.class)),
+                                        NextcloudTalkApplication.Companion.getSharedApplication()
+                                                .getResources().getColor(R.color.colorPrimary));
             if (holder.contactMentionId != null) {
-                FlexibleUtils.highlightText(holder.contactMentionId, "@" + objectId,
-                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                                .getResources().getColor(R.color.colorPrimary));
+                FlexibleUtils.highlightText(holder.contactMentionId,
+                                            "@" + objectId,
+                                            String.valueOf(adapter.getFilter(String.class)),
+                                            NextcloudTalkApplication.Companion.getSharedApplication()
+                                                    .getResources().getColor(R.color.colorPrimary));
             }
         } else {
             holder.contactDisplayName.setText(displayName);
@@ -123,16 +134,19 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             }
         }
 
-        if (source.equals("calls")) {
+        if (SOURCE_CALLS.equals(source)) {
             holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
         } else {
             String avatarId = objectId;
             String avatarUrl = ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                    avatarId, R.dimen.avatar_size_big);
+                                                                avatarId, R.dimen.avatar_size_big);
 
-            if (source.equals("guests")) {
+            if (SOURCE_GUESTS.equals(source)) {
                 avatarId = displayName;
-                avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(currentUser.getBaseUrl(), avatarId, R.dimen.avatar_size_big);
+                avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(
+                        currentUser.getBaseUrl(),
+                        avatarId,
+                        R.dimen.avatar_size_big);
             }
 
             holder.simpleDraweeView.setController(null);
@@ -147,8 +161,15 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     @Override
     public boolean filter(String constraint) {
-        return objectId != null && Pattern.compile(constraint,
-                Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(objectId).find()
-                || displayName != null && Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(displayName).find();
+        return objectId != null &&
+                Pattern
+                        .compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
+                        .matcher(objectId)
+                        .find() ||
+                displayName != null &&
+                        Pattern
+                                .compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
+                                .matcher(displayName)
+                                .find();
     }
 }
