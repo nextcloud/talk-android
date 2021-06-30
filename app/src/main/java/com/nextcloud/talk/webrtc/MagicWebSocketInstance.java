@@ -40,7 +40,6 @@ import com.nextcloud.talk.models.json.websocket.ErrorOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.EventOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloResponseOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.JoinedRoomOverallWebSocketMessage;
-import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.MagicMap;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 
@@ -152,6 +151,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void restartWebSocket() {
         reconnecting = true;
 
+        // TODO: when improving logging, keep in mind this issue: https://github.com/nextcloud/talk-android/issues/1013
         Log.d(TAG, "restartWebSocket: " + connectionUrl);
         Request request = new Request.Builder().url(connectionUrl).build();
         okHttpClient.newWebSocket(request, this);
@@ -162,8 +162,6 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
         if (webSocket == internalWebSocket) {
             Log.d(TAG, "Receiving : " + webSocket.toString() + " " + text);
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "WebSocket " + webSocket.hashCode() + " receiving: " + text);
 
             try {
                 BaseWebSocketMessage baseWebSocketMessage = LoganSquare.parse(text, BaseWebSocketMessage.class);
@@ -200,8 +198,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         Log.e(TAG, "Received error: " + text);
                         ErrorOverallWebSocketMessage errorOverallWebSocketMessage = LoganSquare.parse(text, ErrorOverallWebSocketMessage.class);
                         if (("no_such_session").equals(errorOverallWebSocketMessage.getErrorWebSocketMessage().getCode())) {
-                            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                                    "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
+                            Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired");
                             resumeId = "";
                             currentRoomToken = "";
                             restartWebSocket();
@@ -299,9 +296,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                         break;
                 }
             } catch (IOException e) {
-                LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                        "WebSocket " + webSocket.hashCode() + " IOException: " + e.getMessage());
-                Log.e(TAG, "Failed to recognize WebSocket message");
+                Log.e(TAG, "Failed to recognize WebSocket message", e);
             }
         }
     }
@@ -320,15 +315,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         Log.d(TAG, "Closing : " + code + " / " + reason);
-        LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                "WebSocket " + webSocket.hashCode() + " Closing: " + reason);
     }
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        Log.d(TAG, "Error : " + t.getMessage());
-        LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                "WebSocket " + webSocket.hashCode() + " onFailure: " + t.getMessage());
+        Log.d(TAG, "Error : WebSocket " + webSocket.hashCode() + " onFailure: " + t.getMessage());
         closeWebSocket(webSocket);
     }
 
@@ -366,9 +357,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                 internalWebSocket.send(message);
             }
         } catch (IOException e) {
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "WebSocket sendCalLMessage: " + e.getMessage() + "\n" + ncMessageWrapper.toString());
-            Log.e(TAG, "Failed to serialize signaling message");
+            Log.e(TAG, "Failed to serialize signaling message", e);
         }
     }
 
@@ -387,9 +376,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
                 internalWebSocket.send(message);
             }
         } catch (IOException e) {
-            LoggingUtils.INSTANCE.writeLogEntryToFile(context,
-                    "WebSocket requestOfferForSessionIdWithType: " + e.getMessage() + "\n" + sessionIdParam + " " + roomType);
-            Log.e(TAG, "Failed to offer request");
+            Log.e(TAG, "Failed to offer request. sessionIdParam: " + sessionIdParam + " roomType:" + roomType, e);
         }
     }
 
