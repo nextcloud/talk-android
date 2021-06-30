@@ -516,58 +516,60 @@ public class CallController extends BaseController {
     }
 
     private void initGridAdapter() {
-        GridView gridView = conversationView.findViewById(R.id.gridview);
+        if (conversationView != null) {
+            GridView gridView = conversationView.findViewById(R.id.gridview);
 
-        int columns;
-        int participantsInGrid = participantDisplayItems.size();
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            if (participantsInGrid > 8) {
-                columns = 3;
-            } else if (participantsInGrid > 2) {
-                columns = 2;
+            int columns;
+            int participantsInGrid = participantDisplayItems.size();
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (participantsInGrid > 8) {
+                    columns = 3;
+                } else if (participantsInGrid > 2) {
+                    columns = 2;
+                } else {
+                    columns = 1;
+                }
             } else {
-                columns = 1;
+                if (participantsInGrid > 8) {
+                    columns = 4;
+                } else if (participantsInGrid > 2) {
+                    columns = 3;
+                } else if (participantsInGrid > 1) {
+                    columns = 2;
+                } else {
+                    columns = 1;
+                }
             }
-        } else {
-            if (participantsInGrid > 8) {
-                columns = 4;
-            } else if (participantsInGrid > 2) {
-                columns = 3;
-            } else if (participantsInGrid > 1) {
-                columns = 2;
-            } else {
-                columns = 1;
-            }
+
+            gridView.setNumColumns(columns);
+
+            RelativeLayout gridViewWrapper = conversationView.findViewById(R.id.conversationRelativeLayoutView);
+            gridViewWrapper.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    gridViewWrapper.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    int height = gridViewWrapper.getMeasuredHeight();
+                    gridView.setMinimumHeight(height);
+                }
+            });
+
+            LinearLayout callInfosLinearLayout = conversationView.findViewById(R.id.callInfosLinearLayout);
+            callInfosLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+
+            participantsAdapter = new ParticipantsAdapter(
+                    this.getActivity(),
+                    participantDisplayItems,
+                    gridViewWrapper,
+                    callInfosLinearLayout,
+                    columns,
+                    isVoiceOnlyCall);
+            gridView.setAdapter(participantsAdapter);
         }
-
-        gridView.setNumColumns(columns);
-
-        RelativeLayout gridViewWrapper = conversationView.findViewById(R.id.conversationRelativeLayoutView);
-        gridViewWrapper.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                gridViewWrapper.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int height = gridViewWrapper.getMeasuredHeight();
-                gridView.setMinimumHeight(height);
-            }
-        });
-
-        LinearLayout callInfosLinearLayout = conversationView.findViewById(R.id.callInfosLinearLayout);
-        callInfosLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
-
-        participantsAdapter = new ParticipantsAdapter(
-                this.getActivity(),
-                participantDisplayItems,
-                gridViewWrapper,
-                callInfosLinearLayout,
-                columns,
-                isVoiceOnlyCall);
-        gridView.setAdapter(participantsAdapter);
     }
 
 
@@ -1586,27 +1588,29 @@ public class CallController extends BaseController {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
-                    public void onNext(GenericOverall genericOverall) {
+                    public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                         if (shutDownView && getActivity() != null) {
                             getActivity().finish();
-                        } else if (!shutDownView && (currentCallStatus.equals(CallStatus.RECONNECTING) || currentCallStatus.equals(CallStatus.PUBLISHER_FAILED))) {
+                        } else if (!shutDownView &&
+                                (currentCallStatus == CallStatus.RECONNECTING ||
+                                        currentCallStatus == CallStatus.PUBLISHER_FAILED)) {
                             initiateCall();
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        // unused atm
                     }
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
@@ -1619,25 +1623,25 @@ public class CallController extends BaseController {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<GenericOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
-                    public void onNext(GenericOverall genericOverall) {
+                    public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                         if (shutDownView && getActivity() != null) {
                             getActivity().finish();
                         }
                     }
 
                     @Override
-                    public void onError(Throwable e) {
-
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        // unused atm
                     }
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
@@ -1713,12 +1717,12 @@ public class CallController extends BaseController {
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<ParticipantsOverall>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
-                    public void onNext(ParticipantsOverall participantsOverall) {
+                    public void onNext(@io.reactivex.annotations.NonNull ParticipantsOverall participantsOverall) {
                         participantMap = new HashMap<>();
                         for (Participant participant : participantsOverall.getOcs().getData()) {
                             participantMap.put(participant.getSessionId(), participant);
@@ -1726,13 +1730,13 @@ public class CallController extends BaseController {
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                         Log.e(TAG, "error while executing getPeersForCall", e);
                     }
 
                     @Override
                     public void onComplete() {
-
+                        // unused atm
                     }
                 });
     }
@@ -1759,18 +1763,45 @@ public class CallController extends BaseController {
         } else {
             if (hasMCU && publisher) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                            iceServers, sdpConstraintsForMCU, sessionId, callSession, localMediaStream, true, true, type);
+                                                                            iceServers,
+                                                                            sdpConstraintsForMCU,
+                                                                            sessionId, callSession,
+                                                                            localMediaStream,
+                                                                            true,
+                                                                            true,
+                                                                            type);
 
             } else if (hasMCU) {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                            iceServers, sdpConstraints, sessionId, callSession, null, false, true, type);
+                                                                            iceServers,
+                                                                            sdpConstraints,
+                                                                            sessionId,
+                                                                            callSession,
+                                                                            null,
+                                                                            false,
+                                                                            true,
+                                                                            type);
             } else {
                 if (!"screen".equals(type)) {
                     magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                                iceServers, sdpConstraints, sessionId, callSession, localMediaStream, false, false, type);
+                                                                                iceServers,
+                                                                                sdpConstraints,
+                                                                                sessionId,
+                                                                                callSession,
+                                                                                localMediaStream,
+                                                                                false,
+                                                                                false,
+                                                                                type);
                 } else {
                     magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                                iceServers, sdpConstraints, sessionId, callSession, null, false, false, type);
+                                                                                iceServers,
+                                                                                sdpConstraints,
+                                                                                sessionId,
+                                                                                callSession,
+                                                                                null,
+                                                                                false,
+                                                                                false,
+                                                                                type);
                 }
             }
 
@@ -1818,10 +1849,13 @@ public class CallController extends BaseController {
     private void removeMediaStream(String sessionId) {
         Log.d(TAG, "removeMediaStream");
         participantDisplayItems.remove(sessionId);
-        initGridAdapter();
 
-        if (callControls != null) {
-            callControls.setZ(100.0f);
+        if (!isBeingDestroyed() && !isDestroyed()) {
+            initGridAdapter();
+
+            if (callControls != null) {
+                callControls.setZ(100.0f);
+            }
         }
     }
 
@@ -1928,23 +1962,23 @@ public class CallController extends BaseController {
                         .observeOn(Schedulers.io())
                         .subscribe(new Observer<Long>() {
                             @Override
-                            public void onSubscribe(Disposable d) {
-
+                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                // unused atm
                             }
 
                             @Override
-                            public void onNext(Long aLong) {
+                            public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
                                 magicPeerConnectionWrapper.sendNickChannelData(dataChannelMessage);
                             }
 
                             @Override
-                            public void onError(Throwable e) {
-
+                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                // unused atm
                             }
 
                             @Override
                             public void onComplete() {
-
+                                // unused atm
                             }
                         });
                 break;
