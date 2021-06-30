@@ -44,7 +44,7 @@ public class DatabaseModule {
     @Singleton
     public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(@NonNull final Context context) {
         return new SqlCipherDatabaseSource(context, Models.DEFAULT,
-                context.getResources().getString(R.string.nc_app_name).toLowerCase()
+                context.getResources().getString(R.string.nc_app_product_name).toLowerCase()
                         .replace(" ", "_").trim() + ".sqlite",
                 context.getString(R.string.nc_talk_database_encryption_key), 6);
     }

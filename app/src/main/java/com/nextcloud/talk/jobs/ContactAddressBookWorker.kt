@@ -79,7 +79,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
 
         val currentUser = userUtils.currentUser
 
-        accountName = context.getString(R.string.nc_app_name)
+        accountName = context.getString(R.string.nc_app_product_name)
         accountType = BuildConfig.APPLICATION_ID
 
         if (currentUser == null) {
