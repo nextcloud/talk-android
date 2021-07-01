@@ -505,15 +505,15 @@ public class CallController extends BaseController {
             pipVideoView.setOnTouchListener(new SelfVideoTouchListener());
         }
 
-//        gridView.setOnTouchListener(new View.OnTouchListener() {
-//            public boolean onTouch(View v, MotionEvent me) {
-//                int action = me.getActionMasked();
-//                if (action == MotionEvent.ACTION_DOWN) {
-//                    showCallControls();
-//                }
-//                return true;
-//            }
-//        });
+        gridView.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent me) {
+                int action = me.getActionMasked();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    showCallControls();
+                }
+                return false;
+            }
+        });
 
         initGridAdapter();
     }
