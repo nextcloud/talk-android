@@ -49,10 +49,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
@@ -143,6 +139,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -484,8 +483,10 @@ public class CallController extends BaseController {
             cameraControlButton.setVisibility(View.GONE);
             pipVideoView.setVisibility(View.GONE);
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                                 ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
+            params.setMargins(0,0,0,400);
             gridView.setLayoutParams(params);
         } else {
             callControlEnableSpeaker.setVisibility(View.GONE);
@@ -502,15 +503,15 @@ public class CallController extends BaseController {
             pipVideoView.setOnTouchListener(new SelfVideoTouchListener());
         }
 
-        gridView.setOnTouchListener(new View.OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent me) {
-                int action = me.getActionMasked();
-                if (action == MotionEvent.ACTION_DOWN) {
-                    showCallControls();
-                }
-                return true;
-            }
-        });
+//        gridView.setOnTouchListener(new View.OnTouchListener() {
+//            public boolean onTouch(View v, MotionEvent me) {
+//                int action = me.getActionMasked();
+//                if (action == MotionEvent.ACTION_DOWN) {
+//                    showCallControls();
+//                }
+//                return true;
+//            }
+//        });
 
         initGridAdapter();
     }
@@ -561,11 +562,20 @@ public class CallController extends BaseController {
                 }
             });
 
+            LinearLayout callControlsLinearLayout = controllerCallLayout.findViewById(R.id.callControlsLinearLayout);
+            callControlsLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    callControlsLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
+
             participantsAdapter = new ParticipantsAdapter(
                     this.getActivity(),
                     participantDisplayItems,
                     gridViewWrapper,
                     callInfosLinearLayout,
+                    callControlsLinearLayout,
                     columns,
                     isVoiceOnlyCall);
             gridView.setAdapter(participantsAdapter);

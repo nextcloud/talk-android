@@ -52,6 +52,8 @@
                 android:gravity="center"
                 android:stretchMode="columnWidth"
                 android:numColumns="2"
+                android:scrollbars="vertical"
+                android:background="#fff000"
                 />
 
             <FrameLayout

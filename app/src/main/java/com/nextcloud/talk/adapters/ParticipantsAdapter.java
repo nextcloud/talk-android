@@ -33,18 +33,21 @@ public class ParticipantsAdapter extends BaseAdapter {
     private final ArrayList<ParticipantDisplayItem> participantDisplayItems;
     private final RelativeLayout gridViewWrapper;
     private final LinearLayout callInfosLinearLayout;
+    private final LinearLayout callControlsLinearLayout;
     private final int columns;
     private final boolean isVoiceOnlyCall;
 
     public ParticipantsAdapter(Context mContext,
                                Map<String, ParticipantDisplayItem> participantDisplayItems,
                                RelativeLayout gridViewWrapper,
-                               LinearLayout linearLayout,
+                               LinearLayout callInfosLinearLayout,
+                               LinearLayout callControlsLinearLayout,
                                int columns,
                                boolean isVoiceOnlyCall) {
         this.mContext = mContext;
         this.gridViewWrapper = gridViewWrapper;
-        this.callInfosLinearLayout = linearLayout;
+        this.callInfosLinearLayout = callInfosLinearLayout;
+        this.callControlsLinearLayout = callControlsLinearLayout;
         this.columns = columns;
         this.isVoiceOnlyCall = isVoiceOnlyCall;
 
@@ -136,11 +139,18 @@ public class ParticipantsAdapter extends BaseAdapter {
 
     private int scaleGridViewItemHeight() {
         int headerHeight = 0;
+        int callControlsHeight = 0;
         if (callInfosLinearLayout.getVisibility() == View.VISIBLE && isVoiceOnlyCall) {
             headerHeight = callInfosLinearLayout.getHeight();
         }
-        int itemHeight = (gridViewWrapper.getHeight() - headerHeight) / getRowsCount(getCount());
-        return itemHeight;
+        if (callControlsLinearLayout.getVisibility() == View.VISIBLE && isVoiceOnlyCall) {
+            callControlsHeight = callControlsLinearLayout.getHeight();
+        }
+        int itemHeight = (gridViewWrapper.getHeight() - headerHeight - callControlsHeight) / getRowsCount(getCount());
+//        if (itemHeight < 9000) {
+//            itemHeight = 9000;
+//        }
+        return itemHeight + 10;
     }
 
     private int getRowsCount(int items) {
