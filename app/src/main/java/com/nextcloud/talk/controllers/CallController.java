@@ -163,6 +163,8 @@ public class CallController extends BaseController {
 
     private static final String TAG = "CallController";
 
+    public static final int CALL_CONTROLS_HEIGHT = 300;
+
     private static final String[] PERMISSIONS_CALL = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.RECORD_AUDIO,
@@ -486,7 +488,7 @@ public class CallController extends BaseController {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                                  ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
-            params.setMargins(0,0,0,400);
+            params.setMargins(0,0,0, CALL_CONTROLS_HEIGHT);
             gridView.setLayoutParams(params);
         } else {
             callControlEnableSpeaker.setVisibility(View.GONE);
@@ -562,20 +564,11 @@ public class CallController extends BaseController {
                 }
             });
 
-            LinearLayout callControlsLinearLayout = controllerCallLayout.findViewById(R.id.callControlsLinearLayout);
-            callControlsLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    callControlsLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-            });
-
             participantsAdapter = new ParticipantsAdapter(
                     this.getActivity(),
                     participantDisplayItems,
                     gridViewWrapper,
                     callInfosLinearLayout,
-                    callControlsLinearLayout,
                     columns,
                     isVoiceOnlyCall);
             gridView.setAdapter(participantsAdapter);

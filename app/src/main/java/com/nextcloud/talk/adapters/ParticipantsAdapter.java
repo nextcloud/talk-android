@@ -15,6 +15,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.controllers.CallController;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import org.webrtc.MediaStream;
@@ -28,12 +29,12 @@ import java.util.Map;
 public class ParticipantsAdapter extends BaseAdapter {
 
     private static final String TAG = "ParticipantsAdapter";
+    private static final int ITEM_MIN_HEIGHT = 500;
 
     private final Context mContext;
     private final ArrayList<ParticipantDisplayItem> participantDisplayItems;
     private final RelativeLayout gridViewWrapper;
     private final LinearLayout callInfosLinearLayout;
-    private final LinearLayout callControlsLinearLayout;
     private final int columns;
     private final boolean isVoiceOnlyCall;
 
@@ -41,13 +42,11 @@ public class ParticipantsAdapter extends BaseAdapter {
                                Map<String, ParticipantDisplayItem> participantDisplayItems,
                                RelativeLayout gridViewWrapper,
                                LinearLayout callInfosLinearLayout,
-                               LinearLayout callControlsLinearLayout,
                                int columns,
                                boolean isVoiceOnlyCall) {
         this.mContext = mContext;
         this.gridViewWrapper = gridViewWrapper;
         this.callInfosLinearLayout = callInfosLinearLayout;
-        this.callControlsLinearLayout = callControlsLinearLayout;
         this.columns = columns;
         this.isVoiceOnlyCall = isVoiceOnlyCall;
 
@@ -143,14 +142,14 @@ public class ParticipantsAdapter extends BaseAdapter {
         if (callInfosLinearLayout.getVisibility() == View.VISIBLE && isVoiceOnlyCall) {
             headerHeight = callInfosLinearLayout.getHeight();
         }
-        if (callControlsLinearLayout.getVisibility() == View.VISIBLE && isVoiceOnlyCall) {
-            callControlsHeight = callControlsLinearLayout.getHeight();
+        if (isVoiceOnlyCall) {
+            callControlsHeight = CallController.CALL_CONTROLS_HEIGHT;
         }
         int itemHeight = (gridViewWrapper.getHeight() - headerHeight - callControlsHeight) / getRowsCount(getCount());
-//        if (itemHeight < 9000) {
-//            itemHeight = 9000;
-//        }
-        return itemHeight + 10;
+        if (itemHeight < ITEM_MIN_HEIGHT) {
+            itemHeight = ITEM_MIN_HEIGHT;
+        }
+        return itemHeight;
     }
 
     private int getRowsCount(int items) {
