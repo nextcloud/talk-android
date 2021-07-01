@@ -244,8 +244,10 @@ public class AccountVerificationController extends BaseController {
                             fetchProfile(credentials);
                         } else {
                             if (getActivity() != null && getResources() != null) {
-                                getActivity().runOnUiThread(() -> progressText.setText(String.format(getResources().getString(
-                                        R.string.nc_nextcloud_talk_app_not_installed), getResources().getString(R.string.nc_app_name))));
+                                getActivity().runOnUiThread(() -> progressText.setText(
+                                        String.format(
+                                                getResources().getString(R.string.nc_nextcloud_talk_app_not_installed),
+                                                getResources().getString(R.string.nc_app_product_name))));
                             }
 
                             ApplicationWideMessageHolder.getInstance().setMessageType(
@@ -258,8 +260,10 @@ public class AccountVerificationController extends BaseController {
                     @Override
                     public void onError(Throwable e) {
                         if (getActivity() != null && getResources() != null) {
-                            getActivity().runOnUiThread(() -> progressText.setText(String.format(getResources().getString(
-                                    R.string.nc_nextcloud_talk_app_not_installed), getResources().getString(R.string.nc_app_name))));
+                            getActivity().runOnUiThread(() -> progressText.setText(
+                                    String.format(
+                                            getResources().getString(R.string.nc_nextcloud_talk_app_not_installed),
+                                            getResources().getString(R.string.nc_app_product_name))));
                         }
 
                         ApplicationWideMessageHolder.getInstance().setMessageType(

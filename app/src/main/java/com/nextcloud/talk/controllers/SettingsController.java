@@ -276,7 +276,7 @@ public class SettingsController extends BaseController {
         } else {
             screenLockSwitchPreference.setSummary(String.format(Locale.getDefault(),
                     getResources().getString(R.string.nc_settings_screen_lock_desc),
-                    getResources().getString(R.string.nc_app_name)));
+                    getResources().getString(R.string.nc_app_product_name)));
         }
 
 

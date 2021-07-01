@@ -23,4 +23,4 @@
     android:accountType="com.nextcloud.talk2"
     android:icon="@mipmap/ic_launcher"
     android:smallIcon="@mipmap/ic_launcher"
-    android:label="@string/nc_app_name"/>
+    android:label="@string/nc_app_product_name"/>

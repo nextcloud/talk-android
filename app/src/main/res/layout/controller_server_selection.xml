@@ -43,7 +43,7 @@
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_marginBottom="@dimen/standard_margin"
-            android:contentDescription="@string/nc_app_name"
+            android:contentDescription="@string/nc_app_product_name"
             android:scaleType="fitXY"
             app:srcCompat="@drawable/ic_logo" />
 

@@ -149,7 +149,7 @@ public class WebViewLoginController extends BaseController {
     private String getWebLoginUserAgent() {
         return Build.MANUFACTURER.substring(0, 1).toUpperCase(Locale.getDefault()) +
                 Build.MANUFACTURER.substring(1).toLowerCase(Locale.getDefault()) + " " + Build.MODEL + " ("
-                + getResources().getString(R.string.nc_app_name) + ")";
+                + getResources().getString(R.string.nc_app_product_name) + ")";
     }
 
     @Override
