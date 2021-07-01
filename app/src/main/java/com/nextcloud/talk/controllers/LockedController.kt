@@ -99,7 +99,7 @@ class LockedController : NewBaseController(R.layout.controller_locked) {
                 .setTitle(
                     String.format(
                         context.getString(R.string.nc_biometric_unlock),
-                        context.getString(R.string.nc_app_name)
+                        context.getString(R.string.nc_app_product_name)
                     )
                 )
                 .setNegativeButtonText(context.getString(R.string.nc_cancel))

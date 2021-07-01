@@ -284,11 +284,13 @@ public class CallNotificationController extends BaseController {
                                                                                 "conversation-call-flags");
                             if (hasCallFlags) {
                                 if (isInCallWithVideo(currentConversation.callFlag)) {
-                                    incomingCallVoiceOrVideoTextView.setText(String.format(getResources().getString(R.string.nc_call_video),
-                                                                                           getResources().getString(R.string.nc_app_name)));
+                                    incomingCallVoiceOrVideoTextView.setText(
+                                            String.format(getResources().getString(R.string.nc_call_video),
+                                                          getResources().getString(R.string.nc_app_product_name)));
                                 } else {
-                                    incomingCallVoiceOrVideoTextView.setText(String.format(getResources().getString(R.string.nc_call_voice),
-                                                                                           getResources().getString(R.string.nc_app_name)));
+                                    incomingCallVoiceOrVideoTextView.setText(
+                                            String.format(getResources().getString(R.string.nc_call_voice),
+                                                          getResources().getString(R.string.nc_app_product_name)));
                                 }
                             }
                         }
@@ -328,8 +330,9 @@ public class CallNotificationController extends BaseController {
         super.onViewBound(view);
 
         String callDescriptionWithoutTypeInfo =
-                String.format(getResources().getString(R.string.nc_call_unknown), getResources().getString(R.string.nc_app_name));
-
+                String.format(
+                        getResources().getString(R.string.nc_call_unknown),
+                        getResources().getString(R.string.nc_app_product_name));
 
         incomingCallVoiceOrVideoTextView.setText(callDescriptionWithoutTypeInfo);
 

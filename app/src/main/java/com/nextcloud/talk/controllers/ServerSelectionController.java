@@ -265,7 +265,7 @@ public class ServerSelectionController extends BaseController {
                     } else if (!status.getVersion().startsWith("13.")) {
                         setErrorText(String.format(getResources().
                                         getString(R.string.nc_server_version),
-                                getResources().getString(R.string.nc_app_name),
+                                getResources().getString(R.string.nc_app_product_name),
                                 productName));
                     }
 
