@@ -49,10 +49,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
@@ -143,6 +139,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -484,8 +483,12 @@ public class CallController extends BaseController {
             cameraControlButton.setVisibility(View.GONE);
             pipVideoView.setVisibility(View.GONE);
 
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                                 ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
+            int callControlsHeight =
+                    Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
+            params.setMargins(0,0,0, callControlsHeight);
             gridView.setLayoutParams(params);
         } else {
             callControlEnableSpeaker.setVisibility(View.GONE);
@@ -508,7 +511,7 @@ public class CallController extends BaseController {
                 if (action == MotionEvent.ACTION_DOWN) {
                     showCallControls();
                 }
-                return true;
+                return false;
             }
         });
 
@@ -521,18 +524,14 @@ public class CallController extends BaseController {
 
             int columns;
             int participantsInGrid = participantDisplayItems.size();
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (participantsInGrid > 8) {
-                    columns = 3;
-                } else if (participantsInGrid > 2) {
+            if (getResources() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (participantsInGrid > 2) {
                     columns = 2;
                 } else {
                     columns = 1;
                 }
             } else {
-                if (participantsInGrid > 8) {
-                    columns = 4;
-                } else if (participantsInGrid > 2) {
+                if (participantsInGrid > 2) {
                     columns = 3;
                 } else if (participantsInGrid > 1) {
                     columns = 2;
