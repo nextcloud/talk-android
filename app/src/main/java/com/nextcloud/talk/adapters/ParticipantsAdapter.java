@@ -39,12 +39,12 @@ public class ParticipantsAdapter extends BaseAdapter {
     public ParticipantsAdapter(Context mContext,
                                Map<String, ParticipantDisplayItem> participantDisplayItems,
                                RelativeLayout gridViewWrapper,
-                               LinearLayout linearLayout,
+                               LinearLayout callInfosLinearLayout,
                                int columns,
                                boolean isVoiceOnlyCall) {
         this.mContext = mContext;
         this.gridViewWrapper = gridViewWrapper;
-        this.callInfosLinearLayout = linearLayout;
+        this.callInfosLinearLayout = callInfosLinearLayout;
         this.columns = columns;
         this.isVoiceOnlyCall = isVoiceOnlyCall;
 
@@ -136,10 +136,18 @@ public class ParticipantsAdapter extends BaseAdapter {
 
     private int scaleGridViewItemHeight() {
         int headerHeight = 0;
+        int callControlsHeight = 0;
         if (callInfosLinearLayout.getVisibility() == View.VISIBLE && isVoiceOnlyCall) {
             headerHeight = callInfosLinearLayout.getHeight();
         }
-        int itemHeight = (gridViewWrapper.getHeight() - headerHeight) / getRowsCount(getCount());
+        if (isVoiceOnlyCall) {
+            callControlsHeight = Math.round(mContext.getResources().getDimension(R.dimen.call_controls_height));
+        }
+        int itemHeight = (gridViewWrapper.getHeight() - headerHeight - callControlsHeight) / getRowsCount(getCount());
+        int itemMinHeight = Math.round(mContext.getResources().getDimension(R.dimen.call_grid_item_min_height));
+        if (itemHeight < itemMinHeight) {
+            itemHeight = itemMinHeight;
+        }
         return itemHeight;
     }
 
