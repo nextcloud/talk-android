@@ -1655,8 +1655,16 @@ public class CallController extends BaseController {
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSesssions = new HashSet<>();
 
+        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
+
+        // The signaling session is the same as the Nextcloud session only when the MCU is not used.
+        String currentSessiondId = callSession;
+        if (hasMCU) {
+            currentSessiondId = webSocketClient.getSessionId();
+        }
+
         for (HashMap<String, Object> participant : users) {
-            if (!participant.get("sessionId").equals(callSession)) {
+            if (!participant.get("sessionId").equals(currentSessiondId)) {
                 Object inCallObject = participant.get("inCall");
                 boolean isNewSession;
                 if (inCallObject instanceof Boolean) {
@@ -1693,10 +1701,13 @@ public class CallController extends BaseController {
             getPeersForCall();
         }
 
-        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
+        if (hasMCU) {
+            // Ensure that own publishing peer is set up.
+            getPeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), "video", true);
+        }
 
         for (String sessionId : newSessions) {
-            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", hasMCU && sessionId.equals(webSocketClient.getSessionId()));
+            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
         }
 
         if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
