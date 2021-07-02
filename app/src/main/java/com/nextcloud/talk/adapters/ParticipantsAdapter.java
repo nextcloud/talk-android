@@ -29,7 +29,6 @@ import java.util.Map;
 public class ParticipantsAdapter extends BaseAdapter {
 
     private static final String TAG = "ParticipantsAdapter";
-    private static final int ITEM_MIN_HEIGHT = 500;
 
     private final Context mContext;
     private final ArrayList<ParticipantDisplayItem> participantDisplayItems;
@@ -146,8 +145,9 @@ public class ParticipantsAdapter extends BaseAdapter {
             callControlsHeight = CallController.CALL_CONTROLS_HEIGHT;
         }
         int itemHeight = (gridViewWrapper.getHeight() - headerHeight - callControlsHeight) / getRowsCount(getCount());
-        if (itemHeight < ITEM_MIN_HEIGHT) {
-            itemHeight = ITEM_MIN_HEIGHT;
+        int itemMinHeight = Math.round(mContext.getResources().getDimension(R.dimen.call_grid_item_min_height));
+        if (itemHeight < itemMinHeight) {
+            itemHeight = itemMinHeight;
         }
         return itemHeight;
     }
