@@ -524,18 +524,14 @@ public class CallController extends BaseController {
 
             int columns;
             int participantsInGrid = participantDisplayItems.size();
-            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (participantsInGrid > 8) {
-                    columns = 3;
-                } else if (participantsInGrid > 2) {
+            if (getResources() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                if (participantsInGrid > 2) {
                     columns = 2;
                 } else {
                     columns = 1;
                 }
             } else {
-                if (participantsInGrid > 8) {
-                    columns = 4;
-                } else if (participantsInGrid > 2) {
+                if (participantsInGrid > 2) {
                     columns = 3;
                 } else if (participantsInGrid > 1) {
                     columns = 2;
