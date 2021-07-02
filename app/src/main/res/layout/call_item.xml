@@ -28,8 +28,8 @@
     android:id="@+id/relative_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:orientation="vertical">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/avatarImageView"
@@ -49,25 +49,25 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="6dp"
         android:layout_marginStart="10dp"
+        android:layout_marginBottom="6dp"
         android:ellipsize="end"
         android:maxEms="8"
         android:maxLines="1"
-        android:textColor="@android:color/white"
-        tools:text="Bill Murray 12345678901234567890"/>
+        android:textColor="@color/white"
+        tools:text="Bill Murray 12345678901234567890" />
 
     <ImageView
         android:id="@+id/remote_audio_off"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginStart="10dp"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="6dp"
         android:layout_toEndOf="@id/peer_nick_text_view"
-        android:src="@drawable/ic_mic_off_white_24px"
         android:contentDescription="@string/nc_remote_audio_off"
+        android:src="@drawable/ic_mic_off_white_24px"
         android:visibility="invisible"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </RelativeLayout>
