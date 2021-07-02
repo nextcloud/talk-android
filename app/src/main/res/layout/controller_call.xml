@@ -134,18 +134,17 @@
     <LinearLayout
         android:id="@+id/callControlsLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/call_controls_height"
         android:animateLayoutChanges="true"
         android:orientation="horizontal"
         android:background="@android:color/transparent"
         android:gravity="center"
-        android:layout_alignBottom="@id/linearWrapperLayout"
-        android:layout_marginBottom="16dp">
+        android:layout_alignBottom="@id/linearWrapperLayout">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callControlToggleChat"
             android:layout_width="60dp"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="10dp"
             app:backgroundImage="@color/call_buttons_background"
@@ -157,7 +156,7 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callControlEnableSpeaker"
             android:layout_width="60dp"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             app:backgroundImage="@color/call_buttons_background"
@@ -167,7 +166,7 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/call_control_camera"
             android:layout_width="60dp"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:alpha="0.7"
@@ -178,7 +177,7 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/call_control_microphone"
             android:layout_width="60dp"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:alpha="0.7"
@@ -189,7 +188,7 @@
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/callControlHangupView"
             android:layout_width="60dp"
-            android:layout_height="80dp"
+            android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="40dp"
             app:backgroundImage="@color/nc_darkRed"

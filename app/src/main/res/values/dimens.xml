@@ -59,4 +59,5 @@
     <dimen name="default_login_width">400dp</dimen>
 
     <dimen name="call_grid_item_min_height">180dp</dimen>
+    <dimen name="call_controls_height">110dp</dimen>
 </resources>

@@ -15,7 +15,6 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.controllers.CallController;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import org.webrtc.MediaStream;
@@ -142,7 +141,7 @@ public class ParticipantsAdapter extends BaseAdapter {
             headerHeight = callInfosLinearLayout.getHeight();
         }
         if (isVoiceOnlyCall) {
-            callControlsHeight = CallController.CALL_CONTROLS_HEIGHT;
+            callControlsHeight = Math.round(mContext.getResources().getDimension(R.dimen.call_controls_height));
         }
         int itemHeight = (gridViewWrapper.getHeight() - headerHeight - callControlsHeight) / getRowsCount(getCount());
         int itemMinHeight = Math.round(mContext.getResources().getDimension(R.dimen.call_grid_item_min_height));

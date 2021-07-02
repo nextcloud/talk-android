@@ -163,8 +163,6 @@ public class CallController extends BaseController {
 
     private static final String TAG = "CallController";
 
-    public static final int CALL_CONTROLS_HEIGHT = 300;
-
     private static final String[] PERMISSIONS_CALL = {
             android.Manifest.permission.CAMERA,
             android.Manifest.permission.RECORD_AUDIO,
@@ -488,7 +486,9 @@ public class CallController extends BaseController {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                                  ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
-            params.setMargins(0,0,0, CALL_CONTROLS_HEIGHT);
+            int callControlsHeight =
+                    Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
+            params.setMargins(0,0,0, callControlsHeight);
             gridView.setLayoutParams(params);
         } else {
             callControlEnableSpeaker.setVisibility(View.GONE);
