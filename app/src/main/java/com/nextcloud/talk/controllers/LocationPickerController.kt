@@ -386,9 +386,15 @@ class LocationPickerController(args: Bundle) :
 
     private fun executeShareLocation(selectedLat: Double?, selectedLon: Double?, locationName: String?) {
         val objectId = "geo:$selectedLat,$selectedLon"
+
+        var locationNameToShare = locationName
+        if (locationNameToShare.isNullOrBlank()) {
+            locationNameToShare = resources?.getString(R.string.nc_shared_location)
+        }
+
         val metaData: String =
             "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
-                "\"longitude\":\"$selectedLon\",\"name\":\"$locationName\"}"
+                "\"longitude\":\"$selectedLon\",\"name\":\"$locationNameToShare\"}"
 
         ncApi.sendLocation(
             ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
