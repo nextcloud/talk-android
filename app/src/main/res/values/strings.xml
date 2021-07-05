@@ -382,7 +382,9 @@
     <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_share_current_location">Share current location</string>
     <string name="nc_share_this_location">Share this location</string>
+    <string name="nc_shared_location">Shared location</string>
     <string name="nc_location_current_position_description">Your current location</string>
+    <string name="nc_location_unknown">Position unknown</string>
 
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
@@ -451,5 +453,4 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
-    <string name="nc_location_unknown">Position unknown</string>
 </resources>
