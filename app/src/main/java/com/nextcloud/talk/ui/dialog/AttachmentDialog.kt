@@ -29,6 +29,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import butterknife.Unbinder
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
@@ -91,5 +92,12 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             chatController.showBrowserScreen(BrowserController.BrowserType.DAV_BROWSER)
             dismiss()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 }
