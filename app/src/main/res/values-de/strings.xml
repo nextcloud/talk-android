@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
     <string name="nc_change_password">Passwort ändern</string>
+    <string name="nc_circle">Kreis</string>
     <string name="nc_circles">Kreise</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Menü für die öffentliche Unterhaltung %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menü für die Unterhaltung mit %1$s</string>
     <string name="nc_description_more_menu_public">Menü für die Gruppenunterhaltung %1$s</string>
+    <string name="nc_description_record_voice">Sprachnachricht aufnehmen</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
     <string name="nc_dialog_invalid_password">Ungültiges Passwort</string>
     <string name="nc_dialog_reauth_or_delete">Möchten Sie das Konto erneut autorisieren oder löschen?</string>
@@ -182,6 +184,7 @@
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
     <string name="nc_remote_audio_off">Entferntes Audio aus</string>
+    <string name="nc_remove_circle_and_members">Kreis und Mitglieder entfernen</string>
     <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
     <string name="nc_remove_group_and_members">Gruppe und Mitglieder entfernen</string>
     <string name="nc_remove_participant">Teilnehmer entfernen</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">Sie haben ein Bild gesendet.</string>
     <string name="nc_sent_location" formatted="true">%1$s hat einen Ort gesendet.</string>
     <string name="nc_sent_location_you">Sie haben einen Ort gesendet.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s hat eine Sprachnachricht gesendet.</string>
+    <string name="nc_sent_voice_you">Sie haben eine Sprachnachricht gesendet.</string>
     <string name="nc_server_connect">Prüfe Verbindung zum Server</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
     <string name="nc_server_failed_to_import_account">Das Importieren des ausgewählten Kontos ist fehlgeschlagen</string>
@@ -304,6 +309,10 @@
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_user">Benutzer</string>
     <string name="nc_username">Benutzername</string>
+    <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Halten zum Aufnehmen, zum Versenden loslassen.</string>
+    <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>
+    <string name="nc_voice_message_slide_to_cancel">« Schieben zum Abbrechen</string>
     <string name="nc_webinar">Online-Seminar</string>
     <string name="nc_wrong_link">Unterhaltungs-Link ist ungültig</string>
     <string name="nc_wrong_password">Falsches Passwort</string>
@@ -311,6 +320,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="password_protected">Passwortgeschützt</string>
+    <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>

@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
     <string name="nc_change_password">Aldatu pasahitza</string>
+    <string name="nc_circle">Zirkulua</string>
     <string name="nc_circles">Zirkuluak</string>
     <string name="nc_clear_password">Garbitu pasahitza</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">%1$s elkarrizketa publikoaren menua</string>
     <string name="nc_description_more_menu_one_to_one">%1$s(r)ekin duzun elkarrizketaren menua</string>
     <string name="nc_description_more_menu_public">%1$s taldeko elkarrizketaren menua</string>
+    <string name="nc_description_record_voice">Grabatu ahots mezua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
     <string name="nc_dialog_reauth_or_delete">Kontu hau birbaimendu edo ezabatu nahi duzu?</string>
@@ -182,6 +184,7 @@
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
     <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
     <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
+    <string name="nc_remove_circle_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">Irudi bat bidali duzu.</string>
     <string name="nc_sent_location" formatted="true">%1$s-k kokaleku bat bidali du.</string>
     <string name="nc_sent_location_you">Kokaleku bat bidali duzu.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s-k ahots mezui bat bidali du.</string>
+    <string name="nc_sent_voice_you">Ahots mezu bat bidali duzu.</string>
     <string name="nc_server_connect">Probatu zerbitzariaren konexioa</string>
     <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
     <string name="nc_server_failed_to_import_account">Ezin izan da aukeratutako kontua inportatu</string>
@@ -304,6 +309,10 @@
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_username">Erabiltzaile-izena</string>
+    <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Sakatu grabatzeko, askatu bidaltzeko.</string>
+    <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>
+    <string name="nc_voice_message_slide_to_cancel">« Irristatu uzteko</string>
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_wrong_link">Elkarrizketa esteka ez da baliozkoa</string>
     <string name="nc_wrong_password">Pasahitz okerra</string>
@@ -311,6 +320,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
     <string name="password_protected">Pasahitz bidez babestuta</string>
+    <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>

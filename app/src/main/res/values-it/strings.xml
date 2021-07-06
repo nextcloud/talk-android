@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
     <string name="nc_change_password">Modifica password</string>
+    <string name="nc_circle">Cerchia</string>
     <string name="nc_circles">Cerchie</string>
     <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_client_cert_change">Cambia certificato client</string>

@@ -10,7 +10,7 @@
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">加載中...</string>
-    <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="filename_progress">%1$s（%2$d）</string>
     <string name="lock_symbol">鎖符號</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">所選賬戶現已匯入並可用</string>
@@ -36,12 +36,12 @@
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s 音頻通話中</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s 語音通話中</string>
     <string name="nc_call_state_with_phone">%1$s 電話對話中</string>
     <string name="nc_call_state_with_video">%1$s 視像對話中</string>
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
     <string name="nc_call_unknown">%s 通話</string>
-    <string name="nc_call_video">%s 視頻通話</string>
+    <string name="nc_call_video">%s 視像通話</string>
     <string name="nc_call_voice">%s 語音通話</string>
     <string name="nc_calling">連接中...</string>
     <string name="nc_camera_permission_permanently_denied">為了開啟影像的通訊請在系統設定內同意\"相機\"的需求。</string>
@@ -52,11 +52,12 @@
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
     <string name="nc_change_password">更改密碼</string>
+    <string name="nc_circle">社交圈子</string>
     <string name="nc_circles">圈子</string>
     <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">更改客戶端證書</string>
     <string name="nc_client_cert_setup">設置客戶端證書</string>
-    <string name="nc_common_error_sorry">發生錯誤了 ：(</string>
+    <string name="nc_common_error_sorry">發生錯誤了：（</string>
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">略過</string>
     <string name="nc_configure_cert_auth">選擇驗證證書</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">與 %1$s 公開對話的菜單</string>
     <string name="nc_description_more_menu_one_to_one">與 %1$s 對話的菜單</string>
     <string name="nc_description_more_menu_public">與 %1$s 群組對話的菜單</string>
+    <string name="nc_description_record_voice">錄製話音短訊</string>
     <string name="nc_description_send_message_button">傳送訊息</string>
     <string name="nc_dialog_invalid_password">無效的密碼</string>
     <string name="nc_dialog_reauth_or_delete">您要重新授權或刪除此賬戶嗎？</string>
@@ -95,7 +97,7 @@
     <string name="nc_endless_error">載入更多項目時，發生了錯誤</string>
     <string name="nc_external_server_failed">擷取網絡設定失敗</string>
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。您可以嘗試通過網絡瀏覽器加入對話。</string>
-    <string name="nc_failed_to_perform_operation">發生錯誤了 ：(</string>
+    <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>
     <string name="nc_file_browser">檔案瀏覽器\"</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
@@ -181,7 +183,8 @@
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_push_to_talk">一鍵通</string>
     <string name="nc_push_to_talk_desc">在停用米高風的情況下，單擊並按住即可使用一鍵通</string>
-    <string name="nc_remote_audio_off">遠端音頻關閉</string>
+    <string name="nc_remote_audio_off">遠端語音關閉</string>
+    <string name="nc_remove_circle_and_members">移除社交圈子及組員</string>
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組及組員</string>
     <string name="nc_remove_participant">移除參與者</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">你傳送了一張圖片</string>
     <string name="nc_sent_location" formatted="true">%1$s 傳送一個位置。</string>
     <string name="nc_sent_location_you">您傳送了一個位置。</string>
+    <string name="nc_sent_voice" formatted="true">%1$s 傳送了一個話音短訊。</string>
+    <string name="nc_sent_voice_you">你傳送了一個話音短訊。</string>
     <string name="nc_server_connect">測試伺服器連線</string>
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s數據庫</string>
     <string name="nc_server_failed_to_import_account">無法匯入所選的賬戶</string>
@@ -288,7 +293,7 @@
     <string name="nc_share_link_via">透過以下方式分享連結</string>
     <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s 邀請</string>
-    <string name="nc_share_text">加入於 %1$s/index。php/call/%2$s 的對話</string>
+    <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享此位置</string>
     <string name="nc_start_conversation">新對話</string>
@@ -304,6 +309,10 @@
     <string name="nc_upload_local_file">上傳本地文件</string>
     <string name="nc_user">用戶</string>
     <string name="nc_username">用戶名稱</string>
+    <string name="nc_voice_message_filename">談話錄音來自 %1$s（%2$s）</string>
+    <string name="nc_voice_message_hold_to_record_info">按住錄音，鬆開傳送。</string>
+    <string name="nc_voice_message_missing_audio_permission">需要錄音許可</string>
+    <string name="nc_voice_message_slide_to_cancel">« 滑動取消</string>
     <string name="nc_webinar">網絡研討會</string>
     <string name="nc_wrong_link">對話連結無效</string>
     <string name="nc_wrong_password">密碼錯誤</string>
@@ -311,6 +320,7 @@
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="password_protected">密碼保護</string>
+    <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="read_storage_no_permission">沒有權限就無法從存儲分享檔案</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>

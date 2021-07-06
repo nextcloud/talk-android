@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
     <string name="nc_change_password">Zmień hasło</string>
+    <string name="nc_circle">Krąg</string>
     <string name="nc_circles">Kręgi</string>
     <string name="nc_clear_password">Wyczyść hasło</string>
     <string name="nc_client_cert_change">Zmień certyfikat klienta</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Menu dla rozmów publicznych %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menu rozmowy z %1$s</string>
     <string name="nc_description_more_menu_public">Menu dla rozmów grupowych %1$s</string>
+    <string name="nc_description_record_voice">Nagraj wiadomość głosową</string>
     <string name="nc_description_send_message_button">Wyślij wiadomość</string>
     <string name="nc_dialog_invalid_password">Nieprawidłowe hasło</string>
     <string name="nc_dialog_reauth_or_delete">Czy chcesz ponownie autoryzować lub usunąć konto?</string>
@@ -182,6 +184,7 @@
     <string name="nc_push_to_talk">Naciśnij i mów</string>
     <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
     <string name="nc_remote_audio_off">Zdalne wyłączenie dźwięku</string>
+    <string name="nc_remove_circle_and_members">Usuń krąg i członków</string>
     <string name="nc_remove_from_favorites">Usuń z ulubionych</string>
     <string name="nc_remove_group_and_members">Usuń grupę i członków</string>
     <string name="nc_remove_participant">Usuń uczestnika</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">Wysłałeś plik graficzny.</string>
     <string name="nc_sent_location" formatted="true">%1$s wysłał lokalizację.</string>
     <string name="nc_sent_location_you">Wysłałeś lokalizację.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s wysłał wiadomość głosową.</string>
+    <string name="nc_sent_voice_you">Wysłałeś wiadomość głosową.</string>
     <string name="nc_server_connect">Sprawdź połączenie z serwerem</string>
     <string name="nc_server_db_upgrade_needed">Zaktualizuj swoją %1$s bazę danych</string>
     <string name="nc_server_failed_to_import_account">Nie udało się zaimportować wybranego konta</string>
@@ -304,6 +309,10 @@
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
     <string name="nc_user">Użytkownik</string>
     <string name="nc_username">Nazwa użytkownika</string>
+    <string name="nc_voice_message_filename">Nagranie rozmowy z %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Przytrzymaj, aby nagrać, zwolnij, aby wysłać.</string>
+    <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
+    <string name="nc_voice_message_slide_to_cancel">« Przesuń, aby anulować</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_wrong_password">Złe hasło</string>
@@ -311,6 +320,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="password_protected">Zabezpieczone hasłem</string>
+    <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>

@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
     <string name="nc_change_password">Změnit heslo</string>
+    <string name="nc_circle">Okruh</string>
     <string name="nc_circles">Okruhy</string>
     <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Nabídka pro veřejnou konverzaci %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Nabídka pro konverzaci s %1$s</string>
     <string name="nc_description_more_menu_public">Nabídka pro skupinovou konverzaci %1$s</string>
+    <string name="nc_description_record_voice">Nahrát hlasovou zprávu</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
     <string name="nc_dialog_reauth_or_delete">Chcete tento účet znovu ověřit nebo smazat?</string>
@@ -182,6 +184,7 @@
     <string name="nc_push_to_talk">Vysílačka</string>
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
     <string name="nc_remote_audio_off">Ztlumení mikrofonu na dálku</string>
+    <string name="nc_remove_circle_and_members">Odebrat kruh a členy</string>
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>
     <string name="nc_remove_participant">Odebrat účastníka</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal(a) umístění</string>
     <string name="nc_sent_location_you">Odeslali jste umístění.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s odeslal(a) hlasovou zprávu.</string>
+    <string name="nc_sent_voice_you">Odeslali jste hlasovou zprávu.</string>
     <string name="nc_server_connect">Vyzkoušet připojení k serveru</string>
     <string name="nc_server_db_upgrade_needed">Přejděte na novější verzi databáze %1$s</string>
     <string name="nc_server_failed_to_import_account">Zvolený účet se nepodařilo naimportovat</string>
@@ -291,6 +296,7 @@
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Sdílet toto umístění</string>
+    <string name="nc_shared_location">Sdílené umístění</string>
     <string name="nc_start_conversation">Začněte konverzaci</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_timeout_error">Časový limit</string>
@@ -304,6 +310,10 @@
     <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
     <string name="nc_user">Uživatel</string>
     <string name="nc_username">Uživatelské jméno</string>
+    <string name="nc_voice_message_filename">Nahrávka z Talk z %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Podržením nahrajte, uvolněním odešlete.</string>
+    <string name="nc_voice_message_missing_audio_permission">Je zapotřebí oprávnění pro zaznamenávání zvuku</string>
+    <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
     <string name="nc_webinar">Webinář</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
     <string name="nc_wrong_password">Nesprávné heslo</string>
@@ -311,6 +321,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="password_protected">Chráněno heslem</string>
+    <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>

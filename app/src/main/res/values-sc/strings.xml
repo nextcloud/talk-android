@@ -250,7 +250,7 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Nùmeru de telèfonu</string>
     <string name="nc_settings_phone_book_integration_title">Integratzione de su nùmeru de telèfonu</string>
     <string name="nc_settings_privacy">Riservadesa</string>
-    <string name="nc_settings_proxy_host_title">Istrangiadore Proxy</string>
+    <string name="nc_settings_proxy_host_title">Retzidore Proxy</string>
     <string name="nc_settings_proxy_password_title">Crae proxy</string>
     <string name="nc_settings_proxy_port_title">Ghenna de su proxy</string>
     <string name="nc_settings_proxy_title">Proxy</string>

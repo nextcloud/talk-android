@@ -34,6 +34,7 @@
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_call_reconnecting">Reconnexion en cours…</string>
     <string name="nc_call_state_in_call">%1$s en ligne</string>
+    <string name="nc_call_state_in_call_with_audio">%1$s en appel audio</string>
     <string name="nc_call_state_with_phone">%1$savec un téléphone</string>
     <string name="nc_call_state_with_video">%1$savec la vidéo</string>
     <string name="nc_call_timeout">Aucune réponse depuis 45 secondes, appuyez pour essayer à nouveau</string>
@@ -79,6 +80,7 @@
     <string name="nc_description_more_menu_group">Menu pour la conversation publique %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menu pour la conversation avec %1$s</string>
     <string name="nc_description_more_menu_public">Menu pour la conversation de groupe %1$s</string>
+    <string name="nc_description_record_voice">Enregistrer un message vocal</string>
     <string name="nc_description_send_message_button">Envoyer un message</string>
     <string name="nc_dialog_invalid_password">Mot de passe incorrect</string>
     <string name="nc_dialog_reauth_or_delete">Voulez-vous autoriser à nouveau ou supprimer ce compte ?</string>
@@ -122,6 +124,8 @@
     <string name="nc_lobby">Salle d\'attente</string>
     <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
     <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\nLe démarrage de cette réunion est prévu à %1$s.</string>
+    <string name="nc_location_current_position_description">Votre position actuelle</string>
+    <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
     <string name="nc_locked_tap_to_unlock">Appuyer pour déverrouiller</string>
     <string name="nc_make_call_private">Effectuer une conversation privée</string>
@@ -205,6 +209,10 @@
     <string name="nc_sent_an_audio_you">Vous avez envoyé un fichier audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s a envoyé une image.</string>
     <string name="nc_sent_an_image_you">Vous avez envoyé une image.</string>
+    <string name="nc_sent_location" formatted="true">%1$s a envoyé une position.</string>
+    <string name="nc_sent_location_you">Vous avez envoyé une position.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s a envoyé un message vocal.</string>
+    <string name="nc_sent_voice_you">Vous avez envoyé un message vocal.</string>
     <string name="nc_server_connect">Test de la connexion au serveur</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
@@ -272,11 +280,14 @@
     <string name="nc_settings_vibrate_desc">Le téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_settings_warning">Attention</string>
     <string name="nc_settings_wrong_account">Seul le compte courant peut être ré-autorisé</string>
+    <string name="nc_share_current_location">Partager la position actuelle</string>
     <string name="nc_share_link">Partager par lien public</string>
     <string name="nc_share_link_via">Partager le lien via</string>
+    <string name="nc_share_location">Partager la position</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
+    <string name="nc_share_this_location">Partager cette position</string>
     <string name="nc_start_conversation">Commencer une conversation</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_timeout_error">Délai d\'attente</string>
@@ -290,11 +301,15 @@
     <string name="nc_upload_local_file">Envoyer un fichier local</string>
     <string name="nc_user">Utilisateur</string>
     <string name="nc_username">Nom d\'utilisateur</string>
+    <string name="nc_voice_message_filename">Enregistrement de conversation de %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
+    <string name="nc_voice_message_slide_to_cancel">« Balayer pour annuler</string>
     <string name="nc_webinar">Webinaire</string>
     <string name="nc_wrong_link">Le lien de conversation n\'est pas valide.</string>
     <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_yes">Oui</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+    <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="password_protected">Protégé par mot de passe</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="save">Sauvegarder</string>
@@ -304,6 +319,7 @@
     <string name="scope_local_title">Local</string>
     <string name="scope_private_title">Privé</string>
     <string name="scope_published_title">Publier</string>
+    <string name="scope_toggle_description">Changer le niveau de confidentialité de %1$s</string>
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_to">Envoyer a</string>
     <string name="send_to_three_dots">Envoyer a...</string>

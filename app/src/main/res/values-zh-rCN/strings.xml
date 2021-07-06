@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
     <string name="nc_change_password">修改密码</string>
+    <string name="nc_circle">圈子 </string>
     <string name="nc_circles">圈子</string>
     <string name="nc_clear_password">清除密码</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">公共讨论菜单%1$s</string>
     <string name="nc_description_more_menu_one_to_one">联系人菜单%1$s</string>
     <string name="nc_description_more_menu_public">分组菜单%1$s</string>
+    <string name="nc_description_record_voice">录制语音消息 </string>
     <string name="nc_description_send_message_button">发送消息</string>
     <string name="nc_dialog_invalid_password">无效的密码</string>
     <string name="nc_dialog_reauth_or_delete">你想重新授权还是删除此帐户？</string>
@@ -182,6 +184,7 @@
     <string name="nc_push_to_talk">按住以说话</string>
     <string name="nc_push_to_talk_desc">在禁用麦克风的情况下，单击并按住即可使用 “按键发言” 功能</string>
     <string name="nc_remote_audio_off">远程音频关闭</string>
+    <string name="nc_remove_circle_and_members">删除圈子和成员</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_remove_group_and_members">移除群组和成员</string>
     <string name="nc_remove_participant">远程参与者</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">你已发送一张图片</string>
     <string name="nc_sent_location" formatted="true">%1$s发送了一个位置</string>
     <string name="nc_sent_location_you">你发送了一个位置</string>
+    <string name="nc_sent_voice" formatted="true">%1$s 发送了一条语音消息</string>
+    <string name="nc_sent_voice_you">你发送了一条语音消息</string>
     <string name="nc_server_connect">测试服务端连接 </string>
     <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_failed_to_import_account">选择的账号导入失败</string>
@@ -291,6 +296,7 @@
     <string name="nc_share_text">加入在 %1$s/index.php/call/%2$s 中的会话</string>
     <string name="nc_share_text_pass">\n密码： %1$s</string>
     <string name="nc_share_this_location">分享这个位置</string>
+    <string name="nc_shared_location">共享的位置</string>
     <string name="nc_start_conversation">发起会话</string>
     <string name="nc_start_time">开始时间</string>
     <string name="nc_timeout_error">超时</string>
@@ -304,6 +310,10 @@
     <string name="nc_upload_local_file">上传本地文件</string>
     <string name="nc_user">用户</string>
     <string name="nc_username">用户名</string>
+    <string name="nc_voice_message_filename">来自 %1$s 的 Talk 录音 (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
+    <string name="nc_voice_message_missing_audio_permission">需要音频录制权限</string>
+    <string name="nc_voice_message_slide_to_cancel">« 滑动取消</string>
     <string name="nc_webinar">网络研讨会</string>
     <string name="nc_wrong_link">会话链接无效</string>
     <string name="nc_wrong_password">错误的密码</string>
@@ -311,6 +321,7 @@
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
     <string name="password_protected">受密码保护</string>
+    <string name="play_pause_voice_message">播放/暂停语音消息</string>
     <string name="read_storage_no_permission">如果没有权限，不能共享来自存储的文件</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>

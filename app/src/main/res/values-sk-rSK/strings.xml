@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
     <string name="nc_change_password">Zmena hesla</string>
+    <string name="nc_circle">Kruh</string>
     <string name="nc_circles">Kruhy</string>
     <string name="nc_clear_password">Zrušiť heslo</string>
     <string name="nc_client_cert_change">Zmeniť klientský certifikát</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Menu pre verejný rozhovor %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Ponuka pre rozhovor s %1$s</string>
     <string name="nc_description_more_menu_public">Ponuka pre skupinový rozhovor %1$s</string>
+    <string name="nc_description_record_voice">Nahrať hlasovú správu</string>
     <string name="nc_description_send_message_button">Odoslať správu</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
     <string name="nc_dialog_reauth_or_delete">Prajete si znova autorizovať alebo zmazať tento účet?</string>
@@ -128,6 +130,7 @@
     <string name="nc_lobby_waiting_with_date">Momentálne čakáte v miestnosti.\n Toto stretnutie je naplánované na %1$s.</string>
     <string name="nc_location_current_position_description">Vaša súčasná poloha</string>
     <string name="nc_location_permission_required">vyžaduje sa prístup k polohe</string>
+    <string name="nc_location_unknown">Neznáma poloha</string>
     <string name="nc_locked">Uzamknuté</string>
     <string name="nc_locked_tap_to_unlock">Dotknite sa pre odomknutie</string>
     <string name="nc_make_call_private">Urobiť rozhovor súkromným</string>
@@ -181,6 +184,7 @@
     <string name="nc_push_to_talk">Stlač a hovor PTT</string>
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
     <string name="nc_remote_audio_off">Vypnúť vzdialené audio</string>
+    <string name="nc_remove_circle_and_members">Vymazať kruh a členov</string>
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>
@@ -214,6 +218,8 @@
     <string name="nc_sent_an_image_you">Odoslali ste obrázok.</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal umiestnenie.</string>
     <string name="nc_sent_location_you">Odoslali ste súčasnú polohu.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s poslal hlasovú správu.</string>
+    <string name="nc_sent_voice_you">Odoslali ste hlasovú správu.</string>
     <string name="nc_server_connect">Test serverového pripojenia</string>
     <string name="nc_server_db_upgrade_needed">Prosím aktualizujte vašu %1$sdatabázu</string>
     <string name="nc_server_failed_to_import_account">Nepodarilo sa importovať vybrané kontá</string>
@@ -303,6 +309,10 @@
     <string name="nc_upload_local_file">Nahrať miestny súbor</string>
     <string name="nc_user">Používateľ</string>
     <string name="nc_username">Používateľské meno</string>
+    <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
+    <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
+    <string name="nc_voice_message_slide_to_cancel">« Potiahnite pre zrušenie</string>
     <string name="nc_webinar">Webinár</string>
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
     <string name="nc_wrong_password">Nesprávne heslo</string>
