@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
+    <string name="nc_circle">Círculo</string>
     <string name="nc_circles">Círculos</string>
     <string name="nc_clear_password">Limpiar contraseña</string>
     <string name="nc_client_cert_change">Cambiar certificado de cliente</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Menú para la conversación pública %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menú para la conversación con %1$s</string>
     <string name="nc_description_more_menu_public">Menú para la conversación de grupo %1$s</string>
+    <string name="nc_description_record_voice">Grabar mensaje de voz</string>
     <string name="nc_description_send_message_button">Enviar mensaje</string>
     <string name="nc_dialog_invalid_password">Contraseña no válida</string>
     <string name="nc_dialog_reauth_or_delete">¿Quieres volver a autorizar o eliminar esta cuenta?</string>
@@ -126,6 +128,9 @@
     <string name="nc_lobby">Sala de espera</string>
     <string name="nc_lobby_waiting">Ahora estás esperando en la sala de espera.</string>
     <string name="nc_lobby_waiting_with_date">Estás esperando en la sala de espera.\n Esta reunión está planificada para %1$s.</string>
+    <string name="nc_location_current_position_description">Su ubicación actual</string>
+    <string name="nc_location_permission_required">se requiere permiso de ubicación</string>
+    <string name="nc_location_unknown">Posición desconocida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toca para desbloquear</string>
     <string name="nc_make_call_private">Hacer privada la conversación</string>
@@ -179,6 +184,7 @@
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
     <string name="nc_remote_audio_off">Audio remoto apagado</string>
+    <string name="nc_remove_circle_and_members">Eliminar círculo y miembros</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>
@@ -210,6 +216,10 @@
     <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha enviado una imagen.</string>
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
+    <string name="nc_sent_location" formatted="true">%1$s envió una ubicación.</string>
+    <string name="nc_sent_location_you">Usted envió una ubicación.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s envió un mensaje de voz.</string>
+    <string name="nc_sent_voice_you">Usted envió un mensaje de voz.</string>
     <string name="nc_server_connect">Probar conexión al servidor</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
@@ -228,6 +238,7 @@
     <string name="nc_settings">Configuración</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_settings_add_account">Añadir nueva cuenta</string>
+    <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica al teclado que desactive el aprendizaje personalizado (sin garantías)</string>
@@ -247,11 +258,14 @@
     <string name="nc_settings_phone_book_integration_title">Integración del número de teléfono</string>
     <string name="nc_settings_privacy">Privacidad</string>
     <string name="nc_settings_proxy_host_title">Host del proxy</string>
+    <string name="nc_settings_proxy_password_title">Contraseña de proxy</string>
     <string name="nc_settings_proxy_port_title">Puerto del proxy</string>
     <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Tipo de proxy</string>
+    <string name="nc_settings_proxy_username_title">Usuario de proxy</string>
     <string name="nc_settings_read_privacy_desc">Compartir mi estado de lectura y mostar el estado de lectura de otros</string>
     <string name="nc_settings_read_privacy_title">Estado de lectura</string>
+    <string name="nc_settings_reauthorize">Volver a autorizar la cuenta</string>
     <string name="nc_settings_remove">Eliminar</string>
     <string name="nc_settings_remove_account">Eliminar cuenta</string>
     <string name="nc_settings_remove_confirmation">Por favor, confirma tu intención de eliminar la cuenta actual.</string>
@@ -270,15 +284,19 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Brillante</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">El proxy requiere credenciales</string>
     <string name="nc_settings_vibrate">Vibración</string>
     <string name="nc_settings_vibrate_desc">Tu teléfono vibrará a menos que esté silenciado</string>
     <string name="nc_settings_warning">Alerta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
+    <string name="nc_share_current_location">Compartir ubicación actual</string>
     <string name="nc_share_link">Compartir enlace</string>
     <string name="nc_share_link_via">Compartir enlace vía</string>
+    <string name="nc_share_location">Compartir ubicación</string>
     <string name="nc_share_subject">%1$s invitación</string>
     <string name="nc_share_text">Únete a la conversación en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
+    <string name="nc_share_this_location">Compartir esta ubicación</string>
     <string name="nc_start_conversation">Comienza una conversación</string>
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_timeout_error">Tiempo de espera agotado</string>
@@ -292,6 +310,10 @@
     <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_username">Nombre de usuario</string>
+    <string name="nc_voice_message_filename">Grabando Talk desde %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Mantener para grabar, soltar para enviar.</string>
+    <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>
+    <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">El enlace a la conversación no es válido</string>
     <string name="nc_wrong_password">Contraseña errónea</string>
@@ -299,6 +321,7 @@
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
     <string name="open_in_files_app">Abrir en app Archivos</string>
     <string name="password_protected">Protegido por contraseña</string>
+    <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
     <string name="read_storage_no_permission">Compartir archivos desde el almacenamiento no es posible sin permisos</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Sincronizar solo con servidores de confianza</string>

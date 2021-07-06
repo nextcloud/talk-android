@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
     <string name="nc_change_password">Alterar a senha</string>
+    <string name="nc_circle">Círculo</string>
     <string name="nc_circles">Círculos</string>
     <string name="nc_clear_password">Excluir a senha</string>
     <string name="nc_client_cert_change">Alterar certificado do cliente</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Menu para conversa pública %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menu para conversa com %1$s</string>
     <string name="nc_description_more_menu_public">Menu para conversa em grupo %1$s</string>
+    <string name="nc_description_record_voice">Gravar mensagem de voz</string>
     <string name="nc_description_send_message_button">Enviar mensagem</string>
     <string name="nc_dialog_invalid_password">Senha inválida</string>
     <string name="nc_dialog_reauth_or_delete">Quer reautorizar ou excluir esta conta? </string>
@@ -182,6 +184,7 @@
     <string name="nc_push_to_talk">Pressione-para-falar</string>
     <string name="nc_push_to_talk_desc">Com o microfone desativado, clique&amp; para usar Pressione-para-falar</string>
     <string name="nc_remote_audio_off">Áudio remoto desligado</string>
+    <string name="nc_remove_circle_and_members">Remover círculo e membros</string>
     <string name="nc_remove_from_favorites">Remover dos favoritos</string>
     <string name="nc_remove_group_and_members">Remover grupo e membros </string>
     <string name="nc_remove_participant">Excluir participante</string>
@@ -215,6 +218,8 @@
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou uma localização.</string>
     <string name="nc_sent_location_you">Você enviou um local.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s enviou uma mensagem de voz.</string>
+    <string name="nc_sent_voice_you">Você enviou uma mensagem de voz.</string>
     <string name="nc_server_connect">Testar configuração do servidor</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
@@ -304,6 +309,10 @@
     <string name="nc_upload_local_file">Enviar arquivo local</string>
     <string name="nc_user">Usuário</string>
     <string name="nc_username">Usuário</string>
+    <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
+    <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>
+    <string name="nc_voice_message_slide_to_cancel">« Deslize para cancelar</string>
     <string name="nc_webinar">Webinarário</string>
     <string name="nc_wrong_link">O link de conversação não é válido</string>
     <string name="nc_wrong_password">Senha incorreta</string>

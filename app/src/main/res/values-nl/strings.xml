@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
     <string name="nc_change_password">Wachtwoord wijzigen</string>
+    <string name="nc_circle">Kring</string>
     <string name="nc_circles">Kringen</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">Menu voor openbaar gesprek %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menu voor gesprek met %1$s</string>
     <string name="nc_description_more_menu_public">Menu voor groepsgesprek %1$s</string>
+    <string name="nc_description_record_voice">Opnemen voicegesprek</string>
     <string name="nc_description_send_message_button">Verstuur bericht</string>
     <string name="nc_dialog_invalid_password">Ongeldig wachtwoord</string>
     <string name="nc_dialog_reauth_or_delete">Wil je dit account opnieuw authenticeren of verwijderen?</string>
@@ -130,6 +132,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\n Deze vergadering is ingepland voor %1$s.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
     <string name="nc_location_permission_required">Locatiepermissie vereist</string>
+    <string name="nc_location_unknown">Positie onbekend</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
     <string name="nc_make_call_private">Maak gesprek besloten</string>
@@ -183,6 +186,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_push_to_talk">Druk-om-te-praten</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
     <string name="nc_remote_audio_off">Externe audio uit</string>
+    <string name="nc_remove_circle_and_members">Verwijderen kring en leden</string>
     <string name="nc_remove_from_favorites">Verwijderen uit favorieten</string>
     <string name="nc_remove_group_and_members">Verwijderen groep en leden</string>
     <string name="nc_remove_participant">Verwijder deelnemer</string>
@@ -216,6 +220,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_sent_an_image_you">Je verstuurde een afbeelding.</string>
     <string name="nc_sent_location" formatted="true">%1$s verstuurde een locatie.</string>
     <string name="nc_sent_location_you">Je verstuurde een locatie.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s verstuurde een voicebericht.</string>
+    <string name="nc_sent_voice_you">Je verstuurde een voicebericht.</string>
     <string name="nc_server_connect">Testen serververbinding</string>
     <string name="nc_server_db_upgrade_needed">Werk je %1$s database bij</string>
     <string name="nc_server_failed_to_import_account">Kon het geselecteerde account niet importeren</string>
@@ -305,6 +311,10 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_username">Gebruikersnaam</string>
+    <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Ingedrukt houden om op te nemen, loslaten om te versturen.</string>
+    <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>
+    <string name="nc_voice_message_slide_to_cancel">« Schuiven om te annuleren</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>

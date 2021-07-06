@@ -52,6 +52,7 @@
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
     <string name="nc_change_password">Parolayı değiştir</string>
+    <string name="nc_circle">Çevre</string>
     <string name="nc_circles">Çevreler</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
@@ -83,6 +84,7 @@
     <string name="nc_description_more_menu_group">%1$s herkese açık görüşme menüsü</string>
     <string name="nc_description_more_menu_one_to_one">%1$s görüşmesinin menüsü</string>
     <string name="nc_description_more_menu_public">%1$s grup görüşmesi menüsü</string>
+    <string name="nc_description_record_voice">Ses iletisi kaydet</string>
     <string name="nc_description_send_message_button">İleti gönder</string>
     <string name="nc_dialog_invalid_password">Parola geçersiz</string>
     <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden etkinleştirmek ya da silmek ister misiniz?</string>
@@ -128,6 +130,7 @@
     <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu görüşme %1$s zamanında başlayacak.</string>
     <string name="nc_location_current_position_description">Geçerli konumunuz</string>
     <string name="nc_location_permission_required">konum izinleri gerekli</string>
+    <string name="nc_location_unknown">Konum bilinmiyor</string>
     <string name="nc_locked">Kilitli</string>
     <string name="nc_locked_tap_to_unlock">Kilidi açmak için dokunun</string>
     <string name="nc_make_call_private">Görüşmeyi özel yap</string>
@@ -181,8 +184,9 @@
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_remote_audio_off">Uzak ses kapalı</string>
+    <string name="nc_remove_circle_and_members">Çevreyi ve üyelerini sil</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
-    <string name="nc_remove_group_and_members">Grup ve üyeleri sil</string>
+    <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
     <string name="nc_rename">Görüşmeyi yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
@@ -214,6 +218,8 @@
     <string name="nc_sent_an_image_you">Bir görsel gönderdiniz.</string>
     <string name="nc_sent_location" formatted="true">%1$s bir konum gönderdi.</string>
     <string name="nc_sent_location_you">Bir konum gönderdiniz.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s bir sesli ileti gönderdi.</string>
+    <string name="nc_sent_voice_you">Bir sesli ileti gönderdiniz.</string>
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veritabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
@@ -303,6 +309,10 @@
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_username">Kullanıcı adı</string>
+    <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
+    <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
+    <string name="nc_voice_message_slide_to_cancel">&lt;&lt; iptal etmek için kaydırın</string>
     <string name="nc_webinar">Web sunumu</string>
     <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
     <string name="nc_wrong_password">Parola yanlış</string>

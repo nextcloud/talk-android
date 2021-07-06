@@ -216,6 +216,7 @@
     <string name="nc_settings_notification_sounds">Ήχος</string>
     <string name="nc_settings_other_notifications_ringtone">Ειδοποιήσεις</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Αριθμός τηλεφώνου</string>
+    <string name="nc_settings_phone_book_integration_title">Ενσωμάτωση αριθού τηλεφώνου </string>
     <string name="nc_settings_privacy">Ιδιωτικότητα</string>
     <string name="nc_settings_proxy_host_title">Σύστημα διαμεσολαβητή</string>
     <string name="nc_settings_proxy_port_title">Θύρα διαμεσολαβητή</string>
