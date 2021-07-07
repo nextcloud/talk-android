@@ -296,6 +296,7 @@
     <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享此位置</string>
+    <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_start_conversation">新對話</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_timeout_error">逾時</string>

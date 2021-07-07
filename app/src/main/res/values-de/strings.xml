@@ -296,6 +296,7 @@
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
     <string name="nc_share_this_location">Diesen Ort teilen</string>
+    <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_start_conversation">Starte eine Unterhaltung</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_timeout_error">Zeitüberschreitung</string>
