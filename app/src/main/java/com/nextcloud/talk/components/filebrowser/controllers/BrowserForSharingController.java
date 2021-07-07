@@ -43,7 +43,7 @@ public class BrowserForSharingController extends BrowserController {
     }
 
     @Override
-    void onFileSelectionDone() {
+    public void onFileSelectionDone() {
         synchronized (selectedPaths) {
             Iterator<String> iterator = selectedPaths.iterator();
 

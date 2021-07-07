@@ -336,6 +336,15 @@
     <string name="nc_file_browser_refresh">Refresh</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
     <string name="nc_file_browser_reshare_forbidden">You are not allowed to re-share this file</string>
+    <string name="nc_sort_by">Sort by</string>
+    <string name="nc_file_browser_sort_by_key" translatable="false">file_browser_sort_by</string>
+    <string name="nc_file_browser_sort_by_default" translatable="false">sort_a_to_z</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_date_newest_first">Newest first</string>
+    <string name="menu_item_sort_by_date_oldest_first">Oldest first</string>
+    <string name="menu_item_sort_by_size_biggest_first">Biggest first</string>
+    <string name="menu_item_sort_by_size_smallest_first">Smallest first</string>
 
     <!-- Lobby -->
     <string name="nc_webinar">Webinar</string>

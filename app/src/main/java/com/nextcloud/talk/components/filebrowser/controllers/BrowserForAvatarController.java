@@ -41,7 +41,7 @@ public class BrowserForAvatarController extends BrowserController {
     }
 
     @Override
-    void onFileSelectionDone() {
+    public void onFileSelectionDone() {
         controller.handleAvatar(selectedPaths.iterator().next());
 
         getRouter().popCurrentController();
