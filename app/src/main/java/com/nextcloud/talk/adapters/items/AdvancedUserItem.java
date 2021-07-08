@@ -22,6 +22,7 @@ package com.nextcloud.talk.adapters.items;
 
 import android.accounts.Account;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -123,7 +124,9 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             holder.contactDisplayName.setText(participant.getDisplayName());
         }
 
-        holder.serverUrl.setText((Uri.parse(userEntity.getBaseUrl()).getHost()));
+        if (userEntity != null && !TextUtils.isEmpty(userEntity.getBaseUrl())) {
+            holder.serverUrl.setText((Uri.parse(userEntity.getBaseUrl()).getHost()));
+        }
 
         holder.avatarImageView.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
         holder.avatarImageView.getHierarchy().setFailureImage(R.drawable.account_circle_48dp);
