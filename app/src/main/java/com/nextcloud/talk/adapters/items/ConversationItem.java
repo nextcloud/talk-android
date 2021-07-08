@@ -27,9 +27,9 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -215,13 +215,16 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
 
         if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
-            Drawable[] layers = new Drawable[2];
-            layers[0] = context.getDrawable(R.drawable.ic_launcher_background);
-            layers[1] = context.getDrawable(R.drawable.ic_launcher_foreground);
-            LayerDrawable layerDrawable = new LayerDrawable(layers);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Drawable[] layers = new Drawable[2];
+                layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
+                layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
+                LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-            holder.dialogAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
-
+                holder.dialogAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+            } else {
+                holder.dialogAvatar.getHierarchy().setPlaceholderImage(R.mipmap.ic_launcher);
+            }
             shouldLoadAvatar = false;
         }
 
