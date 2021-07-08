@@ -427,8 +427,15 @@ class ConversationInfoController(args: Bundle) :
                     participantsDisposable = d
                 }
 
+                @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(participantsOverall: ParticipantsOverall) {
-                    handleParticipants(participantsOverall.ocs.data)
+                    try {
+                        handleParticipants(participantsOverall.ocs.data)
+                    } catch (npe: NullPointerException) {
+                        // view binding can be null
+                        // since this is called asynchronously and UI might have been destroyed in the meantime
+                        Log.i(TAG, "UI destroyed - view binding already gone")
+                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -513,55 +520,62 @@ class ConversationInfoController(args: Bundle) :
                     roomDisposable = d
                 }
 
+                @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(roomOverall: RoomOverall) {
-                    conversation = roomOverall.ocs.data
+                    try {
+                        conversation = roomOverall.ocs.data
 
-                    val conversationCopy = conversation
+                        val conversationCopy = conversation
 
-                    if (conversationCopy!!.canModerate(conversationUser)) {
-                        binding.addParticipantsAction.visibility = View.VISIBLE
-                    } else {
-                        binding.addParticipantsAction.visibility = View.GONE
-                    }
-
-                    if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
-                        binding.ownOptions.visibility = View.VISIBLE
-
-                        setupWebinaryView()
-
-                        if (!conversation!!.canLeave(conversationUser)) {
-                            binding.leaveConversationAction.visibility = View.GONE
+                        if (conversationCopy!!.canModerate(conversationUser)) {
+                            binding.addParticipantsAction.visibility = View.VISIBLE
                         } else {
-                            binding.leaveConversationAction.visibility = View.VISIBLE
+                            binding.addParticipantsAction.visibility = View.GONE
                         }
 
-                        if (!conversation!!.canDelete(conversationUser)) {
-                            binding.deleteConversationAction.visibility = View.GONE
-                        } else {
-                            binding.deleteConversationAction.visibility = View.VISIBLE
+                        if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
+                            binding.ownOptions.visibility = View.VISIBLE
+
+                            setupWebinaryView()
+
+                            if (!conversation!!.canLeave(conversationUser)) {
+                                binding.leaveConversationAction.visibility = View.GONE
+                            } else {
+                                binding.leaveConversationAction.visibility = View.VISIBLE
+                            }
+
+                            if (!conversation!!.canDelete(conversationUser)) {
+                                binding.deleteConversationAction.visibility = View.GONE
+                            } else {
+                                binding.deleteConversationAction.visibility = View.VISIBLE
+                            }
+
+                            if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
+                                binding.notificationSettingsView.muteCalls.visibility = View.GONE
+                            }
+
+                            getListOfParticipants()
+
+                            binding.progressBar.visibility = View.GONE
+
+                            binding.conversationInfoName.visibility = View.VISIBLE
+
+                            binding.displayNameText.text = conversation!!.displayName
+
+                            if (conversation!!.description != null && !conversation!!.description.isEmpty()) {
+                                binding.descriptionText.text = conversation!!.description
+                                binding.conversationDescription.visibility = View.VISIBLE
+                            }
+
+                            loadConversationAvatar()
+                            adjustNotificationLevelUI()
+
+                            binding.notificationSettingsView.notificationSettings.visibility = View.VISIBLE
                         }
-
-                        if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                            binding.notificationSettingsView.muteCalls.visibility = View.GONE
-                        }
-
-                        getListOfParticipants()
-
-                        binding.progressBar.visibility = View.GONE
-
-                        binding.conversationInfoName.visibility = View.VISIBLE
-
-                        binding.displayNameText.text = conversation!!.displayName
-
-                        if (conversation!!.description != null && !conversation!!.description.isEmpty()) {
-                            binding.descriptionText.text = conversation!!.description
-                            binding.conversationDescription.visibility = View.VISIBLE
-                        }
-
-                        loadConversationAvatar()
-                        adjustNotificationLevelUI()
-
-                        binding.notificationSettingsView.notificationSettings.visibility = View.VISIBLE
+                    } catch (npe: NullPointerException) {
+                        // view binding can be null
+                        // since this is called asynchronously and UI might have been destroyed in the meantime
+                        Log.i(TAG, "UI destroyed - view binding already gone")
                     }
                 }
 
@@ -986,7 +1000,7 @@ class ConversationInfoController(args: Bundle) :
     }
 
     companion object {
-        private const val TAG = "ConversationInfoController"
+        private const val TAG = "ConversationInfControll"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
         private val LOW_EMPHASIS_OPACITY: Float = 0.38f
     }
