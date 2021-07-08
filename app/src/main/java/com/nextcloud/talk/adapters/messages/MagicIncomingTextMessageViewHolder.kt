@@ -27,6 +27,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
+import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextUtils
@@ -81,11 +82,15 @@ class MagicIncomingTextMessageViewHolder(itemView: View) : MessageHolders
                 // do nothing, avatar is set
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
                 if (context != null) {
-                    val layers = arrayOfNulls<Drawable>(2)
-                    layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
-                    val layerDrawable = LayerDrawable(layers)
-                    binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        val layers = arrayOfNulls<Drawable>(2)
+                        layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
+                        layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                        val layerDrawable = LayerDrawable(layers)
+                        binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                    } else {
+                        binding.messageUserAvatar.setImageResource(R.mipmap.ic_launcher)
+                    }
                 }
             } else if (message.actorType == "bots") {
                 val drawable = TextDrawable.builder()
