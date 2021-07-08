@@ -305,7 +305,7 @@
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
     <string name="nc_upload_failed">Odesílání se nezdařilo, omlouváme se</string>
-    <string name="nc_upload_from_cloud">Sdílení od %1$s</string>
+    <string name="nc_upload_from_cloud">Nasdílet z %1$s</string>
     <string name="nc_upload_in_progess">Nahrávání</string>
     <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
     <string name="nc_user">Uživatel</string>

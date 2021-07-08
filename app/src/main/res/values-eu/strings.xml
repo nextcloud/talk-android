@@ -296,6 +296,7 @@
     <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
+    <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_start_conversation">Hasi elkarrizketa bat</string>
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_timeout_error">Denbora-muga</string>

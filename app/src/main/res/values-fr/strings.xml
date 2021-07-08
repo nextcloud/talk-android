@@ -30,9 +30,11 @@
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_bad_response_error">Mauvaise réponse</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
+    <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversation</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_call_reconnecting">Reconnexion en cours…</string>
+    <string name="nc_call_ringing">APPEL EN COURS</string>
     <string name="nc_call_state_in_call">%1$s en ligne</string>
     <string name="nc_call_state_in_call_with_audio">%1$s en appel audio</string>
     <string name="nc_call_state_with_phone">%1$savec un téléphone</string>
@@ -50,11 +52,13 @@
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer de mot de passe</string>
+    <string name="nc_circle">Cercle</string>
     <string name="nc_circles">Cercles</string>
     <string name="nc_clear_password">Effacer le mot de passe</string>
     <string name="nc_client_cert_change">Modifier le certificat du client</string>
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
     <string name="nc_common_error_sorry">Désolé, quelque chose s’est mal passé !</string>
+    <string name="nc_common_set">Sauver</string>
     <string name="nc_common_skip">Ignorer</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
     <string name="nc_configure_room">Configurer la conversation</string>
@@ -125,6 +129,7 @@
     <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
     <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\nLe démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_location_current_position_description">Votre position actuelle</string>
+    <string name="nc_location_permission_required">La permission d\'accès à votre position est requise</string>
     <string name="nc_location_unknown">Position inconnue</string>
     <string name="nc_locked">Verrouillé</string>
     <string name="nc_locked_tap_to_unlock">Appuyer pour déverrouiller</string>
@@ -178,6 +183,8 @@
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_push_to_talk">fonction Talkie-walkie</string>
     <string name="nc_push_to_talk_desc">Si le micro est désactivé, maintenez &amp; pour utiliser la fonction Talkie-walkie</string>
+    <string name="nc_remote_audio_off">Audio distant en sourdine</string>
+    <string name="nc_remove_circle_and_members">Supprimer le cercle et ses membres</string>
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <string name="nc_remove_group_and_members">Supprimer un groupe et ses membres</string>
     <string name="nc_remove_participant">Retirer le participant</string>
@@ -257,6 +264,7 @@
     <string name="nc_settings_proxy_username_title">nom d\'utilisateur proxy</string>
     <string name="nc_settings_read_privacy_desc">Partager mon statut de lecture et afficher le statut de lecture des autres</string>
     <string name="nc_settings_read_privacy_title">Statut de lecture</string>
+    <string name="nc_settings_reauthorize">Ré-autoriser le compte</string>
     <string name="nc_settings_remove">Effacer</string>
     <string name="nc_settings_remove_account">Supprimer le compte</string>
     <string name="nc_settings_remove_confirmation">Veuillez confirmer votre volonté de supprimer le compte actuel.</string>
@@ -288,6 +296,7 @@
     <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
     <string name="nc_share_this_location">Partager cette position</string>
+    <string name="nc_shared_location">Position partagée</string>
     <string name="nc_start_conversation">Commencer une conversation</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_timeout_error">Délai d\'attente</string>
@@ -303,6 +312,7 @@
     <string name="nc_username">Nom d\'utilisateur</string>
     <string name="nc_voice_message_filename">Enregistrement de conversation de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
+    <string name="nc_voice_message_missing_audio_permission">La permission d\'enregistrer l\'audio est requise</string>
     <string name="nc_voice_message_slide_to_cancel">« Balayer pour annuler</string>
     <string name="nc_webinar">Webinaire</string>
     <string name="nc_wrong_link">Le lien de conversation n\'est pas valide.</string>
@@ -311,14 +321,18 @@
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="password_protected">Protégé par mot de passe</string>
+    <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Ne synchroniser qu\'avec les serveurs de confiance</string>
     <string name="scope_federated_title">Fédéré</string>
     <string name="scope_local_description">Visible uniquement aux personnes dans l\'instance et aux invités</string>
     <string name="scope_local_title">Local</string>
+    <string name="scope_private_description">Seulement visible des utilisateurs mis en correspondance via leur numéro de téléphone par Talk sur mobile</string>
     <string name="scope_private_title">Privé</string>
+    <string name="scope_published_description">Synchronisation avec les serveurs de confiance et le carnet d\'adresses mondial et public</string>
     <string name="scope_published_title">Publier</string>
+    <string name="scope_toggle">Basculer la visibilité</string>
     <string name="scope_toggle_description">Changer le niveau de confidentialité de %1$s</string>
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_to">Envoyer a</string>
@@ -332,6 +346,7 @@
     <string name="user_info_phone">Numéro de téléphone</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Site web</string>
+    <string name="userinfo_error_text">Impossible de récupérer les informations personnelles de l\'utilisateur.</string>
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajouter le nom, la photo et les coordonnées sur votre page de profil.</string>
 </resources>
