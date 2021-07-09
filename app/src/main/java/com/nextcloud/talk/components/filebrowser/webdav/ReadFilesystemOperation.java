@@ -20,6 +20,8 @@
 
 package com.nextcloud.talk.components.filebrowser.webdav;
 
+import android.util.Log;
+
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;
@@ -39,6 +41,7 @@ import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
 public class ReadFilesystemOperation {
+    private static final String TAG = "ReadFilesystemOperation";
     private final OkHttpClient okHttpClient;
     private final String url;
     private final int depth;
@@ -48,7 +51,14 @@ public class ReadFilesystemOperation {
         OkHttpClient.Builder okHttpClientBuilder = okHttpClient.newBuilder();
         okHttpClientBuilder.followRedirects(false);
         okHttpClientBuilder.followSslRedirects(false);
-        okHttpClientBuilder.authenticator(new RestModule.MagicAuthenticator(ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()), "Authorization"));
+        okHttpClientBuilder.authenticator(
+                new RestModule.MagicAuthenticator(
+                        ApiUtils.getCredentials(
+                                currentUser.getUsername(),
+                                currentUser.getToken()
+                                               ),
+                        "Authorization")
+                                         );
         this.okHttpClient = okHttpClientBuilder.build();
         this.basePath = currentUser.getBaseUrl() + DavUtils.DAV_PATH + currentUser.getUserId();
         this.url = basePath + path;
@@ -80,12 +90,9 @@ public class ReadFilesystemOperation {
                             return Unit.INSTANCE;
                         }
                     });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (DavException e) {
-            e.printStackTrace();
+        } catch (IOException | DavException e) {
+            Log.w("", "Error reading remote path");
         }
-
 
         remoteFiles.add(BrowserFile.getModelFromResponse(rootElement[0],
                 rootElement[0].getHref().toString().substring(basePath.length())));
@@ -97,5 +104,4 @@ public class ReadFilesystemOperation {
         davResponse.setData(remoteFiles);
         return davResponse;
     }
-
 }
