@@ -313,7 +313,6 @@
     <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Halten zum Aufnehmen, zum Versenden loslassen.</string>
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>
-    <string name="nc_voice_message_slide_to_cancel">« Schieben zum Abbrechen</string>
     <string name="nc_webinar">Online-Seminar</string>
     <string name="nc_wrong_link">Unterhaltungs-Link ist ungültig</string>
     <string name="nc_wrong_password">Falsches Passwort</string>

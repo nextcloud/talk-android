@@ -312,7 +312,6 @@
     <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
-    <string name="nc_voice_message_slide_to_cancel">&lt;&lt; iptal etmek için kaydırın</string>
     <string name="nc_webinar">Web sunumu</string>
     <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
     <string name="nc_wrong_password">Parola yanlış</string>
