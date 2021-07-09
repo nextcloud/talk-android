@@ -138,7 +138,8 @@ public class ApiUtils {
                     return version;
                 }
                 if (version == 1  &&
-                        CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation")) {
+                        CapabilitiesUtil.hasSpreedFeatureCapability(user, "mention-flag") &&
+                        !CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation-v4")) {
                     return version;
                 }
             }
