@@ -326,7 +326,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 override fun onNext(participantsOverall: ParticipantsOverall) {
                     val participantList: List<Participant> = participantsOverall.ocs.data
                     hasParticipantsInCall = participantList.isNotEmpty()
-                    if (!hasParticipantsInCall) {
+                    if (hasParticipantsInCall) {
                         for (participant in participantList) {
                             if (participant.userId == signatureVerification.userEntity.userId) {
                                 inCallOnDifferentDevice = true
