@@ -313,7 +313,6 @@
     <string name="nc_voice_message_filename">Nahrávka z Talk z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržením nahrajte, uvolněním odešlete.</string>
     <string name="nc_voice_message_missing_audio_permission">Je zapotřebí oprávnění pro zaznamenávání zvuku</string>
-    <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
     <string name="nc_webinar">Webinář</string>
     <string name="nc_wrong_link">Odkaz na konverzaci není platný</string>
     <string name="nc_wrong_password">Nesprávné heslo</string>

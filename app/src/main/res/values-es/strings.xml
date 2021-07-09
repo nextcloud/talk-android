@@ -313,7 +313,6 @@
     <string name="nc_voice_message_filename">Grabando Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantener para grabar, soltar para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>
-    <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">El enlace a la conversación no es válido</string>
     <string name="nc_wrong_password">Contraseña errónea</string>

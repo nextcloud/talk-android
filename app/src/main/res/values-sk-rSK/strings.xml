@@ -312,7 +312,6 @@
     <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
-    <string name="nc_voice_message_slide_to_cancel">« Potiahnite pre zrušenie</string>
     <string name="nc_webinar">Webinár</string>
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
     <string name="nc_wrong_password">Nesprávne heslo</string>

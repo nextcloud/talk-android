@@ -314,7 +314,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Ingedrukt houden om op te nemen, loslaten om te versturen.</string>
     <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>
-    <string name="nc_voice_message_slide_to_cancel">« Schuiven om te annuleren</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
