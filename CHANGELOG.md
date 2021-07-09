@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [12.1.1] - 2021-07-09
+### Fixed
+- fix crash on startup (happened for some older Nextcloud server versions)
+- fix to receive notifications when using Nextcloud server 22
+- fix background of send button (when server version is <22)
+- minor fixes
+
 ## [12.1.0] - 2021-07-06
 ### Added
 - "share to Nextcloud Talk" from other apps
