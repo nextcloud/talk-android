@@ -237,7 +237,6 @@ dependencies {
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     implementation "com.jakewharton:butterknife:${butterknifeVersion}"
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
-    implementation 'com.github.HITGIF:TextFieldBoxes:1.4.5'
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
     implementation 'org.webrtc:google-webrtc:1.0.32006'
