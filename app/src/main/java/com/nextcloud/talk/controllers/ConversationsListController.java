@@ -445,7 +445,9 @@ public class ConversationsListController extends BaseController implements Searc
 
         callItems = new ArrayList<>();
 
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(
+            currentUser,
+            new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 2, 1});
 
         roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion,
                                                                                    currentUser.getBaseUrl()))
