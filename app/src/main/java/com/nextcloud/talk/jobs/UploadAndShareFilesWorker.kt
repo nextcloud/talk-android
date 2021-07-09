@@ -53,6 +53,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
 import retrofit2.Response
 import java.io.File
+import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.InputStream
 import java.util.ArrayList
@@ -167,12 +168,15 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             Log.d(TAG, "file is already in cache")
         } else {
             val outputStream = FileOutputStream(cachedFile)
-            val inputStream: InputStream = context.contentResolver.openInputStream(sourceFileUri)!!
-
-            inputStream.use { input ->
-                outputStream.use { output ->
-                    input.copyTo(output)
+            try {
+                val inputStream: InputStream? = context.contentResolver.openInputStream(sourceFileUri)
+                inputStream?.use { input ->
+                    outputStream.use { output ->
+                        input.copyTo(output)
+                    }
                 }
+            } catch (e: FileNotFoundException) {
+                Log.w(TAG, "failed to copy file to cache", e)
             }
         }
     }
