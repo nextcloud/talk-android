@@ -143,6 +143,8 @@
             app:attachmentButtonWidth="48dp"
             app:delayTypingStatus="200"
             app:inputButtonDefaultBgColor="@color/transparent"
+            app:inputButtonDefaultBgDisabledColor="@color/transparent"
+            app:inputButtonDefaultBgPressedColor="@color/transparent"
             app:inputButtonDefaultIconColor="@color/colorPrimary"
             app:inputButtonHeight="48dp"
             app:inputButtonMargin="0dp"
