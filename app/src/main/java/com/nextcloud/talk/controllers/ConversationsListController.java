@@ -842,20 +842,29 @@ public class ConversationsListController extends BaseController implements Searc
             if (Intent.ACTION_SEND.equals(intent.getAction())
                     || Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
                 try {
-                    if (intent.getClipData() != null) {
-                        for (int i = 0; i < intent.getClipData().getItemCount(); i++) {
-                            ClipData.Item item = intent.getClipData().getItemAt(i);
-                            if (item.getUri() != null) {
-                                filesToShare.add(intent.getClipData().getItemAt(i).getUri().toString());
-                            } else if (item.getText() != null) {
-                                textToPaste = intent.getClipData().getItemAt(i).getText().toString();
-                                break;
-                            } else {
-                                Log.w(TAG, "datatype not yet implemented for share-to");
-                            }
-                        }
+                    String mimeType = intent.getType();
+                    if ("text/plain".equals(mimeType) && (intent.getStringExtra(Intent.EXTRA_TEXT) != null)) {
+                        // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
+                        // with a *screenshot* of the current page in getClipData().
+                        // Here we assume that when sharing a web page the user would prefer to send the URL
+                        // of the current page rather than a screenshot.
+                        textToPaste = intent.getStringExtra(Intent.EXTRA_TEXT);
                     } else {
-                        filesToShare.add(intent.getData().toString());
+                        if (intent.getClipData() != null) {
+                            for (int i = 0; i < intent.getClipData().getItemCount(); i++) {
+                                ClipData.Item item = intent.getClipData().getItemAt(i);
+                                if (item.getUri() != null) {
+                                    filesToShare.add(item.getUri().toString());
+                                } else if (item.getText() != null) {
+                                    textToPaste = item.getText().toString();
+                                    break;
+                                } else {
+                                    Log.w(TAG, "datatype not yet implemented for share-to");
+                                }
+                            }
+                        } else {
+                            filesToShare.add(intent.getData().toString());
+                        }
                     }
                     if (filesToShare.isEmpty() && textToPaste.isEmpty()) {
                         Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
