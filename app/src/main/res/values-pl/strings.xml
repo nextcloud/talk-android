@@ -313,6 +313,7 @@
     <string name="nc_voice_message_filename">Nagranie rozmowy z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Przytrzymaj, aby nagrać, zwolnij, aby wysłać.</string>
     <string name="nc_voice_message_missing_audio_permission">Wymagane jest uprawnienie na nagrywanie dźwięku</string>
+    <string name="nc_voice_message_slide_to_cancel">« Przesuń, aby anulować</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">Link rozmowy jest nieprawidłowy</string>
     <string name="nc_wrong_password">Złe hasło</string>
