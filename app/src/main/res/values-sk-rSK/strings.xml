@@ -15,7 +15,7 @@
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Vybraný účet je teraz importovaný a dostupný</string>
     <string name="nc_about">O aplikácii</string>
-    <string name="nc_account_chooser_active_user">Aktívny používateľ</string>
+    <string name="nc_account_chooser_active_user">Aktívny užívateľ</string>
     <string name="nc_account_chooser_add_account">Pridať účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánovaný na zrušenie a preto nemôže byť zmenený</string>
     <string name="nc_action_open_main_menu">Otvoriť hlavné menu</string>
@@ -296,6 +296,7 @@
     <string name="nc_share_text">Pripojte sa k rozhovoru na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
+    <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_start_conversation">Začať rozhovor</string>
     <string name="nc_start_time">Čas začiatku</string>
     <string name="nc_timeout_error">Vypršal čas požiadavky</string>
@@ -312,6 +313,7 @@
     <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>
+    <string name="nc_voice_message_slide_to_cancel">« Potiahnite pre zrušenie</string>
     <string name="nc_webinar">Webinár</string>
     <string name="nc_wrong_link">Odkaz na rozhovor nie je platný!</string>
     <string name="nc_wrong_password">Nesprávne heslo</string>
@@ -319,6 +321,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre nedostatok práv</string>
     <string name="open_in_files_app">Otvoriť v aplikácii Súbory</string>
     <string name="password_protected">Chránené heslom</string>
+    <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
     <string name="read_storage_no_permission">Zdielanie súborov z úložiska nie je možné bez oprávnenia</string>
     <string name="save">Uložiť</string>
     <string name="scope_federated_description">Synchronizovať iba s dôveryhodnými servermi</string>

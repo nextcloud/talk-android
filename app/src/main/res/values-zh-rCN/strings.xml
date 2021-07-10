@@ -313,6 +313,7 @@
     <string name="nc_voice_message_filename">来自 %1$s 的 Talk 录音 (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
     <string name="nc_voice_message_missing_audio_permission">需要音频录制权限</string>
+    <string name="nc_voice_message_slide_to_cancel">«滑动取消</string>
     <string name="nc_webinar">网络研讨会</string>
     <string name="nc_wrong_link">会话链接无效</string>
     <string name="nc_wrong_password">错误的密码</string>
