@@ -313,6 +313,7 @@
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Sakatu grabatzeko, askatu bidaltzeko.</string>
     <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>
+    <string name="nc_voice_message_slide_to_cancel">« Irristatu bertan behera uzteko</string>
     <string name="nc_webinar">Web-mintegia</string>
     <string name="nc_wrong_link">Elkarrizketa esteka ez da baliozkoa</string>
     <string name="nc_wrong_password">Pasahitz okerra</string>
