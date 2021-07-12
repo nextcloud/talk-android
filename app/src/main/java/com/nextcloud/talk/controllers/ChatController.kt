@@ -602,35 +602,44 @@ class ChatController(args: Bundle) :
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
             }
 
+            @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                if (s.length >= lengthFilter) {
-                    binding.messageInputView.inputEditText?.error = String.format(
-                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
-                        Integer.toString(lengthFilter)
-                    )
-                } else {
-                    binding.messageInputView.inputEditText?.error = null
-                }
+                try {
+                    if (s.length >= lengthFilter) {
+                        binding.messageInputView.inputEditText?.error = String.format(
+                            Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
+                            Integer.toString(lengthFilter)
+                        )
+                    } else {
+                        binding.messageInputView.inputEditText?.error = null
+                    }
 
-                val editable = binding.messageInputView.inputEditText?.editableText
-                if (editable != null && binding.messageInputView.inputEditText != null) {
-                    val mentionSpans = editable.getSpans(
-                        0, binding.messageInputView.inputEditText!!.length(),
-                        Spans.MentionChipSpan::class.java
-                    )
-                    var mentionSpan: Spans.MentionChipSpan
-                    for (i in mentionSpans.indices) {
-                        mentionSpan = mentionSpans[i]
-                        if (start >= editable.getSpanStart(mentionSpan) && start < editable.getSpanEnd(mentionSpan)) {
-                            if (editable.subSequence(
-                                    editable.getSpanStart(mentionSpan),
-                                    editable.getSpanEnd(mentionSpan)
-                                ).toString().trim { it <= ' ' } != mentionSpan.label
+                    val editable = binding.messageInputView.inputEditText?.editableText
+                    if (editable != null && binding.messageInputView.inputEditText != null) {
+                        val mentionSpans = editable.getSpans(
+                            0, binding.messageInputView.inputEditText!!.length(),
+                            Spans.MentionChipSpan::class.java
+                        )
+                        var mentionSpan: Spans.MentionChipSpan
+                        for (i in mentionSpans.indices) {
+                            mentionSpan = mentionSpans[i]
+                            if (start >= editable.getSpanStart(mentionSpan) &&
+                                start < editable.getSpanEnd(mentionSpan)
                             ) {
-                                editable.removeSpan(mentionSpan)
+                                if (editable.subSequence(
+                                        editable.getSpanStart(mentionSpan),
+                                        editable.getSpanEnd(mentionSpan)
+                                    ).toString().trim { it <= ' ' } != mentionSpan.label
+                                ) {
+                                    editable.removeSpan(mentionSpan)
+                                }
                             }
                         }
                     }
+                } catch (npe: NullPointerException) {
+                    // view binding can be null
+                    // since this is called asynchrously and UI might have been destroyed in the meantime
+                    Log.i(TAG, "UI destroyed - view binding already gone")
                 }
             }
 
