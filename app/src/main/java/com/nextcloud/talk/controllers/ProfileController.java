@@ -307,9 +307,12 @@ public class ProfileController extends BaseController {
         if (getActivity() == null) {
             return;
         }
-        ((TextView) getActivity()
+
+        if (currentUser.getBaseUrl() != null) {
+            ((TextView) getActivity()
                 .findViewById(R.id.userinfo_baseurl))
                 .setText(Uri.parse(currentUser.getBaseUrl()).getHost());
+        }
 
         DisplayUtils.loadAvatarImage(currentUser, getActivity().findViewById(R.id.avatar_image), false);
 
