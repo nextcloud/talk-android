@@ -41,9 +41,10 @@
         <ImageView
             android:id="@+id/image_logo"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="96dp"
             android:layout_marginBottom="@dimen/standard_margin"
             android:contentDescription="@string/nc_app_product_name"
+            android:scaleType="centerInside"
             app:srcCompat="@drawable/ic_logo" />
 
         <LinearLayout
