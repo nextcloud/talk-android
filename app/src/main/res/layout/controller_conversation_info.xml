@@ -99,6 +99,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_margin="@dimen/standard_margin"
                     android:layout_marginTop="@dimen/margin_between_elements"
+                    android:autoLink="web"
                     tools:text="Hello world!" />
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
