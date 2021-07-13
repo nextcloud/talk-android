@@ -296,6 +296,7 @@
     <string name="nc_share_text">Görüşmeye şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
+    <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_timeout_error">Zaman aşımı</string>
@@ -312,6 +313,7 @@
     <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
+    <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">Web sunumu</string>
     <string name="nc_wrong_link">Görüşme bağlantısı geçersiz</string>
     <string name="nc_wrong_password">Parola yanlış</string>
@@ -319,6 +321,7 @@
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="password_protected">Parola korumalı</string>
+    <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnız güvenilen sunucular ile eşitlensin</string>
