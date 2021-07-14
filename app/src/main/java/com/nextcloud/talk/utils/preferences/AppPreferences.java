@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -241,10 +243,6 @@ public interface AppPreferences {
     @KeyByString("incognito_keyboard")
     @RemoveMethod
     void removeIncognitoKeyboard();
-
-    @KeyByString("link_previews")
-    @DefaultValue(R.bool.value_true)
-    boolean getAreLinkPreviewsAllowed();
     
     @KeyByString("phone_book_integration")
     @DefaultValue(R.bool.value_false)
@@ -252,13 +250,6 @@ public interface AppPreferences {
     
     @KeyByString("phone_book_integration") 
     void setPhoneBookIntegration(boolean value);
-
-    @KeyByString("link_previews")
-    void setLinkPreviewsAllowed(boolean value);
-
-    @KeyByString("link_previews")
-    @RemoveMethod
-    void removeLinkPreviews();
 
     @KeyByString("screen_lock_timeout")
     @DefaultValue(R.string.nc_screen_lock_timeout_sixty)

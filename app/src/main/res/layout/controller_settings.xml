@@ -3,6 +3,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017 Mario Danic
   ~
@@ -234,15 +236,6 @@
             apc:mp_key="@string/nc_settings_incognito_keyboard_key"
             apc:mp_summary="@string/nc_settings_incognito_keyboard_desc"
             apc:mp_title="@string/nc_settings_incognito_keyboard_title" />
-
-        <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/settings_link_previews"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            apc:mp_default_value="@bool/value_true"
-            apc:mp_key="@string/nc_settings_link_previews_key"
-            apc:mp_summary="@string/nc_settings_link_previews_desc"
-            apc:mp_title="@string/nc_settings_link_previews_title" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
             android:id="@+id/settings_phone_book_integration"
