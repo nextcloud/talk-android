@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -180,7 +182,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         }
 
 
-        return TextMatchers.getMessageTypeFromString(getText());
+        return MessageType.REGULAR_TEXT_MESSAGE;
     }
 
     public Map<String, String> getSelectedIndividualHashMap() {
