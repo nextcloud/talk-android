@@ -269,10 +269,6 @@ dependencies {
     implementation 'com.github.nextcloud:PopupBubble:1.0.6'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
-    implementation('eu.medsea.mimeutil:mime-util:2.1.3', {
-        exclude group: 'org.slf4j'
-    })
-
     implementation "com.afollestad.material-dialogs:core:${materialDialogsVersion}"
     implementation "com.afollestad.material-dialogs:datetime:${materialDialogsVersion}"
     implementation "com.afollestad.material-dialogs:bottomsheets:${materialDialogsVersion}"
