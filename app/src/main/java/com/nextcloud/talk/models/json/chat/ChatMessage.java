@@ -31,7 +31,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.TextMatchers;
 import com.stfalcon.chatkit.commons.models.IUser;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
 
@@ -59,8 +58,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     public UserEntity activeUser;
     @JsonIgnore
     public Map<String, String> selectedIndividualHashMap;
-    @JsonIgnore
-    public boolean isLinkPreviewAllowed;
     @JsonIgnore
     public boolean isDeleted;
     @JsonField(name = "id")
@@ -157,7 +154,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
             }
         }
 
-        if (!messageTypesToIgnore.contains(getMessageType()) && isLinkPreviewAllowed) {
+        if (!messageTypesToIgnore.contains(getMessageType())) {
             return getMessage().trim();
         }
 
@@ -330,10 +327,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         return this.activeUser;
     }
 
-    public boolean isLinkPreviewAllowed() {
-        return this.isLinkPreviewAllowed;
-    }
-
     public boolean isDeleted() {
         return this.isDeleted;
     }
@@ -400,10 +393,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
 
     public void setActiveUser(UserEntity activeUser) {
         this.activeUser = activeUser;
-    }
-
-    public void setLinkPreviewAllowed(boolean isLinkPreviewAllowed) {
-        this.isLinkPreviewAllowed = isLinkPreviewAllowed;
     }
 
     public void setDeleted(boolean isDeleted) {
@@ -493,9 +482,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         if (this$selectedIndividualHashMap == null ? other$selectedIndividualHashMap != null : !this$selectedIndividualHashMap.equals(other$selectedIndividualHashMap)) {
             return false;
         }
-        if (this.isLinkPreviewAllowed() != other.isLinkPreviewAllowed()) {
-            return false;
-        }
         if (this.isDeleted() != other.isDeleted()) {
             return false;
         }
@@ -572,7 +558,6 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         result = result * PRIME + ($activeUser == null ? 43 : $activeUser.hashCode());
         final Object $selectedIndividualHashMap = this.getSelectedIndividualHashMap();
         result = result * PRIME + ($selectedIndividualHashMap == null ? 43 : $selectedIndividualHashMap.hashCode());
-        result = result * PRIME + (this.isLinkPreviewAllowed() ? 79 : 97);
         result = result * PRIME + (this.isDeleted() ? 79 : 97);
         result = result * PRIME + this.getJsonMessageId();
         final Object $token = this.getToken();
@@ -602,7 +587,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     }
 
     public String toString() {
-        return "ChatMessage(isGrouped=" + this.isGrouped() + ", isOneToOneConversation=" + this.isOneToOneConversation() + ", activeUser=" + this.getActiveUser() + ", selectedIndividualHashMap=" + this.getSelectedIndividualHashMap() + ", isLinkPreviewAllowed=" + this.isLinkPreviewAllowed() + ", isDeleted=" + this.isDeleted() + ", jsonMessageId=" + this.getJsonMessageId() + ", token=" + this.getToken() + ", actorType=" + this.getActorType() + ", actorId=" + this.getActorId() + ", actorDisplayName=" + this.getActorDisplayName() + ", timestamp=" + this.getTimestamp() + ", message=" + this.getMessage() + ", messageParameters=" + this.getMessageParameters() + ", systemMessageType=" + this.getSystemMessageType() + ", replyable=" + this.isReplyable() + ", parentMessage=" + this.getParentMessage() + ", readStatus=" + this.getReadStatus() + ", messageTypesToIgnore=" + this.getMessageTypesToIgnore() + ")";
+        return "ChatMessage(isGrouped=" + this.isGrouped() + ", isOneToOneConversation=" + this.isOneToOneConversation() + ", activeUser=" + this.getActiveUser() + ", selectedIndividualHashMap=" + this.getSelectedIndividualHashMap() + ", isDeleted=" + this.isDeleted() + ", jsonMessageId=" + this.getJsonMessageId() + ", token=" + this.getToken() + ", actorType=" + this.getActorType() + ", actorId=" + this.getActorId() + ", actorDisplayName=" + this.getActorDisplayName() + ", timestamp=" + this.getTimestamp() + ", message=" + this.getMessage() + ", messageParameters=" + this.getMessageParameters() + ", systemMessageType=" + this.getSystemMessageType() + ", replyable=" + this.isReplyable() + ", parentMessage=" + this.getParentMessage() + ", readStatus=" + this.getReadStatus() + ", messageTypesToIgnore=" + this.getMessageTypesToIgnore() + ")";
     }
 
     public boolean isVoiceMessage(){

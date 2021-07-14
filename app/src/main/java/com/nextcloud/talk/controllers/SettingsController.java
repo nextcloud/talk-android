@@ -3,6 +3,9 @@
  *
  * @author Andy Scherzinger
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -173,8 +176,6 @@ public class SettingsController extends BaseController {
     MaterialSwitchPreference incognitoKeyboardSwitchPreference;
     @BindView(R.id.settings_screen_security)
     MaterialSwitchPreference screenSecuritySwitchPreference;
-    @BindView(R.id.settings_link_previews)
-    MaterialSwitchPreference linkPreviewsSwitchPreference;
     @BindView(R.id.settings_screen_lock)
     MaterialSwitchPreference screenLockSwitchPreference;
     @BindView(R.id.settings_screen_lock_timeout)
@@ -463,7 +464,6 @@ public class SettingsController extends BaseController {
             readPrivacyPreference.setVisibility(View.GONE);
         }
 
-        ((Checkable) linkPreviewsSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getAreLinkPreviewsAllowed());
         ((Checkable) phoneBookIntegrationPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.isPhoneBookIntegrationEnabled());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
