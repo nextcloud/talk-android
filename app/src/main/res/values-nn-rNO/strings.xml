@@ -182,9 +182,69 @@
     <string name="nc_public_call_explanation">Offentlege samtalar lar deg invitere folk utanfrå gjennom ei spesiallaga lenkje.</string>
     <string name="nc_push_disabled">Push varsel er av </string>
     <string name="nc_push_to_talk">Trykk-for-tale</string>
+    <string name="nc_push_to_talk_desc">Med mikrofon avslegen,  klikk&amp; hold for å bruke Trykk-og-snakk</string>
+    <string name="nc_remote_audio_off">Ekstern lyd av</string>
+    <string name="nc_remove_circle_and_members">Eksterne sirklar og medlemmar</string>
     <string name="nc_remove_from_favorites">Remove from favorites</string>
+    <string name="nc_remove_group_and_members">Eksterne gruppe og medlemmar</string>
+    <string name="nc_remove_participant">Eksterne deltakarar</string>
+    <string name="nc_rename">Eksterne samtalar </string>
+    <string name="nc_reply">Svare</string>
+    <string name="nc_reply_privately">Svar privat</string>
+    <string name="nc_screen_lock_timeout_30">30 sekund</string>
+    <string name="nc_screen_lock_timeout_300">5 minutt</string>
+    <string name="nc_screen_lock_timeout_60">1 minutt</string>
+    <string name="nc_screen_lock_timeout_600">10 minuttar</string>
+    <string name="nc_screen_lock_timeout_six_hundred">600</string>
+    <string name="nc_screen_lock_timeout_sixty">60</string>
+    <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Search</string>
+    <string name="nc_select_an_account">Vel ein konto</string>
+    <string name="nc_select_contacts">Vel kontakt</string>
+    <string name="nc_select_files">Vel filer</string>
+    <string name="nc_select_participants">Vel deltakarar</string>
+    <string name="nc_sent_a_gif" formatted="true">%1$s har send ein GIF.</string>
+    <string name="nc_sent_a_gif_you">Du sendte ein GIF.</string>
+    <string name="nc_sent_a_link" formatted="true">%1$s sendte ei lenkje.</string>
+    <string name="nc_sent_a_link_you">Du sendte ei lenkje.</string>
+    <string name="nc_sent_a_video" formatted="true">%1$s sendte ein video.</string>
+    <string name="nc_sent_a_video_you">Du sendte ein video.</string>
+    <string name="nc_sent_an_attachment" formatted="true">%1$s sendte eit vedlegg.</string>
+    <string name="nc_sent_an_attachment_you">Du sendte eit vedlegg.</string>
+    <string name="nc_sent_an_audio" formatted="true">%1$s sendte eit lyd vedlegg.</string>
+    <string name="nc_sent_an_audio_you">Du sendte eit lyd vedlegg.</string>
+    <string name="nc_sent_an_image" formatted="true">%1$s sendte eit bilete.</string>
+    <string name="nc_sent_an_image_you">Du sendte eit bilete.</string>
+    <string name="nc_sent_location" formatted="true">%1$s sendte ein lokalisasjon. </string>
+    <string name="nc_sent_location_you">Du sendte ein lokalisasjon. </string>
+    <string name="nc_sent_voice" formatted="true">%1$s sendte ei lyd melding.</string>
+    <string name="nc_sent_voice_you">Du sendte ei lyd melding.</string>
+    <string name="nc_server_connect">Test server samband</string>
+    <string name="nc_server_db_upgrade_needed">Vennleg oppgradere din %1$s database </string>
+    <string name="nc_server_failed_to_import_account">Import av vald konto gjekk galt</string>
+    <string name="nc_server_helper_text">Lenkja til ditt %1$s vevs grensesnitt når du opnar det i nettlesar. </string>
+    <string name="nc_server_import_account">Importer konto frå %1$s applikasjonen</string>
+    <string name="nc_server_import_account_plain">Importer konto</string>
+    <string name="nc_server_import_accounts">Importer konto frå %1$s applikasjonen</string>
+    <string name="nc_server_import_accounts_plain">Importer kontoar</string>
+    <string name="nc_server_maintenance">Ta med deg %1$s ut av vedlikehald</string>
+    <string name="nc_server_not_installed">Vennleg gjer ferdig din %1$s installasjon</string>
+    <string name="nc_server_testing_connection">Teste tilkopling</string>
+    <string name="nc_server_unsupported">Server har ikkje støtta Samtale applikasjon installert</string>
+    <string name="nc_server_url">Server adresse https://...</string>
+    <string name="nc_server_version">%1$s virker berre saman med %2$s 13 og oppover</string>
+    <string name="nc_set_password">Lag eit passord</string>
     <string name="nc_settings">Instillingar</string>
+    <string name="nc_settings_account_updated">Din allereie eksisterande konto vart oppdatert, istaden for ein ny  </string>
+    <string name="nc_settings_add_account">Legg til ein ny konto</string>
+    <string name="nc_settings_advanced_title">Avansert</string>
+    <string name="nc_settings_appearance">Utsjånad</string>
+    <string name="nc_settings_call_ringtone">Samtalar</string>
+    <string name="nc_settings_incognito_keyboard_desc">Instruerer tastaturet om å slå av personlig læring (utan garantiar)</string>
+    <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>
+    <string name="nc_settings_link_previews_desc">Tillat førehands syning av innhald frå mottatte lenkjer for støttande tenester</string>
+    <string name="nc_settings_link_previews_title">Førehands vising av lenkjer</string>
+    <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_remove">Fjern</string>
     <string name="nc_share_link">Del lenkje</string>
     <string name="nc_user">Bruker</string>
