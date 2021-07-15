@@ -646,6 +646,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         MATTERBRIDGE_CONFIG_EDITED,
         MATTERBRIDGE_CONFIG_REMOVED,
         MATTERBRIDGE_CONFIG_ENABLED,
-        MATTERBRIDGE_CONFIG_DISABLED
+        MATTERBRIDGE_CONFIG_DISABLED,
+        CLEARED_CHAT
     }
 }

@@ -30,6 +30,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.content.ContextCompat
 import androidx.work.Data
@@ -165,6 +166,7 @@ class ConversationInfoController(args: Bundle) :
 
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog(null) }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
+        binding.clearConversationHistory.setOnClickListener { clearHistory() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
         fetchRoomInfo()
@@ -488,6 +490,35 @@ class ConversationInfoController(args: Bundle) :
         }
     }
 
+    private fun clearHistory() {
+        val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+
+        ncApi?.clearChatHistory(
+            credentials,
+            ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl, conversationToken)
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                @Suppress("Detekt.TooGenericExceptionCaught")
+                override fun onNext(genericOverall: GenericOverall) {
+                    Toast.makeText(context, context?.getString(R.string.nc_clear_history_success), Toast.LENGTH_LONG)
+                        .show()
+                }
+
+                override fun onError(e: Throwable) {
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    Log.e(TAG, "failed to clear chat history", e)
+                }
+
+                override fun onComplete() {
+                }
+            })
+    }
+
     private fun deleteConversation() {
         workerData?.let {
             WorkManager.getInstance().enqueue(
@@ -529,8 +560,14 @@ class ConversationInfoController(args: Bundle) :
 
                         if (conversationCopy!!.canModerate(conversationUser)) {
                             binding.addParticipantsAction.visibility = View.VISIBLE
+                            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "clear-history")) {
+                                binding.clearConversationHistory.visibility = View.VISIBLE
+                            } else {
+                                binding.clearConversationHistory.visibility = View.GONE
+                            }
                         } else {
                             binding.addParticipantsAction.visibility = View.GONE
+                            binding.clearConversationHistory.visibility = View.GONE
                         }
 
                         if (isAttached && (!isBeingDestroyed || !isDestroyed)) {
