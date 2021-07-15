@@ -59,6 +59,8 @@ public class DatabaseModule {
     @Provides
     @Singleton
     public AppPreferences providePreferences(@NonNull final Context poContext) {
-        return StoreBox.create(poContext, AppPreferences.class);
+        AppPreferences p =  StoreBox.create(poContext, AppPreferences.class);
+        p.removeLinkPreviews();
+        return p;
     }
 }
