@@ -12,9 +12,9 @@
     <string name="nc_biometric_unlock">Lås opp %1$s</string>
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
-    <string name="nc_call_reconnecting">Kobler til igjen...</string>
+    <string name="nc_call_reconnecting">Kobler til igjen…</string>
     <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
-    <string name="nc_calling">Ringer...</string>
+    <string name="nc_calling">Ringer…</string>
     <string name="nc_camera_permission_permanently_denied">For å skru på videokommunikasjon, innvilg \"Kamera\"-tilgang i systeminnstillingene.</string>
     <string name="nc_cancel">Avbryt</string>
     <string name="nc_capabilities_failed">Kunne ikke hente evner, avbryter</string>
@@ -28,7 +28,7 @@
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
     <string name="nc_configure_room">Konfigurer samtale</string>
-    <string name="nc_connecting_call">Kobler til...</string>
+    <string name="nc_connecting_call">Kobler til…</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_link">Samtale lenke</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
@@ -72,7 +72,7 @@
     <string name="nc_last_moderator_title">Kunne ikke forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
     <string name="nc_leave">Forlat samtale</string>
-    <string name="nc_leaving_call">Forlater samtalen...</string>
+    <string name="nc_leaving_call">Forlater samtalen…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Lisens</string>
     <string name="nc_limit_hit">%s grensen for maks antall tegn er nådd</string>

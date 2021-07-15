@@ -297,6 +297,7 @@
     <string name="nc_share_text">Únete a la conversación en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
+    <string name="nc_shared_location">Ubicación compartida</string>
     <string name="nc_start_conversation">Comienza una conversación</string>
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_timeout_error">Tiempo de espera agotado</string>
@@ -313,6 +314,7 @@
     <string name="nc_voice_message_filename">Grabando Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantener para grabar, soltar para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>
+    <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">El enlace a la conversación no es válido</string>
     <string name="nc_wrong_password">Contraseña errónea</string>
