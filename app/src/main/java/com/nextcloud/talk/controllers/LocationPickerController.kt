@@ -396,9 +396,11 @@ class LocationPickerController(args: Bundle) :
             "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
                 "\"longitude\":\"$selectedLon\",\"name\":\"$locationNameToShare\"}"
 
+        val apiVersion = ApiUtils.getChatApiVersion(userUtils.currentUser, intArrayOf(1))
+
         ncApi.sendLocation(
             ApiUtils.getCredentials(userUtils.currentUser?.username, userUtils.currentUser?.token),
-            ApiUtils.getUrlToSendLocation(userUtils.currentUser?.baseUrl, roomToken),
+            ApiUtils.getUrlToSendLocation(apiVersion, userUtils.currentUser?.baseUrl, roomToken),
             "geo-location",
             objectId,
             metaData
