@@ -281,12 +281,15 @@
     <string name="nc_settings_vibrate_desc">Il telefono vibrerà a meno che non sia silenziato</string>
     <string name="nc_settings_warning">Avviso</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
+    <string name="nc_share_current_location">Condividi la posizione attuale</string>
     <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_share_link_via">Condividi collegamento tramite</string>
     <string name="nc_share_location">Condividi posizione</string>
     <string name="nc_share_subject">%1$s invito</string>
     <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
+    <string name="nc_share_this_location">Condividi questa posizione</string>
+    <string name="nc_shared_location">Posizione condivisa</string>
     <string name="nc_start_conversation">Inizia una conversazione</string>
     <string name="nc_start_time">Ora di inizio</string>
     <string name="nc_timeout_error">Tempo scaduto</string>
