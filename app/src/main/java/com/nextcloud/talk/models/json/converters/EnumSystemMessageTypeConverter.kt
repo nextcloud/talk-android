@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -25,7 +27,9 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_LEFT
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_MISSED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_STARTED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_TRIED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_CREATED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_RENAMED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DESCRIPTION_REMOVED
@@ -67,6 +71,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_RE
 * `call_joined` - {actor} joined the call
 * `call_left` - {actor} left the call
 * `call_ended` - Call with {user1}, {user2}, {user3}, {user4} and {user5} (Duration 30:23)
+* `call_missed` - You missed a call from {user}
+* `call_tried` - You tried to call {user}
 * `read_only_off` - {actor} unlocked the conversation
 * `read_only` - {actor} locked the conversation
 * `listable_none` - {actor} limited the conversation to the current participants
@@ -105,6 +111,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "call_joined" -> return CALL_JOINED
             "call_left" -> return CALL_LEFT
             "call_ended" -> return CALL_ENDED
+            "call_missed" -> return CALL_MISSED
+            "call_tried" -> return CALL_TRIED
             "read_only_off" -> return READ_ONLY_OFF
             "read_only" -> return READ_ONLY
             "listable_none" -> return LISTABLE_NONE
@@ -150,6 +158,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             CALL_JOINED -> return "call_joined"
             CALL_LEFT -> return "call_left"
             CALL_ENDED -> return "call_ended"
+            CALL_MISSED -> return "call_missed"
+            CALL_TRIED -> return "call_tried"
             READ_ONLY_OFF -> return "read_only_off"
             READ_ONLY -> return "read_only"
             LISTABLE_NONE -> return "listable_none"
