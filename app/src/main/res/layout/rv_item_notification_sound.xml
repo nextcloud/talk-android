@@ -41,6 +41,7 @@
         android:lines="1"
         android:paddingStart="24dp"
         android:paddingEnd="0dp"
+        android:textAlignment="viewStart"
         android:textAppearance="@style/ListItem"
         tools:text="Ringy Gone" />
 

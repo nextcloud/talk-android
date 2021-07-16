@@ -103,6 +103,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
                 android:textSize="16sp"
                 tools:text="Share this location" />
@@ -114,6 +115,7 @@
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:maxLines="1"
+                android:textAlignment="viewStart"
                 android:textColor="@color/medium_emphasis_text"
                 android:textSize="14sp"
                 tools:text="Brandenburg, Germany" />

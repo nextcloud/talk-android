@@ -58,6 +58,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/ListItem"
             tools:text="Call item text" />
 
@@ -67,6 +68,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textColor="@color/textColorMaxContrast"
             tools:text="A week ago" />
 

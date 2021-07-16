@@ -61,6 +61,7 @@
             android:imeOptions="actionDone"
             android:inputType="textUri"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textColor="@color/colorPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>

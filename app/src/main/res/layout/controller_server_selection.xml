@@ -99,6 +99,7 @@
                 android:paddingEnd="8dp"
                 android:paddingBottom="2dp"
                 android:text="@string/nc_server_helper_text"
+                android:textAlignment="viewStart"
                 android:textColor="@color/nc_login_text_color" />
 
             <LinearLayout
@@ -121,12 +122,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="end"
-                    android:gravity="center_vertical"
+                    android:gravity="start|center_vertical"
                     android:lineSpacingMultiplier="1.2"
                     android:lines="2"
                     android:paddingStart="5dp"
                     android:paddingEnd="8dp"
                     android:text="@string/nc_server_testing_connection"
+                    android:textAlignment="viewStart"
                     android:textColor="@color/white" />
 
             </LinearLayout>
@@ -137,12 +139,13 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="5dp"
                 android:ellipsize="end"
-                android:gravity="center_vertical"
+                android:gravity="start|center_vertical"
                 android:lineSpacingMultiplier="1.2"
                 android:lines="2"
                 android:paddingStart="16dp"
                 android:paddingEnd="8dp"
                 android:text="@string/nc_server_unsupported"
+                android:textAlignment="viewStart"
                 android:textColor="@color/white"
                 android:visibility="invisible"
                 app:drawableStartCompat="@android:drawable/stat_sys_warning"

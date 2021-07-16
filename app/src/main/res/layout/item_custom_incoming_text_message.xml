@@ -22,6 +22,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
@@ -59,19 +60,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
+            android:textAlignment="viewStart"
             android:textColor="@color/textColorMaxContrast"
             android:textIsSelectable="false"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            tools:text="Jane Doe" />
 
         <androidx.emoji.widget.EmojiTextView
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
+            android:textAlignment="viewStart"
             android:textIsSelectable="false"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
-            app:layout_wrapBefore="true" />
+            app:layout_wrapBefore="true"
+            tools:text="Talk to you later!" />
 
         <TextView
             android:id="@id/messageTime"

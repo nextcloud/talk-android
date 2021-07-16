@@ -56,8 +56,8 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:text="@string/scope_private_title"
+                android:textAlignment="viewStart"
                 android:textColor="@color/conversation_item_header"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -66,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_private_description"
+                android:textAlignment="viewStart"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp" />
 
@@ -99,6 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_local_title"
+                android:textAlignment="viewStart"
                 android:textColor="@color/conversation_item_header"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -107,6 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_local_description"
+                android:textAlignment="viewStart"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp" />
 
@@ -140,6 +143,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_federated_title"
+                android:textAlignment="viewStart"
                 android:textColor="@color/conversation_item_header"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -148,6 +152,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_federated_description"
+                android:textAlignment="viewStart"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp" />
 
@@ -181,6 +186,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_published_title"
+                android:textAlignment="viewStart"
                 android:textColor="@color/conversation_item_header"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -189,6 +195,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/scope_published_description"
+                android:textAlignment="viewStart"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp" />
 

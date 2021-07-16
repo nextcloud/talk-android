@@ -69,6 +69,7 @@
         android:marqueeRepeatLimit="1"
         android:paddingBottom="6dp"
         android:singleLine="true"
+        android:textAlignment="viewStart"
         android:textColor="@color/textColorMaxContrast"
         android:textSize="12sp"
         tools:text="3 minutes ago" />
@@ -85,6 +86,7 @@
         android:marqueeRepeatLimit="1"
         android:paddingTop="6dp"
         android:singleLine="true"
+        android:textAlignment="viewStart"
         android:textColor="@color/conversation_item_header"
         android:textSize="@dimen/two_line_primary_text_size"
         tools:text="filename.md" />

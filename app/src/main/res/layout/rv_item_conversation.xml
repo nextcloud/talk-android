@@ -78,6 +78,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textColor="@color/conversation_item_header"
             android:textSize="@dimen/two_line_primary_text_size"
             tools:text="Call item text" />
@@ -87,6 +88,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textColor="@color/textColorMaxContrast"
             android:textSize="14sp"
             tools:text="A week ago" />

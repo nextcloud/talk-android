@@ -26,66 +26,68 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="16dp"
+    android:layout_marginStart="@dimen/standard_margin"
     android:layout_marginTop="2dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginEnd="@dimen/standard_margin"
     android:layout_marginBottom="2dp">
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@id/messageUserAvatar"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="8dp"
-            app:roundAsCircle="true" />
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@id/messageUserAvatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="8dp"
+        app:roundAsCircle="true" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@id/bubble"
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@id/bubble"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
+        android:layout_toEndOf="@id/messageUserAvatar"
+        android:orientation="vertical"
+        app:alignContent="stretch"
+        app:alignItems="stretch"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_end">
+
+        <include
+            android:id="@+id/message_quote"
+            layout="@layout/item_message_quote"
+            android:visibility="gone" />
+
+        <WebView
+            android:id="@+id/webview"
+            android:layout_width="400dp"
+            android:layout_height="200dp" />
+
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@+id/messageAuthor"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
-            android:layout_toEndOf="@id/messageUserAvatar"
-            android:orientation="vertical"
-            app:alignContent="stretch"
-            app:alignItems="stretch"
-            app:flexWrap="wrap"
-            app:justifyContent="flex_end">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textAlignment="viewStart"
+            android:textColor="@color/textColorMaxContrast"
+            android:textSize="12sp" />
 
-                <include
-                    android:id="@+id/message_quote"
-                    layout="@layout/item_message_quote"
-                    android:visibility="gone" />
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@id/messageText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:textAlignment="viewStart"
+            android:textIsSelectable="true"
+            app:layout_alignSelf="flex_start"
+            app:layout_flexGrow="1"
+            app:layout_wrapBefore="true" />
 
-                <WebView
-                    android:id="@+id/webview"
-                    android:layout_width="400dp"
-                    android:layout_height="200dp" />
+        <TextView
+            android:id="@id/messageTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/messageText"
+            android:layout_marginStart="8dp"
+            app:layout_alignSelf="center" />
 
-                <androidx.emoji.widget.EmojiTextView
-                    android:id="@+id/messageAuthor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:textColor="@color/textColorMaxContrast"
-                    android:textSize="12sp" />
-
-                <androidx.emoji.widget.EmojiTextView
-                    android:id="@id/messageText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingMultiplier="1.2"
-                    android:textIsSelectable="true"
-                    app:layout_alignSelf="flex_start"
-                    app:layout_flexGrow="1"
-                    app:layout_wrapBefore="true" />
-
-                <TextView
-                    android:id="@id/messageTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/messageText"
-                    android:layout_marginStart="8dp"
-                    app:layout_alignSelf="center" />
-
-        </com.google.android.flexbox.FlexboxLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

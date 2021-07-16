@@ -64,6 +64,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="@color/conversation_item_header"
             tools:text="Jane Doe" />
@@ -74,8 +75,9 @@
             android:layout_height="wrap_content"
             android:ellipsize="middle"
             android:singleLine="true"
+            android:textAlignment="viewStart"
             android:textColor="?android:attr/textColorSecondary"
-            tools:text="Moderator" />
+            tools:text="@string/nc_moderator" />
 
     </LinearLayout>
 

@@ -25,42 +25,42 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/bg_default"
+    android:orientation="vertical"
     tools:context=".activities.FullScreenTextViewerActivity">
 
-        <com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipChildren="true"
+        android:clipToPadding="false"
+        android:windowContentOverlay="@null">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/textview_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:theme="@style/appActionBarPopupMenu"
+            app:layout_scrollFlags="scroll|enterAlways|snap"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="Text File Preview" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipChildren="true"
-            android:clipToPadding="false"
-            android:windowContentOverlay="@null">
+            android:padding="@dimen/standard_padding"
+            tools:text="Lorem Ipsum" />
 
-                <com.google.android.material.appbar.MaterialToolbar
-                    android:id="@+id/textview_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:theme="@style/appActionBarPopupMenu"
-                    app:layout_scrollFlags="scroll|enterAlways|snap"
-                    app:navigationIconTint="@color/fontAppbar"
-                    app:popupTheme="@style/appActionBarPopupMenu"
-                    app:titleTextColor="@color/fontAppbar"
-                    tools:title="Text File Preview" />
-
-        </com.google.android.material.appbar.AppBarLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                <TextView
-                    android:id="@+id/text_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/standard_padding"
-                    tools:text="Lorem Ipsum" />
-
-        </androidx.core.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
