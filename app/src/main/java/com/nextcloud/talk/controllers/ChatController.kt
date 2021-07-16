@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Marcel Hibbe
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
@@ -229,7 +231,6 @@ class ChatController(args: Bundle) :
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
     var isLeavingForConversation: Boolean = false
-    var isLinkPreviewAllowed: Boolean = false
     var wasDetached: Boolean = false
     var emojiPopup: EmojiPopup? = null
 
@@ -1363,8 +1364,6 @@ class ChatController(args: Bundle) :
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
-        isLinkPreviewAllowed = appPreferences?.areLinkPreviewsAllowed ?: false
-
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
 
         emojiPopup = binding.messageInputView.inputEditText?.let {
@@ -1908,7 +1907,6 @@ class ChatController(args: Bundle) :
                     val chatMessage = chatMessageList[i]
                     chatMessage.isOneToOneConversation =
                         currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-                    chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
                     chatMessage.activeUser = conversationUser
                 }
 
@@ -1937,7 +1935,6 @@ class ChatController(args: Bundle) :
                     chatMessage = chatMessageList[i]
 
                     chatMessage.activeUser = conversationUser
-                    chatMessage.isLinkPreviewAllowed = isLinkPreviewAllowed
 
                     val shouldScroll =
                         !isThereANewNotice &&
@@ -2377,7 +2374,6 @@ class ChatController(args: Bundle) :
 
         messageTemp.isOneToOneConversation =
             currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-        messageTemp.isLinkPreviewAllowed = isLinkPreviewAllowed
         messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
