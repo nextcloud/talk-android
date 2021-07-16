@@ -166,7 +166,7 @@ class ConversationInfoController(args: Bundle) :
 
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog(null) }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
-        binding.clearConversationHistory.setOnClickListener { clearHistory() }
+        binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog(null) }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
         fetchRoomInfo()
@@ -301,6 +301,7 @@ class ConversationInfoController(args: Bundle) :
     private fun showLovelyDialog(dialogId: Int, savedInstanceState: Bundle) {
         when (dialogId) {
             ID_DELETE_CONVERSATION_DIALOG -> showDeleteConversationDialog(savedInstanceState)
+            ID_CLEAR_CHAT_DIALOG -> showClearHistoryDialog(savedInstanceState)
             else -> {
             }
         }
@@ -487,6 +488,27 @@ class ConversationInfoController(args: Bundle) :
                 ).setInputData(it).build()
             )
             popTwoLastControllers()
+        }
+    }
+
+    private fun showClearHistoryDialog(savedInstanceState: Bundle?) {
+        if (activity != null) {
+            LovelyStandardDialog(activity, LovelyStandardDialog.ButtonLayout.HORIZONTAL)
+                .setTopColorRes(R.color.nc_darkRed)
+                .setIcon(
+                    DisplayUtils.getTintedDrawable(
+                        context!!.resources,
+                        R.drawable.ic_delete_black_24dp, R.color.bg_default
+                    )
+                )
+                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+                .setTitle(R.string.nc_clear_history)
+                .setMessage(R.string.nc_clear_history_warning)
+                .setPositiveButton(R.string.nc_delete) { clearHistory() }
+                .setNegativeButton(R.string.nc_cancel, null)
+                .setInstanceStateHandler(ID_CLEAR_CHAT_DIALOG, saveStateHandler!!)
+                .setSavedInstanceState(savedInstanceState)
+                .show()
         }
     }
 
@@ -1039,6 +1061,7 @@ class ConversationInfoController(args: Bundle) :
     companion object {
         private const val TAG = "ConversationInfControll"
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
+        private const val ID_CLEAR_CHAT_DIALOG = 1
         private val LOW_EMPHASIS_OPACITY: Float = 0.38f
     }
 

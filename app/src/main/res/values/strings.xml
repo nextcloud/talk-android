@@ -168,6 +168,7 @@
     <string name="nc_configure_room">Configure conversation</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_clear_history">Clear history</string>
+    <string name="nc_clear_history_warning">The chat history will be deleted.</string>
     <string name="nc_clear_history_success">Chat history was cleared</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_set_password">Set a password</string>
