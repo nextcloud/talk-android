@@ -203,9 +203,12 @@ public class ConversationsListController extends BaseController implements Searc
 
     private String textToPaste = "";
 
-    public ConversationsListController() {
+    private boolean forwardMessage = false;
+
+    public ConversationsListController(Bundle bundle) {
         super();
         setHasOptionsMenu(true);
+        forwardMessage = bundle.getBoolean("forwardMessage");
     }
 
     @Override
@@ -340,9 +343,13 @@ public class ConversationsListController extends BaseController implements Searc
 
         showShareToScreen = !shareToScreenWasShown && hasActivityActionSendIntent();
 
+
         if (showShareToScreen) {
             hideSearchBar();
             getActionBar().setTitle(R.string.send_to_three_dots);
+        } else if (forwardMessage) {
+            hideSearchBar();
+            getActionBar().setTitle(R.string.nc_forward_to_three_dots);
         } else {
             MainActivity activity = (MainActivity) getActivity();
 
@@ -752,11 +759,17 @@ public class ConversationsListController extends BaseController implements Searc
             if (showShareToScreen) {
                 shareToScreenWasShown = true;
                 handleSharedData();
+            }else if (forwardMessage) {
+                forwardMessage();
             } else {
                 openConversation();
             }
         }
         return true;
+    }
+
+    private void forwardMessage() {
+        System.out.println("Add code to forward a message here");
     }
 
     private void handleSharedData() {

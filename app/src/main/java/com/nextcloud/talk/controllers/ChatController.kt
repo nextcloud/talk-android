@@ -2165,6 +2165,14 @@ class ChatController(args: Bundle) :
                         clipboardManager.setPrimaryClip(clipData)
                         true
                     }
+                    R.id.action_forward_message -> {
+                        val bundle = Bundle()
+                        bundle.putBoolean("forwardMessage", true)
+                        getRouter().pushController(
+                            RouterTransaction.with(ConversationsListController(bundle)).pushChangeHandler
+                                (HorizontalChangeHandler()).popChangeHandler(HorizontalChangeHandler()))
+                        true
+                    }
                     R.id.action_reply_to_message -> {
                         val chatMessage = message as ChatMessage?
                         replyToMessage(chatMessage, message?.jsonMessageId)
