@@ -1805,7 +1805,7 @@ class ChatController(args: Bundle) :
                         }
 
                         override fun onError(e: Throwable) {
-                            // unused atm
+                            Log.e(TAG, "failed to pull chat messages", e)
                         }
 
                         override fun onComplete() {
@@ -1876,6 +1876,13 @@ class ChatController(args: Bundle) :
 
             val chatOverall = response.body() as ChatOverall?
             val chatMessageList = setDeletionFlagsAndRemoveInfomessages(chatOverall?.ocs!!.data)
+
+            if (chatMessageList.isNotEmpty() &&
+                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
+            ) {
+                adapter?.clear()
+                adapter?.notifyDataSetChanged()
+            }
 
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation()

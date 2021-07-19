@@ -3,8 +3,10 @@
  *
  * @author Mario Danic
  * @author Tim Krüger
- * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * @author Marcel Hibbe
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,6 +32,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_LE
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_MISSED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_STARTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_TRIED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CLEARED_CHAT
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_CREATED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_RENAMED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DESCRIPTION_REMOVED
@@ -92,6 +95,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_RE
 * `guest_moderator_promoted` - {actor} promoted {user} to moderator
 * `guest_moderator_demoted` - {actor} demoted {user} from moderator
 * `message_deleted` - Message deleted by {actor} (Should not be shown to the user)
+* `history_cleared` - {actor} cleared the history of the conversation
 * `file_shared` - {file}
 * `object_shared` - {object}
 * `matterbridge_config_added` - {actor} set up Matterbridge to synchronize this conversation with other chats
@@ -139,6 +143,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "matterbridge_config_removed" -> return MATTERBRIDGE_CONFIG_REMOVED
             "matterbridge_config_enabled" -> return MATTERBRIDGE_CONFIG_ENABLED
             "matterbridge_config_disabled" -> return MATTERBRIDGE_CONFIG_DISABLED
+            "history_cleared" -> return CLEARED_CHAT
             else -> return DUMMY
         }
     }
@@ -186,6 +191,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             MATTERBRIDGE_CONFIG_REMOVED -> return "matterbridge_config_removed"
             MATTERBRIDGE_CONFIG_ENABLED -> return "matterbridge_config_enabled"
             MATTERBRIDGE_CONFIG_DISABLED -> return "matterbridge_config_disabled"
+            CLEARED_CHAT -> return "clear_history"
             else -> return ""
         }
     }
