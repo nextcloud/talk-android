@@ -296,6 +296,7 @@
     <string name="nc_share_text">Junte-se à conversa em %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSenha: %1$s</string>
     <string name="nc_share_this_location">Compartilhe este local</string>
+    <string name="nc_shared_location">Localização compartilhada</string>
     <string name="nc_start_conversation">Iniciar uma conversa</string>
     <string name="nc_start_time">Hora de início</string>
     <string name="nc_timeout_error">Tempo limite</string>
@@ -312,6 +313,7 @@
     <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>
+    <string name="nc_voice_message_slide_to_cancel">« Delize para cancelar</string>
     <string name="nc_webinar">Webinarário</string>
     <string name="nc_wrong_link">O link de conversação não é válido</string>
     <string name="nc_wrong_password">Senha incorreta</string>
@@ -319,6 +321,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="password_protected">Protegido por senha</string>
+    <string name="play_pause_voice_message">Tocar/parar mensagem de voz</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões </string>
     <string name="save">Salvar</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis </string>
