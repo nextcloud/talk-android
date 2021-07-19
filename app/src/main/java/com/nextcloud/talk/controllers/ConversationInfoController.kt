@@ -525,7 +525,6 @@ class ConversationInfoController(args: Bundle) :
                 override fun onSubscribe(d: Disposable) {
                 }
 
-                @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(genericOverall: GenericOverall) {
                     Toast.makeText(context, context?.getString(R.string.nc_clear_history_success), Toast.LENGTH_LONG)
                         .show()
