@@ -139,6 +139,7 @@ public class ConversationsListController extends BaseController implements Searc
     public static final String TAG = "ConvListController";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
+    private final Bundle bundle;
     @Inject
     UserUtils userUtils;
 
@@ -209,6 +210,7 @@ public class ConversationsListController extends BaseController implements Searc
         super();
         setHasOptionsMenu(true);
         forwardMessage = bundle.getBoolean("forwardMessage");
+        this.bundle = bundle;
     }
 
     @Override
@@ -760,16 +762,12 @@ public class ConversationsListController extends BaseController implements Searc
                 shareToScreenWasShown = true;
                 handleSharedData();
             }else if (forwardMessage) {
-                forwardMessage();
+                openConversation(bundle.getString("forwardMessageText"));
             } else {
                 openConversation();
             }
         }
         return true;
-    }
-
-    private void forwardMessage() {
-        System.out.println("Add code to forward a message here");
     }
 
     private void handleSharedData() {

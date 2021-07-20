@@ -95,6 +95,7 @@ import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
@@ -2061,7 +2062,7 @@ class ChatController(args: Bundle) :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                router.popCurrentController()
+                (activity as MainActivity).resetConversationsList()
                 return true
             }
             R.id.conversation_video_call -> {
@@ -2168,6 +2169,7 @@ class ChatController(args: Bundle) :
                     R.id.action_forward_message -> {
                         val bundle = Bundle()
                         bundle.putBoolean("forwardMessage", true)
+                        bundle.putString("forwardMessageText", message?.text)
                         getRouter().pushController(
                             RouterTransaction.with(ConversationsListController(bundle)).pushChangeHandler
                                 (HorizontalChangeHandler()).popChangeHandler(HorizontalChangeHandler()))
@@ -2311,6 +2313,10 @@ class ChatController(args: Bundle) :
                 (message as ChatMessage).user.id.substring(6) != currentConversation?.actorId &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
+            menu.findItem(R.id.action_forward_message).isVisible = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.equals(
+                (message as ChatMessage)
+                    .getMessageType()
+            )
             if (menu.hasVisibleItems()) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
