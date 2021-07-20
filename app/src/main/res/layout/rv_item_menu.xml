@@ -33,10 +33,11 @@
         android:layout_margin="16dp"
         android:focusable="false"
         android:focusableInTouchMode="false"
-        android:gravity="center_vertical"
+        android:gravity="start|center_vertical"
+        android:textAlignment="viewStart"
         android:textColor="@color/conversation_item_header"
         android:textSize="16sp"
-        tools:drawableLeft="@drawable/ic_add_grey600_24px"
         tools:drawablePadding="16dp"
+        tools:drawableStart="@drawable/ic_add_grey600_24px"
         tools:text="Start a new conversation" />
 </RelativeLayout>

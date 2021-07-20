@@ -109,6 +109,7 @@
                         android:paddingStart="@dimen/standard_padding"
                         android:paddingEnd="0dp"
                         android:layout_centerHorizontal="true"
+                        android:textAlignment="viewStart"
                         android:textColor="@color/nc_darkRed"
                         tools:text="@string/nc_settings_server_almost_eol" />
 

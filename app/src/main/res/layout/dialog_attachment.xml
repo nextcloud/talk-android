@@ -35,6 +35,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/standard_padding"
         android:text="@string/nc_add_file"
+        android:textAlignment="viewStart"
         android:textColor="@color/medium_emphasis_text"
         android:textSize="@dimen/bottom_sheet_text_size" />
 
@@ -62,9 +63,10 @@
             android:id="@+id/txt_share_location"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginStart="@dimen/standard_margin"
             android:text="@string/nc_share_location"
+            android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
@@ -94,9 +96,10 @@
             android:id="@+id/txt_attach_file_from_local"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginStart="@dimen/standard_margin"
             android:text="@string/nc_upload_local_file"
+            android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
@@ -126,8 +129,9 @@
             android:id="@+id/txt_attach_file_from_cloud"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginStart="@dimen/standard_margin"
+            android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size"
             tools:text="Share from Nextcloud" />

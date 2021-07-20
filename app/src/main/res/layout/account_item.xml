@@ -88,8 +88,9 @@
                 android:layout_marginTop="4dp"
                 android:layout_marginEnd="@dimen/standard_double_margin"
                 android:ellipsize="end"
-                android:gravity="bottom"
+                android:gravity="start|bottom"
                 android:maxLines="1"
+                android:textAlignment="viewStart"
                 android:textColor="@color/conversation_item_header"
                 android:textSize="@dimen/two_line_primary_text_size"
                 tools:text="Firstname Lastname" />
@@ -116,8 +117,9 @@
                 android:layout_marginEnd="@dimen/standard_double_margin"
                 android:layout_marginBottom="4dp"
                 android:ellipsize="end"
-                android:gravity="top"
+                android:gravity="start|top"
                 android:maxLines="1"
+                android:textAlignment="viewStart"
                 android:textColor="@color/textColorMaxContrast"
                 android:textSize="14sp"
                 tools:text="https://server.com/nextcloud" />

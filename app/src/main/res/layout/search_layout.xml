@@ -70,13 +70,14 @@
                 android:ellipsize="end"
                 android:gravity="start|center_vertical"
                 android:lines="1"
+                android:textAlignment="viewStart"
                 android:textColor="@color/fontSecondaryAppbar"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@id/menu_button"
                 app:layout_constraintRight_toLeftOf="@id/rightContainer"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Search in Nextcloud" />
+                tools:text="@string/appbar_search_in" />
 
             <FrameLayout
                 android:id="@+id/rightContainer"

@@ -54,6 +54,7 @@
         android:ellipsize="end"
         android:maxEms="8"
         android:maxLines="1"
+        android:textAlignment="viewStart"
         android:textColor="@color/white"
         tools:text="Bill Murray 12345678901234567890" />
 

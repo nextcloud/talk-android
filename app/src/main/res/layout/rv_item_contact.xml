@@ -51,6 +51,7 @@
         android:layout_toEndOf="@id/simple_drawee_view"
         android:ellipsize="end"
         android:lines="1"
+        android:textAlignment="viewStart"
         android:textAppearance="@style/ListItem"
         tools:text="Jane Doe" />
 

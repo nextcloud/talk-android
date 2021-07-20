@@ -75,24 +75,25 @@
             android:imeOptions="actionDone"
             android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
             android:lineSpacingMultiplier="1.2"
-            android:minHeight="48dp" />
+            android:minHeight="48dp"
+            android:textAlignment="viewStart"
+            tools:hint="@string/nc_hint_enter_a_message" />
 
         <TextView
             android:id="@+id/slideToCancelDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/quotedChatMessageView"
+            android:layout_centerInParent="true"
             android:layout_toStartOf="@id/recordAudioButton"
             android:layout_toEndOf="@id/audioRecordDuration"
-            android:layout_centerInParent="true"
-            android:textAlignment="center"
+            android:text="@string/nc_voice_message_slide_to_cancel"
+            android:textAlignment="viewStart"
+            android:textColor="@color/low_emphasis_text"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="@color/low_emphasis_text"
-            android:text="@string/nc_voice_message_slide_to_cancel"
             android:visibility="gone"
-            tools:visibility="visible">
-        </TextView>
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/microphoneEnabledInfoBackground"

@@ -51,6 +51,7 @@
         android:ellipsize="middle"
         android:singleLine="true"
         android:text="@string/nc_join_via_link"
+        android:textAlignment="viewStart"
         android:textAppearance="@style/ListItem" />
 
 </RelativeLayout>

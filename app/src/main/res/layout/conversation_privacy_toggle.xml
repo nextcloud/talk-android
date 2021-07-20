@@ -57,6 +57,7 @@
             android:ellipsize="middle"
             android:singleLine="true"
             android:text="@string/nc_public_call"
+            android:textAlignment="viewStart"
             android:textAppearance="@style/ListItem"
             tools:text="@string/nc_public_call" />
 
