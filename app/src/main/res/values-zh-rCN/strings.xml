@@ -54,6 +54,9 @@
     <string name="nc_change_password">修改密码</string>
     <string name="nc_circle">圈子 </string>
     <string name="nc_circles">圈子</string>
+    <string name="nc_clear_history">清除历史</string>
+    <string name="nc_clear_history_success">已清除聊天历史</string>
+    <string name="nc_clear_history_warning">聊天历史将被删除</string>
     <string name="nc_clear_password">清除密码</string>
     <string name="nc_client_cert_change">修改客户端证书</string>
     <string name="nc_client_cert_setup">设置客户端证书</string>
