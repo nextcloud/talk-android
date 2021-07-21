@@ -2171,8 +2171,10 @@ class ChatController(args: Bundle) :
                         bundle.putBoolean("forwardMessage", true)
                         bundle.putString("forwardMessageText", message?.text)
                         getRouter().pushController(
-                            RouterTransaction.with(ConversationsListController(bundle)).pushChangeHandler
-                                (HorizontalChangeHandler()).popChangeHandler(HorizontalChangeHandler()))
+                            RouterTransaction.with(ConversationsListController(bundle))
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler())
+                        )
                         true
                     }
                     R.id.action_reply_to_message -> {
