@@ -54,6 +54,9 @@
     <string name="nc_change_password">Zmień hasło</string>
     <string name="nc_circle">Krąg</string>
     <string name="nc_circles">Kręgi</string>
+    <string name="nc_clear_history">Wyczyść historię</string>
+    <string name="nc_clear_history_success">Historia czatu została wyczyszczona</string>
+    <string name="nc_clear_history_warning">Historia czatu zostanie usunięta.</string>
     <string name="nc_clear_password">Wyczyść hasło</string>
     <string name="nc_client_cert_change">Zmień certyfikat klienta</string>
     <string name="nc_client_cert_setup">Skonfiguruj certyfikat klienta</string>

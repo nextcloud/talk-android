@@ -54,6 +54,9 @@
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_circle">Kreis</string>
     <string name="nc_circles">Kreise</string>
+    <string name="nc_clear_history">Verlauf leeren</string>
+    <string name="nc_clear_history_success">Chatverlauf wurde geleert</string>
+    <string name="nc_clear_history_warning">Der Chatverlauf wird geleert.</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>

@@ -54,6 +54,9 @@
     <string name="nc_change_password">Změnit heslo</string>
     <string name="nc_circle">Okruh</string>
     <string name="nc_circles">Okruhy</string>
+    <string name="nc_clear_history">Vymazat historii</string>
+    <string name="nc_clear_history_success">Historie chatu byla vymazána</string>
+    <string name="nc_clear_history_warning">Historie tohoto chatu bude smazána.</string>
     <string name="nc_clear_password">Vyčistit heslo</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_client_cert_setup">Nastavit klientský certifikát</string>
