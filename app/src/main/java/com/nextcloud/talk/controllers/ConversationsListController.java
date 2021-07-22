@@ -139,6 +139,7 @@ public class ConversationsListController extends BaseController implements Searc
     public static final String TAG = "ConvListController";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
+    private final Bundle bundle;
     @Inject
     UserUtils userUtils;
 
@@ -203,9 +204,13 @@ public class ConversationsListController extends BaseController implements Searc
 
     private String textToPaste = "";
 
-    public ConversationsListController() {
+    private boolean forwardMessage = false;
+
+    public ConversationsListController(Bundle bundle) {
         super();
         setHasOptionsMenu(true);
+        forwardMessage = bundle.getBoolean(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_FLAG());
+        this.bundle = bundle;
     }
 
     @Override
@@ -340,9 +345,13 @@ public class ConversationsListController extends BaseController implements Searc
 
         showShareToScreen = !shareToScreenWasShown && hasActivityActionSendIntent();
 
+
         if (showShareToScreen) {
             hideSearchBar();
             getActionBar().setTitle(R.string.send_to_three_dots);
+        } else if (forwardMessage) {
+            hideSearchBar();
+            getActionBar().setTitle(R.string.nc_forward_to_three_dots);
         } else {
             MainActivity activity = (MainActivity) getActivity();
 
@@ -752,6 +761,8 @@ public class ConversationsListController extends BaseController implements Searc
             if (showShareToScreen) {
                 shareToScreenWasShown = true;
                 handleSharedData();
+            } else if (forwardMessage) {
+                openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
             } else {
                 openConversation();
             }

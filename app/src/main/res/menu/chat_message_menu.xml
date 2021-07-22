@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_forward_message"
+        android:icon="@drawable/ic_share_action"
+        android:title="@string/nc_forward_message"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_reply_to_message"
         android:icon="@drawable/ic_reply"
         android:title="@string/nc_reply"

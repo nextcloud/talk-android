@@ -69,6 +69,7 @@ import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.emoji.widget.EmojiTextView;
@@ -407,7 +408,19 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             return;
         }
 
-        PopupMenu popupMenu = new PopupMenu(this.context, itemView, Gravity.START);
+        Context viewContext;
+
+        if (itemView != null && itemView.getContext() != null) {
+            viewContext = itemView.getContext();
+        } else {
+            viewContext = this.context;
+        }
+
+        PopupMenu popupMenu = new PopupMenu(
+            new ContextThemeWrapper(viewContext, R.style.appActionBarPopupMenu),
+            itemView,
+            Gravity.START
+        );
         popupMenu.inflate(R.menu.chat_preview_message_menu);
 
         popupMenu.setOnMenuItemClickListener(item -> {
