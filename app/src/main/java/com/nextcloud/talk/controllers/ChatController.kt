@@ -2168,8 +2168,8 @@ class ChatController(args: Bundle) :
                     }
                     R.id.action_forward_message -> {
                         val bundle = Bundle()
-                        bundle.putBoolean("forwardMessage", true)
-                        bundle.putString("forwardMessageText", message?.text)
+                        bundle.putBoolean(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
+                        bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.text)
                         getRouter().pushController(
                             RouterTransaction.with(ConversationsListController(bundle))
                                 .pushChangeHandler(HorizontalChangeHandler())

@@ -209,7 +209,7 @@ public class ConversationsListController extends BaseController implements Searc
     public ConversationsListController(Bundle bundle) {
         super();
         setHasOptionsMenu(true);
-        forwardMessage = bundle.getBoolean("forwardMessage");
+        forwardMessage = bundle.getBoolean(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_FLAG());
         this.bundle = bundle;
     }
 
@@ -761,8 +761,8 @@ public class ConversationsListController extends BaseController implements Searc
             if (showShareToScreen) {
                 shareToScreenWasShown = true;
                 handleSharedData();
-            }else if (forwardMessage) {
-                openConversation(bundle.getString("forwardMessageText"));
+            } else if (forwardMessage) {
+                openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
             } else {
                 openConversation();
             }
