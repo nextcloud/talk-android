@@ -504,7 +504,7 @@ class ConversationInfoController(args: Bundle) :
                 .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
                 .setTitle(R.string.nc_clear_history)
                 .setMessage(R.string.nc_clear_history_warning)
-                .setPositiveButton(R.string.nc_delete) { clearHistory() }
+                .setPositiveButton(R.string.nc_delete_all) { clearHistory() }
                 .setNegativeButton(R.string.nc_cancel, null)
                 .setInstanceStateHandler(ID_CLEAR_CHAT_DIALOG, saveStateHandler!!)
                 .setSavedInstanceState(savedInstanceState)
