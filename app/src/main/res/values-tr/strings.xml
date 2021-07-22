@@ -54,6 +54,9 @@
     <string name="nc_change_password">Parolayı değiştir</string>
     <string name="nc_circle">Çevre</string>
     <string name="nc_circles">Çevreler</string>
+    <string name="nc_clear_history">Geçmişi temizle</string>
+    <string name="nc_clear_history_success">Sohbet geçmişi temizlendi</string>
+    <string name="nc_clear_history_warning">Sohbet geçmişi silinecek.</string>
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
