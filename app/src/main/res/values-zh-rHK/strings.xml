@@ -54,9 +54,6 @@
     <string name="nc_change_password">更改密碼</string>
     <string name="nc_circle">社交圈子</string>
     <string name="nc_circles">圈子</string>
-    <string name="nc_clear_history">清除記錄</string>
-    <string name="nc_clear_history_success">已清除聊天記錄</string>
-    <string name="nc_clear_history_warning">聊天記錄將被刪除。</string>
     <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">更改客戶端證書</string>
     <string name="nc_client_cert_setup">設置客戶端證書</string>
