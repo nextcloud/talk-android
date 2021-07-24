@@ -54,6 +54,9 @@
     <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_circle">Kreis</string>
     <string name="nc_circles">Kreise</string>
+    <string name="nc_clear_history">Alle Nachrichten löschen</string>
+    <string name="nc_clear_history_success">Alle Nachrichten wurden gelöscht</string>
+    <string name="nc_clear_history_warning">Möchten Sie wirklich alle Nachrichten dieser Unterhaltung löschen?</string>
     <string name="nc_clear_password">Passwort leeren</string>
     <string name="nc_client_cert_change">Client-Zertifikat ändern</string>
     <string name="nc_client_cert_setup">Client-Zertifikat einrichten</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
     <string name="nc_delete">Löschen</string>
+    <string name="nc_delete_all">Alle löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Sie dürfen diese Datei nicht weiterteilen</string>
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
     <string name="nc_formatted_message_you">Sie: %1$s</string>
+    <string name="nc_forward_message">Weiterleiten</string>
+    <string name="nc_forward_to_three_dots">Weiterleiten an …</string>
     <string name="nc_general_settings">Allgemein</string>
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Anbieter zu finden</string>
     <string name="nc_get_source_code">Zum Programmcode</string>

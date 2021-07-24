@@ -54,6 +54,9 @@
     <string name="nc_change_password">更改密碼</string>
     <string name="nc_circle">社交圈子</string>
     <string name="nc_circles">圈子</string>
+    <string name="nc_clear_history">刪除所有訊息</string>
+    <string name="nc_clear_history_success">已刪除所有訊息</string>
+    <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
     <string name="nc_clear_password">清除密碼</string>
     <string name="nc_client_cert_change">更改客戶端證書</string>
     <string name="nc_client_cert_setup">設置客戶端證書</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">刪除</string>
+    <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
     <string name="nc_delete_conversation_default">請確認是否要清除的對話。</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">您無權重新分享此檔案</string>
     <string name="nc_following_link">用戶關注公共連結</string>
     <string name="nc_formatted_message_you">你： %1$s</string>
+    <string name="nc_forward_message">轉寄</string>
+    <string name="nc_forward_to_three_dots">轉寄給 ...</string>
     <string name="nc_general_settings">一般</string>
     <string name="nc_get_from_provider">您沒有自己的伺服器嗎？\n點這裡向服務供應商購買</string>
     <string name="nc_get_source_code">取得原始碼</string>
