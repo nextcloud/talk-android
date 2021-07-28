@@ -54,6 +54,9 @@
     <string name="nc_change_password">Wachtwoord wijzigen</string>
     <string name="nc_circle">Kring</string>
     <string name="nc_circles">Kringen</string>
+    <string name="nc_clear_history">Alle berichten verwijderen</string>
+    <string name="nc_clear_history_success">Alle berichten zijn verwijderd</string>
+    <string name="nc_clear_history_warning">Wil je dit alle berichten in dit gesprek echt verwijderen?</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">Vandaag</string>
     <string name="nc_date_header_yesterday">Gisteren</string>
     <string name="nc_delete">Verwijderen</string>
+    <string name="nc_delete_all">Alles verwijderen</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Je mag het bestand niet verder delen</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
+    <string name="nc_forward_message">Doorsturen</string>
+    <string name="nc_forward_to_three_dots">Doorsturen aan ...</string>
     <string name="nc_general_settings">Algemeen</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
