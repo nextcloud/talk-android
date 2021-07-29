@@ -54,6 +54,9 @@
     <string name="nc_change_password">Aldatu pasahitza</string>
     <string name="nc_circle">Zirkulua</string>
     <string name="nc_circles">Zirkuluak</string>
+    <string name="nc_clear_history">Ezabatu mezu guztiak</string>
+    <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
+    <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
     <string name="nc_clear_password">Garbitu pasahitza</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
     <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">Gaur</string>
     <string name="nc_date_header_yesterday">Atzo</string>
     <string name="nc_delete">Ezabatu</string>
+    <string name="nc_delete_all">Ezabatu denak</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete_conversation_default">Baieztatu mesedez elkarrizketa kendu nahi duzula.</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Ez zaude fitxategi hau birpartekatzeko baimenduta</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
+    <string name="nc_forward_message">Birbidali</string>
+    <string name="nc_forward_to_three_dots">Birbidali ...</string>
     <string name="nc_general_settings">Orokorra</string>
     <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
     <string name="nc_get_source_code">Iturburu kodea eskuratu</string>
