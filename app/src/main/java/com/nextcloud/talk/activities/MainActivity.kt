@@ -111,7 +111,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (!router!!.hasRootController()) {
                 router!!.setRoot(
-                    RouterTransaction.with(ConversationsListController())
+                    RouterTransaction.with(ConversationsListController(Bundle()))
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
                 )
@@ -121,7 +121,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             if (hasDb) {
                 if (userUtils.anyUserExists()) {
                     router!!.setRoot(
-                        RouterTransaction.with(ConversationsListController())
+                        RouterTransaction.with(ConversationsListController(Bundle()))
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler())
                     )
@@ -174,7 +174,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     fun resetConversationsList() {
         if (userUtils.anyUserExists()) {
             router!!.setRoot(
-                RouterTransaction.with(ConversationsListController())
+                RouterTransaction.with(ConversationsListController(Bundle()))
                     .pushChangeHandler(HorizontalChangeHandler())
                     .popChangeHandler(HorizontalChangeHandler())
             )

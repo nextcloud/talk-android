@@ -54,8 +54,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 120020005
-        versionName "12.2.0 Alpha 05"
+        versionCode 120020006
+        versionName "12.2.0 Alpha 06"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -179,7 +179,7 @@ configurations.all {
 
 dependencies {
     implementation fileTree(include: ['*'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.github.vanniktech:Emoji:0.6.0'  // 0.7.0 has display issue - don't update to 0.7.0
@@ -194,7 +194,7 @@ dependencies {
     implementation ('com.gitlab.bitfireAT:dav4jvm:2.1.2', {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
-    ktlint "com.pinterest:ktlint:0.41.0"
+    ktlint "com.pinterest:ktlint:0.42.0"
     implementation 'org.conscrypt:conscrypt-android:2.5.2'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
@@ -275,7 +275,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
     implementation 'com.google.code.gson:gson:2.8.7'
-    implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.2'
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
     implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.23'

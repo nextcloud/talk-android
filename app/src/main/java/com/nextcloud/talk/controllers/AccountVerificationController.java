@@ -443,7 +443,7 @@ public class AccountVerificationController extends BaseController {
             getActivity().runOnUiThread(() -> {
                 if (userUtils.getUsers().size() == 1) {
                     getRouter().setRoot(RouterTransaction.with(new
-                            ConversationsListController())
+                            ConversationsListController(new Bundle()))
                             .pushChangeHandler(new HorizontalChangeHandler())
                             .popChangeHandler(new HorizontalChangeHandler()));
                 } else {
@@ -524,7 +524,7 @@ public class AccountVerificationController extends BaseController {
 
                     } else {
                         if (userUtils.anyUserExists()) {
-                            getRouter().setRoot(RouterTransaction.with(new ConversationsListController())
+                            getRouter().setRoot(RouterTransaction.with(new ConversationsListController(new Bundle()))
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else {
