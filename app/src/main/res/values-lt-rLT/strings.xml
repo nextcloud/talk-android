@@ -12,6 +12,7 @@
     <string name="nc_action_open_main_menu">Atverti pagrindinį meniu</string>
     <string name="nc_add">Pridėti</string>
     <string name="nc_add_attachment">Pridėti priedą</string>
+    <string name="nc_add_emojis">Pridėti šypsenėlių</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_allow_guests">Leisti svečius</string>
