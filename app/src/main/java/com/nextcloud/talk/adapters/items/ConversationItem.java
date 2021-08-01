@@ -217,8 +217,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         if (Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 Drawable[] layers = new Drawable[2];
-                layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
-                layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
+                layers[0] = ContextCompat.getDrawable(context, R.drawable.logo);
+                layers[1] = ContextCompat.getDrawable(context, R.drawable.logo);
                 LayerDrawable layerDrawable = new LayerDrawable(layers);
 
                 holder.dialogAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));

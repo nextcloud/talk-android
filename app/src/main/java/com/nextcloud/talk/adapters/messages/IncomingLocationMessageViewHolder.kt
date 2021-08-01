@@ -113,7 +113,7 @@ class IncomingLocationMessageViewHolder(incomingView: View) : MessageHolders
             } else if (message.actorType == "bots" && message.actorId == "changelog") {
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_background)
-                layers[1] = AppCompatResources.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                layers[1] = AppCompatResources.getDrawable(context!!, R.drawable.logo)
                 val layerDrawable = LayerDrawable(layers)
                 binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
             } else if (message.actorType == "bots") {

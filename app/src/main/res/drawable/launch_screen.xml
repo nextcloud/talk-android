@@ -20,7 +20,7 @@
 
     <item android:drawable="@color/colorPrimary" />
     <item
-        android:drawable="@drawable/ic_logo"
+        android:drawable="@drawable/logo"
         android:gravity="center" />
 
 </layer-list>

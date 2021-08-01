@@ -716,7 +716,7 @@ class ConversationInfoController(args: Bundle) :
             Conversation.ConversationType.ROOM_SYSTEM -> {
                 val layers = arrayOfNulls<Drawable>(2)
                 layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.logo)
                 val layerDrawable = LayerDrawable(layers)
                 binding.avatarImage.hierarchy.setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable))
             }

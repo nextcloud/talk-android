@@ -275,7 +275,7 @@ public class NotificationWorker extends Worker {
         String category;
         int priority = Notification.PRIORITY_HIGH;
 
-        smallIcon = R.drawable.ic_logo;
+        smallIcon = R.drawable.logo;
 
         if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
             category = Notification.CATEGORY_MESSAGE;

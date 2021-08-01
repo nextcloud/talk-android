@@ -204,7 +204,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     val layers = arrayOfNulls<Drawable>(2)
                     layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.logo)
                     val layerDrawable = LayerDrawable(layers)
                     binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
                 } else {

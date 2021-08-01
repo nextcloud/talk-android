@@ -235,7 +235,7 @@
     <string name="nc_server_not_installed">Bitte beenden Sie Ihre %1$s Installation</string>
     <string name="nc_server_testing_connection">Teste Verbindung </string>
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
-    <string name="nc_server_url">Serveradresse https://…</string>
+    <string name="nc_server_url">Name deiner Praxis</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
     <string name="nc_set_password">Passwort setzen</string>
     <string name="nc_settings">Einstellungen</string>

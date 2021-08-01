@@ -13,7 +13,6 @@
         android:icon="@drawable/ic_reply"
         android:title="@string/nc_reply"
         app:showAsAction="always" />
-
     <item
         android:id="@+id/action_reply_privately"
         android:icon="@drawable/ic_reply"

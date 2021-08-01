@@ -211,7 +211,8 @@ public class ServerSelectionController extends BaseController {
     private void checkServerAndProceed() {
         dispose();
 
-        String url = serverEntryTextInputEditText.getText().toString().trim();
+        String input = serverEntryTextInputEditText.getText().toString().trim();
+        String url = "https://"+input+".moyn.io";
 
         serverEntryTextInputEditText.setEnabled(false);
         showProgressBar();
