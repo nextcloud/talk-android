@@ -54,6 +54,9 @@
     <string name="nc_change_password">Zmena hesla</string>
     <string name="nc_circle">Kruh</string>
     <string name="nc_circles">Kruhy</string>
+    <string name="nc_clear_history">Vymazať všetky správy</string>
+    <string name="nc_clear_history_success">Všetky správy boli vymazané</string>
+    <string name="nc_clear_history_warning">Naozaj chcete vymazať všetky správy v tejto konverzácii?</string>
     <string name="nc_clear_password">Zrušiť heslo</string>
     <string name="nc_client_cert_change">Zmeniť klientský certifikát</string>
     <string name="nc_client_cert_setup">Nastaviť klientský certifikát</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Zmazať</string>
+    <string name="nc_delete_all">Vymazať všetko</string>
     <string name="nc_delete_call">Zmazať rozhovor</string>
     <string name="nc_delete_conversation_default">Potvrďte prosím, že naozaj chcete zmazať rozhovor</string>
     <string name="nc_delete_conversation_more">Ak zmažete rozhovor, bude takisto zmazaný pre všetkých ostatných zúčastnených</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Nemáte oprávnenie k ďalšiemu zdieľaniu tohoto súboru</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
+    <string name="nc_forward_message">Preposlať</string>
+    <string name="nc_forward_to_three_dots">Preposlať na ...</string>
     <string name="nc_general_settings">Všeobecné</string>
     <string name="nc_get_from_provider">Ešte nemáte server? \nKliknite sem a získajte jeden od poskytovateľa</string>
     <string name="nc_get_source_code">Získajte zdrojový kód</string>
