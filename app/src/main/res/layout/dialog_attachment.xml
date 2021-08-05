@@ -106,6 +106,39 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/menu_attach_picture_from_cam"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/standard_padding"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingRight="@dimen/standard_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/menu_icon_attach_picture_from_cam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_photo_camera_24"
+            app:tint="@color/colorPrimary" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/txt_attach_picture_from_cam"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@string/nc_upload_picture_from_cam"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/menu_attach_file_from_cloud"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

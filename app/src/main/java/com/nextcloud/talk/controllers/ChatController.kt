@@ -96,6 +96,7 @@ import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
@@ -1211,6 +1212,34 @@ class ChatController(args: Bundle) :
                         }
                         .setNegativeButton(R.string.nc_no) {}
                         .show()
+                } catch (e: IllegalStateException) {
+                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                        .show()
+                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                } catch (e: IllegalArgumentException) {
+                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                        .show()
+                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                }
+            }
+        } else if (requestCode == REQUEST_CODE_PICK_CAMERA) {
+            if (resultCode == RESULT_OK) {
+                try {
+                    checkNotNull(intent)
+                    filesToUpload.clear()
+                    run {
+                        checkNotNull(intent.data)
+                        intent.data.let {
+                            filesToUpload.add(intent.data.toString())
+                        }
+                    }
+                    require(filesToUpload.isNotEmpty())
+
+                    if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                        uploadFiles(filesToUpload, false)
+                    } else {
+                        UploadAndShareFilesWorker.requestStoragePermission(this)
+                    }
                 } catch (e: IllegalStateException) {
                     Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
@@ -2542,6 +2571,10 @@ class ChatController(args: Bundle) :
         }
     }
 
+    fun sendPictureFromCamIntent() {
+        startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
+    }
+
     companion object {
         private const val TAG = "ChatController"
         private const val CONTENT_TYPE_SYSTEM_MESSAGE: Byte = 1
@@ -2556,6 +2589,7 @@ class ChatController(args: Bundle) :
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
+        private const val REQUEST_CODE_PICK_CAMERA: Int = 333
         private const val OBJECT_MESSAGE: String = "{object}"
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
