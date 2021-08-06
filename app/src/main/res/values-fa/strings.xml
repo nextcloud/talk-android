@@ -188,7 +188,7 @@
     <string name="nc_settings_vibrate">لرزش</string>
     <string name="nc_settings_vibrate_desc">تلفن لرزش خواهد کرد مگر اینکه در حالت سکوت باشد</string>
     <string name="nc_settings_wrong_account">فقط حساب کاربری فعلی قابل گرفتن مجوز مجدد است</string>
-    <string name="nc_share_link">Share link</string>
+    <string name="nc_share_link">لینک را به اشتراک بگذارید</string>
     <string name="nc_share_link_via">اشتراک گذاری پیوند از طریق</string>
     <string name="nc_share_subject">دعوت %1$s</string>
     <string name="nc_share_text">به مکالمه %1$s/index.php/call/%2$s ملحق شوید</string>

@@ -52,7 +52,11 @@
     <string name="nc_certificate_error">Sa cunfiguratzione SSL at refudadu sa connessione</string>
     <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
     <string name="nc_change_password">Càmbia crae</string>
+    <string name="nc_circle">Giru</string>
     <string name="nc_circles">Giros</string>
+    <string name="nc_clear_history">Cantzella totu is messàgios</string>
+    <string name="nc_clear_history_success">Cantzellados totu is messàgios</string>
+    <string name="nc_clear_history_warning">A beru boles cantzellare totu is messàgios in custa resonada?</string>
     <string name="nc_clear_password">Isbòida crae</string>
     <string name="nc_client_cert_change">Càmbia tzertificadu cliente</string>
     <string name="nc_client_cert_setup">Imposta tzertificadu cliente</string>
@@ -73,6 +77,7 @@
     <string name="nc_date_header_today">Oe</string>
     <string name="nc_date_header_yesterday">Eris</string>
     <string name="nc_delete">Cantzella</string>
+    <string name="nc_delete_all">Cantzella totu</string>
     <string name="nc_delete_call">Cantzella resonada</string>
     <string name="nc_delete_conversation_default">Cunfirma s\'intentzione tua de nde bogare sa resonada.</string>
     <string name="nc_delete_conversation_more">Si cantzellas sa resonada, s\'at a cantzellare puru pro su restu de partetzipantes.</string>
@@ -83,6 +88,7 @@
     <string name="nc_description_more_menu_group">Menu pro resonada pùblica %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Menu pro tzarrada cun%1$s</string>
     <string name="nc_description_more_menu_public">Menu pro resonada de grupu %1$s</string>
+    <string name="nc_description_record_voice">Registra messàgiu de boghe</string>
     <string name="nc_description_send_message_button">Imbia messàgiu</string>
     <string name="nc_dialog_invalid_password">Crae non bàlida</string>
     <string name="nc_dialog_reauth_or_delete">Boles torrare a autorizare o cantzellare custu contu?</string>
@@ -102,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Non tenes su permissu de torrare a cumpartzire custu archìviu</string>
     <string name="nc_following_link">Utente chi sighit unu ligòngiu pùblicu</string>
     <string name="nc_formatted_message_you">Tue: %1$s</string>
+    <string name="nc_forward_message">Torra a imbiare</string>
+    <string name="nc_forward_to_three_dots">Torra a imbiare a ...</string>
     <string name="nc_general_settings">Generale</string>
     <string name="nc_get_from_provider">Non tenes ancora unu serbidore?\nIncarca inoghe pro dd\'otènnere dae unu frunidore.</string>
     <string name="nc_get_source_code">Otene su còdighe fonte</string>
@@ -128,6 +136,7 @@
     <string name="nc_lobby_waiting_with_date">Immoe ses abetende in s\'intrada.\n Custa riunione est programmada pro %1$s.</string>
     <string name="nc_location_current_position_description">Sa positzione tua atuale</string>
     <string name="nc_location_permission_required">su permissu de positzione est rechertu</string>
+    <string name="nc_location_unknown">Positzione disconnota</string>
     <string name="nc_locked">Blocadu</string>
     <string name="nc_locked_tap_to_unlock">Toca pro isblocare</string>
     <string name="nc_make_call_private">Faghe privada sa resonada</string>
@@ -181,6 +190,7 @@
     <string name="nc_push_to_talk">Cumandu de trasmissione</string>
     <string name="nc_push_to_talk_desc">Cun su micròfonu disativadu, mantene incarcadu&amp;pro impreare su cumandu de trasmissione</string>
     <string name="nc_remote_audio_off">Àudiu remotu istudadu </string>
+    <string name="nc_remove_circle_and_members">Boga·nche giru e partetzipantes</string>
     <string name="nc_remove_from_favorites">Boga dae preferidos</string>
     <string name="nc_remove_group_and_members">Boga·nche grupu e partetzipantes</string>
     <string name="nc_remove_participant"> Boga·nche partetzipante</string>
@@ -214,6 +224,8 @@
     <string name="nc_sent_an_image_you">As imbiadu un\'immàgine.</string>
     <string name="nc_sent_location" formatted="true">%1$s at imbiadu una positzione.</string>
     <string name="nc_sent_location_you">As imbiadu una positzione.</string>
+    <string name="nc_sent_voice" formatted="true">%1$sat imbiadu unu messàgiu de boghe</string>
+    <string name="nc_sent_voice_you">As imbiadu unu messàgiu de boghe.</string>
     <string name="nc_server_connect">Proa sa connessione de su serbidore</string>
     <string name="nc_server_db_upgrade_needed">Agiorna %1$s sa base de datos tua</string>
     <string name="nc_server_failed_to_import_account">No at fatu a importare su contu seletzionadu</string>
@@ -290,6 +302,7 @@
     <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nCrae: %1$s</string>
     <string name="nc_share_this_location">Cumpartzi custa positzione</string>
+    <string name="nc_shared_location">Positzione cumpartzida</string>
     <string name="nc_start_conversation">Cumintza una tzarrada</string>
     <string name="nc_start_time">Ora de cumintzu</string>
     <string name="nc_timeout_error">Agabbadu su tempus</string>
@@ -303,6 +316,10 @@
     <string name="nc_upload_local_file">Càrriga archìviu locale</string>
     <string name="nc_user">Utente</string>
     <string name="nc_username">Nùmene utente</string>
+    <string name="nc_voice_message_filename">Registratzione Talk dae %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Podera pro registrare, lassa pro imbiare.</string>
+    <string name="nc_voice_message_missing_audio_permission">Permissu pro registratziones àudio rechertu</string>
+    <string name="nc_voice_message_slide_to_cancel">« Iscurre pro annullare</string>
     <string name="nc_webinar">Seminàriu in lìnia</string>
     <string name="nc_wrong_link">Ligòngiu de tzarrada non vàlidu</string>
     <string name="nc_wrong_password">Crae isballiada</string>
@@ -310,6 +327,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>
     <string name="open_in_files_app">Aberi in s\'aplicatzione de is archìvios</string>
     <string name="password_protected">Crae bardiada</string>
+    <string name="play_pause_voice_message">Riprodue/pausa messàgiu de boghe</string>
     <string name="read_storage_no_permission">Non faghet a cumpartzire archìvios dae s\'archiviatzione chene permissos</string>
     <string name="save">Sarva</string>
     <string name="scope_federated_description">Sincroniza cun serbidores seguros ebbia</string>
