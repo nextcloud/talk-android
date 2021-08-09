@@ -85,8 +85,8 @@
                     android:textColor="@color/fontSecondaryAppbar"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/menu_button"
-                    app:layout_constraintRight_toLeftOf="@id/rightContainer"
+                    app:layout_constraintStart_toEndOf="@id/menu_button"
+                    app:layout_constraintEnd_toStartOf="@id/rightContainer"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Search in Nextcloud" />
 
