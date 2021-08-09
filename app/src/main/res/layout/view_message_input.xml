@@ -31,7 +31,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="4dp">
+        android:layout_marginEnd="4dp"
+        android:layoutDirection="ltr">
 
         <include layout="@layout/item_message_quote"
             android:layout_width="match_parent"
@@ -66,7 +67,7 @@
 
         <androidx.emoji.widget.EmojiEditText
             android:id="@id/messageInput"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/quotedChatMessageView"
             android:layout_centerHorizontal="true"
@@ -77,6 +78,7 @@
             android:lineSpacingMultiplier="1.2"
             android:minHeight="48dp"
             android:textAlignment="viewStart"
+            android:layoutDirection="locale"
             tools:hint="@string/nc_hint_enter_a_message" />
 
         <TextView
