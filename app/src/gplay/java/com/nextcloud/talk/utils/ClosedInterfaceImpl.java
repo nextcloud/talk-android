@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.utils;
+package com.moyn.talk.utils;
 
 
 import android.content.Intent;
@@ -27,8 +27,8 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.security.ProviderInstaller.ProviderInstallListener;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.interfaces.ClosedInterface;
+import com.moyn.talk.application.NextcloudTalkApplication;
+import com.moyn.talk.interfaces.ClosedInterface;
 
 public class ClosedInterfaceImpl implements ClosedInterface, ProviderInstallListener {
     @Override

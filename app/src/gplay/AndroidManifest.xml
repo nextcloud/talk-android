@@ -20,7 +20,7 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
-          package="com.nextcloud.talk">
+          package="com.moyn.talk">
 
     <application
         android:name=".application.NextcloudTalkApplication"
