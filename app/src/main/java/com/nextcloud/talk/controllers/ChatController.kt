@@ -2398,7 +2398,7 @@ class ChatController(args: Bundle) :
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
             true
         } else {
-            currentConversation!!.isParticipantOwnerOrModerator
+            currentConversation!!.canModerate(conversationUser)
         }
         if (!isUserAllowedByPrivileges) return false
 
