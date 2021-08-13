@@ -54,7 +54,7 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 120020090
+        versionCode 120020091
         versionName "12.2.0"
 
         flavorDimensions "default"
