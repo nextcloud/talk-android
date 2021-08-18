@@ -54,6 +54,9 @@
     <string name="nc_change_password">Changer de mot de passe</string>
     <string name="nc_circle">Cercle</string>
     <string name="nc_circles">Cercles</string>
+    <string name="nc_clear_history">Supprimer tous les messages</string>
+    <string name="nc_clear_history_success">Tous les messages vont être supprimés</string>
+    <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
     <string name="nc_clear_password">Effacer le mot de passe</string>
     <string name="nc_client_cert_change">Modifier le certificat du client</string>
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_delete">Supprimer</string>
+    <string name="nc_delete_all">Supprimer tout</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
     <string name="nc_delete_conversation_default">Veuillez confirmer votre volonté de supprimer la conversation.</string>
     <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Vous n\'êtes pas autorisé à repartager  ce fichier</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
     <string name="nc_formatted_message_you">Vous : %1$s</string>
+    <string name="nc_forward_message">Faire suivre</string>
+    <string name="nc_forward_to_three_dots">Faire suivre à...</string>
     <string name="nc_general_settings">Général</string>
     <string name="nc_get_from_provider">Vous n\'avez pas encore de serveur?\nCliquez-ici pour en obtenir un chez un fournisseur d\'accès.</string>
     <string name="nc_get_source_code">Obtenir le code source</string>
