@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ProfileController
@@ -67,5 +68,12 @@ class ScopeDialog(
             userInfoAdapter.updateScope(position, Scope.PUBLISHED)
             dismiss()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 }
