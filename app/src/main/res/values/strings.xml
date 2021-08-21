@@ -462,4 +462,5 @@
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_switch_camera">Switch camera</string>
     <string name="take_photo_toggle_torch">Toggle torch</string>
+    <string name="take_photo_error_deleting_picture">Error taking picture</string>
 </resources>

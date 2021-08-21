@@ -33,6 +33,7 @@ import android.view.Surface;
 import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ActivityTakePictureBinding;
 import com.nextcloud.talk.models.TakePictureViewModel;
 import com.nextcloud.talk.utils.FileUtils;
@@ -64,7 +65,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     private OrientationEventListener orientationEventListener;
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ROOT);
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ROOT);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,17 +82,34 @@ public class TakePhotoActivity extends AppCompatActivity {
                 final ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
                 final Preview preview = getPreview();
                 final ImageCapture imageCapture = getImageCapture();
-                final Camera camera = cameraProvider.bindToLifecycle(this, viewModel.getCameraSelector(), imageCapture, preview);
+                final Camera camera = cameraProvider.bindToLifecycle(
+                    this,
+                    viewModel.getCameraSelector(),
+                    imageCapture,
+                    preview);
 
-                viewModel.getCameraSelectorToggleButtonImageResource().observe(this, res -> binding.switchCamera.setImageDrawable(ContextCompat.getDrawable(this, res)));
-                viewModel.getTorchToggleButtonImageResource().observe(this, res -> binding.toggleTorch.setImageDrawable(ContextCompat.getDrawable(this, res)));
-                viewModel.isTorchEnabled().observe(this, enabled -> camera.getCameraControl().enableTorch(enabled));
+                viewModel.getCameraSelectorToggleButtonImageResource()
+                    .observe(
+                        this,
+                        res -> binding.switchCamera.setImageDrawable(ContextCompat.getDrawable(this, res)));
+                viewModel.getTorchToggleButtonImageResource()
+                    .observe(
+                        this,
+                        res -> binding.toggleTorch.setImageDrawable(ContextCompat.getDrawable(this, res)));
+                viewModel.isTorchEnabled()
+                    .observe(
+                        this,
+                             enabled -> camera.getCameraControl().enableTorch(enabled));
 
                 binding.toggleTorch.setOnClickListener((v) -> viewModel.toggleTorchEnabled());
                 binding.switchCamera.setOnClickListener((v) -> {
                     viewModel.toggleCameraSelector();
                     cameraProvider.unbindAll();
-                    cameraProvider.bindToLifecycle(this, viewModel.getCameraSelector(), imageCapture, preview);
+                    cameraProvider.bindToLifecycle(
+                        this,
+                        viewModel.getCameraSelector(),
+                        imageCapture,
+                        preview);
                 });
             } catch (IllegalArgumentException | ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error taking picture", e);
@@ -130,12 +148,17 @@ public class TakePhotoActivity extends AppCompatActivity {
             final String photoFileName = dateFormat.format(new Date())+ ".jpg";
             try {
                 final File photoFile = FileUtils.getTempCacheFile(this, "photos/" + photoFileName);
-                final ImageCapture.OutputFileOptions options = new ImageCapture.OutputFileOptions.Builder(photoFile).build();
-                imageCapture.takePicture(options, ContextCompat.getMainExecutor(this), new ImageCapture.OnImageSavedCallback() {
+                final ImageCapture.OutputFileOptions options =
+                    new ImageCapture.OutputFileOptions.Builder(photoFile).build();
+                imageCapture.takePicture(
+                    options,
+                    ContextCompat.getMainExecutor(this),
+                    new ImageCapture.OnImageSavedCallback() {
+
                     @Override
                     public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
                         final Uri savedUri = Uri.fromFile(photoFile);
-                        Log.i(TAG, "onImageSaved - savedUri:" + savedUri.toString());
+                        Log.i(TAG, "onImageSaved - savedUri:" + savedUri);
                         setResult(RESULT_OK, new Intent().setDataAndType(savedUri, "image/jpeg"));
                         finish();
                     }
@@ -143,14 +166,15 @@ public class TakePhotoActivity extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull ImageCaptureException e) {
                         Log.e(TAG, "Error", e);
-                        //noinspection ResultOfMethodCallIgnored
-                        photoFile.delete();
+
+                        if(!photoFile.delete()) {
+                            Log.w(TAG, "Deleting picture failed");
+                        }
                         binding.takePhoto.setEnabled(true);
                     }
                 });
             } catch (Exception e) {
-                // TODO replace string with placeholder
-                Toast.makeText(this, "Error taking picture", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.take_photo_error_deleting_picture, Toast.LENGTH_SHORT).show();
             }
         });
 

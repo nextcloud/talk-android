@@ -39,7 +39,8 @@ public class TakePictureViewModel extends ViewModel {
     @NonNull
     private CameraSelector cameraSelector = DEFAULT_BACK_CAMERA;
     @NonNull
-    private final MutableLiveData<Integer> cameraSelectorToggleButtonImageResource = new MutableLiveData<>(R.drawable.ic_baseline_camera_front_24);
+    private final MutableLiveData<Integer> cameraSelectorToggleButtonImageResource =
+        new MutableLiveData<>(R.drawable.ic_baseline_camera_front_24);
     @NonNull
     private final MutableLiveData<Boolean> torchEnabled = new MutableLiveData<>(false);
 
@@ -77,4 +78,3 @@ public class TakePictureViewModel extends ViewModel {
             : R.drawable.ic_baseline_flash_on_24);
     }
 }
-
