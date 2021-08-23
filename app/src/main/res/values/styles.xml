@@ -55,18 +55,6 @@
         <item name="android:navigationBarColor">@color/grey950</item>
     </style>
 
-    <style name="TransparentTheme" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/background_dark</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="TakePhotoTheme" parent="TransparentTheme">
-        <item name="android:windowFullscreen">true</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-
     <style name="ErrorAppearance" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/nc_darkRed</item>
         <item name="android:textSize">12sp</item>

@@ -142,11 +142,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize">
         </activity>
 
-        <activity
-            android:name=".activities.TakePhotoActivity"
-            android:theme="@style/TakePhotoTheme"
-            android:windowSoftInputMode="stateHidden" />
-
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
