@@ -21,21 +21,14 @@
 package com.nextcloud.talk.controllers.bottomsheet;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.Data;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-import autodagger.AutoInjector;
-import butterknife.BindView;
+
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.kennyc.bottomsheet.adapters.AppAdapter;
@@ -55,16 +48,29 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.ShareUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
-import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcel;
 import org.parceler.Parcels;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import autodagger.AutoInjector;
+import butterknife.BindView;
+import eu.davidea.flexibleadapter.FlexibleAdapter;
+import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallMenuController extends BaseController implements FlexibleAdapter.OnItemClickListener {
@@ -76,6 +82,9 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
 
     @Inject
     UserUtils userUtils;
+
+    @Inject
+    Context context;
 
     private Conversation conversation;
     private List<AbstractFlexibleItem> menuItems;
@@ -104,6 +113,7 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
     }
 
     @Override
+    @NonNull
     protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
         return inflater.inflate(R.layout.controller_call_menu, container, false);
     }
@@ -153,44 +163,56 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             if (conversation.isFavorite()) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
             } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "favorites")) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites)
-                        , 98, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_black_24dp, R.color.grey_600)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites),
+                                           98,
+                                           DisplayUtils.getTintedDrawable(getResources(),
+                                                                          R.drawable.ic_star_black_24dp,
+                                                                          R.color.grey_600)));
             }
 
             if (conversation.isNameEditable(currentUser)) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename), 2, getResources().getDrawable(R.drawable
-                        .ic_pencil_grey600_24dp)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename),
+                                           2,
+                                           ContextCompat.getDrawable(context,
+                                                                     R.drawable.ic_pencil_grey600_24dp)));
             }
 
             if (conversation.canModerate(currentUser)) {
                 if (!conversation.isPublic()) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public), 3, getResources().getDrawable(R.drawable
-                            .ic_link_grey600_24px)));
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public),
+                                               3, ContextCompat.getDrawable(context,
+                                                                            R.drawable.ic_link_grey600_24px)));
                 } else {
                     if (conversation.isHasPassword()) {
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password), 4, getResources().getDrawable(R.drawable
-                                .ic_lock_grey600_24px)));
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password), 5, getResources().getDrawable(R.drawable
-                                .ic_lock_open_grey600_24dp)));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password),
+                                                   4, ContextCompat.getDrawable(context,
+                                                                                R.drawable.ic_lock_grey600_24px)));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password),
+                                                   5,
+                                                   ContextCompat.getDrawable(context,
+                                                                             R.drawable.ic_lock_open_grey600_24dp)));
                     } else {
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password), 6, getResources().getDrawable(R.drawable
-                                .ic_lock_plus_grey600_24dp)));
+                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password),
+                                                   6, ContextCompat.getDrawable(context,
+                                                                                R.drawable.ic_lock_plus_grey600_24dp)));
                     }
                 }
 
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call), 9, getResources().getDrawable(R.drawable
-                        .ic_delete_grey600_24dp)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call),
+                                           9, ContextCompat.getDrawable(context,
+                                                                        R.drawable.ic_delete_grey600_24dp)));
             }
 
             if (conversation.isPublic()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link), 7, getResources().getDrawable(R.drawable
-                        .ic_link_grey600_24px)));
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link),
+                                           7, ContextCompat.getDrawable(context,
+                                                                        R.drawable.ic_link_grey600_24px)));
                 if (conversation.canModerate(currentUser)) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private), 8, getResources().getDrawable(R.drawable
-                            .ic_group_grey600_24px)));
+                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private),
+                                               8, ContextCompat.getDrawable(context,
+                                                                            R.drawable.ic_group_grey600_24px)));
                 }
             }
-
 
             if (conversation.canLeave(currentUser)) {
                 menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1,
@@ -202,8 +224,10 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             prepareIntent();
             List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
                     null);
-            menuItems.add(new AppItem(getResources().getString(R.string.nc_share_link_via), "", "",
-                    getResources().getDrawable(R.drawable.ic_link_grey600_24px)));
+            menuItems.add(new AppItem(getResources().getString(R.string.nc_share_link_via),
+                                      "",
+                                      "",
+                                      ContextCompat.getDrawable(context, R.drawable.ic_link_grey600_24px)));
             if (appInfoList != null) {
                 for (AppAdapter.AppInfo appInfo : appInfoList) {
                     menuItems.add(new AppItem(appInfo.title, appInfo.packageName, appInfo.name, appInfo.drawable));
@@ -211,8 +235,12 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
             }
         } else {
             menuItems.add(new MenuItem(getResources().getString(R.string.nc_start_conversation), 0, null));
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_new_conversation), 1, getResources().getDrawable(R.drawable.ic_add_grey600_24px)));
-            menuItems.add(new MenuItem(getResources().getString(R.string.nc_join_via_link), 2, getResources().getDrawable(R.drawable.ic_link_grey600_24px)));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_new_conversation),
+                                       1, ContextCompat.getDrawable(context,
+                                                                    R.drawable.ic_add_grey600_24px)));
+            menuItems.add(new MenuItem(getResources().getString(R.string.nc_join_via_link),
+                                       2, ContextCompat.getDrawable(context,
+                                                                    R.drawable.ic_link_grey600_24px)));
         }
     }
 
