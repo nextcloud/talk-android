@@ -54,10 +54,6 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
     @JvmField
     var attachFromCloud: AppCompatTextView? = null
 
-    @BindView(R.id.menu_attach_picture_from_cam)
-    @JvmField
-    var pictureFromCamItem: LinearLayout? = null
-
     private var unbinder: Unbinder? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,12 +88,6 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             chatController.sendSelectLocalFileIntent()
             dismiss()
         }
-
-        pictureFromCamItem?.setOnClickListener {
-            chatController.sendPictureFromCamIntent()
-            dismiss()
-        }
-
         attachFromCloud?.setOnClickListener {
             chatController.showBrowserScreen(BrowserController.BrowserType.DAV_BROWSER)
             dismiss()

@@ -60,7 +60,7 @@ import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPeerConnectionWrapper {
-    private static final String TAG = "MagicPeerConWrapper";
+    private static String TAG = "MagicPeerConnectionWrapper";
 
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
@@ -129,6 +129,7 @@ public class MagicPeerConnectionWrapper {
                     EventBus.getDefault().post(new WebSocketCommunicationEvent("peerReadyForRequestingOffer", hashMap));
                 } else if (!hasMCU && hasInitiated) {
                     peerConnection.createOffer(magicSdpObserver, sdpConstraints);
+
                 }
             }
         }
@@ -177,6 +178,7 @@ public class MagicPeerConnectionWrapper {
         }
     }
 
+
     public void sendNickChannelData(DataChannelMessageNick dataChannelMessage) {
         ByteBuffer buffer;
         if (magicDataChannel != null) {
@@ -184,7 +186,7 @@ public class MagicPeerConnectionWrapper {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 magicDataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
-                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
+                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage.toString());
             }
         }
     }
@@ -196,7 +198,7 @@ public class MagicPeerConnectionWrapper {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 magicDataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
-                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
+                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage.toString());
             }
         }
     }

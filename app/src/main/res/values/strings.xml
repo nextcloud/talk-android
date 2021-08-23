@@ -374,7 +374,6 @@
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
     <string name="nc_upload_local_file">Upload local file</string>
-    <string name="nc_upload_picture_from_cam">Upload from camera</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
@@ -458,9 +457,4 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
-
-    <string name="take_photo">Take a photo</string>
-    <string name="take_photo_switch_camera">Switch camera</string>
-    <string name="take_photo_toggle_torch">Toggle torch</string>
-    <string name="take_photo_error_deleting_picture">Error taking picture</string>
 </resources>
