@@ -196,7 +196,7 @@
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
     <string name="nc_rename">Görüşmeyi yeniden adlandır</string>
     <string name="nc_reply">Yanıtla</string>
-    <string name="nc_reply_privately">Özel yanıt gönder</string>
+    <string name="nc_reply_privately">Kişisel yanıt gönder</string>
     <string name="nc_screen_lock_timeout_30">30 saniye</string>
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
     <string name="nc_screen_lock_timeout_60">1 dakika</string>

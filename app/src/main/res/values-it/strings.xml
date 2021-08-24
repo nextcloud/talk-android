@@ -54,6 +54,9 @@
     <string name="nc_change_password">Modifica password</string>
     <string name="nc_circle">Cerchia</string>
     <string name="nc_circles">Cerchie</string>
+    <string name="nc_clear_history">Elimina tutti i messaggi</string>
+    <string name="nc_clear_history_success">Tutti i messaggi sono stati eliminati</string>
+    <string name="nc_clear_history_warning">Vuoi davvero eliminare tutti i messaggi in questa conversazione?</string>
     <string name="nc_clear_password">Cancella la password</string>
     <string name="nc_client_cert_change">Cambia certificato client</string>
     <string name="nc_client_cert_setup">Configura certificato client</string>
@@ -74,6 +77,7 @@
     <string name="nc_date_header_today">Oggi</string>
     <string name="nc_date_header_yesterday">Ieri</string>
     <string name="nc_delete">Elimina</string>
+    <string name="nc_delete_all">Elimina tutto</string>
     <string name="nc_delete_call">Elimina conversazione</string>
     <string name="nc_delete_conversation_default">Conferma la tua intenzione di rimuovere la conversazione.</string>
     <string name="nc_delete_conversation_more">Se elimini la conversazione, sarà eliminata anche per tutti i partecipanti.</string>
@@ -104,6 +108,8 @@
     <string name="nc_file_browser_reshare_forbidden">Non ti è consentito ricondividere questo file</string>
     <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
+    <string name="nc_forward_message">Inoltra</string>
+    <string name="nc_forward_to_three_dots">Inoltra a …</string>
     <string name="nc_general_settings">Generale</string>
     <string name="nc_get_from_provider">Non hai ancora un server?\nFai clic qui per ottenerne uno da un fornitore</string>
     <string name="nc_get_source_code">Ottieni codice sorgente</string>
@@ -129,6 +135,8 @@
     <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
     <string name="nc_lobby_waiting_with_date">Stai attualmente aspettando nell\'ingresso.\nQuesta riunione è pianificata per %1$s.</string>
     <string name="nc_location_current_position_description">La tua posizione attuale</string>
+    <string name="nc_location_permission_required">Autorizzazione di geolocalizzazione richiesta</string>
+    <string name="nc_location_unknown">Posizione sconosciuta</string>
     <string name="nc_locked">Bloccato</string>
     <string name="nc_locked_tap_to_unlock">Tocca per sbloccare</string>
     <string name="nc_make_call_private">Rendi privata la conversazione</string>
@@ -182,6 +190,7 @@
     <string name="nc_push_to_talk">Premi per parlare</string>
     <string name="nc_push_to_talk_desc">Con il microfono disabilitato, fai clic e mantieni per utilizzare Premi per parlare</string>
     <string name="nc_remote_audio_off">Audio remoto spento</string>
+    <string name="nc_remove_circle_and_members">Rimuovi cerchia e membri</string>
     <string name="nc_remove_from_favorites">Rimuovi dai preferiti</string>
     <string name="nc_remove_group_and_members">Rimuovi gruppo e membri</string>
     <string name="nc_remove_participant">Rimuovi partecipante</string>
@@ -213,6 +222,10 @@
     <string name="nc_sent_an_audio_you">Hai inviato un audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha inviato un\'immagine.</string>
     <string name="nc_sent_an_image_you">Hai inviato un\'immagine.</string>
+    <string name="nc_sent_location" formatted="true">%1$s ha inviato una posizione.</string>
+    <string name="nc_sent_location_you">Hai inviato una posizione.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s ha inviato un messaggio vocale.</string>
+    <string name="nc_sent_voice_you">Hai inviato un messaggio vocale.</string>
     <string name="nc_server_connect">Prova di connessione al server</string>
     <string name="nc_server_db_upgrade_needed">Aggiorna il tuo database %1$s</string>
     <string name="nc_server_failed_to_import_account">Importazione dell\'account selezionato non riuscita</string>
@@ -303,6 +316,10 @@
     <string name="nc_upload_local_file">Carica file locale</string>
     <string name="nc_user">Utente</string>
     <string name="nc_username">Nome utente</string>
+    <string name="nc_voice_message_filename">Registrazione Talk da %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Tieni premuto per registrare, rilascia per inviare.</string>
+    <string name="nc_voice_message_missing_audio_permission">Autorizzazione di registrazione audio richiesta</string>
+    <string name="nc_voice_message_slide_to_cancel">« Scorri per annullare</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">Il collegamento della conversazione non è valido</string>
     <string name="nc_wrong_password">Password errata</string>
@@ -310,6 +327,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
     <string name="open_in_files_app">Apri nell\'applicazione File</string>
     <string name="password_protected">Protetto da password</string>
+    <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="save">Salva</string>
     <string name="scope_federated_description">Sincronizza solo con server fidati</string>
