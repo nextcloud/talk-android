@@ -47,6 +47,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
@@ -168,8 +169,8 @@ class ConversationsListController(bundle: Bundle) :
     private var currentUser: User? = null
     private var roomsQueryDisposable: Disposable? = null
     private var openConversationsQueryDisposable: Disposable? = null
-    private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
-    private var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    @VisibleForTesting var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
+    @VisibleForTesting var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private val searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchItem: MenuItem? = null

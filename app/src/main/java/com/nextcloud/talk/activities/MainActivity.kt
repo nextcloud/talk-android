@@ -75,7 +75,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     @Inject
     lateinit var userManager: UserManager
 
-    private var router: Router? = null
+    public var router: Router? = null
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -169,6 +169,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             RouterTransaction.with(ConversationsListController(Bundle()))
                 .pushChangeHandler(HorizontalChangeHandler())
                 .popChangeHandler(HorizontalChangeHandler())
+                .tag("ConversationListController")
         )
     }
 
