@@ -22,6 +22,7 @@
 
 package com.nextcloud.talk.activities
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
@@ -82,6 +83,7 @@ class MagicCallActivity : BaseActivity() {
                     RouterTransaction.with(CallController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
+                        .tag("callController")
                 )
             }
         }
@@ -114,6 +116,13 @@ class MagicCallActivity : BaseActivity() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         eventBus.post(ConfigurationChangeEvent())
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode != CallController.CAPTURE_PERMISSION_REQUEST_CODE) return
+        val callController : CallController = router!!.getControllerWithTag("callController") as CallController
+        callController.initScreenShare(resultCode, data);
     }
 
     companion object {
