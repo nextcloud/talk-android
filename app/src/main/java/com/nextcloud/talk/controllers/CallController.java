@@ -24,10 +24,15 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,6 +53,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -120,6 +126,7 @@ import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RendererCommon;
+import org.webrtc.ScreenCapturerAndroid;
 import org.webrtc.SessionDescription;
 import org.webrtc.SurfaceTextureHelper;
 import org.webrtc.SurfaceViewRenderer;
@@ -175,6 +182,7 @@ public class CallController extends BaseController {
     private static final String[] PERMISSIONS_MICROPHONE = {
             Manifest.permission.RECORD_AUDIO
     };
+    public static final int CAPTURE_PERMISSION_REQUEST_CODE = 1;
 
     @BindView(R.id.callControlEnableSpeaker)
     SimpleDraweeView callControlEnableSpeaker;
@@ -194,6 +202,8 @@ public class CallController extends BaseController {
     SimpleDraweeView cameraControlButton;
     @BindView(R.id.call_control_switch_camera)
     SimpleDraweeView cameraSwitchButton;
+    @BindView(R.id.callControlShareScreen)
+    SimpleDraweeView callControlShareScreen;
     @BindView(R.id.callStateTextView)
     TextView callStateTextView;
 
@@ -429,7 +439,9 @@ public class CallController extends BaseController {
         sdpConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
 
         if (!isVoiceOnlyCall) {
-            cameraInitialization();
+            checkPermissions();
+            // TODO change back to cameraInitialization (just changed this for androidScreensharing Proof of concept)
+//            cameraInitialization();
         }
 
         microphoneInitialization();
@@ -471,7 +483,6 @@ public class CallController extends BaseController {
                     }
                 });
     }
-
 
     @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
@@ -573,16 +584,22 @@ public class CallController extends BaseController {
 
 
     private void checkPermissions() {
-        if (isVoiceOnlyCall) {
-            onMicrophoneClick();
-        } else if (getActivity() != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(PERMISSIONS_CALL, 100);
-            } else {
-                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1, 1});
-            }
-        }
+        // TODO revert (just changed this for androidScreensharing Proof of concept)
+//        if (isVoiceOnlyCall) {
+//            onMicrophoneClick();
+//        } else if (getActivity() != null) {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                requestPermissions(PERMISSIONS_CALL, 100);
+//            } else {
+//                onRequestPermissionsResult(100, PERMISSIONS_CALL, new int[]{1, 1});
+//            }
+//        }
 
+            MediaProjectionManager mediaProjectionManager =
+                (MediaProjectionManager) getApplicationContext().getSystemService(
+                    Context.MEDIA_PROJECTION_SERVICE);
+            getActivity().startActivityForResult(
+                mediaProjectionManager.createScreenCaptureIntent(), CAPTURE_PERMISSION_REQUEST_CODE);
     }
 
     private boolean isConnectionEstablished() {
@@ -704,6 +721,27 @@ public class CallController extends BaseController {
         localVideoTrack.addSink(pipVideoView);
     }
 
+    public void initScreenShare(int resultCode, Intent intent){
+        videoCapturer = createScreenCapturer(resultCode, intent);
+
+        if (videoCapturer != null) {
+            SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", rootEglBase.getEglBaseContext());
+            videoSource = peerConnectionFactory.createVideoSource(true);
+            videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
+        }
+
+        localVideoTrack = peerConnectionFactory.createVideoTrack("ARDAMSv0", videoSource);
+        localMediaStream.addTrack(localVideoTrack);
+        localVideoTrack.setEnabled(true);
+        localVideoTrack.addSink(pipVideoView);
+
+        videoCapturer.startCapture(1000, 1000, 10);
+
+        if (!isConnectionEstablished()) {
+            fetchSignalingSettings();
+        }
+    }
+
     private void microphoneInitialization() {
         //create an AudioSource instance
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
@@ -745,6 +783,20 @@ public class CallController extends BaseController {
 
         return null;
     }
+
+    private VideoCapturer createScreenCapturer(int resultCode, Intent intent) {
+        if (resultCode != Activity.RESULT_OK) {
+            Log.d("","User didn't give permission to capture the screen.");
+            return null;
+        }
+        return new ScreenCapturerAndroid(intent, new MediaProjection.Callback() {
+            @Override
+            public void onStop() {
+                Log.d("","User revoked permission to capture the screen.");
+            }
+        });
+    }
+
 
     @OnLongClick(R.id.call_control_microphone)
     boolean onMicrophoneLongClick() {
@@ -881,6 +933,11 @@ public class CallController extends BaseController {
             }
         }
 
+    }
+
+    @OnClick(R.id.callControlShareScreen)
+    public void onCallControlShareScreenClick() {
+        Toast.makeText(getApplicationContext(), "not yet implemented", Toast.LENGTH_LONG).show();
     }
 
     @OnClick({R.id.call_control_switch_camera})
@@ -1380,7 +1437,8 @@ public class CallController extends BaseController {
 
     private void initiateCall() {
         if (!TextUtils.isEmpty(roomToken)) {
-            checkPermissions();
+            // TODO revert (just changed this for androidScreensharing Proof of concept)
+//            checkPermissions();
         } else {
             handleFromNotification();
         }
