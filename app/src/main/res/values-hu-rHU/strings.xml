@@ -27,6 +27,7 @@
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_allow_guests">Vendégek engedélyezése</string>
+    <string name="nc_attendee_pin">Kitűző: %1$s</string>
     <string name="nc_bad_response_error">Hibás válasz</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
