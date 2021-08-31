@@ -24,6 +24,8 @@
 
 package third_parties.daveKoeller;
 
+import com.nextcloud.talk.components.filebrowser.adapters.items.BrowserFileItem;
+
 import java.io.File;
 import java.io.Serializable;
 import java.math.BigInteger;
@@ -85,9 +87,9 @@ public class AlphanumComparator<T> implements Comparator<T>, Serializable {
         return chunk.toString();
     }
 
-    public int compare(File f1, File f2) {
-        String s1 = f1.getPath();
-        String s2 = f2.getPath();
+    public int compare(BrowserFileItem f1, BrowserFileItem f2) {
+        String s1 = f1.getModel().path;
+        String s2 = f2.getModel().path;
 
         return compare(s1, s2);
     }
