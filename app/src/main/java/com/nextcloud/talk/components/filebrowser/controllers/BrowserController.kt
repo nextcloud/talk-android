@@ -30,6 +30,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
@@ -73,6 +74,7 @@ abstract class BrowserController(args: Bundle) :
     ),
     ListingInterface,
     FlexibleAdapter.OnItemClickListener,
+    SwipeRefreshLayout.OnRefreshListener,
     SelectionInterface {
 
     private val binding: ControllerBrowserBinding by viewBinding(ControllerBrowserBinding::bind)
@@ -136,7 +138,6 @@ abstract class BrowserController(args: Bundle) :
     override fun onAttach(view: View) {
         super.onAttach(view)
 
-        binding.bottomNavigation.menu.findItem(R.id.action_refresh)?.setOnMenuItemClickListener { refreshCurrentPath() }
         binding.pathNavigation.menu.findItem(R.id.action_back)?.setOnMenuItemClickListener { goBack() }
         binding.sortButton.setOnClickListener { changeSorting() }
 
@@ -144,6 +145,10 @@ abstract class BrowserController(args: Bundle) :
             DisplayUtils.getSortOrderStringId(FileSortOrder.getFileSortOrder(appPreferences?.sorting))
         )
 
+        refreshCurrentPath()
+    }
+
+    override fun onRefresh() {
         refreshCurrentPath()
     }
 
@@ -174,7 +179,6 @@ abstract class BrowserController(args: Bundle) :
 
     @SuppressLint("RestrictedApi")
     private fun changeEnabledStatusForBarItems(shouldBeEnabled: Boolean) {
-        binding.bottomNavigation.menu.findItem(R.id.action_refresh)?.isEnabled = shouldBeEnabled
         binding.pathNavigation.menu.findItem(R.id.action_back)?.isEnabled = shouldBeEnabled && currentPath != "/"
     }
 
@@ -211,6 +215,8 @@ abstract class BrowserController(args: Bundle) :
                 changeEnabledStatusForBarItems(true)
             }
         }
+
+        binding.swipeRefreshList.isRefreshing = false
     }
 
     private fun shouldPathBeSelectedDueToParent(currentPath: String): Boolean {
@@ -270,6 +276,8 @@ abstract class BrowserController(args: Bundle) :
                     return@setBubbleTextCreator ""
                 }
             }
+
+            binding.swipeRefreshList.setOnRefreshListener(this)
         }
     }
 

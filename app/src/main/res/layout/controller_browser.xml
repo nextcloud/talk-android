@@ -82,23 +82,19 @@
         app:itemTextColor="@color/fg_default"
         app:menu="@menu/file_browser_path" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/bottom_navigation"
+        android:layout_height="match_parent"
         android:layout_below="@id/path_navigation"
-        tools:listitem="@layout/rv_item_browser_file" />
+        android:footerDividersEnabled="false">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_navigation"
-        style="@style/BottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="64dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/bg_default"
-        app:itemTextColor="@color/fg_default"
-        app:itemIconTint="@color/fg_default"
-        app:menu="@menu/file_browser_bottom" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/rv_item_browser_file" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>
