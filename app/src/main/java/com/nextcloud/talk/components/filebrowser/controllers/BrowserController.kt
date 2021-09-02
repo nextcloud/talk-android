@@ -55,7 +55,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
-import eu.davidea.flexibleadapter.items.IFlexible
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import okhttp3.OkHttpClient
 import org.parceler.Parcel
@@ -263,19 +262,7 @@ abstract class BrowserController(args: Bundle) :
             binding.recyclerView.layoutManager = layoutManager
             binding.recyclerView.setHasFixedSize(true)
             binding.recyclerView.adapter = adapter
-            adapter!!.fastScroller = binding.fastScrollerContainer.fastScroller
             adapter!!.addListener(this)
-            binding.fastScrollerContainer.fastScroller.setBubbleTextCreator { position: Int ->
-                val abstractFlexibleItem: IFlexible<*> = adapter!!.getItem(position)!!
-                if (abstractFlexibleItem is BrowserFileItem) {
-                    return@setBubbleTextCreator (adapter!!.getItem(position) as BrowserFileItem)
-                        .model
-                        .getDisplayName()[0]
-                        .toString()
-                } else {
-                    return@setBubbleTextCreator ""
-                }
-            }
 
             binding.swipeRefreshList.setOnRefreshListener(this)
         }
