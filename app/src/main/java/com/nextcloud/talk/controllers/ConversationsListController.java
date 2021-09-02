@@ -122,7 +122,6 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import butterknife.BindView;
-import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -133,8 +132,7 @@ import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, FastScroller
-                .OnScrollStateChangeListener, ConversationMenuInterface {
+        FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
 
     public static final String TAG = "ConvListController";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
@@ -166,9 +164,6 @@ public class ConversationsListController extends BaseController implements Searc
 
     @BindView(R.id.emptyLayout)
     RelativeLayout emptyLayoutView;
-
-    @BindView(R.id.fast_scroller)
-    FastScroller fastScroller;
 
     @BindView(R.id.floatingActionButton)
     FloatingActionButton floatingActionButton;
@@ -588,23 +583,6 @@ public class ConversationsListController extends BaseController implements Searc
             showNewConversationsScreen();
         });
 
-        fastScroller.addOnScrollStateChangeListener(this);
-        adapter.setFastScroller(fastScroller);
-
-        fastScroller.setBubbleTextCreator(position -> {
-            String displayName;
-            if (shouldUseLastMessageLayout) {
-                displayName = ((ConversationItem) adapter.getItem(position)).getModel().getDisplayName();
-            } else {
-                displayName = ((CallItem) adapter.getItem(position)).getModel().getDisplayName();
-            }
-
-            if (displayName.length() > 8) {
-                displayName = displayName.substring(0, 4) + "...";
-            }
-            return displayName;
-        });
-
         if (getActivity() != null && getActivity() instanceof MainActivity) {
             MainActivity activity = (MainActivity) getActivity();
 
@@ -753,11 +731,6 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_app_product_name);
-    }
-
-    @Override
-    public void onFastScrollerStateChange(boolean scrolling) {
-        swipeRefreshLayout.setEnabled(!scrolling);
     }
 
     @Override

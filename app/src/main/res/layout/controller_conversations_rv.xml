@@ -122,6 +122,4 @@
         app:srcCompat="@drawable/ic_add_white_24px"
         app:tint="@color/white" />
 
-    <include layout="@layout/fast_scroller" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

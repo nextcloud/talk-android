@@ -62,11 +62,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
-import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import eu.davidea.flexibleadapter.items.IFlexible;
 import okhttp3.OkHttpClient;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -77,8 +75,6 @@ public abstract class BrowserController extends BaseController implements Listin
     UserUtils userUtils;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
-    @BindView(R.id.fast_scroller)
-    FastScroller fastScroller;
     @BindView(R.id.action_back)
     BottomNavigationItemView backMenuItem;
     @BindView(R.id.action_refresh)
@@ -276,18 +272,7 @@ public abstract class BrowserController extends BaseController implements Listin
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adapter);
-
-            adapter.setFastScroller(fastScroller);
             adapter.addListener(this);
-
-            fastScroller.setBubbleTextCreator(position -> {
-                IFlexible abstractFlexibleItem = adapter.getItem(position);
-                if (abstractFlexibleItem instanceof BrowserFileItem) {
-                    return String.valueOf(((BrowserFileItem) adapter.getItem(position)).getModel().getDisplayName().charAt(0));
-                } else {
-                    return "";
-                }
-            });
         }
     }
 

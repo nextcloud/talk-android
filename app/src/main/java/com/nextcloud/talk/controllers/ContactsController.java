@@ -102,7 +102,6 @@ import autodagger.AutoInjector;
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.Optional;
-import eu.davidea.fastscroller.FastScroller;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
@@ -116,7 +115,7 @@ import okhttp3.ResponseBody;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener, FastScroller.OnScrollStateChangeListener {
+        FlexibleAdapter.OnItemClickListener {
 
     public static final String TAG = "ContactsController";
 
@@ -136,9 +135,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @BindView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-
-    @BindView(R.id.fast_scroller)
-    FastScroller fastScroller;
 
     @BindView(R.id.call_header_layout)
     RelativeLayout conversationPrivacyToogleLayout;
@@ -698,19 +694,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
 
-        fastScroller.addOnScrollStateChangeListener(this);
-        adapter.setFastScroller(fastScroller);
-        fastScroller.setBubbleTextCreator(position -> {
-            IFlexible abstractFlexibleItem = adapter.getItem(position);
-            if (abstractFlexibleItem instanceof UserItem) {
-                return ((UserItem) adapter.getItem(position)).getHeader().getModel();
-            } else if (abstractFlexibleItem instanceof GenericTextHeaderItem) {
-                return ((GenericTextHeaderItem) adapter.getItem(position)).getModel();
-            } else {
-                return "";
-            }
-        });
-
         joinConversationViaLinkImageView
                 .getBackground()
                 .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorBackgroundDarker, null),
@@ -819,10 +802,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-    @Override
-    public void onFastScrollerStateChange(boolean scrolling) {
-        swipeRefreshLayout.setEnabled(!scrolling);
-    }
 
 
     private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean showEntrySheet) {
