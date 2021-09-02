@@ -154,7 +154,10 @@ abstract class BrowserController(args: Bundle) :
     fun changeSorting() {
         val newFragment: DialogFragment = SortingOrderDialogFragment
             .newInstance(FileSortOrder.getFileSortOrder(appPreferences?.sorting))
-        newFragment.show((activity as MainActivity?)!!.supportFragmentManager, "SortingOrderDialogFragment")
+        newFragment.show(
+            (activity as MainActivity?)!!.supportFragmentManager,
+            SortingOrderDialogFragment.SORTING_ORDER_FRAGMENT
+        )
     }
 
     public override fun onDestroy() {
