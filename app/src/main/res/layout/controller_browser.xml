@@ -53,11 +53,4 @@
         app:itemIconTint="@color/fg_default"
         app:menu="@menu/file_browser_bottom" />
 
-    <include
-        layout="@layout/fast_scroller"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/recycler_view"
-        android:layout_alignBottom="@id/recycler_view" />
-
 </RelativeLayout>
