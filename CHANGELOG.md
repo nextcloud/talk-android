@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [12.2.1] - 2021-09-02
+- clear chat history (as moderator)
+- forward text messages
+- RTL support
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/45?closed=1
+
 ## [12.1.2] - 2021-07-16
 - Fix to share link from chrome
 - Make links clickable in conversation description
