@@ -322,7 +322,7 @@ abstract class BrowserController(args: Bundle) :
                 }
             } catch (npe: NullPointerException) {
                 // view binding can be null
-                // since this is called asynchrously and UI might have been destroyed in the meantime
+                // since this is called asynchronously and UI might have been destroyed in the meantime
                 Log.i(BrowserController.TAG, "UI destroyed - view binding already gone")
             }
         }
