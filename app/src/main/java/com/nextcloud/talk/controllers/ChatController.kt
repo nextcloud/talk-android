@@ -2170,6 +2170,7 @@ class ChatController(args: Bundle) :
                         val bundle = Bundle()
                         bundle.putBoolean(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
                         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.text)
+                        bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomId)
                         getRouter().pushController(
                             RouterTransaction.with(ConversationsListController(bundle))
                                 .pushChangeHandler(HorizontalChangeHandler())
