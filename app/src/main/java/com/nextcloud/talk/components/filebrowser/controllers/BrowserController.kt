@@ -268,6 +268,8 @@ abstract class BrowserController(args: Bundle) :
             adapter!!.addListener(this)
 
             binding.swipeRefreshList.setOnRefreshListener(this)
+            binding.swipeRefreshList.setColorSchemeResources(R.color.colorPrimary)
+            binding.swipeRefreshList.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
         }
     }
 
