@@ -488,6 +488,12 @@ public class ConversationsListController extends BaseController implements Searc
                     Conversation conversation;
                     for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
                         conversation = roomsOverall.getOcs().getData().get(i);
+
+                        if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()) && conversation.roomId.equals(bundle.getString(
+                            BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()))) {
+                            continue;
+                        }
+
                         if (shouldUseLastMessageLayout) {
                             if (getActivity() != null) {
                                 ConversationItem conversationItem = new ConversationItem(conversation
