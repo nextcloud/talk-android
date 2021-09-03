@@ -255,7 +255,7 @@
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
     <string name="nc_settings_notification_sounds">Dźwięk</string>
     <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
-    <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talka z aplikacją kontaktów systemowych</string>
+    <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talka z aplikacją systemową kontaktów</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić swój numer telefonu, aby inni użytkownicy mogli Ciebie znaleźć</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Numer telefonu ustawiony pomyślnie</string>
@@ -311,7 +311,7 @@
     <string name="nc_upload_confirm_send_multiple">Wysłać te pliki do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Wysłać ten plik do %1$s?</string>
     <string name="nc_upload_failed">Wysyłanie nie powiodło się</string>
-    <string name="nc_upload_from_cloud">Udostępnij z %1$s</string>
+    <string name="nc_upload_from_cloud">Udostępnij z %1$sa</string>
     <string name="nc_upload_in_progess">Wysyłanie</string>
     <string name="nc_upload_local_file">Wyślij plik lokalny</string>
     <string name="nc_user">Użytkownik</string>
