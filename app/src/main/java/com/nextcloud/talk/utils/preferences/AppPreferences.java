@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
  * @author Tim Krüger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
@@ -23,6 +25,7 @@
 package com.nextcloud.talk.utils.preferences;
 
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.utils.FileSortOrder;
 
 import net.orange_box.storebox.annotations.method.ClearMethod;
 import net.orange_box.storebox.annotations.method.DefaultValue;
@@ -315,6 +318,21 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_settings_read_privacy_key)
     @UnregisterChangeListenerMethod
     void unregisterReadPrivacyChangeListener(OnPreferenceValueChangedListener<Boolean> listener);
+
+    @KeyByResource(R.string.nc_file_browser_sort_by_key)
+    void setSorting(String value);
+
+    @KeyByResource(R.string.nc_file_browser_sort_by_key)
+    @DefaultValue(R.string.nc_file_browser_sort_by_default)
+    String getSorting();
+
+    @KeyByResource(R.string.nc_file_browser_sort_by_key)
+    @RegisterChangeListenerMethod
+    void registerSortingChangeListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByResource(R.string.nc_file_browser_sort_by_key)
+    @UnregisterChangeListenerMethod
+    void unregisterSortingChangeListener(OnPreferenceValueChangedListener<String> listener);
 
     @ClearMethod
     void clear();
