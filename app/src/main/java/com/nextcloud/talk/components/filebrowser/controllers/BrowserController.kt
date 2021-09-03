@@ -195,7 +195,6 @@ abstract class BrowserController(args: Bundle) :
     }
 
     override fun listingResult(davResponse: DavResponse) {
-        adapter!!.clear()
         recyclerViewItems = ArrayList()
         if (davResponse.getData() != null) {
             val objectList = davResponse.getData() as List<BrowserFile>
@@ -210,9 +209,10 @@ abstract class BrowserController(args: Bundle) :
 
         FileSortOrder.getFileSortOrder(appPreferences?.sorting).sortCloudFiles(recyclerViewItems)
 
-        adapter!!.addItems(0, recyclerViewItems)
         if (activity != null) {
             activity!!.runOnUiThread {
+                adapter!!.clear()
+                adapter!!.addItems(0, recyclerViewItems)
                 adapter!!.notifyDataSetChanged()
                 changeEnabledStatusForBarItems(true)
             }
@@ -247,7 +247,11 @@ abstract class BrowserController(args: Bundle) :
             selectedPaths.remove(file.parent!! + "/")
             file = File(file.parent!!)
         }
-        adapter!!.notifyDataSetChanged()
+        if (activity != null) {
+            activity!!.runOnUiThread {
+                adapter!!.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onItemClick(view: View, position: Int): Boolean {
