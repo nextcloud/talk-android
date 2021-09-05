@@ -12,6 +12,12 @@
     <string name="file_list_loading">加載中...</string>
     <string name="filename_progress">%1$s（%2$d）</string>
     <string name="lock_symbol">鎖符號</string>
+    <string name="menu_item_sort_by_date_newest_first">最新先</string>
+    <string name="menu_item_sort_by_date_oldest_first">最舊先</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">最大先</string>
+    <string name="menu_item_sort_by_size_smallest_first">最小先</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">所選賬戶現已匯入並可用</string>
     <string name="nc_about">關於</string>
@@ -303,6 +309,7 @@
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享此位置</string>
     <string name="nc_shared_location">分享了的位置</string>
+    <string name="nc_sort_by">排序方式</string>
     <string name="nc_start_conversation">新對話</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_timeout_error">逾時</string>
