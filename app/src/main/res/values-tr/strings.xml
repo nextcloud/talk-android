@@ -12,6 +12,12 @@
     <string name="file_list_loading">Yükleniyor…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Kilit simgesi</string>
+    <string name="menu_item_sort_by_date_newest_first">Yeniden eskiye</string>
+    <string name="menu_item_sort_by_date_oldest_first">Eskiden yeniye</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Büyükten küçüğe</string>
+    <string name="menu_item_sort_by_size_smallest_first">Küçükten büyüğe</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
     <string name="nc_about">Hakkında</string>
@@ -303,6 +309,7 @@
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
+    <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_timeout_error">Zaman aşımı</string>

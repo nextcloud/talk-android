@@ -12,6 +12,12 @@
     <string name="file_list_loading">Načítání…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Uzamknout symbol</string>
+    <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
+    <string name="menu_item_sort_by_date_oldest_first">Nejstarší jako první</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
+    <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Zvolený účet byl importován a je k dispozici</string>
     <string name="nc_about">O aplikaci</string>
@@ -303,6 +309,7 @@
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Sdílet toto umístění</string>
     <string name="nc_shared_location">Sdílené umístění</string>
+    <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_conversation">Začněte konverzaci</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_timeout_error">Časový limit</string>
