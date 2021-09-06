@@ -12,6 +12,12 @@
     <string name="file_list_loading">Ładowanie…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
+    <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
+    <string name="menu_item_sort_by_date_oldest_first">Od najstarszych</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
+    <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Wybrane konto jest teraz zaimportowane i dostępne</string>
     <string name="nc_about">O aplikacji</string>
@@ -303,6 +309,7 @@
     <string name="nc_share_text_pass">\nHasło: %1$s</string>
     <string name="nc_share_this_location">Udostępnij tę lokalizację</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
+    <string name="nc_sort_by">Sortuj według</string>
     <string name="nc_start_conversation">Rozpocznij rozmowę</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_timeout_error">Przekroczono limit czasu</string>
