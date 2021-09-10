@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Andy Scherzinger
@@ -35,53 +34,73 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/toggle_torch"
+        style="@style/Widget.AppTheme.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginEnd="12dp"
+        android:contentDescription="@string/take_photo_toggle_torch"
+        android:insetLeft="4dp"
+        android:insetTop="4dp"
+        android:insetRight="4dp"
+        android:insetBottom="4dp"
+        android:tint="@color/white"
+        app:backgroundTint="#99121212"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:elevation="0dp"
+        app:icon="@drawable/ic_baseline_flash_on_24"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/switchCamera"
+        style="@style/Widget.AppTheme.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="12dp"
+        android:contentDescription="@string/take_photo_switch_camera"
+        android:insetLeft="4dp"
+        android:insetTop="4dp"
+        android:insetRight="4dp"
+        android:insetBottom="4dp"
+        android:padding="0dp"
+        android:tint="@android:color/white"
+        app:backgroundTint="#99121212"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:elevation="0dp"
+        app:icon="@drawable/ic_baseline_camera_front_24"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toStartOf="@+id/toggle_torch"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/takePhoto"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/transparent_black"
-        android:paddingTop="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_double_padding"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/switchCamera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/take_photo_switch_camera"
-            android:tint="@android:color/white"
-            app:backgroundTint="@color/colorPrimary"
-            app:fabSize="mini"
-            app:layout_constraintBottom_toBottomOf="@id/takePhoto"
-            app:layout_constraintEnd_toStartOf="@id/takePhoto"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/takePhoto"
-            tools:srcCompat="@drawable/ic_baseline_camera_front_24" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/takePhoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/take_photo"
-            android:tint="@android:color/white"
-            app:backgroundTint="@color/colorPrimary"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/toggle_torch"
-            app:layout_constraintStart_toEndOf="@id/switchCamera"
-            app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/toggle_torch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/take_photo_toggle_torch"
-            android:tint="@android:color/white"
-            app:backgroundTint="@color/colorPrimary"
-            app:fabSize="mini"
-            app:layout_constraintBottom_toBottomOf="@id/takePhoto"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/takePhoto"
-            app:layout_constraintTop_toTopOf="@id/takePhoto"
-            tools:srcCompat="@drawable/ic_baseline_flash_on_24" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_marginBottom="@dimen/standard_double_margin"
+        android:contentDescription="@string/take_photo"
+        android:tint="@android:color/white"
+        app:backgroundTint="@color/colorPrimary"
+        app:fabCustomSize="72dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -55,7 +55,7 @@
         <item name="elevation">1dp</item>
     </style>
 
-    <style name="TransparentTheme" parent="Theme.AppCompat.NoActionBar">
+    <style name="TransparentTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@android:color/background_dark</item>
         <item name="android:colorBackgroundCacheHint">@null</item>

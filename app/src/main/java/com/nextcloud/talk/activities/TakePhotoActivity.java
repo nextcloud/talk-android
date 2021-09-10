@@ -91,11 +91,11 @@ public class TakePhotoActivity extends AppCompatActivity {
                 viewModel.getCameraSelectorToggleButtonImageResource()
                     .observe(
                         this,
-                        res -> binding.switchCamera.setImageDrawable(ContextCompat.getDrawable(this, res)));
+                        res -> binding.switchCamera.setIcon(ContextCompat.getDrawable(this, res)));
                 viewModel.getTorchToggleButtonImageResource()
                     .observe(
                         this,
-                        res -> binding.toggleTorch.setImageDrawable(ContextCompat.getDrawable(this, res)));
+                        res -> binding.toggleTorch.setIcon(ContextCompat.getDrawable(this, res)));
                 viewModel.isTorchEnabled()
                     .observe(
                         this,
