@@ -37,6 +37,7 @@
     <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_call_state_in_call">%1$s v klicu</string>
     <string name="nc_call_state_in_call_with_audio">%1$s v zvočnem klicu</string>
+    <string name="nc_call_state_with_phone">%1$s v video klicu</string>
     <string name="nc_call_state_with_video">%1$s v video klicu</string>
     <string name="nc_call_timeout">Že 45 sekund ni odziva. Ponovite vzpostavitev povezave.</string>
     <string name="nc_call_unknown">Klic %s</string>
