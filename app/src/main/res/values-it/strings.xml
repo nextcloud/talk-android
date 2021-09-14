@@ -12,6 +12,12 @@
     <string name="file_list_loading">Caricamento...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Simbolo lucchetto</string>
+    <string name="menu_item_sort_by_date_newest_first">Prima i più recenti</string>
+    <string name="menu_item_sort_by_date_oldest_first">Prima i più datati</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Prima i più grandi</string>
+    <string name="menu_item_sort_by_size_smallest_first">Prima i più piccoli</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">L\'account selezionato è ora importato e disponibile</string>
     <string name="nc_about">Informazioni</string>
@@ -303,6 +309,7 @@
     <string name="nc_share_text_pass">\nPassword: %1$s</string>
     <string name="nc_share_this_location">Condividi questa posizione</string>
     <string name="nc_shared_location">Posizione condivisa</string>
+    <string name="nc_sort_by">Ordina per</string>
     <string name="nc_start_conversation">Inizia una conversazione</string>
     <string name="nc_start_time">Ora di inizio</string>
     <string name="nc_timeout_error">Tempo scaduto</string>
