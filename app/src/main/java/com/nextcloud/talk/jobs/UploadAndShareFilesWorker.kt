@@ -214,10 +214,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         fun isStoragePermissionGranted(context: Context): Boolean {
             when {
-                Build.VERSION.SDK_INT > 29 -> {
+                Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
                     return if (PermissionChecker.checkSelfPermission(
-                            context, Manifest.permission
-                                .READ_EXTERNAL_STORAGE
+                            context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
                         ) == PermissionChecker.PERMISSION_GRANTED
                     ) {
                         Log.d(TAG, "Permission is granted (SDK 30 or greater)")
@@ -249,9 +249,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         fun requestStoragePermission(controller: Controller) {
 
-
             when {
-                Build.VERSION.SDK_INT > 29 -> {
+                Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
                     controller.requestPermissions(
                         arrayOf(
                             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -268,7 +267,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                     )
                 }
                 else -> { // permission is automatically granted on sdk<23 upon installation
-
                 }
             }
         }
