@@ -194,6 +194,7 @@ public class MagicAudioManager {
         }
     }
 
+    @SuppressLint("WrongConstant")
     public void start(AudioManagerEvents audioManagerEvents) {
         Log.d(TAG, "start");
         ThreadUtils.checkIsOnMainThread();
@@ -292,6 +293,7 @@ public class MagicAudioManager {
         Log.d(TAG, "AudioManager started");
     }
 
+    @SuppressLint("WrongConstant")
     public void stop() {
         Log.d(TAG, "stop");
         ThreadUtils.checkIsOnMainThread();
