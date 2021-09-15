@@ -45,7 +45,7 @@
     <string name="nc_call_voice">%s mutida de boghe</string>
     <string name="nc_calling">Tzerriende...</string>
     <string name="nc_camera_permission_permanently_denied">Pro ativare comunicatzione in vìdeu cunsenti is pemissos de \"Fotocàmera\" in sa cunfiguratzione de sistema.</string>
-    <string name="nc_cancel">Cantzella</string>
+    <string name="nc_cancel">Annulla</string>
     <string name="nc_capabilities_failed">Errore in su recùperu de is capatzidades, annullende</string>
     <string name="nc_certificate_dialog_text">Ti fidas de su tzertificadu SSL, disconnotu finas a immoe, frunidu dae %1$s pro %2$s, vàlidu dae %3$s a %4$s?</string>
     <string name="nc_certificate_dialog_title">Controlla su tzertificadu</string>
