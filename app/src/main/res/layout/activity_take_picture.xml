@@ -34,6 +34,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageView
+        android:id="@+id/photo_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:visibility="gone" />
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/toggle_torch"
         style="@style/Widget.AppTheme.Button.IconButton"
@@ -41,8 +48,8 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="12dp"
         android:layout_marginStart="0dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="12dp"
         android:contentDescription="@string/take_photo_toggle_torch"
         android:insetLeft="4dp"
@@ -68,9 +75,9 @@
         android:layout_height="48dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="12dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="12dp"
         android:contentDescription="@string/take_photo_switch_camera"
         android:insetLeft="4dp"
         android:insetTop="4dp"
@@ -89,6 +96,34 @@
         app:layout_constraintEnd_toStartOf="@+id/toggle_torch"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/retake"
+        style="@style/Widget.AppTheme.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="@string/take_photo_switch_camera"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:padding="0dp"
+        android:tint="@android:color/white"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:elevation="0dp"
+        app:icon="@drawable/ic_autorenew"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/takePhoto"
+        app:layout_constraintEnd_toStartOf="@id/takePhoto"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/takePhoto"
         android:layout_width="wrap_content"
@@ -103,4 +138,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_baseline_photo_camera_24" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/send"
+        style="@style/Widget.AppTheme.Button.IconButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="12dp"
+        android:contentDescription="@string/take_photo_switch_camera"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        android:padding="0dp"
+        android:tint="@android:color/white"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorPrimary"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:elevation="0dp"
+        app:icon="@drawable/ic_send"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="24dp"
+        app:iconTint="@color/white"
+        app:layout_constraintBottom_toBottomOf="@id/takePhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/takePhoto" />
 </androidx.constraintlayout.widget.ConstraintLayout>

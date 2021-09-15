@@ -24,12 +24,15 @@ package com.nextcloud.talk.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
 import android.view.OrientationEventListener;
 import android.view.Surface;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.common.util.concurrent.ListenableFuture;
@@ -39,6 +42,8 @@ import com.nextcloud.talk.models.TakePictureViewModel;
 import com.nextcloud.talk.utils.FileUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -53,6 +58,7 @@ import androidx.camera.core.ImageCaptureException;
 import androidx.camera.core.Preview;
 import androidx.camera.lifecycle.ProcessCameraProvider;
 import androidx.core.content.ContextCompat;
+import androidx.exifinterface.media.ExifInterface;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TakePhotoActivity extends AppCompatActivity {
@@ -99,7 +105,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                 viewModel.isTorchEnabled()
                     .observe(
                         this,
-                             enabled -> camera.getCameraControl().enableTorch(enabled));
+                        enabled -> camera.getCameraControl().enableTorch(enabled));
 
                 binding.toggleTorch.setOnClickListener((v) -> viewModel.toggleTorchEnabled());
                 binding.switchCamera.setOnClickListener((v) -> {
@@ -111,12 +117,48 @@ public class TakePhotoActivity extends AppCompatActivity {
                         imageCapture,
                         preview);
                 });
+                binding.retake.setOnClickListener((v) -> {
+                    Uri uri = (Uri) binding.photoPreview.getTag();
+                    File photoFile = new File(uri.getPath());
+                    if (!photoFile.delete()) {
+                        Log.w(TAG, "Error deleting temp camera image");
+                    }
+                    binding.takePhoto.setEnabled(true);
+                    showCameraElements();
+                });
+                binding.send.setOnClickListener((v) -> {
+                    Uri uri = (Uri) binding.photoPreview.getTag();
+                    setResult(RESULT_OK, new Intent().setDataAndType(uri, "image/jpeg"));
+                    finish();
+                });
             } catch (IllegalArgumentException | ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error taking picture", e);
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
                 finish();
             }
         }, ContextCompat.getMainExecutor(this));
+    }
+
+    private void showCameraElements() {
+        binding.send.setVisibility(View.GONE);
+        binding.retake.setVisibility(View.GONE);
+        binding.photoPreview.setVisibility(View.GONE);
+
+        binding.preview.setVisibility(View.VISIBLE);
+        binding.takePhoto.setVisibility(View.VISIBLE);
+        binding.switchCamera.setVisibility(View.VISIBLE);
+        binding.toggleTorch.setVisibility(View.VISIBLE);
+    }
+
+    private void showPictureProcessingElements() {
+        binding.preview.setVisibility(View.GONE);
+        binding.takePhoto.setVisibility(View.GONE);
+        binding.switchCamera.setVisibility(View.GONE);
+        binding.toggleTorch.setVisibility(View.GONE);
+
+        binding.send.setVisibility(View.VISIBLE);
+        binding.retake.setVisibility(View.VISIBLE);
+        binding.photoPreview.setVisibility(View.VISIBLE);
     }
 
     private ImageCapture getImageCapture() {
@@ -145,7 +187,7 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         binding.takePhoto.setOnClickListener((v) -> {
             binding.takePhoto.setEnabled(false);
-            final String photoFileName = dateFormat.format(new Date())+ ".jpg";
+            final String photoFileName = dateFormat.format(new Date()) + ".jpg";
             try {
                 final File photoFile = FileUtils.getTempCacheFile(this, "photos/" + photoFileName);
                 final ImageCapture.OutputFileOptions options =
@@ -155,30 +197,69 @@ public class TakePhotoActivity extends AppCompatActivity {
                     ContextCompat.getMainExecutor(this),
                     new ImageCapture.OnImageSavedCallback() {
 
-                    @Override
-                    public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                        final Uri savedUri = Uri.fromFile(photoFile);
-                        Log.i(TAG, "onImageSaved - savedUri:" + savedUri);
-                        setResult(RESULT_OK, new Intent().setDataAndType(savedUri, "image/jpeg"));
-                        finish();
-                    }
-
-                    @Override
-                    public void onError(@NonNull ImageCaptureException e) {
-                        Log.e(TAG, "Error", e);
-
-                        if(!photoFile.delete()) {
-                            Log.w(TAG, "Deleting picture failed");
+                        @Override
+                        public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
+                            final Uri savedUri = Uri.fromFile(photoFile);
+                            Log.i(TAG, "onImageSaved - savedUri:" + savedUri);
+                            BitmapFactory.Options options = new BitmapFactory.Options();
+                            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                            try {
+                                binding.photoPreview.setImageBitmap(
+                                    BitmapFactory.decodeStream(new FileInputStream(photoFile), null, options));
+                                binding.photoPreview.setRotation(getImageOrientation(photoFile));
+                                binding.photoPreview.setTag(savedUri);
+                                showPictureProcessingElements();
+                            } catch (FileNotFoundException e) {
+                                Log.w(TAG, "Error reading image", e);
+                            }
                         }
-                        binding.takePhoto.setEnabled(true);
-                    }
-                });
+
+                        @Override
+                        public void onError(@NonNull ImageCaptureException e) {
+                            Log.e(TAG, "Error", e);
+
+                            if (!photoFile.delete()) {
+                                Log.w(TAG, "Deleting picture failed");
+                            }
+                            binding.takePhoto.setEnabled(true);
+                        }
+                    });
             } catch (Exception e) {
                 Toast.makeText(this, R.string.take_photo_error_deleting_picture, Toast.LENGTH_SHORT).show();
             }
         });
 
         return imageCapture;
+    }
+
+    public int getImageOrientation(File imageFile) {
+        int rotate = 0;
+        try {
+            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            int orientation = exif.getAttributeInt(
+                ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+                default:
+                    rotate = 0;
+                    break;
+            }
+
+            Log.i(TAG, "ImageOrientation - Exif orientation: " + orientation + " - " + "Rotate value: " + rotate);
+        } catch (Exception e) {
+            Log.w(TAG, "Error calculation rotation value");
+        }
+        return rotate;
     }
 
     private Preview getPreview() {
