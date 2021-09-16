@@ -31,6 +31,7 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -193,6 +194,7 @@ public class MagicAudioManager {
         }
     }
 
+    @SuppressLint("WrongConstant")
     public void start(AudioManagerEvents audioManagerEvents) {
         Log.d(TAG, "start");
         ThreadUtils.checkIsOnMainThread();
@@ -291,6 +293,7 @@ public class MagicAudioManager {
         Log.d(TAG, "AudioManager started");
     }
 
+    @SuppressLint("WrongConstant")
     public void stop() {
         Log.d(TAG, "stop");
         ThreadUtils.checkIsOnMainThread();
@@ -464,7 +467,7 @@ public class MagicAudioManager {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             return audioManager.isWiredHeadsetOn();
         } else {
-            final AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_ALL);
+            @SuppressLint("WrongConstant") final AudioDeviceInfo[] devices = audioManager.getDevices(AudioManager.GET_DEVICES_ALL);
             for (AudioDeviceInfo device : devices) {
                 final int type = device.getType();
                 if (type == AudioDeviceInfo.TYPE_WIRED_HEADSET) {
