@@ -281,7 +281,7 @@ public class AccountVerificationController extends BaseController {
 
     private void storeProfile(String displayName, String userId) {
         userUtils.createOrUpdateUser(username, token,
-                baseUrl, displayName, null, true,
+                baseUrl, displayName, null, Boolean.TRUE,
                 userId, null, null,
                 appPreferences.getTemporaryClientCertAlias(), null)
                 .subscribeOn(Schedulers.io())

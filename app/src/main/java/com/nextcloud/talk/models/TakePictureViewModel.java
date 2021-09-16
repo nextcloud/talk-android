@@ -42,7 +42,7 @@ public class TakePictureViewModel extends ViewModel {
     private final MutableLiveData<Integer> cameraSelectorToggleButtonImageResource =
         new MutableLiveData<>(R.drawable.ic_baseline_camera_front_24);
     @NonNull
-    private final MutableLiveData<Boolean> torchEnabled = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> torchEnabled = new MutableLiveData<>(Boolean.FALSE);
 
     @NonNull
     public CameraSelector getCameraSelector() {
