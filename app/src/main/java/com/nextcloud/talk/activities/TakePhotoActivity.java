@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Size;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
@@ -186,7 +187,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     private ImageCapture getImageCapture() {
-        final ImageCapture imageCapture = new ImageCapture.Builder().build();
+        final ImageCapture imageCapture = new ImageCapture.Builder().setTargetResolution(new Size(1080, 1920)).build();
 
         orientationEventListener = new OrientationEventListener(this) {
             @Override
