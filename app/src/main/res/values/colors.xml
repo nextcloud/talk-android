@@ -89,7 +89,4 @@
     <!-- voicemessage -->
     <color name="nc_voice_message_outgoing_controls">#606060</color>
 
-    <!-- camera -->
-    <color name="transparent_black">#7f000000</color>
-
 </resources>
