@@ -115,7 +115,7 @@
         app:backgroundTint="@color/colorPrimary"
         app:cornerRadius="@dimen/button_corner_radius"
         app:elevation="0dp"
-        app:icon="@drawable/ic_autorenew"
+        app:icon="@drawable/ic_refresh"
         app:iconGravity="textStart"
         app:iconPadding="0dp"
         app:iconSize="24dp"
