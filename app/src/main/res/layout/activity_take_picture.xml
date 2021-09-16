@@ -26,7 +26,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black"
-    android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:theme="@style/TransparentTheme">
 
     <androidx.camera.view.PreviewView
@@ -34,12 +34,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
-        android:visibility="gone" />
+        android:visibility="invisible" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/toggle_torch"

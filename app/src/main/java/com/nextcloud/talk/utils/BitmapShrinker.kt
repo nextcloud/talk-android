@@ -34,6 +34,7 @@ object BitmapShrinker {
     private const val DEGREES_180 = 180f
     private const val DEGREES_270 = 270f
 
+    @JvmStatic
     fun shrinkBitmap(
         path: String,
         reqWidth: Int,

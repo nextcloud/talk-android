@@ -28,8 +28,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Size;
 import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.View;
@@ -39,11 +39,10 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ActivityTakePictureBinding;
 import com.nextcloud.talk.models.TakePictureViewModel;
+import com.nextcloud.talk.utils.BitmapShrinker;
 import com.nextcloud.talk.utils.FileUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -64,6 +63,9 @@ import androidx.lifecycle.ViewModelProvider;
 public class TakePhotoActivity extends AppCompatActivity {
 
     private static final String TAG = TakePhotoActivity.class.getSimpleName();
+
+    private static final float MAX_SCALE = 6.0f;
+    private static final float MEDIUM_SCALE = 2.45f;
 
     private ActivityTakePictureBinding binding;
     private TakePictureViewModel viewModel;
@@ -124,13 +126,20 @@ public class TakePhotoActivity extends AppCompatActivity {
                         Log.w(TAG, "Error deleting temp camera image");
                     }
                     binding.takePhoto.setEnabled(true);
+                    binding.photoPreview.setTag(null);
                     showCameraElements();
                 });
                 binding.send.setOnClickListener((v) -> {
                     Uri uri = (Uri) binding.photoPreview.getTag();
                     setResult(RESULT_OK, new Intent().setDataAndType(uri, "image/jpeg"));
+                    binding.photoPreview.setTag(null);
                     finish();
                 });
+
+                // Enable enlarging the image more than default 3x maximumScale.
+                // Medium scale adapted to make double-tap behaviour more consistent.
+                binding.photoPreview.setMaximumScale(MAX_SCALE);
+                binding.photoPreview.setMediumScale(MEDIUM_SCALE);
             } catch (IllegalArgumentException | ExecutionException | InterruptedException e) {
                 Log.e(TAG, "Error taking picture", e);
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
@@ -139,10 +148,25 @@ public class TakePhotoActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
+    @Override
+    public void onBackPressed() {
+        Uri uri = (Uri) binding.photoPreview.getTag();
+
+        if (uri != null) {
+            File photoFile = new File(uri.getPath());
+            if (!photoFile.delete()) {
+                Log.w(TAG, "Error deleting temp camera image");
+            }
+            binding.photoPreview.setTag(null);
+        }
+
+        super.onBackPressed();
+    }
+
     private void showCameraElements() {
         binding.send.setVisibility(View.GONE);
         binding.retake.setVisibility(View.GONE);
-        binding.photoPreview.setVisibility(View.GONE);
+        binding.photoPreview.setVisibility(View.INVISIBLE);
 
         binding.preview.setVisibility(View.VISIBLE);
         binding.takePhoto.setVisibility(View.VISIBLE);
@@ -151,7 +175,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     private void showPictureProcessingElements() {
-        binding.preview.setVisibility(View.GONE);
+        binding.preview.setVisibility(View.INVISIBLE);
         binding.takePhoto.setVisibility(View.GONE);
         binding.switchCamera.setVisibility(View.GONE);
         binding.toggleTorch.setVisibility(View.GONE);
@@ -162,7 +186,7 @@ public class TakePhotoActivity extends AppCompatActivity {
     }
 
     private ImageCapture getImageCapture() {
-        final ImageCapture imageCapture = new ImageCapture.Builder().setTargetResolution(new Size(720, 1280)).build();
+        final ImageCapture imageCapture = new ImageCapture.Builder().build();
 
         orientationEventListener = new OrientationEventListener(this) {
             @Override
@@ -199,19 +223,8 @@ public class TakePhotoActivity extends AppCompatActivity {
 
                         @Override
                         public void onImageSaved(@NonNull ImageCapture.OutputFileResults outputFileResults) {
-                            final Uri savedUri = Uri.fromFile(photoFile);
-                            Log.i(TAG, "onImageSaved - savedUri:" + savedUri);
-                            BitmapFactory.Options options = new BitmapFactory.Options();
-                            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                            try {
-                                binding.photoPreview.setImageBitmap(
-                                    BitmapFactory.decodeStream(new FileInputStream(photoFile), null, options));
-                                binding.photoPreview.setRotation(getImageOrientation(photoFile));
-                                binding.photoPreview.setTag(savedUri);
-                                showPictureProcessingElements();
-                            } catch (FileNotFoundException e) {
-                                Log.w(TAG, "Error reading image", e);
-                            }
+                            setPreviewImage(photoFile);
+                            showPictureProcessingElements();
                         }
 
                         @Override
@@ -230,6 +243,22 @@ public class TakePhotoActivity extends AppCompatActivity {
         });
 
         return imageCapture;
+    }
+
+    private void setPreviewImage(File photoFile) {
+        final Uri savedUri = Uri.fromFile(photoFile);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        int doubleScreenWidth = displayMetrics.widthPixels * 2;
+        int doubleScreenHeight = displayMetrics.heightPixels * 2;
+
+        Bitmap bitmap = BitmapShrinker.shrinkBitmap(photoFile.getAbsolutePath(),
+                                                    doubleScreenWidth,
+                                                    doubleScreenHeight);
+
+        binding.photoPreview.setImageBitmap(bitmap);
+        binding.photoPreview.setTag(savedUri);
     }
 
     public int getImageOrientation(File imageFile) {
@@ -281,6 +310,28 @@ public class TakePhotoActivity extends AppCompatActivity {
         super.onResume();
         if (this.orientationEventListener != null) {
             this.orientationEventListener.enable();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        if (binding.photoPreview.getTag() != null) {
+            savedInstanceState.putString("Uri", ((Uri) binding.photoPreview.getTag()).getPath());
+        }
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        String uri = savedInstanceState.getString("Uri", null);
+
+        if (uri != null) {
+            File photoFile = new File(uri);
+            setPreviewImage(photoFile);
+            showPictureProcessingElements();
         }
     }
 
