@@ -122,4 +122,17 @@
         app:srcCompat="@drawable/ic_add_white_24px"
         app:tint="@color/white" />
 
+    <com.webianks.library.PopupBubble
+        android:id="@+id/newMentionPopupBubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="16dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="8dp"
+        app:pb_backgroundColor="@color/colorPrimary"
+        app:pb_icon="@drawable/ic_baseline_arrow_downward_24px"
+        app:pb_text="@string/nc_new_mention"
+        app:pb_textColor="@color/textColorOnPrimaryBackground" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

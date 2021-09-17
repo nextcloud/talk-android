@@ -264,6 +264,9 @@
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
 
+    <!-- Conversations List-->
+    <string name="nc_new_mention">More mentions</string>
+
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
