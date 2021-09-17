@@ -1127,7 +1127,8 @@ class ChatController(args: Bundle) :
                         DateUtils.getLocalDateStringFromTimestampForLobby(
                             currentConversation?.lobbyTimer
                                 ?: 0
-                        )
+                        ),
+                        currentConversation!!.description
                     )
                 } else {
                     binding.lobby.lobbyTextView.setText(R.string.nc_lobby_waiting)
