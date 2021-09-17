@@ -38,9 +38,7 @@ public class TakePictureViewModel extends ViewModel {
 
     @NonNull
     private CameraSelector cameraSelector = DEFAULT_BACK_CAMERA;
-    @NonNull
-    private final MutableLiveData<Integer> cameraSelectorToggleButtonImageResource =
-        new MutableLiveData<>(R.drawable.ic_baseline_camera_front_24);
+
     @NonNull
     private final MutableLiveData<Boolean> torchEnabled = new MutableLiveData<>(Boolean.FALSE);
 
@@ -49,17 +47,11 @@ public class TakePictureViewModel extends ViewModel {
         return this.cameraSelector;
     }
 
-    public LiveData<Integer> getCameraSelectorToggleButtonImageResource() {
-        return this.cameraSelectorToggleButtonImageResource;
-    }
-
     public void toggleCameraSelector() {
         if (this.cameraSelector == DEFAULT_BACK_CAMERA) {
             this.cameraSelector = DEFAULT_FRONT_CAMERA;
-            this.cameraSelectorToggleButtonImageResource.postValue(R.drawable.ic_baseline_camera_rear_24);
         } else {
             this.cameraSelector = DEFAULT_BACK_CAMERA;
-            this.cameraSelectorToggleButtonImageResource.postValue(R.drawable.ic_baseline_camera_front_24);
         }
     }
 
