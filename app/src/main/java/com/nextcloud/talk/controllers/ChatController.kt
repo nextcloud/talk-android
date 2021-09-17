@@ -1301,7 +1301,7 @@ class ChatController(args: Bundle) :
                 startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
             } else {
                 Toast
-                    .makeText(context, context?.getString(R.string.read_storage_no_permission), Toast.LENGTH_LONG)
+                    .makeText(context, context?.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
                     .show()
             }
         }
