@@ -54,8 +54,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 120030006
-        versionName "12.3.0 Alpha 06"
+        versionCode 120030007
+        versionName "12.3.0 Alpha 07"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
