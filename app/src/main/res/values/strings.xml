@@ -353,7 +353,8 @@
     <string name="nc_lobby">Lobby</string>
     <string name="nc_start_time">Start time</string>
     <string name="nc_lobby_waiting">You are currently waiting in the lobby.</string>
-    <string name="nc_lobby_waiting_with_date">You are currently waiting in the lobby.\n This meeting is scheduled for %1$s.</string>
+    <string name="nc_lobby_start_date">This meeting is scheduled for %1$s</string>
+    <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_manual">Not set</string>
 
     <!-- Errors -->

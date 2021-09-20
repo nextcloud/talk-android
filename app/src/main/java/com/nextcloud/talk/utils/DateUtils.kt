@@ -20,12 +20,26 @@
 
 package com.nextcloud.talk.utils
 
+import android.content.res.Resources
+import android.icu.text.RelativeDateTimeFormatter
+import android.icu.text.RelativeDateTimeFormatter.Direction
+import android.icu.text.RelativeDateTimeFormatter.RelativeUnit
+import android.os.Build
+import com.nextcloud.talk.R
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
 
 object DateUtils {
+
+    private const val TIMESTAMP_CORRECTION_MULTIPLIER = 1000
+    private const val SECOND_DIVIDER = 1000
+    private const val MINUTES_DIVIDER = 60
+    private const val HOURS_DIVIDER = 60
+    private const val DAYS_DIVIDER = 24
+
     fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {
         val cal = Calendar.getInstance()
         val tz = cal.timeZone
@@ -41,6 +55,50 @@ object DateUtils {
     }
 
     fun getLocalDateStringFromTimestampForLobby(timestamp: Long): String {
-        return getLocalDateTimeStringFromTimestamp(timestamp * 1000)
+        return getLocalDateTimeStringFromTimestamp(timestamp * TIMESTAMP_CORRECTION_MULTIPLIER)
+    }
+
+    fun relativeStartTimeForLobby(timestamp: Long, resources: Resources): String {
+
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            val fmt = RelativeDateTimeFormatter.getInstance()
+            val timeLeftMillis = timestamp * TIMESTAMP_CORRECTION_MULTIPLIER - System.currentTimeMillis()
+            val minutes = timeLeftMillis.toDouble() / SECOND_DIVIDER / MINUTES_DIVIDER
+            val hours = minutes / HOURS_DIVIDER
+            val days = hours / DAYS_DIVIDER
+
+            val minutesInt = minutes.roundToInt()
+            val hoursInt = hours.roundToInt()
+            val daysInt = days.roundToInt()
+
+            when {
+                daysInt > 0 -> {
+                    fmt.format(
+                        daysInt.toDouble(),
+                        Direction.NEXT,
+                        RelativeUnit.DAYS
+                    )
+                }
+                hoursInt > 0 -> {
+                    fmt.format(
+                        hoursInt.toDouble(),
+                        Direction.NEXT,
+                        RelativeUnit.HOURS
+                    )
+                }
+                minutesInt > 1 -> {
+                    fmt.format(
+                        minutesInt.toDouble(),
+                        Direction.NEXT,
+                        RelativeUnit.MINUTES
+                    )
+                }
+                else -> {
+                    resources.getString(R.string.nc_lobby_start_soon)
+                }
+            }
+        } else {
+            ""
+        }
     }
 }

@@ -1119,19 +1119,26 @@ class ChatController(args: Bundle) :
                 binding.messageInputView.visibility = View.GONE
                 binding.progressBar.visibility = View.GONE
 
+                val sb = StringBuilder()
+                sb.append(resources!!.getText(R.string.nc_lobby_waiting))
+                    .append("\n\n")
+
                 if (currentConversation?.lobbyTimer != null && currentConversation?.lobbyTimer !=
                     0L
                 ) {
-                    binding.lobby.lobbyTextView.text = String.format(
-                        resources!!.getString(R.string.nc_lobby_waiting_with_date),
-                        DateUtils.getLocalDateStringFromTimestampForLobby(
-                            currentConversation?.lobbyTimer
-                                ?: 0
-                        )
+                    val timestamp = currentConversation?.lobbyTimer ?: 0
+                    val stringWithStartDate = String.format(
+                        resources!!.getString(R.string.nc_lobby_start_date),
+                        DateUtils.getLocalDateStringFromTimestampForLobby(timestamp)
                     )
-                } else {
-                    binding.lobby.lobbyTextView.setText(R.string.nc_lobby_waiting)
+                    val relativeTime = DateUtils.relativeStartTimeForLobby(timestamp, resources!!)
+
+                    sb.append("$stringWithStartDate - $relativeTime")
+                        .append("\n\n")
                 }
+
+                sb.append(currentConversation!!.description)
+                binding.lobby.lobbyTextView.text = sb.toString()
             } else {
                 binding.lobby.lobbyView.visibility = View.GONE
                 binding.messagesListView.visibility = View.VISIBLE
