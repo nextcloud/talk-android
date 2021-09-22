@@ -138,6 +138,8 @@
     <string name="nc_license_title">Lizentzia</string>
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
     <string name="nc_lobby">Sarrera</string>
+    <string name="nc_lobby_start_date">Bilera hau %1$s(r)etarako programatuta dago</string>
+    <string name="nc_lobby_start_soon">Bilera laster hasiko da</string>
     <string name="nc_lobby_waiting">Sarreran itxaroten zabiltza momentu honetan.</string>
     <string name="nc_lobby_waiting_with_date">Sarreran itxatoren ari zara momentu honetan.\n Bilera hau %1$s(r)(e)tan dago antolatuta.</string>
     <string name="nc_location_current_position_description">Zure uneko kokalekua</string>
@@ -157,6 +159,7 @@
     <string name="nc_mute_calls_desc">Sarrerako deiak isilduko dira</string>
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_new_conversation">Elkarrizketa berria</string>
+    <string name="nc_new_mention">Aipamen gehiago</string>
     <string name="nc_new_messages">Irakurri gabeko mezuak</string>
     <string name="nc_new_password">Pasahitz berria</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app-a ez dago instalatuta zerbitzarian, bertan behera uzten</string>
