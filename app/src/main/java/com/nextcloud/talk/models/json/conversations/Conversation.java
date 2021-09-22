@@ -98,6 +98,9 @@ public class Conversation {
     @JsonField(name = "canDeleteConversation")
     public Boolean canDeleteConversation;
 
+    @JsonField(name = "unreadMentionDirect")
+    public Boolean unreadMentionDirect;
+
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
     }
@@ -254,6 +257,10 @@ public class Conversation {
         return this.callFlag;
     }
 
+    public Boolean getUnreadMentionDirect() {
+        return unreadMentionDirect;
+    }
+
     public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
@@ -357,6 +364,10 @@ public class Conversation {
 
     public void setCallFlag(int callFlag) {
         this.callFlag = callFlag;
+    }
+
+    public void setUnreadMentionDirect(Boolean unreadMentionDirect) {
+        this.unreadMentionDirect = unreadMentionDirect;
     }
 
     @Override
