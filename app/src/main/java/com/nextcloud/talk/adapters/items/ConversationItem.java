@@ -42,6 +42,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.chip.Chip;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
@@ -136,20 +137,45 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.dialogUnreadBubble.setText(R.string.tooManyUnreadMessages);
             }
 
-            if (conversation.isUnreadMention() || conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            ColorStateList lightBubbleFillColor = ColorStateList.valueOf(
+                ContextCompat.getColor(context,
+                R.color.conversation_unread_bubble));
+            int lightBubbleTextColor = ContextCompat.getColor(
+                context,
+                R.color.conversation_unread_bubble_text);
+            ColorStateList lightBubbleStrokeColor = ColorStateList.valueOf(
+                ContextCompat.getColor(context,
+                R.color.colorPrimary));
+
+            if (conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
                 holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                 holder.dialogUnreadBubble.setTextColor(Color.WHITE);
+            } else if (conversation.isUnreadMention()) {
+                if (CapabilitiesUtil.hasSpreedFeatureCapability(userEntity, "direct-mention-flag")){
+                    if (conversation.getUnreadMentionDirect()) {
+                        holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
+                        holder.dialogUnreadBubble.setTextColor(Color.WHITE);
+                    } else {
+                        holder.dialogUnreadBubble.setChipBackgroundColor(ColorStateList.valueOf(
+                            ContextCompat.getColor(context, R.color.white)));
+                        holder.dialogUnreadBubble.setTextColor(ContextCompat.getColor(
+                            context,
+                            R.color.colorPrimary));
+                        holder.dialogUnreadBubble.setChipStrokeWidth(6.0f);
+                        holder.dialogUnreadBubble.setChipStrokeColor(lightBubbleStrokeColor);
+                    }
+                } else {
+                    holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
+                    holder.dialogUnreadBubble.setTextColor(Color.WHITE);
+                }
             } else {
-                holder.dialogUnreadBubble.setChipBackgroundColor(
-                        ColorStateList.valueOf(ContextCompat.getColor(context, R.color.conversation_unread_bubble)));
-                holder.dialogUnreadBubble.setTextColor(
-                        ContextCompat.getColor(context, R.color.conversation_unread_bubble_text));
+                holder.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);
+                holder.dialogUnreadBubble.setTextColor(lightBubbleTextColor);
             }
         } else {
             holder.dialogName.setTypeface(null, Typeface.NORMAL);
             holder.dialogDate.setTypeface(null, Typeface.NORMAL);
             holder.dialogLastMessage.setTypeface(null, Typeface.NORMAL);
-
             holder.dialogUnreadBubble.setVisibility(View.GONE);
         }
 

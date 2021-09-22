@@ -631,7 +631,7 @@ public class ConversationsListController extends BaseController implements Searc
             Conversation conversationItem = ((ConversationItem) flexItem).getModel();
             int position = adapter.getGlobalPositionOf(flexItem);
             if (conversationItem.unreadMention && position > lastVisibleItem) {
-                if(!newMentionPopupBubble.isShown()){
+                if (!newMentionPopupBubble.isShown()){
                     newMentionPopupBubble.show();
                 }
                 return;
