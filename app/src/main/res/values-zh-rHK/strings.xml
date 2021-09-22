@@ -138,6 +138,8 @@
     <string name="nc_license_title">授權</string>
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
     <string name="nc_lobby">等候室</string>
+    <string name="nc_lobby_start_date">此次會議預定開始時間為 %1$s</string>
+    <string name="nc_lobby_start_soon">會議即將開始</string>
     <string name="nc_lobby_waiting">您目前正在等候室等候。</string>
     <string name="nc_lobby_waiting_with_date">您目前正在等候室等候。\n此會議定於%1$s開始。</string>
     <string name="nc_location_current_position_description">您目前的位置</string>
@@ -157,6 +159,7 @@
     <string name="nc_mute_calls_desc">來電將被靜音</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
+    <string name="nc_new_mention">更多提及</string>
     <string name="nc_new_messages">未讀郵件</string>
     <string name="nc_new_password">新密碼</string>
     <string name="nc_nextcloud_talk_app_not_installed">此伺服器並未安裝%1$s應用程式，操作中斷。</string>

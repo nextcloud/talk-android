@@ -138,6 +138,8 @@
     <string name="nc_license_title">Licence</string>
     <string name="nc_limit_hit">byl dosažen limit %s znaků</string>
     <string name="nc_lobby">Čekárna</string>
+    <string name="nc_lobby_start_date">Tato schůzka je naplánována na %1$s</string>
+    <string name="nc_lobby_start_soon">Schůzka brzy začne</string>
     <string name="nc_lobby_waiting">V tuto chvíli se nacházíte v čekárně.</string>
     <string name="nc_lobby_waiting_with_date">V tuto chvíli se nacházíte v čekárně.\n Toto setkání je naplánováno na %1$s.</string>
     <string name="nc_location_current_position_description">Vaše stávající umístění</string>
@@ -157,6 +159,7 @@
     <string name="nc_mute_calls_desc">Příchozí hovory budou ztišeny</string>
     <string name="nc_never">Nikdy nepřipojeno</string>
     <string name="nc_new_conversation">Nová konverzace</string>
+    <string name="nc_new_mention">Další zmínění</string>
     <string name="nc_new_messages">Nepřečtené zprávy</string>
     <string name="nc_new_password">Nové heslo</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, přerušuje se</string>

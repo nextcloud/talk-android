@@ -138,6 +138,8 @@
     <string name="nc_license_title">Licença</string>
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
     <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby_start_date">Esta reunião está agendada para %1$s</string>
+    <string name="nc_lobby_start_soon">A reunião vai começar em breve</string>
     <string name="nc_lobby_waiting">Você está esperando no lobby no momento.</string>
     <string name="nc_lobby_waiting_with_date">Você está na lista de espera.\n Esta reunião está agendada para %1$s.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
@@ -157,6 +159,7 @@
     <string name="nc_mute_calls_desc">Chamadas recebidas serão silenciadas</string>
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_new_conversation">Nova conversa</string>
+    <string name="nc_new_mention">Mais citações </string>
     <string name="nc_new_messages">Mensagens não lidas</string>
     <string name="nc_new_password">Nova senha</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplicativo %1$s não instalado no servidor, cancelando</string>
