@@ -128,7 +128,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         if (conversation.getUnreadMessages() > 0) {
             holder.dialogName.setTypeface(holder.dialogName.getTypeface(), Typeface.BOLD);
-            holder.dialogDate.setTypeface(holder.dialogDate.getTypeface(), Typeface.BOLD);
             holder.dialogLastMessage.setTypeface(holder.dialogLastMessage.getTypeface(), Typeface.BOLD);
             holder.dialogUnreadBubble.setVisibility(View.VISIBLE);
             if (conversation.getUnreadMessages() < 1000) {
