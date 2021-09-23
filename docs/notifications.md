@@ -47,15 +47,20 @@ Please take into account that the android settings might be different for each m
   "Always notify" or "Notify when mentioned"
 	- Be aware that this is a per conversation setting. Set it for every conversation differently depending on your 
       needs.
+- Also be aware that notifications are not generated when you have an active session for a conversation. This also applies for tabs that are open in the background, etc.
 
 ## 🖥 Check server settings
+
+
+
+*Note: If the command is not available, make sure you have the https://github.com/nextcloud/notifications app installed on your instance. It is shipped and enabled by default, but could be missing in development environments or being disabled manually.*
 
 Run the `notification:test-push` command for the user:
 
 ```bash
 sudo -u www-data php /var/www/html/occ notification:test-push --talk admin
 ```
-  
+
 It should print something like the following:
 ```
 Trying to push to 2 devices
@@ -71,13 +76,13 @@ Data to encrypt is: {"nid":525210,"app":"admin_notification_talk","subject":"Tes
 Signed encrypted push subject
 Push notification sent successfully
 ```
-  
+
 If it prints something like
 ```
 sudo -u www-data php /var/www/html/occ notification:test-push --talk admin
 No devices found for user
 ```
-  
+
 try to remove the account from Nextcloud Talk app and create it again. Afterwards try to run the command again.
 
 # 🦺 Developers/testers
