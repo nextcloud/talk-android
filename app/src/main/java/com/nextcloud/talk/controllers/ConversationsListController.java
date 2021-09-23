@@ -626,20 +626,23 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     private void checkToShowUnreadBubble() {
-        try{
+        try {
             int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
             for (AbstractFlexibleItem flexItem : callItems) {
                 Conversation conversationItem = ((ConversationItem) flexItem).getModel();
                 int position = adapter.getGlobalPositionOf(flexItem);
-                if (conversationItem.unreadMention && position > lastVisibleItem) {
-                    if (!newMentionPopupBubble.isShown()){
+                if ((conversationItem.unreadMention ||
+                    (conversationItem.unreadMessages > 0 &&
+                        conversationItem.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) &&
+                    position > lastVisibleItem) {
+                    if (!newMentionPopupBubble.isShown()) {
                         newMentionPopupBubble.show();
                     }
                     return;
                 }
             }
             newMentionPopupBubble.hide();
-        } catch (NullPointerException e){
+        } catch (NullPointerException e) {
             Log.d(TAG, "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
                 "user already left the conversations-list screen so the popup bubble is not available anymore.", e);
         }
