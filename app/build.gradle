@@ -167,7 +167,7 @@ ext {
     parcelerVersion = "1.1.13"
     powermockVersion = "2.0.9"
     retrofit2Version = "2.9.0"
-    workVersion = "2.5.0"
+    workVersion = "2.6.0"
     markwonVersion =  "4.6.2"
 }
 
