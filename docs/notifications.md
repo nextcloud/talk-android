@@ -25,7 +25,8 @@ Please take into account that the android settings might be different for each m
 
 - Check that your phone is not in "do not disturb" mode
 - Check that your phone has internet access
-- Check the android settings like "energy saving" and "notifications" regularly as they might be reset by android at 
+- Check the android settings like **"energy saving"** and **"notifications"** regularly as they might be reset by
+ android at 
   any time!
     - Energy saving options example for Xiaomi RedMi:
 		- go to "Settings" 
@@ -51,14 +52,10 @@ Please take into account that the android settings might be different for each m
 
 ## 🖥 Check server settings
 
-
-
-*Note: If the command is not available, make sure you have the https://github.com/nextcloud/notifications app installed on your instance. It is shipped and enabled by default, but could be missing in development environments or being disabled manually.*
-
-Run the `notification:test-push` command for the user:
+Run the `notification:test-push` command for the user who is logged in at the device that should receive the notification:
 
 ```bash
-sudo -u www-data php /var/www/html/occ notification:test-push --talk admin
+sudo -u www-data php /var/www/yourinstance/occ notification:test-push --talk youruser
 ```
 
 It should print something like the following:
@@ -76,14 +73,26 @@ Data to encrypt is: {"nid":525210,"app":"admin_notification_talk","subject":"Tes
 Signed encrypted push subject
 Push notification sent successfully
 ```
+This means the notifications are set up correctly on server side. Note that there won't be any notification on the
+ phone as this is just a test-message which won't be handled (As a developer you could set a breakpoint in the
+  "onMessageReceived"-method of the Firebase cloud messaging handling to check if the notification is received).
 
 If it prints something like
 ```
-sudo -u www-data php /var/www/html/occ notification:test-push --talk admin
+sudo -u www-data php /var/www/yourinstance/occ notification:test-push --talk youruser
 No devices found for user
 ```
-
-try to remove the account from Nextcloud Talk app and create it again. Afterwards try to run the command again.
+try to remove the account from the Nextcloud Android Talk app and log in again. Afterwards try to run the command
+ again.
+ 
+If it prints
+```
+There are no commands defined in the "notification" namespace. 
+```
+then the https://github.com/nextcloud/notifications app is not installed on your nextcloud instance.
+The notification app is shipped and enabled by default, but could be missing in development environments or being disabled manually.
+Install and enable the app by following the instructions at https://github.com/nextcloud/notifications#developers and
+ try again to execute the command.
 
 # 🦺 Developers/testers
 - Be aware that the "qa"-versions that you can install by scanning the QR-code in a github pull request don't 
