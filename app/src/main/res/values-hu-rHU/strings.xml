@@ -138,6 +138,8 @@
     <string name="nc_license_title">Licenc</string>
     <string name="nc_limit_hit">%s karakteres korlát elérve</string>
     <string name="nc_lobby">Váró</string>
+    <string name="nc_lobby_start_date">A találkozó ekkorra van ütemezve: %1$s</string>
+    <string name="nc_lobby_start_soon">Ez a találkozó hamarosan elkezdődik</string>
     <string name="nc_lobby_waiting">Jelenleg a váróban van.</string>
     <string name="nc_lobby_waiting_with_date">Jelenleg a váróban van.\nA találkozó ekkorra van ütemezve: %1$s.</string>
     <string name="nc_location_current_position_description">A jelenlegi helye</string>
@@ -157,6 +159,7 @@
     <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_new_conversation">Új beszélgetés</string>
+    <string name="nc_new_mention">További megemlítések</string>
     <string name="nc_new_messages">Olvasatlan üzenetek</string>
     <string name="nc_new_password">Új jelszó</string>
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s alkalmazás nincs telepítve a kiszolgálón, megszakítás</string>
