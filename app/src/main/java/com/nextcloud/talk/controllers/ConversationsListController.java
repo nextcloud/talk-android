@@ -207,6 +207,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     private boolean forwardMessage;
 
+    private int nextUnreadConversationScrollPosition = 0;
+
     private SmoothScrollLinearLayoutManager layoutManager;
 
     public ConversationsListController(Bundle bundle) {
@@ -619,7 +621,7 @@ public class ConversationsListController extends BaseController implements Searc
         newMentionPopupBubble.setPopupBubbleListener(new PopupBubble.PopupBubbleClickListener() {
             @Override
             public void bubbleClicked(Context context) {
-                recyclerView.smoothScrollToPosition(callItems.size());
+                recyclerView.smoothScrollToPosition(nextUnreadConversationScrollPosition);
             }
         });
     }
@@ -634,12 +636,14 @@ public class ConversationsListController extends BaseController implements Searc
                     (conversationItem.unreadMessages > 0 &&
                         conversationItem.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) &&
                     position > lastVisibleItem) {
+                    nextUnreadConversationScrollPosition = position;
                     if (!newMentionPopupBubble.isShown()) {
                         newMentionPopupBubble.show();
                     }
                     return;
                 }
             }
+            nextUnreadConversationScrollPosition = 0;
             newMentionPopupBubble.hide();
         } catch (NullPointerException e) {
             Log.d(TAG, "A NPE was caught when trying to show the unread popup bubble. This might happen when the " +
