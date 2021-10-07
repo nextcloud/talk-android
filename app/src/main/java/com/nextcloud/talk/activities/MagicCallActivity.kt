@@ -23,12 +23,15 @@
 package com.nextcloud.talk.activities
 
 import android.app.KeyguardManager
+import android.app.PictureInPictureParams
 import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
-import android.view.View
+import android.util.Log
+import android.util.Rational
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Conductor
 import com.bluelinelabs.conductor.Router
@@ -38,7 +41,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.CallController
 import com.nextcloud.talk.controllers.CallNotificationController
-import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.ActivityMagicCallBinding
 import com.nextcloud.talk.events.ConfigurationChangeEvent
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -46,14 +48,11 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicCallActivity : BaseActivity() {
     lateinit var binding: ActivityMagicCallBinding
-
-    private lateinit var chatController: ChatController
-
     private var router: Router? = null
-    private var chatRouter: Router? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d(TAG, "onCreate")
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         setTheme(R.style.CallTheme)
 
@@ -63,7 +62,7 @@ class MagicCallActivity : BaseActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN or
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         )
-        window.decorView.systemUiVisibility = systemUiVisibility
+       // window.decorView.systemUiVisibility = systemUiVisibility
 
         binding = ActivityMagicCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -87,30 +86,28 @@ class MagicCallActivity : BaseActivity() {
             }
         }
 
-        val extras = intent.extras ?: Bundle()
-        extras.putBoolean("showToggleChat", true)
-
-        chatController = ChatController(extras)
-        chatRouter = Conductor.attachRouter(this, binding.chatControllerView, savedInstanceState)
-        chatRouter!!.setRoot(
-            RouterTransaction.with(chatController)
-                .pushChangeHandler(HorizontalChangeHandler())
-                .popChangeHandler(HorizontalChangeHandler())
-        )
     }
 
-    fun showChat() {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun enterPipMode() {
         enableKeyguard()
-        binding.chatControllerView.visibility = View.VISIBLE
-        binding.controllerContainer.visibility = View.GONE
-        chatController.wasDetached = false
-        chatController.pullChatMessages(1)
+        enterPictureInPictureMode(getPipParams())
     }
 
-    fun showCall() {
-        binding.controllerContainer.visibility = View.VISIBLE
-        binding.chatControllerView.visibility = View.GONE
-        chatController.wasDetached = true
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onUserLeaveHint() {
+        enterPictureInPictureMode(getPipParams())
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun getPipParams(): PictureInPictureParams {
+        val pipRatio = Rational(
+            300,
+            500
+        )
+        return PictureInPictureParams.Builder()
+            .setAspectRatio(pipRatio)
+            .build()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -145,14 +142,25 @@ class MagicCallActivity : BaseActivity() {
         }
     }
 
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
+        newConfig: Configuration) {
+        if (isInPictureInPictureMode) {
+            Log.d(TAG, "Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.")
+        } else {
+            Log.d(TAG,"Restore the full-screen UI.")
+        }
+    }
+
+
+
     companion object {
         private val TAG = "MagicCallActivity"
 
-        private val systemUiVisibility: Int
+      /*  private val systemUiVisibility: Int
             get() {
                 var flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
                 flags = flags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 return flags
-            }
+            } */
     }
 }

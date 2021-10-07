@@ -142,14 +142,14 @@
         android:orientation="horizontal">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlToggleChat"
+            android:id="@+id/callControlEnterPip"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="40dp"
             android:layout_marginEnd="10dp"
             android:elevation="10dp"
             app:backgroundImage="@color/call_buttons_background"
-            app:placeholderImage="@drawable/ic_comment_white"
+            app:placeholderImage="@drawable/ic_baseline_picture_in_picture_alt_24"
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView

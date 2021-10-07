@@ -577,15 +577,6 @@ class ChatController(args: Bundle) :
 
         binding.messageInputView.setPadding(0, 0, 0, 0)
 
-        if (args.containsKey("showToggleChat") && args.getBoolean("showToggleChat")) {
-            binding.callControlToggleChat.visibility = View.VISIBLE
-            wasDetached = true
-        }
-
-        binding.callControlToggleChat.setOnClickListener {
-            (activity as MagicCallActivity).showCall()
-        }
-
         binding.messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -1459,6 +1450,7 @@ class ChatController(args: Bundle) :
             !activity?.isChangingConfigurations!! &&
             !isLeavingForConversation
         ) {
+            // TODO: don't leave room when going back to call from PIP Mode!!
             wasDetached = true
             leaveRoom()
         }
@@ -2336,7 +2328,7 @@ class ChatController(args: Bundle) :
             menu.findItem(R.id.action_forward_message).isVisible =
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType()
             if (menu.hasVisibleItems()) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
                 }
                 show()

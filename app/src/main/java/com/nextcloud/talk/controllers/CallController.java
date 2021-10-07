@@ -141,6 +141,7 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -372,7 +373,9 @@ public class CallController extends BaseController {
         basicInitialization();
         initViews();
         initPipView();
-        initiateCall();
+        if (!isConnectionEstablished()){
+            initiateCall();
+        }
     }
 
     private void basicInitialization() {
@@ -839,9 +842,10 @@ public class CallController extends BaseController {
         }
     }
 
-    @OnClick(R.id.callControlToggleChat)
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @OnClick(R.id.callControlEnterPip)
     void onToggleChatClick() {
-        ((MagicCallActivity) getActivity()).showChat();
+        ((MagicCallActivity) getActivity()).enterPipMode();
     }
 
     @OnClick(R.id.callControlHangupView)

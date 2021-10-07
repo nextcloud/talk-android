@@ -124,7 +124,8 @@
 
         <activity
             android:name=".activities.MagicCallActivity"
-            android:configChanges="orientation|screenSize"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask" />
 
         <activity
