@@ -37,7 +37,7 @@ import java.util.Arrays
 
 object AccountUtils {
 
-    private val TAG = "AccountUtils"
+    private const val TAG = "AccountUtils"
 
     fun findAccounts(userEntitiesList: List<UserEntity>): List<Account> {
         val context = NextcloudTalkApplication.sharedApplication!!.applicationContext
