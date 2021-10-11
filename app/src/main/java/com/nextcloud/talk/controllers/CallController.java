@@ -844,7 +844,7 @@ public class CallController extends BaseController {
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @OnClick(R.id.callControlEnterPip)
-    void onToggleChatClick() {
+    void enterPipMode() {
         ((MagicCallActivity) getActivity()).enterPipMode();
     }
 
@@ -1304,6 +1304,7 @@ public class CallController extends BaseController {
                             setCallState(CallStatus.JOINED);
 
                             ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
+                            ApplicationWideCurrentRoomHolder.getInstance().setDialing(false);
 
                             if (!TextUtils.isEmpty(roomToken)) {
                                 NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(),
@@ -1581,6 +1582,7 @@ public class CallController extends BaseController {
         }
 
         hangupNetworkCalls(shutDownView);
+        ApplicationWideCurrentRoomHolder.getInstance().setInCall(false);
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {

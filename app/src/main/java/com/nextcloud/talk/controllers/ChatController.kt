@@ -232,7 +232,6 @@ class ChatController(args: Bundle) :
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
-    var isLeavingForConversation: Boolean = false
     var wasDetached: Boolean = false
     var emojiPopup: EmojiPopup? = null
 
@@ -1367,10 +1366,8 @@ class ChatController(args: Bundle) :
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
-        isLeavingForConversation = false
         ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
         ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomId
-        ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
@@ -1434,11 +1431,6 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-
-        if (!isLeavingForConversation) {
-            // current room is still "active", we need the info
-            ApplicationWideCurrentRoomHolder.getInstance().clear()
-        }
         eventBus?.unregister(this)
 
         if (activity != null) {
@@ -1448,9 +1440,10 @@ class ChatController(args: Bundle) :
         if (conversationUser != null &&
             activity != null &&
             !activity?.isChangingConfigurations!! &&
-            !isLeavingForConversation
+            !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
+            !ApplicationWideCurrentRoomHolder.getInstance().isDialing
         ) {
-            // TODO: don't leave room when going back to call from PIP Mode!!
+            ApplicationWideCurrentRoomHolder.getInstance().clear()
             wasDetached = true
             leaveRoom()
         }
@@ -2121,7 +2114,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
-        isLeavingForConversation = true
+        ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
         val callIntent = getIntentForCall(isVoiceOnlyCall)
         if (callIntent != null) {
             startActivity(callIntent)
