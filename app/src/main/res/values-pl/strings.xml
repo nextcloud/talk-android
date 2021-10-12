@@ -159,7 +159,6 @@
     <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_never">Nigdy nie dołączył</string>
     <string name="nc_new_conversation">Nowa rozmowa</string>
-    <string name="nc_new_mention">Więcej wzmianek</string>
     <string name="nc_new_messages">Nieprzeczytane wiadomości</string>
     <string name="nc_new_password">Nowe hasło</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikacja %1$s nie została zainstalowana na serwerze, przerwano żądanie</string>
