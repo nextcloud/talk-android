@@ -49,6 +49,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 class MagicCallActivity : BaseActivity() {
     lateinit var binding: ActivityMagicCallBinding
     private var router: Router? = null
+    var isInPipMode: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,8 +143,10 @@ class MagicCallActivity : BaseActivity() {
         }
     }
 
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean,
-        newConfig: Configuration) {
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
+        isInPipMode = isInPictureInPictureMode
+
         if (isInPictureInPictureMode) {
             Log.d(TAG, "Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.")
         } else {
@@ -151,7 +154,12 @@ class MagicCallActivity : BaseActivity() {
         }
     }
 
-
+    override fun onStop() {
+        super.onStop()
+        if (isInPipMode) {
+            finish()
+        }
+    }
 
     companion object {
         private val TAG = "MagicCallActivity"
