@@ -2359,6 +2359,19 @@ public class CallController extends BaseController {
         }
     }
 
+    public void updateUiForPipMode(){
+        callControls.setVisibility(View.GONE);
+        callInfosLinearLayout.setVisibility(View.GONE);
+        selfVideoView.setVisibility(View.GONE);
+        callStateView.setVisibility(View.GONE);
+    }
+
+    public void updateUiForNormalMode(){
+        callControls.setVisibility(View.VISIBLE);
+        callInfosLinearLayout.setVisibility(View.VISIBLE);
+        selfVideoView.setVisibility(View.VISIBLE);
+    }
+
     private String getDescriptionForCallType() {
         String appName = getResources().getString(R.string.nc_app_product_name);
         if (isVoiceOnlyCall) {

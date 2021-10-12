@@ -82,6 +82,7 @@ class MagicCallActivity : BaseActivity() {
                     RouterTransaction.with(CallController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
+                        .tag("CallController")
                 )
             }
         }
@@ -147,10 +148,11 @@ class MagicCallActivity : BaseActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         isInPipMode = isInPictureInPictureMode
 
+        var callController = router?.getControllerWithTag("CallController") as CallController
         if (isInPictureInPictureMode) {
-            Log.d(TAG, "Hide the full-screen UI (controls, etc.) while in picture-in-picture mode.")
+            callController.updateUiForPipMode()
         } else {
-            Log.d(TAG,"Restore the full-screen UI.")
+            callController.updateUiForNormalMode()
         }
     }
 
