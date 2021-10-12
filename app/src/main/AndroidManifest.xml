@@ -124,9 +124,12 @@
 
         <activity
             android:name=".activities.MagicCallActivity"
+            android:theme="@style/AppTheme.CallLauncher"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:taskAffinity=".call"
+            android:excludeFromRecents="true" />
 
         <activity
             android:name=".activities.FullScreenImageActivity"

@@ -187,6 +187,13 @@
         <item name="android:navigationBarColor">@color/colorPrimary</item>
     </style>
 
+    <!-- Call Launch screen -->
+    <style name="AppTheme.CallLauncher">
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
+    </style>
+
     <style name="Nextcloud.Material.TextButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">
         <item name="android:typeface">sans</item>
         <item name="android:textStyle">bold</item>
