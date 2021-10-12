@@ -96,6 +96,7 @@ class MagicCallActivity : BaseActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onUserLeaveHint() {
+        enableKeyguard()
         enterPictureInPictureMode(getPipParams())
     }
 
