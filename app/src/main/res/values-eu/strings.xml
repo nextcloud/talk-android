@@ -159,7 +159,6 @@
     <string name="nc_mute_calls_desc">Sarrerako deiak isilduko dira</string>
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_new_conversation">Elkarrizketa berria</string>
-    <string name="nc_new_mention">Aipamen gehiago</string>
     <string name="nc_new_messages">Irakurri gabeko mezuak</string>
     <string name="nc_new_password">Pasahitz berria</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app-a ez dago instalatuta zerbitzarian, bertan behera uzten</string>

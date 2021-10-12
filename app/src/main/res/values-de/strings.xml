@@ -159,7 +159,6 @@
     <string name="nc_mute_calls_desc">Eingehende Anrufe werden stummgeschaltet</string>
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>
-    <string name="nc_new_mention">Weitere Erwähnungen</string>
     <string name="nc_new_messages">Ungelesene Nachrichten</string>
     <string name="nc_new_password">Neues Passwort</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
