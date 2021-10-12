@@ -63,7 +63,6 @@ class MagicCallActivity : BaseActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN or
                 WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
         )
-       // window.decorView.systemUiVisibility = systemUiVisibility
 
         binding = ActivityMagicCallBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -163,12 +162,5 @@ class MagicCallActivity : BaseActivity() {
 
     companion object {
         private val TAG = "MagicCallActivity"
-
-      /*  private val systemUiVisibility: Int
-            get() {
-                var flags = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_FULLSCREEN
-                flags = flags or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                return flags
-            } */
     }
 }
