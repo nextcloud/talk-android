@@ -159,6 +159,7 @@
     <string name="nc_mute_calls_desc">來電將被靜音</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
+    <string name="nc_new_mention">未讀的提及</string>
     <string name="nc_new_messages">未讀郵件</string>
     <string name="nc_new_password">新密碼</string>
     <string name="nc_nextcloud_talk_app_not_installed">此伺服器並未安裝%1$s應用程式，操作中斷。</string>
