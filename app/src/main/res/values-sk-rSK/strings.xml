@@ -159,6 +159,7 @@
     <string name="nc_mute_calls_desc">Príchadzajúce hovory budú stíšené</string>
     <string name="nc_never">Nikdy nepridaný</string>
     <string name="nc_new_conversation">Nový rozhovor</string>
+    <string name="nc_new_mention">Neprečítané spomenutia</string>
     <string name="nc_new_messages">Neprečítané správy</string>
     <string name="nc_new_password">Nové heslo</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$s nie je na serveri nainštalovaná, ruší sa</string>
