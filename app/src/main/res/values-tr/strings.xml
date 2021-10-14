@@ -159,6 +159,7 @@
     <string name="nc_mute_calls_desc">Gelen çağrılar sessize alınacak</string>
     <string name="nc_never">Hiç katılmadı</string>
     <string name="nc_new_conversation">Yeni görüşme</string>
+    <string name="nc_new_mention">Okunmamış anmalar</string>
     <string name="nc_new_messages">Okunmamış iletiler</string>
     <string name="nc_new_password">Yeni parola</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s uygulaması sunucu üzerinde  kurulu değil, vazgeçiliyor</string>
