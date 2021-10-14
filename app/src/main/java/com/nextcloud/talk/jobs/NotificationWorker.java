@@ -537,18 +537,15 @@ public class NotificationWorker extends Worker {
                 }
             }
 
-
-            if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting()) || importantConversation) {
-                Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-
-                if (vibrator != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                    } else {
-                        //vibrator.vibrate(500);
-                    }
+            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
+                } else {
+                    //vibrator.vibrate(500);
                 }
             }
+
         }
     }
 

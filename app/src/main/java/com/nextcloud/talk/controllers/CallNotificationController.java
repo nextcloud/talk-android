@@ -358,9 +358,7 @@ public class CallNotificationController extends BaseController {
             playRingtoneSound();
         }
 
-        if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
-            vibrate();
-        }
+        vibrate();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

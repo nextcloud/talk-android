@@ -170,8 +170,6 @@ public class SettingsController extends BaseController {
     MaterialPreferenceCategory messageView;
     @BindView(R.id.settings_client_cert)
     MaterialStandardPreference certificateSetup;
-    @BindView(R.id.settings_always_vibrate)
-    MaterialSwitchPreference shouldVibrateSwitchPreference;
     @BindView(R.id.settings_incognito_keyboard)
     MaterialSwitchPreference incognitoKeyboardSwitchPreference;
     @BindView(R.id.settings_screen_security)
@@ -263,10 +261,6 @@ public class SettingsController extends BaseController {
             licenceButton.setVisibility(View.GONE);
         }
 
-        if (!DoNotDisturbUtils.INSTANCE.hasVibrator()) {
-            shouldVibrateSwitchPreference.setVisibility(View.GONE);
-        }
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             incognitoKeyboardSwitchPreference.setVisibility(View.GONE);
         }
@@ -279,7 +273,6 @@ public class SettingsController extends BaseController {
                     getResources().getString(R.string.nc_settings_screen_lock_desc),
                     getResources().getString(R.string.nc_app_product_name)));
         }
-
 
         if (!TextUtils.isEmpty(getResources().getString(R.string.nc_privacy_url))) {
             privacyButton.addPreferenceClickListener(view12 -> {
@@ -352,7 +345,6 @@ public class SettingsController extends BaseController {
             if (alias == null) {
                 alias = "";
             }
-
 
             userUtils.createOrUpdateUser(null, null, null, null, null, null, null, currentUser.getId(),
                     null, alias, null);
@@ -443,10 +435,6 @@ public class SettingsController extends BaseController {
             certificateSetup.setTitle(R.string.nc_client_cert_change);
         } else {
             certificateSetup.setTitle(R.string.nc_client_cert_setup);
-        }
-
-        if (shouldVibrateSwitchPreference.getVisibility() == View.VISIBLE) {
-            ((Checkable) shouldVibrateSwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getShouldVibrateSetting());
         }
 
         ((Checkable) screenSecuritySwitchPreference.findViewById(R.id.mp_checkable)).setChecked(appPreferences.getIsScreenSecured());
