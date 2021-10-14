@@ -32,7 +32,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -536,16 +535,6 @@ public class NotificationWorker extends Worker {
                     Log.e(TAG, "Failed to set data source");
                 }
             }
-
-            Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-            if (vibrator != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    //vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE));
-                } else {
-                    //vibrator.vibrate(500);
-                }
-            }
-
         }
     }
 
