@@ -11,6 +11,10 @@
 
 Please note that Notifications won't work with the F-Droid version due to missing Google Play Services.
 
+|||||||
+|---|---|---|---|---|---|
+|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/conversationList_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/searchParticipant_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/voiceCall.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/voiceRecord_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/markdown_light.png">|<img src="https://raw.githubusercontent.com/nextcloud/screenshots/master/android/Talk/playstore/settings_light.png">|
+
 **Video & audio calls through Nextcloud on Android**
 
 Nextcloud Talk is a fully on-premises audio/video and chat communication service. It features web and mobile apps and is designed to offer the highest degree of security while being easy to use.
