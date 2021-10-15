@@ -2316,17 +2316,15 @@ class ChatController(args: Bundle) :
             }
             inflate(R.menu.chat_message_menu)
             menu.findItem(R.id.action_copy_message).isVisible = !(message as ChatMessage).isDeleted
-            menu.findItem(R.id.action_reply_to_message).isVisible = (message as ChatMessage).replyable
-            menu.findItem(R.id.action_reply_privately).isVisible = (message as ChatMessage).replyable &&
+            menu.findItem(R.id.action_reply_to_message).isVisible = message.replyable
+            menu.findItem(R.id.action_reply_privately).isVisible = message.replyable &&
                 conversationUser?.userId?.isNotEmpty() == true && conversationUser.userId != "?" &&
-                (message as ChatMessage).user.id.startsWith("users/") &&
-                (message as ChatMessage).user.id.substring(6) != currentConversation?.actorId &&
+                message.user.id.startsWith("users/") &&
+                message.user.id.substring(6) != currentConversation?.actorId &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
-            menu.findItem(R.id.action_forward_message).isVisible = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.equals(
-                (message as ChatMessage)
-                    .getMessageType()
-            )
+            menu.findItem(R.id.action_forward_message).isVisible =
+                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType()
             if (menu.hasVisibleItems()) {
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
