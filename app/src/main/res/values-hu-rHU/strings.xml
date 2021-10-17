@@ -159,6 +159,7 @@
     <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_new_conversation">Új beszélgetés</string>
+    <string name="nc_new_mention">Olvasatlan említések</string>
     <string name="nc_new_messages">Olvasatlan üzenetek</string>
     <string name="nc_new_password">Új jelszó</string>
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s alkalmazás nincs telepítve a kiszolgálón, megszakítás</string>
