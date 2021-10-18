@@ -2360,6 +2360,12 @@ public class CallController extends BaseController {
     }
 
     public void updateUiForPipMode(){
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,0,0, 0);
+        gridView.setLayoutParams(params);
+
+
         callControls.setVisibility(View.GONE);
         callInfosLinearLayout.setVisibility(View.GONE);
         selfVideoView.setVisibility(View.GONE);
@@ -2367,6 +2373,14 @@ public class CallController extends BaseController {
     }
 
     public void updateUiForNormalMode(){
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
+        int callControlsHeight =
+            Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
+        params.setMargins(0,0,0, callControlsHeight);
+        gridView.setLayoutParams(params);
+
         callControls.setVisibility(View.VISIBLE);
         callInfosLinearLayout.setVisibility(View.VISIBLE);
         selfVideoView.setVisibility(View.VISIBLE);
