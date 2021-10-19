@@ -30,7 +30,6 @@ import com.afollestad.materialdialogs.actions.hasActionButton
 import com.afollestad.materialdialogs.actions.hasActionButtons
 import com.afollestad.materialdialogs.internal.list.DialogAdapter
 import com.afollestad.materialdialogs.internal.rtl.RtlTextView
-import com.afollestad.materialdialogs.list.getItemSelector
 import com.afollestad.materialdialogs.utils.MDUtil.inflate
 import com.afollestad.materialdialogs.utils.MDUtil.maybeSetTextColor
 import com.nextcloud.talk.R
@@ -103,7 +102,6 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
         val currentItem = items[position]
 
         holder.titleView.text = currentItem.title
-        holder.itemView.background = dialog.getItemSelector()
         currentItem.populateIcon(holder.iconView)
 
         val activatedIndex = dialog.config[KEY_ACTIVATED_INDEX] as? Int
