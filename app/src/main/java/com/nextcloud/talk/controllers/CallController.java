@@ -180,8 +180,12 @@ public class CallController extends BaseController {
     @BindView(R.id.callControlEnableSpeaker)
     SimpleDraweeView callControlEnableSpeaker;
 
-    @BindView(R.id.pip_video_view)
-    SurfaceViewRenderer pipVideoView;
+    @BindView(R.id.selfVideoRenderer)
+    SurfaceViewRenderer selfVideoRenderer;
+
+    @BindView(R.id.selfVideoViewWrapper)
+    FrameLayout selfVideoViewWrapper;
+
     @BindView(R.id.controllerCallLayout)
     RelativeLayout controllerCallLayout;
     @BindView(R.id.gridview)
@@ -205,8 +209,7 @@ public class CallController extends BaseController {
     @BindView(R.id.callConversationNameTextView)
     TextView callConversationNameTextView;
 
-    @BindView(R.id.selfVideoView)
-    FrameLayout selfVideoView;
+
 
     @BindView(R.id.callStateRelativeLayoutView)
     RelativeLayout callStateView;
@@ -371,8 +374,9 @@ public class CallController extends BaseController {
 
         callControls.setZ(100.0f);
         basicInitialization();
+        participantDisplayItems = new HashMap<>();
         initViews();
-        initPipView();
+        updateSelfVideoViewPosition();
         if (!isConnectionEstablished()){
             initiateCall();
         }
@@ -475,37 +479,37 @@ public class CallController extends BaseController {
                 });
     }
 
-
     @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
-        participantDisplayItems = new HashMap<>();
+
+
+        callControls.setVisibility(View.VISIBLE);
+        callInfosLinearLayout.setVisibility(View.VISIBLE);
+        selfVideoViewWrapper.setVisibility(View.VISIBLE);
 
         if (isVoiceOnlyCall) {
             callControlEnableSpeaker.setVisibility(View.VISIBLE);
             cameraSwitchButton.setVisibility(View.GONE);
             cameraControlButton.setVisibility(View.GONE);
-            pipVideoView.setVisibility(View.GONE);
+            selfVideoRenderer.setVisibility(View.GONE);
 
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                                  ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
-            int callControlsHeight =
-                    Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
+            int callControlsHeight = Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
             params.setMargins(0,0,0, callControlsHeight);
             gridView.setLayoutParams(params);
         } else {
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                                 ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.setMargins(0,0,0, 0);
+            gridView.setLayoutParams(params);
+
             callControlEnableSpeaker.setVisibility(View.GONE);
             if (cameraEnumerator.getDeviceNames().length < 2) {
                 cameraSwitchButton.setVisibility(View.GONE);
             }
-
-            pipVideoView.init(rootEglBase.getEglBaseContext(), null);
-            pipVideoView.setZOrderMediaOverlay(true);
-            // disabled because it causes some devices to crash
-            pipVideoView.setEnableHardwareScaler(false);
-            pipVideoView.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
-
-            pipVideoView.setOnTouchListener(new SelfVideoTouchListener());
+            initSelfVideoView();
         }
 
         gridView.setOnTouchListener(new View.OnTouchListener() {
@@ -519,6 +523,21 @@ public class CallController extends BaseController {
         });
 
         initGridAdapter();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void initSelfVideoView() {
+        try{
+            selfVideoRenderer.init(rootEglBase.getEglBaseContext(), null);
+        } catch(IllegalStateException e) {
+            Log.d(TAG, "selfVideoRenderer already initialized", e);
+        }
+
+        selfVideoRenderer.setZOrderMediaOverlay(true);
+        // disabled because it causes some devices to crash
+        selfVideoRenderer.setEnableHardwareScaler(false);
+        selfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT);
+        selfVideoRenderer.setOnTouchListener(new SelfVideoTouchListener());
     }
 
     private void initGridAdapter() {
@@ -704,7 +723,7 @@ public class CallController extends BaseController {
         localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
         localMediaStream.addTrack(localVideoTrack);
         localVideoTrack.setEnabled(false);
-        localVideoTrack.addSink(pipVideoView);
+        localVideoTrack.addSink(selfVideoRenderer);
     }
 
     private void microphoneInitialization() {
@@ -725,7 +744,7 @@ public class CallController extends BaseController {
                 Logging.d(TAG, "Creating front facing camera capturer.");
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
                 if (videoCapturer != null) {
-                    pipVideoView.setMirror(true);
+                    selfVideoRenderer.setMirror(true);
                     return videoCapturer;
                 }
             }
@@ -740,7 +759,7 @@ public class CallController extends BaseController {
                 VideoCapturer videoCapturer = enumerator.createCapturer(deviceName, null);
 
                 if (videoCapturer != null) {
-                    pipVideoView.setMirror(false);
+                    selfVideoRenderer.setMirror(false);
                     return videoCapturer;
                 }
             }
@@ -894,7 +913,7 @@ public class CallController extends BaseController {
             cameraVideoCapturer.switchCamera(new CameraVideoCapturer.CameraSwitchHandler() {
                 @Override
                 public void onCameraSwitchDone(boolean currentCameraIsFront) {
-                    pipVideoView.setMirror(currentCameraIsFront);
+                    selfVideoRenderer.setMirror(currentCameraIsFront);
                 }
 
                 @Override
@@ -928,9 +947,9 @@ public class CallController extends BaseController {
                 localMediaStream.videoTracks.get(0).setEnabled(enable);
             }
             if (enable) {
-                pipVideoView.setVisibility(View.VISIBLE);
+                selfVideoRenderer.setVisibility(View.VISIBLE);
             } else {
-                pipVideoView.setVisibility(View.INVISIBLE);
+                selfVideoRenderer.setVisibility(View.INVISIBLE);
             }
         } else {
             message = "audioOff";
@@ -1545,8 +1564,8 @@ public class CallController extends BaseController {
                 videoCapturer = null;
             }
 
-            if (pipVideoView != null) {
-                pipVideoView.release();
+            if (selfVideoRenderer != null) {
+                selfVideoRenderer.release();
             }
 
             if (audioSource != null) {
@@ -1879,11 +1898,11 @@ public class CallController extends BaseController {
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
         powerManagerUtils.setOrientation(Objects.requireNonNull(getResources()).getConfiguration().orientation);
         initGridAdapter();
-        initPipView();
+        updateSelfVideoViewPosition();
     }
 
-    private void initPipView() {
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) pipVideoView.getLayoutParams();
+    private void updateSelfVideoViewPosition() {
+        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) selfVideoRenderer.getLayoutParams();
 
         DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
         int screenWidthPx = displayMetrics.widthPixels;
@@ -1908,11 +1927,11 @@ public class CallController extends BaseController {
             layoutParams.width = (int) getResources().getDimension(R.dimen.large_preview_dimension);
             newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.5);
         }
-        pipVideoView.setLayoutParams(layoutParams);
+        selfVideoRenderer.setLayoutParams(layoutParams);
 
         int newXafterRotatePx = (int) DisplayUtils.convertDpToPixel(newXafterRotate, getApplicationContext());
-        selfVideoView.setY(newYafterRotate);
-        selfVideoView.setX(newXafterRotatePx);
+        selfVideoViewWrapper.setY(newYafterRotate);
+        selfVideoViewWrapper.setX(newXafterRotatePx);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -2368,22 +2387,18 @@ public class CallController extends BaseController {
 
         callControls.setVisibility(View.GONE);
         callInfosLinearLayout.setVisibility(View.GONE);
-        selfVideoView.setVisibility(View.GONE);
+        selfVideoViewWrapper.setVisibility(View.GONE);
         callStateView.setVisibility(View.GONE);
+
+        selfVideoRenderer.release();
     }
 
     public void updateUiForNormalMode(){
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
-        int callControlsHeight =
-            Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
-        params.setMargins(0,0,0, callControlsHeight);
-        gridView.setLayoutParams(params);
+        initViews();  // --> IllegalStateException: pip_video_viewAlready initialized
 
         callControls.setVisibility(View.VISIBLE);
         callInfosLinearLayout.setVisibility(View.VISIBLE);
-        selfVideoView.setVisibility(View.VISIBLE);
+        selfVideoViewWrapper.setVisibility(View.VISIBLE);
     }
 
     private String getDescriptionForCallType() {
@@ -2489,10 +2504,10 @@ public class CallController extends BaseController {
             long duration = event.getEventTime() - event.getDownTime();
 
             if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
-                float newY = event.getRawY() - selfVideoView.getHeight() / (float) 2;
-                float newX = event.getRawX() - selfVideoView.getWidth() / (float) 2;
-                selfVideoView.setY(newY);
-                selfVideoView.setX(newX);
+                float newY = event.getRawY() - selfVideoViewWrapper.getHeight() / (float) 2;
+                float newX = event.getRawX() - selfVideoViewWrapper.getWidth() / (float) 2;
+                selfVideoViewWrapper.setY(newY);
+                selfVideoViewWrapper.setX(newX);
             } else if (event.getActionMasked() == MotionEvent.ACTION_UP && duration < 100) {
                 switchCamera();
             }

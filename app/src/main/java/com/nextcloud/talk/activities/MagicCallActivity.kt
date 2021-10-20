@@ -148,7 +148,7 @@ class MagicCallActivity : BaseActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         isInPipMode = isInPictureInPictureMode
 
-        var callController = router?.getControllerWithTag("CallController") as CallController
+        val callController = router?.getControllerWithTag("CallController") as CallController
         if (isInPictureInPictureMode) {
             callController.updateUiForPipMode()
         } else {
