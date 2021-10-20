@@ -24,8 +24,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lobby_view"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_default">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/lobby_image_view"
