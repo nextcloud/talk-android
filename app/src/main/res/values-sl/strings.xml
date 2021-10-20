@@ -12,6 +12,12 @@
     <string name="file_list_loading">Poteka nalaganje …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Simbol zaklepa</string>
+    <string name="menu_item_sort_by_date_newest_first">najprej najnovejše</string>
+    <string name="menu_item_sort_by_date_oldest_first">najprej najstarejše</string>
+    <string name="menu_item_sort_by_name_a_z">po abecedi naraščajoče A–Ž</string>
+    <string name="menu_item_sort_by_name_z_a">po abecedi padajoče Ž–A</string>
+    <string name="menu_item_sort_by_size_biggest_first">najprej največje</string>
+    <string name="menu_item_sort_by_size_smallest_first">najprej najmanjše</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
     <string name="nc_about">O programu</string>
@@ -140,6 +146,7 @@
     <string name="nc_mute_calls_desc">Dohodni klici bodo utišani</string>
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_new_conversation">Nov pogovor</string>
+    <string name="nc_new_mention">Neprebrane omembe</string>
     <string name="nc_new_messages">Neprebrana sporočila</string>
     <string name="nc_new_password">Novo geslo</string>
     <string name="nc_nextcloud_talk_app_not_installed">Program %1$s na strežniku ni nameščen, zahteva bo preklicana.</string>
@@ -282,6 +289,7 @@
     <string name="nc_share_subject"> povabilo %1$s</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
+    <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_conversation">Začni pogovor</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_timeout_error">Časovni zamik</string>
