@@ -519,7 +519,7 @@ class LocationPickerController(args: Bundle) :
         }
     }
 
-    override fun onLocationChanged(location: Location?) {
+    override fun onLocationChanged(location: Location) {
         myLocation = GeoPoint(location)
     }
 
@@ -527,11 +527,11 @@ class LocationPickerController(args: Bundle) :
         // empty
     }
 
-    override fun onProviderEnabled(provider: String?) {
+    override fun onProviderEnabled(provider: String) {
         // empty
     }
 
-    override fun onProviderDisabled(provider: String?) {
+    override fun onProviderDisabled(provider: String) {
         // empty
     }
 

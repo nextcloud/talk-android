@@ -213,31 +213,62 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         const val META_DATA = "META_DATA"
 
         fun isStoragePermissionGranted(context: Context): Boolean {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                return if (PermissionChecker.checkSelfPermission(
-                        context,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ) == PermissionChecker.PERMISSION_GRANTED
-                ) {
-                    Log.d(TAG, "Permission is granted")
-                    true
-                } else {
-                    Log.d(TAG, "Permission is revoked")
-                    false
+            when {
+                Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
+                    return if (PermissionChecker.checkSelfPermission(
+                            context,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ) == PermissionChecker.PERMISSION_GRANTED
+                    ) {
+                        Log.d(TAG, "Permission is granted (SDK 30 or greater)")
+                        true
+                    } else {
+                        Log.d(TAG, "Permission is revoked (SDK 30 or greater)")
+                        false
+                    }
                 }
-            } else { // permission is automatically granted on sdk<23 upon installation
-                Log.d(TAG, "Permission is granted")
-                return true
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                    return if (PermissionChecker.checkSelfPermission(
+                            context,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) == PermissionChecker.PERMISSION_GRANTED
+                    ) {
+                        Log.d(TAG, "Permission is granted")
+                        true
+                    } else {
+                        Log.d(TAG, "Permission is revoked")
+                        false
+                    }
+                }
+                else -> { // permission is automatically granted on sdk<23 upon installation
+                    Log.d(TAG, "Permission is granted")
+                    return true
+                }
             }
         }
 
         fun requestStoragePermission(controller: Controller) {
-            controller.requestPermissions(
-                arrayOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ),
-                REQUEST_PERMISSION
-            )
+
+            when {
+                Build.VERSION.SDK_INT > Build.VERSION_CODES.Q -> {
+                    controller.requestPermissions(
+                        arrayOf(
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ),
+                        REQUEST_PERMISSION
+                    )
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M -> {
+                    controller.requestPermissions(
+                        arrayOf(
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ),
+                        REQUEST_PERMISSION
+                    )
+                }
+                else -> { // permission is automatically granted on sdk<23 upon installation
+                }
+            }
         }
     }
 }
