@@ -192,14 +192,13 @@ public class ConversationsListController extends BaseController implements Searc
     private Bundle conversationMenuBundle = null;
 
     private boolean showShareToScreen = false;
-    private boolean shareToScreenWasShown = false;
 
     private ArrayList<String> filesToShare;
     private Conversation selectedConversation;
 
     private String textToPaste = "";
 
-    private boolean forwardMessage = false;
+    private boolean forwardMessage;
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -338,7 +337,7 @@ public class ConversationsListController extends BaseController implements Searc
 
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
-        showShareToScreen = !shareToScreenWasShown && hasActivityActionSendIntent();
+        showShareToScreen = !showShareToScreen && hasActivityActionSendIntent();
 
 
         if (showShareToScreen) {
@@ -738,10 +737,11 @@ public class ConversationsListController extends BaseController implements Searc
         selectedConversation = getConversation(position);
         if (selectedConversation != null && getActivity() != null) {
             if (showShareToScreen) {
-                shareToScreenWasShown = true;
                 handleSharedData();
+                showShareToScreen = false;
             } else if (forwardMessage) {
                 openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
+                forwardMessage = false;
             } else {
                 openConversation();
             }
