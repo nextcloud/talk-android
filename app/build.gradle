@@ -34,16 +34,6 @@ configurations {
     ktlint
 }
 
-for (TaskExecutionRequest tr : getGradle().getStartParameter().getTaskRequests()) {
-    for (String arg : tr.args) {
-        // any gplay, but only exact "build", as e.g. buildGeneric shall not apply gplay.grade
-        if (arg.contains("Gplay") || arg.contains("lint") || arg == "build") {
-            apply from: 'gplay.gradle'
-            System.console().println("Applying gplay.gradle")
-        }
-    }
-}
-
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
@@ -305,6 +295,8 @@ dependencies {
     })
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
+
+    gplayImplementation "com.google.firebase:firebase-messaging:20.1.2"
 }
 
 task ktlint(type: JavaExec, group: "verification") {
