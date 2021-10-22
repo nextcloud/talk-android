@@ -54,13 +54,12 @@
             apc:mp_title="@string/nc_plain_old_messages" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
-            android:id="@+id/muteCalls"
+            android:id="@+id/callNotifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            apc:mp_default_value="false"
-            apc:mp_key="mute_calls"
-            apc:mp_title="@string/nc_mute_calls"
-            apc:mp_summary="@string/nc_mute_calls_desc"/>
+            apc:mp_default_value="true"
+            apc:mp_key="call_notifications"
+            apc:mp_title="@string/nc_call_notifications" />
 
     </com.yarolegovich.mp.MaterialPreferenceCategory>
 

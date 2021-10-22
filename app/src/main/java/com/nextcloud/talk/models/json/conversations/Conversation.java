@@ -3,6 +3,8 @@
  *   Nextcloud Talk application
  *
  *   @author Mario Danic
+ *   @author Tim Krüger
+ *   Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  *   Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
  *   This program is free software: you can redistribute it and/or modify
@@ -35,6 +37,7 @@ import com.nextcloud.talk.models.json.participants.Participant;
 import org.parceler.Parcel;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 @Parcel
 @JsonObject
@@ -100,6 +103,9 @@ public class Conversation {
 
     @JsonField(name = "unreadMentionDirect")
     public Boolean unreadMentionDirect;
+
+    @JsonField(name = "notificationCalls")
+    public Integer notificationCalls;
 
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
@@ -261,6 +267,8 @@ public class Conversation {
         return unreadMentionDirect;
     }
 
+    public Integer getNotificationCalls() { return notificationCalls; }
+
     public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
@@ -370,6 +378,7 @@ public class Conversation {
         this.unreadMentionDirect = unreadMentionDirect;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -405,46 +414,46 @@ public class Conversation {
         if (callFlag != that.callFlag) {
             return false;
         }
-        if (roomId != null ? !roomId.equals(that.roomId) : that.roomId != null) {
+        if (!Objects.equals(roomId, that.roomId)) {
             return false;
         }
         if (!token.equals(that.token)) {
             return false;
         }
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (!Objects.equals(name, that.name)) {
             return false;
         }
-        if (displayName != null ? !displayName.equals(that.displayName) : that.displayName != null) {
+        if (!Objects.equals(displayName, that.displayName)) {
             return false;
         }
-        if (description != null ? !description.equals(that.description) : that.description != null) {
+        if (!Objects.equals(description, that.description)) {
             return false;
         }
         if (type != that.type) {
             return false;
         }
-        if (participants != null ? !participants.equals(that.participants) : that.participants != null) {
+        if (!Objects.equals(participants, that.participants)) {
             return false;
         }
         if (participantType != that.participantType) {
             return false;
         }
-        if (sessionId != null ? !sessionId.equals(that.sessionId) : that.sessionId != null) {
+        if (!Objects.equals(sessionId, that.sessionId)) {
             return false;
         }
-        if (actorId != null ? !actorId.equals(that.actorId) : that.actorId != null) {
+        if (!Objects.equals(actorId, that.actorId)) {
             return false;
         }
-        if (actorType != null ? !actorType.equals(that.actorType) : that.actorType != null) {
+        if (!Objects.equals(actorType, that.actorType)) {
             return false;
         }
-        if (password != null ? !password.equals(that.password) : that.password != null) {
+        if (!Objects.equals(password, that.password)) {
             return false;
         }
-        if (lastMessage != null ? !lastMessage.equals(that.lastMessage) : that.lastMessage != null) {
+        if (!Objects.equals(lastMessage, that.lastMessage)) {
             return false;
         }
-        if (objectType != null ? !objectType.equals(that.objectType) : that.objectType != null) {
+        if (!Objects.equals(objectType, that.objectType)) {
             return false;
         }
         if (notificationLevel != that.notificationLevel) {
@@ -456,13 +465,16 @@ public class Conversation {
         if (lobbyState != that.lobbyState) {
             return false;
         }
-        if (lobbyTimer != null ? !lobbyTimer.equals(that.lobbyTimer) : that.lobbyTimer != null) {
+        if (!Objects.equals(lobbyTimer, that.lobbyTimer)) {
             return false;
         }
-        if (canLeaveConversation != null ? !canLeaveConversation.equals(that.canLeaveConversation) : that.canLeaveConversation != null) {
+        if (!Objects.equals(canLeaveConversation, that.canLeaveConversation)) {
             return false;
         }
-        return canDeleteConversation != null ? canDeleteConversation.equals(that.canDeleteConversation) : that.canDeleteConversation == null;
+        if (!Objects.equals(notificationCalls, that.notificationCalls)) {
+            return false;
+        }
+        return Objects.equals(canDeleteConversation, that.canDeleteConversation);
     }
 
     protected boolean canEqual(final Object other) {
@@ -499,6 +511,7 @@ public class Conversation {
         result = 31 * result + callFlag;
         result = 31 * result + (canLeaveConversation != null ? canLeaveConversation.hashCode() : 0);
         result = 31 * result + (canDeleteConversation != null ? canDeleteConversation.hashCode() : 0);
+        result = 31 * result + (notificationCalls != null ? notificationCalls.hashCode() : 0);
         return result;
     }
 
@@ -533,6 +546,7 @@ public class Conversation {
                 ", callFlag=" + callFlag +
                 ", canLeaveConversation=" + canLeaveConversation +
                 ", canDeleteConversation=" + canDeleteConversation +
+                ", notificationCalls=" + notificationCalls +
                 '}';
     }
 

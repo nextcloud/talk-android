@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,6 +24,8 @@ package com.nextcloud.talk.utils.preferences.preferencestorage;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
+
 import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -31,21 +35,30 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
+import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.yarolegovich.mp.io.StorageModule;
+
+import org.jetbrains.annotations.NotNull;
+
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
+
+import java.util.Collections;
 import java.util.Set;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {
+    private static final String TAG = "DatabaseStorageModule";
     @Inject
     ArbitraryStorageUtils arbitraryStorageUtils;
 
     @Inject
     NcApi ncApi;
+
 
     private UserEntity conversationUser;
     private String conversationToken;
@@ -65,6 +78,40 @@ public class DatabaseStorageModule implements StorageModule {
 
     @Override
     public void saveBoolean(String key, boolean value) {
+        if(key.equals("call_notifications")) {
+            int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
+            ncApi.notificationCalls(ApiUtils.getCredentials(conversationUser.getUsername(),
+                                                            conversationUser.getToken()),
+                                    ApiUtils.getUrlForRoomNotificationCalls(apiVersion,
+                                                                            conversationUser.getBaseUrl(),
+                                                                            conversationToken),
+                                    value ? 1 : 0)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<GenericOverall>() {
+                    @Override
+                    public void onSubscribe(@NotNull Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NotNull GenericOverall genericOverall) {
+
+                    }
+
+                    @Override
+                    public void onError(@NotNull Throwable e) {
+                        Log.e(TAG, "Error when trying to toggle notification calls", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                }
+            );
+        }
+
         if (!key.equals("conversation_lobby")) {
             arbitraryStorageUtils.storeStorageSetting(accountIdentifier, key, Boolean.toString(value), conversationToken);
         } else {

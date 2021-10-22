@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -609,7 +611,14 @@ class ConversationInfoController(args: Bundle) :
                             }
 
                             if (Conversation.ConversationType.ROOM_SYSTEM == conversation!!.type) {
-                                binding.notificationSettingsView.muteCalls.visibility = View.GONE
+                                binding.notificationSettingsView.callNotifications.visibility = View.GONE
+                            }
+
+                            if (conversation!!.notificationCalls === null) {
+                                binding.notificationSettingsView.callNotifications.visibility = View.GONE
+                            } else {
+                                binding.notificationSettingsView.callNotifications.value =
+                                    conversationCopy.notificationCalls == 1
                             }
 
                             getListOfParticipants()
