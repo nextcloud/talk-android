@@ -187,17 +187,6 @@ public interface AppPreferences {
     @RemoveMethod
     void removeNotificationChannelUpgradeToV3();
 
-    @KeyByString("notifications_vibrate")
-    @DefaultValue(R.bool.value_true)
-    boolean getShouldVibrateSetting();
-
-    @KeyByString("notifications_vibrate")
-    void setVibrateSetting(boolean value);
-
-    @KeyByString("notifications_vibrate")
-    @RemoveMethod
-    void removeVibrateSetting();
-
     @KeyByString("screen_security")
     @DefaultValue(R.bool.value_false)
     boolean getIsScreenSecured();

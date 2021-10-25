@@ -29,10 +29,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.renderscript.RenderScript;
 import android.text.TextUtils;
@@ -357,10 +355,6 @@ public class CallNotificationController extends BaseController {
         if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
             playRingtoneSound();
         }
-
-        if (DoNotDisturbUtils.INSTANCE.shouldVibrate(appPreferences.getShouldVibrateSetting())) {
-            vibrate();
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -528,33 +522,5 @@ public class CallNotificationController extends BaseController {
                 Log.e(TAG, "Failed to set data source");
             }
         }
-    }
-
-    private void vibrate() {
-        vibrator = (Vibrator) getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-
-        if (vibrator != null) {
-            long[] vibratePattern = new long[]{0, 400, 800, 600, 800, 800, 800, 1000};
-            int[] amplitudes = new int[]{0, 255, 0, 255, 0, 255, 0, 255};
-
-            VibrationEffect vibrationEffect;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (vibrator.hasAmplitudeControl()) {
-                    vibrationEffect = VibrationEffect.createWaveform(vibratePattern, amplitudes, -1);
-                    //vibrator.vibrate(vibrationEffect);
-                } else {
-                    vibrationEffect = VibrationEffect.createWaveform(vibratePattern, -1);
-                    //vibrator.vibrate(vibrationEffect);
-                }
-            } else {
-                //vibrator.vibrate(vibratePattern, -1);
-            }
-        }
-
-        handler.postDelayed(() -> {
-            if (vibrator != null) {
-                vibrator.cancel();
-            }
-        }, 10000);
     }
 }
