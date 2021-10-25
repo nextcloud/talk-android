@@ -79,6 +79,8 @@ public class ParticipantsAdapter extends BaseAdapter {
 
             surfaceViewRenderer = convertView.findViewById(R.id.surface_view);
             try {
+                Log.d(TAG, "hasSurface: " + participantDisplayItem.getRootEglBase().hasSurface());
+
                 surfaceViewRenderer.setMirror(false);
                 surfaceViewRenderer.init(participantDisplayItem.getRootEglBase().getEglBaseContext(), null);
                 surfaceViewRenderer.setZOrderMediaOverlay(false);
@@ -127,7 +129,24 @@ public class ParticipantsAdapter extends BaseAdapter {
         } else {
             audioOffView.setVisibility(View.INVISIBLE);
         }
+
+
+        convertView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                Log.d(TAG,"onViewAttachedToWindow");
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                Log.d(TAG,"onViewDetachedFromWindow");
+            }
+        });
+
+
         return convertView;
+
     }
 
     private boolean hasVideoStream(ParticipantDisplayItem participantDisplayItem, MediaStream mediaStream) {

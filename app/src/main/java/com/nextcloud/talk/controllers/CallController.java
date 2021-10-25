@@ -141,7 +141,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import autodagger.AutoInjector;
 import butterknife.BindView;
@@ -208,8 +207,8 @@ public class CallController extends BaseController {
     TextView callVoiceOrVideoTextView;
     @BindView(R.id.callConversationNameTextView)
     TextView callConversationNameTextView;
-
-
+    @BindView(R.id.callControlEnterPip)
+    SimpleDraweeView callControlEnterPip;
 
     @BindView(R.id.callStateRelativeLayoutView)
     RelativeLayout callStateView;
@@ -483,6 +482,10 @@ public class CallController extends BaseController {
     private void initViews() {
         callInfosLinearLayout.setVisibility(View.VISIBLE);
         selfVideoViewWrapper.setVisibility(View.VISIBLE);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            callControlEnterPip.setVisibility(View.GONE);
+        }
 
         if (isVoiceOnlyCall) {
             callControlEnableSpeaker.setVisibility(View.VISIBLE);
@@ -858,10 +861,14 @@ public class CallController extends BaseController {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @OnClick(R.id.callControlEnterPip)
     void enterPipMode() {
-        ((MagicCallActivity) getActivity()).enterPipMode();
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
+            ((MagicCallActivity) getActivity()).enterPipMode();
+        } else{
+            Log.w(TAG, "tried to enterPipMode with an android api level below 26 (Android 8). This scenario should " +
+                "have been avoided by hiding the PIP button!");
+        }
     }
 
     @OnClick(R.id.callControlHangupView)
