@@ -522,6 +522,8 @@ public class CallController extends BaseController {
             }
         });
 
+        animateCallControls(true, 0);
+
         initGridAdapter();
     }
 
