@@ -2398,9 +2398,12 @@ public class CallController extends BaseController {
     }
 
     public void updateUiForNormalMode(){
-        callControls.setVisibility(View.INVISIBLE); // animateCallControls needs this to be invisible for a check.
-        initViews();  // --> IllegalStateException: pip_video_viewAlready initialized
-
+        if (isVoiceOnlyCall) {
+            callControls.setVisibility(View.VISIBLE);
+        } else {
+            callControls.setVisibility(View.INVISIBLE); // animateCallControls needs this to be invisible for a check.
+        }
+        initViews();
 
         callInfosLinearLayout.setVisibility(View.VISIBLE);
         selfVideoViewWrapper.setVisibility(View.VISIBLE);
