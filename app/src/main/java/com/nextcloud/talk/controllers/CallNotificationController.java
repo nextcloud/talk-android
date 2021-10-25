@@ -31,7 +31,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.renderscript.RenderScript;
 import android.text.TextUtils;
 import android.util.Log;
@@ -149,7 +148,6 @@ public class CallNotificationController extends BaseController {
     private MediaPlayer mediaPlayer;
     private boolean leavingScreen = false;
     private RenderScript renderScript;
-    private Vibrator vibrator;
     private Handler handler;
 
     public CallNotificationController(Bundle args) {
@@ -451,10 +449,6 @@ public class CallNotificationController extends BaseController {
 
             mediaPlayer.release();
             mediaPlayer = null;
-        }
-
-        if (vibrator != null) {
-            vibrator.cancel();
         }
     }
 
