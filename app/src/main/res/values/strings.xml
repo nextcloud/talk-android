@@ -231,8 +231,7 @@
     <string name="nc_notify_me_always">Always notify</string>
     <string name="nc_notify_me_mention">Notify when mentioned</string>
     <string name="nc_notify_me_never">Never notify</string>
-    <string name="nc_mute_calls">Mute calls</string>
-    <string name="nc_mute_calls_desc">Incoming calls will be silenced</string>
+    <string name="nc_call_notifications">Call notifications</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
 

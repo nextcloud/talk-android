@@ -4,8 +4,10 @@
  *
  *   @author Mario Danic
  *   @author Marcel Hibbe
+ *   @author Tim Krüger
  *   Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *   Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ *   Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -418,4 +420,9 @@ public interface NcApi {
 
     @DELETE
     Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
+
+    @FormUrlEncoded
+    @POST
+    Observable<GenericOverall> notificationCalls(@Header("Authorization") String authorization, @Url String url,
+                                                 @Field("level") Integer level);
 }

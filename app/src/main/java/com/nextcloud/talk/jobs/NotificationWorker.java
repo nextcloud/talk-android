@@ -143,11 +143,6 @@ public class NotificationWorker extends Worker {
         ArbitraryStorageEntity arbitraryStorageEntity;
 
         if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
-                "mute_calls", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
-            muteCall = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
-        }
-
-        if ((arbitraryStorageEntity = arbitraryStorageUtils.getStorageSetting(userEntity.getId(),
                 "important_conversation", intent.getExtras().getString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN()))) != null) {
             importantConversation = Boolean.parseBoolean(arbitraryStorageEntity.getValue());
         }
@@ -183,6 +178,8 @@ public class NotificationWorker extends Worker {
                                 showNotification(intent);
                             }
                         }
+
+                        muteCall = !(conversation.notificationCalls == 1);
                     }
 
                     @Override

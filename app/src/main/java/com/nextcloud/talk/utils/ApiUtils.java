@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -232,6 +234,10 @@ public class ApiUtils {
 
     public static String getUrlForRoomWebinaryLobby(int version, String baseUrl, String token) {
         return getUrlForRoom(version, baseUrl, token) + "/webinary/lobby";
+    }
+
+    public static String getUrlForRoomNotificationCalls(int version, String baseUrl, String token) {
+        return getUrlForRoom(version, baseUrl, token) + "/notify-calls";
     }
 
     public static String getUrlForCall(int version, String baseUrl, String token) {
