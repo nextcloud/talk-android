@@ -89,13 +89,15 @@ class MagicCallActivity : BaseActivity() {
 
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun enterPipMode() {
-        enableKeyguard()
-        enterPictureInPictureMode(getPipParams())
+    override fun onBackPressed() {
+        enterPipMode()
     }
 
     override fun onUserLeaveHint() {
+        enterPipMode()
+    }
+
+    fun enterPipMode() {
         enableKeyguard()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             enterPictureInPictureMode(getPipParams())

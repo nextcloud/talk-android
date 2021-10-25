@@ -865,12 +865,7 @@ public class CallController extends BaseController {
 
     @OnClick(R.id.callControlEnterPip)
     void enterPipMode() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O){
-            ((MagicCallActivity) getActivity()).enterPipMode();
-        } else{
-            Log.w(TAG, "tried to enterPipMode with an android api level below 26 (Android 8). This scenario should " +
-                "have been avoided by hiding the PIP button!");
-        }
+        ((MagicCallActivity) getActivity()).enterPipMode();
     }
 
     @OnClick(R.id.callControlHangupView)
