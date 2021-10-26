@@ -315,7 +315,8 @@ public class CallNotificationController extends BaseController {
             conversationNameTextView.setText(currentConversation.getDisplayName());
         }
 
-        loadAvatar();
+        // TODO: load avatar, but don't block UI!
+//        loadAvatar();
         checkIfAnyParticipantsRemainInRoom();
         showAnswerControls();
     }

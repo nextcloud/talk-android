@@ -1252,9 +1252,16 @@ public class CallController extends BaseController {
 
         int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {ApiUtils.APIv4, 1});
 
+        Log.d(TAG, "joinRoomAndCall");
+        Log.d(TAG, "   baseUrl= " + baseUrl);
+        Log.d(TAG, "   roomToken= " + roomToken);
+        Log.d(TAG, "   callSession= " + callSession);
+
+        String url = ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken);
+        Log.d(TAG, "   url= " + url);
+
         if (TextUtils.isEmpty(callSession)) {
-            ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken),
-                           conversationPassword)
+            ncApi.joinRoom(credentials, url, conversationPassword)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(3)
@@ -1267,6 +1274,8 @@ public class CallController extends BaseController {
                         @Override
                         public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                             callSession = roomOverall.getOcs().getData().getSessionId();
+                            Log.d(TAG, " new callSession by joinRoom= " + callSession);
+
                             ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
                             ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
                             ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
@@ -1276,12 +1285,12 @@ public class CallController extends BaseController {
 
                         @Override
                         public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                            // unused atm
+                            Log.e(TAG, "joinRoom onError", e);
                         }
 
                         @Override
                         public void onComplete() {
-                            // unused atm
+                            Log.d(TAG, "joinRoom onComplete");
                         }
                     });
         } else {
@@ -1640,6 +1649,7 @@ public class CallController extends BaseController {
                 });
     }
 
+    // TODO: why is this never called?!
     private void leaveRoom(boolean shutDownView) {
         int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
 

@@ -269,6 +269,8 @@ class ChatController(args: Bundle) :
         this.roomToken = args.getString(KEY_ROOM_TOKEN, "")
         this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
+        Log.d(TAG, "roomToken = " + roomToken)
+
         if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
             this.currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
         }
@@ -289,6 +291,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
+        Log.d(TAG, "getRoomInfo")
         val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
@@ -308,6 +311,8 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         currentConversation = roomOverall.ocs.data
+                        Log.d(TAG, "currentConversation.toString : " + currentConversation.toString())
+                        Log.d(TAG, "currentConversation.sessionId : " + currentConversation?.sessionId)
                         loadAvatarForStatusBar()
 
                         setTitle()
@@ -419,6 +424,7 @@ class ChatController(args: Bundle) :
 
     override fun onViewBound(view: View) {
         actionBar?.show()
+        Log.d(TAG, "onViewBound")
         var adapterWasNull = false
 
         if (adapter == null) {
