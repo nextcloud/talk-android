@@ -58,7 +58,11 @@
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
     <string name="nc_change_password">Spremeni geslo</string>
+    <string name="nc_circle">Krog</string>
     <string name="nc_circles">Krogi</string>
+    <string name="nc_clear_history">Izbriši vsa sporočila</string>
+    <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
+    <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
     <string name="nc_clear_password">Počisti geslo</string>
     <string name="nc_client_cert_change">Spremeni potrdilo odjemalca</string>
     <string name="nc_client_cert_setup">Nastavi potrdilo odjemalca</string>
@@ -79,6 +83,7 @@
     <string name="nc_date_header_today">Danes</string>
     <string name="nc_date_header_yesterday">Včeraj</string>
     <string name="nc_delete">Izbriši</string>
+    <string name="nc_delete_all">Izbriši vse</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete_conversation_default">Potrdite zahtevo, da želite odstraniti pogovor.</string>
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
@@ -89,6 +94,7 @@
     <string name="nc_description_more_menu_group">Meni za javen pogovor %1$s</string>
     <string name="nc_description_more_menu_one_to_one">Meni pogovora z %1$s</string>
     <string name="nc_description_more_menu_public">Meni za skupinski pogovor %1$s</string>
+    <string name="nc_description_record_voice">Posnemi glasovno sporočilo</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
     <string name="nc_dialog_invalid_password">Neveljavno geslo</string>
     <string name="nc_dialog_reauth_or_delete">Ali želite ponovno overiti ali odstraniti račun?</string>
@@ -108,6 +114,8 @@
     <string name="nc_file_browser_reshare_forbidden">Nadaljnje omogočanje uporabi te datoteke ni dovoljeno</string>
     <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
     <string name="nc_formatted_message_you">→ %1$s</string>
+    <string name="nc_forward_message">Posreduj</string>
+    <string name="nc_forward_to_three_dots">Posreduj za ...</string>
     <string name="nc_general_settings">Splošno</string>
     <string name="nc_get_from_provider">Še nimate izbranega oziroma nameščenega strežnika? Kliknite in si pridobite dostop.</string>
     <string name="nc_get_source_code">Pridobi izvorno kodo</string>
@@ -132,6 +140,7 @@
     <string name="nc_lobby">Spletna čakalnica</string>
     <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
     <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\nsestanek je načrtovan za %1$s.</string>
+    <string name="nc_location_current_position_description">Vaše trenutno mesto</string>
     <string name="nc_locked">Zaklenjeno</string>
     <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
@@ -217,6 +226,7 @@
     <string name="nc_sent_an_audio_you">Pošljete zvočno sporočilo</string>
     <string name="nc_sent_an_image" formatted="true">%1$s pošlje sliko.</string>
     <string name="nc_sent_an_image_you">Pošljete sliko</string>
+    <string name="nc_sent_location_you">Poslali ste podatke o trenutnem mestu.</string>
     <string name="nc_server_connect">Preizkusi povezavo s strežnikom</string>
     <string name="nc_server_db_upgrade_needed">Posodobite podatkovno zbirko %1$s</string>
     <string name="nc_server_failed_to_import_account">Uvoz izbranega računa je spodletel</string>
@@ -235,6 +245,7 @@
     <string name="nc_settings">Nastavitve</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_settings_add_account">Dodaj račun</string>
+    <string name="nc_settings_advanced_title">Napredno</string>
     <string name="nc_settings_appearance">Videz</string>
     <string name="nc_settings_call_ringtone">Klici</string>
     <string name="nc_settings_incognito_keyboard_desc">Nastavi določilo za onemogočanje osebnega učenja (brez vsakršnih zagotovil)</string>
@@ -284,8 +295,10 @@
     <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
     <string name="nc_settings_warning">Opozorilo</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
+    <string name="nc_share_current_location">Objavi trenutno mesto</string>
     <string name="nc_share_link">Objavi povezavo</string>
     <string name="nc_share_link_via">Objavi povezavo prek</string>
+    <string name="nc_share_location">Objavi trenutno mesto</string>
     <string name="nc_share_subject"> povabilo %1$s</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
