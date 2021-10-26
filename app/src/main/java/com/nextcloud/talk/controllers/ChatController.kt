@@ -1373,7 +1373,7 @@ class ChatController(args: Bundle) :
         }
 
         ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
-        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomId
+        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
