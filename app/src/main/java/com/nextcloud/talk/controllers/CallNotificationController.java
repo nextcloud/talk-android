@@ -200,7 +200,8 @@ public class CallNotificationController extends BaseController {
 
         getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
                                                  .popChangeHandler(new HorizontalChangeHandler())
-                                                 .pushChangeHandler(new HorizontalChangeHandler()));
+                                                 .pushChangeHandler(new HorizontalChangeHandler())
+                                                 .tag(CallController.TAG));
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {

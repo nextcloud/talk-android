@@ -161,7 +161,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallController extends BaseController {
 
-    private static final String TAG = "CallController";
+    public static final String TAG = "CallController";
 
     private static final String[] PERMISSIONS_CALL = {
             android.Manifest.permission.CAMERA,
