@@ -441,7 +441,7 @@ public class CallNotificationController extends BaseController {
         }
     }
 
-    private void endMediaAndVibratorNotifications() {
+    private void endMediaNotifications() {
         if (mediaPlayer != null) {
             if (mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
@@ -461,7 +461,7 @@ public class CallNotificationController extends BaseController {
             handler = null;
         }
         dispose();
-        endMediaAndVibratorNotifications();
+        endMediaNotifications();
         super.onDestroy();
     }
 
