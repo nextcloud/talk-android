@@ -22,6 +22,7 @@ package com.nextcloud.talk.controllers;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -41,8 +42,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
@@ -55,6 +54,7 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -173,7 +173,7 @@ public class CallNotificationController extends BaseController {
         callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.callControlHangupView)
+    @OnClick(R.id.hangupButton)
     void hangup() {
         leavingScreen = true;
 
@@ -198,10 +198,14 @@ public class CallNotificationController extends BaseController {
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
 
-        getRouter().replaceTopController(RouterTransaction.with(new CallController(originalBundle))
-                                                 .popChangeHandler(new HorizontalChangeHandler())
-                                                 .pushChangeHandler(new HorizontalChangeHandler())
-                                                 .tag(CallController.TAG));
+//        getRouter().replaceTopController(RouterTransaction.with(new CallActivity(originalBundle))
+//                                                 .popChangeHandler(new HorizontalChangeHandler())
+//                                                 .pushChangeHandler(new HorizontalChangeHandler())
+//                                                 .tag(CallActivity.TAG));
+
+        Intent intent = new Intent(this.getActivity(), CallActivity.class);
+        intent.putExtras(originalBundle);
+        startActivity(intent);
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {

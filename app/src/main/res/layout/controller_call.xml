@@ -28,7 +28,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".activities.MagicCallActivity">
+    tools:context=".activities.CallActivity">
 
     <LinearLayout
         android:id="@+id/linearWrapperLayout"
@@ -37,7 +37,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/conversationRelativeLayoutView"
+            android:id="@+id/conversationRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -70,7 +70,7 @@
                     tools:visibility="visible" />
 
                 <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/call_control_switch_camera"
+                    android:id="@+id/switchSelfVideoButton"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal|bottom"
@@ -89,7 +89,7 @@
                 android:paddingTop="20dp">
 
                 <TextView
-                    android:id="@+id/callVoiceOrVideoTextView"
+                    android:id="@+id/callModeTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
@@ -122,6 +122,7 @@
                 android:layout_centerVertical="true" />
 
             <include
+                android:id="@+id/callStates"
                 layout="@layout/call_states"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,7 +133,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/callControlsLinearLayout"
+        android:id="@+id/callControls"
         android:layout_width="match_parent"
         android:layout_height="@dimen/call_controls_height"
         android:layout_alignBottom="@id/linearWrapperLayout"
@@ -144,7 +145,7 @@
         android:layout_marginEnd="40dp">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlEnterPip"
+            android:id="@+id/pictureInPictureButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginEnd="10dp"
@@ -154,7 +155,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlEnableSpeaker"
+            android:id="@+id/speakerButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -164,7 +165,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/call_control_camera"
+            android:id="@+id/cameraButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -175,7 +176,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/call_control_microphone"
+            android:id="@+id/microphoneButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -186,7 +187,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlHangupView"
+            android:id="@+id/hangupButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"

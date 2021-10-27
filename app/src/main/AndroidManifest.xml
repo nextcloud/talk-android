@@ -123,7 +123,7 @@
         </activity>
 
         <activity
-            android:name=".activities.MagicCallActivity"
+            android:name=".activities.CallActivity"
             android:theme="@style/AppTheme.CallLauncher"
             android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"

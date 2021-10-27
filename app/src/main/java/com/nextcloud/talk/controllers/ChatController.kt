@@ -94,7 +94,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
@@ -2142,7 +2142,7 @@ class ChatController(args: Bundle) :
             }
 
             return if (activity != null) {
-                val callIntent = Intent(activity, MagicCallActivity::class.java)
+                val callIntent = Intent(activity, CallActivity::class.java)
                 callIntent.putExtras(bundle)
                 callIntent
             } else {
@@ -2500,7 +2500,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onNext(roomOverall: RoomOverall) {
-                        val conversationIntent = Intent(activity, MagicCallActivity::class.java)
+                        val conversationIntent = Intent(activity, CallActivity::class.java)
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                         bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)

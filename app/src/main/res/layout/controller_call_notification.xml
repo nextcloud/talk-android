@@ -54,7 +54,7 @@
             tools:visibility="visible" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlHangupView"
+            android:id="@+id/hangupButton"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:layout_margin="24dp"
