@@ -101,7 +101,7 @@ import okhttp3.Cache;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationController extends BaseController {
 
-    private static final String TAG = "CallNotificationController";
+    public static final String TAG = "CallNotificationController";
 
     @Inject
     NcApi ncApi;

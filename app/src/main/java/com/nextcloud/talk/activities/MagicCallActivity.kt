@@ -76,6 +76,7 @@ class MagicCallActivity : BaseActivity() {
                     RouterTransaction.with(CallNotificationController(intent.extras))
                         .pushChangeHandler(HorizontalChangeHandler())
                         .popChangeHandler(HorizontalChangeHandler())
+                        .tag(CallNotificationController.TAG)
                 )
             } else {
                 router!!.setRoot(
@@ -153,11 +154,20 @@ class MagicCallActivity : BaseActivity() {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         isInPipMode = isInPictureInPictureMode
 
-        val callController = router?.getControllerWithTag(CallController.TAG) as CallController
-        if (isInPictureInPictureMode) {
-            callController.updateUiForPipMode()
-        } else {
-            callController.updateUiForNormalMode()
+        if (router?.getControllerWithTag(CallNotificationController.TAG) != null) {
+            val callNotificationController = router?.getControllerWithTag(CallNotificationController.TAG) as CallNotificationController
+            if (isInPictureInPictureMode) {
+                // callNotificationController.updateUiForPipMode()
+            } else {
+                // callNotificationController.updateUiForNormalMode()
+            }
+        } else if (router?.getControllerWithTag(CallController.TAG) != null) {
+            val callController = router?.getControllerWithTag(CallController.TAG) as CallController
+            if (isInPictureInPictureMode) {
+                callController.updateUiForPipMode()
+            } else {
+                callController.updateUiForNormalMode()
+            }
         }
     }
 
