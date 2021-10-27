@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>
+    <string name="nc_call_notifications">Известия за обаждане</string>
     <string name="nc_call_reconnecting">Повторно свързване...</string>
     <string name="nc_call_ringing">ПОЗВЪНЯВАНЕ</string>
     <string name="nc_call_state_in_call">%1$sв разговор</string>

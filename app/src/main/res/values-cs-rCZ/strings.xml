@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_call_name_is_same">Zadaný název je stejný jako ten stávající</string>
+    <string name="nc_call_notifications">Upozornění na hovor</string>
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
     <string name="nc_call_ringing">ZVONĚNÍ</string>
     <string name="nc_call_state_in_call">%1$s má hovor</string>

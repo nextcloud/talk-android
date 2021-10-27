@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">PRZYCHODZĄCA</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
+    <string name="nc_call_notifications">Powiadomienia połączenia</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_call_ringing">DZWONIENIE</string>
     <string name="nc_call_state_in_call">%1$s w trakcie połączenia</string>

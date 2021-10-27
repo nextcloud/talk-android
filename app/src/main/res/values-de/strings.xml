@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_call_name_is_same">Der eingegebene Name stimmt mit dem bestehenden überein</string>
+    <string name="nc_call_notifications">Anruf-Benachrichtigungen</string>
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_call_state_in_call">%1$s ist in einem Gespräch</string>
