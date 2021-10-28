@@ -54,7 +54,7 @@ import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.databinding.ControllerCallBinding;
+import com.nextcloud.talk.databinding.CallActivityBinding;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.events.MediaStreamEvent;
 import com.nextcloud.talk.events.NetworkEvent;
@@ -242,7 +242,7 @@ public class CallActivity extends BaseActivity {
 
     private Boolean isInPipMode = false;
 
-    private ControllerCallBinding binding;
+    private CallActivityBinding binding;
 
     @Parcel
     public enum CallStatus {
@@ -262,7 +262,7 @@ public class CallActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        binding = ControllerCallBinding.inflate(getLayoutInflater());
+        binding = CallActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         Bundle extras = getIntent().getExtras();
@@ -310,6 +310,43 @@ public class CallActivity extends BaseActivity {
         });
 
         initClickListeners();
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    @Override
+    public void onStart() {
+        super.onStart();
+        // TODO: move some lines to onCreate!?!
+
+        binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
+
+        pulseAnimation = PulseAnimation.create().with(binding.microphoneButton)
+            .setDuration(310)
+            .setRepeatCount(PulseAnimation.INFINITE)
+            .setRepeatMode(PulseAnimation.REVERSE);
+
+
+        try {
+            cache.evictAll();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to evict cache");
+        }
+
+        binding.callControls.setZ(100.0f);
+        basicInitialization();
+        participantDisplayItems = new HashMap<>();
+        initViews();
+        updateSelfVideoViewPosition();
+        if (!isConnectionEstablished()){
+            initiateCall();
+        }
+    }
+
+    public void onStop() {
+        super.onStop();
+        if (isInPipMode) {
+            finish();
+        }
     }
 
     private void initClickListeners() {
@@ -2380,34 +2417,6 @@ public class CallActivity extends BaseActivity {
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public void onStart() {
-        super.onStart();
-        binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
-
-        pulseAnimation = PulseAnimation.create().with(binding.microphoneButton)
-            .setDuration(310)
-            .setRepeatCount(PulseAnimation.INFINITE)
-            .setRepeatMode(PulseAnimation.REVERSE);
-
-
-        try {
-            cache.evictAll();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to evict cache");
-        }
-
-        binding.callControls.setZ(100.0f);
-        basicInitialization();
-        participantDisplayItems = new HashMap<>();
-        initViews();
-        updateSelfVideoViewPosition();
-        if (!isConnectionEstablished()){
-            initiateCall();
-        }
-    }
-
     private class MicrophoneButtonTouchListener implements View.OnTouchListener {
 
         @SuppressLint("ClickableViewAccessibility")
@@ -2502,13 +2511,6 @@ public class CallActivity extends BaseActivity {
             updateUiForPipMode();
         } else {
             updateUiForNormalMode();
-        }
-    }
-
-    public void onStop() {
-        super.onStop();
-        if (isInPipMode) {
-            finish();
         }
     }
 
