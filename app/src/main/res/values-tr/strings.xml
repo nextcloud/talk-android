@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
+    <string name="nc_call_notifications">Çağrı bildirimleri</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_call_state_in_call">%1$s kişi katılıyor</string>
