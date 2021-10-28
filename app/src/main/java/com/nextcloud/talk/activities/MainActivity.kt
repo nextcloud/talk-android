@@ -40,7 +40,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.controllers.CallNotificationController
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.LockedController
 import com.nextcloud.talk.controllers.ServerSelectionController
@@ -310,11 +309,17 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         handleActionFromContact(intent)
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                router!!.pushController(
-                    RouterTransaction.with(CallNotificationController(intent.extras))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())
-                )
+
+                // router!!.pushController(
+                //     RouterTransaction.with(CallNotificationController(intent.extras))
+                //         .pushChangeHandler(HorizontalChangeHandler())
+                //         .popChangeHandler(HorizontalChangeHandler())
+                // )
+
+                val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
+                intent.extras?.let { callNotificationIntent.putExtras(it) }
+                startActivity(callNotificationIntent)
+
             } else {
                 ConductorRemapping.remapChatController(
                     router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),

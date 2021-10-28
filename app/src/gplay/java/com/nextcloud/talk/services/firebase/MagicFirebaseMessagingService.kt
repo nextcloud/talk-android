@@ -41,7 +41,7 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.CallActivity
+import com.nextcloud.talk.activities.CallNotificationActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -178,7 +178,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                 )
                             }
                         } else if (type == "call") {
-                            val fullScreenIntent = Intent(applicationContext, CallActivity::class.java)
+                            val fullScreenIntent = Intent(applicationContext, CallNotificationActivity::class.java)
                             val bundle = Bundle()
                             bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage!!.id)
                             bundle.putParcelable(KEY_USER_ENTITY, signatureVerification!!.userEntity)

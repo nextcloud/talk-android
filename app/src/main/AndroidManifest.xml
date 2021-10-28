@@ -132,6 +132,14 @@
             android:excludeFromRecents="true" />
 
         <activity
+            android:name=".activities.CallNotificationActivity"
+            android:theme="@style/AppTheme.CallLauncher"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
+            android:launchMode="singleTask"
+            android:taskAffinity=".call"
+            android:excludeFromRecents="true" />
+
+        <activity
             android:name=".activities.FullScreenImageActivity"
             android:theme="@style/FullScreenImageTheme"
             android:configChanges="orientation|keyboardHidden|screenSize">

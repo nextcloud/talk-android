@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers;
+package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -32,32 +32,24 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.renderscript.RenderScript;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.databinding.CallNotificationActivityBinding;
 import com.nextcloud.talk.events.CallNotificationClick;
 import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
@@ -86,11 +78,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import autodagger.AutoInjector;
-import butterknife.BindView;
 import butterknife.OnClick;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -99,9 +89,9 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallNotificationController extends BaseController {
+public class CallNotificationActivity extends BaseActivity {
 
-    public static final String TAG = "CallNotificationController";
+    public static final String TAG = "CallNotificationActivity";
 
     @Inject
     NcApi ncApi;
@@ -118,27 +108,6 @@ public class CallNotificationController extends BaseController {
     @Inject
     Context context;
 
-    @BindView(R.id.incomingCallVoiceOrVideoTextView)
-    TextView incomingCallVoiceOrVideoTextView;
-
-    @BindView(R.id.conversationNameTextView)
-    TextView conversationNameTextView;
-
-    @BindView(R.id.avatarImageView)
-    SimpleDraweeView avatarImageView;
-
-    @BindView(R.id.callAnswerVoiceOnlyView)
-    SimpleDraweeView callAnswerVoiceOnlyView;
-
-    @BindView(R.id.callAnswerCameraView)
-    SimpleDraweeView callAnswerCameraView;
-
-    @BindView(R.id.backgroundImageView)
-    ImageView backgroundImageView;
-
-    @BindView(R.id.incomingTextRelativeLayout)
-    RelativeLayout incomingTextRelativeLayout;
-
     private List<Disposable> disposablesList = new ArrayList<>();
     private Bundle originalBundle;
     private String roomId;
@@ -147,63 +116,97 @@ public class CallNotificationController extends BaseController {
     private Conversation currentConversation;
     private MediaPlayer mediaPlayer;
     private boolean leavingScreen = false;
-    private RenderScript renderScript;
     private Handler handler;
+    private CallNotificationActivityBinding binding;
 
-    public CallNotificationController(Bundle args) {
-        super(args);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
         eventBus.post(new CallNotificationClick());
-        this.roomId = args.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
-        this.currentConversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
-        this.userBeingCalled = args.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
 
-        this.originalBundle = args;
+        binding = CallNotificationActivityBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        Bundle extras = getIntent().getExtras();
+        this.roomId = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
+        this.currentConversation = Parcels.unwrap(extras.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
+        this.userBeingCalled = extras.getParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY());
+
+        this.originalBundle = extras;
         credentials = ApiUtils.getCredentials(userBeingCalled.getUsername(), userBeingCalled.getToken());
+
+        setCallDescriptionText();
+
+        if (currentConversation == null) {
+            handleFromNotification();
+        } else {
+            runAllThings();
+        }
+
+        if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
+            playRingtoneSound();
+        }
+
+        initClickListeners();
     }
 
+    @SuppressLint({"LongLogTag"})
     @Override
-    protected View inflateView(@NonNull LayoutInflater inflater, @NonNull ViewGroup container) {
-        return inflater.inflate(R.layout.controller_call_notification, container, false);
+    public void onStart() {
+        super.onStart();
+
+        if (handler == null) {
+            handler = new Handler();
+
+            try {
+                cache.evictAll();
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to evict cache");
+            }
+        }
+    }
+
+    private void initClickListeners() {
+        binding.callAnswerVoiceOnlyView.setOnClickListener(l -> {
+            originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
+            proceedToCall();
+        });
+
+        binding.callAnswerCameraView.setOnClickListener(l -> {
+            originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
+            proceedToCall();
+        });
+
+        binding.hangupButton.setOnClickListener(l -> hangup());
+    }
+
+    private void setCallDescriptionText() {
+        String callDescriptionWithoutTypeInfo =
+            String.format(
+                getResources().getString(R.string.nc_call_unknown),
+                getResources().getString(R.string.nc_app_product_name));
+
+        binding.incomingCallVoiceOrVideoTextView.setText(callDescriptionWithoutTypeInfo);
     }
 
     private void showAnswerControls() {
-        callAnswerCameraView.setVisibility(View.VISIBLE);
-        callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
+        binding.callAnswerCameraView.setVisibility(View.VISIBLE);
+        binding.callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.hangupButton)
     void hangup() {
         leavingScreen = true;
-
-        if (getActivity() != null) {
-            getActivity().finish();
-        }
-    }
-
-    @OnClick(R.id.callAnswerCameraView)
-    void answerWithCamera() {
-        originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
-        proceedToCall();
-    }
-
-    @OnClick(R.id.callAnswerVoiceOnlyView)
-    void answerVoiceOnly() {
-        originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
-        proceedToCall();
+        finish();
     }
 
     private void proceedToCall() {
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), currentConversation.getToken());
         originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), currentConversation.getDisplayName());
 
-//        getRouter().replaceTopController(RouterTransaction.with(new CallActivity(originalBundle))
-//                                                 .popChangeHandler(new HorizontalChangeHandler())
-//                                                 .pushChangeHandler(new HorizontalChangeHandler())
-//                                                 .tag(CallActivity.TAG));
-
-        Intent intent = new Intent(this.getActivity(), CallActivity.class);
+        Intent intent = new Intent(this, CallActivity.class);
         intent.putExtras(originalBundle);
         startActivity(intent);
     }
@@ -239,9 +242,7 @@ public class CallNotificationController extends BaseController {
                         }
 
                         if (!hasParticipantsInCall || inCallOnDifferentDevice) {
-                            if (getActivity() != null) {
-                                getActivity().runOnUiThread(() -> hangup());
-                            }
+                            runOnUiThread(() -> hangup());
                         }
                     }
 
@@ -285,11 +286,11 @@ public class CallNotificationController extends BaseController {
                                                                                 "conversation-call-flags");
                             if (hasCallFlags) {
                                 if (isInCallWithVideo(currentConversation.callFlag)) {
-                                    incomingCallVoiceOrVideoTextView.setText(
+                                    binding.incomingCallVoiceOrVideoTextView.setText(
                                             String.format(getResources().getString(R.string.nc_call_video),
                                                           getResources().getString(R.string.nc_app_product_name)));
                                 } else {
-                                    incomingCallVoiceOrVideoTextView.setText(
+                                    binding.incomingCallVoiceOrVideoTextView.setText(
                                             String.format(getResources().getString(R.string.nc_call_voice),
                                                           getResources().getString(R.string.nc_app_product_name)));
                                 }
@@ -316,9 +317,7 @@ public class CallNotificationController extends BaseController {
     }
 
     private void runAllThings() {
-        if (conversationNameTextView != null) {
-            conversationNameTextView.setText(currentConversation.getDisplayName());
-        }
+        binding.conversationNameTextView.setText(currentConversation.getDisplayName());
 
         // TODO: load avatar, but don't block UI!
 //        loadAvatar();
@@ -326,67 +325,21 @@ public class CallNotificationController extends BaseController {
         showAnswerControls();
     }
 
-    @SuppressLint({"LongLogTag"})
-    @Override
-    protected void onViewBound(@NonNull View view) {
-        super.onViewBound(view);
-
-        String callDescriptionWithoutTypeInfo =
-                String.format(
-                        getResources().getString(R.string.nc_call_unknown),
-                        getResources().getString(R.string.nc_app_product_name));
-
-        incomingCallVoiceOrVideoTextView.setText(callDescriptionWithoutTypeInfo);
-
-        renderScript = RenderScript.create(getActivity());
-
-        if (handler == null) {
-            handler = new Handler();
-
-            try {
-                cache.evictAll();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to evict cache");
-            }
-        }
-
-        if (currentConversation == null) {
-            handleFromNotification();
-        } else {
-            runAllThings();
-        }
-
-        if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
-            playRingtoneSound();
-        }
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) avatarImageView.getLayoutParams();
+        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) binding.avatarImageView.getLayoutParams();
         int dimen = (int) getResources().getDimension(R.dimen.avatar_size_very_big);
 
         layoutParams.width = dimen;
         layoutParams.height = dimen;
-        avatarImageView.setLayoutParams(layoutParams);
+        binding.avatarImageView.setLayoutParams(layoutParams);
     }
 
-    @Override
-    protected void onDetach(@NonNull View view) {
-        super.onDetach(view);
-        eventBus.unregister(this);
-    }
-
-    @Override
-    protected void onAttach(@NonNull View view) {
-        super.onAttach(view);
-        eventBus.register(this);
-    }
 
     private void loadAvatar() {
         switch (currentConversation.getType()) {
             case ROOM_TYPE_ONE_TO_ONE_CALL:
-                avatarImageView.setVisibility(View.VISIBLE);
+                binding.avatarImageView.setVisibility(View.VISIBLE);
 
                 ImageRequest imageRequest =
                         DisplayUtils.getImageRequestForUrl(
@@ -401,33 +354,30 @@ public class CallNotificationController extends BaseController {
                 dataSource.subscribe(new BaseBitmapDataSubscriber() {
                     @Override
                     protected void onNewResultImpl(@Nullable Bitmap bitmap) {
-                        if (avatarImageView != null) {
-                            avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
-                                                                    true);
+                        binding.avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
+                                                                true);
+                        if (getResources() != null) {
+                            binding.incomingTextRelativeLayout.setBackground(
+                                    getResources().getDrawable(R.drawable.incoming_gradient));
+                        }
 
-                            if (getResources() != null) {
-                                incomingTextRelativeLayout.setBackground(
-                                        getResources().getDrawable(R.drawable.incoming_gradient));
-                            }
+                        if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 ||
+                                AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
 
-                            if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 ||
-                                    AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
-                                if (getActivity() != null) {
-                                    Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
-                                    new BlurPostProcessor(5, getActivity()).process(backgroundBitmap);
-                                    backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
-                                }
-                            } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                                ColorArt colorArt = new ColorArt(bitmap);
-                                int color = colorArt.getBackgroundColor();
+                                Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
+                                new BlurPostProcessor(5, context).process(backgroundBitmap);
+                                binding.backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
 
-                                float[] hsv = new float[3];
-                                Color.colorToHSV(color, hsv);
-                                hsv[2] *= 0.75f;
-                                color = Color.HSVToColor(hsv);
+                        } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
+                            ColorArt colorArt = new ColorArt(bitmap);
+                            int color = colorArt.getBackgroundColor();
 
-                                backgroundImageView.setImageDrawable(new ColorDrawable(color));
-                            }
+                            float[] hsv = new float[3];
+                            Color.colorToHSV(color, hsv);
+                            hsv[2] *= 0.75f;
+                            color = Color.HSVToColor(hsv);
+
+                            binding.backgroundImageView.setImageDrawable(new ColorDrawable(color));
                         }
                     }
 
@@ -439,9 +389,9 @@ public class CallNotificationController extends BaseController {
 
                 break;
             case ROOM_GROUP_CALL:
-                avatarImageView.setImageResource(R.drawable.ic_circular_group);
+                binding.avatarImageView.setImageResource(R.drawable.ic_circular_group);
             case ROOM_PUBLIC_CALL:
-                avatarImageView.setImageResource(R.drawable.ic_circular_group);
+                binding.avatarImageView.setImageResource(R.drawable.ic_circular_group);
                 break;
             default:
         }
@@ -502,10 +452,10 @@ public class CallNotificationController extends BaseController {
             }
         }
 
-        if (ringtoneUri != null && getActivity() != null) {
+        if (ringtoneUri != null) {
             mediaPlayer = new MediaPlayer();
             try {
-                mediaPlayer.setDataSource(getActivity(), ringtoneUri);
+                mediaPlayer.setDataSource(this, ringtoneUri);
 
                 mediaPlayer.setLooping(true);
                 AudioAttributes audioAttributes = new AudioAttributes
