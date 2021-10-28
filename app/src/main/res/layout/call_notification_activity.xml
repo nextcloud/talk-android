@@ -35,6 +35,7 @@
         tools:srcCompat="@tools:sample/backgrounds/scenic" />
 
     <LinearLayout
+        android:id="@+id/callAnswerButtons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -75,7 +76,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/incomingTextRelativeLayout"
+        android:id="@+id/incomingCallRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

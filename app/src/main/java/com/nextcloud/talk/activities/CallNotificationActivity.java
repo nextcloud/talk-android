@@ -21,8 +21,10 @@
 package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
+import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -30,10 +32,12 @@ import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Rational;
 import android.view.View;
 
 import com.bluelinelabs.logansquare.LoganSquare;
@@ -79,6 +83,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import autodagger.AutoInjector;
 import butterknife.OnClick;
@@ -118,6 +123,7 @@ public class CallNotificationActivity extends BaseActivity {
     private boolean leavingScreen = false;
     private Handler handler;
     private CallNotificationActivityBinding binding;
+    private Boolean isInPipMode = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -357,7 +363,7 @@ public class CallNotificationActivity extends BaseActivity {
                         binding.avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
                                                                 true);
                         if (getResources() != null) {
-                            binding.incomingTextRelativeLayout.setBackground(
+                            binding.incomingCallRelativeLayout.setBackground(
                                     getResources().getDrawable(R.drawable.incoming_gradient));
                         }
 
@@ -472,5 +478,52 @@ public class CallNotificationActivity extends BaseActivity {
                 Log.e(TAG, "Failed to set data source");
             }
         }
+    }
+
+    public void onBackPressed() {
+        enterPipMode();
+    }
+
+    public void onUserLeaveHint() {
+        enterPipMode();
+    }
+
+    void enterPipMode() {
+//        enableKeyguard();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPictureInPictureMode(getPipParams());
+        } else {
+            finish();
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    public PictureInPictureParams getPipParams() {
+        Rational pipRatio = new Rational(300, 500);
+        return new PictureInPictureParams.Builder()
+            .setAspectRatio(pipRatio)
+            .build();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        isInPipMode = isInPictureInPictureMode;
+        if (isInPictureInPictureMode) {
+            updateUiForPipMode();
+        } else {
+            updateUiForNormalMode();
+        }
+    }
+
+    public void updateUiForPipMode(){
+        binding.callAnswerButtons.setVisibility(View.INVISIBLE);
+        binding.incomingCallRelativeLayout.setVisibility(View.INVISIBLE);
+    }
+
+    public void updateUiForNormalMode(){
+        binding.callAnswerButtons.setVisibility(View.VISIBLE);
+        binding.incomingCallRelativeLayout.setVisibility(View.VISIBLE);
     }
 }

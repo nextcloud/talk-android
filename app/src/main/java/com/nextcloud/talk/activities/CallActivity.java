@@ -2340,33 +2340,6 @@ public class CallActivity extends BaseActivity {
         }
     }
 
-    public void updateUiForPipMode(){
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,0,0, 0);
-        binding.gridview.setLayoutParams(params);
-
-
-        binding.callControls.setVisibility(View.GONE);
-        binding.callInfosLinearLayout.setVisibility(View.GONE);
-        binding.selfVideoViewWrapper.setVisibility(View.GONE);
-        binding.callStates.callStateRelativeLayout.setVisibility(View.GONE);
-
-        binding.selfVideoRenderer.release();
-    }
-
-    public void updateUiForNormalMode(){
-        if (isVoiceOnlyCall) {
-            binding.callControls.setVisibility(View.VISIBLE);
-        } else {
-            binding.callControls.setVisibility(View.INVISIBLE); // animateCallControls needs this to be invisible for a check.
-        }
-        initViews();
-
-        binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
-        binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
-    }
-
     private String getDescriptionForCallType() {
         String appName = getResources().getString(R.string.nc_app_product_name);
         if (isVoiceOnlyCall) {
@@ -2474,6 +2447,44 @@ public class CallActivity extends BaseActivity {
             .build();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        isInPipMode = isInPictureInPictureMode;
+        if (isInPictureInPictureMode) {
+            updateUiForPipMode();
+        } else {
+            updateUiForNormalMode();
+        }
+    }
+    public void updateUiForPipMode(){
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                                                             ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,0,0, 0);
+        binding.gridview.setLayoutParams(params);
+
+
+        binding.callControls.setVisibility(View.GONE);
+        binding.callInfosLinearLayout.setVisibility(View.GONE);
+        binding.selfVideoViewWrapper.setVisibility(View.GONE);
+        binding.callStates.callStateRelativeLayout.setVisibility(View.GONE);
+
+        binding.selfVideoRenderer.release();
+    }
+
+    public void updateUiForNormalMode(){
+        if (isVoiceOnlyCall) {
+            binding.callControls.setVisibility(View.VISIBLE);
+        } else {
+            binding.callControls.setVisibility(View.INVISIBLE); // animateCallControls needs this to be invisible for a check.
+        }
+        initViews();
+
+        binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
+        binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
+    }
+
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         eventBus.post(new ConfigurationChangeEvent());
@@ -2499,18 +2510,6 @@ public class CallActivity extends BaseActivity {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        }
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
-        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
-        isInPipMode = isInPictureInPictureMode;
-        if (isInPictureInPictureMode) {
-            updateUiForPipMode();
-        } else {
-            updateUiForNormalMode();
         }
     }
 
