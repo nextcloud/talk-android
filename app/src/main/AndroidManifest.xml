@@ -129,7 +129,8 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
             android:taskAffinity=".call"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true"/>
 
         <activity
             android:name=".activities.CallNotificationActivity"
@@ -138,7 +139,8 @@
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:launchMode="singleTask"
             android:taskAffinity=".call"
-            android:excludeFromRecents="true" />
+            android:excludeFromRecents="true"
+            android:showOnLockScreen="true" />
 
         <activity
             android:name=".activities.FullScreenImageActivity"

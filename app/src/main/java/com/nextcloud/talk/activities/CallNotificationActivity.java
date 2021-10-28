@@ -21,6 +21,7 @@
 package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
+import android.app.KeyguardManager;
 import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Rational;
 import android.view.View;
+import android.view.WindowManager;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
@@ -129,6 +131,10 @@ public class CallNotificationActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+
+        dismissKeyguard();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         eventBus.post(new CallNotificationClick());
 
@@ -489,7 +495,6 @@ public class CallNotificationActivity extends BaseActivity {
     }
 
     void enterPipMode() {
-//        enableKeyguard();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             enterPictureInPictureMode(getPipParams());
         } else {
@@ -525,5 +530,20 @@ public class CallNotificationActivity extends BaseActivity {
     public void updateUiForNormalMode(){
         binding.callAnswerButtons.setVisibility(View.VISIBLE);
         binding.incomingCallRelativeLayout.setVisibility(View.VISIBLE);
+    }
+
+    // TODO: dismiss keyguard works, but whenever accepting the call and switch to CallActivity by intent, the
+    //  lockscreen is shown (although CallActivity also dismisses the keyguard in the same way.)
+    private void dismissKeyguard() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+            keyguardManager.requestDismissKeyguard(this, null);
+        } else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        }
     }
 }
