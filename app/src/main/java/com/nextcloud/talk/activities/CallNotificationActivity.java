@@ -142,7 +142,7 @@ public class CallNotificationActivity extends BaseActivity {
         if (currentConversation == null) {
             handleFromNotification();
         } else {
-            runAllThings();
+            setUpAfterConversationIsKnown();
         }
 
         if (DoNotDisturbUtils.INSTANCE.shouldPlaySound()) {
@@ -278,7 +278,7 @@ public class CallNotificationActivity extends BaseActivity {
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                         currentConversation = roomOverall.getOcs().data;
-                        runAllThings();
+                        setUpAfterConversationIsKnown();
 
                         if (apiVersion >= 3) {
                             boolean hasCallFlags =
@@ -316,7 +316,7 @@ public class CallNotificationActivity extends BaseActivity {
                 || Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue() == callFlag);
     }
 
-    private void runAllThings() {
+    private void setUpAfterConversationIsKnown() {
         binding.conversationNameTextView.setText(currentConversation.getDisplayName());
 
         // TODO: load avatar, but don't block UI!
