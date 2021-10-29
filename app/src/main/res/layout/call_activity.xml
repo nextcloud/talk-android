@@ -197,4 +197,36 @@
             app:roundAsCircle="true" />
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/pipGroupCallOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/black"
+        android:gravity="center"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/pipCallConversationNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-30dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textAlignment="center"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            tools:text="our group call" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:backgroundImage="@drawable/ic_circular_group"
+            app:roundAsCircle="true" />
+
+    </LinearLayout>
+
 </RelativeLayout>

@@ -559,52 +559,53 @@ public class CallActivity extends BaseActivity {
     }
 
     private void initGridAdapter() {
-        if (binding.conversationRelativeLayout != null) {
-
-            int columns;
-            int participantsInGrid = participantDisplayItems.size();
-            if (getResources() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-                if (participantsInGrid > 2) {
-                    columns = 2;
-                } else {
-                    columns = 1;
-                }
+        int columns;
+        int participantsInGrid = participantDisplayItems.size();
+        if (getResources() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            if (participantsInGrid > 2) {
+                columns = 2;
             } else {
-                if (participantsInGrid > 2) {
-                    columns = 3;
-                } else if (participantsInGrid > 1) {
-                    columns = 2;
-                } else {
-                    columns = 1;
-                }
+                columns = 1;
             }
+        } else {
+            if (participantsInGrid > 2) {
+                columns = 3;
+            } else if (participantsInGrid > 1) {
+                columns = 2;
+            } else {
+                columns = 1;
+            }
+        }
 
-            binding.gridview.setNumColumns(columns);
+        binding.gridview.setNumColumns(columns);
 
-            binding.conversationRelativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    int height = binding.conversationRelativeLayout.getMeasuredHeight();
-                    binding.gridview.setMinimumHeight(height);
-                }
-            });
+        binding.conversationRelativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                int height = binding.conversationRelativeLayout.getMeasuredHeight();
+                binding.gridview.setMinimumHeight(height);
+            }
+        });
 
-            binding.callInfosLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-                @Override
-                public void onGlobalLayout() {
-                    binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                }
-            });
+        binding.callInfosLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
 
-            participantsAdapter = new ParticipantsAdapter(
-                    this,
-                    participantDisplayItems,
-                    binding.conversationRelativeLayout,
-                    binding.callInfosLinearLayout,
-                    columns,
-                    isVoiceOnlyCall);
-            binding.gridview.setAdapter(participantsAdapter);
+        participantsAdapter = new ParticipantsAdapter(
+                this,
+                participantDisplayItems,
+                binding.conversationRelativeLayout,
+                binding.callInfosLinearLayout,
+                columns,
+                isVoiceOnlyCall);
+        binding.gridview.setAdapter(participantsAdapter);
+
+        if (isInPipMode){
+            updateUiForPipMode();
         }
     }
 
@@ -2470,6 +2471,13 @@ public class CallActivity extends BaseActivity {
         binding.selfVideoViewWrapper.setVisibility(View.GONE);
         binding.callStates.callStateRelativeLayout.setVisibility(View.GONE);
 
+        if (participantDisplayItems.size() > 1){
+            binding.pipCallConversationNameTextView.setText(conversationName);
+            binding.pipGroupCallOverlay.setVisibility(View.VISIBLE);
+        } else {
+            binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
+        }
+
         binding.selfVideoRenderer.release();
     }
 
@@ -2483,6 +2491,8 @@ public class CallActivity extends BaseActivity {
 
         binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
         binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
+
+        binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
     }
 
     public void onConfigurationChanged(Configuration newConfig) {
