@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
+    <string name="nc_call_notifications">Notifiche di chiamata</string>
     <string name="nc_call_reconnecting">Riconnessione in corso...</string>
     <string name="nc_call_ringing">STA SQUILLANDO</string>
     <string name="nc_call_state_in_call">%1$s in chiamata</string>
@@ -138,6 +139,8 @@
     <string name="nc_license_title">Licenza</string>
     <string name="nc_limit_hit">Il limite di %s caratteri è stato raggiunto</string>
     <string name="nc_lobby">Ingresso</string>
+    <string name="nc_lobby_start_date">Questa riunione è programmata per %1$s</string>
+    <string name="nc_lobby_start_soon">La riunione inizierà presto</string>
     <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
     <string name="nc_lobby_waiting_with_date">Stai attualmente aspettando nell\'ingresso.\nQuesta riunione è pianificata per %1$s.</string>
     <string name="nc_location_current_position_description">La tua posizione attuale</string>
@@ -157,6 +160,7 @@
     <string name="nc_mute_calls_desc">Le chiamate in ingresso saranno silenziate</string>
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_new_conversation">Nuova conversazione</string>
+    <string name="nc_new_mention">Menzioni non lette</string>
     <string name="nc_new_messages">Messaggi non letti</string>
     <string name="nc_new_password">Nuova password</string>
     <string name="nc_nextcloud_talk_app_not_installed">Applicazione %1$s non installata, interruzione in corso</string>
