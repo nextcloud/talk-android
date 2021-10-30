@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
+    <string name="nc_call_notifications">Upozornenia na hovory</string>
     <string name="nc_call_reconnecting">Opätovné pripájanie...</string>
     <string name="nc_call_ringing">ZVONÍ</string>
     <string name="nc_call_state_in_call">%1$s v rozhovore</string>
