@@ -26,6 +26,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
 import android.app.PictureInPictureParams;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioAttributes;
@@ -499,7 +500,7 @@ public class CallActivity extends BaseActivity {
         binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
         binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+        if (!deviceSupportsPipMode()) {
             binding.pictureInPictureButton.setVisibility(View.GONE);
         }
 
@@ -2423,21 +2424,28 @@ public class CallActivity extends BaseActivity {
         }
     }
 
+    @Override
     public void onBackPressed() {
         enterPipMode();
     }
 
+    @Override
     public void onUserLeaveHint() {
         enterPipMode();
     }
 
     void enterPipMode() {
         enableKeyguard();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (deviceSupportsPipMode()) {
             enterPictureInPictureMode(getPipParams());
         } else {
             finish();
         }
+    }
+
+    private boolean deviceSupportsPipMode() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+            && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
