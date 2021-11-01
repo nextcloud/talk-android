@@ -14,6 +14,10 @@
     <string name="lock_symbol">Slot symbool</string>
     <string name="menu_item_sort_by_date_newest_first">Nieuwste eerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Oudste eerst</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Grootste eerst</string>
+    <string name="menu_item_sort_by_size_smallest_first">Kleinste eerst</string>
     <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_about">Over</string>
@@ -307,6 +311,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
     <string name="nc_share_this_location">Deel deze locatie</string>
     <string name="nc_shared_location">Gedeelde locatie</string>
+    <string name="nc_sort_by">Sorteren op</string>
     <string name="nc_start_conversation">Begin een gesprek</string>
     <string name="nc_start_time">Begintijd</string>
     <string name="nc_timeout_error">Time-out</string>
