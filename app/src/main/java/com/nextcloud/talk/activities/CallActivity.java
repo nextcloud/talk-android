@@ -25,10 +25,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
+import android.app.RemoteAction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -136,6 +143,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -155,6 +163,17 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends BaseActivity {
 
+    @Inject
+    NcApi ncApi;
+    @Inject
+    EventBus eventBus;
+    @Inject
+    UserUtils userUtils;
+    @Inject
+    AppPreferences appPreferences;
+    @Inject
+    Cache cache;
+
     public static final String TAG = "CallActivity";
 
     private static final String[] PERMISSIONS_CALL = {
@@ -170,16 +189,12 @@ public class CallActivity extends BaseActivity {
             Manifest.permission.RECORD_AUDIO
     };
 
-    @Inject
-    NcApi ncApi;
-    @Inject
-    EventBus eventBus;
-    @Inject
-    UserUtils userUtils;
-    @Inject
-    AppPreferences appPreferences;
-    @Inject
-    Cache cache;
+    private static final String MICROPHONE_PIP_INTENT_NAME = "microphone_pip_intent";
+    private static final String MICROPHONE_PIP_INTENT_EXTRA_ACTION = "microphone_pip_action";
+    private static final int MICROPHONE_PIP_REQUEST_MUTE = 1;
+    private static final int MICROPHONE_PIP_REQUEST_UNMUTE = 2;
+    private PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
+    private BroadcastReceiver mReceiver;
 
     private PeerConnectionFactory peerConnectionFactory;
     private MediaConstraints audioConstraints;
@@ -206,7 +221,7 @@ public class CallActivity extends BaseActivity {
     private Map<String, Participant> participantMap = new HashMap<>();
 
     private boolean videoOn = false;
-    private boolean audioOn = false;
+    private boolean microphoneOn = false;
 
     private boolean isVoiceOnlyCall;
     private boolean isIncomingCallFromNotification;
@@ -294,21 +309,9 @@ public class CallActivity extends BaseActivity {
             setCallState(CallStatus.CONNECTING);
         }
 
-        binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
-        binding.microphoneButton.setOnLongClickListener(l -> {
-            if (!audioOn) {
-                callControlHandler.removeCallbacksAndMessages(null);
-                callInfosHandler.removeCallbacksAndMessages(null);
-                cameraSwitchHandler.removeCallbacksAndMessages(null);
-                isPTTActive = true;
-                binding.callControls.setVisibility(View.VISIBLE);
-                if (!isVoiceOnlyCall) {
-                    binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
-                }
-            }
-            onMicrophoneClick();
-            return true;
-        });
+        if (deviceSupportsPipMode()) {
+            mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+        }
 
         initClickListeners();
     }
@@ -362,6 +365,22 @@ public class CallActivity extends BaseActivity {
                     binding.speakerButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp);
                 }
             }
+        });
+
+        binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
+        binding.microphoneButton.setOnLongClickListener(l -> {
+            if (!microphoneOn) {
+                callControlHandler.removeCallbacksAndMessages(null);
+                callInfosHandler.removeCallbacksAndMessages(null);
+                cameraSwitchHandler.removeCallbacksAndMessages(null);
+                isPTTActive = true;
+                binding.callControls.setVisibility(View.VISIBLE);
+                if (!isVoiceOnlyCall) {
+                    binding.switchSelfVideoButton.setVisibility(View.VISIBLE);
+                }
+            }
+            onMicrophoneClick();
+            return true;
         });
 
         binding.cameraButton.setOnClickListener(l -> onCameraClick());
@@ -635,7 +654,7 @@ public class CallActivity extends BaseActivity {
                 onCameraClick();
             }
 
-            if (!audioOn) {
+            if (!microphoneOn) {
                 onMicrophoneClick();
             }
 
@@ -680,7 +699,7 @@ public class CallActivity extends BaseActivity {
         }
 
         if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE)) {
-            if (!audioOn) {
+            if (!microphoneOn) {
                 onMicrophoneClick();
             }
         } else {
@@ -812,15 +831,21 @@ public class CallActivity extends BaseActivity {
             }
 
             if (!isPTTActive) {
-                audioOn = !audioOn;
+                microphoneOn = !microphoneOn;
 
-                if (audioOn) {
+                if (microphoneOn) {
                     binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_white_24px);
+                    updatePictureInPictureActions(R.drawable.ic_mic_white_24px,
+                                                  getResources().getString(R.string.nc_pip_microphone_mute),
+                                                  MICROPHONE_PIP_REQUEST_MUTE);
                 } else {
                     binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_off_white_24px);
+                    updatePictureInPictureActions(R.drawable.ic_mic_off_white_24px,
+                                                  getResources().getString(R.string.nc_pip_microphone_unmute),
+                                                  MICROPHONE_PIP_REQUEST_UNMUTE);
                 }
 
-                toggleMedia(audioOn, false);
+                toggleMedia(microphoneOn, false);
             } else {
                 binding.microphoneButton.getHierarchy().setPlaceholderImage(R.drawable.ic_mic_white_24px);
                 pulseAnimation.start();
@@ -2437,7 +2462,9 @@ public class CallActivity extends BaseActivity {
     void enterPipMode() {
         enableKeyguard();
         if (deviceSupportsPipMode()) {
-            enterPictureInPictureMode(getPipParams());
+            Rational pipRatio = new Rational(300, 500);
+            mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
+            enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
         } else {
             finish();
         }
@@ -2448,25 +2475,63 @@ public class CallActivity extends BaseActivity {
             && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    public PictureInPictureParams getPipParams() {
-        Rational pipRatio = new Rational(300, 500);
-        return new PictureInPictureParams.Builder()
-            .setAspectRatio(pipRatio)
-            .build();
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
         isInPipMode = isInPictureInPictureMode;
         if (isInPictureInPictureMode) {
+            mReceiver =
+                new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        if (intent == null || !MICROPHONE_PIP_INTENT_NAME.equals(intent.getAction())) {
+                            return;
+                        }
+
+                        final int action = intent.getIntExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, 0);
+                        switch (action) {
+                            case MICROPHONE_PIP_REQUEST_MUTE:
+                            case MICROPHONE_PIP_REQUEST_UNMUTE:
+                                onMicrophoneClick();
+                                break;
+                        }
+                    }
+                };
+            registerReceiver(mReceiver, new IntentFilter(MICROPHONE_PIP_INTENT_NAME));
+
             updateUiForPipMode();
         } else {
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+
             updateUiForNormalMode();
         }
     }
+
+    void updatePictureInPictureActions(
+        @DrawableRes int iconId,
+        String title,
+        int requestCode) {
+
+        if (deviceSupportsPipMode()) {
+            final ArrayList<RemoteAction> actions = new ArrayList<>();
+
+            final Icon icon = Icon.createWithResource(this, iconId);
+            final PendingIntent intent =
+                PendingIntent.getBroadcast(
+                    this,
+                    requestCode,
+                    new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
+                    0);
+
+            actions.add(new RemoteAction(icon, title, title, intent));
+
+            mPictureInPictureParamsBuilder.setActions(actions);
+            setPictureInPictureParams(mPictureInPictureParamsBuilder.build());
+        }
+    }
+
     public void updateUiForPipMode(){
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                              ViewGroup.LayoutParams.WRAP_CONTENT);

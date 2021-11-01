@@ -221,6 +221,10 @@
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>
 
+    <!-- Picture in Picture -->
+    <string name="nc_pip_microphone_mute">mute microphone</string>
+    <string name="nc_pip_microphone_unmute">enable microphone</string>
+
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
     <string name="nc_notification_channel_calls">Calls notification channel</string>
@@ -468,4 +472,5 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
+
 </resources>
