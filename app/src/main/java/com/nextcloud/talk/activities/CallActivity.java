@@ -177,16 +177,16 @@ public class CallActivity extends BaseActivity {
     public static final String TAG = "CallActivity";
 
     private static final String[] PERMISSIONS_CALL = {
-            android.Manifest.permission.CAMERA,
-            android.Manifest.permission.RECORD_AUDIO,
+        android.Manifest.permission.CAMERA,
+        android.Manifest.permission.RECORD_AUDIO,
     };
 
     private static final String[] PERMISSIONS_CAMERA = {
-            Manifest.permission.CAMERA
+        Manifest.permission.CAMERA
     };
 
     private static final String[] PERMISSIONS_MICROPHONE = {
-            Manifest.permission.RECORD_AUDIO
+        Manifest.permission.RECORD_AUDIO
     };
 
     private static final String MICROPHONE_PIP_INTENT_NAME = "microphone_pip_intent";
@@ -325,7 +325,7 @@ public class CallActivity extends BaseActivity {
         basicInitialization();
         participantDisplayItems = new HashMap<>();
         initViews();
-        if (!isConnectionEstablished()){
+        if (!isConnectionEstablished()) {
             initiateCall();
         }
         updateSelfVideoViewPosition();
@@ -419,14 +419,14 @@ public class CallActivity extends BaseActivity {
         //Create a new PeerConnectionFactory instance.
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         DefaultVideoEncoderFactory defaultVideoEncoderFactory = new DefaultVideoEncoderFactory(
-                rootEglBase.getEglBaseContext(), true, true);
+            rootEglBase.getEglBaseContext(), true, true);
         DefaultVideoDecoderFactory defaultVideoDecoderFactory = new DefaultVideoDecoderFactory(rootEglBase.getEglBaseContext());
 
         peerConnectionFactory = PeerConnectionFactory.builder()
-                .setOptions(options)
-                .setVideoEncoderFactory(defaultVideoEncoderFactory)
-                .setVideoDecoderFactory(defaultVideoDecoderFactory)
-                .createPeerConnectionFactory();
+            .setOptions(options)
+            .setVideoEncoderFactory(defaultVideoEncoderFactory)
+            .setVideoDecoderFactory(defaultVideoDecoderFactory)
+            .createPeerConnectionFactory();
 
         //Create MediaConstraints - Will be useful for specifying video and audio constraints.
         audioConstraints = new MediaConstraints();
@@ -473,40 +473,40 @@ public class CallActivity extends BaseActivity {
     }
 
     private void handleFromNotification() {
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion, baseUrl))
-                .retry(3)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<RoomsOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .retry(3)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<RoomsOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull RoomsOverall roomsOverall) {
-                        for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                            if (roomId.equals(conversation.getRoomId())) {
-                                roomToken = conversation.getToken();
-                                break;
-                            }
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull RoomsOverall roomsOverall) {
+                    for (Conversation conversation : roomsOverall.getOcs().getData()) {
+                        if (roomId.equals(conversation.getRoomId())) {
+                            roomToken = conversation.getToken();
+                            break;
                         }
-
-                        checkPermissions();
                     }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        // unused atm
-                    }
+                    checkPermissions();
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    // unused atm
+                }
+
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -528,12 +528,12 @@ public class CallActivity extends BaseActivity {
                                                                                  ViewGroup.LayoutParams.WRAP_CONTENT);
             params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout);
             int callControlsHeight = Math.round(getApplicationContext().getResources().getDimension(R.dimen.call_controls_height));
-            params.setMargins(0,0,0, callControlsHeight);
+            params.setMargins(0, 0, 0, callControlsHeight);
             binding.gridview.setLayoutParams(params);
         } else {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                                  ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.setMargins(0,0,0, 0);
+            params.setMargins(0, 0, 0, 0);
             binding.gridview.setLayoutParams(params);
 
             binding.speakerButton.setVisibility(View.GONE);
@@ -560,9 +560,9 @@ public class CallActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initSelfVideoView() {
-        try{
+        try {
             binding.selfVideoRenderer.init(rootEglBase.getEglBaseContext(), null);
-        } catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             Log.d(TAG, "selfVideoRenderer already initialized", e);
         }
 
@@ -611,15 +611,15 @@ public class CallActivity extends BaseActivity {
         });
 
         participantsAdapter = new ParticipantsAdapter(
-                this,
-                participantDisplayItems,
-                binding.conversationRelativeLayout,
-                binding.callInfosLinearLayout,
-                columns,
-                isVoiceOnlyCall);
+            this,
+            participantDisplayItems,
+            binding.conversationRelativeLayout,
+            binding.callInfosLinearLayout,
+            columns,
+            isVoiceOnlyCall);
         binding.gridview.setAdapter(participantsAdapter);
 
-        if (isInPipMode){
+        if (isInPipMode) {
             updateUiForPipMode();
         }
     }
@@ -717,7 +717,7 @@ public class CallActivity extends BaseActivity {
         }
 
         if ((EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) ||
-                EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE))) {
+            EffortlessPermissions.hasPermissions(this, PERMISSIONS_MICROPHONE))) {
             checkIfSomeAreApproved();
         } else if (!isConnectionEstablished()) {
             fetchSignalingSettings();
@@ -725,13 +725,13 @@ public class CallActivity extends BaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-            final MagicAudioManager.AudioDevice device, final Set<MagicAudioManager.AudioDevice> availableDevices) {
+        final MagicAudioManager.AudioDevice device, final Set<MagicAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
-                + "selected: " + device);
+            + "selected: " + device);
 
         final boolean shouldDisableProximityLock = (device.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
-                || device.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
-                || device.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
+            || device.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
+            || device.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
@@ -803,24 +803,24 @@ public class CallActivity extends BaseActivity {
 
             if (!appPreferences.getPushToTalkIntroShown()) {
                 spotlightView = new SpotlightView.Builder(this)
-                        .introAnimationDuration(300)
-                        .enableRevealAnimation(true)
-                        .performClick(false)
-                        .fadeinTextDuration(400)
-                        .headingTvColor(getResources().getColor(R.color.colorPrimary))
-                        .headingTvSize(20)
-                        .headingTvText(getResources().getString(R.string.nc_push_to_talk))
-                        .subHeadingTvColor(getResources().getColor(R.color.bg_default))
-                        .subHeadingTvSize(16)
-                        .subHeadingTvText(getResources().getString(R.string.nc_push_to_talk_desc))
-                        .maskColor(Color.parseColor("#dc000000"))
-                        .target(binding.microphoneButton)
-                        .lineAnimDuration(400)
-                        .lineAndArcColor(getResources().getColor(R.color.colorPrimary))
-                        .enableDismissAfterShown(true)
-                        .dismissOnBackPress(true)
-                        .usageId("pushToTalk")
-                        .show();
+                    .introAnimationDuration(300)
+                    .enableRevealAnimation(true)
+                    .performClick(false)
+                    .fadeinTextDuration(400)
+                    .headingTvColor(getResources().getColor(R.color.colorPrimary))
+                    .headingTvSize(20)
+                    .headingTvText(getResources().getString(R.string.nc_push_to_talk))
+                    .subHeadingTvColor(getResources().getColor(R.color.bg_default))
+                    .subHeadingTvSize(16)
+                    .subHeadingTvText(getResources().getString(R.string.nc_push_to_talk_desc))
+                    .maskColor(Color.parseColor("#dc000000"))
+                    .target(binding.microphoneButton)
+                    .lineAnimDuration(400)
+                    .lineAndArcColor(getResources().getColor(R.color.colorPrimary))
+                    .enableDismissAfterShown(true)
+                    .dismissOnBackPress(true)
+                    .usageId("pushToTalk")
+                    .show();
 
                 appPreferences.setPushToTalkIntroShown(true);
             }
@@ -855,8 +855,8 @@ public class CallActivity extends BaseActivity {
             // Microphone permission is permanently denied so we cannot request it normally.
 
             OpenAppDetailsDialogFragment.show(
-                    R.string.nc_microphone_permission_permanently_denied,
-                    R.string.nc_permissions_settings, (AppCompatActivity) this);
+                R.string.nc_microphone_permission_permanently_denied,
+                R.string.nc_permissions_settings, (AppCompatActivity) this);
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(PERMISSIONS_MICROPHONE, 100);
@@ -884,8 +884,8 @@ public class CallActivity extends BaseActivity {
         } else if (EffortlessPermissions.somePermissionPermanentlyDenied(this, PERMISSIONS_CAMERA)) {
             // Camera permission is permanently denied so we cannot request it normally.
             OpenAppDetailsDialogFragment.show(
-                    R.string.nc_camera_permission_permanently_denied,
-                    R.string.nc_permissions_settings, (AppCompatActivity) this);
+                R.string.nc_camera_permission_permanently_denied,
+                R.string.nc_permissions_settings, (AppCompatActivity) this);
         } else {
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -1010,88 +1010,88 @@ public class CallActivity extends BaseActivity {
             if (binding.callControls != null) {
                 binding.callControls.setEnabled(false);
                 binding.callControls.animate()
-                        .translationY(0)
-                        .alpha(alpha)
-                        .setDuration(duration)
-                        .setStartDelay(startDelay)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                if (binding.callControls != null) {
-                                    if (!show) {
-                                        binding.callControls.setVisibility(View.GONE);
-                                        if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
-                                            spotlightView.setVisibility(View.GONE);
-                                        }
-                                    } else {
-                                        callControlHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (!isPTTActive) {
-                                                    animateCallControls(false, 0);
-                                                }
-                                            }
-                                        }, 7500);
+                    .translationY(0)
+                    .alpha(alpha)
+                    .setDuration(duration)
+                    .setStartDelay(startDelay)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            if (binding.callControls != null) {
+                                if (!show) {
+                                    binding.callControls.setVisibility(View.GONE);
+                                    if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
+                                        spotlightView.setVisibility(View.GONE);
                                     }
-
-                                    binding.callControls.setEnabled(true);
+                                } else {
+                                    callControlHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isPTTActive) {
+                                                animateCallControls(false, 0);
+                                            }
+                                        }
+                                    }, 7500);
                                 }
+
+                                binding.callControls.setEnabled(true);
                             }
-                        });
+                        }
+                    });
             }
 
             if (binding.callInfosLinearLayout != null) {
                 binding.callInfosLinearLayout.setEnabled(false);
                 binding.callInfosLinearLayout.animate()
-                        .translationY(0)
-                        .alpha(alpha)
-                        .setDuration(duration)
-                        .setStartDelay(startDelay)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                if (binding.callInfosLinearLayout != null) {
-                                    if (!show) {
-                                        binding.callInfosLinearLayout.setVisibility(View.GONE);
-                                    } else {
-                                        callInfosHandler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (!isPTTActive) {
-                                                    animateCallControls(false, 0);
-                                                }
+                    .translationY(0)
+                    .alpha(alpha)
+                    .setDuration(duration)
+                    .setStartDelay(startDelay)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            if (binding.callInfosLinearLayout != null) {
+                                if (!show) {
+                                    binding.callInfosLinearLayout.setVisibility(View.GONE);
+                                } else {
+                                    callInfosHandler.postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isPTTActive) {
+                                                animateCallControls(false, 0);
                                             }
-                                        }, 7500);
-                                    }
-
-                                    binding.callInfosLinearLayout.setEnabled(true);
+                                        }
+                                    }, 7500);
                                 }
+
+                                binding.callInfosLinearLayout.setEnabled(true);
                             }
-                        });
+                        }
+                    });
             }
 
             if (binding.switchSelfVideoButton != null) {
                 binding.switchSelfVideoButton.setEnabled(false);
                 binding.switchSelfVideoButton.animate()
-                        .translationY(0)
-                        .alpha(alpha)
-                        .setDuration(duration)
-                        .setStartDelay(startDelay)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                super.onAnimationEnd(animation);
-                                if (binding.switchSelfVideoButton != null) {
-                                    if (!show) {
-                                        binding.switchSelfVideoButton.setVisibility(View.GONE);
-                                    }
-
-                                    binding.switchSelfVideoButton.setEnabled(true);
+                    .translationY(0)
+                    .alpha(alpha)
+                    .setDuration(duration)
+                    .setStartDelay(startDelay)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            super.onAnimationEnd(animation);
+                            if (binding.switchSelfVideoButton != null) {
+                                if (!show) {
+                                    binding.switchSelfVideoButton.setVisibility(View.GONE);
                                 }
+
+                                binding.switchSelfVideoButton.setEnabled(true);
                             }
-                        });
+                        }
+                    });
             }
 
         }
@@ -1108,139 +1108,139 @@ public class CallActivity extends BaseActivity {
     }
 
     private void fetchSignalingSettings() {
-        int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {ApiUtils.APIv3, 2, 1});
+        int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[]{ApiUtils.APIv3, 2, 1});
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
-                .subscribeOn(Schedulers.io())
-                .retry(3)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<SignalingSettingsOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .subscribeOn(Schedulers.io())
+            .retry(3)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<SignalingSettingsOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull SignalingSettingsOverall signalingSettingsOverall) {
-                        if (signalingSettingsOverall != null && signalingSettingsOverall.getOcs() != null &&
-                                signalingSettingsOverall.getOcs().getSettings() != null) {
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull SignalingSettingsOverall signalingSettingsOverall) {
+                    if (signalingSettingsOverall != null && signalingSettingsOverall.getOcs() != null &&
+                        signalingSettingsOverall.getOcs().getSettings() != null) {
 
+                        externalSignalingServer = new ExternalSignalingServer();
+
+                        if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
+                            !TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
                             externalSignalingServer = new ExternalSignalingServer();
+                            externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
+                            externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                            hasExternalSignalingServer = true;
+                        } else {
+                            hasExternalSignalingServer = false;
+                        }
 
-                            if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
-                                    !TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
-                                externalSignalingServer = new ExternalSignalingServer();
-                                externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
-                                externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
-                                hasExternalSignalingServer = true;
-                            } else {
-                                hasExternalSignalingServer = false;
+                        if (!conversationUser.getUserId().equals("?")) {
+                            try {
+                                userUtils.createOrUpdateUser(null, null, null, null, null, null, null,
+                                                             conversationUser.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
+                                    .subscribeOn(Schedulers.io())
+                                    .subscribe();
+                            } catch (IOException exception) {
+                                Log.e(TAG, "Failed to serialize external signaling server", exception);
                             }
+                        } else {
+                            try {
+                                conversationUser.setExternalSignalingServer(LoganSquare.serialize(externalSignalingServer));
+                            } catch (IOException exception) {
+                                Log.e(TAG, "Failed to serialize external signaling server", exception);
+                            }
+                        }
 
-                            if (!conversationUser.getUserId().equals("?")) {
-                                try {
-                                    userUtils.createOrUpdateUser(null, null, null, null, null, null, null,
-                                                                 conversationUser.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
-                                            .subscribeOn(Schedulers.io())
-                                            .subscribe();
-                                } catch (IOException exception) {
-                                    Log.e(TAG, "Failed to serialize external signaling server", exception);
+                        if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
+                            List<IceServer> stunServers =
+                                signalingSettingsOverall.getOcs().getSettings().getStunServers();
+                            if (apiVersion == ApiUtils.APIv3) {
+                                for (IceServer stunServer : stunServers) {
+                                    if (stunServer.getUrls() != null) {
+                                        for (String url : stunServer.getUrls()) {
+                                            iceServers.add(new PeerConnection.IceServer(url));
+                                        }
+                                    }
                                 }
                             } else {
-                                try {
-                                    conversationUser.setExternalSignalingServer(LoganSquare.serialize(externalSignalingServer));
-                                } catch (IOException exception) {
-                                    Log.e(TAG, "Failed to serialize external signaling server", exception);
-                                }
-                            }
-
-                            if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
-                                List<IceServer> stunServers =
-                                        signalingSettingsOverall.getOcs().getSettings().getStunServers();
-                                if (apiVersion == ApiUtils.APIv3) {
+                                if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
                                     for (IceServer stunServer : stunServers) {
-                                        if (stunServer.getUrls() != null) {
-                                            for (String url : stunServer.getUrls()) {
-                                                iceServers.add(new PeerConnection.IceServer(url));
-                                            }
-                                        }
-                                    }
-                                } else {
-                                    if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
-                                        for (IceServer stunServer : stunServers) {
-                                            iceServers.add(new PeerConnection.IceServer(stunServer.getUrl()));
-                                        }
-                                    }
-                                }
-                            }
-
-                            if (signalingSettingsOverall.getOcs().getSettings().getTurnServers() != null) {
-                                List<IceServer> turnServers =
-                                        signalingSettingsOverall.getOcs().getSettings().getTurnServers();
-                                for (IceServer turnServer : turnServers) {
-                                    if (turnServer.getUrls() != null) {
-                                        for (String url : turnServer.getUrls()) {
-                                            iceServers.add(new PeerConnection.IceServer(
-                                                    url, turnServer.getUsername(), turnServer.getCredential()
-                                            ));
-                                        }
+                                        iceServers.add(new PeerConnection.IceServer(stunServer.getUrl()));
                                     }
                                 }
                             }
                         }
 
-                        checkCapabilities();
+                        if (signalingSettingsOverall.getOcs().getSettings().getTurnServers() != null) {
+                            List<IceServer> turnServers =
+                                signalingSettingsOverall.getOcs().getSettings().getTurnServers();
+                            for (IceServer turnServer : turnServers) {
+                                if (turnServer.getUrls() != null) {
+                                    for (String url : turnServer.getUrls()) {
+                                        iceServers.add(new PeerConnection.IceServer(
+                                            url, turnServer.getUsername(), turnServer.getCredential()
+                                        ));
+                                    }
+                                }
+                            }
+                        }
                     }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Log.e(TAG, e.getMessage(), e);
-                    }
+                    checkCapabilities();
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
+
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     private void checkCapabilities() {
         ncApi.getCapabilities(credentials, ApiUtils.getUrlForCapabilities(baseUrl))
-                .retry(3)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<CapabilitiesOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .retry(3)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<CapabilitiesOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull CapabilitiesOverall capabilitiesOverall) {
-                        // FIXME check for compatible Call API version
-                        if (hasExternalSignalingServer) {
-                            setupAndInitiateWebSocketsConnection();
-                        } else {
-                            joinRoomAndCall();
-                        }
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull CapabilitiesOverall capabilitiesOverall) {
+                    // FIXME check for compatible Call API version
+                    if (hasExternalSignalingServer) {
+                        setupAndInitiateWebSocketsConnection();
+                    } else {
+                        joinRoomAndCall();
                     }
+                }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        // unused atm
-                    }
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     private void joinRoomAndCall() {
         callSession = ApplicationWideCurrentRoomHolder.getInstance().getSession();
 
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser,  new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         Log.d(TAG, "joinRoomAndCall");
         Log.d(TAG, "   baseUrl= " + baseUrl);
@@ -1252,37 +1252,37 @@ public class CallActivity extends BaseActivity {
 
         if (TextUtils.isEmpty(callSession)) {
             ncApi.joinRoom(credentials, url, conversationPassword)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(3)
-                    .subscribe(new Observer<RoomOverall>() {
-                        @Override
-                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                            // unused atm
-                        }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(3)
+                .subscribe(new Observer<RoomOverall>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
+                    }
 
-                        @Override
-                        public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
-                            callSession = roomOverall.getOcs().getData().getSessionId();
-                            Log.d(TAG, " new callSession by joinRoom= " + callSession);
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
+                        callSession = roomOverall.getOcs().getData().getSessionId();
+                        Log.d(TAG, " new callSession by joinRoom= " + callSession);
 
-                            ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
-                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
-                            ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
-                            ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
-                            callOrJoinRoomViaWebSocket();
-                        }
+                        ApplicationWideCurrentRoomHolder.getInstance().setSession(callSession);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomId(roomId);
+                        ApplicationWideCurrentRoomHolder.getInstance().setCurrentRoomToken(roomToken);
+                        ApplicationWideCurrentRoomHolder.getInstance().setUserInRoom(conversationUser);
+                        callOrJoinRoomViaWebSocket();
+                    }
 
-                        @Override
-                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                            Log.e(TAG, "joinRoom onError", e);
-                        }
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.e(TAG, "joinRoom onError", e);
+                    }
 
-                        @Override
-                        public void onComplete() {
-                            Log.d(TAG, "joinRoom onComplete");
-                        }
-                    });
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "joinRoom onComplete");
+                    }
+                });
         } else {
             // we are in a room and start a call -> same session needs to be used
             callOrJoinRoomViaWebSocket();
@@ -1305,82 +1305,82 @@ public class CallActivity extends BaseActivity {
             inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
         }
 
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
-                .subscribeOn(Schedulers.io())
-                .retry(3)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .subscribeOn(Schedulers.io())
+            .retry(3)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<GenericOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                        if (!currentCallStatus.equals(CallStatus.LEAVING)) {
-                            setCallState(CallStatus.JOINED);
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
+                    if (!currentCallStatus.equals(CallStatus.LEAVING)) {
+                        setCallState(CallStatus.JOINED);
 
-                            ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
-                            ApplicationWideCurrentRoomHolder.getInstance().setDialing(false);
+                        ApplicationWideCurrentRoomHolder.getInstance().setInCall(true);
+                        ApplicationWideCurrentRoomHolder.getInstance().setDialing(false);
 
-                            if (!TextUtils.isEmpty(roomToken)) {
-                                NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(),
-                                                                                              conversationUser,
-                                                                                              roomToken);
-                            }
+                        if (!TextUtils.isEmpty(roomToken)) {
+                            NotificationUtils.INSTANCE.cancelExistingNotificationsForRoom(getApplicationContext(),
+                                                                                          conversationUser,
+                                                                                          roomToken);
+                        }
 
-                            if (!hasExternalSignalingServer) {
-                                int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser,
-                                                                                 new int[] {ApiUtils.APIv3, 2, 1});
+                        if (!hasExternalSignalingServer) {
+                            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser,
+                                                                             new int[]{ApiUtils.APIv3, 2, 1});
 
-                                ncApi.pullSignalingMessages(credentials,
-                                                            ApiUtils.getUrlForSignaling(apiVersion,
-                                                                                        baseUrl,
-                                                                                        roomToken))
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .repeatWhen(observable -> observable)
-                                        .takeWhile(observable -> isConnectionEstablished())
-                                        .retry(3, observable -> isConnectionEstablished())
-                                        .subscribe(new Observer<SignalingOverall>() {
-                                            @Override
-                                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                                                signalingDisposable = d;
-                                            }
+                            ncApi.pullSignalingMessages(credentials,
+                                                        ApiUtils.getUrlForSignaling(apiVersion,
+                                                                                    baseUrl,
+                                                                                    roomToken))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .repeatWhen(observable -> observable)
+                                .takeWhile(observable -> isConnectionEstablished())
+                                .retry(3, observable -> isConnectionEstablished())
+                                .subscribe(new Observer<SignalingOverall>() {
+                                    @Override
+                                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                                        signalingDisposable = d;
+                                    }
 
-                                            @Override
-                                            public void onNext(
-                                                    @io.reactivex.annotations.NonNull
-                                                            SignalingOverall signalingOverall) {
-                                                receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
-                                            }
+                                    @Override
+                                    public void onNext(
+                                        @io.reactivex.annotations.NonNull
+                                            SignalingOverall signalingOverall) {
+                                        receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
+                                    }
 
-                                            @Override
-                                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                                dispose(signalingDisposable);
-                                            }
+                                    @Override
+                                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                                        dispose(signalingDisposable);
+                                    }
 
-                                            @Override
-                                            public void onComplete() {
-                                                dispose(signalingDisposable);
-                                            }
-                                        });
-                            }
+                                    @Override
+                                    public void onComplete() {
+                                        dispose(signalingDisposable);
+                                    }
+                                });
                         }
                     }
+                }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        // unused atm
-                    }
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     private void setupAndInitiateWebSocketsConnection() {
@@ -1390,9 +1390,9 @@ public class CallActivity extends BaseActivity {
 
         if (webSocketClient == null) {
             webSocketClient = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                    externalSignalingServer.getExternalSignalingServer(),
-                    conversationUser, externalSignalingServer.getExternalSignalingTicket(),
-                    TextUtils.isEmpty(credentials));
+                externalSignalingServer.getExternalSignalingServer(),
+                conversationUser, externalSignalingServer.getExternalSignalingTicket(),
+                TextUtils.isEmpty(credentials));
         } else {
             if (webSocketClient.isConnected() && currentCallStatus.equals(CallStatus.PUBLISHER_FAILED)) {
                 webSocketClient.restartWebSocket();
@@ -1432,18 +1432,18 @@ public class CallActivity extends BaseActivity {
             case "participantsUpdate":
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
                     processUsersInRoom(
-                            (List<HashMap<String, Object>>) webSocketClient
-                                    .getJobWithId(
-                                            Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+                        (List<HashMap<String, Object>>) webSocketClient
+                            .getJobWithId(
+                                Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 }
                 break;
             case "signalingMessage":
                 processMessage((NCSignalingMessage) webSocketClient.getJobWithId(
-                        Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+                    Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
             case "peerReadyForRequestingOffer":
                 webSocketClient.requestOfferForSessionIdWithType(
-                        webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
+                    webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
                 break;
         }
     }
@@ -1492,8 +1492,8 @@ public class CallActivity extends BaseActivity {
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
             MagicPeerConnectionWrapper magicPeerConnectionWrapper =
-                    getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                ncSignalingMessage.getRoomType(), false);
+                getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
+                                                            ncSignalingMessage.getRoomType(), false);
 
             String type = null;
             if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
@@ -1513,16 +1513,16 @@ public class CallActivity extends BaseActivity {
                         SessionDescription sessionDescriptionWithPreferredCodec;
 
                         String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
-                                (ncSignalingMessage.getPayload().getSdp(),
-                                 "H264", false);
+                            (ncSignalingMessage.getPayload().getSdp(),
+                             "H264", false);
 
                         sessionDescriptionWithPreferredCodec = new SessionDescription(
-                                SessionDescription.Type.fromCanonicalForm(type),
-                                sessionDescriptionStringWithPreferredCodec);
+                            SessionDescription.Type.fromCanonicalForm(type),
+                            sessionDescriptionStringWithPreferredCodec);
 
                         if (magicPeerConnectionWrapper.getPeerConnection() != null) {
                             magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
-                                                                                                        .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
+                                                                                                    .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
                         }
                         break;
                     case "candidate":
@@ -1600,70 +1600,70 @@ public class CallActivity extends BaseActivity {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<GenericOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                        if (shutDownView) {
-                            finish();
-                        } else if (!shutDownView &&
-                                (currentCallStatus == CallStatus.RECONNECTING ||
-                                        currentCallStatus == CallStatus.PUBLISHER_FAILED)) {
-                            initiateCall();
-                        }
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
+                    if (shutDownView) {
+                        finish();
+                    } else if (!shutDownView &&
+                        (currentCallStatus == CallStatus.RECONNECTING ||
+                            currentCallStatus == CallStatus.PUBLISHER_FAILED)) {
+                        initiateCall();
                     }
+                }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        // unused atm
-                    }
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     // TODO: why is this never called?!
     private void leaveRoom(boolean shutDownView) {
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.leaveRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<GenericOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                        if (shutDownView) {
-                            finish();
-                        }
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
+                    if (shutDownView) {
+                        finish();
                     }
+                }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        // unused atm
-                    }
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     private void startVideoCapture() {
@@ -1742,34 +1742,34 @@ public class CallActivity extends BaseActivity {
 
     private void getPeersForCall() {
         Log.d(TAG, "getPeersForCall");
-        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Observer<ParticipantsOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        // unused atm
-                    }
+            .subscribeOn(Schedulers.io())
+            .subscribe(new Observer<ParticipantsOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    // unused atm
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull ParticipantsOverall participantsOverall) {
-                        participantMap = new HashMap<>();
-                        for (Participant participant : participantsOverall.getOcs().getData()) {
-                            participantMap.put(participant.getSessionId(), participant);
-                        }
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull ParticipantsOverall participantsOverall) {
+                    participantMap = new HashMap<>();
+                    for (Participant participant : participantsOverall.getOcs().getData()) {
+                        participantMap.put(participant.getSessionId(), participant);
                     }
+                }
 
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Log.e(TAG, "error while executing getPeersForCall", e);
-                    }
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    Log.e(TAG, "error while executing getPeersForCall", e);
+                }
 
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     private void deleteMagicPeerConnection(MagicPeerConnectionWrapper magicPeerConnectionWrapper) {
@@ -1931,19 +1931,19 @@ public class CallActivity extends BaseActivity {
         String sessionId = peerConnectionEvent.getSessionId();
 
         if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
-                                                                            .PEER_CLOSED)) {
+                                                                        .PEER_CLOSED)) {
             endPeerConnection(sessionId, peerConnectionEvent.getVideoStreamType().equals("screen"));
         } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                                                                                   .PeerConnectionEventType.SENSOR_FAR) ||
-                peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                                                                                .PeerConnectionEventType.SENSOR_NEAR)) {
+                                                                               .PeerConnectionEventType.SENSOR_FAR) ||
+            peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
+                                                                        .PeerConnectionEventType.SENSOR_NEAR)) {
 
             if (!isVoiceOnlyCall) {
                 boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                                                                                                      .PeerConnectionEventType.SENSOR_FAR) && videoOn;
+                                                                                                  .PeerConnectionEventType.SENSOR_FAR) && videoOn;
                 if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
-                        (currentCallStatus.equals(CallStatus.CONNECTING) || isConnectionEstablished()) && videoOn
-                        && enableVideo != localVideoTrack.enabled()) {
+                    (currentCallStatus.equals(CallStatus.CONNECTING) || isConnectionEstablished()) && videoOn
+                    && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
             }
@@ -1984,30 +1984,30 @@ public class CallActivity extends BaseActivity {
             if (magicPeerConnectionWrapperList.get(i).isMCUPublisher()) {
                 magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
                 Observable
-                        .interval(1, TimeUnit.SECONDS)
-                        .repeatUntil(() -> (!isConnectionEstablished() || isDestroyed()))
-                        .observeOn(Schedulers.io())
-                        .subscribe(new Observer<Long>() {
-                            @Override
-                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                                // unused atm
-                            }
+                    .interval(1, TimeUnit.SECONDS)
+                    .repeatUntil(() -> (!isConnectionEstablished() || isDestroyed()))
+                    .observeOn(Schedulers.io())
+                    .subscribe(new Observer<Long>() {
+                        @Override
+                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                            // unused atm
+                        }
 
-                            @Override
-                            public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-                                magicPeerConnectionWrapper.sendNickChannelData(dataChannelMessage);
-                            }
+                        @Override
+                        public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
+                            magicPeerConnectionWrapper.sendNickChannelData(dataChannelMessage);
+                        }
 
-                            @Override
-                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                // unused atm
-                            }
+                        @Override
+                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                            // unused atm
+                        }
 
-                            @Override
-                            public void onComplete() {
-                                // unused atm
-                            }
-                        });
+                        @Override
+                        public void onComplete() {
+                            // unused atm
+                        }
+                    });
                 break;
             }
 
@@ -2018,19 +2018,19 @@ public class CallActivity extends BaseActivity {
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
         if (mediaStreamEvent.getMediaStream() != null) {
             boolean hasAtLeastOneVideoStream = mediaStreamEvent.getMediaStream().videoTracks != null
-                    && mediaStreamEvent.getMediaStream().videoTracks.size() > 0;
+                && mediaStreamEvent.getMediaStream().videoTracks.size() > 0;
 
             setupVideoStreamForLayout(
-                    mediaStreamEvent.getMediaStream(),
-                    mediaStreamEvent.getSession(),
-                    hasAtLeastOneVideoStream,
-                    mediaStreamEvent.getVideoStreamType());
+                mediaStreamEvent.getMediaStream(),
+                mediaStreamEvent.getSession(),
+                hasAtLeastOneVideoStream,
+                mediaStreamEvent.getVideoStreamType());
         } else {
             setupVideoStreamForLayout(
-                    null,
-                    mediaStreamEvent.getSession(),
-                    false,
-                    mediaStreamEvent.getVideoStreamType());
+                null,
+                mediaStreamEvent.getSession(),
+                false,
+                mediaStreamEvent.getVideoStreamType());
         }
     }
 
@@ -2062,46 +2062,46 @@ public class CallActivity extends BaseActivity {
         if (!hasExternalSignalingServer) {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{")
-                    .append("\"fn\":\"")
-                    .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
-                    .append(",")
-                    .append("\"sessionId\":")
-                    .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
-                    .append(",")
-                    .append("\"ev\":\"message\"")
-                    .append("}");
+                .append("\"fn\":\"")
+                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
+                .append(",")
+                .append("\"sessionId\":")
+                .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
+                .append(",")
+                .append("\"ev\":\"message\"")
+                .append("}");
 
             List<String> strings = new ArrayList<>();
             String stringToSend = stringBuilder.toString();
             strings.add(stringToSend);
 
-            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[] {ApiUtils.APIv3, 2, 1});
+            int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[]{ApiUtils.APIv3, 2, 1});
 
             ncApi.sendSignalingMessages(credentials, ApiUtils.getUrlForSignaling(apiVersion, baseUrl, roomToken),
                                         strings.toString())
-                    .retry(3)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(new Observer<SignalingOverall>() {
-                        @Override
-                        public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                            // unused atm
-                        }
+                .retry(3)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<SignalingOverall>() {
+                    @Override
+                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                        // unused atm
+                    }
 
-                        @Override
-                        public void onNext(@io.reactivex.annotations.NonNull SignalingOverall signalingOverall) {
-                            receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
-                        }
+                    @Override
+                    public void onNext(@io.reactivex.annotations.NonNull SignalingOverall signalingOverall) {
+                        receivedSignalingMessages(signalingOverall.getOcs().getSignalings());
+                    }
 
-                        @Override
-                        public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                            Log.e(TAG, "", e);
-                        }
+                    @Override
+                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                        Log.e(TAG, "", e);
+                    }
 
-                        @Override
-                        public void onComplete() {
-                            // unused atm
-                        }
-                    });
+                    @Override
+                    public void onComplete() {
+                        // unused atm
+                    }
+                });
         } else {
             webSocketClient.sendCallMessage(ncMessageWrapper);
         }
@@ -2376,10 +2376,10 @@ public class CallActivity extends BaseActivity {
         Uri ringtoneUri;
         if (isIncomingCallFromNotification) {
             ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                                            "/raw/librem_by_feandesign_call");
+                                        "/raw/librem_by_feandesign_call");
         } else {
             ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/raw" +
-                                            "/tr110_1_kap8_3_freiton1");
+                                        "/tr110_1_kap8_3_freiton1");
         }
 
         mediaPlayer = new MediaPlayer();
@@ -2387,9 +2387,9 @@ public class CallActivity extends BaseActivity {
             mediaPlayer.setDataSource(this, ringtoneUri);
             mediaPlayer.setLooping(true);
             AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(
-                    AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
-                    .build();
+                AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .build();
             mediaPlayer.setAudioAttributes(audioAttributes);
 
             mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
@@ -2432,12 +2432,12 @@ public class CallActivity extends BaseActivity {
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
         if (networkEvent.getNetworkConnectionEvent()
-                .equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED)) {
+            .equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED)) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
             }
         } else if (networkEvent.getNetworkConnectionEvent()
-                .equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
+            .equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
             }
@@ -2527,10 +2527,10 @@ public class CallActivity extends BaseActivity {
         }
     }
 
-    public void updateUiForPipMode(){
+    public void updateUiForPipMode() {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                              ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,0,0, 0);
+        params.setMargins(0, 0, 0, 0);
         binding.gridview.setLayoutParams(params);
 
 
@@ -2539,7 +2539,7 @@ public class CallActivity extends BaseActivity {
         binding.selfVideoViewWrapper.setVisibility(View.GONE);
         binding.callStates.callStateRelativeLayout.setVisibility(View.GONE);
 
-        if (participantDisplayItems.size() > 1){
+        if (participantDisplayItems.size() > 1) {
             binding.pipCallConversationNameTextView.setText(conversationName);
             binding.pipGroupCallOverlay.setVisibility(View.VISIBLE);
         } else {
@@ -2549,7 +2549,7 @@ public class CallActivity extends BaseActivity {
         binding.selfVideoRenderer.release();
     }
 
-    public void updateUiForNormalMode(){
+    public void updateUiForNormalMode() {
         if (isVoiceOnlyCall) {
             binding.callControls.setVisibility(View.VISIBLE);
         } else {
