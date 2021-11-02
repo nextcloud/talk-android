@@ -585,7 +585,7 @@ class ChatController(args: Bundle) :
                         if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
 
-                            if (binding.popupBubbleView.isShown == true) {
+                            if (binding.popupBubbleView.isShown) {
                                 binding.popupBubbleView.hide()
                             }
                         }
@@ -640,7 +640,7 @@ class ChatController(args: Bundle) :
                     }
                 } catch (npe: NullPointerException) {
                     // view binding can be null
-                    // since this is called asynchrously and UI might have been destroyed in the meantime
+                    // since this is called asynchronously and UI might have been destroyed in the meantime
                     Log.i(TAG, "UI destroyed - view binding already gone")
                 }
             }
