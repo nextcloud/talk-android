@@ -265,6 +265,7 @@ public class CallActivity extends BaseActivity {
         CONNECTING, CALLING_TIMEOUT, JOINED, IN_CONVERSATION, RECONNECTING, OFFLINE, LEAVING, PUBLISHER_FAILED
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -296,7 +297,6 @@ public class CallActivity extends BaseActivity {
         credentials = ApiUtils.getCredentials(conversationUser.getUsername(), conversationUser.getToken());
 
         baseUrl = extras.getString(BundleKeys.INSTANCE.getKEY_MODIFIED_BASE_URL(), "");
-
         if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = conversationUser.getBaseUrl();
         }
@@ -314,14 +314,6 @@ public class CallActivity extends BaseActivity {
         }
 
         initClickListeners();
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    @Override
-    public void onStart() {
-        super.onStart();
-        // TODO: move some lines to onCreate!?!
-
         binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
 
         pulseAnimation = PulseAnimation.create().with(binding.microphoneButton)
@@ -329,20 +321,23 @@ public class CallActivity extends BaseActivity {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE);
 
-
-        try {
-            cache.evictAll();
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to evict cache");
-        }
-
         binding.callControls.setZ(100.0f);
         basicInitialization();
         participantDisplayItems = new HashMap<>();
         initViews();
-        updateSelfVideoViewPosition();
         if (!isConnectionEstablished()){
             initiateCall();
+        }
+        updateSelfVideoViewPosition();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        try {
+            cache.evictAll();
+        } catch (IOException e) {
+            Log.e(TAG, "Failed to evict cache");
         }
     }
 
