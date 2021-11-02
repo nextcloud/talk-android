@@ -331,8 +331,7 @@ public class CallNotificationActivity extends BaseActivity {
     private void setUpAfterConversationIsKnown() {
         binding.conversationNameTextView.setText(currentConversation.getDisplayName());
 
-        // TODO: load avatar, but don't block UI!
-//        loadAvatar();
+        loadAvatar();
         checkIfAnyParticipantsRemainInRoom();
         showAnswerControls();
     }
