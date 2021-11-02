@@ -309,13 +309,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         handleActionFromContact(intent)
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-
-                // router!!.pushController(
-                //     RouterTransaction.with(CallNotificationController(intent.extras))
-                //         .pushChangeHandler(HorizontalChangeHandler())
-                //         .popChangeHandler(HorizontalChangeHandler())
-                // )
-
                 val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
