@@ -40,7 +40,7 @@
         android:textSize="@dimen/bottom_sheet_text_size" />
 
     <LinearLayout
-        android:id="@+id/menu_share_location"
+        android:id="@+id/shareLocationOption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
@@ -60,7 +60,7 @@
             app:tint="@color/colorPrimary" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_share_location"
+            android:id="@+id/shareLocationText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
@@ -73,7 +73,40 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/menu_attach_file_from_local"
+        android:id="@+id/shareContactOption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/standard_padding"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingRight="@dimen/standard_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/menu_icon_share_contact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_person_24"
+            app:tint="@color/colorPrimary" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/shareContactText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@string/nc_share_contact"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/shareFileFromLocalOption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
@@ -93,7 +126,7 @@
             app:tint="@color/colorPrimary" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_attach_file_from_local"
+            android:id="@+id/shareFileFromLocalText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
@@ -106,7 +139,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/menu_attach_file_from_cloud"
+        android:id="@+id/shareFileFromCloudOption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?android:attr/selectableItemBackground"
@@ -126,7 +159,7 @@
             app:tint="@color/colorPrimary" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/txt_attach_file_from_cloud"
+            android:id="@+id/shareFileFromCloudText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"

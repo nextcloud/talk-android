@@ -394,6 +394,7 @@
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>
+    <string name="nc_share_contact">Share contact</string>
     <string name="nc_location_permission_required">location permission is required</string>
     <string name="nc_share_current_location">Share current location</string>
     <string name="nc_share_this_location">Share this location</string>
