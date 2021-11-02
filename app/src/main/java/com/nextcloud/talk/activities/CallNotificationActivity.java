@@ -224,108 +224,108 @@ public class CallNotificationActivity extends BaseActivity {
     }
 
     private void checkIfAnyParticipantsRemainInRoom() {
-        int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
                                                                   currentConversation.getToken()))
-                .subscribeOn(Schedulers.io())
-                .takeWhile(observable -> !leavingScreen)
-                .subscribe(new Observer<ParticipantsOverall>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        disposablesList.add(d);
-                    }
+            .subscribeOn(Schedulers.io())
+            .takeWhile(observable -> !leavingScreen)
+            .subscribe(new Observer<ParticipantsOverall>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    disposablesList.add(d);
+                }
 
-                    @Override
-                    public void onNext(ParticipantsOverall participantsOverall) {
-                        boolean hasParticipantsInCall = false;
-                        boolean inCallOnDifferentDevice = false;
-                        List<Participant> participantList = participantsOverall.getOcs().getData();
-                        hasParticipantsInCall = participantList.size() > 0;
+                @Override
+                public void onNext(ParticipantsOverall participantsOverall) {
+                    boolean hasParticipantsInCall = false;
+                    boolean inCallOnDifferentDevice = false;
+                    List<Participant> participantList = participantsOverall.getOcs().getData();
+                    hasParticipantsInCall = participantList.size() > 0;
 
-                        if (hasParticipantsInCall) {
-                            for (Participant participant : participantList) {
-                                if (participant.getActorType() == Participant.ActorType.USERS &&
-                                        participant.getActorId().equals(userBeingCalled.getUserId())) {
-                                    inCallOnDifferentDevice = true;
-                                    break;
-                                }
+                    if (hasParticipantsInCall) {
+                        for (Participant participant : participantList) {
+                            if (participant.getActorType() == Participant.ActorType.USERS &&
+                                participant.getActorId().equals(userBeingCalled.getUserId())) {
+                                inCallOnDifferentDevice = true;
+                                break;
                             }
                         }
-
-                        if (!hasParticipantsInCall || inCallOnDifferentDevice) {
-                            runOnUiThread(() -> hangup());
-                        }
                     }
 
-                    @Override
-                    public void onError(Throwable e) {
-
+                    if (!hasParticipantsInCall || inCallOnDifferentDevice) {
+                        runOnUiThread(() -> hangup());
                     }
+                }
 
-                    @Override
-                    public void onComplete() {
-                        if (!leavingScreen) {
-                            handler.postDelayed(() -> checkIfAnyParticipantsRemainInRoom(), 5000);
-                        }
+                @Override
+                public void onError(Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                    if (!leavingScreen) {
+                        handler.postDelayed(() -> checkIfAnyParticipantsRemainInRoom(), 5000);
                     }
-                });
+                }
+            });
 
     }
 
     private void handleFromNotification() {
-        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[] {ApiUtils.APIv4,
-                ApiUtils.APIv3, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(userBeingCalled, new int[]{ApiUtils.APIv4,
+            ApiUtils.APIv3, 1});
 
         ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, userBeingCalled.getBaseUrl(), roomId))
-                .subscribeOn(Schedulers.io())
-                .retry(3)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<RoomOverall>() {
-                    @Override
-                    public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                        disposablesList.add(d);
-                    }
+            .subscribeOn(Schedulers.io())
+            .retry(3)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(new Observer<RoomOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                    disposablesList.add(d);
+                }
 
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
-                        currentConversation = roomOverall.getOcs().data;
-                        setUpAfterConversationIsKnown();
+                @Override
+                public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
+                    currentConversation = roomOverall.getOcs().data;
+                    setUpAfterConversationIsKnown();
 
-                        if (apiVersion >= 3) {
-                            boolean hasCallFlags =
-                                    CapabilitiesUtil.hasSpreedFeatureCapability(userBeingCalled,
-                                                                                "conversation-call-flags");
-                            if (hasCallFlags) {
-                                if (isInCallWithVideo(currentConversation.callFlag)) {
-                                    binding.incomingCallVoiceOrVideoTextView.setText(
-                                            String.format(getResources().getString(R.string.nc_call_video),
-                                                          getResources().getString(R.string.nc_app_product_name)));
-                                } else {
-                                    binding.incomingCallVoiceOrVideoTextView.setText(
-                                            String.format(getResources().getString(R.string.nc_call_voice),
-                                                          getResources().getString(R.string.nc_app_product_name)));
-                                }
+                    if (apiVersion >= 3) {
+                        boolean hasCallFlags =
+                            CapabilitiesUtil.hasSpreedFeatureCapability(userBeingCalled,
+                                                                        "conversation-call-flags");
+                        if (hasCallFlags) {
+                            if (isInCallWithVideo(currentConversation.callFlag)) {
+                                binding.incomingCallVoiceOrVideoTextView.setText(
+                                    String.format(getResources().getString(R.string.nc_call_video),
+                                                  getResources().getString(R.string.nc_app_product_name)));
+                            } else {
+                                binding.incomingCallVoiceOrVideoTextView.setText(
+                                    String.format(getResources().getString(R.string.nc_call_voice),
+                                                  getResources().getString(R.string.nc_app_product_name)));
                             }
                         }
                     }
+                }
 
-                    @SuppressLint("LongLogTag")
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        Log.e(TAG, e.getMessage(), e);
-                    }
+                @SuppressLint("LongLogTag")
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
 
-                    @Override
-                    public void onComplete() {
+                @Override
+                public void onComplete() {
 
-                    }
-                });
+                }
+            });
     }
 
     private boolean isInCallWithVideo(int callFlag) {
         return (Participant.ParticipantFlags.IN_CALL_WITH_VIDEO.getValue() == callFlag
-                || Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue() == callFlag);
+            || Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue() == callFlag);
     }
 
     private void setUpAfterConversationIsKnown() {
@@ -353,11 +353,11 @@ public class CallNotificationActivity extends BaseActivity {
                 binding.avatarImageView.setVisibility(View.VISIBLE);
 
                 ImageRequest imageRequest =
-                        DisplayUtils.getImageRequestForUrl(
-                                ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                                                                 currentConversation.getName(),
-                                                                 R.dimen.avatar_size_very_big),
-                                null);
+                    DisplayUtils.getImageRequestForUrl(
+                        ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
+                                                         currentConversation.getName(),
+                                                         R.dimen.avatar_size_very_big),
+                        null);
 
                 ImagePipeline imagePipeline = Fresco.getImagePipeline();
                 DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
@@ -366,18 +366,18 @@ public class CallNotificationActivity extends BaseActivity {
                     @Override
                     protected void onNewResultImpl(@Nullable Bitmap bitmap) {
                         binding.avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
-                                                                true);
+                                                                        true);
                         if (getResources() != null) {
                             binding.incomingCallRelativeLayout.setBackground(
-                                    getResources().getDrawable(R.drawable.incoming_gradient));
+                                getResources().getDrawable(R.drawable.incoming_gradient));
                         }
 
                         if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 ||
-                                AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
+                            AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
 
-                                Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
-                                new BlurPostProcessor(5, context).process(backgroundBitmap);
-                                binding.backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
+                            Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
+                            new BlurPostProcessor(5, context).process(backgroundBitmap);
+                            binding.backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
 
                         } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
                             ColorArt colorArt = new ColorArt(bitmap);
@@ -450,16 +450,16 @@ public class CallNotificationActivity extends BaseActivity {
         if (TextUtils.isEmpty(callRingtonePreferenceString)) {
             // play default sound
             ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                                            "/raw/librem_by_feandesign_call");
+                                        "/raw/librem_by_feandesign_call");
         } else {
             try {
                 RingtoneSettings ringtoneSettings = LoganSquare.parse(
-                        callRingtonePreferenceString, RingtoneSettings.class);
+                    callRingtonePreferenceString, RingtoneSettings.class);
                 ringtoneUri = ringtoneSettings.getRingtoneUri();
             } catch (IOException e) {
                 Log.e(TAG, "Failed to parse ringtone settings");
                 ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                                                "/raw/librem_by_feandesign_call");
+                                            "/raw/librem_by_feandesign_call");
             }
         }
 
@@ -470,10 +470,10 @@ public class CallNotificationActivity extends BaseActivity {
 
                 mediaPlayer.setLooping(true);
                 AudioAttributes audioAttributes = new AudioAttributes
-                        .Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                        .build();
+                    .Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
+                    .build();
                 mediaPlayer.setAudioAttributes(audioAttributes);
 
                 mediaPlayer.setOnPreparedListener(mp -> mediaPlayer.start());
@@ -521,12 +521,12 @@ public class CallNotificationActivity extends BaseActivity {
         }
     }
 
-    public void updateUiForPipMode(){
+    public void updateUiForPipMode() {
         binding.callAnswerButtons.setVisibility(View.INVISIBLE);
         binding.incomingCallRelativeLayout.setVisibility(View.INVISIBLE);
     }
 
-    public void updateUiForNormalMode(){
+    public void updateUiForNormalMode() {
         binding.callAnswerButtons.setVisibility(View.VISIBLE);
         binding.incomingCallRelativeLayout.setVisibility(View.VISIBLE);
     }
