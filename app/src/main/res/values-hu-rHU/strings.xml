@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_name">Beszélgetésnév</string>
     <string name="nc_call_name_is_same">A megadott név egyezik egy már meglévővel</string>
+    <string name="nc_call_notifications">Hívásértesítések</string>
     <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
     <string name="nc_call_ringing">CSENGETÉS</string>
     <string name="nc_call_state_in_call">%1$s hívásban</string>
