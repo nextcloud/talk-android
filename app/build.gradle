@@ -151,7 +151,7 @@ android {
 ext {
     butterknifeVersion = "10.2.3"
     coilKtVersion = "1.4.0"
-    daggerVersion = "2.39.1"
+    daggerVersion = "2.40"
     okhttpVersion = "4.9.2"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
@@ -264,7 +264,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:bottomsheets:${materialDialogsVersion}"
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
