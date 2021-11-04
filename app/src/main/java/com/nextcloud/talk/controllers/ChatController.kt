@@ -33,7 +33,9 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.AssetFileDescriptor
 import android.content.res.Resources
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
@@ -46,6 +48,7 @@ import android.os.Handler
 import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
+import android.provider.ContactsContract
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextUtils
@@ -69,6 +72,7 @@ import android.widget.RelativeLayout
 import android.widget.Toast
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import androidx.core.widget.doAfterTextChanged
@@ -93,6 +97,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MagicCallActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -138,6 +143,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
+import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.KeyboardUtils
@@ -1152,61 +1158,96 @@ class ChatController(args: Bundle) :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
+        if (resultCode != RESULT_OK) {
+            Log.e(TAG, "resultCode for received intent was != ok")
+            return
+        }
+
         if (requestCode == REQUEST_CODE_CHOOSE_FILE) {
-            if (resultCode == RESULT_OK) {
-                try {
-                    checkNotNull(intent)
-                    filesToUpload.clear()
-                    intent.clipData?.let {
-                        for (index in 0 until it.itemCount) {
-                            filesToUpload.add(it.getItemAt(index).uri.toString())
-                        }
-                    } ?: run {
-                        checkNotNull(intent.data)
-                        intent.data.let {
-                            filesToUpload.add(intent.data.toString())
-                        }
+            try {
+                checkNotNull(intent)
+                filesToUpload.clear()
+                intent.clipData?.let {
+                    for (index in 0 until it.itemCount) {
+                        filesToUpload.add(it.getItemAt(index).uri.toString())
                     }
-                    require(filesToUpload.isNotEmpty())
-
-                    val filenamesWithLinebreaks = StringBuilder("\n")
-
-                    for (file in filesToUpload) {
-                        val filename = UriUtils.getFileName(Uri.parse(file), context)
-                        filenamesWithLinebreaks.append(filename).append("\n")
+                } ?: run {
+                    checkNotNull(intent.data)
+                    intent.data.let {
+                        filesToUpload.add(intent.data.toString())
                     }
-
-                    val confirmationQuestion = when (filesToUpload.size) {
-                        1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
-                            String.format(it, title)
-                        }
-                        else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
-                            String.format(it, title)
-                        }
-                    }
-
-                    LovelyStandardDialog(activity)
-                        .setPositiveButtonColorRes(R.color.nc_darkGreen)
-                        .setTitle(confirmationQuestion)
-                        .setMessage(filenamesWithLinebreaks.toString())
-                        .setPositiveButton(R.string.nc_yes) { v ->
-                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                                uploadFiles(filesToUpload, false)
-                            } else {
-                                UploadAndShareFilesWorker.requestStoragePermission(this)
-                            }
-                        }
-                        .setNegativeButton(R.string.nc_no) {}
-                        .show()
-                } catch (e: IllegalStateException) {
-                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                        .show()
-                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-                } catch (e: IllegalArgumentException) {
-                    Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                        .show()
-                    Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
+                require(filesToUpload.isNotEmpty())
+
+                val filenamesWithLinebreaks = StringBuilder("\n")
+
+                for (file in filesToUpload) {
+                    val filename = UriUtils.getFileName(Uri.parse(file), context)
+                    filenamesWithLinebreaks.append(filename).append("\n")
+                }
+
+                val confirmationQuestion = when (filesToUpload.size) {
+                    1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
+                        String.format(it, title)
+                    }
+                    else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
+                        String.format(it, title)
+                    }
+                }
+
+                LovelyStandardDialog(activity)
+                    .setPositiveButtonColorRes(R.color.nc_darkGreen)
+                    .setTitle(confirmationQuestion)
+                    .setMessage(filenamesWithLinebreaks.toString())
+                    .setPositiveButton(R.string.nc_yes) { v ->
+                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                            uploadFiles(filesToUpload, false)
+                        } else {
+                            UploadAndShareFilesWorker.requestStoragePermission(this)
+                        }
+                    }
+                    .setNegativeButton(R.string.nc_no) {}
+                    .show()
+            } catch (e: IllegalStateException) {
+                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                    .show()
+                Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+            } catch (e: IllegalArgumentException) {
+                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
+                    .show()
+                Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+            }
+        } else if (requestCode == REQUEST_CODE_SELECT_CONTACT) {
+            val contactUri = intent?.data ?: return
+            val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
+
+            if (cursor != null && cursor.moveToFirst()) {
+                val id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
+                val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
+                val file = File(context?.cacheDir, fileName)
+                writeContactToVcfFile(cursor, file)
+
+                val shareUri = FileProvider.getUriForFile(
+                    activity!!,
+                    BuildConfig.APPLICATION_ID,
+                    File(file.absolutePath)
+                )
+                uploadFiles(mutableListOf(shareUri.toString()), false)
+            }
+        }
+    }
+
+    private fun writeContactToVcfFile(cursor: Cursor, file: File) {
+        val lookupKey = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+        val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
+
+        val fd: AssetFileDescriptor = activity?.contentResolver!!.openAssetFileDescriptor(uri, "r")!!
+        val fis = fd.createInputStream()
+
+        file.createNewFile()
+        fis.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
             }
         }
     }
@@ -1285,6 +1326,10 @@ class ChatController(args: Bundle) :
             ),
             REQUEST_CODE_CHOOSE_FILE
         )
+    }
+
+    fun sendChooseContactIntent() {
+        requestReadContacts()
     }
 
     fun showBrowserScreen(browserType: BrowserController.BrowserType) {
@@ -2549,6 +2594,7 @@ class ChatController(args: Bundle) :
         private const val MESSAGE_MAX_LENGTH: Int = 1000
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
+        private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val OBJECT_MESSAGE: String = "{object}"
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000

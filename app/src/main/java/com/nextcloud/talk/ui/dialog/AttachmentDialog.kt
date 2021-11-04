@@ -92,6 +92,11 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
             chatController.showBrowserScreen(BrowserController.BrowserType.DAV_BROWSER)
             dismiss()
         }
+
+        dialogAttachmentBinding.menuAttachContact.setOnClickListener {
+            chatController.sendChooseContactIntent()
+            dismiss()
+        }
     }
 
     override fun onStart() {
