@@ -478,6 +478,8 @@
     <string name="take_photo_switch_camera">Switch camera</string>
     <string name="take_photo_retake_photo">Re-take photo</string>
     <string name="take_photo_toggle_torch">Toggle torch</string>
+    <string name="take_photo_toggle_crop">Crop photo</string>
+    <string name="take_photo_toggle_lowres">Reduce image size</string>
     <string name="take_photo_send">Send</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>

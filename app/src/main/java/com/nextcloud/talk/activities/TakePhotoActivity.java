@@ -109,8 +109,32 @@ public class TakePhotoActivity extends AppCompatActivity {
                     .observe(
                         this,
                         enabled -> camera.getCameraControl().enableTorch(enabled));
-
                 binding.toggleTorch.setOnClickListener((v) -> viewModel.toggleTorchEnabled());
+
+                binding.toggleCrop.setOnClickListener((v) -> {
+                    crop = !crop;
+                    binding.toggleCrop.setIcon(ContextCompat.getDrawable(this, crop ?
+                        R.drawable.ic_baseline_flash_on_24 : R.drawable.ic_baseline_flash_off_24));
+                    cameraProvider.unbindAll();
+                    camera = cameraProvider.bindToLifecycle(
+                        this,
+                        viewModel.getCameraSelector(),
+                        getImageCapture(crop, lowres),
+                        getPreview(crop));
+                });
+
+                binding.toggleLowres.setOnClickListener((v) -> {
+                    lowres = !lowres;
+                    binding.toggleLowres.setIcon(ContextCompat.getDrawable(this, lowres ?
+                        R.drawable.ic_baseline_flash_on_24 : R.drawable.ic_baseline_flash_off_24));
+                    cameraProvider.unbindAll();
+                    camera = cameraProvider.bindToLifecycle(
+                        this,
+                        viewModel.getCameraSelector(),
+                        getImageCapture(crop, lowres),
+                        getPreview(crop));
+                });
+
                 binding.switchCamera.setOnClickListener((v) -> {
                     viewModel.toggleCameraSelector();
                     cameraProvider.unbindAll();
