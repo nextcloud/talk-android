@@ -312,7 +312,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
-
             } else {
                 ConductorRemapping.remapChatController(
                     router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
