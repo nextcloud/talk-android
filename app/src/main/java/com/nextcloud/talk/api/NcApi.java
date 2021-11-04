@@ -31,6 +31,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.conversations.RoomsOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.generic.Status;
+import com.nextcloud.talk.models.json.hovercard.HoverCardOverall;
 import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
@@ -425,4 +426,7 @@ public interface NcApi {
     @POST
     Observable<GenericOverall> notificationCalls(@Header("Authorization") String authorization, @Url String url,
                                                  @Field("level") Integer level);
+
+    @GET
+    Observable<HoverCardOverall> hoverCard(@Header("Authorization") String authorization, @Url String url);
 }

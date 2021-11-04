@@ -132,6 +132,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
+import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
@@ -427,9 +428,12 @@ class ChatController(args: Bundle) :
             adapterWasNull = true
 
             val messageHolders = MessageHolders()
+            val profileBottomSheet = ProfileBottomSheet(ncApi!!, conversationUser!!, router)
+
             messageHolders.setIncomingTextConfig(
                 MagicIncomingTextMessageViewHolder::class.java,
-                R.layout.item_custom_incoming_text_message
+                R.layout.item_custom_incoming_text_message,
+                profileBottomSheet
             )
             messageHolders.setOutcomingTextConfig(
                 MagicOutcomingTextMessageViewHolder::class.java,
@@ -438,7 +442,8 @@ class ChatController(args: Bundle) :
 
             messageHolders.setIncomingImageConfig(
                 IncomingPreviewMessageViewHolder::class.java,
-                R.layout.item_custom_incoming_preview_message
+                R.layout.item_custom_incoming_preview_message,
+                profileBottomSheet
             )
 
             messageHolders.setOutcomingImageConfig(
@@ -460,14 +465,17 @@ class ChatController(args: Bundle) :
                 MagicUnreadNoticeMessageViewHolder::class.java,
                 R.layout.item_date_header,
                 MagicUnreadNoticeMessageViewHolder::class.java,
-                R.layout.item_date_header, this
+                R.layout.item_date_header,
+                this
             )
 
             messageHolders.registerContentType(
                 CONTENT_TYPE_LOCATION,
                 IncomingLocationMessageViewHolder::class.java,
+                profileBottomSheet,
                 R.layout.item_custom_incoming_location_message,
                 OutcomingLocationMessageViewHolder::class.java,
+                null,
                 R.layout.item_custom_outcoming_location_message,
                 this
             )
@@ -475,8 +483,10 @@ class ChatController(args: Bundle) :
             messageHolders.registerContentType(
                 CONTENT_TYPE_VOICE_MESSAGE,
                 IncomingVoiceMessageViewHolder::class.java,
+                profileBottomSheet,
                 R.layout.item_custom_incoming_voice_message,
                 OutcomingVoiceMessageViewHolder::class.java,
+                null,
                 R.layout.item_custom_outcoming_voice_message,
                 this
             )
@@ -2178,7 +2188,7 @@ class ChatController(args: Bundle) :
                         bundle.putBoolean(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
                         bundle.putString(BundleKeys.KEY_FORWARD_MSG_TEXT, message?.text)
                         bundle.putString(BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM, roomId)
-                        getRouter().pushController(
+                        router.pushController(
                             RouterTransaction.with(ConversationsListController(bundle))
                                 .pushChangeHandler(HorizontalChangeHandler())
                                 .popChangeHandler(HorizontalChangeHandler())
