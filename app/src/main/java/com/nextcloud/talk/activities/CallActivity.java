@@ -256,7 +256,7 @@ public class CallActivity extends BaseActivity {
     private Map<String, ParticipantDisplayItem> participantDisplayItems;
     private ParticipantsAdapter participantsAdapter;
 
-    private Boolean isInPipMode = false;
+    public Boolean isInPipMode = false;
 
     private CallActivityBinding binding;
 
