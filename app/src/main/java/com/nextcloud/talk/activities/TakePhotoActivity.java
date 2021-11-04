@@ -32,6 +32,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.OrientationEventListener;
+import android.view.ScaleGestureDetector;
 import android.view.Surface;
 import android.view.View;
 import android.widget.Toast;
@@ -52,6 +53,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.ImageCapture;
 import androidx.camera.core.ImageCaptureException;
@@ -76,6 +78,9 @@ public class TakePhotoActivity extends AppCompatActivity {
 
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ROOT);
 
+    private Camera camera;
+    private boolean crop = false, lowres = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,13 +94,12 @@ public class TakePhotoActivity extends AppCompatActivity {
         cameraProviderFuture.addListener(() -> {
             try {
                 final ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                final Preview preview = getPreview();
-                final ImageCapture imageCapture = getImageCapture();
-                final Camera camera = cameraProvider.bindToLifecycle(
+
+                camera = cameraProvider.bindToLifecycle(
                     this,
                     viewModel.getCameraSelector(),
-                    imageCapture,
-                    preview);
+                    getImageCapture(false, false),
+                    getPreview(false));
 
                 viewModel.getTorchToggleButtonImageResource()
                     .observe(
@@ -110,11 +114,11 @@ public class TakePhotoActivity extends AppCompatActivity {
                 binding.switchCamera.setOnClickListener((v) -> {
                     viewModel.toggleCameraSelector();
                     cameraProvider.unbindAll();
-                    cameraProvider.bindToLifecycle(
+                    camera = cameraProvider.bindToLifecycle(
                         this,
                         viewModel.getCameraSelector(),
-                        imageCapture,
-                        preview);
+                        getImageCapture(crop, lowres),
+                        getPreview(crop));
                 });
                 binding.retake.setOnClickListener((v) -> {
                     Uri uri = (Uri) binding.photoPreview.getTag();
@@ -131,6 +135,22 @@ public class TakePhotoActivity extends AppCompatActivity {
                     setResult(RESULT_OK, new Intent().setDataAndType(uri, "image/jpeg"));
                     binding.photoPreview.setTag(null);
                     finish();
+                });
+
+                ScaleGestureDetector mDetector =
+                    new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener(){
+                        @Override
+                        public boolean onScale(ScaleGestureDetector detector){
+                            float ratio = camera.getCameraInfo().getZoomState().getValue().getZoomRatio();
+                            float delta = detector.getScaleFactor();
+                            camera.getCameraControl().setZoomRatio(ratio * delta);
+                            return true;
+                        }
+                    });
+                binding.preview.setOnTouchListener((v, event) -> {
+                    v.performClick();
+                    mDetector.onTouchEvent(event);
+                    return true;
                 });
 
                 // Enable enlarging the image more than default 3x maximumScale.
@@ -182,8 +202,12 @@ public class TakePhotoActivity extends AppCompatActivity {
         binding.photoPreview.setVisibility(View.VISIBLE);
     }
 
-    private ImageCapture getImageCapture() {
-        final ImageCapture imageCapture = new ImageCapture.Builder().setTargetResolution(new Size(1080, 1920)).build();
+    private ImageCapture getImageCapture(boolean crop, boolean lowres) {
+        final ImageCapture imageCapture;
+        if (lowres) imageCapture = new ImageCapture.Builder()
+            .setTargetResolution(new Size(crop ? 1080 : 1440, 1920)).build();
+        else imageCapture = new ImageCapture.Builder()
+            .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3).build();
 
         orientationEventListener = new OrientationEventListener(this) {
             @Override
@@ -288,9 +312,11 @@ public class TakePhotoActivity extends AppCompatActivity {
         return rotate;
     }
 
-    private Preview getPreview() {
-        Preview preview = new Preview.Builder().build();
+    private Preview getPreview(boolean crop) {
+        Preview preview = new Preview.Builder()
+            .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3).build();
         preview.setSurfaceProvider(binding.preview.getSurfaceProvider());
+
         return preview;
     }
 

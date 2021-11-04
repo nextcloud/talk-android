@@ -32,14 +32,15 @@
     <androidx.camera.view.PreviewView
         android:id="@+id/preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:scaleType="fitCenter" />
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="@null"
-        android:scaleType="fitStart"
+        android:scaleType="fitCenter"
         android:visibility="invisible" />
 
     <com.google.android.material.button.MaterialButton
