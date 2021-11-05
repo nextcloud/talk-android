@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_call_name_is_same">Sartu duzun izena dagoenaren berdina da</string>
+    <string name="nc_call_notifications">Dei jakinarazpenak</string>
     <string name="nc_call_reconnecting">Berriro konektatzen...</string>
     <string name="nc_call_ringing">DEITZEN</string>
     <string name="nc_call_state_in_call">%1$s deian</string>
