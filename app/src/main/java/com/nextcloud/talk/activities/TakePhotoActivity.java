@@ -213,6 +213,8 @@ public class TakePhotoActivity extends AppCompatActivity {
         binding.takePhoto.setVisibility(View.VISIBLE);
         binding.switchCamera.setVisibility(View.VISIBLE);
         binding.toggleTorch.setVisibility(View.VISIBLE);
+        binding.toggleCrop.setVisibility(View.VISIBLE);
+        binding.toggleLowres.setVisibility(View.VISIBLE);
     }
 
     private void showPictureProcessingElements() {
@@ -220,6 +222,8 @@ public class TakePhotoActivity extends AppCompatActivity {
         binding.takePhoto.setVisibility(View.GONE);
         binding.switchCamera.setVisibility(View.GONE);
         binding.toggleTorch.setVisibility(View.GONE);
+        binding.toggleCrop.setVisibility(View.GONE);
+        binding.toggleLowres.setVisibility(View.GONE);
 
         binding.send.setVisibility(View.VISIBLE);
         binding.retake.setVisibility(View.VISIBLE);
