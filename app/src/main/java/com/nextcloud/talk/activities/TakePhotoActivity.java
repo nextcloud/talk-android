@@ -113,8 +113,8 @@ public class TakePhotoActivity extends AppCompatActivity {
 
                 binding.toggleCrop.setOnClickListener((v) -> {
                     crop = !crop;
-                    binding.toggleCrop.setIcon(ContextCompat.getDrawable(this, crop ?
-                        R.drawable.ic_baseline_flash_on_24 : R.drawable.ic_baseline_flash_off_24));
+                    binding.toggleCrop.setBackgroundColor(crop ? getResources().getColor(R.color.colorPrimary) :
+                                                              getResources().getColor(R.color.camera_bg_tint));
                     cameraProvider.unbindAll();
                     camera = cameraProvider.bindToLifecycle(
                         this,
@@ -125,8 +125,8 @@ public class TakePhotoActivity extends AppCompatActivity {
 
                 binding.toggleLowres.setOnClickListener((v) -> {
                     lowres = !lowres;
-                    binding.toggleLowres.setIcon(ContextCompat.getDrawable(this, lowres ?
-                        R.drawable.ic_baseline_flash_on_24 : R.drawable.ic_baseline_flash_off_24));
+                    binding.toggleLowres.setBackgroundColor(lowres ? getResources().getColor(R.color.colorPrimary) :
+                                                              getResources().getColor(R.color.camera_bg_tint));
                     cameraProvider.unbindAll();
                     camera = cameraProvider.bindToLifecycle(
                         this,
