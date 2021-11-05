@@ -101,6 +101,7 @@ import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
@@ -160,7 +161,7 @@ public class DisplayUtils {
     }
 
     public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
-        VectorDrawable vectorDrawable = (VectorDrawable) resources.getDrawable(resource);
+        VectorDrawable vectorDrawable = (VectorDrawable) ResourcesCompat.getDrawable(resources, resource,null);
         Bitmap bitmap = getBitmap(vectorDrawable);
         new RoundPostprocessor(true).process(bitmap);
         return bitmap;
@@ -260,12 +261,13 @@ public class DisplayUtils {
     }
 
     public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId, @ColorRes int colorResId) {
-        Drawable drawable = res.getDrawable(drawableResId);
+        Drawable drawable = ResourcesCompat.getDrawable(res, drawableResId,null);;
         int color = res.getColor(colorResId);
-        drawable.setTint(color);
+        if (drawable != null) {
+            drawable.setTint(color);
+        }
         return drawable;
     }
-
 
     public static Drawable getDrawableForMentionChipSpan(Context context, String id, CharSequence label,
                                                          UserEntity conversationUser, String type,

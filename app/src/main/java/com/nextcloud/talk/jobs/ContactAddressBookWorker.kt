@@ -145,7 +145,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 })
         }
 
-        // store timestamp 
+        // store timestamp
         appPreferences.setPhoneBookIntegrationLastRun(System.currentTimeMillis())
 
         return Result.success()
