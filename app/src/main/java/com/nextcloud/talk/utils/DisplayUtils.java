@@ -101,6 +101,7 @@ import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatDrawableManager;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
@@ -130,7 +131,11 @@ public class DisplayUtils {
             public void onClick(@NonNull View widget) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext().startActivity(browserIntent);
+                NextcloudTalkApplication
+                    .Companion
+                    .getSharedApplication()
+                    .getApplicationContext()
+                    .startActivity(browserIntent);
             }
 
             @Override
@@ -160,7 +165,7 @@ public class DisplayUtils {
     }
 
     public static Bitmap getRoundedBitmapFromVectorDrawableResource(Resources resources, int resource) {
-        VectorDrawable vectorDrawable = (VectorDrawable) resources.getDrawable(resource);
+        VectorDrawable vectorDrawable = (VectorDrawable) ResourcesCompat.getDrawable(resources, resource, null);
         Bitmap bitmap = getBitmap(vectorDrawable);
         new RoundPostprocessor(true).process(bitmap);
         return bitmap;
@@ -172,7 +177,8 @@ public class DisplayUtils {
 
     public static Bitmap getBitmap(Drawable drawable) {
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                                            drawable.getIntrinsicHeight(),
+                                            Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
@@ -181,16 +187,18 @@ public class DisplayUtils {
 
     public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
         Map<String, String> headers = new HashMap<>();
-        if (userEntity != null && url.startsWith(userEntity.getBaseUrl()) && (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
+        if (userEntity != null &&
+            url.startsWith(userEntity.getBaseUrl()) &&
+            (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
             headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
         }
 
         return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-                .setProgressiveRenderingEnabled(true)
-                .setRotationOptions(RotationOptions.autoRotate())
-                .disableDiskCache()
-                .setHeaders(headers)
-                .build();
+            .setProgressiveRenderingEnabled(true)
+            .setRotationOptions(RotationOptions.autoRotate())
+            .disableDiskCache()
+            .setHeaders(headers)
+            .build();
     }
 
     public static ControllerListener getImageControllerListener(SimpleDraweeView draweeView) {
@@ -201,7 +209,9 @@ public class DisplayUtils {
             }
 
             @Override
-            public void onFinalImageSet(String id, @androidx.annotation.Nullable Object imageInfo, @androidx.annotation.Nullable Animatable animatable) {
+            public void onFinalImageSet(String id,
+                                        @androidx.annotation.Nullable Object imageInfo,
+                                        @androidx.annotation.Nullable Animatable animatable) {
                 updateViewSize((ImageInfo) imageInfo, draweeView);
             }
 
@@ -229,7 +239,7 @@ public class DisplayUtils {
 
     public static float convertDpToPixel(float dp, Context context) {
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
-                context.getResources().getDisplayMetrics()) + 0.5f);
+                                                    context.getResources().getDisplayMetrics()) + 0.5f);
     }
 
     public static float convertPixelToDp(float px, Context context) {
@@ -241,8 +251,10 @@ public class DisplayUtils {
         if (Build.VERSION.SDK_INT < 23) {
             try {
                 @SuppressLint("RestrictedApi") AppCompatDrawableManager drawableManager = AppCompatDrawableManager.get();
-                Class<?> inflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$InflateDelegate");
-                Class<?> vdcInflateDelegateClass = Class.forName("android.support.v7.widget.AppCompatDrawableManager$VdcInflateDelegate");
+                Class<?> inflateDelegateClass = Class.forName(
+                    "android.support.v7.widget.AppCompatDrawableManager$InflateDelegate");
+                Class<?> vdcInflateDelegateClass = Class.forName(
+                    "android.support.v7.widget.AppCompatDrawableManager$VdcInflateDelegate");
 
                 Constructor<?> constructor = vdcInflateDelegateClass.getDeclaredConstructor();
                 constructor.setAccessible(true);
@@ -253,19 +265,21 @@ public class DisplayUtils {
                 addDelegate.setAccessible(true);
                 addDelegate.invoke(drawableManager, "vector", vdcInflateDelegate);
             } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException |
-                    InvocationTargetException | IllegalAccessException e) {
+                InvocationTargetException | IllegalAccessException e) {
                 Log.e(TAG, "Failed to use reflection to enable proper vector scaling");
             }
         }
     }
 
     public static Drawable getTintedDrawable(Resources res, @DrawableRes int drawableResId, @ColorRes int colorResId) {
-        Drawable drawable = res.getDrawable(drawableResId);
+        Drawable drawable = ResourcesCompat.getDrawable(res, drawableResId, null);
+        ;
         int color = res.getColor(colorResId);
-        drawable.setTint(color);
+        if (drawable != null) {
+            drawable.setTint(color);
+        }
         return drawable;
     }
-
 
     public static Drawable getDrawableForMentionChipSpan(Context context, String id, CharSequence label,
                                                          UserEntity conversationUser, String type,
@@ -301,31 +315,37 @@ public class DisplayUtils {
         if (!isCall) {
             String url = ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big);
             if ("guests".equals(type) || "guest".equals(type)) {
-                url = ApiUtils.getUrlForAvatarWithNameForGuests(conversationUser.getBaseUrl(), String.valueOf(label), R.dimen.avatar_size_big);
+                url = ApiUtils.getUrlForAvatarWithNameForGuests(
+                    conversationUser.getBaseUrl(),
+                    String.valueOf(label), R.dimen.avatar_size_big);
             }
             ImageRequest imageRequest = getImageRequestForUrl(url, null);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
+            DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(
+                imageRequest,
+                context);
 
             dataSource.subscribe(
-                    new BaseBitmapDataSubscriber() {
-                        @Override
-                        protected void onNewResultImpl(Bitmap bitmap) {
-                            if (bitmap != null) {
-                                chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
+                new BaseBitmapDataSubscriber() {
+                    @Override
+                    protected void onNewResultImpl(Bitmap bitmap) {
+                        if (bitmap != null) {
+                            chip.setChipIcon(getRoundedDrawable(new BitmapDrawable(bitmap)));
 
-                                // A hack to refresh the chip icon
-                                if (emojiEditText != null) {
-                                    emojiEditText.post(() -> emojiEditText.setTextKeepState(emojiEditText.getText(), TextView.BufferType.SPANNABLE));
-                                }
+                            // A hack to refresh the chip icon
+                            if (emojiEditText != null) {
+                                emojiEditText.post(() -> emojiEditText.setTextKeepState(
+                                    emojiEditText.getText(),
+                                    TextView.BufferType.SPANNABLE));
                             }
                         }
+                    }
 
-                        @Override
-                        protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                        }
-                    },
-                    UiThreadImmediateExecutorService.getInstance());
+                    @Override
+                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                    }
+                },
+                UiThreadImmediateExecutorService.getInstance());
         }
 
         return chip;
@@ -340,8 +360,8 @@ public class DisplayUtils {
         String stringText = text.toString();
 
         Matcher m = Pattern.compile("@" + label,
-                Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
-                .matcher(spannableString);
+                                    Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
+            .matcher(spannableString);
 
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
@@ -357,9 +377,14 @@ public class DisplayUtils {
             int end = start + m.group().length();
             lastStartIndex = end;
             mentionChipSpan = new Spans.MentionChipSpan(DisplayUtils.getDrawableForMentionChipSpan(context,
-                    id, label, conversationUser, type, chipXmlRes, null),
-                    BetterImageSpan.ALIGN_CENTER, id,
-                    label);
+                                                                                                   id,
+                                                                                                   label,
+                                                                                                   conversationUser,
+                                                                                                   type,
+                                                                                                   chipXmlRes,
+                                                                                                   null),
+                                                        BetterImageSpan.ALIGN_CENTER, id,
+                                                        label);
             spannableString.setSpan(mentionChipSpan, start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             if ("user".equals(type) && !conversationUser.getUserId().equals(id)) {
                 spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -378,12 +403,12 @@ public class DisplayUtils {
         }
 
         Matcher m = Pattern.compile(searchText,
-                Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
-                .matcher(spannableString);
+                                    Pattern.CASE_INSENSITIVE | Pattern.LITERAL | Pattern.MULTILINE)
+            .matcher(spannableString);
 
 
         int textSize = NextcloudTalkApplication.Companion.getSharedApplication().getResources().getDimensionPixelSize(R.dimen
-                .chat_text_size);
+                                                                                                                          .chat_text_size);
 
         int lastStartIndex = -1;
         while (m.find()) {
@@ -391,7 +416,7 @@ public class DisplayUtils {
             int end = start + m.group().length();
             lastStartIndex = end;
             spannableString.setSpan(new ForegroundColorSpan(color), start, end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableString.setSpan(new StyleSpan(Typeface.BOLD), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             spannableString.setSpan(new AbsoluteSizeSpan(textSize), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -399,23 +424,25 @@ public class DisplayUtils {
         return spannableString;
     }
 
-    public static Drawable getMessageSelector(@ColorInt int normalColor, @ColorInt int selectedColor,
-                                              @ColorInt int pressedColor, @DrawableRes int shape) {
+    public static Drawable getMessageSelector(@ColorInt int normalColor,
+                                              @ColorInt int selectedColor,
+                                              @ColorInt int pressedColor,
+                                              @DrawableRes int shape) {
 
         Drawable vectorDrawable = ContextCompat.getDrawable(NextcloudTalkApplication.Companion.getSharedApplication()
-                        .getApplicationContext(),
-                shape);
+                                                                .getApplicationContext(),
+                                                            shape);
         Drawable drawable = DrawableCompat.wrap(vectorDrawable).mutate();
         DrawableCompat.setTintList(
-                drawable,
-                new ColorStateList(
-                        new int[][]{
-                                new int[]{android.R.attr.state_selected},
-                                new int[]{android.R.attr.state_pressed},
-                                new int[]{-android.R.attr.state_pressed, -android.R.attr.state_selected}
-                        },
-                        new int[]{selectedColor, pressedColor, normalColor}
-                ));
+            drawable,
+            new ColorStateList(
+                new int[][]{
+                    new int[]{android.R.attr.state_selected},
+                    new int[]{android.R.attr.state_pressed},
+                    new int[]{-android.R.attr.state_pressed, -android.R.attr.state_selected}
+                },
+                new int[]{selectedColor, pressedColor, normalColor}
+            ));
         return drawable;
     }
 
@@ -434,7 +461,8 @@ public class DisplayUtils {
                 if (isLightTheme) {
                     int systemUiFlagLightStatusBar;
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                        systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR |
+                            View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                     } else {
                         systemUiFlagLightStatusBar = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
                     }
@@ -552,14 +580,15 @@ public class DisplayUtils {
         }
 
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(avatarImageView.getController())
-                .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString, null))
-                .build();
+            .setOldController(avatarImageView.getController())
+            .setAutoPlayAnimations(true)
+            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString, null))
+            .build();
         avatarImageView.setController(draweeController);
     }
 
-    public static @StringRes int getSortOrderStringId(FileSortOrder sortOrder) {
+    public static @StringRes
+    int getSortOrderStringId(FileSortOrder sortOrder) {
         switch (sortOrder.name) {
             case sort_z_to_a_id:
                 return R.string.menu_item_sort_by_name_z_a;
@@ -577,4 +606,3 @@ public class DisplayUtils {
         }
     }
 }
-
