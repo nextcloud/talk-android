@@ -269,6 +269,7 @@ public class CallActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
 
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
@@ -511,6 +512,7 @@ public class CallActivity extends BaseActivity {
 
     @SuppressLint("ClickableViewAccessibility")
     private void initViews() {
+        Log.d(TAG, "initViews");
         binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
         binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
 
@@ -574,6 +576,7 @@ public class CallActivity extends BaseActivity {
     }
 
     private void initGridAdapter() {
+        Log.d(TAG, "initGridAdapter");
         int columns;
         int participantsInGrid = participantDisplayItems.size();
         if (getResources() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -1894,36 +1897,39 @@ public class CallActivity extends BaseActivity {
     }
 
     private void updateSelfVideoViewPosition() {
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) binding.selfVideoRenderer.getLayoutParams();
+        Log.d(TAG, "updateSelfVideoViewPosition");
+        if (!isInPipMode) {
+            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) binding.selfVideoRenderer.getLayoutParams();
 
-        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
-        int screenWidthPx = displayMetrics.widthPixels;
+            DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+            int screenWidthPx = displayMetrics.widthPixels;
 
-        int screenWidthDp = (int) DisplayUtils.convertPixelToDp(screenWidthPx, getApplicationContext());
+            int screenWidthDp = (int) DisplayUtils.convertPixelToDp(screenWidthPx, getApplicationContext());
 
-        float newXafterRotate = 0;
-        float newYafterRotate;
-        if (binding.callInfosLinearLayout.getVisibility() == View.VISIBLE) {
-            newYafterRotate = 250;
-        } else {
-            newYafterRotate = 20;
+            float newXafterRotate = 0;
+            float newYafterRotate;
+            if (binding.callInfosLinearLayout.getVisibility() == View.VISIBLE) {
+                newYafterRotate = 250;
+            } else {
+                newYafterRotate = 20;
+            }
+
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                layoutParams.height = (int) getResources().getDimension(R.dimen.large_preview_dimension);
+                layoutParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
+                newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.8);
+
+            } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT;
+                layoutParams.width = (int) getResources().getDimension(R.dimen.large_preview_dimension);
+                newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.5);
+            }
+            binding.selfVideoRenderer.setLayoutParams(layoutParams);
+
+            int newXafterRotatePx = (int) DisplayUtils.convertDpToPixel(newXafterRotate, getApplicationContext());
+            binding.selfVideoViewWrapper.setY(newYafterRotate);
+            binding.selfVideoViewWrapper.setX(newXafterRotatePx);
         }
-
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            layoutParams.height = (int) getResources().getDimension(R.dimen.large_preview_dimension);
-            layoutParams.width = FrameLayout.LayoutParams.WRAP_CONTENT;
-            newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.8);
-
-        } else if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            layoutParams.height = FrameLayout.LayoutParams.WRAP_CONTENT;
-            layoutParams.width = (int) getResources().getDimension(R.dimen.large_preview_dimension);
-            newXafterRotate = (float) (screenWidthDp - getResources().getDimension(R.dimen.large_preview_dimension) * 0.5);
-        }
-        binding.selfVideoRenderer.setLayoutParams(layoutParams);
-
-        int newXafterRotatePx = (int) DisplayUtils.convertDpToPixel(newXafterRotate, getApplicationContext());
-        binding.selfVideoViewWrapper.setY(newYafterRotate);
-        binding.selfVideoViewWrapper.setX(newXafterRotatePx);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -2474,6 +2480,8 @@ public class CallActivity extends BaseActivity {
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+        Log.d(TAG, "onPictureInPictureModeChanged");
+        Log.d(TAG, "isInPictureInPictureMode= " + isInPictureInPictureMode);
         isInPipMode = isInPictureInPictureMode;
         if (isInPictureInPictureMode) {
             mReceiver =
@@ -2528,6 +2536,7 @@ public class CallActivity extends BaseActivity {
     }
 
     public void updateUiForPipMode() {
+        Log.d(TAG, "updateUiForPipMode");
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                                                                              ViewGroup.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, 0, 0, 0);
@@ -2550,6 +2559,7 @@ public class CallActivity extends BaseActivity {
     }
 
     public void updateUiForNormalMode() {
+        Log.d(TAG, "updateUiForNormalMode");
         if (isVoiceOnlyCall) {
             binding.callControls.setVisibility(View.VISIBLE);
         } else {
