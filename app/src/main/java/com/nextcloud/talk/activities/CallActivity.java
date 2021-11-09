@@ -24,6 +24,7 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
+import android.app.AppOpsManager;
 import android.app.KeyguardManager;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
@@ -310,7 +311,7 @@ public class CallActivity extends BaseActivity {
             setCallState(CallStatus.CONNECTING);
         }
 
-        if (deviceSupportsPipMode()) {
+        if (isGreaterEqualOreo() && isPipModePossible()) {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
         }
 
@@ -516,7 +517,7 @@ public class CallActivity extends BaseActivity {
         binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
         binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
 
-        if (!deviceSupportsPipMode()) {
+        if (!isPipModePossible()) {
             binding.pictureInPictureButton.setVisibility(View.GONE);
         }
 
@@ -2462,7 +2463,7 @@ public class CallActivity extends BaseActivity {
 
     void enterPipMode() {
         enableKeyguard();
-        if (deviceSupportsPipMode()) {
+        if (isGreaterEqualOreo() && isPipModePossible()) {
             Rational pipRatio = new Rational(300, 500);
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
@@ -2471,9 +2472,21 @@ public class CallActivity extends BaseActivity {
         }
     }
 
-    private boolean deviceSupportsPipMode() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-            && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+    private boolean isPipModePossible() {
+        if (isGreaterEqualOreo()) {
+            boolean deviceHasPipFeature = getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+
+            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
+            boolean isPipFeatureGranted = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                                                                       android.os.Process.myUid(),
+                                                                       "com.nextcloud.talk2") == AppOpsManager.MODE_ALLOWED; // TODO: no hardcoding (-> branding!)
+            return deviceHasPipFeature && isPipFeatureGranted;
+        }
+        return false;
+    }
+
+    private boolean isGreaterEqualOreo(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -2517,7 +2530,7 @@ public class CallActivity extends BaseActivity {
         String title,
         int requestCode) {
 
-        if (deviceSupportsPipMode()) {
+        if (isGreaterEqualOreo() && isPipModePossible()) {
             final ArrayList<RemoteAction> actions = new ArrayList<>();
 
             final Icon icon = Icon.createWithResource(this, iconId);
