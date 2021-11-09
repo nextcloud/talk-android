@@ -53,6 +53,7 @@ import java.util.concurrent.ExecutionException;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.ImageCapture;
@@ -79,7 +80,6 @@ public class TakePhotoActivity extends AppCompatActivity {
     private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss", Locale.ROOT);
 
     private Camera camera;
-    private boolean crop = false, lowres = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,8 +98,9 @@ public class TakePhotoActivity extends AppCompatActivity {
                 camera = cameraProvider.bindToLifecycle(
                     this,
                     viewModel.getCameraSelector(),
-                    getImageCapture(false, false),
-                    getPreview(false));
+                    getImageCapture(
+                        viewModel.isCropEnabled().getValue(), viewModel.isLowResolutionEnabled().getValue()),
+                    getPreview(viewModel.isCropEnabled().getValue()));
 
                 viewModel.getTorchToggleButtonImageResource()
                     .observe(
@@ -108,32 +109,46 @@ public class TakePhotoActivity extends AppCompatActivity {
                 viewModel.isTorchEnabled()
                     .observe(
                         this,
-                        enabled -> camera.getCameraControl().enableTorch(enabled));
+                        enabled -> camera.getCameraControl().enableTorch(viewModel.isTorchEnabled().getValue()));
                 binding.toggleTorch.setOnClickListener((v) -> viewModel.toggleTorchEnabled());
 
-                binding.toggleCrop.setOnClickListener((v) -> {
-                    crop = !crop;
-                    binding.toggleCrop.setBackgroundColor(crop ? getResources().getColor(R.color.colorPrimary) :
-                                                              getResources().getColor(R.color.camera_bg_tint));
-                    cameraProvider.unbindAll();
-                    camera = cameraProvider.bindToLifecycle(
+                viewModel.getCropToggleButtonImageResource()
+                    .observe(
                         this,
-                        viewModel.getCameraSelector(),
-                        getImageCapture(crop, lowres),
-                        getPreview(crop));
-                });
+                        res -> binding.toggleCrop.setIcon(ContextCompat.getDrawable(this, res)));
+                viewModel.isCropEnabled()
+                    .observe(
+                        this,
+                        enabled -> {
+                            cameraProvider.unbindAll();
+                            camera = cameraProvider.bindToLifecycle(
+                                this,
+                                viewModel.getCameraSelector(),
+                                getImageCapture(
+                                    viewModel.isCropEnabled().getValue(), viewModel.isLowResolutionEnabled().getValue()),
+                                getPreview(viewModel.isCropEnabled().getValue()));
+                            camera.getCameraControl().enableTorch(viewModel.isTorchEnabled().getValue());
+                        });
+                binding.toggleCrop.setOnClickListener((v) -> viewModel.toggleCropEnabled());
 
-                binding.toggleLowres.setOnClickListener((v) -> {
-                    lowres = !lowres;
-                    binding.toggleLowres.setBackgroundColor(lowres ? getResources().getColor(R.color.colorPrimary) :
-                                                              getResources().getColor(R.color.camera_bg_tint));
-                    cameraProvider.unbindAll();
-                    camera = cameraProvider.bindToLifecycle(
+                viewModel.getLowResolutionToggleButtonImageResource()
+                    .observe(
                         this,
-                        viewModel.getCameraSelector(),
-                        getImageCapture(crop, lowres),
-                        getPreview(crop));
-                });
+                        res -> binding.toggleLowres.setIcon(ContextCompat.getDrawable(this, res)));
+                viewModel.isLowResolutionEnabled()
+                    .observe(
+                        this,
+                        enabled -> {
+                            cameraProvider.unbindAll();
+                            camera = cameraProvider.bindToLifecycle(
+                                this,
+                                viewModel.getCameraSelector(),
+                                getImageCapture(
+                                    viewModel.isCropEnabled().getValue(), viewModel.isLowResolutionEnabled().getValue()),
+                                getPreview(viewModel.isCropEnabled().getValue()));
+                            camera.getCameraControl().enableTorch(viewModel.isTorchEnabled().getValue());
+                        });
+                binding.toggleLowres.setOnClickListener((v) -> viewModel.toggleLowResolutionEnabled());
 
                 binding.switchCamera.setOnClickListener((v) -> {
                     viewModel.toggleCameraSelector();
@@ -141,8 +156,9 @@ public class TakePhotoActivity extends AppCompatActivity {
                     camera = cameraProvider.bindToLifecycle(
                         this,
                         viewModel.getCameraSelector(),
-                        getImageCapture(crop, lowres),
-                        getPreview(crop));
+                        getImageCapture(
+                            viewModel.isCropEnabled().getValue(), viewModel.isLowResolutionEnabled().getValue()),
+                        getPreview(viewModel.isCropEnabled().getValue()));
                 });
                 binding.retake.setOnClickListener((v) -> {
                     Uri uri = (Uri) binding.photoPreview.getTag();
@@ -230,7 +246,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         binding.photoPreview.setVisibility(View.VISIBLE);
     }
 
-    private ImageCapture getImageCapture(boolean crop, boolean lowres) {
+    private ImageCapture getImageCapture(Boolean crop, Boolean lowres) {
         final ImageCapture imageCapture;
         if (lowres) imageCapture = new ImageCapture.Builder()
             .setTargetResolution(new Size(crop ? 1080 : 1440, 1920)).build();
@@ -340,7 +356,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         return rotate;
     }
 
-    private Preview getPreview(boolean crop) {
+    private Preview getPreview(Boolean crop) {
         Preview preview = new Preview.Builder()
             .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3).build();
         preview.setSurfaceProvider(binding.preview.getSurfaceProvider());
