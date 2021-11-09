@@ -24,16 +24,12 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
-import android.app.AppOpsManager;
-import android.app.KeyguardManager;
 import android.app.PendingIntent;
-import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
@@ -47,18 +43,14 @@ import android.os.Looper;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Rational;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
@@ -163,7 +155,7 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallActivity extends BaseActivity {
+public class CallActivity extends CallActivityBase {
 
     @Inject
     NcApi ncApi;
@@ -195,7 +187,7 @@ public class CallActivity extends BaseActivity {
     private static final String MICROPHONE_PIP_INTENT_EXTRA_ACTION = "microphone_pip_action";
     private static final int MICROPHONE_PIP_REQUEST_MUTE = 1;
     private static final int MICROPHONE_PIP_REQUEST_UNMUTE = 2;
-    private PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
+
     private BroadcastReceiver mReceiver;
 
     private PeerConnectionFactory peerConnectionFactory;
@@ -258,8 +250,6 @@ public class CallActivity extends BaseActivity {
     private Map<String, ParticipantDisplayItem> participantDisplayItems;
     private ParticipantsAdapter participantsAdapter;
 
-    public Boolean isInPipMode = false;
-
     private CallActivityBinding binding;
 
     @Parcel
@@ -270,28 +260,15 @@ public class CallActivity extends BaseActivity {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
+        super.onCreate(savedInstanceState);
 
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-
-        setTheme(R.style.CallTheme);
-
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dismissKeyguard();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         binding = CallActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        if (!isPipModePossible()){
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                                                                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
-                                                                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                                                                 View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            binding.controllerCallLayout.setFitsSystemWindows(false);
-        }
+        hideNavigationIfNoPipAvailable();
 
         Bundle extras = getIntent().getExtras();
         roomId = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
@@ -320,10 +297,6 @@ public class CallActivity extends BaseActivity {
             setCallState(CallStatus.CONNECTING);
         }
 
-        if (isGreaterEqualOreo() && isPipModePossible()) {
-            mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
-        }
-
         initClickListeners();
         binding.microphoneButton.setOnTouchListener(new MicrophoneButtonTouchListener());
 
@@ -349,14 +322,6 @@ public class CallActivity extends BaseActivity {
             cache.evictAll();
         } catch (IOException e) {
             Log.e(TAG, "Failed to evict cache");
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (isInPipMode) {
-            finish();
         }
     }
 
@@ -2461,47 +2426,6 @@ public class CallActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        if (isPipModePossible()) {
-            enterPipMode();
-        }
-    }
-
-    @Override
-    public void onUserLeaveHint() {
-        enterPipMode();
-    }
-
-    void enterPipMode() {
-        enableKeyguard();
-        if (isGreaterEqualOreo() && isPipModePossible()) {
-            Rational pipRatio = new Rational(300, 500);
-            mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
-            enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
-        } else {
-            finish();
-        }
-    }
-
-    private boolean isPipModePossible() {
-        if (isGreaterEqualOreo()) {
-            boolean deviceHasPipFeature = getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
-
-            AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-            boolean isPipFeatureGranted = appOpsManager.checkOpNoThrow(
-                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
-                android.os.Process.myUid(),
-                BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
-            return deviceHasPipFeature && isPipFeatureGranted;
-        }
-        return false;
-    }
-
-    private boolean isGreaterEqualOreo(){
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
@@ -2599,32 +2523,14 @@ public class CallActivity extends BaseActivity {
         binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
     }
 
+    @Override
+    void suppressFitsSystemWindows() {
+        binding.controllerCallLayout.setFitsSystemWindows(false);
+    }
+
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         eventBus.post(new ConfigurationChangeEvent());
-    }
-
-    private void dismissKeyguard() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            keyguardManager.requestDismissKeyguard(this, null);
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        }
-    }
-
-    private void enableKeyguard() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(false);
-        } else {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        }
     }
 
     private class SelfVideoTouchListener implements View.OnTouchListener {

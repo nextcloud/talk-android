@@ -21,8 +21,6 @@
 package com.nextcloud.talk.activities;
 
 import android.annotation.SuppressLint;
-import android.app.KeyguardManager;
-import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -38,9 +36,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Rational;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
@@ -96,9 +92,9 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallNotificationActivity extends BaseActivity {
+public class CallNotificationActivity extends CallActivityBase {
 
-    public static final String TAG = "CallNotificationActivity";
+    public static final String TAG = "CallNotificationA";
 
     @Inject
     NcApi ncApi;
@@ -125,21 +121,20 @@ public class CallNotificationActivity extends BaseActivity {
     private boolean leavingScreen = false;
     private Handler handler;
     private CallNotificationActivityBinding binding;
-    private Boolean isInPipMode = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate");
         super.onCreate(savedInstanceState);
+
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-
-        dismissKeyguard();
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        eventBus.post(new CallNotificationClick());
 
         binding = CallNotificationActivityBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        hideNavigationIfNoPipAvailable();
+
+        eventBus.post(new CallNotificationClick());
 
         Bundle extras = getIntent().getExtras();
         this.roomId = extras.getString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), "");
@@ -331,7 +326,7 @@ public class CallNotificationActivity extends BaseActivity {
     private void setUpAfterConversationIsKnown() {
         binding.conversationNameTextView.setText(currentConversation.getDisplayName());
 
-        loadAvatar();
+//        loadAvatar(); // TODO: loadAvatar always makes problems! also now for PIP mode! needs to be rewritten!
         checkIfAnyParticipantsRemainInRoom();
         showAnswerControls();
     }
@@ -345,7 +340,6 @@ public class CallNotificationActivity extends BaseActivity {
         layoutParams.height = dimen;
         binding.avatarImageView.setLayoutParams(layoutParams);
     }
-
 
     private void loadAvatar() {
         switch (currentConversation.getType()) {
@@ -485,30 +479,6 @@ public class CallNotificationActivity extends BaseActivity {
         }
     }
 
-    public void onBackPressed() {
-        enterPipMode();
-    }
-
-    public void onUserLeaveHint() {
-        enterPipMode();
-    }
-
-    void enterPipMode() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPictureInPictureMode(getPipParams());
-        } else {
-            finish();
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    public PictureInPictureParams getPipParams() {
-        Rational pipRatio = new Rational(300, 500);
-        return new PictureInPictureParams.Builder()
-            .setAspectRatio(pipRatio)
-            .build();
-    }
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
@@ -531,18 +501,8 @@ public class CallNotificationActivity extends BaseActivity {
         binding.incomingCallRelativeLayout.setVisibility(View.VISIBLE);
     }
 
-    // TODO: dismiss keyguard works, but whenever accepting the call and switch to CallActivity by intent, the
-    //  lockscreen is shown (although CallActivity also dismisses the keyguard in the same way.)
-    private void dismissKeyguard() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            keyguardManager.requestDismissKeyguard(this, null);
-        } else {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
-        }
+    @Override
+    void suppressFitsSystemWindows() {
+        binding.controllerCallNotificationLayout.setFitsSystemWindows(false);
     }
 }
