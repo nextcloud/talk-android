@@ -324,6 +324,7 @@ public class TakePhotoActivity extends AppCompatActivity {
 
         binding.photoPreview.setImageBitmap(bitmap);
         binding.photoPreview.setTag(savedUri);
+        viewModel.disableTorchIfEnabled();
     }
 
     public int getImageOrientation(File imageFile) {

@@ -64,6 +64,12 @@ public class TakePictureViewModel extends ViewModel {
         }
     }
 
+    public void disableTorchIfEnabled() {
+        if (this.torchEnabled.getValue()) {
+            toggleTorchEnabled();
+        }
+    }
+
     public void toggleTorchEnabled() {
         //noinspection ConstantConditions
         this.torchEnabled.postValue(!this.torchEnabled.getValue());
