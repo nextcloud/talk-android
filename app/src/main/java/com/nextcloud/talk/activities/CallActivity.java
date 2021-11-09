@@ -352,6 +352,7 @@ public class CallActivity extends BaseActivity {
         }
     }
 
+    @Override
     public void onStop() {
         super.onStop();
         if (isInPipMode) {
@@ -2462,7 +2463,9 @@ public class CallActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        enterPipMode();
+        if (isPipModePossible()) {
+            enterPipMode();
+        }
     }
 
     @Override
