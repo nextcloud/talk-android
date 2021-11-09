@@ -58,6 +58,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
@@ -2485,9 +2486,10 @@ public class CallActivity extends BaseActivity {
             boolean deviceHasPipFeature = getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
 
             AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
-            boolean isPipFeatureGranted = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
-                                                                       android.os.Process.myUid(),
-                                                                       "com.nextcloud.talk2") == AppOpsManager.MODE_ALLOWED; // TODO: no hardcoding (-> branding!)
+            boolean isPipFeatureGranted = appOpsManager.checkOpNoThrow(
+                AppOpsManager.OPSTR_PICTURE_IN_PICTURE,
+                android.os.Process.myUid(),
+                BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
             return deviceHasPipFeature && isPipFeatureGranted;
         }
         return false;
