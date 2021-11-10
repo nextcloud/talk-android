@@ -25,9 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -46,14 +44,12 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.postprocessors.BlurPostProcessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding;
 import com.nextcloud.talk.events.CallNotificationClick;
-import com.nextcloud.talk.events.ConfigurationChangeEvent;
 import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -66,12 +62,8 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-import org.michaelevans.colorart.library.ColorArt;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -82,7 +74,6 @@ import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import autodagger.AutoInjector;
 import butterknife.OnClick;
 import io.reactivex.Observer;
@@ -91,10 +82,11 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 
+@SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallNotificationActivity extends CallActivityBase {
 
-    public static final String TAG = "CallNotificationA";
+    public static final String TAG = "CallNotificationActivity";
 
     @Inject
     NcApi ncApi;
@@ -159,7 +151,6 @@ public class CallNotificationActivity extends CallActivityBase {
         initClickListeners();
     }
 
-    @SuppressLint({"LongLogTag"})
     @Override
     public void onStart() {
         super.onStart();
@@ -177,11 +168,13 @@ public class CallNotificationActivity extends CallActivityBase {
 
     private void initClickListeners() {
         binding.callAnswerVoiceOnlyView.setOnClickListener(l -> {
+            Log.d(TAG, "accept call (voice only)");
             originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
             proceedToCall();
         });
 
         binding.callAnswerCameraView.setOnClickListener(l -> {
+            Log.d(TAG, "accept call (with video)");
             originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
             proceedToCall();
         });
@@ -305,7 +298,6 @@ public class CallNotificationActivity extends CallActivityBase {
                     }
                 }
 
-                @SuppressLint("LongLogTag")
                 @Override
                 public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                     Log.e(TAG, e.getMessage(), e);
@@ -326,80 +318,40 @@ public class CallNotificationActivity extends CallActivityBase {
     private void setUpAfterConversationIsKnown() {
         binding.conversationNameTextView.setText(currentConversation.getDisplayName());
 
-//        loadAvatar(); // TODO: loadAvatar always makes problems! also now for PIP mode! needs to be rewritten!
+        if(currentConversation.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL){
+            setAvatarForOneToOneCall();
+        } else {
+            binding.avatarImageView.setImageResource(R.drawable.ic_circular_group);
+        }
+
         checkIfAnyParticipantsRemainInRoom();
         showAnswerControls();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(ConfigurationChangeEvent configurationChangeEvent) {
-        ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) binding.avatarImageView.getLayoutParams();
-        int dimen = (int) getResources().getDimension(R.dimen.avatar_size_very_big);
+    private void setAvatarForOneToOneCall() {
+        ImageRequest imageRequest =
+            DisplayUtils.getImageRequestForUrl(
+                ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
+                                                 currentConversation.getName(),
+                                                 R.dimen.avatar_size_big), null);
 
-        layoutParams.width = dimen;
-        layoutParams.height = dimen;
-        binding.avatarImageView.setLayoutParams(layoutParams);
-    }
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
 
-    private void loadAvatar() {
-        switch (currentConversation.getType()) {
-            case ROOM_TYPE_ONE_TO_ONE_CALL:
-                binding.avatarImageView.setVisibility(View.VISIBLE);
+        dataSource.subscribe(new BaseBitmapDataSubscriber() {
+            @Override
+            protected void onNewResultImpl(@Nullable Bitmap bitmap) {
+                binding.avatarImageView.getHierarchy().setImage(
+                    new BitmapDrawable(getResources(), bitmap),
+                    100,
+                    true);
+            }
 
-                ImageRequest imageRequest =
-                    DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                                                         currentConversation.getName(),
-                                                         R.dimen.avatar_size_very_big),
-                        null);
-
-                ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);
-
-                dataSource.subscribe(new BaseBitmapDataSubscriber() {
-                    @Override
-                    protected void onNewResultImpl(@Nullable Bitmap bitmap) {
-                        binding.avatarImageView.getHierarchy().setImage(new BitmapDrawable(bitmap), 100,
-                                                                        true);
-                        if (getResources() != null) {
-                            binding.incomingCallRelativeLayout.setBackground(
-                                getResources().getDrawable(R.drawable.incoming_gradient));
-                        }
-
-                        if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 200 ||
-                            AvatarStatusCodeHolder.getInstance().getStatusCode() == 0) {
-
-                            Bitmap backgroundBitmap = bitmap.copy(bitmap.getConfig(), true);
-                            new BlurPostProcessor(5, context).process(backgroundBitmap);
-                            binding.backgroundImageView.setImageDrawable(new BitmapDrawable(backgroundBitmap));
-
-                        } else if (AvatarStatusCodeHolder.getInstance().getStatusCode() == 201) {
-                            ColorArt colorArt = new ColorArt(bitmap);
-                            int color = colorArt.getBackgroundColor();
-
-                            float[] hsv = new float[3];
-                            Color.colorToHSV(color, hsv);
-                            hsv[2] *= 0.75f;
-                            color = Color.HSVToColor(hsv);
-
-                            binding.backgroundImageView.setImageDrawable(new ColorDrawable(color));
-                        }
-                    }
-
-                    @Override
-                    protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                        // unused atm
-                    }
-                }, UiThreadImmediateExecutorService.getInstance());
-
-                break;
-            case ROOM_GROUP_CALL:
-                binding.avatarImageView.setImageResource(R.drawable.ic_circular_group);
-            case ROOM_PUBLIC_CALL:
-                binding.avatarImageView.setImageResource(R.drawable.ic_circular_group);
-                break;
-            default:
-        }
+            @Override
+            protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                Log.e(TAG, "failed to load avatar");
+            }
+        }, UiThreadImmediateExecutorService.getInstance());
     }
 
     private void endMediaNotifications() {
@@ -415,7 +367,6 @@ public class CallNotificationActivity extends CallActivityBase {
 
     @Override
     public void onDestroy() {
-        AvatarStatusCodeHolder.getInstance().setStatusCode(0);
         leavingScreen = true;
         if (handler != null) {
             handler.removeCallbacksAndMessages(null);
@@ -436,7 +387,6 @@ public class CallNotificationActivity extends CallActivityBase {
         }
     }
 
-    @SuppressLint("LongLogTag")
     private void playRingtoneSound() {
         String callRingtonePreferenceString = appPreferences.getCallRingtoneUri();
         Uri ringtoneUri;

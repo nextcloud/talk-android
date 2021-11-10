@@ -24,16 +24,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/controllerCallNotificationLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:id="@+id/backgroundImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@color/grey950"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+    android:layout_height="match_parent"
+    android:background="@color/grey950">
 
     <LinearLayout
         android:id="@+id/callAnswerButtons"
@@ -121,10 +113,9 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/avatarImageView"
-        android:layout_width="@dimen/avatar_size_very_big"
-        android:layout_height="@dimen/avatar_size_very_big"
+        android:layout_width="@dimen/avatar_size_big"
+        android:layout_height="@dimen/avatar_size_big"
         android:layout_centerInParent="true"
-        app:roundAsCircle="true"
-        tools:srcCompat="@tools:sample/avatars[0]" />
+        app:roundAsCircle="true" />
 
 </RelativeLayout>

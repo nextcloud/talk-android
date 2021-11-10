@@ -21,6 +21,4 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">24dp</dimen>
-
-    <dimen name="avatar_size_very_big">120dp</dimen>
 </resources>
