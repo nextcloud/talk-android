@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,8 +33,8 @@ import androidx.emoji.widget.EmojiTextView;
 public class IncomingPreviewMessageViewHolder extends MagicPreviewMessageViewHolder {
     private final ItemCustomIncomingPreviewMessageBinding binding;
 
-    public IncomingPreviewMessageViewHolder(View itemView) {
-        super(itemView);
+    public IncomingPreviewMessageViewHolder(View itemView, Object payload) {
+        super(itemView, payload);
         binding = ItemCustomIncomingPreviewMessageBinding.bind(itemView);
     }
 

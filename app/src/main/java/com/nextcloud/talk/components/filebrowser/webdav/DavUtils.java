@@ -68,32 +68,32 @@ public class DavUtils {
     public static final String PROPERTY_QUOTA_AVAILABLE_BYTES = "quota-available-bytes";
 
     static Property.Name[] getAllPropSet() {
-        List<Property.Name> propSet = new ArrayList<>();
+        List<Property.Name> props = new ArrayList<>();
 
-        propSet.add(DisplayName.NAME);
-        propSet.add(GetContentType.NAME);
-        propSet.add(GetContentLength.NAME);
-        propSet.add(GetContentType.NAME);
-        propSet.add(GetContentLength.NAME);
-        propSet.add(GetLastModified.NAME);
-        propSet.add(CreationDate.NAME);
-        propSet.add(GetETag.NAME);
-        propSet.add(ResourceType.NAME);
+        props.add(DisplayName.NAME);
+        props.add(GetContentType.NAME);
+        props.add(GetContentLength.NAME);
+        props.add(GetContentType.NAME);
+        props.add(GetContentLength.NAME);
+        props.add(GetLastModified.NAME);
+        props.add(CreationDate.NAME);
+        props.add(GetETag.NAME);
+        props.add(ResourceType.NAME);
 
-        propSet.add(NCPermission.NAME);
-        propSet.add(OCId.NAME);
-        propSet.add(OCSize.NAME);
-        propSet.add(OCFavorite.NAME);
-        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_ID));
-        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_DISPLAY_NAME));
-        propSet.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
+        props.add(NCPermission.NAME);
+        props.add(OCId.NAME);
+        props.add(OCSize.NAME);
+        props.add(OCFavorite.NAME);
+        props.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_ID));
+        props.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_OWNER_DISPLAY_NAME));
+        props.add(new Property.Name(OC_NAMESPACE, EXTENDED_PROPERTY_UNREAD_COMMENTS));
 
-        propSet.add(NCEncrypted.NAME);
-        propSet.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_MOUNT_TYPE));
-        propSet.add(NCPreview.NAME);
-        propSet.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
+        props.add(NCEncrypted.NAME);
+        props.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_MOUNT_TYPE));
+        props.add(NCPreview.NAME);
+        props.add(new Property.Name(NC_NAMESPACE, EXTENDED_PROPERTY_NOTE));
 
-        return propSet.toArray(new Property.Name[0]);
+        return props.toArray(new Property.Name[0]);
     }
 
     public static void registerCustomFactories() {

@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Marcel Hibbe
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -46,6 +48,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingVoiceMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -54,8 +57,8 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
-.IncomingTextMessageViewHolder<ChatMessage>(incomingView) {
+class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : MessageHolders
+.IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
 
     private val binding: ItemCustomIncomingVoiceMessageBinding =
         ItemCustomIncomingVoiceMessageBinding.bind(itemView)
@@ -192,6 +195,9 @@ class IncomingVoiceMessageViewHolder(incomingView: View) : MessageHolders
         val author: String = message.actorDisplayName
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
+            binding.messageUserAvatar.setOnClickListener {
+                (payload as? ProfileBottomSheet)?.showFor(message.actorId, itemView.context)
+            }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
         }

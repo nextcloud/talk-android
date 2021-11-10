@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Marcel Hibbe
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -54,6 +56,7 @@ import com.nextcloud.talk.jobs.DownloadFileToCacheWorker;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet;
 import com.nextcloud.talk.utils.AccountUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
@@ -110,8 +113,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     View clickView;
 
-    public MagicPreviewMessageViewHolder(View itemView) {
-        super(itemView);
+    public MagicPreviewMessageViewHolder(View itemView, Object payload) {
+        super(itemView, payload);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
@@ -128,6 +131,11 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 }
             } else {
                 userAvatar.setVisibility(View.VISIBLE);
+                userAvatar.setOnClickListener(v -> {
+                    if (payload instanceof ProfileBottomSheet){
+                        ((ProfileBottomSheet) payload).showFor(message.actorId, v.getContext());
+                    }
+                });
 
                 if (ACTOR_TYPE_BOTS.equals(message.actorType) && ACTOR_ID_CHANGELOG.equals(message.actorId)) {
                     if (context != null) {

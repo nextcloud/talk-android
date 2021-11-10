@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Andy Scherzinger
+ * @author Tim Krüger
+ * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -32,7 +34,7 @@ public class OutcomingPreviewMessageViewHolder extends MagicPreviewMessageViewHo
     private final ItemCustomOutcomingPreviewMessageBinding binding;
 
     public OutcomingPreviewMessageViewHolder(View itemView) {
-        super(itemView);
+        super(itemView, null);
         binding = ItemCustomOutcomingPreviewMessageBinding.bind(itemView);
     }
 

@@ -1007,8 +1007,14 @@ class ConversationInfoController(args: Bundle) :
                 R.drawable.ic_lock_grey600_24px,
                 context!!.getString(R.string.nc_attendee_pin, participant.attendeePin)
             ),
-            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context!!.getString(R.string.nc_promote)),
-            BasicListItemWithImage(R.drawable.ic_pencil_grey600_24dp, context!!.getString(R.string.nc_demote)),
+            BasicListItemWithImage(
+                R.drawable.ic_pencil_grey600_24dp,
+                context!!.getString(R.string.nc_promote)
+            ),
+            BasicListItemWithImage(
+                R.drawable.ic_pencil_grey600_24dp,
+                context!!.getString(R.string.nc_demote)
+            ),
             BasicListItemWithImage(
                 R.drawable.ic_delete_grey600_24dp,
                 context!!.getString(R.string.nc_remove_participant)

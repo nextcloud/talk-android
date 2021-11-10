@@ -400,4 +400,7 @@ public class ApiUtils {
     public static String getUrlToSendLocation(int version, String baseUrl, String roomToken) {
         return getUrlForChat(version, baseUrl, roomToken) + "/share";
     }
+
+    public static String getUrlForHoverCard(String baseUrl, String userId) { return baseUrl + ocsApiVersion +
+        "/hovercard/v1/" + userId; }
 }
