@@ -6,6 +6,8 @@
   ~
   ~ @author Mario Danic
   ~ @author Andy Scherzinger
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~
@@ -58,6 +60,11 @@
             <Class name="~.*\.DataBinderMapperImpl" />
             <Class name="~.*Binding" />
         </Or>
+    </Match>
+
+    <!-- Ignore generated JsonObjectMapper -->
+    <Match>
+        <Class name="~.*\$\$JsonObjectMapper.*" />
     </Match>
 
     <Bug pattern="PATH_TRAVERSAL_IN" />
