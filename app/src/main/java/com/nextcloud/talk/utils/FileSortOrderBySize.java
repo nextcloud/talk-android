@@ -46,16 +46,13 @@ public class FileSortOrderBySize extends FileSortOrder {
 
         Collections.sort(files, (o1, o2) -> {
             if (!o1.getModel().isFile() && !o2.getModel().isFile()) {
-                Long obj1 = o1.getModel().size;
-                return multiplier * obj1.compareTo(o2.getModel().getSize());
+                return multiplier * Long.compare(o1.getModel().getSize(), o2.getModel().getSize());
             } else if (!o1.getModel().isFile()) {
                 return -1;
-
             } else if (!o2.getModel().isFile()) {
                 return 1;
             } else {
-                Long obj1 = o1.getModel().getSize();
-                return multiplier * obj1.compareTo(o2.getModel().getSize());
+                return multiplier * Long.compare(o1.getModel().getSize(), o2.getModel().getSize());
             }
         });
 
