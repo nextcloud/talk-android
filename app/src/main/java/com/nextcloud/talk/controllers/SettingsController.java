@@ -77,7 +77,6 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -132,8 +131,6 @@ public class SettingsController extends BaseController {
     private static final int ID_REMOVE_ACCOUNT_WARNING_DIALOG = 0;
     @BindView(R.id.settings_screen)
     MaterialPreferenceScreen settingsScreen;
-    @BindView(R.id.settings_proxy_choice)
-    MaterialChoicePreference proxyChoice;
     @BindView(R.id.settings_proxy_port_edit)
     MaterialEditTextPreference proxyPortEditText;
     @BindView(R.id.settings_licence)
