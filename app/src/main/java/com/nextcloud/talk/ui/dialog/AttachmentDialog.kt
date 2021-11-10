@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Andy Scherzinger
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

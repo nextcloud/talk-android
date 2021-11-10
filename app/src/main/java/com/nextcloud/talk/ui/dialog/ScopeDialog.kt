@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Tobias Kaminsky
+ * @author Andy Scherzinger
  * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +26,11 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ProfileController
+import com.nextcloud.talk.databinding.DialogScopeBinding
 import com.nextcloud.talk.models.json.userprofile.Scope
 
 class ScopeDialog(
@@ -38,33 +40,36 @@ class ScopeDialog(
     private val position: Int
 ) :
     BottomSheetDialog(con) {
+
+    private lateinit var dialogScopeBinding: DialogScopeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val view = layoutInflater.inflate(R.layout.dialog_scope, null)
-        setContentView(view)
+        dialogScopeBinding = DialogScopeBinding.inflate(layoutInflater)
+        setContentView(dialogScopeBinding.root)
 
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         if (field == ProfileController.Field.DISPLAYNAME || field == ProfileController.Field.EMAIL) {
-            findViewById<LinearLayout>(R.id.scope_private)?.visibility = View.GONE
+            dialogScopeBinding.scopePrivate.visibility = View.GONE
         }
 
-        findViewById<LinearLayout>(R.id.scope_private)?.setOnClickListener {
+        dialogScopeBinding.scopePrivate.setOnClickListener {
             userInfoAdapter.updateScope(position, Scope.PRIVATE)
             dismiss()
         }
 
-        findViewById<LinearLayout>(R.id.scope_local)?.setOnClickListener {
+        dialogScopeBinding.scopeLocal.setOnClickListener {
             userInfoAdapter.updateScope(position, Scope.LOCAL)
             dismiss()
         }
 
-        findViewById<LinearLayout>(R.id.scope_federated)?.setOnClickListener {
+        dialogScopeBinding.scopeFederated.setOnClickListener {
             userInfoAdapter.updateScope(position, Scope.FEDERATED)
             dismiss()
         }
 
-        findViewById<LinearLayout>(R.id.scope_published)?.setOnClickListener {
+        dialogScopeBinding.scopePublished.setOnClickListener {
             userInfoAdapter.updateScope(position, Scope.PUBLISHED)
             dismiss()
         }
