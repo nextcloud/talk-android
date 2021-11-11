@@ -222,8 +222,8 @@
     <string name="nc_call_state_with_video">%1$s with video</string>
 
     <!-- Picture in Picture -->
-    <string name="nc_pip_microphone_mute">mute microphone</string>
-    <string name="nc_pip_microphone_unmute">enable microphone</string>
+    <string name="nc_pip_microphone_mute">Mute microphone</string>
+    <string name="nc_pip_microphone_unmute">Enable microphone</string>
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
