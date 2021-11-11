@@ -63,7 +63,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -341,7 +340,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     hasParticipantsInCall = participantList.isNotEmpty()
                     if (hasParticipantsInCall) {
                         for (participant in participantList) {
-                            if (participant.userId == signatureVerification.userEntity.userId) {
+                            if (participant.actorId == signatureVerification.userEntity.userId &&
+                                participant.actorType == Participant.ActorType.USERS) {
                                 inCallOnDifferentDevice = true
                                 break
                             }
