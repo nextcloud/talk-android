@@ -155,7 +155,7 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallActivity extends CallActivityBase {
+public class CallActivity extends CallBaseActivity {
 
     @Inject
     NcApi ncApi;

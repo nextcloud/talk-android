@@ -16,9 +16,9 @@ import android.view.WindowManager;
 
 import com.nextcloud.talk.BuildConfig;
 
-public abstract class CallActivityBase extends BaseActivity {
+public abstract class CallBaseActivity extends BaseActivity {
 
-    public static final String TAG = "CallActivityBase";
+    public static final String TAG = "CallBaseActivity";
 
     public PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
     public Boolean isInPipMode = false;

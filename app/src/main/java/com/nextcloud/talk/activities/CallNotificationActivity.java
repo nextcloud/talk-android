@@ -84,7 +84,7 @@ import okhttp3.Cache;
 
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallNotificationActivity extends CallActivityBase {
+public class CallNotificationActivity extends CallBaseActivity {
 
     public static final String TAG = "CallNotificationActivity";
 
