@@ -38,7 +38,6 @@ import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -714,7 +713,6 @@ public class OperationsMenuController extends BaseController {
         eventBus.post(new BottomSheetLockEvent(true, 0,
                                                true, true, dismissView));
 
-        Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), conversation.getRoomId());
@@ -722,8 +720,6 @@ public class OperationsMenuController extends BaseController {
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
         bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
-
-        conversationIntent.putExtras(bundle);
 
         if (getParentController() != null) {
             ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), currentUser.getId(),

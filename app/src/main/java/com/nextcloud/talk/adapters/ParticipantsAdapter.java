@@ -15,6 +15,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import org.webrtc.MediaStream;
@@ -79,6 +80,8 @@ public class ParticipantsAdapter extends BaseAdapter {
 
             surfaceViewRenderer = convertView.findViewById(R.id.surface_view);
             try {
+                Log.d(TAG, "hasSurface: " + participantDisplayItem.getRootEglBase().hasSurface());
+
                 surfaceViewRenderer.setMirror(false);
                 surfaceViewRenderer.init(participantDisplayItem.getRootEglBase().getEglBaseContext(), null);
                 surfaceViewRenderer.setZOrderMediaOverlay(false);
@@ -96,7 +99,6 @@ public class ParticipantsAdapter extends BaseAdapter {
         layoutParams.height = scaleGridViewItemHeight();
         convertView.setLayoutParams(layoutParams);
 
-
         TextView nickTextView = convertView.findViewById(R.id.peer_nick_text_view);
         SimpleDraweeView imageView = convertView.findViewById(R.id.avatarImageView);
 
@@ -110,8 +112,13 @@ public class ParticipantsAdapter extends BaseAdapter {
         } else {
             imageView.setVisibility(View.VISIBLE);
             surfaceViewRenderer.setVisibility(View.INVISIBLE);
-            nickTextView.setVisibility(View.VISIBLE);
-            nickTextView.setText(participantDisplayItem.getNick());
+
+            if (((CallActivity) mContext).isInPipMode) {
+                nickTextView.setVisibility(View.GONE);
+            } else {
+                nickTextView.setVisibility(View.VISIBLE);
+                nickTextView.setText(participantDisplayItem.getNick());
+            }
 
             imageView.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
@@ -127,7 +134,9 @@ public class ParticipantsAdapter extends BaseAdapter {
         } else {
             audioOffView.setVisibility(View.INVISIBLE);
         }
+
         return convertView;
+
     }
 
     private boolean hasVideoStream(ParticipantDisplayItem participantDisplayItem, MediaStream mediaStream) {

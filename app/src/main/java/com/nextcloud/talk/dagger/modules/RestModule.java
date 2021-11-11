@@ -33,7 +33,6 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.LoggingUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
-import com.nextcloud.talk.utils.singletons.AvatarStatusCodeHolder;
 import com.nextcloud.talk.utils.ssl.MagicKeyManager;
 import com.nextcloud.talk.utils.ssl.MagicTrustManager;
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat;
@@ -252,10 +251,6 @@ public class RestModule {
                     .build();
 
             Response response = chain.proceed(request);
-
-            if (request.url().encodedPath().contains("/avatar/")) {
-                AvatarStatusCodeHolder.getInstance().setStatusCode(response.code());
-            }
 
             return response;
         }

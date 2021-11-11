@@ -51,10 +51,6 @@
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 
-    <style name="CallTheme" parent="AppTheme">
-        <item name="android:navigationBarColor">@color/grey950</item>
-    </style>
-
     <style name="BottomNavigationView" parent="@style/Widget.MaterialComponents.BottomNavigationView">
         <item name="elevation">1dp</item>
     </style>
@@ -185,6 +181,13 @@
         <item name="android:windowBackground">@drawable/launch_screen</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
+    </style>
+
+    <!-- Call Launch screen -->
+    <style name="AppTheme.CallLauncher">
+        <item name="android:windowBackground">@color/grey950</item>
+        <item name="android:statusBarColor">@color/grey950</item>
+        <item name="android:navigationBarColor">@color/grey950</item>
     </style>
 
     <style name="Nextcloud.Material.TextButton" parent="Widget.MaterialComponents.Button.TextButton.Icon">

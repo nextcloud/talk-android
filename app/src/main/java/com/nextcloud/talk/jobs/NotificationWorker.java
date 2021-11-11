@@ -48,7 +48,7 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.MagicCallActivity;
+import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -590,7 +590,7 @@ public class NotificationWorker extends Worker {
 
                             boolean startACall = decryptedPushMessage.getType().equals("call");
                             if (startACall) {
-                                intent = new Intent(context, MagicCallActivity.class);
+                                intent = new Intent(context, CallActivity.class);
                             } else {
                                 intent = new Intent(context, MainActivity.class);
                             }

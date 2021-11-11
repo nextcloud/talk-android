@@ -94,7 +94,7 @@ import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
 import com.facebook.imagepipeline.image.CloseableImage
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MagicCallActivity
+import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
@@ -232,7 +232,6 @@ class ChatController(args: Bundle) :
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
-    var isLeavingForConversation: Boolean = false
     var wasDetached: Boolean = false
     var emojiPopup: EmojiPopup? = null
 
@@ -270,6 +269,8 @@ class ChatController(args: Bundle) :
         this.roomToken = args.getString(KEY_ROOM_TOKEN, "")
         this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
+        Log.d(TAG, "roomToken = " + roomToken)
+
         if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
             this.currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
         }
@@ -290,6 +291,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
+        Log.d(TAG, "getRoomInfo")
         val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
@@ -309,6 +311,8 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         currentConversation = roomOverall.ocs.data
+                        Log.d(TAG, "currentConversation.toString : " + currentConversation.toString())
+                        Log.d(TAG, "currentConversation.sessionId : " + currentConversation?.sessionId)
                         loadAvatarForStatusBar()
 
                         setTitle()
@@ -420,6 +424,7 @@ class ChatController(args: Bundle) :
 
     override fun onViewBound(view: View) {
         actionBar?.show()
+        Log.d(TAG, "onViewBound")
         var adapterWasNull = false
 
         if (adapter == null) {
@@ -576,15 +581,6 @@ class ChatController(args: Bundle) :
         }
 
         binding.messageInputView.setPadding(0, 0, 0, 0)
-
-        if (args.containsKey("showToggleChat") && args.getBoolean("showToggleChat")) {
-            binding.callControlToggleChat.visibility = View.VISIBLE
-            wasDetached = true
-        }
-
-        binding.callControlToggleChat.setOnClickListener {
-            (activity as MagicCallActivity).showCall()
-        }
 
         binding.messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -1376,10 +1372,8 @@ class ChatController(args: Bundle) :
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
         }
 
-        isLeavingForConversation = false
         ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
-        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomId
-        ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
+        ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
@@ -1443,11 +1437,6 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-
-        if (!isLeavingForConversation) {
-            // current room is still "active", we need the info
-            ApplicationWideCurrentRoomHolder.getInstance().clear()
-        }
         eventBus?.unregister(this)
 
         if (activity != null) {
@@ -1457,8 +1446,10 @@ class ChatController(args: Bundle) :
         if (conversationUser != null &&
             activity != null &&
             !activity?.isChangingConfigurations!! &&
-            !isLeavingForConversation
+            !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
+            !ApplicationWideCurrentRoomHolder.getInstance().isDialing
         ) {
+            ApplicationWideCurrentRoomHolder.getInstance().clear()
             wasDetached = true
             leaveRoom()
         }
@@ -2129,7 +2120,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
-        isLeavingForConversation = true
+        ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
         val callIntent = getIntentForCall(isVoiceOnlyCall)
         if (callIntent != null) {
             startActivity(callIntent)
@@ -2151,7 +2142,7 @@ class ChatController(args: Bundle) :
             }
 
             return if (activity != null) {
-                val callIntent = Intent(activity, MagicCallActivity::class.java)
+                val callIntent = Intent(activity, CallActivity::class.java)
                 callIntent.putExtras(bundle)
                 callIntent
             } else {
@@ -2336,7 +2327,7 @@ class ChatController(args: Bundle) :
             menu.findItem(R.id.action_forward_message).isVisible =
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType()
             if (menu.hasVisibleItems()) {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
                 }
                 show()
@@ -2509,7 +2500,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onNext(roomOverall: RoomOverall) {
-                        val conversationIntent = Intent(activity, MagicCallActivity::class.java)
+                        val conversationIntent = Intent(activity, CallActivity::class.java)
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
                         bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)

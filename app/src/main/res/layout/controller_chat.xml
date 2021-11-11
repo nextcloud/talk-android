@@ -40,19 +40,6 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlToggleChat"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
-            android:elevation="10dp"
-            android:visibility="gone"
-            app:backgroundImage="@color/call_buttons_background"
-            app:placeholderImage="@drawable/ic_call_black_24dp"
-            app:roundAsCircle="true"
-            tools:visibility="visible" />
-
         <LinearLayout
             android:id="@+id/progressBar"
             android:layout_width="match_parent"

@@ -28,7 +28,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context=".activities.MagicCallActivity">
+    tools:context=".activities.CallActivity">
 
     <LinearLayout
         android:id="@+id/linearWrapperLayout"
@@ -37,7 +37,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/conversationRelativeLayoutView"
+            android:id="@+id/conversationRelativeLayout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -55,12 +55,12 @@
                 android:stretchMode="columnWidth" />
 
             <FrameLayout
-                android:id="@+id/selfVideoView"
+                android:id="@+id/selfVideoViewWrapper"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <org.webrtc.SurfaceViewRenderer
-                    android:id="@+id/pip_video_view"
+                    android:id="@+id/selfVideoRenderer"
                     android:layout_width="@dimen/large_preview_dimension"
                     android:layout_height="150dp"
                     android:layout_gravity="center"
@@ -70,7 +70,7 @@
                     tools:visibility="visible" />
 
                 <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/call_control_switch_camera"
+                    android:id="@+id/switchSelfVideoButton"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_horizontal|bottom"
@@ -89,7 +89,7 @@
                 android:paddingTop="20dp">
 
                 <TextView
-                    android:id="@+id/callVoiceOrVideoTextView"
+                    android:id="@+id/callModeTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
@@ -122,6 +122,7 @@
                 android:layout_centerVertical="true" />
 
             <include
+                android:id="@+id/callStates"
                 layout="@layout/call_states"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -132,7 +133,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/callControlsLinearLayout"
+        android:id="@+id/callControls"
         android:layout_width="match_parent"
         android:layout_height="@dimen/call_controls_height"
         android:layout_alignBottom="@id/linearWrapperLayout"
@@ -142,18 +143,17 @@
         android:orientation="horizontal">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlToggleChat"
+            android:id="@+id/pictureInPictureButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="40dp"
             android:layout_marginEnd="10dp"
             android:elevation="10dp"
             app:backgroundImage="@color/call_buttons_background"
-            app:placeholderImage="@drawable/ic_comment_white"
+            app:placeholderImage="@drawable/ic_baseline_picture_in_picture_alt_24"
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlEnableSpeaker"
+            android:id="@+id/speakerButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -163,7 +163,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/call_control_camera"
+            android:id="@+id/cameraButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -174,7 +174,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/call_control_microphone"
+            android:id="@+id/microphoneButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
@@ -185,14 +185,46 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/callControlHangupView"
+            android:id="@+id/hangupButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginEnd="10dp"
             app:backgroundImage="@color/nc_darkRed"
             app:placeholderImage="@drawable/ic_call_end_white_24px"
             app:roundAsCircle="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/pipGroupCallOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/black"
+        android:gravity="center"
+        android:visibility="invisible">
+
+        <TextView
+            android:id="@+id/pipCallConversationNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-30dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:textAlignment="center"
+            android:maxLines="3"
+            android:ellipsize="end"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            tools:text="our group call" />
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:backgroundImage="@drawable/ic_circular_group"
+            app:roundAsCircle="true" />
+
     </LinearLayout>
 
 </RelativeLayout>

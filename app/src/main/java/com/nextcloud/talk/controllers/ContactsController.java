@@ -22,7 +22,6 @@ package com.nextcloud.talk.controllers;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +44,6 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.activities.MagicCallActivity;
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -106,7 +104,6 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.SelectableAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
-import eu.davidea.flexibleadapter.items.IFlexible;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -897,13 +894,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             @Override
                             public void onNext(RoomOverall roomOverall) {
                                 if (getActivity() != null) {
-                                    Intent conversationIntent = new Intent(getActivity(), MagicCallActivity.class);
                                     Bundle bundle = new Bundle();
                                     bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
                                     bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
                                     bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
-                                    conversationIntent.putExtras(bundle);
-
                                     bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
                                                          Parcels.wrap(roomOverall.getOcs().getData()));
 
