@@ -371,9 +371,6 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         File file = new File(path);
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(file), mimetype);
-
-        // TODO resolveActivity might need more permissions starting with android 11 (api 30)
-        // https://developer.android.com/about/versions/11/privacy/package-visibility
         return intent.resolveActivity(context.getPackageManager()) != null;
     }
 
