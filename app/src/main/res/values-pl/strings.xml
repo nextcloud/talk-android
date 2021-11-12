@@ -196,7 +196,7 @@
     <string name="nc_promote">Promuj na moderatora</string>
     <string name="nc_public_call">Nowa rozmowa publiczna</string>
     <string name="nc_public_call_explanation">Rozmowy publiczne pozwalają zapraszać ludzi z zewnątrz poprzez specjalnie przygotowany link.</string>
-    <string name="nc_push_disabled">Powiadomienie push wyłączone</string>
+    <string name="nc_push_disabled">Powiadomienie Push wyłączone</string>
     <string name="nc_push_to_talk">Naciśnij i mów</string>
     <string name="nc_push_to_talk_desc">Gdy mikrofon jest wyłączony, kliknij i przytrzymaj, aby użyć funkcji \"Naciśnij i mów\"</string>
     <string name="nc_remote_audio_off">Zdalne wyłączenie dźwięku</string>
