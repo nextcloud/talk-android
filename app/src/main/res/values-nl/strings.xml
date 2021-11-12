@@ -39,6 +39,7 @@
     <string name="nc_call_incoming">INKOMEND</string>
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
+    <string name="nc_call_notifications">Oproepmeldingen</string>
     <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
@@ -140,6 +141,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_limit_hit"> match 
 %stekens limiet bereikt</string>
     <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby_start_date">Deze vergadering staat gepland voor %1$s</string>
+    <string name="nc_lobby_start_soon">Deze vergadering zal binnenkort starten</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\n Deze vergadering is ingepland voor %1$s.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
@@ -159,6 +162,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
+    <string name="nc_new_mention">Ongelezen vermeldingen</string>
     <string name="nc_new_messages">Ongelezen berichten</string>
     <string name="nc_new_password">Nieuw wachtwoord</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app is niet geïnstalleerd op de server, afbreken</string>
