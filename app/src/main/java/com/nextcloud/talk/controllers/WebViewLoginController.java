@@ -398,7 +398,7 @@ public class WebViewLoginController extends BaseController {
                 if (isPasswordUpdate) {
                     if (currentUser != null) {
                         userQueryDisposable = userUtils.createOrUpdateUser(null, loginData.getToken(),
-                                null, null, "", true,
+                                null, null, "", Boolean.TRUE,
                                 null, currentUser.getId(), null, appPreferences.getTemporaryClientCertAlias(), null)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(AndroidSchedulers.mainThread())
