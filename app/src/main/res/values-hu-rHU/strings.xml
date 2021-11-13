@@ -189,6 +189,8 @@
     <string name="nc_permissions_settings">Beállítások megnyitása</string>
     <string name="nc_phone_book_integration_account_not_found">A fiók nem található</string>
     <string name="nc_phone_book_integration_chat_via">Csevegés %s segítségével</string>
+    <string name="nc_pip_microphone_mute">Mikrofon némítása</string>
+    <string name="nc_pip_microphone_unmute">Mikrofon engedélyezése</string>
     <string name="nc_plain_old_messages">Üzenetek</string>
     <string name="nc_privacy">Adatvédelem</string>
     <string name="nc_proceed">Folytatás</string>
