@@ -189,6 +189,8 @@
     <string name="nc_permissions_settings">Einstellungen öffnen</string>
     <string name="nc_phone_book_integration_account_not_found">Konto nicht gefunden</string>
     <string name="nc_phone_book_integration_chat_via">Chatten über %s</string>
+    <string name="nc_pip_microphone_mute">Mikrofon stummschalten</string>
+    <string name="nc_pip_microphone_unmute">Mikrofon aktivieren</string>
     <string name="nc_plain_old_messages">Nachrichten</string>
     <string name="nc_privacy">Datenschutz</string>
     <string name="nc_proceed">Fortsetzen</string>

@@ -189,6 +189,8 @@
     <string name="nc_permissions_settings">Ayarları aç</string>
     <string name="nc_phone_book_integration_account_not_found">Hesap bulunamadı</string>
     <string name="nc_phone_book_integration_chat_via">%s ile sohbet</string>
+    <string name="nc_pip_microphone_mute">Mikrofonu kapat</string>
+    <string name="nc_pip_microphone_unmute">Mikrofonu aç</string>
     <string name="nc_plain_old_messages">İletiler</string>
     <string name="nc_privacy">Gizlilik</string>
     <string name="nc_proceed">İlerle</string>
