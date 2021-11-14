@@ -327,6 +327,7 @@
     <string name="nc_upload_from_cloud">%1$s üzerinden paylaş</string>
     <string name="nc_upload_in_progess">Yükleniyor</string>
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
+    <string name="nc_upload_picture_from_cam">Fotoğraf çek</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_username">Kullanıcı adı</string>
     <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>
@@ -358,6 +359,15 @@
     <string name="send_to_three_dots">Şuraya gönder …</string>
     <string name="share">Paylaş</string>
     <string name="starred">Sık kullanılanlara ekle</string>
+    <string name="take_photo">Bir fotoğraf çekin</string>
+    <string name="take_photo_error_deleting_picture">Fotoğraf çekilirken sorun çıktı</string>
+    <string name="take_photo_permission">İzin verilmeden bir fotoğraf çekilemez</string>
+    <string name="take_photo_retake_photo">Fotoğrafı yeniden çek</string>
+    <string name="take_photo_send">Gönder</string>
+    <string name="take_photo_switch_camera">Kamerayı değiştir</string>
+    <string name="take_photo_toggle_crop">Fotoğrafı kırp</string>
+    <string name="take_photo_toggle_lowres">Görsel boyutunu küçült</string>
+    <string name="take_photo_toggle_torch">El fenerini aç/kapat</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Tam ad</string>

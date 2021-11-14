@@ -329,6 +329,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_from_cloud">Delen van %1$s</string>
     <string name="nc_upload_in_progess">Uploaden</string>
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
+    <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_user">Gebruiker</string>
     <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
@@ -360,6 +361,15 @@ Kies er eentje van een provider.</string>
     <string name="send_to_three_dots">Versturen naar ...</string>
     <string name="share">Delen</string>
     <string name="starred">Favoriet</string>
+    <string name="take_photo">Neem een foto</string>
+    <string name="take_photo_error_deleting_picture">Fout bij het nemen van een foto</string>
+    <string name="take_photo_permission">Een foto nemen is niet mogelijk zonder rechten</string>
+    <string name="take_photo_retake_photo">Herneem foto</string>
+    <string name="take_photo_send">Verzenden</string>
+    <string name="take_photo_switch_camera">Andere camera</string>
+    <string name="take_photo_toggle_crop">Crop foto</string>
+    <string name="take_photo_toggle_lowres">Reduceer foto resolutie</string>
+    <string name="take_photo_toggle_torch">Schakel zaklamp</string>
     <string name="upload_new_avatar_from_device">Upload een nieuwe avatar van toestel</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Volledige naam</string>
