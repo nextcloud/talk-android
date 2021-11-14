@@ -327,6 +327,7 @@
     <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
     <string name="nc_upload_in_progess">Lade hoch</string>
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
+    <string name="nc_upload_picture_from_cam">Foto aufnehmen</string>
     <string name="nc_user">Benutzer</string>
     <string name="nc_username">Benutzername</string>
     <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
@@ -358,6 +359,15 @@
     <string name="send_to_three_dots">Senden an …</string>
     <string name="share">Freigabe</string>
     <string name="starred">Favorit</string>
+    <string name="take_photo">Ein Foto aufnehmen</string>
+    <string name="take_photo_error_deleting_picture">Fehler beim Aufnehmen des Fotos</string>
+    <string name="take_photo_permission">Das Fotografieren ist ohne Berechtigungen nicht möglich</string>
+    <string name="take_photo_retake_photo">Foto nochmals aufnehmen</string>
+    <string name="take_photo_send">Senden</string>
+    <string name="take_photo_switch_camera">Kamera wechseln</string>
+    <string name="take_photo_toggle_crop">Foto beschneiden</string>
+    <string name="take_photo_toggle_lowres">Bildgröße verringern</string>
+    <string name="take_photo_toggle_torch">Taschenlampe umschalten</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Vollständiger Name</string>

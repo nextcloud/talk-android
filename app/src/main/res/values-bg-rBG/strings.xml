@@ -189,6 +189,8 @@
     <string name="nc_permissions_settings">Отваряне на настройките</string>
     <string name="nc_phone_book_integration_account_not_found">Няма намерен профил</string>
     <string name="nc_phone_book_integration_chat_via">Чат чрез %s</string>
+    <string name="nc_pip_microphone_mute">Изключване на микрофона</string>
+    <string name="nc_pip_microphone_unmute">Активиране на микрофона</string>
     <string name="nc_plain_old_messages">Съобщения</string>
     <string name="nc_privacy">Защита на лични данни</string>
     <string name="nc_proceed">Proceed</string>
@@ -325,6 +327,7 @@
     <string name="nc_upload_from_cloud">Споделяне от %1$s</string>
     <string name="nc_upload_in_progess">Качване</string>
     <string name="nc_upload_local_file">Качване на локален файл</string>
+    <string name="nc_upload_picture_from_cam">Снимане</string>
     <string name="nc_user">Потребител</string>
     <string name="nc_username">Потребител</string>
     <string name="nc_voice_message_filename">Запис на разговор от %1$s(%2$s)</string>
@@ -356,6 +359,15 @@
     <string name="send_to_three_dots">Изпращане до ...</string>
     <string name="share">Споделяне</string>
     <string name="starred">Любими</string>
+    <string name="take_photo">Направете снимка</string>
+    <string name="take_photo_error_deleting_picture">Грешка при снимане</string>
+    <string name="take_photo_permission">Правенето на снимка не е възможно без права</string>
+    <string name="take_photo_retake_photo">Направете отново снимка</string>
+    <string name="take_photo_send">Изпращане</string>
+    <string name="take_photo_switch_camera">Превключване на камера</string>
+    <string name="take_photo_toggle_crop">Изрязване на снимка</string>
+    <string name="take_photo_toggle_lowres">Намаляване на размера на изображение</string>
+    <string name="take_photo_toggle_torch">Превключване на фенерче</string>
     <string name="upload_new_avatar_from_device">Качеване на нов аватар от устройството</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Пълно име</string>

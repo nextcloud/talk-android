@@ -327,6 +327,7 @@
     <string name="nc_upload_from_cloud">Megosztás innen: %1$s</string>
     <string name="nc_upload_in_progess">Feltöltés</string>
     <string name="nc_upload_local_file">Helyi fájl feltöltése</string>
+    <string name="nc_upload_picture_from_cam">Fénykép készítése</string>
     <string name="nc_user">Felhasználó</string>
     <string name="nc_username">Felhasználónév</string>
     <string name="nc_voice_message_filename">Beszédrögzítés innen: %1$s (%2$s)</string>
@@ -358,6 +359,15 @@
     <string name="send_to_three_dots">Küldés…</string>
     <string name="share">Megosztás</string>
     <string name="starred">Kedvenc</string>
+    <string name="take_photo">Fénykép készítése</string>
+    <string name="take_photo_error_deleting_picture">Hiba a fénykép készítése során</string>
+    <string name="take_photo_permission">Engedély nélkül a fénykép készítése nem lehetséges</string>
+    <string name="take_photo_retake_photo">Fénykép újbóli elkészítése</string>
+    <string name="take_photo_send">Küldés</string>
+    <string name="take_photo_switch_camera">Kamera váltása</string>
+    <string name="take_photo_toggle_crop">Fénykép levágása</string>
+    <string name="take_photo_toggle_lowres">Képméret csökkentése</string>
+    <string name="take_photo_toggle_torch">Lámpa be/ki</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_info_address">Cím</string>
     <string name="user_info_displayname">Teljes név</string>

@@ -327,6 +327,7 @@
     <string name="nc_upload_from_cloud">分享來自 %1$s</string>
     <string name="nc_upload_in_progess">上傳中</string>
     <string name="nc_upload_local_file">上傳本地文件</string>
+    <string name="nc_upload_picture_from_cam">拍照</string>
     <string name="nc_user">用戶</string>
     <string name="nc_username">用戶名稱</string>
     <string name="nc_voice_message_filename">談話錄音來自 %1$s（%2$s）</string>
@@ -358,6 +359,15 @@
     <string name="send_to_three_dots">傳送到 ...</string>
     <string name="share">分享</string>
     <string name="starred">我的最愛</string>
+    <string name="take_photo">拍照</string>
+    <string name="take_photo_error_deleting_picture">拍照時出錯</string>
+    <string name="take_photo_permission">沒有權限就無法拍照</string>
+    <string name="take_photo_retake_photo">重新拍照</string>
+    <string name="take_photo_send">傳送</string>
+    <string name="take_photo_switch_camera">切換相機</string>
+    <string name="take_photo_toggle_crop">裁剪照片</string>
+    <string name="take_photo_toggle_lowres">縮小圖像尺寸</string>
+    <string name="take_photo_toggle_torch">切換 torch</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新頭像</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>
