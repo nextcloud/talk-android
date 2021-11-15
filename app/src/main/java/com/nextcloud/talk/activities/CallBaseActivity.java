@@ -22,11 +22,14 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     public PictureInPictureParams.Builder mPictureInPictureParamsBuilder;
     public Boolean isInPipMode = false;
+    long onCreateTime;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        onCreateTime = System.currentTimeMillis();
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         dismissKeyguard();
@@ -88,7 +91,15 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     @Override
     protected void onUserLeaveHint() {
-        enterPipMode();
+        long onUserLeaveHintTime = System.currentTimeMillis();
+        long diff = onUserLeaveHintTime - onCreateTime;
+        Log.d(TAG, "onUserLeaveHintTime - onCreateTime: " + diff);
+
+        if (diff < 3000) {
+            Log.d(TAG, "enterPipMode skipped");
+        } else {
+            enterPipMode();
+        }
     }
 
     void enterPipMode() {
