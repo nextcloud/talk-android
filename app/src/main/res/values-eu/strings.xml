@@ -327,6 +327,7 @@
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
     <string name="nc_upload_in_progess">Kargatzen</string>
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
+    <string name="nc_upload_picture_from_cam">Atera argazkia</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_username">Erabiltzaile-izena</string>
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
@@ -358,6 +359,15 @@
     <string name="send_to_three_dots">Bidali honi ...</string>
     <string name="share">Partekatu</string>
     <string name="starred">Gogokoa</string>
+    <string name="take_photo">Atera argazki bat</string>
+    <string name="take_photo_error_deleting_picture">Errorea argazkia ateratzen</string>
+    <string name="take_photo_permission">Ezin dira argazkiak atera baimenik gabe</string>
+    <string name="take_photo_retake_photo">Atera argazkia berriro</string>
+    <string name="take_photo_send">Bidali</string>
+    <string name="take_photo_switch_camera">Aldatu kamera</string>
+    <string name="take_photo_toggle_crop">Moztu argazkia</string>
+    <string name="take_photo_toggle_lowres">Murriztu irudiaren tamaina</string>
+    <string name="take_photo_toggle_torch">Txandakatu linterna</string>
     <string name="upload_new_avatar_from_device">Kargatu avatar berria gailutik</string>
     <string name="user_info_address">Helbidea</string>
     <string name="user_info_displayname">Izen osoa</string>

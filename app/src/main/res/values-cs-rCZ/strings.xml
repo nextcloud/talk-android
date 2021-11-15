@@ -189,6 +189,8 @@
     <string name="nc_permissions_settings">Otevřít nastavení</string>
     <string name="nc_phone_book_integration_account_not_found">Účet nenalezen</string>
     <string name="nc_phone_book_integration_chat_via">Rozhovor prostřednictvím %s</string>
+    <string name="nc_pip_microphone_mute">Ztlumit mikrofon</string>
+    <string name="nc_pip_microphone_unmute">Zapnout mikrofon</string>
     <string name="nc_plain_old_messages">Zprávy</string>
     <string name="nc_privacy">Soukromí</string>
     <string name="nc_proceed">Pokračovat</string>
@@ -325,6 +327,7 @@
     <string name="nc_upload_from_cloud">Nasdílet z %1$s</string>
     <string name="nc_upload_in_progess">Nahrávání</string>
     <string name="nc_upload_local_file">Nahrát soubor ze zařízení</string>
+    <string name="nc_upload_picture_from_cam">Vyfotit</string>
     <string name="nc_user">Uživatel</string>
     <string name="nc_username">Uživatelské jméno</string>
     <string name="nc_voice_message_filename">Nahrávka z Talk z %1$s (%2$s)</string>
@@ -356,6 +359,15 @@
     <string name="send_to_three_dots">Odeslat k…</string>
     <string name="share">Sdílet</string>
     <string name="starred">Oblíbené</string>
+    <string name="take_photo">Vyfotit</string>
+    <string name="take_photo_error_deleting_picture">Chyba při pořizování obrázku</string>
+    <string name="take_photo_permission">Focení není možné bez udělení oprávnění</string>
+    <string name="take_photo_retake_photo">Znovu pořídit fotku</string>
+    <string name="take_photo_send">Odeslat</string>
+    <string name="take_photo_switch_camera">Přepnout kameru</string>
+    <string name="take_photo_toggle_crop">Oříznout fotku</string>
+    <string name="take_photo_toggle_lowres">Zmenšit velikost obrázku</string>
+    <string name="take_photo_toggle_torch">Vyp/zap. přisvícení</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Celé jméno</string>
