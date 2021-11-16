@@ -274,7 +274,7 @@
             apc:mp_default_value="@string/nc_no_proxy"
             apc:mp_entry_descriptions="@array/proxy_type_descriptions"
             apc:mp_key="@string/nc_settings_proxy_type_key"
-            apc:mp_show_value="onRight"
+            apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_proxy_type_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
@@ -282,7 +282,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_host_key"
-            apc:mp_show_value="onRight"
+            apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_proxy_host_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
@@ -290,7 +290,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_port_key"
-            apc:mp_show_value="onRight"
+            apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_proxy_port_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
@@ -298,7 +298,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_username_key"
-            apc:mp_show_value="onRight"
+            apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_proxy_username_title" />
 
         <com.yarolegovich.mp.MaterialEditTextPreference
@@ -306,7 +306,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             apc:mp_key="@string/nc_settings_proxy_password_key"
-            apc:mp_show_value="onRight"
+            apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_proxy_password_title" />
 
         <com.yarolegovich.mp.MaterialSwitchPreference
@@ -315,7 +315,7 @@
             android:layout_height="wrap_content"
             apc:mp_default_value="false"
             apc:mp_key="@string/nc_settings_use_credentials_key"
-            apc:mp_show_value="onRight"
+            apc:mp_show_value="onBottom"
             apc:mp_title="@string/nc_settings_use_credentials_title">
 
         </com.yarolegovich.mp.MaterialSwitchPreference>
