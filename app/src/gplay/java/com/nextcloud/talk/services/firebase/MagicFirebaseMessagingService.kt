@@ -63,6 +63,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -81,8 +82,11 @@ import javax.crypto.Cipher
 import javax.crypto.NoSuchPaddingException
 import javax.inject.Inject
 
+@SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicFirebaseMessagingService : FirebaseMessagingService() {
+    private val TAG = "MagicFirebaseMessagingService"
+
     @JvmField
     @Inject
     var appPreferences: AppPreferences? = null
@@ -112,11 +116,13 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(event: CallNotificationClick) {
+        Log.d(TAG, "CallNotification was clicked")
         isServiceInForeground = false
         stopForeground(true)
     }
 
     override fun onDestroy() {
+        Log.d(TAG, "onDestroy")
         isServiceInForeground = false
         eventBus?.unregister(this)
         stopForeground(true)
@@ -128,12 +134,13 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         super.onNewToken(token)
         sharedApplication!!.componentApplication.inject(this)
         appPreferences!!.pushToken = token
+        Log.d(TAG, "onNewToken. token = $token")
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
         WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 
-    @SuppressLint("LongLogTag")
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
+        Log.d(TAG, "onMessageReceived")
         sharedApplication!!.componentApplication.inject(this)
         if (!remoteMessage.data["subject"].isNullOrEmpty() && !remoteMessage.data["signature"].isNullOrEmpty()) {
             decryptMessage(remoteMessage.data["subject"]!!, remoteMessage.data["signature"]!!)
@@ -160,6 +167,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                         DecryptedPushMessage::class.java
                     )
                     decryptedPushMessage?.apply {
+                        Log.d(TAG, this.toString())
                         timestamp = System.currentTimeMillis()
                         if (delete) {
                             cancelExistingNotificationWithId(
@@ -296,6 +304,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         signatureVerification: SignatureVerification,
         decryptedPushMessage: DecryptedPushMessage
     ) {
+        Log.d(TAG, "checkIfCallIsActive")
         val ncApi = retrofit!!.newBuilder()
             .client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build()
             .create(NcApi::class.java)
@@ -336,6 +345,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     }
 
                     if (!hasParticipantsInCall || inCallOnDifferentDevice) {
+                        Log.d(TAG, "no participants in call OR inCallOnDifferentDevice")
                         stopForeground(true)
                         handler.removeCallbacksAndMessages(null)
                     } else if (isServiceInForeground) {

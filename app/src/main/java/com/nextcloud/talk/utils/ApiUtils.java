@@ -197,6 +197,9 @@ public class ApiUtils {
     }
 
     public static String getUrlForParticipants(int version, String baseUrl, String token) {
+        if (token == null || token.isEmpty()){
+            Log.e(TAG, "token was null or empty");
+        }
         return getUrlForRoom(version, baseUrl, token) + "/participants";
     }
 

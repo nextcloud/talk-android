@@ -332,6 +332,9 @@ public class MagicWebSocketInstance extends WebSocketListener {
     }
 
     public void joinRoomWithRoomTokenAndSession(String roomToken, String normalBackendSession) {
+        Log.d(TAG, "joinRoomWithRoomTokenAndSession");
+        Log.d(TAG, "   roomToken: " + roomToken);
+        Log.d(TAG, "   session: " + normalBackendSession);
         try {
             String message = LoganSquare.serialize(webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession));
             if (!connected || reconnecting) {
