@@ -202,7 +202,7 @@
         android:orientation="vertical"
         android:background="@color/black"
         android:gravity="center"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/pipCallConversationNameTextView"

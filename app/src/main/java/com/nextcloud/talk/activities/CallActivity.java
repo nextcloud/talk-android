@@ -530,7 +530,6 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
-        // TODO maybe not necessary if it doesnt disappear
         binding.conversationRelativeLayout.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent me) {
                 int action = me.getActionMasked();
@@ -2471,7 +2470,7 @@ public class CallActivity extends CallBaseActivity {
             binding.pipCallConversationNameTextView.setText(conversationName);
             binding.pipGroupCallOverlay.setVisibility(View.VISIBLE);
         } else {
-            binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
+            binding.pipGroupCallOverlay.setVisibility(View.GONE);
         }
 
         binding.selfVideoRenderer.release();
@@ -2489,7 +2488,7 @@ public class CallActivity extends CallBaseActivity {
         binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
         binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
 
-        binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
+        binding.pipGroupCallOverlay.setVisibility(View.GONE);
     }
 
     @Override
