@@ -367,7 +367,7 @@
     <string name="take_photo_switch_camera">Przełącz kamerę</string>
     <string name="take_photo_toggle_crop">Przytnij zdjęcie</string>
     <string name="take_photo_toggle_lowres">Zmniejsz rozmiar obrazu</string>
-    <string name="take_photo_toggle_torch">Przełącz lampę błyskową</string>
+    <string name="take_photo_toggle_torch">Przełącz latarkę</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Pełna nazwa</string>
