@@ -530,6 +530,17 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
+        // TODO maybe not necessary if it doesnt disappear
+        binding.conversationRelativeLayout.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent me) {
+                int action = me.getActionMasked();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    animateCallControls(true, 0);
+                }
+                return false;
+            }
+        });
+
         animateCallControls(true, 0);
 
         initGridAdapter();
