@@ -305,7 +305,6 @@ public class CallActivity extends CallBaseActivity {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE);
 
-        binding.callControls.setZ(100.0f);
         basicInitialization();
         participantDisplayItems = new HashMap<>();
         initViews();
@@ -522,6 +521,16 @@ public class CallActivity extends CallBaseActivity {
         }
 
         binding.gridview.setOnTouchListener(new View.OnTouchListener() {
+            public boolean onTouch(View v, MotionEvent me) {
+                int action = me.getActionMasked();
+                if (action == MotionEvent.ACTION_DOWN) {
+                    animateCallControls(true, 0);
+                }
+                return false;
+            }
+        });
+
+        binding.conversationRelativeLayout.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent me) {
                 int action = me.getActionMasked();
                 if (action == MotionEvent.ACTION_DOWN) {
@@ -986,92 +995,80 @@ public class CallActivity extends CallBaseActivity {
                 duration = 1000;
             }
 
-            if (binding.callControls != null) {
-                binding.callControls.setEnabled(false);
-                binding.callControls.animate()
-                    .translationY(0)
-                    .alpha(alpha)
-                    .setDuration(duration)
-                    .setStartDelay(startDelay)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            if (binding.callControls != null) {
-                                if (!show) {
-                                    binding.callControls.setVisibility(View.GONE);
-                                    if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
-                                        spotlightView.setVisibility(View.GONE);
+            binding.callControls.setEnabled(false);
+            binding.callControls.animate()
+                .translationY(0)
+                .alpha(alpha)
+                .setDuration(duration)
+                .setStartDelay(startDelay)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        if (!show) {
+                            binding.callControls.setVisibility(View.GONE);
+                            if (spotlightView != null && spotlightView.getVisibility() != View.GONE) {
+                                spotlightView.setVisibility(View.GONE);
+                            }
+                        } else {
+                            callControlHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!isPTTActive) {
+                                        animateCallControls(false, 0);
                                     }
-                                } else {
-                                    callControlHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (!isPTTActive) {
-                                                animateCallControls(false, 0);
-                                            }
-                                        }
-                                    }, 7500);
                                 }
-
-                                binding.callControls.setEnabled(true);
-                            }
+                            }, 7500);
                         }
-                    });
-            }
 
-            if (binding.callInfosLinearLayout != null) {
-                binding.callInfosLinearLayout.setEnabled(false);
-                binding.callInfosLinearLayout.animate()
-                    .translationY(0)
-                    .alpha(alpha)
-                    .setDuration(duration)
-                    .setStartDelay(startDelay)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            if (binding.callInfosLinearLayout != null) {
-                                if (!show) {
-                                    binding.callInfosLinearLayout.setVisibility(View.GONE);
-                                } else {
-                                    callInfosHandler.postDelayed(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            if (!isPTTActive) {
-                                                animateCallControls(false, 0);
-                                            }
-                                        }
-                                    }, 7500);
+                        binding.callControls.setEnabled(true);
+                    }
+                });
+
+            binding.callInfosLinearLayout.setEnabled(false);
+            binding.callInfosLinearLayout.animate()
+                .translationY(0)
+                .alpha(alpha)
+                .setDuration(duration)
+                .setStartDelay(startDelay)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        if (!show) {
+                            binding.callInfosLinearLayout.setVisibility(View.GONE);
+                        } else {
+                            callInfosHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!isPTTActive) {
+                                        animateCallControls(false, 0);
+                                    }
                                 }
-
-                                binding.callInfosLinearLayout.setEnabled(true);
-                            }
+                            }, 7500);
                         }
-                    });
-            }
 
-            if (binding.switchSelfVideoButton != null) {
-                binding.switchSelfVideoButton.setEnabled(false);
-                binding.switchSelfVideoButton.animate()
-                    .translationY(0)
-                    .alpha(alpha)
-                    .setDuration(duration)
-                    .setStartDelay(startDelay)
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            super.onAnimationEnd(animation);
-                            if (binding.switchSelfVideoButton != null) {
-                                if (!show) {
-                                    binding.switchSelfVideoButton.setVisibility(View.GONE);
-                                }
+                        binding.callInfosLinearLayout.setEnabled(true);
+                    }
+                });
 
-                                binding.switchSelfVideoButton.setEnabled(true);
-                            }
+            binding.switchSelfVideoButton.setEnabled(false);
+            binding.switchSelfVideoButton.animate()
+                .translationY(0)
+                .alpha(alpha)
+                .setDuration(duration)
+                .setStartDelay(startDelay)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        super.onAnimationEnd(animation);
+                        if (!show) {
+                            binding.switchSelfVideoButton.setVisibility(View.GONE);
                         }
-                    });
-            }
+
+                        binding.switchSelfVideoButton.setEnabled(true);
+                    }
+                });
 
         }
     }
@@ -1858,10 +1855,6 @@ public class CallActivity extends CallBaseActivity {
 
         if (!isDestroyed()) {
             initGridAdapter();
-
-            if (binding.callControls != null) {
-                binding.callControls.setZ(100.0f);
-            }
         }
     }
 
@@ -2135,7 +2128,6 @@ public class CallActivity extends CallBaseActivity {
         participantDisplayItems.put(session, participantDisplayItem);
 
         initGridAdapter();
-        binding.callControls.setZ(100.0f);
     }
 
     private void setCallState(CallStatus callState) {
@@ -2225,33 +2217,25 @@ public class CallActivity extends CallBaseActivity {
                     handler.postDelayed(() -> setCallState(CallStatus.CALLING_TIMEOUT), 45000);
                     handler.post(() -> {
                         binding.callModeTextView.setText(getDescriptionForCallType());
-                        if (binding.callStates.callStateRelativeLayout != null) {
-                            if (isIncomingCallFromNotification) {
-                                binding.callStates.callStateTextView.setText(R.string.nc_call_incoming);
-                            } else {
-                                binding.callStates.callStateTextView.setText(R.string.nc_call_ringing);
-                            }
-                            if (binding.callStates.callStateRelativeLayout.getVisibility() != View.VISIBLE) {
-                                binding.callStates.callStateRelativeLayout.setVisibility(View.VISIBLE);
-                            }
+                        if (isIncomingCallFromNotification) {
+                            binding.callStates.callStateTextView.setText(R.string.nc_call_incoming);
+                        } else {
+                            binding.callStates.callStateTextView.setText(R.string.nc_call_ringing);
+                        }
+                        if (binding.callStates.callStateRelativeLayout.getVisibility() != View.VISIBLE) {
+                            binding.callStates.callStateRelativeLayout.setVisibility(View.VISIBLE);
                         }
 
-                        if (binding.callStates.callStateProgressBar != null) {
-                            if (binding.callStates.callStateProgressBar.getVisibility() != View.VISIBLE) {
-                                binding.callStates.callStateProgressBar.setVisibility(View.VISIBLE);
-                            }
+                        if (binding.callStates.callStateProgressBar.getVisibility() != View.VISIBLE) {
+                            binding.callStates.callStateProgressBar.setVisibility(View.VISIBLE);
                         }
 
-                        if (binding.gridview != null) {
-                            if (binding.gridview.getVisibility() != View.INVISIBLE) {
-                                binding.gridview.setVisibility(View.INVISIBLE);
-                            }
+                        if (binding.gridview.getVisibility() != View.INVISIBLE) {
+                            binding.gridview.setVisibility(View.INVISIBLE);
                         }
 
-                        if (binding.callStates.errorImageView != null) {
-                            if (binding.callStates.errorImageView.getVisibility() != View.GONE) {
-                                binding.callStates.errorImageView.setVisibility(View.GONE);
-                            }
+                        if (binding.callStates.errorImageView.getVisibility() != View.GONE) {
+                            binding.callStates.errorImageView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -2268,28 +2252,20 @@ public class CallActivity extends CallBaseActivity {
                             animateCallControls(false, 5000);
                         }
 
-                        if (binding.callStates.callStateRelativeLayout != null) {
-                            if (binding.callStates.callStateRelativeLayout.getVisibility() != View.INVISIBLE) {
-                                binding.callStates.callStateRelativeLayout.setVisibility(View.INVISIBLE);
-                            }
+                        if (binding.callStates.callStateRelativeLayout.getVisibility() != View.INVISIBLE) {
+                            binding.callStates.callStateRelativeLayout.setVisibility(View.INVISIBLE);
                         }
 
-                        if (binding.callStates.callStateProgressBar != null) {
-                            if (binding.callStates.callStateProgressBar.getVisibility() != View.GONE) {
-                                binding.callStates.callStateProgressBar.setVisibility(View.GONE);
-                            }
+                        if (binding.callStates.callStateProgressBar.getVisibility() != View.GONE) {
+                            binding.callStates.callStateProgressBar.setVisibility(View.GONE);
                         }
 
-                        if (binding.gridview != null) {
-                            if (binding.gridview.getVisibility() != View.VISIBLE) {
-                                binding.gridview.setVisibility(View.VISIBLE);
-                            }
+                        if (binding.gridview.getVisibility() != View.VISIBLE) {
+                            binding.gridview.setVisibility(View.VISIBLE);
                         }
 
-                        if (binding.callStates.errorImageView != null) {
-                            if (binding.callStates.errorImageView.getVisibility() != View.GONE) {
-                                binding.callStates.errorImageView.setVisibility(View.GONE);
-                            }
+                        if (binding.callStates.errorImageView.getVisibility() != View.GONE) {
+                            binding.callStates.errorImageView.setVisibility(View.GONE);
                         }
                     });
                     break;
@@ -2297,32 +2273,24 @@ public class CallActivity extends CallBaseActivity {
                     handler.post(() -> {
                         stopCallingSound();
 
-                        if (binding.callStates.callStateTextView != null) {
-                            binding.callStates.callStateTextView.setText(R.string.nc_offline);
+                        binding.callStates.callStateTextView.setText(R.string.nc_offline);
 
-                            if (binding.callStates.callStateRelativeLayout.getVisibility() != View.VISIBLE) {
-                                binding.callStates.callStateRelativeLayout.setVisibility(View.VISIBLE);
-                            }
+                        if (binding.callStates.callStateRelativeLayout.getVisibility() != View.VISIBLE) {
+                            binding.callStates.callStateRelativeLayout.setVisibility(View.VISIBLE);
                         }
 
 
-                        if (binding.gridview != null) {
-                            if (binding.gridview.getVisibility() != View.INVISIBLE) {
-                                binding.gridview.setVisibility(View.INVISIBLE);
-                            }
+                        if (binding.gridview.getVisibility() != View.INVISIBLE) {
+                            binding.gridview.setVisibility(View.INVISIBLE);
                         }
 
-                        if (binding.callStates.callStateProgressBar != null) {
-                            if (binding.callStates.callStateProgressBar.getVisibility() != View.GONE) {
-                                binding.callStates.callStateProgressBar.setVisibility(View.GONE);
-                            }
+                        if (binding.callStates.callStateProgressBar.getVisibility() != View.GONE) {
+                            binding.callStates.callStateProgressBar.setVisibility(View.GONE);
                         }
 
-                        if (binding.callStates.errorImageView != null) {
-                            binding.callStates.errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp);
-                            if (binding.callStates.errorImageView.getVisibility() != View.VISIBLE) {
-                                binding.callStates.errorImageView.setVisibility(View.VISIBLE);
-                            }
+                        binding.callStates.errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp);
+                        if (binding.callStates.errorImageView.getVisibility() != View.VISIBLE) {
+                            binding.callStates.errorImageView.setVisibility(View.VISIBLE);
                         }
                     });
                     break;
@@ -2502,7 +2470,7 @@ public class CallActivity extends CallBaseActivity {
             binding.pipCallConversationNameTextView.setText(conversationName);
             binding.pipGroupCallOverlay.setVisibility(View.VISIBLE);
         } else {
-            binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
+            binding.pipGroupCallOverlay.setVisibility(View.GONE);
         }
 
         binding.selfVideoRenderer.release();
@@ -2520,7 +2488,7 @@ public class CallActivity extends CallBaseActivity {
         binding.callInfosLinearLayout.setVisibility(View.VISIBLE);
         binding.selfVideoViewWrapper.setVisibility(View.VISIBLE);
 
-        binding.pipGroupCallOverlay.setVisibility(View.INVISIBLE);
+        binding.pipGroupCallOverlay.setVisibility(View.GONE);
     }
 
     @Override
