@@ -305,7 +305,6 @@ public class CallActivity extends CallBaseActivity {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE);
 
-        binding.callControls.setZ(100.0f);
         basicInitialization();
         participantDisplayItems = new HashMap<>();
         initViews();
@@ -1846,10 +1845,6 @@ public class CallActivity extends CallBaseActivity {
 
         if (!isDestroyed()) {
             initGridAdapter();
-
-            if (binding.callControls != null) {
-                binding.callControls.setZ(100.0f);
-            }
         }
     }
 
@@ -2123,7 +2118,6 @@ public class CallActivity extends CallBaseActivity {
         participantDisplayItems.put(session, participantDisplayItem);
 
         initGridAdapter();
-        binding.callControls.setZ(100.0f);
     }
 
     private void setCallState(CallStatus callState) {
