@@ -1591,42 +1591,8 @@ public class CallActivity extends CallBaseActivity {
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                     if (shutDownView) {
                         finish();
-                    } else if (!shutDownView &&
-                        (currentCallStatus == CallStatus.RECONNECTING ||
-                            currentCallStatus == CallStatus.PUBLISHER_FAILED)) {
+                    } else if (currentCallStatus == CallStatus.RECONNECTING || currentCallStatus == CallStatus.PUBLISHER_FAILED) {
                         initiateCall();
-                    }
-                }
-
-                @Override
-                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                    // unused atm
-                }
-
-                @Override
-                public void onComplete() {
-                    // unused atm
-                }
-            });
-    }
-
-    // TODO: why is this never called?!
-    private void leaveRoom(boolean shutDownView) {
-        int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
-
-        ncApi.leaveRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion, baseUrl, roomToken))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(new Observer<GenericOverall>() {
-                @Override
-                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                    // unused atm
-                }
-
-                @Override
-                public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                    if (shutDownView) {
-                        finish();
                     }
                 }
 
