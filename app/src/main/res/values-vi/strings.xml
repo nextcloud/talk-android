@@ -18,7 +18,6 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Lớn nhất trước</string>
     <string name="menu_item_sort_by_size_smallest_first">Nhỏ nhất trước</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Tài khoản được chọn bây giờ đã được nhập và đang có sẵn</string>
     <string name="nc_about">Thông tin</string>
     <string name="nc_account_chooser_active_user">Người dùng đang hoạt động</string>
@@ -42,7 +41,6 @@
     <string name="nc_call_reconnecting">Đang kết nối lại...</string>
     <string name="nc_call_ringing">ĐANG ĐỔ CHUÔNG</string>
     <string name="nc_call_state_in_call">%1$s đang trong cuộc gọi</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s đang trong cuộc gọi có âm thanh</string>
     <string name="nc_call_state_with_phone">%1$s với điện thoại</string>
     <string name="nc_call_state_with_video">%1$s với video</string>
     <string name="nc_call_timeout">Không có phản hồi trong 45 giây, nhấn để thử lại</string>
@@ -86,7 +84,6 @@
     <string name="nc_failed_to_perform_operation">Thật xin lỗi, một số thứ đang bị sai sót!</string>
     <string name="nc_file_browser_back">Quay lại</string>
     <string name="nc_file_browser_refresh">Làm mới</string>
-    <string name="nc_general_settings">Tổng hợp</string>
     <string name="nc_get_from_provider">Bạn đã có một máy chủ chưa?\nBấm vào đây để tìm từ một nhà cung cấp.</string>
     <string name="nc_get_source_code">Lấy mã nguồn</string>
     <string name="nc_groups">Nhóm</string>
@@ -154,17 +151,14 @@
     <string name="nc_set_password">Đặt mật khẩu</string>
     <string name="nc_settings">Cài đặt</string>
     <string name="nc_settings_account_updated">Bạn đã cập nhật tài khoản đã có, hãy thêm tài khoản mới</string>
-    <string name="nc_settings_add_account">Thêm một tài khoản mới</string>
     <string name="nc_settings_appearance">Ngoại hình</string>
     <string name="nc_settings_call_ringtone">Cuộc gọi</string>
-    <string name="nc_settings_link_previews_title">Hiện mục xem trước liên kết</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
     <string name="nc_settings_notification_sounds">Âm thanh</string>
     <string name="nc_settings_other_notifications_ringtone">Thông báo</string>
     <string name="nc_settings_privacy">Riêng tư</string>
     <string name="nc_settings_proxy_host_title">Máy chủ Proxy</string>
     <string name="nc_settings_proxy_port_title">Cổng Proxy</string>
-    <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Loại Proxy</string>
     <string name="nc_settings_read_privacy_title">Đọc trạng thái</string>
     <string name="nc_settings_remove">Xóa</string>
@@ -186,7 +180,6 @@
     <string name="nc_share_text_pass">\nMật khẩu: %1$s</string>
     <string name="nc_start_conversation">Bắt đầu một cuộc Đàm thoại</string>
     <string name="nc_user">Người dùng</string>
-    <string name="nc_username">Tài khoản</string>
     <string name="nc_wrong_link">Liên kết đàm thoại này không có thực</string>
     <string name="nc_wrong_password">Sai mật khẩu</string>
     <string name="nc_yes">Có</string>

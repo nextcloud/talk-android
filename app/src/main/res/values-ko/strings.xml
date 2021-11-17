@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_about">정보</string>
     <string name="nc_account_scheduled_for_deletion">이 계정이 삭제 예정이며 변경할 수 없음</string>
     <string name="nc_add">추가</string>
@@ -51,12 +50,10 @@
     <string name="nc_endless_error">아이템을 불러오던 중 에러가 발생했습니다.</string>
     <string name="nc_external_server_failed">신호 설정을 가져오지 못함</string>
     <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>
-    <string name="nc_file_browser">파일 브라우저\"</string>
     <string name="nc_file_browser_back">뒤로</string>
     <string name="nc_file_browser_refresh">새로 고침</string>
     <string name="nc_following_link">공개 링크를 따르는 사용자</string>
     <string name="nc_formatted_message_you">나: %1$s</string>
-    <string name="nc_general_settings">일반</string>
     <string name="nc_get_from_provider">서버가 없으신가요?\n공급자를 알아보려면 누르십시오</string>
     <string name="nc_get_source_code">소스 코드 얻기</string>
     <string name="nc_groups">그룹</string>
@@ -132,7 +129,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">검색</string>
     <string name="nc_select_an_account">계정 선택</string>
-    <string name="nc_select_files">파일 선택</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s이(가) GIF를 보냈습니다.</string>
     <string name="nc_sent_a_gif_you">GIF를 보냈습니다.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s이(가) 링크를 보냈습니다.</string>
@@ -157,17 +153,13 @@
     <string name="nc_set_password">암호 설정</string>
     <string name="nc_settings">설정</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
-    <string name="nc_settings_add_account">새 계정 추가</string>
     <string name="nc_settings_appearance">외형</string>
     <string name="nc_settings_incognito_keyboard_desc">키보드에 개인화된 학습을 비활성화하도록 지시(보증 없음)</string>
     <string name="nc_settings_incognito_keyboard_title">시크릿 키보드</string>
-    <string name="nc_settings_link_previews_desc">지원되는 서비스에 대해 수신된 링크의 콘텐츠 미리 보기 허용</string>
-    <string name="nc_settings_link_previews_title">링크 미리보기</string>
     <string name="nc_settings_no_ringtone">무음</string>
     <string name="nc_settings_no_talk_installed">인증하려는 서버에 Talk 앱이 설치되어 있지 않습니다.</string>
     <string name="nc_settings_proxy_host_title">프록시 호스트</string>
     <string name="nc_settings_proxy_port_title">프록시 포트</string>
-    <string name="nc_settings_proxy_title">프록시</string>
     <string name="nc_settings_proxy_type_title">프록시 종류</string>
     <string name="nc_settings_remove">제거</string>
     <string name="nc_settings_remove_account">계정 삭제</string>
@@ -195,7 +187,6 @@
     <string name="nc_timeout_error">시간 초과</string>
     <string name="nc_unauthorized_error">권한 없음</string>
     <string name="nc_user">사용자</string>
-    <string name="nc_username">사용자 이름</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">무효한 대화 링크</string>
     <string name="nc_wrong_password">잘못된 암호</string>

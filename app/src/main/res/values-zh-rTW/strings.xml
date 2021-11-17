@@ -18,7 +18,6 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">最大優先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小優先</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">選擇已匯入且可用的帳號</string>
     <string name="nc_about">關於</string>
     <string name="nc_account_chooser_active_user">活躍使用者</string>
@@ -42,7 +41,6 @@
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_call_ringing">鈴響聲</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s 語音通話中</string>
     <string name="nc_call_state_with_phone">%1$s 通過手機</string>
     <string name="nc_call_state_with_video">%1$s 視訊對話中</string>
     <string name="nc_call_timeout">在45秒內無回應，請點按以重試</string>
@@ -85,9 +83,7 @@
     <string name="nc_delete">刪除</string>
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
-    <string name="nc_delete_conversation_default">請確認是否移除目前對話。</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
-    <string name="nc_delete_conversation_one2one">如果您刪除對話，它也將會從 %1$s 處刪除。</string>
     <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">訊息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_demote">取消主持人資格</string>
@@ -108,7 +104,6 @@
     <string name="nc_external_server_failed">汲取訊號設定失敗</string>
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
-    <string name="nc_file_browser">檔案瀏覽器\"</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_browser_refresh">重新整理</string>
     <string name="nc_file_browser_reshare_forbidden">你不被允許再分享這個檔案</string>
@@ -116,7 +111,6 @@
     <string name="nc_formatted_message_you">你: %1$s</string>
     <string name="nc_forward_message">轉貼</string>
     <string name="nc_forward_to_three_dots">轉貼到…</string>
-    <string name="nc_general_settings">一般</string>
     <string name="nc_get_from_provider">您沒有自己的伺服器嗎？\n點這裡向服務供應商購買</string>
     <string name="nc_get_source_code">取得原始碼</string>
     <string name="nc_group">群組</string>
@@ -176,7 +170,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">搜尋</string>
     <string name="nc_select_an_account">選擇一個帳號</string>
-    <string name="nc_select_files">選取檔案</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF.</string>
     <string name="nc_sent_a_gif_you">您傳送了一個 GIF 檔</string>
     <string name="nc_sent_a_link" formatted="true">%1$s 傳送一個連結</string>
@@ -201,13 +194,10 @@
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
     <string name="nc_set_password">設定密碼</string>
     <string name="nc_settings">設定</string>
-    <string name="nc_settings_add_account">新增一個帳號</string>
     <string name="nc_settings_appearance">外觀</string>
-    <string name="nc_settings_link_previews_title">顯示 連結預覽</string>
     <string name="nc_settings_no_ringtone">無聲</string>
     <string name="nc_settings_proxy_host_title">proxy代理主機</string>
     <string name="nc_settings_proxy_port_title">proxy連接埠</string>
-    <string name="nc_settings_proxy_title">proxy代理</string>
     <string name="nc_settings_proxy_type_title">proxy類型</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除帳號</string>
@@ -222,7 +212,6 @@
     <string name="nc_timeout_error">逾時</string>
     <string name="nc_unauthorized_error">未授權</string>
     <string name="nc_user">使用者</string>
-    <string name="nc_username">使用者</string>
     <string name="nc_wrong_link">對話連結無效</string>
     <string name="nc_wrong_password">密碼錯誤</string>
     <string name="nc_yes">是</string>

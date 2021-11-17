@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_about">O programu</string>
     <string name="nc_account_scheduled_for_deletion">Nalogu je zakazano brisanje i to ne može da se promeni</string>
     <string name="nc_add">Dodaj</string>
@@ -51,12 +50,10 @@
     <string name="nc_endless_error">Desila se greška prilikom učitavanja još stavki.</string>
     <string name="nc_external_server_failed">Greška prilikom dohvatanja podešavanja signaliziranja</string>
     <string name="nc_failed_to_perform_operation">Izvinjavamo se, nešto je pošlo naopako!</string>
-    <string name="nc_file_browser">Pregledač fajlova\"</string>
     <string name="nc_file_browser_back">Nazad</string>
     <string name="nc_file_browser_refresh">Osveži</string>
     <string name="nc_following_link">Korisnik koji je pratio javnu vezu</string>
     <string name="nc_formatted_message_you">Ti: %1$s</string>
-    <string name="nc_general_settings">Opšte</string>
     <string name="nc_get_from_provider">Imate li server?nKliknite ovde da napravite jedan kod provajdera</string>
     <string name="nc_get_source_code">Izvorni kôd</string>
     <string name="nc_groups">Grupe</string>
@@ -132,7 +129,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Traži</string>
     <string name="nc_select_an_account">Izaberite nalog</string>
-    <string name="nc_select_files">Odaberite fajlove</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s je poslao GIF.</string>
     <string name="nc_sent_a_gif_you">Poslali ste GIF.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s je poslao vezu.</string>
@@ -157,17 +153,13 @@
     <string name="nc_set_password">Postavi lozinku</string>
     <string name="nc_settings">Postavke</string>
     <string name="nc_settings_account_updated">Vaš postojeći nalog je ažuriran, umesto što je dodat novi nalog</string>
-    <string name="nc_settings_add_account">Dodaj novi nalog</string>
     <string name="nc_settings_appearance">Izgled</string>
     <string name="nc_settings_incognito_keyboard_desc">Naloži tastaturi da isključi personalizovano učenje (bez garancija)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito tastatura</string>
-    <string name="nc_settings_link_previews_desc">Dozvoljava pretpreglede sadržaja sa primljenih veza za podržane servise</string>
-    <string name="nc_settings_link_previews_title">Prikaži pretpregled veza</string>
     <string name="nc_settings_no_ringtone">Nema zvuka</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Ćaskanja nije instalirana na serveru na koji se prijavljujete</string>
     <string name="nc_settings_proxy_host_title">Domaćin</string>
     <string name="nc_settings_proxy_port_title">Port posrednika</string>
-    <string name="nc_settings_proxy_title">Posrednik</string>
     <string name="nc_settings_proxy_type_title">Tip posrednika</string>
     <string name="nc_settings_remove">Ukloni</string>
     <string name="nc_settings_remove_account">Ukloni nalog</string>
@@ -195,7 +187,6 @@
     <string name="nc_timeout_error">Istek vremena</string>
     <string name="nc_unauthorized_error">Neovlašćeno</string>
     <string name="nc_user">Korisnik</string>
-    <string name="nc_username">Korisničko ime</string>
     <string name="nc_webinar">Vebinar</string>
     <string name="nc_wrong_link">Veza razgovora nije ispravna</string>
     <string name="nc_wrong_password">Pogrešna lozinka</string>
