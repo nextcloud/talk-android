@@ -18,7 +18,6 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Größste zuerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste zuerst</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
     <string name="nc_about">Über</string>
     <string name="nc_account_chooser_active_user">Aktiver Benutzer</string>
@@ -43,7 +42,6 @@
     <string name="nc_call_reconnecting">Verbinde erneut…</string>
     <string name="nc_call_ringing">KLINGELT</string>
     <string name="nc_call_state_in_call">%1$s ist in einem Gespräch</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s ist in einem Gespräch</string>
     <string name="nc_call_state_with_phone">%1$s mit Telefon</string>
     <string name="nc_call_state_with_video">%1$s mit Video</string>
     <string name="nc_call_timeout">Keine Antwort nach 45 Sekunden, klicken Sie um es erneut zu versuchen</string>
@@ -86,9 +84,7 @@
     <string name="nc_delete">Löschen</string>
     <string name="nc_delete_all">Alle löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
-    <string name="nc_delete_conversation_default">Bitte bestätigen Sie, dass Sie diese Unterhaltung entfernen möchten.</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
-    <string name="nc_delete_conversation_one2one">Wenn Sie diese Unterhaltung entfernen, so wird diese auch für %1$s entfernt.</string>
     <string name="nc_delete_message">Löschen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_demote">Moderator absetzen</string>
@@ -109,7 +105,6 @@
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
-    <string name="nc_file_browser">Datei-Browser\"</string>
     <string name="nc_file_browser_back">Zurück</string>
     <string name="nc_file_browser_refresh">Aktualisieren</string>
     <string name="nc_file_browser_reshare_forbidden">Sie dürfen diese Datei nicht weiterteilen</string>
@@ -117,7 +112,6 @@
     <string name="nc_formatted_message_you">Sie: %1$s</string>
     <string name="nc_forward_message">Weiterleiten</string>
     <string name="nc_forward_to_three_dots">Weiterleiten an …</string>
-    <string name="nc_general_settings">Allgemein</string>
     <string name="nc_get_from_provider">Sie haben noch keinen Server?\nKlicken Sie hier um Anbieter zu finden</string>
     <string name="nc_get_source_code">Zum Programmcode</string>
     <string name="nc_group">Gruppe</string>
@@ -219,8 +213,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Suchen</string>
     <string name="nc_select_an_account">Konto auswählen</string>
-    <string name="nc_select_contacts">Kontakte auswählen</string>
-    <string name="nc_select_files">Dateien wählen</string>
     <string name="nc_select_participants">Teilnehmer auswählen</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s hat ein GIF gesendet.</string>
     <string name="nc_sent_a_gif_you">Sie haben ein GIF gesendet.</string>
@@ -255,14 +247,11 @@
     <string name="nc_set_password">Passwort setzen</string>
     <string name="nc_settings">Einstellungen</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
-    <string name="nc_settings_add_account">Konto hinzufügen</string>
     <string name="nc_settings_advanced_title">Erweitert</string>
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
-    <string name="nc_settings_link_previews_desc">Ermöglicht die Vorschau von Inhalten von empfangenen Links für unterstützte Dienste</string>
-    <string name="nc_settings_link_previews_title">Link-Vorschau zeigen</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
     <string name="nc_settings_notification_sounds">Ton</string>
@@ -277,7 +266,6 @@
     <string name="nc_settings_proxy_host_title">Proxy-Host</string>
     <string name="nc_settings_proxy_password_title">Proxy-Passwort</string>
     <string name="nc_settings_proxy_port_title">Proxy-Port</string>
-    <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy-Typ</string>
     <string name="nc_settings_proxy_username_title">Proxy-Benutzername</string>
     <string name="nc_settings_read_privacy_desc">Ihren Lesestatus teilen und den Lesestatus von anderen anzeigen</string>
@@ -294,7 +282,6 @@
     <string name="nc_settings_server_almost_eol">Die Serverversion ist sehr alt und wird ab dem nächsten Update nicht mehr unterstützt</string>
     <string name="nc_settings_server_eol">Die Serverversion ist zu alt und wird von dieser Version der Android-App nicht unterstützt</string>
     <string name="nc_settings_server_eol_title">Nicht unterstützter Server</string>
-    <string name="nc_settings_switch_account">Zwischen Konten wechseln</string>
     <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus gesetzt</string>
     <string name="nc_settings_theme_dark">Dunkel</string>
     <string name="nc_settings_theme_follow_system">Systemstandard verwenden</string>
@@ -329,7 +316,6 @@
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_picture_from_cam">Foto aufnehmen</string>
     <string name="nc_user">Benutzer</string>
-    <string name="nc_username">Benutzername</string>
     <string name="nc_voice_message_filename">Talk-Aufnahme von %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Halten zum Aufnehmen, zum Versenden loslassen.</string>
     <string name="nc_voice_message_missing_audio_permission">Erlaubnis für Audioaufnahmen ist erforderlich</string>

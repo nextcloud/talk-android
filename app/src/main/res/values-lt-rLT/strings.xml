@@ -5,7 +5,6 @@
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
     <string name="file_list_loading">Įkeliama…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_about">Apie</string>
     <string name="nc_account_chooser_add_account">Pridėti paskyrą</string>
     <string name="nc_account_scheduled_for_deletion">Paskyra yra suplanuota ištrynimui ir negali būti pakeista</string>
@@ -59,7 +58,6 @@
     <string name="nc_file_browser_back">Atgal</string>
     <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
     <string name="nc_formatted_message_you">Jūs: %1$s</string>
-    <string name="nc_general_settings">Bendra</string>
     <string name="nc_get_from_provider">Neturite serverio? Spauskite čia, kad galėtumėte pasirinkti vieną iš paslaugų teikėjų</string>
     <string name="nc_get_source_code">Gauti išeities kodą</string>
     <string name="nc_groups">Grupės</string>
@@ -150,17 +148,13 @@
     <string name="nc_set_password">Nustatyti slaptažodį</string>
     <string name="nc_settings">Nustatymai</string>
     <string name="nc_settings_account_updated">Vietoj naujos paskyros pridėjimo, buvo atnaujinta jūsų esama paskyra</string>
-    <string name="nc_settings_add_account">Pridėti naują paskyrą</string>
     <string name="nc_settings_appearance">Išvaizda</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klaviatūra</string>
-    <string name="nc_settings_link_previews_desc">Palaikomuose įrenginiuose leidžia matyti gautų nuorodų turinio peržiūras</string>
-    <string name="nc_settings_link_previews_title">Rodyti nuorodų peržiūras</string>
     <string name="nc_settings_no_ringtone">Be garso</string>
     <string name="nc_settings_no_talk_installed">Pokalbių programėlė nėra įdiegta serveryje, kuriame bandėte nusistatyti tapatybę</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefono numeris</string>
     <string name="nc_settings_privacy">Privatumas</string>
     <string name="nc_settings_proxy_port_title">Įgaliotojo serverio prievadas</string>
-    <string name="nc_settings_proxy_title">Įgaliotasis serveris</string>
     <string name="nc_settings_proxy_type_title">Įgaliotojo serverio tipas</string>
     <string name="nc_settings_remove">Šalinti</string>
     <string name="nc_settings_remove_account">Šalinti paskyrą</string>
@@ -187,7 +181,6 @@
     <string name="nc_timeout_error">Pasibaigė laikas</string>
     <string name="nc_unauthorized_error">Nesankcionuota</string>
     <string name="nc_user">Naudotojas</string>
-    <string name="nc_username">Naudotojo vardas</string>
     <string name="nc_webinar">Internetinis seminaras</string>
     <string name="nc_wrong_link">Pokalbio nuoroda negalioja</string>
     <string name="nc_wrong_password">Neteisingas slaptažodis</string>

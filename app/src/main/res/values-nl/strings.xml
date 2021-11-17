@@ -18,7 +18,6 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Grootste eerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste eerst</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_about">Over</string>
     <string name="nc_account_chooser_active_user">Actieve gebruiker</string>
@@ -43,7 +42,6 @@
     <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s in gesprek met audio</string>
     <string name="nc_call_state_with_phone">%1$s met telefoon</string>
     <string name="nc_call_state_with_video">%1$s met video</string>
     <string name="nc_call_timeout">Geen reactie binnen 45 seconden, tap om het opnieuw te proberen.</string>
@@ -86,9 +84,7 @@
     <string name="nc_delete">Verwijderen</string>
     <string name="nc_delete_all">Alles verwijderen</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
-    <string name="nc_delete_conversation_default">Bevestig dat je het gesprek wilt verwijderen.</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
-    <string name="nc_delete_conversation_one2one">Als je het gesprek verwijdert, wordt het ook verwijderd voor %1$s.</string>
     <string name="nc_delete_message">verwijderen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
     <string name="nc_demote">Degradeer van moderator</string>
@@ -109,7 +105,6 @@
     <string name="nc_external_server_failed">Kon signaleringsinstellingen niet ophalen</string>
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
-    <string name="nc_file_browser">Bestandenbrowser\"</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_file_browser_refresh">Verversen</string>
     <string name="nc_file_browser_reshare_forbidden">Je mag het bestand niet verder delen</string>
@@ -117,7 +112,6 @@
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_forward_message">Doorsturen</string>
     <string name="nc_forward_to_three_dots">Doorsturen aan ...</string>
-    <string name="nc_general_settings">Algemeen</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
     <string name="nc_get_source_code">Download sourcecode</string>
@@ -221,8 +215,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Zoeken</string>
     <string name="nc_select_an_account">Selecteer een account</string>
-    <string name="nc_select_contacts">Selecteer contactpersonen</string>
-    <string name="nc_select_files">Selecteer bestanden</string>
     <string name="nc_select_participants">Selecteer deelnemers</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s verstuurde een GIF.</string>
     <string name="nc_sent_a_gif_you">Je verstuurde een GIF.</string>
@@ -257,14 +249,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_set_password">Instellen wachtwoord</string>
     <string name="nc_settings">Instellingen</string>
     <string name="nc_settings_account_updated">Je al bestaande account werd bijgewerkt, in plaats van een nieuwe aan te maken</string>
-    <string name="nc_settings_add_account">Toevoegen nieuw account</string>
     <string name="nc_settings_advanced_title">Geavanceerd</string>
     <string name="nc_settings_appearance">Uiterlijk</string>
     <string name="nc_settings_call_ringtone">Oproepen</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrueert het toetsenbord gepersonaliseerd leren uit te schakelen (geen garanties)</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
-    <string name="nc_settings_link_previews_desc">Staat voorbeeldweergave toe van ontvangen links van ondersteunde diensten</string>
-    <string name="nc_settings_link_previews_title">Tonen link-voorbeelden</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
     <string name="nc_settings_notification_sounds">Geluid</string>
@@ -279,7 +268,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_proxy_host_title">Proxy host</string>
     <string name="nc_settings_proxy_password_title">Proxy wachtwoord</string>
     <string name="nc_settings_proxy_port_title">Proxy poort</string>
-    <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy type</string>
     <string name="nc_settings_proxy_username_title">Proxy gebruikersnaam</string>
     <string name="nc_settings_read_privacy_desc">Deel mijn lees-status en toon de lees-status van anderen</string>
@@ -296,7 +284,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_server_almost_eol">De serverversie is heel oud en wordt niet meer ondersteund in de volgende release.</string>
     <string name="nc_settings_server_eol">De serverversie is te oud en wordt niet meer ondersteund door deze versie van de Android app</string>
     <string name="nc_settings_server_eol_title">Niet-ondersteunde server</string>
-    <string name="nc_settings_switch_account">Omschakelen tussen accounts</string>
     <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_dark">Donker</string>
     <string name="nc_settings_theme_follow_system">Gebruik systeem standaarden</string>
@@ -331,7 +318,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_local_file">Upload lokaal bestand</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_user">Gebruiker</string>
-    <string name="nc_username">Gebruikersnaam</string>
     <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Ingedrukt houden om op te nemen, loslaten om te versturen.</string>
     <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>
