@@ -18,7 +18,6 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Handienak lehenengo</string>
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Aukeratutako kontua inportatu da eta eskuragarri dago</string>
     <string name="nc_about">Honi buruz</string>
     <string name="nc_account_chooser_active_user">Erabiltzaile aktiboa</string>
@@ -43,7 +42,6 @@
     <string name="nc_call_reconnecting">Berriro konektatzen...</string>
     <string name="nc_call_ringing">DEITZEN</string>
     <string name="nc_call_state_in_call">%1$s deian</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s audio deian</string>
     <string name="nc_call_state_with_phone">%1$s telefonoarekin</string>
     <string name="nc_call_state_with_video">%1$s bideoarekin</string>
     <string name="nc_call_timeout">Ez da erantzunik egon 45 segundutan, sakatu berriro saiatzeko</string>
@@ -86,9 +84,7 @@
     <string name="nc_delete">Ezabatu</string>
     <string name="nc_delete_all">Ezabatu denak</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
-    <string name="nc_delete_conversation_default">Baieztatu mesedez elkarrizketa kendu nahi duzula.</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
-    <string name="nc_delete_conversation_one2one">Elkarrizketa ezabatzen baduzu, %1$s(r)entzako ere ezabatuko da.</string>
     <string name="nc_delete_message">Ezabatu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
     <string name="nc_demote">Moderatzailetik degradatua</string>
@@ -109,7 +105,6 @@
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
-    <string name="nc_file_browser">Fitxategi nabigatzailea\"</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_browser_refresh">Freskatu</string>
     <string name="nc_file_browser_reshare_forbidden">Ez zaude fitxategi hau birpartekatzeko baimenduta</string>
@@ -117,7 +112,6 @@
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
     <string name="nc_forward_to_three_dots">Birbidali ...</string>
-    <string name="nc_general_settings">Orokorra</string>
     <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
     <string name="nc_get_source_code">Iturburu kodea eskuratu</string>
     <string name="nc_group">Taldea</string>
@@ -219,8 +213,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Bilatu</string>
     <string name="nc_select_an_account">Hautatu kontua bat</string>
-    <string name="nc_select_contacts">Hautatu kontaktuak</string>
-    <string name="nc_select_files">Hautatu fitxategiak</string>
     <string name="nc_select_participants">Hautatu parte-hartzaileak</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s-k GIF bat bidali du.</string>
     <string name="nc_sent_a_gif_you">GIF bat bidali duzu.</string>
@@ -255,14 +247,11 @@
     <string name="nc_set_password">Ezarri pasahitz bat</string>
     <string name="nc_settings">Ezarpenak</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
-    <string name="nc_settings_add_account">Kontu berria gehitu</string>
     <string name="nc_settings_advanced_title">Aurreratua</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
-    <string name="nc_settings_link_previews_desc">Jasotako esteka eta onartutako zerbitzuetako edukia aurreikusten onartzen du</string>
-    <string name="nc_settings_link_previews_title">Erakutsi esteka aurrebistak</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
     <string name="nc_settings_notification_sounds">Soinua</string>
@@ -277,7 +266,6 @@
     <string name="nc_settings_proxy_host_title">Proxy ostalaria</string>
     <string name="nc_settings_proxy_password_title">Proxy-pasahitza</string>
     <string name="nc_settings_proxy_port_title">Proxy portua</string>
-    <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Proxy mota</string>
     <string name="nc_settings_proxy_username_title">Proxy erabiltzaile-izena</string>
     <string name="nc_settings_read_privacy_desc">Partekatu nire irakurtze-egoera eta erakutsi besteen irakurtze-egoera</string>
@@ -294,7 +282,6 @@
     <string name="nc_settings_server_almost_eol">Zerbitzariaren bertsioa zaharregia da eta ez da hurrengo argitalpenean onartuko!</string>
     <string name="nc_settings_server_eol">Zerbitzariaren bertsioa zaharregia da eta Android aplikazio honek ez du onartzen</string>
     <string name="nc_settings_server_eol_title">Ez da zerbitzaria onartzen</string>
-    <string name="nc_settings_switch_account">Aldatu kontuen artean</string>
     <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
@@ -329,7 +316,6 @@
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_upload_picture_from_cam">Atera argazkia</string>
     <string name="nc_user">Erabiltzailea</string>
-    <string name="nc_username">Erabiltzaile-izena</string>
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Sakatu grabatzeko, askatu bidaltzeko.</string>
     <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>

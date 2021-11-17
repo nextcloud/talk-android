@@ -7,7 +7,6 @@
     <string name="file_list_folder">مجلد</string>
     <string name="file_list_loading">Lعملية التحميل جارية…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">تم استيراد الحساب المحدد وهو متاح الآن </string>
     <string name="nc_about">عن</string>
     <string name="nc_account_chooser_active_user">مستخدم نشط</string>
@@ -62,9 +61,7 @@
     <string name="nc_date_header_yesterday">أمس</string>
     <string name="nc_delete">حذف </string>
     <string name="nc_delete_call">احذف المحادثة</string>
-    <string name="nc_delete_conversation_default">من فضلك قم بالتأكيد على رغبتك بازالة المحادثة.</string>
     <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
-    <string name="nc_delete_conversation_one2one">إذا قمت بحذف المحادثة، سوف تحذف أيضا لدى %1$s.</string>
     <string name="nc_delete_message">حذف </string>
     <string name="nc_delete_message_leaked_to_matterbridge">تم حذف الرسالة بنجاح، لكن من الممكن أن تم تسريبها لخدمات أخرى</string>
     <string name="nc_demote">تخفيض رتبة مشرف</string>
@@ -83,12 +80,10 @@
     <string name="nc_external_server_failed">فشل جلب إعدادات الإشارات</string>
     <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
-    <string name="nc_file_browser">متصفح الملف</string>
     <string name="nc_file_browser_back">العودة</string>
     <string name="nc_file_browser_refresh">تحديث</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
-    <string name="nc_general_settings">العامة</string>
     <string name="nc_get_from_provider">ليس لديك خادم حتى الآن ؟\nإضغط هنا للحصول على واحد من أحد المزودين</string>
     <string name="nc_get_source_code">الحصول على الشفرة المصدرية</string>
     <string name="nc_group">الفريق</string>
@@ -176,8 +171,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">البحث</string>
     <string name="nc_select_an_account">اختيار حساب</string>
-    <string name="nc_select_contacts">اختر مراسِلين</string>
-    <string name="nc_select_files">اختر الملفات</string>
     <string name="nc_select_participants">اختر مشاركين</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ارسل GIF.</string>
     <string name="nc_sent_a_gif_you">لقد قمت بارسال GIF.</string>
@@ -206,14 +199,11 @@
     <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_settings">الإعدادات</string>
     <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>
-    <string name="nc_settings_add_account">إضافة حساب جديد</string>
     <string name="nc_settings_advanced_title">تعديلات متقدمه</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
-    <string name="nc_settings_link_previews_desc">يسمح بمعاينات المحتوى من الروابط المستلمة للخدمات المدعومة </string>
-    <string name="nc_settings_link_previews_title">اظهر معاينات الروابط</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
     <string name="nc_settings_no_talk_installed">تطبيق التحدث غير مثبت على الخادم الذي تريد المصادقة إليه.</string>
     <string name="nc_settings_notification_sounds">صوت</string>
@@ -227,7 +217,6 @@
     <string name="nc_settings_privacy">الخصوصية</string>
     <string name="nc_settings_proxy_host_title">مضيف البروكسي</string>
     <string name="nc_settings_proxy_port_title">منفذ البروكسي</string>
-    <string name="nc_settings_proxy_title">وكيل البروكسي</string>
     <string name="nc_settings_proxy_type_title">نوع البروكسي</string>
     <string name="nc_settings_read_privacy_desc">شارك حالتي و أظهر الحالة للآخرين</string>
     <string name="nc_settings_read_privacy_title">قراءة الحالة</string>
@@ -239,7 +228,6 @@
     <string name="nc_settings_screen_lock_title">قفل الشاشة</string>
     <string name="nc_settings_screen_security_desc">يمنع اخذ لقطات الشاشة في القائمة الأخيرة وداخل التطبيق</string>
     <string name="nc_settings_screen_security_title">أمان الشاشة</string>
-    <string name="nc_settings_switch_account">تبديل بين الحسابات</string>
     <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
@@ -266,7 +254,6 @@
     <string name="nc_upload_in_progess">جاري الرفع...</string>
     <string name="nc_upload_local_file">رفع الملف المحلي</string>
     <string name="nc_user">مستخدم</string>
-    <string name="nc_username">اسم المستخدم</string>
     <string name="nc_webinar">ويبنار</string>
     <string name="nc_wrong_link">رابط المحادثة غير صالح</string>
     <string name="nc_wrong_password">كلمة سرية خاطئة</string>

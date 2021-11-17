@@ -12,7 +12,6 @@
     <string name="file_list_loading">Carrighende...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Sìmbolu de blocu</string>
-    <string name="nc_99_plus">99+</string>
     <string name="nc_Server_account_imported">Su contu seletzionadu est importadu e a disponimentu</string>
     <string name="nc_about">In contu de</string>
     <string name="nc_account_chooser_active_user">Utèntzia ativa</string>
@@ -36,7 +35,6 @@
     <string name="nc_call_reconnecting">Torrende a connètere...</string>
     <string name="nc_call_ringing">SONENDE</string>
     <string name="nc_call_state_in_call">%1$s in mutida</string>
-    <string name="nc_call_state_in_call_with_audio">%1$s in mutida cun àudio</string>
     <string name="nc_call_state_with_phone">%1$s cun telèfonu</string>
     <string name="nc_call_state_with_video">%1$s cun vìdeu</string>
     <string name="nc_call_timeout">Peruna risposta in 45 segundos, toca pro torrare a proare</string>
@@ -79,9 +77,7 @@
     <string name="nc_delete">Cantzella</string>
     <string name="nc_delete_all">Cantzella totu</string>
     <string name="nc_delete_call">Cantzella resonada</string>
-    <string name="nc_delete_conversation_default">Cunfirma s\'intentzione tua de nde bogare sa resonada.</string>
     <string name="nc_delete_conversation_more">Si cantzellas sa resonada, s\'at a cantzellare puru pro su restu de partetzipantes.</string>
-    <string name="nc_delete_conversation_one2one">Si cantzellas sa resonada, s\'at a cantzellare puru pro %1$s.</string>
     <string name="nc_delete_message">Cantzella</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Messàgiu cantzelladu, ma diat pòdere èssere istadu dispensadu a àteros servìtzios</string>
     <string name="nc_demote">Lea·ssi su permissu de moderare</string>
@@ -102,7 +98,6 @@
     <string name="nc_external_server_failed">Errore in su recùperu de sa cunfiguratzione</string>
     <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una resonada pùblica cun telèfonos mòbiles. Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
-    <string name="nc_file_browser">Navigadore de archìviu\"</string>
     <string name="nc_file_browser_back">In segus</string>
     <string name="nc_file_browser_refresh">Agiorna</string>
     <string name="nc_file_browser_reshare_forbidden">Non tenes su permissu de torrare a cumpartzire custu archìviu</string>
@@ -110,7 +105,6 @@
     <string name="nc_formatted_message_you">Tue: %1$s</string>
     <string name="nc_forward_message">Torra a imbiare</string>
     <string name="nc_forward_to_three_dots">Torra a imbiare a ...</string>
-    <string name="nc_general_settings">Generale</string>
     <string name="nc_get_from_provider">Non tenes ancora unu serbidore?\nIncarca inoghe pro dd\'otènnere dae unu frunidore.</string>
     <string name="nc_get_source_code">Otene su còdighe fonte</string>
     <string name="nc_group">Grupu</string>
@@ -207,8 +201,6 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Chirca</string>
     <string name="nc_select_an_account">Seletziona unu contu</string>
-    <string name="nc_select_contacts">Seletziona cuntatos</string>
-    <string name="nc_select_files">Seletziona archìvios</string>
     <string name="nc_select_participants">Seletzionapartetzipantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s at imbiadu una GIF.</string>
     <string name="nc_sent_a_gif_you">As imbiadu una GIF.</string>
@@ -243,14 +235,11 @@
     <string name="nc_set_password">Imposta una crae</string>
     <string name="nc_settings">Impostatziones</string>
     <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
-    <string name="nc_settings_add_account">Agiunghe unu contu nou</string>
     <string name="nc_settings_advanced_title">Avantzadu</string>
     <string name="nc_settings_appearance">Visibilidade</string>
     <string name="nc_settings_call_ringtone">Mutidas</string>
     <string name="nc_settings_incognito_keyboard_desc">Imparat a sa tastiera a disativare s\'imparu personale (chene garantzias)</string>
     <string name="nc_settings_incognito_keyboard_title">Tastiera in incògnita</string>
-    <string name="nc_settings_link_previews_desc">Permite anteprimas de cuntenutu dae ligòngios retzidos pro servìtzios suportados</string>
-    <string name="nc_settings_link_previews_title">Mustra anteprima de is ligòngios</string>
     <string name="nc_settings_no_ringtone">Perunu sonu</string>
     <string name="nc_settings_no_talk_installed"> S\'aplicatzione de mutidas no est installada in su serbidore a su chi as proadu a autenticare</string>
     <string name="nc_settings_notification_sounds">Sonu</string>
@@ -265,7 +254,6 @@
     <string name="nc_settings_proxy_host_title">Retzidore Proxy</string>
     <string name="nc_settings_proxy_password_title">Crae proxy</string>
     <string name="nc_settings_proxy_port_title">Ghenna de su proxy</string>
-    <string name="nc_settings_proxy_title">Proxy</string>
     <string name="nc_settings_proxy_type_title">Genia de proxy</string>
     <string name="nc_settings_proxy_username_title">Nùmene utente proxy</string>
     <string name="nc_settings_read_privacy_desc">Cumpartzi s\'istadu de letura miu e mustra cussu de àtere</string>
@@ -282,7 +270,6 @@
     <string name="nc_settings_server_almost_eol">Sa versione de su serbidore est betza meda e no at a èssere suportada in sa versione imbeniente!</string>
     <string name="nc_settings_server_eol">Sa versione de su serbidore est betza meda e non suportada dae custa versione de aplicatzione Android</string>
     <string name="nc_settings_server_eol_title">Serbidore non suportadu</string>
-    <string name="nc_settings_switch_account">Passa a àteros contos</string>
     <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
     <string name="nc_settings_theme_dark">Iscuru</string>
     <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
@@ -315,7 +302,6 @@
     <string name="nc_upload_in_progess">Carrigamentu</string>
     <string name="nc_upload_local_file">Càrriga archìviu locale</string>
     <string name="nc_user">Utente</string>
-    <string name="nc_username">Nùmene utente</string>
     <string name="nc_voice_message_filename">Registratzione Talk dae %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podera pro registrare, lassa pro imbiare.</string>
     <string name="nc_voice_message_missing_audio_permission">Permissu pro registratziones àudio rechertu</string>
