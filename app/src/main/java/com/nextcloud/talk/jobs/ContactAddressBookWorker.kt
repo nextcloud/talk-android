@@ -48,6 +48,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
@@ -299,7 +300,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                     }
 
                     val numbers = getPhoneNumbersFromDeviceContact(id)
-                    val displayName = getDisplayNameFromDeviceContact(id)
+                    val displayName = ContactUtils.getDisplayNameFromDeviceContact(context, id)
 
                     if (displayName == null) {
                         return
@@ -391,33 +392,6 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         } else {
             Log.d(TAG, "no contacts with linked Talk Accounts found. No linked accounts created.")
         }
-    }
-
-    private fun getDisplayNameFromDeviceContact(id: String?): String? {
-        var displayName: String? = null
-        val whereName =
-            ContactsContract.Data.MIMETYPE +
-                " = ? AND " +
-                ContactsContract.CommonDataKinds.StructuredName.CONTACT_ID +
-                " = ?"
-        val whereNameParams = arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, id)
-        val nameCursor = context.contentResolver.query(
-            ContactsContract.Data.CONTENT_URI,
-            null,
-            whereName,
-            whereNameParams,
-            ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME
-        )
-        if (nameCursor != null) {
-            while (nameCursor.moveToNext()) {
-                displayName =
-                    nameCursor.getString(
-                        nameCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME)
-                    )
-            }
-            nameCursor.close()
-        }
-        return displayName
     }
 
     private fun getPhoneNumbersFromDeviceContact(id: String?): MutableList<String> {
