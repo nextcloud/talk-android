@@ -5,7 +5,7 @@ steps:
 - name: generic
   image: nextcloudci/android:android-44
   commands:
-    - ./gradlew assembleGeneric
+    - ./gradlew --console=plain assembleGeneric
 
 trigger:
   branch:
@@ -22,7 +22,7 @@ steps:
 - name: gplay
   image: nextcloudci/android:android-44
   commands:
-    - ./gradlew assembleGplay
+    - ./gradlew --console=plain assembleGplay
 
 trigger:
   branch:
