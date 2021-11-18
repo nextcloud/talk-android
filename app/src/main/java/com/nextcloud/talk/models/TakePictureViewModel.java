@@ -99,19 +99,19 @@ public class TakePictureViewModel extends ViewModel {
 
     public LiveData<Integer> getTorchToggleButtonImageResource() {
         return Transformations.map(isTorchEnabled(), enabled -> enabled
-            ? R.drawable.ic_baseline_flash_off_24
-            : R.drawable.ic_baseline_flash_on_24);
+            ? R.drawable.ic_baseline_flash_on_24
+            : R.drawable.ic_baseline_flash_off_24);
     }
 
     public LiveData<Integer> getLowResolutionToggleButtonImageResource() {
         return Transformations.map(isLowResolutionEnabled(), enabled -> enabled
-            ? R.drawable.ic_high_quality
-            : R.drawable.ic_low_quality);
+            ? R.drawable.ic_low_quality
+            : R.drawable.ic_high_quality);
     }
 
     public LiveData<Integer> getCropToggleButtonImageResource() {
         return Transformations.map(isCropEnabled(), enabled -> enabled
-            ? R.drawable.ic_crop_4_3
-            : R.drawable.ic_crop_16_9);
+            ? R.drawable.ic_crop_16_9
+            : R.drawable.ic_crop_4_3);
     }
 }
