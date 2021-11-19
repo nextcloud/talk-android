@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Telefón bude vibrovať, pokiaľ nebude stíšený.</string>
     <string name="nc_settings_warning">Varovanie</string>
     <string name="nc_settings_wrong_account">Iba aktuálny účet môže byť znova prihlásený</string>
+    <string name="nc_share_contact">Zdieľať kontakt</string>
+    <string name="nc_share_contact_permission">Je potrebné oprávnenie čítať kontakty</string>
     <string name="nc_share_current_location">Zdieľať súčasnú polohu</string>
     <string name="nc_share_link">Zdieľať odkaz</string>
     <string name="nc_share_link_via">Zdieľať odkaz cez</string>

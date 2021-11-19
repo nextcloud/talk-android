@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Телефонът ще вибрира, освен ако не е заглушен</string>
     <string name="nc_settings_warning">Внимание</string>
     <string name="nc_settings_wrong_account">Само текущия профил може да бъде упълномощен.</string>
+    <string name="nc_share_contact">Споделяне на контакт</string>
+    <string name="nc_share_contact_permission">Нужно е право за четене на контактите</string>
     <string name="nc_share_current_location">Споделяне на текущо местоположение</string>
     <string name="nc_share_link">Връзка за споделяне</string>
     <string name="nc_share_link_via">Сподели връзката чрез</string>

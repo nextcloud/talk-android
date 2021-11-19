@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">除非靜音，否則手機會震動</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">只有特定賬號可以被重新授權</string>
+    <string name="nc_share_contact">分享聯絡人</string>
+    <string name="nc_share_contact_permission">需要讀取聯絡人的權限</string>
     <string name="nc_share_current_location">分享目前位置</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_share_link_via">透過以下方式分享連結</string>

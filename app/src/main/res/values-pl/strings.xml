@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Telefon będzie wibrować pod warunkiem, że nie zostanie wyciszony</string>
     <string name="nc_settings_warning">Ostrzeżenie</string>
     <string name="nc_settings_wrong_account">Tylko bieżące konto można ponownie autoryzować</string>
+    <string name="nc_share_contact">Udostępnij kontakt</string>
+    <string name="nc_share_contact_permission">Wymagane uprawnienie do odczytu kontaktów</string>
     <string name="nc_share_current_location">Udostępnij obecną lokalizację</string>
     <string name="nc_share_link">Udostępnij link</string>
     <string name="nc_share_link_via">Udostępnij link przez</string>
