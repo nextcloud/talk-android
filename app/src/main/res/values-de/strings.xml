@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_warning">Warnung</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
+    <string name="nc_share_contact">Kontakt teilen</string>
+    <string name="nc_share_contact_permission">Leseberechtigung für Kontakte erforderlich</string>
     <string name="nc_share_current_location">Aktuelle Position teilen</string>
     <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_link_via">Link teilen über</string>

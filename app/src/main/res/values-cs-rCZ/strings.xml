@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_warning">Varování</string>
     <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
+    <string name="nc_share_contact">Sdílet kontakt</string>
+    <string name="nc_share_contact_permission">Je třeba oprávnění ke čtení kontaktů</string>
     <string name="nc_share_current_location">Sdílet stávající umístění</string>
     <string name="nc_share_link">Sdílet odkaz</string>
     <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>

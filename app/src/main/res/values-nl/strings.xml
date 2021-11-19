@@ -49,11 +49,11 @@
     <string name="nc_call_video">%s videogesprek</string>
     <string name="nc_call_voice">%s gesprek</string>
     <string name="nc_calling">Oproepen...</string>
-    <string name="nc_camera_permission_permanently_denied">Om videogesprekken te houden, verleen \"Camera\" permissies in de systeeminstellingen.</string>
+    <string name="nc_camera_permission_permanently_denied">Om videogesprekken te houden, verleen \"Camera\" machtiging in de systeeminstellingen.</string>
     <string name="nc_cancel">Annuleren</string>
     <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
-    <string name="nc_certificate_dialog_title">Verifieer het certificaat</string>
+    <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
     <string name="nc_change_password">Wachtwoord wijzigen</string>
@@ -140,7 +140,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
     <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\n Deze vergadering is ingepland voor %1$s.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
-    <string name="nc_location_permission_required">Locatiepermissie vereist</string>
+    <string name="nc_location_permission_required">Locatiemachtiging is vereist</string>
     <string name="nc_location_unknown">Positie onbekend</string>
     <string name="nc_locked">Vergrendeld</string>
     <string name="nc_locked_tap_to_unlock">Tikken om te ontgrendelen</string>
@@ -150,7 +150,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <string name="nc_message_read">Bericht gelezen</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
-    <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" permissies in de systeeminstellingen.</string>
+    <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" machtiging in de systeeminstellingen.</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_mute_calls">Gesprekken dempen</string>
     <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
@@ -295,6 +295,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_vibrate_desc">Telefoon zal trillen, tenzij deze is gedempt</string>
     <string name="nc_settings_warning">Waarschuwing</string>
     <string name="nc_settings_wrong_account">Alleen het huidige account kan opnieuw worden geautoriseerd</string>
+    <string name="nc_share_contact">Deel contact</string>
+    <string name="nc_share_contact_permission">Machtiging om contacten te lezen is vereist</string>
     <string name="nc_share_current_location">Deel huidige locatie</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_link_via">Deel link via</string>
@@ -326,11 +328,11 @@ Kies er eentje van een provider.</string>
     <string name="nc_wrong_link">Gesprekslink is niet geldig</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_yes">Ja</string>
-    <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende permissies</string>
+    <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende machtigingen</string>
     <string name="open_in_files_app">Openen in de Bestanden-app</string>
     <string name="password_protected">Wachtwoord-beveiligd</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
-    <string name="read_storage_no_permission">Bestanden delen vanuit opslag is niet mogelijk zonder autorisaties</string>
+    <string name="read_storage_no_permission">Bestanden delen vanuit opslag is niet mogelijk zonder machtiging</string>
     <string name="save">Bewaren</string>
     <string name="scope_federated_description">Alleen synchroniseren met vertrouwde servers</string>
     <string name="scope_federated_title">Gefedereerd</string>
@@ -349,7 +351,7 @@ Kies er eentje van een provider.</string>
     <string name="starred">Favoriet</string>
     <string name="take_photo">Neem een foto</string>
     <string name="take_photo_error_deleting_picture">Fout bij het nemen van een foto</string>
-    <string name="take_photo_permission">Een foto nemen is niet mogelijk zonder rechten</string>
+    <string name="take_photo_permission">Een foto nemen is niet mogelijk zonder machtiging</string>
     <string name="take_photo_retake_photo">Herneem foto</string>
     <string name="take_photo_send">Verzenden</string>
     <string name="take_photo_switch_camera">Andere camera</string>
