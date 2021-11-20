@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_warning">Oharra</string>
     <string name="nc_settings_wrong_account">Oraingo kontua baino ezin da berrbaimendu</string>
+    <string name="nc_share_contact">Partekatu kontaktua</string>
+    <string name="nc_share_contact_permission">Kontaktuak irakurtzeko baimena behar da</string>
     <string name="nc_share_current_location">Partekatu uneko kokapena</string>
     <string name="nc_share_link">Partekatu esteka</string>
     <string name="nc_share_link_via">Partekatu esteka...</string>
