@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Bu seçenek etkinleştirildiğinde, telefon sessize alınmamış ise bildirimler için titrer</string>
     <string name="nc_settings_warning">Uyarı</string>
     <string name="nc_settings_wrong_account">Yalnız geçerli hesaba yeniden izin verilebilir</string>
+    <string name="nc_share_contact">Kişiyi paylaş</string>
+    <string name="nc_share_contact_permission">Kişileri okuma izni gerekiyor</string>
     <string name="nc_share_current_location">Geçerli konumu paylaş</string>
     <string name="nc_share_link">Paylaşım bağlantısı</string>
     <string name="nc_share_link_via">Bağlantıyı şununla paylaş</string>
