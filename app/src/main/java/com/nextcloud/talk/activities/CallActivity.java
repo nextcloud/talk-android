@@ -1084,6 +1084,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void fetchSignalingSettings() {
+        Log.d(TAG, "fetchSignalingSettings");
         int apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, new int[]{ApiUtils.APIv3, 2, 1});
 
         ncApi.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
@@ -1098,9 +1099,7 @@ public class CallActivity extends CallBaseActivity {
 
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull SignalingSettingsOverall signalingSettingsOverall) {
-                    if (signalingSettingsOverall != null && signalingSettingsOverall.getOcs() != null &&
-                        signalingSettingsOverall.getOcs().getSettings() != null) {
-
+                    if (signalingSettingsOverall.getOcs() != null && signalingSettingsOverall.getOcs().getSettings() != null) {
                         externalSignalingServer = new ExternalSignalingServer();
 
                         if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
@@ -1112,6 +1111,7 @@ public class CallActivity extends CallBaseActivity {
                         } else {
                             hasExternalSignalingServer = false;
                         }
+                        Log.d(TAG, "   hasExternalSignalingServer: " + hasExternalSignalingServer);
 
                         if (!conversationUser.getUserId().equals("?")) {
                             try {
@@ -1137,6 +1137,7 @@ public class CallActivity extends CallBaseActivity {
                                 for (IceServer stunServer : stunServers) {
                                     if (stunServer.getUrls() != null) {
                                         for (String url : stunServer.getUrls()) {
+                                            Log.d(TAG, "   STUN server url: " + url);
                                             iceServers.add(new PeerConnection.IceServer(url));
                                         }
                                     }
@@ -1144,6 +1145,7 @@ public class CallActivity extends CallBaseActivity {
                             } else {
                                 if (signalingSettingsOverall.getOcs().getSettings().getStunServers() != null) {
                                     for (IceServer stunServer : stunServers) {
+                                        Log.d(TAG, "   STUN server url: " + stunServer.getUrl());
                                         iceServers.add(new PeerConnection.IceServer(stunServer.getUrl()));
                                     }
                                 }
@@ -1156,6 +1158,7 @@ public class CallActivity extends CallBaseActivity {
                             for (IceServer turnServer : turnServers) {
                                 if (turnServer.getUrls() != null) {
                                     for (String url : turnServer.getUrls()) {
+                                        Log.d(TAG, "   TURN server url: " + url);
                                         iceServers.add(new PeerConnection.IceServer(
                                             url, turnServer.getUsername(), turnServer.getCredential()
                                         ));
@@ -1616,9 +1619,10 @@ public class CallActivity extends CallBaseActivity {
 
     private void processUsersInRoom(List<HashMap<String, Object>> users) {
         List<String> newSessions = new ArrayList<>();
-        Set<String> oldSesssions = new HashSet<>();
+        Set<String> oldSessions = new HashSet<>();
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
+
 
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
         String currentSessiondId = callSession;
@@ -1639,22 +1643,22 @@ public class CallActivity extends CallBaseActivity {
                 if (isNewSession) {
                     newSessions.add(participant.get("sessionId").toString());
                 } else {
-                    oldSesssions.add(participant.get("sessionId").toString());
+                    oldSessions.add(participant.get("sessionId").toString());
                 }
             }
         }
 
         for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
             if (!magicPeerConnectionWrapper.isMCUPublisher()) {
-                oldSesssions.add(magicPeerConnectionWrapper.getSessionId());
+                oldSessions.add(magicPeerConnectionWrapper.getSessionId());
             }
         }
 
         // Calculate sessions that left the call
-        oldSesssions.removeAll(newSessions);
+        oldSessions.removeAll(newSessions);
 
         // Calculate sessions that join the call
-        newSessions.removeAll(oldSesssions);
+        newSessions.removeAll(oldSessions);
 
         if (!isConnectionEstablished() && !currentCallStatus.equals(CallStatus.CONNECTING)) {
             return;
@@ -1677,7 +1681,7 @@ public class CallActivity extends CallBaseActivity {
             setCallState(CallStatus.IN_CONVERSATION);
         }
 
-        for (String sessionId : oldSesssions) {
+        for (String sessionId : oldSessions) {
             endPeerConnection(sessionId, false);
         }
     }

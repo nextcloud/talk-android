@@ -20,6 +20,9 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.annotation.SuppressLint;
+import android.util.Log;
+
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
@@ -47,6 +50,7 @@ import okhttp3.OkHttpClient;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class WebSocketConnectionHelper {
+    public static final String TAG = "WebSocketConnectionHelper";
     private static Map<Long, MagicWebSocketInstance> magicWebSocketInstanceMap = new HashMap<>();
 
     @Inject
@@ -57,11 +61,12 @@ public class WebSocketConnectionHelper {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
 
+    @SuppressLint("LongLogTag")
     public static synchronized MagicWebSocketInstance getMagicWebSocketInstanceForUserId(long userId) {
         if (userId != -1 && magicWebSocketInstanceMap.containsKey(userId)) {
             return magicWebSocketInstanceMap.get(userId);
         }
-
+        Log.d(TAG, "no magicWebSocketInstance found");
         return null;
     }
 
