@@ -279,7 +279,7 @@ class ChatController(args: Bundle) :
         this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
         Log.d(TAG, "   roomToken = $roomToken")
-        if (roomToken.isNullOrEmpty()){
+        if (roomToken.isNullOrEmpty()) {
             Log.d(TAG, "   roomToken was null or empty!")
         }
 
@@ -322,7 +322,10 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         currentConversation = roomOverall.ocs.data
-                        Log.d(TAG, "getRoomInfo. token: " + currentConversation?.getToken() + " sessionId: " + currentConversation?.sessionId)
+                        Log.d(
+                            TAG, "getRoomInfo. token: " + currentConversation?.getToken() +
+                                " sessionId: " + currentConversation?.sessionId
+                        )
                         loadAvatarForStatusBar()
 
                         setTitle()
@@ -1627,9 +1630,10 @@ class ChatController(args: Bundle) :
 
     private fun joinRoomWithPassword() {
 
-        if (currentConversation == null
-            || TextUtils.isEmpty(currentConversation?.sessionId)
-            || currentConversation?.sessionId == "0") {
+        if (currentConversation == null ||
+            TextUtils.isEmpty(currentConversation?.sessionId) ||
+            currentConversation?.sessionId == "0"
+        ) {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
