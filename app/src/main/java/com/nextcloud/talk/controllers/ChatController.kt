@@ -268,6 +268,8 @@ class ChatController(args: Bundle) :
     var currentlyPlayedVoiceMessage: ChatMessage? = null
 
     init {
+        Log.d(TAG, "init ChatController")
+
         setHasOptionsMenu(true)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
@@ -276,7 +278,10 @@ class ChatController(args: Bundle) :
         this.roomToken = args.getString(KEY_ROOM_TOKEN, "")
         this.sharedText = args.getString(BundleKeys.KEY_SHARED_TEXT, "")
 
-        Log.d(TAG, "roomToken = " + roomToken)
+        Log.d(TAG, "   roomToken = $roomToken")
+        if (roomToken.isNullOrEmpty()) {
+            Log.d(TAG, "   roomToken was null or empty!")
+        }
 
         if (args.containsKey(KEY_ACTIVE_CONVERSATION)) {
             this.currentConversation = Parcels.unwrap<Conversation>(args.getParcelable(KEY_ACTIVE_CONVERSATION))
@@ -298,7 +303,6 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
-        Log.d(TAG, "getRoomInfo")
         val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
@@ -318,8 +322,11 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         currentConversation = roomOverall.ocs.data
-                        Log.d(TAG, "currentConversation.toString : " + currentConversation.toString())
-                        Log.d(TAG, "currentConversation.sessionId : " + currentConversation?.sessionId)
+                        Log.d(
+                            TAG,
+                            "getRoomInfo. token: " + currentConversation?.getToken() +
+                                " sessionId: " + currentConversation?.sessionId
+                        )
                         loadAvatarForStatusBar()
 
                         setTitle()
@@ -431,7 +438,6 @@ class ChatController(args: Bundle) :
 
     override fun onViewBound(view: View) {
         actionBar?.show()
-        Log.d(TAG, "onViewBound")
         var adapterWasNull = false
 
         if (adapter == null) {
@@ -1487,6 +1493,7 @@ class ChatController(args: Bundle) :
 
     override fun onAttach(view: View) {
         super.onAttach(view)
+        Log.d(TAG, "onAttach")
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" &&
@@ -1537,6 +1544,7 @@ class ChatController(args: Bundle) :
             if (wasDetached) {
                 currentConversation?.sessionId = "0"
                 wasDetached = false
+                Log.d(TAG, "execute joinRoomWithPassword in onAttach")
                 joinRoomWithPassword()
             }
         }
@@ -1561,6 +1569,7 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
+        Log.d(TAG, "onDetach")
         eventBus?.unregister(this)
 
         if (activity != null) {
@@ -1622,7 +1631,8 @@ class ChatController(args: Bundle) :
 
     private fun joinRoomWithPassword() {
 
-        if (currentConversation == null || TextUtils.isEmpty(currentConversation?.sessionId) ||
+        if (currentConversation == null ||
+            TextUtils.isEmpty(currentConversation?.sessionId) ||
             currentConversation?.sessionId == "0"
         ) {
             var apiVersion = 1
@@ -1704,6 +1714,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun leaveRoom() {
+        Log.d(TAG, "leaveRoom")
         var apiVersion = 1
         // FIXME Fix API checking with guests?
         if (conversationUser != null) {
@@ -1737,6 +1748,8 @@ class ChatController(args: Bundle) :
                             "",
                             currentConversation?.sessionId
                         )
+                    } else {
+                        Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
                     }
 
                     if (!isDestroyed && !isBeingDestroyed && !wasDetached) {
@@ -1848,6 +1861,7 @@ class ChatController(args: Bundle) :
                 magicWebSocketInstance =
                     WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id)
             } else {
+                Log.d(TAG, "magicWebSocketInstance became null")
                 magicWebSocketInstance = null
             }
         }
