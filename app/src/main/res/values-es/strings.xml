@@ -12,8 +12,12 @@
     <string name="file_list_loading">Cargando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
+    <string name="menu_item_sort_by_date_newest_first">Nuevas primero</string>
+    <string name="menu_item_sort_by_date_oldest_first">Antiguas primero</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Grandes primero</string>
+    <string name="menu_item_sort_by_size_smallest_first">Pequeñas primero</string>
     <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_about">Acerca de</string>
     <string name="nc_account_chooser_active_user">Activar usuario</string>
@@ -34,6 +38,7 @@
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
     <string name="nc_call_name_is_same">El nombre que has introducido es el mismo que el existente</string>
+    <string name="nc_call_notifications">Notificaciones de llamadas</string>
     <string name="nc_call_reconnecting">Reconectando...</string>
     <string name="nc_call_ringing">LLAMANDO</string>
     <string name="nc_call_state_in_call">%1$s en una llamada</string>
@@ -54,7 +59,9 @@
     <string name="nc_change_password">Cambiar contraseña</string>
     <string name="nc_circle">Círculo</string>
     <string name="nc_circles">Círculos</string>
+    <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Se han eliminado todos los mensajes</string>
+    <string name="nc_clear_history_warning">¿Seguro que quieres borrar todos los mensajes en esta conversación?</string>
     <string name="nc_clear_password">Limpiar contraseña</string>
     <string name="nc_client_cert_change">Cambiar certificado de cliente</string>
     <string name="nc_client_cert_setup">Configurar certificado de cliente</string>
@@ -103,6 +110,8 @@
     <string name="nc_file_browser_reshare_forbidden">Usted no está autorizado para volver a compartir este archivo</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
+    <string name="nc_forward_message">Reenviar</string>
+    <string name="nc_forward_to_three_dots">Reenviar a ...</string>
     <string name="nc_get_from_provider">¿No tienes todavía un servidor?\nClic aquí para conseguir uno de un proveedor</string>
     <string name="nc_get_source_code">Conseguir el código fuente</string>
     <string name="nc_group">Grupo</string>
@@ -124,6 +133,8 @@
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Se ha alcanzado el límite de %s caracteres</string>
     <string name="nc_lobby">Sala de espera</string>
+    <string name="nc_lobby_start_date">La reunión está programada para las %1$s</string>
+    <string name="nc_lobby_start_soon">La reunión empezará en breves</string>
     <string name="nc_lobby_waiting">Ahora estás esperando en la sala de espera.</string>
     <string name="nc_lobby_waiting_with_date">Estás esperando en la sala de espera.\n Esta reunión está planificada para %1$s.</string>
     <string name="nc_location_current_position_description">Su ubicación actual</string>
@@ -143,6 +154,7 @@
     <string name="nc_mute_calls_desc">Las llamadas entrantes serán silenciadas</string>
     <string name="nc_never">Nunca unido</string>
     <string name="nc_new_conversation">Nueva conversación</string>
+    <string name="nc_new_mention">Menciones sin leer</string>
     <string name="nc_new_messages">Mensajes no leídos</string>
     <string name="nc_new_password">Nueva contraseña</string>
     <string name="nc_nextcloud_talk_app_not_installed">La app %1$s no está instalada en el servidor. Abortando</string>
@@ -171,6 +183,8 @@
     <string name="nc_permissions_settings">Abrir configuración</string>
     <string name="nc_phone_book_integration_account_not_found">Cuenta no encontrada</string>
     <string name="nc_phone_book_integration_chat_via">Chat a través de %s</string>
+    <string name="nc_pip_microphone_mute">Silenciar micrófono</string>
+    <string name="nc_pip_microphone_unmute">Activar micrófono</string>
     <string name="nc_plain_old_messages">Mensajes</string>
     <string name="nc_privacy">Privacidad</string>
     <string name="nc_proceed">Proceder</string>
@@ -280,6 +294,7 @@
     <string name="nc_settings_vibrate_desc">Tu teléfono vibrará a menos que esté silenciado</string>
     <string name="nc_settings_warning">Alerta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
+    <string name="nc_share_contact">Compartir contacto</string>
     <string name="nc_share_current_location">Compartir ubicación actual</string>
     <string name="nc_share_link">Compartir enlace</string>
     <string name="nc_share_link_via">Compartir enlace vía</string>
