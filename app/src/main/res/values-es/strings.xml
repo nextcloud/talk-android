@@ -295,6 +295,7 @@
     <string name="nc_settings_warning">Alerta</string>
     <string name="nc_settings_wrong_account">Solo la cuenta actual puede ser reautorizada</string>
     <string name="nc_share_contact">Compartir contacto</string>
+    <string name="nc_share_contact_permission">El permiso para leer los contactos es necesario</string>
     <string name="nc_share_current_location">Compartir ubicación actual</string>
     <string name="nc_share_link">Compartir enlace</string>
     <string name="nc_share_link_via">Compartir enlace vía</string>
@@ -348,7 +349,14 @@
     <string name="share">Compartir</string>
     <string name="starred">Favorito</string>
     <string name="take_photo">Hacer una foto</string>
+    <string name="take_photo_error_deleting_picture">Error al hacer la foto</string>
+    <string name="take_photo_permission">No se puede hacer una foto sin permisos</string>
+    <string name="take_photo_retake_photo">Repetir foto</string>
     <string name="take_photo_send">Enviar</string>
+    <string name="take_photo_switch_camera">Cambiar de cámara</string>
+    <string name="take_photo_toggle_crop">Recortar foto</string>
+    <string name="take_photo_toggle_lowres">Reducir el tamaño de la imagen</string>
+    <string name="take_photo_toggle_torch">Alternar linterna</string>
     <string name="upload_new_avatar_from_device">Subir avatar desde dispositivo</string>
     <string name="user_info_address">Dirección</string>
     <string name="user_info_displayname">Nombre completo</string>
