@@ -167,7 +167,7 @@
     <string name="nc_none">Brak</string>
     <string name="nc_not_defined_error">Nieznany błąd</string>
     <string name="nc_notification_channel">%1$s na %2$s kanale powiadomień</string>
-    <string name="nc_notification_channel_calls">Kanał powiadomienia o rozmowach</string>
+    <string name="nc_notification_channel_calls">Kanał powiadomienia o połączeniach</string>
     <string name="nc_notification_channel_calls_description">Wyświetla połączenia przychodzące</string>
     <string name="nc_notification_channel_messages">Kanał powiadomienia o wiadomościach</string>
     <string name="nc_notification_settings">Ustawienia powiadomień</string>
