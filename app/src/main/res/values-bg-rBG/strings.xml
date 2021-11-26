@@ -136,7 +136,7 @@
     <string name="nc_lobby_start_date">Тази среща е насрочена за %1$s</string>
     <string name="nc_lobby_start_soon">Срещата ще започне скоро</string>
     <string name="nc_lobby_waiting">В момента изчаквате в лобито.</string>
-    <string name="nc_lobby_waiting_with_date">В момента чакате във фоайето. \ N Срещата е насрочена за %1$s.</string>
+    <string name="nc_lobby_waiting_with_date">В момента чакате във лобито. \ n Срещата е насрочена за %1$s.</string>
     <string name="nc_location_current_position_description">Вашето текущо местоположение</string>
     <string name="nc_location_permission_required">Нужно е право за местоположение</string>
     <string name="nc_location_unknown">Неизвестна позиция</string>

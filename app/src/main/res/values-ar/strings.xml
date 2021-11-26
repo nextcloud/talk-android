@@ -187,6 +187,7 @@
     <string name="nc_server_connect">أفحص أتصال الخادم</string>
     <string name="nc_server_db_upgrade_needed">الرجاء ترقية %1$s قاعدة البيانات الخاصة بك </string>
     <string name="nc_server_failed_to_import_account">فشل في استيراد حساب محدد</string>
+    <string name="nc_server_helper_text">الرابط الخاص بك %1$s يكون واجهة الموقع عند فتحها في المتصفح</string>
     <string name="nc_server_import_account">استيراد الحساب من تطبيق %1$s</string>
     <string name="nc_server_import_account_plain">استيراد حساب</string>
     <string name="nc_server_import_accounts">استيراد الحسابات من تطبيق %1$s</string>

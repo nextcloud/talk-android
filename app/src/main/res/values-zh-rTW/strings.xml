@@ -12,8 +12,8 @@
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">上鎖符號</string>
-    <string name="menu_item_sort_by_date_newest_first">最新優先</string>
-    <string name="menu_item_sort_by_date_oldest_first">最舊優先</string>
+    <string name="menu_item_sort_by_date_newest_first">新的在前</string>
+    <string name="menu_item_sort_by_date_oldest_first">舊的在前</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">最大優先</string>
