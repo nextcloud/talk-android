@@ -491,6 +491,11 @@ public class NotificationWorker extends Worker {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, notification);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // On devices with Android 8.0 (Oreo) or later, notification sound will be handled by the system
+            // if notifications have not been disabled by the user.
+            return;
+        }
 
         if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
             String ringtonePreferencesString;
