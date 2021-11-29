@@ -38,6 +38,7 @@
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
+    <string name="nc_call_notifications">Obvestila klica</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave ...</string>
     <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_call_state_in_call">%1$s v klicu</string>
@@ -132,9 +133,13 @@
     <string name="nc_license_title">Dovoljenje</string>
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
     <string name="nc_lobby">Spletna čakalnica</string>
+    <string name="nc_lobby_start_date">Začetek srečanja je načrtovan ob %1$s</string>
+    <string name="nc_lobby_start_soon">Srečanje se bo kmalu začelo</string>
     <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
-    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\nsestanek je načrtovan za %1$s.</string>
+    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\nSestanek je načrtovan za %1$s.</string>
     <string name="nc_location_current_position_description">Vaše trenutno mesto</string>
+    <string name="nc_location_permission_required">zahtevano je dovoljenje objave trenutnega mesta</string>
+    <string name="nc_location_unknown">Položaj ni znan</string>
     <string name="nc_locked">Zaklenjeno</string>
     <string name="nc_locked_tap_to_unlock">Pritisnite za odklep</string>
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
@@ -178,6 +183,8 @@
     <string name="nc_permissions_settings">Odpri nastavitve</string>
     <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
     <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
+    <string name="nc_pip_microphone_mute">Utišaj mikrofon</string>
+    <string name="nc_pip_microphone_unmute">Omogoči mikrofon</string>
     <string name="nc_plain_old_messages">Sporočila</string>
     <string name="nc_privacy">Zasebnost</string>
     <string name="nc_proceed">Nadaljuj</string>
@@ -189,6 +196,7 @@
     <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
     <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>
     <string name="nc_remote_audio_off">Oddaljen zvok je onemogočen</string>
+    <string name="nc_remove_circle_and_members">Odstrani krog in člane</string>
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
     <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
@@ -218,7 +226,10 @@
     <string name="nc_sent_an_audio_you">Pošljete zvočno sporočilo</string>
     <string name="nc_sent_an_image" formatted="true">%1$s pošlje sliko.</string>
     <string name="nc_sent_an_image_you">Pošljete sliko</string>
+    <string name="nc_sent_location" formatted="true">%1$s pošlje podatek trenutnega mesta.</string>
     <string name="nc_sent_location_you">Poslali ste podatke o trenutnem mestu.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s pošilja glasovno sporočilo.</string>
+    <string name="nc_sent_voice_you">Poslali te zvočno sporočilo.</string>
     <string name="nc_server_connect">Preizkusi povezavo s strežnikom</string>
     <string name="nc_server_db_upgrade_needed">Posodobite podatkovno zbirko %1$s</string>
     <string name="nc_server_failed_to_import_account">Uvoz izbranega računa je spodletel</string>
@@ -282,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
     <string name="nc_settings_warning">Opozorilo</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
+    <string name="nc_share_contact">Posreduj podatke stika</string>
+    <string name="nc_share_contact_permission">Zahtevano je dovoljenje za branje seznama stikov</string>
     <string name="nc_share_current_location">Objavi trenutno mesto</string>
     <string name="nc_share_link">Objavi povezavo</string>
     <string name="nc_share_link_via">Objavi povezavo prek</string>
@@ -289,6 +302,8 @@
     <string name="nc_share_subject"> povabilo %1$s</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nGeslo: %1$s</string>
+    <string name="nc_share_this_location">Objavi trenutno mesto</string>
+    <string name="nc_shared_location">Objavljeno trenutno mesto</string>
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_conversation">Začni pogovor</string>
     <string name="nc_start_time">Čas začetka</string>
@@ -301,7 +316,12 @@
     <string name="nc_upload_from_cloud">Souporaba %1$s</string>
     <string name="nc_upload_in_progess">Poteka pošiljanje</string>
     <string name="nc_upload_local_file">Pošlji krajevno datoteko</string>
+    <string name="nc_upload_picture_from_cam">Zajemi sliko</string>
     <string name="nc_user">Uporabnik</string>
+    <string name="nc_voice_message_filename">Posnetek %1$s (%2$s)</string>
+    <string name="nc_voice_message_hold_to_record_info">Zadržite za snemanje in sprostite za pošiljanje.</string>
+    <string name="nc_voice_message_missing_audio_permission">Zahtevano je dovoljenje za zvočno snemanje.</string>
+    <string name="nc_voice_message_slide_to_cancel">« Potegnite za preklic</string>
     <string name="nc_webinar">Spletinar</string>
     <string name="nc_wrong_link">Povezava do pogovora ni veljavna</string>
     <string name="nc_wrong_password">Napačno geslo</string>
@@ -309,6 +329,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
     <string name="password_protected">Zaščiteno z geslom</string>
+    <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="save">Shrani</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
@@ -326,6 +347,15 @@
     <string name="send_to_three_dots">Pošlji …</string>
     <string name="share">Souporaba</string>
     <string name="starred">Priljubljeno</string>
+    <string name="take_photo">Zajemi sliko</string>
+    <string name="take_photo_error_deleting_picture">Napaka zajemanja slike</string>
+    <string name="take_photo_permission">Zajemanje slik brez ustreznih dovoljenj ni mogoče</string>
+    <string name="take_photo_retake_photo">Ponovno zajemi sliko</string>
+    <string name="take_photo_send">Pošlji</string>
+    <string name="take_photo_switch_camera">Preklopi kamero</string>
+    <string name="take_photo_toggle_crop">Obreži sliko</string>
+    <string name="take_photo_toggle_lowres">Zmanjšaj velikost slike</string>
+    <string name="take_photo_toggle_torch">Preklopi bliskavico</string>
     <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
     <string name="user_info_address">Naslov</string>
     <string name="user_info_displayname">Polno ime</string>
