@@ -133,6 +133,8 @@
     <string name="nc_license_title">Licence</string>
     <string name="nc_limit_hit">La limite de %s caractères a été atteinte</string>
     <string name="nc_lobby">Salle d\'attente</string>
+    <string name="nc_lobby_start_date">La réunion est planifiée pour %1$s</string>
+    <string name="nc_lobby_start_soon">La réunion va bientôt commencer</string>
     <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
     <string name="nc_lobby_waiting_with_date">Vous attendez actuellement dans la salle d\'attente.\nLe démarrage de cette réunion est prévu à %1$s.</string>
     <string name="nc_location_current_position_description">Votre position actuelle</string>
@@ -181,6 +183,8 @@
     <string name="nc_permissions_settings">Ouvrir les paramètres</string>
     <string name="nc_phone_book_integration_account_not_found">Compte introuvable</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
+    <string name="nc_pip_microphone_mute">Désactiver le micro</string>
+    <string name="nc_pip_microphone_unmute">Activer le micro</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_privacy">Vie privée</string>
     <string name="nc_proceed">Continuer</string>
@@ -289,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Le téléphone va vibrer à moins qu\'il ne soit en mode silencieux</string>
     <string name="nc_settings_warning">Attention</string>
     <string name="nc_settings_wrong_account">Seul le compte courant peut être ré-autorisé</string>
+    <string name="nc_share_contact">Partager le contact</string>
+    <string name="nc_share_contact_permission">Permission de lire les contacts requise</string>
     <string name="nc_share_current_location">Partager la position actuelle</string>
     <string name="nc_share_link">Partager par lien public</string>
     <string name="nc_share_link_via">Partager le lien via</string>
@@ -310,6 +316,7 @@
     <string name="nc_upload_from_cloud">Partagé de %1$s</string>
     <string name="nc_upload_in_progess">Téléversement</string>
     <string name="nc_upload_local_file">Envoyer un fichier local</string>
+    <string name="nc_upload_picture_from_cam">Prendre une photo</string>
     <string name="nc_user">Utilisateur</string>
     <string name="nc_voice_message_filename">Enregistrement de conversation de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
@@ -340,6 +347,15 @@
     <string name="send_to_three_dots">Envoyer a...</string>
     <string name="share">Partage</string>
     <string name="starred">Favori</string>
+    <string name="take_photo">Prendre une photo</string>
+    <string name="take_photo_error_deleting_picture">Erreur en prenant la photo</string>
+    <string name="take_photo_permission">Prendre une photo est impossible sans permissions</string>
+    <string name="take_photo_retake_photo">Re-prendre la photo</string>
+    <string name="take_photo_send">Envoyer</string>
+    <string name="take_photo_switch_camera">Retourner la caméra</string>
+    <string name="take_photo_toggle_crop">Rogner la photo</string>
+    <string name="take_photo_toggle_lowres">Réduire la taille de l\'image</string>
+    <string name="take_photo_toggle_torch">Allumer/Eteindre la lampe</string>
     <string name="upload_new_avatar_from_device">Envoyer un nouvel avatar depuis l\'appareil</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Nom complet</string>
