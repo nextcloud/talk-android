@@ -235,15 +235,19 @@ object NotificationUtils {
         context: Context,
         appPreferences: AppPreferences?
     ): Uri? {
-        return getRingtoneUri(context,
-            appPreferences!!.callRingtoneUri, DEFAULT_CALL_RINGTONE_URI, NOTIFICATION_CHANNEL_CALLS_V4)
+        return getRingtoneUri(
+            context,
+            appPreferences!!.callRingtoneUri, DEFAULT_CALL_RINGTONE_URI, NOTIFICATION_CHANNEL_CALLS_V4
+        )
     }
 
     fun getMessageRingtoneUri(
         context: Context,
         appPreferences: AppPreferences?
     ): Uri? {
-        return getRingtoneUri(context,
-            appPreferences!!.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V3)
+        return getRingtoneUri(
+            context,
+            appPreferences!!.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V3
+        )
     }
 }
