@@ -2325,8 +2325,7 @@ public class CallActivity extends CallBaseActivity {
         stopCallingSound();
         Uri ringtoneUri;
         if (isIncomingCallFromNotification) {
-            ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() +
-                                        "/raw/librem_by_feandesign_call");
+            ringtoneUri = NotificationUtils.INSTANCE.getCallRingtoneUri(getApplicationContext(), appPreferences);
         } else {
             ringtoneUri = Uri.parse("android.resource://" + getApplicationContext().getPackageName() + "/raw" +
                                         "/tr110_1_kap8_3_freiton1");
