@@ -45,6 +45,7 @@ import com.nextcloud.talk.adapters.items.NotificationSoundItem;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.models.RingtoneSettings;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -180,13 +181,10 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
     private String getRingtoneString() {
         if (callNotificationSounds) {
-            return ("android.resource://" + context.getPackageName() +
-                    "/raw/librem_by_feandesign_call");
+            return NotificationUtils.INSTANCE.getDEFAULT_CALL_RINGTONE_URI();
         } else {
-            return ("android.resource://" + context.getPackageName() + "/raw" +
-                    "/librem_by_feandesign_message");
+            return NotificationUtils.INSTANCE.getDEFAULT_MESSAGE_RINGTONE_URI();
         }
-
     }
 
     private void fetchNotificationSounds() {

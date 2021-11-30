@@ -52,7 +52,6 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.SignatureVerification;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -342,25 +341,8 @@ public class NotificationWorker extends Worker {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
                         (AudioAttributes.CONTENT_TYPE_SONIFICATION);
                 audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
-
-                String ringtonePreferencesString;
-                Uri soundUri;
-
-                ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
-                if (TextUtils.isEmpty(ringtonePreferencesString)) {
-                    soundUri = Uri.parse("android.resource://" + context.getPackageName() +
-                            "/raw/librem_by_feandesign_message");
-                } else {
-                    try {
-                        RingtoneSettings ringtoneSettings = LoganSquare.parse
-                                (ringtonePreferencesString, RingtoneSettings.class);
-                        soundUri = ringtoneSettings.getRingtoneUri();
-                    } catch (IOException exception) {
-                        soundUri = Uri.parse("android.resource://" + context.getPackageName() +
-                                "/raw/librem_by_feandesign_message");
-                    }
-                }
-
+                Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(getApplicationContext(),
+                                                                                appPreferences);
                 NotificationUtils.INSTANCE.createNotificationChannel(context,
                         NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3(), context.getResources()
                                 .getString(R.string.nc_notification_channel_messages), context.getResources()
@@ -498,24 +480,8 @@ public class NotificationWorker extends Worker {
         }
 
         if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
-            String ringtonePreferencesString;
-            Uri soundUri;
-
-            ringtonePreferencesString = appPreferences.getMessageRingtoneUri();
-            if (TextUtils.isEmpty(ringtonePreferencesString)) {
-                soundUri = Uri.parse("android.resource://" + context.getPackageName() +
-                        "/raw/librem_by_feandesign_message");
-            } else {
-                try {
-                    RingtoneSettings ringtoneSettings = LoganSquare.parse
-                            (ringtonePreferencesString, RingtoneSettings.class);
-                    soundUri = ringtoneSettings.getRingtoneUri();
-                } catch (IOException exception) {
-                    soundUri = Uri.parse("android.resource://" + context.getPackageName() +
-                            "/raw/librem_by_feandesign_message");
-                }
-            }
-
+            Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(getApplicationContext(),
+                                                                            appPreferences);
             if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     (DoNotDisturbUtils.INSTANCE.shouldPlaySound() || importantConversation)) {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType

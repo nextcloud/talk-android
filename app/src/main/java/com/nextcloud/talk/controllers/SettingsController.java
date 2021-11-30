@@ -33,9 +33,12 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.security.KeyChain;
 import android.text.Editable;
 import android.text.InputType;
@@ -59,7 +62,6 @@ import com.bluelinelabs.conductor.Controller;
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
 import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
-import com.bluelinelabs.logansquare.LoganSquare;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputLayout;
@@ -70,7 +72,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
-import com.nextcloud.talk.models.RingtoneSettings;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -78,6 +79,7 @@ import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.LoggingUtils;
+import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.SecurityUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -95,7 +97,6 @@ import com.yarolegovich.mp.MaterialSwitchPreference;
 
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -293,21 +294,43 @@ public class SettingsController extends BaseController {
 
         versionInfo.setSummary("v" + BuildConfig.VERSION_NAME);
 
-        settingsCallSound.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), true);
-            getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-        settingsMessageSound.setOnClickListener(v -> {
-            Bundle bundle = new Bundle();
-            bundle.putBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), false);
-            getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
-                    .pushChangeHandler(new HorizontalChangeHandler())
-                    .popChangeHandler(new HorizontalChangeHandler()));
-        });
+            settingsCallSound.setOnClickListener(v -> {
+                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID);
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID,
+                                NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V4());
+                startActivity(intent);
+            });
+
+            settingsMessageSound.setOnClickListener(v -> {
+                Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
+                intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID);
+                intent.putExtra(Settings.EXTRA_CHANNEL_ID,
+                                NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3());
+                startActivity(intent);
+            });
+
+        } else {
+
+            settingsCallSound.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), true);
+                getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
+                                               .pushChangeHandler(new HorizontalChangeHandler())
+                                               .popChangeHandler(new HorizontalChangeHandler()));
+            });
+
+            settingsMessageSound.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(BundleKeys.INSTANCE.getKEY_ARE_CALL_SOUNDS(), false);
+                getRouter().pushController(RouterTransaction.with(new RingtoneSelectionController(bundle))
+                                               .pushChangeHandler(new HorizontalChangeHandler())
+                                               .popChangeHandler(new HorizontalChangeHandler()));
+            });
+
+        }
 
         if (CapabilitiesUtil.isPhoneBookIntegrationAvailable(userUtils.getCurrentUser())) {
             phoneBookIntegrationPreference.setVisibility(View.VISIBLE);
@@ -417,6 +440,18 @@ public class SettingsController extends BaseController {
         }
     }
 
+    private String getRingtoneName(Context context, Uri ringtoneUri) {
+        if (ringtoneUri == null) {
+            return getResources().getString(R.string.nc_settings_no_ringtone);
+        } else if (ringtoneUri.toString().equals(NotificationUtils.INSTANCE.getDEFAULT_CALL_RINGTONE_URI()) ||
+            ringtoneUri.toString().equals(NotificationUtils.INSTANCE.getDEFAULT_MESSAGE_RINGTONE_URI())) {
+            return getResources().getString(R.string.nc_settings_default_ringtone);
+        } else  {
+            Ringtone r = RingtoneManager.getRingtone(context, ringtoneUri);
+            return r.getTitle(context);
+        }
+    }
+
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
@@ -479,33 +514,11 @@ public class SettingsController extends BaseController {
             }
         }
 
-        String ringtoneName = "";
-        RingtoneSettings ringtoneSettings;
-        if (!TextUtils.isEmpty(appPreferences.getCallRingtoneUri())) {
-            try {
-                ringtoneSettings = LoganSquare.parse(appPreferences.getCallRingtoneUri(), RingtoneSettings.class);
-                ringtoneName = ringtoneSettings.getRingtoneName();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to parse ringtone name");
-            }
-            settingsCallSound.setSummary(ringtoneName);
-        } else {
-            settingsCallSound.setSummary(R.string.nc_settings_default_ringtone);
-        }
+        Uri callRingtoneUri = NotificationUtils.INSTANCE.getCallRingtoneUri(view.getContext(), appPreferences);
+        settingsCallSound.setSummary(getRingtoneName(view.getContext(), callRingtoneUri));
 
-        ringtoneName = "";
-
-        if (!TextUtils.isEmpty(appPreferences.getMessageRingtoneUri())) {
-            try {
-                ringtoneSettings = LoganSquare.parse(appPreferences.getMessageRingtoneUri(), RingtoneSettings.class);
-                ringtoneName = ringtoneSettings.getRingtoneName();
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to parse ringtone name");
-            }
-            settingsMessageSound.setSummary(ringtoneName);
-        } else {
-            settingsMessageSound.setSummary(R.string.nc_settings_default_ringtone);
-        }
+        Uri messageRingtoneUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(view.getContext(), appPreferences);
+        settingsMessageSound.setSummary(getRingtoneName(view.getContext(), messageRingtoneUri));
 
         if ("No proxy".equals(appPreferences.getProxyType()) || appPreferences.getProxyType() == null) {
             hideProxySettings();

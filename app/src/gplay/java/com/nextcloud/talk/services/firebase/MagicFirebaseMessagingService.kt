@@ -27,7 +27,6 @@ import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.text.TextUtils
 import android.util.Base64
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -48,7 +47,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.events.CallNotificationClick
 import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.jobs.PushRegistrationWorker
-import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
@@ -58,6 +56,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
 import com.nextcloud.talk.utils.NotificationUtils.createNotificationChannel
+import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
@@ -73,7 +72,6 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.Retrofit
-import java.io.IOException
 import java.net.CookieManager
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -206,39 +204,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                 AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
                             audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
 
-                            val ringtonePreferencesString: String? = appPreferences!!.callRingtoneUri
-                            val soundUri = if (TextUtils.isEmpty(ringtonePreferencesString)) {
-                                Uri.parse(
-                                    "android.resource://" + applicationContext.packageName +
-                                        "/raw/librem_by_feandesign_call"
-                                )
-                            } else {
-                                try {
-                                    val ringtoneSettings =
-                                        LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
-                                    ringtoneSettings.ringtoneUri
-                                } catch (exception: IOException) {
-                                    Uri.parse(
-                                        "android.resource://" +
-                                            applicationContext.packageName +
-                                            "/raw/librem_by_feandesign_call"
-                                    )
-                                }
-                            }
-
-                            val notificationChannelId = NotificationUtils.getNotificationChannelId(
-                                applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls),
-                                applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls_description),
-                                true,
-                                NotificationManagerCompat.IMPORTANCE_HIGH,
-                                soundUri!!,
-                                audioAttributesBuilder.build(),
-                                null,
-                                false
-                            )
-
+                            val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences)
+                            val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
                             createNotificationChannel(
                                 applicationContext!!,
                                 notificationChannelId,
@@ -248,7 +215,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                     .getString(R.string.nc_notification_channel_calls_description),
                                 true,
                                 NotificationManagerCompat.IMPORTANCE_HIGH,
-                                soundUri,
+                                soundUri!!,
                                 audioAttributesBuilder.build(),
                                 null,
                                 false
