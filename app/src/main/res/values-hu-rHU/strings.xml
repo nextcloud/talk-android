@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
     <string name="nc_settings_warning">Figyelmeztetés</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
+    <string name="nc_share_contact">Névjegy megosztása</string>
+    <string name="nc_share_contact_permission">A névjegyek olvasási engedélye szükséges</string>
     <string name="nc_share_current_location">Jelenlegi hely megosztása</string>
     <string name="nc_share_link">Hivatkozás megosztása</string>
     <string name="nc_share_link_via">Hivatkozás megosztása ezzel</string>
