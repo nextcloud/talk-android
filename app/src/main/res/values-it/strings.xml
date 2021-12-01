@@ -183,6 +183,8 @@
     <string name="nc_permissions_settings">Apri impostazioni</string>
     <string name="nc_phone_book_integration_account_not_found">Account non trovato</string>
     <string name="nc_phone_book_integration_chat_via">Chat tramite %s</string>
+    <string name="nc_pip_microphone_mute">Spegni microfono</string>
+    <string name="nc_pip_microphone_unmute">Accendi microfono</string>
     <string name="nc_plain_old_messages">Messaggi</string>
     <string name="nc_privacy">Riservatezza</string>
     <string name="nc_proceed">Procedi</string>
@@ -291,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">Il telefono vibrerà a meno che non sia silenziato</string>
     <string name="nc_settings_warning">Avviso</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
+    <string name="nc_share_contact">Condividi il contatto</string>
+    <string name="nc_share_contact_permission">Necessaria l\'autorizzazione per leggere i contatti</string>
     <string name="nc_share_current_location">Condividi la posizione attuale</string>
     <string name="nc_share_link">Condividi collegamento</string>
     <string name="nc_share_link_via">Condividi collegamento tramite</string>
@@ -312,6 +316,7 @@
     <string name="nc_upload_from_cloud">Condividi da %1$s</string>
     <string name="nc_upload_in_progess">Caricamento</string>
     <string name="nc_upload_local_file">Carica file locale</string>
+    <string name="nc_upload_picture_from_cam">Scatta foto</string>
     <string name="nc_user">Utente</string>
     <string name="nc_voice_message_filename">Registrazione Talk da %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Tieni premuto per registrare, rilascia per inviare.</string>
@@ -342,6 +347,15 @@
     <string name="send_to_three_dots">Invia a…</string>
     <string name="share">Condividi</string>
     <string name="starred">Preferito</string>
+    <string name="take_photo">Scatta una foto</string>
+    <string name="take_photo_error_deleting_picture">Errore acquisizione immagine</string>
+    <string name="take_photo_permission">Non è possibile scattare una foto senza autorizzazioni</string>
+    <string name="take_photo_retake_photo">Ri-scatta foto</string>
+    <string name="take_photo_send">Invia</string>
+    <string name="take_photo_switch_camera">Cambia fotocamera</string>
+    <string name="take_photo_toggle_crop">Ritaglia foto</string>
+    <string name="take_photo_toggle_lowres">Riduci dimensione immagine</string>
+    <string name="take_photo_toggle_torch">Accendi/spegni la torcia</string>
     <string name="upload_new_avatar_from_device">Carica nuovo avatar dal dispositivo</string>
     <string name="user_info_address">Indirizzo</string>
     <string name="user_info_displayname">Nome completo</string>
