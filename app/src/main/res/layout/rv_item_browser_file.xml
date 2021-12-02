@@ -23,13 +23,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/double_margin_between_elements"
+    android:layout_marginTop="@dimen/standard_margin"
+    android:layout_marginStart="@dimen/standard_margin"
+    android:layout_marginBottom="@dimen/standard_margin"
     android:background="@color/bg_default">
 
     <CheckBox
         android:id="@+id/select_file_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:clickable="true"
@@ -93,10 +95,10 @@
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/file_icon"
-        android:layout_width="@dimen/small_item_height"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="@dimen/standard_margin"
         app:actualImageScaleType="fitCenter"
         app:placeholderImageScaleType="fitCenter" />
 
