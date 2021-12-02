@@ -323,7 +323,8 @@ class ChatController(args: Bundle) :
                     override fun onNext(roomOverall: RoomOverall) {
                         currentConversation = roomOverall.ocs.data
                         Log.d(
-                            TAG, "getRoomInfo. token: " + currentConversation?.getToken() +
+                            TAG,
+                            "getRoomInfo. token: " + currentConversation?.getToken() +
                                 " sessionId: " + currentConversation?.sessionId
                         )
                         loadAvatarForStatusBar()
