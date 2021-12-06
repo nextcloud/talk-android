@@ -30,6 +30,7 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
+import androidx.core.app.NotificationManagerCompat
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -54,7 +55,7 @@ object NotificationUtils {
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_message"
 
     @TargetApi(Build.VERSION_CODES.O)
-    fun createNotificationChannel(
+    private fun createNotificationChannel(
         context: Context,
         channelId: String,
         channelName: String,
@@ -95,8 +96,66 @@ object NotificationUtils {
         }
     }
 
+    private fun createCallsNotificationChannel(
+        context: Context,
+        appPreferences: AppPreferences
+    ) {
+        val audioAttributes =
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
+                .build()
+        val soundUri = getCallRingtoneUri(context, appPreferences)
+
+        createNotificationChannel(
+            context,
+            NOTIFICATION_CHANNEL_CALLS_V4,
+            context.resources.getString(R.string.nc_notification_channel_calls),
+            context.resources.getString(R.string.nc_notification_channel_calls_description),
+            true,
+            NotificationManagerCompat.IMPORTANCE_HIGH,
+            soundUri,
+            audioAttributes,
+            null,
+            false
+        )
+    }
+
+    private fun createMessagesNotificationChannel(
+        context: Context,
+        appPreferences: AppPreferences
+    ) {
+        val audioAttributes =
+            AudioAttributes.Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
+                .build()
+        val soundUri = getMessageRingtoneUri(context, appPreferences)
+
+        createNotificationChannel(
+            context,
+            NOTIFICATION_CHANNEL_MESSAGES_V3,
+            context.resources.getString(R.string.nc_notification_channel_messages),
+            context.resources.getString(R.string.nc_notification_channel_messages),
+            true,
+            NotificationManager.IMPORTANCE_HIGH,
+            soundUri,
+            audioAttributes,
+            null,
+            false
+        )
+    }
+
+    fun registerNotificationChannels(
+        context: Context,
+        appPreferences: AppPreferences
+    ) {
+        createCallsNotificationChannel(context, appPreferences)
+        createMessagesNotificationChannel(context, appPreferences)
+    }
+
     @TargetApi(Build.VERSION_CODES.O)
-    fun getNotificationChannel(
+    private fun getNotificationChannel(
         context: Context,
         channelId: String
     ): NotificationChannel? {
@@ -214,17 +273,22 @@ object NotificationUtils {
         ringtonePreferencesString: String?,
         defaultRingtoneUri: String,
         channelId: String
-    ): Uri? {
+    ): Uri {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = getNotificationChannel(context, channelId)
-            return channel!!.sound
-        } else if (TextUtils.isEmpty(ringtonePreferencesString)) {
+            if (channel != null) {
+                return channel.sound
+            }
+            // Notification channel will not be available when starting the application for the first time.
+            // Ringtone uris are required to register the notification channels -> get uri from preferences.
+        }
+        if (TextUtils.isEmpty(ringtonePreferencesString)) {
             return Uri.parse(defaultRingtoneUri)
         } else {
             try {
                 val ringtoneSettings =
                     LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
-                return ringtoneSettings.ringtoneUri
+                return ringtoneSettings.ringtoneUri!!
             } catch (exception: IOException) {
                 return Uri.parse(defaultRingtoneUri)
             }
@@ -233,21 +297,21 @@ object NotificationUtils {
 
     fun getCallRingtoneUri(
         context: Context,
-        appPreferences: AppPreferences?
-    ): Uri? {
+        appPreferences: AppPreferences
+    ): Uri {
         return getRingtoneUri(
             context,
-            appPreferences!!.callRingtoneUri, DEFAULT_CALL_RINGTONE_URI, NOTIFICATION_CHANNEL_CALLS_V4
+            appPreferences.callRingtoneUri, DEFAULT_CALL_RINGTONE_URI, NOTIFICATION_CHANNEL_CALLS_V4
         )
     }
 
     fun getMessageRingtoneUri(
         context: Context,
-        appPreferences: AppPreferences?
-    ): Uri? {
+        appPreferences: AppPreferences
+    ): Uri {
         return getRingtoneUri(
             context,
-            appPreferences!!.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V3
+            appPreferences.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V3
         )
     }
 }

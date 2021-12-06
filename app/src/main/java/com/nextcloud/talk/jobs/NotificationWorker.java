@@ -21,7 +21,6 @@
 package com.nextcloud.talk.jobs;
 
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -332,34 +331,9 @@ public class NotificationWorker extends Worker {
         notificationBuilder.setExtras(notificationInfo);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
-            /*NotificationUtils.createNotificationChannelGroup(context,
-                    Long.toString(crc32.getValue()),
-                    groupName);*/
-
             if (CHAT.equals(decryptedPushMessage.getType()) || ROOM.equals(decryptedPushMessage.getType())) {
-                AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType
-                        (AudioAttributes.CONTENT_TYPE_SONIFICATION);
-                audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT);
-                Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(getApplicationContext(),
-                                                                                appPreferences);
-                NotificationUtils.INSTANCE.createNotificationChannel(context,
-                        NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3(), context.getResources()
-                                .getString(R.string.nc_notification_channel_messages), context.getResources()
-                                .getString(R.string.nc_notification_channel_messages), true,
-                        NotificationManager.IMPORTANCE_HIGH, soundUri, audioAttributesBuilder.build(), null, false);
-
                 notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3());
-            } else {
-                /*NotificationUtils.INSTANCE.createNotificationChannel(context,
-                        NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3(), context.getResources()
-                                .getString(R.string.nc_notification_channel_calls), context.getResources()
-                                .getString(R.string.nc_notification_channel_calls_description), true,
-                        NotificationManager.IMPORTANCE_HIGH);
-
-                notificationBuilder.setChannelId(NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V3());*/
             }
-
         } else {
             // red color for the lights
             notificationBuilder.setLights(0xFFFF0000, 200, 200);

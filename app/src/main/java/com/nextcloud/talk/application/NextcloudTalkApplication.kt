@@ -58,6 +58,7 @@ import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.OkHttpNetworkFetcherWithCache
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageModule
 import com.nextcloud.talk.utils.database.user.UserModule
@@ -188,6 +189,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         val emojiCompat = EmojiCompat.init(config)
 
         EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
+
+        NotificationUtils.registerNotificationChannels(applicationContext, appPreferences)
     }
 
     override fun onTerminate() {
