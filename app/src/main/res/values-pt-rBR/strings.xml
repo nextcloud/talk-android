@@ -183,6 +183,8 @@
     <string name="nc_permissions_settings">Abrir as configurações</string>
     <string name="nc_phone_book_integration_account_not_found">Conta não encontrada</string>
     <string name="nc_phone_book_integration_chat_via">Bate-papo via %s</string>
+    <string name="nc_pip_microphone_mute">Microfone mudo</string>
+    <string name="nc_pip_microphone_unmute">Habilitar microfone</string>
     <string name="nc_plain_old_messages">Mensagens</string>
     <string name="nc_privacy">Privacidade</string>
     <string name="nc_proceed">Prosseguir</string>
@@ -312,6 +314,7 @@
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
     <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_upload_local_file">Enviar arquivo local</string>
+    <string name="nc_upload_picture_from_cam">Tirar fotos</string>
     <string name="nc_user">Usuário</string>
     <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
@@ -342,6 +345,15 @@
     <string name="send_to_three_dots">Enviar para …</string>
     <string name="share">Compartilhar </string>
     <string name="starred">Favorito</string>
+    <string name="take_photo">Tirar uma fotos</string>
+    <string name="take_photo_error_deleting_picture">Erro ao tirar foto</string>
+    <string name="take_photo_permission">Tirar uma foto não é possível sem permissões</string>
+    <string name="take_photo_retake_photo">Tirar a foto novamente</string>
+    <string name="take_photo_send">Enviar</string>
+    <string name="take_photo_switch_camera">Trocar câmera</string>
+    <string name="take_photo_toggle_crop">Cortar foto</string>
+    <string name="take_photo_toggle_lowres">Reduza o tamanho da imagem</string>
+    <string name="take_photo_toggle_torch">Alternar tocha</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
     <string name="user_info_address">Endereço</string>
     <string name="user_info_displayname">Nome completo</string>
