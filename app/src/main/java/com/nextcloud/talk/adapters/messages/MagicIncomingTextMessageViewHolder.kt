@@ -211,8 +211,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             } ?: run {
                 binding.messageQuote.quotedMessageImage.visibility = View.GONE
             }
-            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
+            binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty())
+                context!!.getText(R.string.nc_nick_guest) else parentChatMessage.actorDisplayName
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
