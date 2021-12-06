@@ -23,14 +23,12 @@ import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
-import android.media.AudioAttributes
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Base64
 import android.util.Log
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.emoji.text.EmojiCompat
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -55,7 +53,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationWithId
-import com.nextcloud.talk.utils.NotificationUtils.createNotificationChannel
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.PushUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -200,27 +197,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                                 PendingIntent.FLAG_UPDATE_CURRENT
                             )
 
-                            val audioAttributesBuilder =
-                                AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                            audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
-
-                            val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences)
+                            val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
                             val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
-                            createNotificationChannel(
-                                applicationContext!!,
-                                notificationChannelId,
-                                applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls),
-                                applicationContext.resources
-                                    .getString(R.string.nc_notification_channel_calls_description),
-                                true,
-                                NotificationManagerCompat.IMPORTANCE_HIGH,
-                                soundUri!!,
-                                audioAttributesBuilder.build(),
-                                null,
-                                false
-                            )
-
                             val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
                             val baseUrl = uri.host
 
