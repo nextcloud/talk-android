@@ -92,7 +92,7 @@ We are all about quality while not sacrificing speed so we use a very pragmatic 
 
 ### Branching model
 
-![branching model](/doc/branching.png "Branching Model")
+![branching model](/docs/branching.png "Branching Model")
 * All contributions (bug fix or feature PRs) target the ```master``` branch
 * Feature releases will always be based on ```master```
 * Bug fix releases will always be based on their respective feature-release-bug-fix-branches
