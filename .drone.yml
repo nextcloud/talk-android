@@ -39,14 +39,13 @@ type: docker
 name: tests
 
 steps:
-  - name: tests
+  - name: all
     image: nextcloudci/android:android-49
     privileged: true
     commands:
       - emulator-headless -avd android-27 -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
       - scripts/wait_for_emulator.sh
-      - ./gradlew --console=plain connectedGplayDebugAndroidTest
-
+      - ./gradlew --console=plain testGplayDebugUnitTest connectedGplayDebugAndroidTest
 
 #services:
 #  - name: server
