@@ -28,7 +28,8 @@ import org.junit.runner.RunWith;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -42,6 +43,7 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.nextcloud.talk", appContext.getPackageName());
+        assertNotNull(appContext.getPackageName());
+        assertTrue("The package name must start with 'com.nextcloud.talk2'", appContext.getPackageName().startsWith("com.nextcloud.talk2"));
     }
 }

@@ -36,6 +36,7 @@ import org.mockito.MockitoAnnotations;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -66,9 +67,11 @@ public class DoNotDisturbUtilsTest {
 
     @Before
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
-        mockStatic(NextcloudTalkApplication.class);
-        PowerMockito.when(NextcloudTalkApplication.getSharedApplication()).thenReturn(application);
+        MockitoAnnotations.openMocks(this);
+        mockStatic(NextcloudTalkApplication.Companion.class);
+        NextcloudTalkApplication.Companion companionMock = PowerMockito.mock(NextcloudTalkApplication.Companion.class);
+        Whitebox.setInternalState(NextcloudTalkApplication.class,"Companion",companionMock);
+        PowerMockito.when(NextcloudTalkApplication.Companion.getSharedApplication()).thenReturn(application);
         when(application.getApplicationContext()).thenReturn(context);
         when(context.getSystemService(Context.NOTIFICATION_SERVICE)).thenReturn(notificationManager);
         when(context.getSystemService(Context.AUDIO_SERVICE)).thenReturn(audioManager);

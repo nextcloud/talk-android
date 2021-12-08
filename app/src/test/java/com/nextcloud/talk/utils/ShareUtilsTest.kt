@@ -27,9 +27,10 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.database.user.UserUtils
-import junit.framework.Assert.assertEquals
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers
@@ -43,6 +44,7 @@ import java.text.ParseException
 
 @RunWith(PowerMockRunner::class)
 @PrepareForTest(TextUtils::class)
+@Ignore("Test fails on CI server. See issue https://github.com/nextcloud/talk-android/issues/1737")
 class ShareUtilsTest {
     @Mock
     private val context: Context? = null
@@ -63,7 +65,7 @@ class ShareUtilsTest {
 
     @Before
     fun setUp() {
-        MockitoAnnotations.initMocks(this)
+        MockitoAnnotations.openMocks(this)
         PowerMockito.mockStatic(TextUtils::class.java)
         Mockito.`when`(userUtils!!.currentUser).thenReturn(userEntity)
         Mockito.`when`(userEntity!!.baseUrl).thenReturn(baseUrl)
