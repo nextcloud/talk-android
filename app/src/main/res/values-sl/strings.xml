@@ -49,7 +49,7 @@
     <string name="nc_call_video">Glasovni klic %s</string>
     <string name="nc_call_voice">Glasovni klic %s</string>
     <string name="nc_calling">Poteka klicanje ...</string>
-    <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora prek videa je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
+    <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora po videu je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
     <string name="nc_cancel">Prekliči</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
     <string name="nc_certificate_dialog_text">Ali zaupate do sedaj neznanemu potrdilu SSL, izdanem s strani %1$s za %2$s, z obdobjem veljavnosti od %3$s do %4$s?</string>
@@ -103,7 +103,7 @@
     <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je dovoljena omejitev).</string>
     <string name="nc_endless_error">Med nalaganjem predmetov je prišlo do napake.</string>
     <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
-    <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom prek mobilnih telefonov. Poskusite se povezati prek spletnega brskalnika.</string>
+    <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_file_browser_back">Nazaj</string>
     <string name="nc_file_browser_refresh">Osveži</string>
@@ -122,8 +122,8 @@
     <string name="nc_important_conversation">Pomemben pogovor</string>
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
     <string name="nc_incoming_call">Dohodni klic:</string>
-    <string name="nc_join_via_link">Pridruži se prek povezave</string>
-    <string name="nc_join_via_web">Pridruži se prek spleta</string>
+    <string name="nc_join_via_link">Pridruži se po povezavi</string>
+    <string name="nc_join_via_web">Pridruži se po spletu</string>
     <string name="nc_last_moderator">Pred odhodom iz %1$s morate nekoga določiti za moderatorja.</string>
     <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
