@@ -293,6 +293,8 @@
     <string name="nc_settings_vibrate_desc">O telefone vai vibrar a menos que esteja silenciado</string>
     <string name="nc_settings_warning">Aviso</string>
     <string name="nc_settings_wrong_account">Somente a conta atual pode ser reautorizada</string>
+    <string name="nc_share_contact">Compartilhar contato</string>
+    <string name="nc_share_contact_permission">A permissão para ler os contatos é necessária</string>
     <string name="nc_share_current_location">Compartilhe a localização atual</string>
     <string name="nc_share_link">Compartilhar um link</string>
     <string name="nc_share_link_via">Compartilhar link via</string>
