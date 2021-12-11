@@ -94,10 +94,11 @@
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
-    <string name="nc_settings_notification_sounds">Sound</string>
+    <string name="nc_settings_notification_sounds">Notification sounds</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
     <string name="nc_settings_call_ringtone">Calls</string>
     <string name="nc_settings_call_ringtone_key" translatable="false">call_ringtone</string>
-    <string name="nc_settings_other_notifications_ringtone">Notifications</string>
+    <string name="nc_settings_other_notifications_ringtone">Messages</string>
     <string name="nc_settings_message_ringtone_key" translatable="false">message_ringtone</string>
     <string name="nc_settings_default_ringtone" translatable="false">Librem by feandesign</string>
     <string name="nc_settings_no_ringtone">No sound</string>
@@ -227,9 +228,10 @@
 
     <!-- Notification channels -->
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
-    <string name="nc_notification_channel_calls">Calls notification channel</string>
-    <string name="nc_notification_channel_messages">Messages notification channel</string>
-    <string name="nc_notification_channel_calls_description">Shows incoming calls</string>
+    <string name="nc_notification_channel_calls">Calls</string>
+    <string name="nc_notification_channel_messages">Messages</string>
+    <string name="nc_notification_channel_calls_description">Notify about incoming calls</string>
+    <string name="nc_notification_channel_messages_description">Notify about incoming messages</string>
     <string name="nc_notification_settings">Notification settings</string>
     <string name="nc_plain_old_messages">Messages</string>
     <string name="nc_notify_me_always">Always notify</string>

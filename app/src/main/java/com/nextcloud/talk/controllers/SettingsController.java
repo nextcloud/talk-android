@@ -156,6 +156,8 @@ public class SettingsController extends BaseController {
     TextView serverAgeTextView;
     @BindView(R.id.server_age_warning_icon)
     ImageView serverAgeIcon;
+    @BindView(R.id.settings_notifications_category)
+    MaterialPreferenceCategory notificationsCategory;
     @BindView(R.id.settings_call_sound)
     MaterialStandardPreference settingsCallSound;
     @BindView(R.id.settings_message_sound)
@@ -512,6 +514,10 @@ public class SettingsController extends BaseController {
                 screenLockSwitchPreference.setAlpha(0.38f);
                 screenLockTimeoutChoicePreference.setAlpha(0.38f);
             }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationsCategory.setTitle(getResources().getString(R.string.nc_settings_notification_sounds_post_oreo));
         }
 
         Uri callRingtoneUri = NotificationUtils.INSTANCE.getCallRingtoneUri(view.getContext(), appPreferences);
