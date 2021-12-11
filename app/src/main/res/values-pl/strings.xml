@@ -137,13 +137,13 @@
     <string name="nc_lobby_start_soon">Spotkanie rozpocznie się wkrótce</string>
     <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>
     <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie jest zaplanowane na %1$s.</string>
-    <string name="nc_location_current_position_description">Twoja obecna lokalizacja</string>
-    <string name="nc_location_permission_required">uprawnienie do lokalizacji jest wymagane</string>
+    <string name="nc_location_current_position_description">Twoja aktualna lokalizacja</string>
+    <string name="nc_location_permission_required">wymagane jest pozwolenie na lokalizację</string>
     <string name="nc_location_unknown">Pozycja nieznana</string>
     <string name="nc_locked">Zablokowany</string>
     <string name="nc_locked_tap_to_unlock">Dotknij, aby odblokować</string>
-    <string name="nc_make_call_private">Ustaw jako rozmowę prywatą</string>
-    <string name="nc_make_call_public">Ustaw jako rozmowę publiczną</string>
+    <string name="nc_make_call_private">Ustaw rozmowę jako prywatną</string>
+    <string name="nc_make_call_public">Ustaw rozmowę jako publiczną</string>
     <string name="nc_manual">Nie ustawiony</string>
     <string name="nc_message_quote_cancel_reply">Anuluj odpowiedź</string>
     <string name="nc_message_read">Wiadomość przeczytana</string>
