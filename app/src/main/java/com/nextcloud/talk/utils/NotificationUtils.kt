@@ -138,7 +138,7 @@ object NotificationUtils {
             context.resources.getString(R.string.nc_notification_channel_messages),
             context.resources.getString(R.string.nc_notification_channel_messages),
             true,
-            NotificationManager.IMPORTANCE_HIGH,
+            NotificationManagerCompat.IMPORTANCE_HIGH,
             soundUri,
             audioAttributes,
             null,
