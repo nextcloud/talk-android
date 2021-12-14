@@ -155,8 +155,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                         holder.dialogUnreadBubble.setTextColor(Color.WHITE);
                     } else {
-                        holder.dialogUnreadBubble.setChipBackgroundColor(ColorStateList.valueOf(
-                            ContextCompat.getColor(context, R.color.white)));
+                        holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.bg_default);
                         holder.dialogUnreadBubble.setTextColor(ContextCompat.getColor(
                             context,
                             R.color.colorPrimary));
