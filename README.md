@@ -56,6 +56,11 @@ Easy starting points are also reviewing [pull requests](https://github.com/nextc
 
 Please be aware that currently java8 is needed to compile this project! (needs to be fixed 
 with https://github.com/nextcloud/talk-android/issues/1125)
+In Android Studio go to "File | Settings | Build, Execution, Deployment | Build Tools | Gradle"
+and set the path to your JDK8 location. You can also download JDK8 Eclipse Temurin in the dropdown list when 
+selecting "Download JDK" and then selecting version "1.8".
+
+![java8gradleJDK](/docs/java8gradleJDK.png "Branching Model")
 
 ### Testing :test_tube:
 
