@@ -30,7 +30,6 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
-import androidx.core.app.NotificationManagerCompat
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -41,11 +40,11 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.IOException
 
 object NotificationUtils {
-    val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
     val NOTIFICATION_CHANNEL_MESSAGES = "NOTIFICATION_CHANNEL_MESSAGES"
-    val NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2"
     val NOTIFICATION_CHANNEL_MESSAGES_V2 = "NOTIFICATION_CHANNEL_MESSAGES_V2"
     val NOTIFICATION_CHANNEL_MESSAGES_V3 = "NOTIFICATION_CHANNEL_MESSAGES_V3"
+    val NOTIFICATION_CHANNEL_CALLS = "NOTIFICATION_CHANNEL_CALLS"
+    val NOTIFICATION_CHANNEL_CALLS_V2 = "NOTIFICATION_CHANNEL_CALLS_V2"
     val NOTIFICATION_CHANNEL_CALLS_V3 = "NOTIFICATION_CHANNEL_CALLS_V3"
     val NOTIFICATION_CHANNEL_CALLS_V4 = "NOTIFICATION_CHANNEL_CALLS_V4"
 
@@ -60,12 +59,8 @@ object NotificationUtils {
         channelId: String,
         channelName: String,
         channelDescription: String,
-        enableLights: Boolean,
-        importance: Int,
         sound: Uri,
-        audioAttributes: AudioAttributes,
-        vibrationPattern: LongArray?,
-        bypassDnd: Boolean = false
+        audioAttributes: AudioAttributes
     ) {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -74,23 +69,16 @@ object NotificationUtils {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
             notificationManager.getNotificationChannel(channelId) == null
         ) {
-
             val channel = NotificationChannel(
                 channelId, channelName,
-                importance
+                NotificationManager.IMPORTANCE_HIGH
             )
 
             channel.description = channelDescription
-            channel.enableLights(enableLights)
+            channel.enableLights(true)
             channel.lightColor = R.color.colorPrimary
             channel.setSound(sound, audioAttributes)
-            if (vibrationPattern != null) {
-                channel.enableVibration(true)
-                channel.vibrationPattern = vibrationPattern
-            } else {
-                channel.enableVibration(false)
-            }
-            channel.setBypassDnd(bypassDnd)
+            channel.setBypassDnd(false)
 
             notificationManager.createNotificationChannel(channel)
         }
@@ -112,12 +100,8 @@ object NotificationUtils {
             NOTIFICATION_CHANNEL_CALLS_V4,
             context.resources.getString(R.string.nc_notification_channel_calls),
             context.resources.getString(R.string.nc_notification_channel_calls_description),
-            true,
-            NotificationManagerCompat.IMPORTANCE_HIGH,
             soundUri,
-            audioAttributes,
-            null,
-            false
+            audioAttributes
         )
     }
 
@@ -137,12 +121,8 @@ object NotificationUtils {
             NOTIFICATION_CHANNEL_MESSAGES_V3,
             context.resources.getString(R.string.nc_notification_channel_messages),
             context.resources.getString(R.string.nc_notification_channel_messages_description),
-            true,
-            NotificationManagerCompat.IMPORTANCE_HIGH,
             soundUri,
-            audioAttributes,
-            null,
-            false
+            audioAttributes
         )
     }
 
