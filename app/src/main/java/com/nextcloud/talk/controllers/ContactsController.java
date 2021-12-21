@@ -80,6 +80,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -540,7 +541,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                         } else if (participant.getActorType() == Participant.ActorType.CIRCLES) {
                                             headerTitle = getResources().getString(R.string.nc_circles);
                                         } else {
-                                            headerTitle = participant.getDisplayName().substring(0, 1).toUpperCase();
+                                            headerTitle =
+                                                participant.getDisplayName().substring(0, 1).toUpperCase(Locale.getDefault());
                                         }
 
                                         GenericTextHeaderItem genericTextHeaderItem;

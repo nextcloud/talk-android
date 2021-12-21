@@ -115,7 +115,7 @@ android {
 
     android.applicationVariants.all { variant ->
         String variantName = variant.name
-        String capVariantName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1)
+        String capVariantName = variantName.substring(0, 1).toUpperCase(Locale.ROOT) + variantName.substring(1)
         tasks.register("spotbugs${capVariantName}Report", SpotBugsTask) {
             ignoreFailures = true // should continue checking
             effort = "max"
