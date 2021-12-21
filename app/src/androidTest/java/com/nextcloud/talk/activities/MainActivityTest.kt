@@ -5,7 +5,7 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.nextcloud.talk.models.database.UserEntity
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import junit.framework.Assert.assertTrue
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 
@@ -23,7 +23,7 @@ class MainActivityTest {
         sut.userUtils.createOrUpdateUser(
             "test",
             "test",
-            "http://10.0.2.2/nc",
+            "http://server/nc",
             "test",
             null,
             true,
@@ -49,7 +49,7 @@ class MainActivityTest {
 
         sut.runOnUiThread { sut.resetConversationsList() }
 
-        assertTrue(sut.userUtils.getIfUserWithUsernameAndServer("test", "http://10.0.2.2/nc"))
+        assertTrue(sut.userUtils.getIfUserWithUsernameAndServer("test", "http://server/nc"))
 
         try {
         } catch (e: InterruptedException) {

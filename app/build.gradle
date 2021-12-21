@@ -87,6 +87,10 @@ android {
                 ]
             }
         }
+
+        testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
+        testInstrumentationRunnerArgument "TEST_SERVER_USERNAME", "${NC_TEST_SERVER_USERNAME}"
+        testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
     }
 
     dexOptions {
@@ -111,7 +115,7 @@ android {
 
     android.applicationVariants.all { variant ->
         String variantName = variant.name
-        String capVariantName = variantName.substring(0, 1).toUpperCase() + variantName.substring(1)
+        String capVariantName = variantName.substring(0, 1).toUpperCase(Locale.ROOT) + variantName.substring(1)
         tasks.register("spotbugs${capVariantName}Report", SpotBugsTask) {
             ignoreFailures = true // should continue checking
             effort = "max"
@@ -297,16 +301,19 @@ dependencies {
     testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
     testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
 
+
+    androidTestImplementation "androidx.test:core:1.4.0"
+
+
     // Espresso core
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation ("androidx.test.espresso:espresso-core:$espressoVersion", {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-web:$espressoVersion"
     androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espressoVersion"
     androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
 
-    androidTestImplementation ('androidx.test.espresso:espresso-core:3.4.0', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
 

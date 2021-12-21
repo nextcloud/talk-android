@@ -92,8 +92,8 @@ public class MagicWebRTCUtils {
 
 
     public static boolean shouldEnableVideoHardwareAcceleration() {
-        return (!HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase())
-                && !HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains(Build.MODEL.toUpperCase()));
+        return (!HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase(Locale.ROOT))
+                && !HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains(Build.MODEL.toUpperCase(Locale.ROOT)));
     }
 
     public static String preferCodec(String sdpDescription, String codec, boolean isAudio) {
