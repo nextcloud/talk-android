@@ -71,5 +71,4 @@ class ImageEmojiEditText : EmojiEditText {
 
         return InputConnectionCompat.createWrapper(ic, editorInfo, callback)
     }
-
 }
