@@ -181,9 +181,9 @@ public class RingtoneSelectionController extends BaseController implements Flexi
 
     private String getRingtoneString() {
         if (callNotificationSounds) {
-            return NotificationUtils.INSTANCE.getDEFAULT_CALL_RINGTONE_URI();
+            return NotificationUtils.DEFAULT_CALL_RINGTONE_URI;
         } else {
-            return NotificationUtils.INSTANCE.getDEFAULT_MESSAGE_RINGTONE_URI();
+            return NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI;
         }
     }
 
