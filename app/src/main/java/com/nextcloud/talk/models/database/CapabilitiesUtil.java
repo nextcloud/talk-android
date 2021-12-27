@@ -75,6 +75,10 @@ public abstract class CapabilitiesUtil {
         return !hasSpreedFeatureCapability(user, "chat-replies");
     }
 
+    public static boolean canSetChatReadMarker(@Nullable UserEntity user) {
+        return hasSpreedFeatureCapability(user, "chat-read-marker");
+    }
+
     public static boolean hasSpreedFeatureCapability(@Nullable UserEntity user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             try {

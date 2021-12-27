@@ -2319,6 +2319,38 @@ class ChatController(args: Bundle) :
                         clipboardManager.setPrimaryClip(clipData)
                         true
                     }
+                    R.id.action_mark_as_unread -> {
+                        val chatMessage = message as ChatMessage?
+                        ncApi!!.setChatReadMarker(
+                            credentials,
+                            ApiUtils.getUrlForSetChatReadMarker(
+                                1,
+                                conversationUser?.baseUrl,
+                                roomToken
+                            ),
+                            chatMessage!!.jsonMessageId.minus(1)
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<GenericOverall> {
+                                override fun onSubscribe(d: Disposable) {
+                                    // unused atm
+                                }
+
+                                override fun onNext(t: GenericOverall) {
+                                    // unused atm
+                                }
+
+                                override fun onError(e: Throwable) {
+                                    Log.e(TAG, e.message, e)
+                                }
+
+                                override fun onComplete() {
+                                    // unused atm
+                                }
+                            })
+                        true
+                    }
                     R.id.action_forward_message -> {
                         val bundle = Bundle()
                         bundle.putBoolean(BundleKeys.KEY_FORWARD_MSG_FLAG, true)

@@ -9,6 +9,12 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/action_mark_as_unread"
+        android:icon="@drawable/ic_eye_off"
+        android:title="@string/nc_mark_as_unread"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/action_forward_message"
         android:icon="@drawable/ic_share_action"
         android:title="@string/nc_forward_message"

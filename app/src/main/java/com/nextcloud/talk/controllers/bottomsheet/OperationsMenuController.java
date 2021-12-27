@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -74,6 +75,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -480,6 +482,17 @@ public class OperationsMenuController extends BaseController {
                         });
 
                 break;
+            case 96:
+                // TODO: why does it break with v4?
+                ncApi.setChatReadMarker(credentials,
+                                        ApiUtils.getUrlForSetChatReadMarker(1,
+                                                                            currentUser.getBaseUrl(),
+                                                                            conversation.getToken()),
+                                        conversation.lastMessage.jsonMessageId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(1)
+                    .subscribe(genericOperationsObserver);
             case 97:
             case 98:
                 if (operationCode == 97) {

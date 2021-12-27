@@ -74,6 +74,7 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallMenuController extends BaseController implements FlexibleAdapter.OnItemClickListener {
+    public static final int ALL_MESSAGES_READ = 0;
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
 
@@ -168,6 +169,12 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                                            DisplayUtils.getTintedDrawable(getResources(),
                                                                           R.drawable.ic_star_black_24dp,
                                                                           R.color.grey_600)));
+            }
+
+            if(conversation.unreadMessages > ALL_MESSAGES_READ && CapabilitiesUtil.canSetChatReadMarker(currentUser)) {
+                menuItems.add(new MenuItem(getResources().getString(R.string.nc_mark_as_read),
+                                           96,
+                                           ContextCompat.getDrawable(context, R.drawable.ic_eye)));
             }
 
             if (conversation.isNameEditable(currentUser)) {
@@ -340,7 +347,6 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         }
 
         return null;
-
     }
 
     @Parcel
