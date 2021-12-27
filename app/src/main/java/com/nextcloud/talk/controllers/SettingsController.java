@@ -445,8 +445,8 @@ public class SettingsController extends BaseController {
     private String getRingtoneName(Context context, Uri ringtoneUri) {
         if (ringtoneUri == null) {
             return getResources().getString(R.string.nc_settings_no_ringtone);
-        } else if (ringtoneUri.toString().equals(NotificationUtils.DEFAULT_CALL_RINGTONE_URI) ||
-            ringtoneUri.toString().equals(NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI)) {
+        } else if (NotificationUtils.DEFAULT_CALL_RINGTONE_URI.equals(ringtoneUri.toString()) ||
+            NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI.equals(ringtoneUri.toString())) {
             return getResources().getString(R.string.nc_settings_default_ringtone);
         } else  {
             Ringtone r = RingtoneManager.getRingtone(context, ringtoneUri);
