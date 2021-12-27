@@ -65,7 +65,7 @@ object NotificationUtils {
         channelId: String,
         channelName: String,
         channelDescription: String,
-        sound: Uri,
+        sound: Uri?,
         audioAttributes: AudioAttributes
     ) {
 
@@ -281,7 +281,7 @@ object NotificationUtils {
         ringtonePreferencesString: String?,
         defaultRingtoneUri: String,
         channelId: String
-    ): Uri {
+    ): Uri? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = getNotificationChannel(context, channelId)
             if (channel != null) {
@@ -296,7 +296,7 @@ object NotificationUtils {
             try {
                 val ringtoneSettings =
                     LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
-                return ringtoneSettings.ringtoneUri!!
+                return ringtoneSettings.ringtoneUri
             } catch (exception: IOException) {
                 return Uri.parse(defaultRingtoneUri)
             }
@@ -306,7 +306,7 @@ object NotificationUtils {
     fun getCallRingtoneUri(
         context: Context,
         appPreferences: AppPreferences
-    ): Uri {
+    ): Uri? {
         return getRingtoneUri(
             context,
             appPreferences.callRingtoneUri, DEFAULT_CALL_RINGTONE_URI, NOTIFICATION_CHANNEL_CALLS_V4
@@ -316,7 +316,7 @@ object NotificationUtils {
     fun getMessageRingtoneUri(
         context: Context,
         appPreferences: AppPreferences
-    ): Uri {
+    ): Uri? {
         return getRingtoneUri(
             context,
             appPreferences.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V4
