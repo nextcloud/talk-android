@@ -2049,8 +2049,8 @@ class ChatController(args: Bundle) :
 
             var countGroupedMessages = 0
             if (!isFromTheFuture) {
-
-                for (i in chatMessageList.indices) {
+                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+                for (i in chatMessageList.indices.reversed()) {
                     if (chatMessageList.size > i + 1) {
                         if (TextUtils.isEmpty(chatMessageList[i].systemMessage) &&
                             TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
@@ -2069,6 +2069,12 @@ class ChatController(args: Bundle) :
                     chatMessage.isOneToOneConversation =
                         currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
                     chatMessage.activeUser = conversationUser
+
+                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                        chatMessage.previousMessageId = previousMessageId
+                    }
+
+                    previousMessageId = chatMessage.jsonMessageId
                 }
 
                 if (adapter != null) {
@@ -2092,8 +2098,15 @@ class ChatController(args: Bundle) :
                 val isThereANewNotice =
                     shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
 
-                for (i in chatMessageList.indices) {
+                var previousMessageId = -1
+                for (i in chatMessageList.indices.reversed()) {
                     chatMessage = chatMessageList[i]
+
+                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                        chatMessage.previousMessageId = previousMessageId
+                    }
+
+                    previousMessageId = chatMessage.jsonMessageId
 
                     chatMessage.activeUser = conversationUser
 
@@ -2321,34 +2334,36 @@ class ChatController(args: Bundle) :
                     }
                     R.id.action_mark_as_unread -> {
                         val chatMessage = message as ChatMessage?
-                        ncApi!!.setChatReadMarker(
-                            credentials,
-                            ApiUtils.getUrlForSetChatReadMarker(
-                                ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
-                                conversationUser?.baseUrl,
-                                roomToken
-                            ),
-                            chatMessage!!.jsonMessageId.minus(1)
-                        )
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(object : Observer<GenericOverall> {
-                                override fun onSubscribe(d: Disposable) {
-                                    // unused atm
-                                }
+                        if (chatMessage!!.previousMessageId > 0) {
+                            ncApi!!.setChatReadMarker(
+                                credentials,
+                                ApiUtils.getUrlForSetChatReadMarker(
+                                    ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
+                                    conversationUser?.baseUrl,
+                                    roomToken
+                                ),
+                                chatMessage.previousMessageId
+                            )
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(object : Observer<GenericOverall> {
+                                    override fun onSubscribe(d: Disposable) {
+                                        // unused atm
+                                    }
 
-                                override fun onNext(t: GenericOverall) {
-                                    // unused atm
-                                }
+                                    override fun onNext(t: GenericOverall) {
+                                        // unused atm
+                                    }
 
-                                override fun onError(e: Throwable) {
-                                    Log.e(TAG, e.message, e)
-                                }
+                                    override fun onError(e: Throwable) {
+                                        Log.e(TAG, e.message, e)
+                                    }
 
-                                override fun onComplete() {
-                                    // unused atm
-                                }
-                            })
+                                    override fun onComplete() {
+                                        // unused atm
+                                    }
+                                })
+                        }
                         true
                     }
                     R.id.action_forward_message -> {
@@ -2503,8 +2518,10 @@ class ChatController(args: Bundle) :
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
             menu.findItem(R.id.action_forward_message).isVisible =
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType()
+            menu.findItem(R.id.action_mark_as_unread).isVisible = message.previousMessageId > -1 &&
+                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType()
             if (menu.hasVisibleItems()) {
-                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
                 }
                 show()
@@ -2755,5 +2772,6 @@ class ChatController(args: Bundle) :
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE: Int = 1000
         private const val SECOND: Long = 1000
+        private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
     }
 }
