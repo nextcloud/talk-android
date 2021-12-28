@@ -40,11 +40,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
+import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -61,8 +64,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import autodagger.AutoInjector;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
+import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChooseAccountDialogFragment extends DialogFragment {
@@ -73,6 +79,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
     @Inject
     CookieManager cookieManager;
+
+    @Inject
+    NcApi ncApi;
 
     private DialogChooseAccountBinding binding;
     private View dialogView;
@@ -106,24 +115,27 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             binding.currentAccount.account.setText((Uri.parse(user.getBaseUrl()).getHost()));
 
             if (user.getBaseUrl() != null &&
-                    (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
+                (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
                 binding.currentAccount.userIcon.setVisibility(View.VISIBLE);
 
                 DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                        .setOldController(binding.currentAccount.userIcon.getController())
-                        .setAutoPlayAnimations(true)
-                        .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                                ApiUtils.getUrlForAvatarWithName(
-                                        user.getBaseUrl(),
-                                        user.getUserId(),
-                                        R.dimen.small_item_height),
-                                null))
-                        .build();
+                    .setOldController(binding.currentAccount.userIcon.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(
+                        ApiUtils.getUrlForAvatarWithName(
+                            user.getBaseUrl(),
+                            user.getUserId(),
+                            R.dimen.small_item_height),
+                        null))
+                    .build();
                 binding.currentAccount.userIcon.setController(draweeController);
 
             } else {
                 binding.currentAccount.userIcon.setVisibility(View.INVISIBLE);
             }
+
+
+            loadCurrentStatus(user);
         }
 
         // Creating listeners for quick-actions
@@ -138,6 +150,16 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 dismiss();
                 ((MainActivity) getActivity()).openSettings();
             });
+        }
+
+        binding.setStatus.setOnClickListener(v -> {
+            dismiss();
+            SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user);
+            setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
+        });
+
+        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
+            binding.statusView.setVisibility(View.VISIBLE);
         }
 
         if (adapter == null) {
@@ -171,6 +193,39 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         prepareViews();
     }
 
+    private void loadCurrentStatus(User user) {
+        String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
+        ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).
+            subscribeOn(Schedulers.io()).
+            observeOn(AndroidSchedulers.mainThread()).
+            subscribe(new Observer<StatusOverall>() {
+
+                private StatusOverall statusOverall;
+
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+                    Log.d("x", "onSubscribe");
+                }
+
+                @Override
+                public void onNext(@NonNull StatusOverall statusOverall) {
+                    Log.d("x", "onNext");
+                    this.statusOverall = statusOverall;
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+                    Log.e("x", "Läuft net", e);
+                }
+
+                @Override
+                public void onComplete() {
+                    Log.d("x", "complete");
+
+                }
+            });
+    }
+
     private void prepareViews() {
         if (getActivity() != null) {
             LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
@@ -196,21 +251,21 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     }
 
     private final FlexibleAdapter.OnItemClickListener onSwitchItemClickListener =
-            new FlexibleAdapter.OnItemClickListener() {
-        @Override
-        public boolean onItemClick(View view, int position) {
-            if (userItems.size() > position) {
-                UserEntity userEntity = (userItems.get(position)).getEntity();
-                userUtils.createOrUpdateUser(null,
-                                             null,
-                                             null,
-                                             null,
-                                             null,
-                                             Boolean.TRUE,
-                                             null, userEntity.getId(),
-                                             null,
-                                             null,
-                                             null)
+        new FlexibleAdapter.OnItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position) {
+                if (userItems.size() > position) {
+                    UserEntity userEntity = (userItems.get(position)).getEntity();
+                    userUtils.createOrUpdateUser(null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 Boolean.TRUE,
+                                                 null, userEntity.getId(),
+                                                 null,
+                                                 null,
+                                                 null)
                         .subscribe(new Observer<UserEntity>() {
                             @Override
                             public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -223,7 +278,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
                                 if (getActivity() != null) {
                                     getActivity().runOnUiThread(
-                                            () -> ((MainActivity) getActivity()).resetConversationsList());
+                                        () -> ((MainActivity) getActivity()).resetConversationsList());
                                 }
                                 dismiss();
                             }
@@ -238,9 +293,11 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                 // DONE
                             }
                         });
-            }
+                }
 
-            return true;
-        }
-    };
+                return true;
+            }
+        };
+
+
 }

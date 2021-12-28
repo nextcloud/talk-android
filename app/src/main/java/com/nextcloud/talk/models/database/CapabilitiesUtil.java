@@ -56,7 +56,7 @@ public abstract class CapabilitiesUtil {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities.getExternalCapability() != null &&
                         capabilities.getExternalCapability().containsKey("v1")) {
-                    return capabilities.getExternalCapability().get("v1").contains("capabilityName");
+                    return capabilities.getExternalCapability().get("v1").contains(capabilityName);
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Failed to get capabilities for the user");
@@ -167,6 +167,22 @@ public abstract class CapabilitiesUtil {
                     if (map != null && map.containsKey("read-privacy")) {
                         return Integer.parseInt(map.get("read-privacy")) == 1;
                     }
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to get capabilities for the user");
+            }
+        }
+        return false;
+    }
+
+    public static boolean isUserStatusAvailable(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
+            try {
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                if (capabilities.getUserStatusCapability() != null &&
+                    capabilities.getUserStatusCapability().isEnabled() &&
+                    capabilities.getUserStatusCapability().isSupportsEmoji()) {
+                    return true;
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Failed to get capabilities for the user");

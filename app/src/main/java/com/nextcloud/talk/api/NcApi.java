@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
@@ -443,4 +444,10 @@ public interface NcApi {
     @GET
     Observable<RoomsOverall> getOpenConversations(@Header("Authorization") String authorization, @Url String url);
 
+
+    /*
+     * OCS Status API
+     */
+    @GET
+    Observable<StatusOverall> status(@Header("Authorization") String authorization, @Url String url);
 }

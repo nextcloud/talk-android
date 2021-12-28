@@ -416,4 +416,12 @@ public class ApiUtils {
     public static String getUrlForSetChatReadMarker(int version, String baseUrl, String roomToken) {
         return getUrlForChat(version, baseUrl, roomToken) + "/read";
     }
+
+    /*
+     * OCS Status API
+     */
+
+    public static String getUrlForStatus(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/user_status";
+    }
 }

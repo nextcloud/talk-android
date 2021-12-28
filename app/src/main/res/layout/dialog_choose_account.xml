@@ -17,6 +17,7 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -31,6 +32,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:id="@+id/statusView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/current_account"
+        tools:visibility="visible">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="4dp"
+            android:background="@color/list_divider_background" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/set_status"
+            style="@style/Nextcloud.Material.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp"
+            android:text="@string/set_status"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="@color/fontAppbar"
+            app:icon="@drawable/ic_edit"
+            app:iconGravity="start"
+            app:iconPadding="22dp"
+            app:iconTint="@color/fontAppbar" />
+    </LinearLayout>
+
     <View
         android:id="@+id/separator_line"
         android:layout_width="0dp"
@@ -39,7 +76,7 @@
         android:background="@color/controller_chat_separator"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/current_account" />
+        app:layout_constraintTop_toBottomOf="@id/statusView" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/accounts_list"

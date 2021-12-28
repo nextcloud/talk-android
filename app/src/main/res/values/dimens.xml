@@ -63,4 +63,10 @@
     <dimen name="call_grid_item_min_height">180dp</dimen>
     <dimen name="call_controls_height">110dp</dimen>
     <dimen name="zero">0dp</dimen>
+
+    <dimen name="online_status_item_height">52dp</dimen>
+    <dimen name="standard_quarter_margin">4dp</dimen>
+    <dimen name="activity_list_item_title_header_text_size">16sp</dimen>
+    <dimen name="activity_row_layout_height">48dp</dimen>
+    <dimen name="standard_eighth_margin">2dp</dimen>
 </resources>

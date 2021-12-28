@@ -65,4 +65,6 @@
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#4B4B4B</color>
     <color name="nc_shimmer_darker_color">#282828</color>
+
+    <color name="list_divider_background">#222222</color>
 </resources>
