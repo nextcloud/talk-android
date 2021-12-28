@@ -2324,7 +2324,7 @@ class ChatController(args: Bundle) :
                         ncApi!!.setChatReadMarker(
                             credentials,
                             ApiUtils.getUrlForSetChatReadMarker(
-                                1,
+                                ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
                                 conversationUser?.baseUrl,
                                 roomToken
                             ),

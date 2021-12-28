@@ -280,7 +280,8 @@ public class OperationsMenuController extends BaseController {
         }
 
         credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, ApiUtils.APIv1});
+        int chatApiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {ApiUtils.APIv1});
 
         switch (operationCode) {
             case 2:
@@ -483,9 +484,8 @@ public class OperationsMenuController extends BaseController {
 
                 break;
             case 96:
-                // TODO: why does it break with v4?
                 ncApi.setChatReadMarker(credentials,
-                                        ApiUtils.getUrlForSetChatReadMarker(1,
+                                        ApiUtils.getUrlForSetChatReadMarker(chatApiVersion,
                                                                             currentUser.getBaseUrl(),
                                                                             conversation.getToken()),
                                         conversation.lastMessage.jsonMessageId)
@@ -493,6 +493,7 @@ public class OperationsMenuController extends BaseController {
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(1)
                     .subscribe(genericOperationsObserver);
+                break;
             case 97:
             case 98:
                 if (operationCode == 97) {
