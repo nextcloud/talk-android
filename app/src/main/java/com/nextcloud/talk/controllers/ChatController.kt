@@ -2051,6 +2051,22 @@ class ChatController(args: Bundle) :
             if (!isFromTheFuture) {
                 var previousMessageId = NO_PREVIOUS_MESSAGE_ID
                 for (i in chatMessageList.indices.reversed()) {
+                    val chatMessage = chatMessageList[i]
+
+                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                        chatMessage.previousMessageId = previousMessageId
+                    } else if (adapter?.isEmpty != true) {
+                        if (adapter!!.items[0].item is ChatMessage) {
+                            chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                            chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                        }
+                    }
+
+                    previousMessageId = chatMessage.jsonMessageId
+                }
+
+                for (i in chatMessageList.indices) {
                     if (chatMessageList.size > i + 1) {
                         if (TextUtils.isEmpty(chatMessageList[i].systemMessage) &&
                             TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
@@ -2069,12 +2085,6 @@ class ChatController(args: Bundle) :
                     chatMessage.isOneToOneConversation =
                         currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
                     chatMessage.activeUser = conversationUser
-
-                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                        chatMessage.previousMessageId = previousMessageId
-                    }
-
-                    previousMessageId = chatMessage.jsonMessageId
                 }
 
                 if (adapter != null) {
@@ -2098,15 +2108,25 @@ class ChatController(args: Bundle) :
                 val isThereANewNotice =
                     shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
 
-                var previousMessageId = -1
+                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
                 for (i in chatMessageList.indices.reversed()) {
-                    chatMessage = chatMessageList[i]
+                    val chatMessageItem = chatMessageList[i]
 
                     if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
-                        chatMessage.previousMessageId = previousMessageId
+                        chatMessageItem.previousMessageId = previousMessageId
+                    } else if (adapter?.isEmpty != true) {
+                        if (adapter!!.items[0].item is ChatMessage) {
+                            chatMessageItem.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                            chatMessageItem.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                        }
                     }
 
-                    previousMessageId = chatMessage.jsonMessageId
+                    previousMessageId = chatMessageItem.jsonMessageId
+                }
+
+                for (i in chatMessageList.indices) {
+                    chatMessage = chatMessageList[i]
 
                     chatMessage.activeUser = conversationUser
 
@@ -2334,7 +2354,7 @@ class ChatController(args: Bundle) :
                     }
                     R.id.action_mark_as_unread -> {
                         val chatMessage = message as ChatMessage?
-                        if (chatMessage!!.previousMessageId > 0) {
+                        if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
                             ncApi!!.setChatReadMarker(
                                 credentials,
                                 ApiUtils.getUrlForSetChatReadMarker(
