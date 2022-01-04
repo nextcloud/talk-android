@@ -148,6 +148,7 @@ import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.KeyboardUtils
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
@@ -667,6 +668,12 @@ class ChatController(args: Bundle) :
             override fun afterTextChanged(s: Editable) {
             }
         })
+
+        // Image keyboard support
+        // See: https://developer.android.com/guide/topics/text/image-keyboard
+        (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
+            uploadFiles(mutableListOf(it.toString()), false)
+        }
 
         showMicrophoneButton(true)
 
