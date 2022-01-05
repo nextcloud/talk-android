@@ -1618,10 +1618,12 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void processUsersInRoom(List<HashMap<String, Object>> users) {
+        Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
+        Log.d(TAG, "   hasMCU is " + hasMCU);
 
 
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
@@ -1630,13 +1632,18 @@ public class CallActivity extends CallBaseActivity {
             currentSessionId = webSocketClient.getSessionId();
         }
 
+        Log.d(TAG, "   currentSessionId is " + currentSessionId);
+
         for (HashMap<String, Object> participant : users) {
-            if (!participant.get("sessionId").equals(currentSessionId)) {
+            if (!participant.get("sessionId").equals(currentSessionId)) {  // own session is skipped
                 Object inCallObject = participant.get("inCall");
                 boolean isNewSession;
                 if (inCallObject instanceof Boolean) {
                     isNewSession = (boolean) inCallObject;
                 } else {
+                    Log.d(TAG,
+                          "   inCallObject of participant " + participant.get("sessionId").toString().substring(0,4) +
+                              " : " + inCallObject);
                     isNewSession = ((long) inCallObject) != 0;
                 }
 
@@ -1644,6 +1651,13 @@ public class CallActivity extends CallBaseActivity {
                     newSessions.add(participant.get("sessionId").toString());
                 } else {
                     oldSessions.add(participant.get("sessionId").toString());
+                }
+            } else {
+                Object inCallObject = participant.get("inCall");
+                Log.d(TAG, "   inCallObject of currentSessionId: " + inCallObject);
+                if(((long) inCallObject) == 0){
+                    Log.d(TAG, "     hangup!!!!!!!!!!");
+                    hangup(true);
                 }
             }
         }
@@ -1674,6 +1688,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         for (String sessionId : newSessions) {
+            Log.d(TAG, "   newSession joined: " + sessionId);
             getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
         }
 
@@ -1682,6 +1697,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         for (String sessionId : oldSessions) {
+            Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
     }
