@@ -302,7 +302,7 @@ public class SettingsController extends BaseController {
                 Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID);
                 intent.putExtra(Settings.EXTRA_CHANNEL_ID,
-                                NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_CALLS_V4());
+                                NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4);
                 startActivity(intent);
             });
 
@@ -310,7 +310,7 @@ public class SettingsController extends BaseController {
                 Intent intent = new Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS);
                 intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID);
                 intent.putExtra(Settings.EXTRA_CHANNEL_ID,
-                                NotificationUtils.INSTANCE.getNOTIFICATION_CHANNEL_MESSAGES_V3());
+                                NotificationUtils.NOTIFICATION_CHANNEL_MESSAGES_V4);
                 startActivity(intent);
             });
 
@@ -445,8 +445,8 @@ public class SettingsController extends BaseController {
     private String getRingtoneName(Context context, Uri ringtoneUri) {
         if (ringtoneUri == null) {
             return getResources().getString(R.string.nc_settings_no_ringtone);
-        } else if (ringtoneUri.toString().equals(NotificationUtils.INSTANCE.getDEFAULT_CALL_RINGTONE_URI()) ||
-            ringtoneUri.toString().equals(NotificationUtils.INSTANCE.getDEFAULT_MESSAGE_RINGTONE_URI())) {
+        } else if (NotificationUtils.DEFAULT_CALL_RINGTONE_URI.equals(ringtoneUri.toString()) ||
+            NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI.equals(ringtoneUri.toString())) {
             return getResources().getString(R.string.nc_settings_default_ringtone);
         } else  {
             Ringtone r = RingtoneManager.getRingtone(context, ringtoneUri);
