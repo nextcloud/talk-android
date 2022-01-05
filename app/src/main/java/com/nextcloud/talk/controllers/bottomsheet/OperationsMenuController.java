@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -74,6 +75,7 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -278,7 +280,8 @@ public class OperationsMenuController extends BaseController {
         }
 
         credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+        int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, ApiUtils.APIv1});
+        int chatApiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {ApiUtils.APIv1});
 
         switch (operationCode) {
             case 2:
@@ -479,6 +482,17 @@ public class OperationsMenuController extends BaseController {
                             }
                         });
 
+                break;
+            case 96:
+                ncApi.setChatReadMarker(credentials,
+                                        ApiUtils.getUrlForSetChatReadMarker(chatApiVersion,
+                                                                            currentUser.getBaseUrl(),
+                                                                            conversation.getToken()),
+                                        conversation.lastMessage.jsonMessageId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .retry(1)
+                    .subscribe(genericOperationsObserver);
                 break;
             case 97:
             case 98:

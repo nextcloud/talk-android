@@ -2049,6 +2049,22 @@ class ChatController(args: Bundle) :
 
             var countGroupedMessages = 0
             if (!isFromTheFuture) {
+                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+                for (i in chatMessageList.indices.reversed()) {
+                    val chatMessage = chatMessageList[i]
+
+                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                        chatMessage.previousMessageId = previousMessageId
+                    } else if (adapter?.isEmpty != true) {
+                        if (adapter!!.items[0].item is ChatMessage) {
+                            chatMessage.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                            chatMessage.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                        }
+                    }
+
+                    previousMessageId = chatMessage.jsonMessageId
+                }
 
                 for (i in chatMessageList.indices) {
                     if (chatMessageList.size > i + 1) {
@@ -2091,6 +2107,23 @@ class ChatController(args: Bundle) :
 
                 val isThereANewNotice =
                     shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
+
+                var previousMessageId = NO_PREVIOUS_MESSAGE_ID
+                for (i in chatMessageList.indices.reversed()) {
+                    val chatMessageItem = chatMessageList[i]
+
+                    if (previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                        chatMessageItem.previousMessageId = previousMessageId
+                    } else if (adapter?.isEmpty != true) {
+                        if (adapter!!.items[0].item is ChatMessage) {
+                            chatMessageItem.previousMessageId = (adapter!!.items[0].item as ChatMessage).jsonMessageId
+                        } else if (adapter!!.items.size > 1 && adapter!!.items[1].item is ChatMessage) {
+                            chatMessageItem.previousMessageId = (adapter!!.items[1].item as ChatMessage).jsonMessageId
+                        }
+                    }
+
+                    previousMessageId = chatMessageItem.jsonMessageId
+                }
 
                 for (i in chatMessageList.indices) {
                     chatMessage = chatMessageList[i]
@@ -2319,6 +2352,40 @@ class ChatController(args: Bundle) :
                         clipboardManager.setPrimaryClip(clipData)
                         true
                     }
+                    R.id.action_mark_as_unread -> {
+                        val chatMessage = message as ChatMessage?
+                        if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+                            ncApi!!.setChatReadMarker(
+                                credentials,
+                                ApiUtils.getUrlForSetChatReadMarker(
+                                    ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
+                                    conversationUser?.baseUrl,
+                                    roomToken
+                                ),
+                                chatMessage.previousMessageId
+                            )
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(object : Observer<GenericOverall> {
+                                    override fun onSubscribe(d: Disposable) {
+                                        // unused atm
+                                    }
+
+                                    override fun onNext(t: GenericOverall) {
+                                        // unused atm
+                                    }
+
+                                    override fun onError(e: Throwable) {
+                                        Log.e(TAG, e.message, e)
+                                    }
+
+                                    override fun onComplete() {
+                                        // unused atm
+                                    }
+                                })
+                        }
+                        true
+                    }
                     R.id.action_forward_message -> {
                         val bundle = Bundle()
                         bundle.putBoolean(BundleKeys.KEY_FORWARD_MSG_FLAG, true)
@@ -2471,8 +2538,10 @@ class ChatController(args: Bundle) :
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
             menu.findItem(R.id.action_forward_message).isVisible =
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType()
+            menu.findItem(R.id.action_mark_as_unread).isVisible = message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
+                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType()
             if (menu.hasVisibleItems()) {
-                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
                 }
                 show()
@@ -2723,5 +2792,6 @@ class ChatController(args: Bundle) :
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE: Int = 1000
         private const val SECOND: Long = 1000
+        private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
     }
 }

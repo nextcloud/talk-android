@@ -40,6 +40,8 @@ import androidx.annotation.Nullable;
 import okhttp3.Credentials;
 
 public class ApiUtils {
+    public static final int APIv1 = 1;
+    public static final int APIv2 = 2;
     public static final int APIv3 = 3;
     public static final int APIv4 = 4;
     private static final String TAG = "ApiUtils";
@@ -59,7 +61,7 @@ public class ApiUtils {
      */
     @Deprecated
     public static String getUrlForRemovingParticipantFromConversation(String baseUrl, String roomToken, boolean isGuest) {
-        String url = getUrlForParticipants(1, baseUrl, roomToken);
+        String url = getUrlForParticipants(APIv1, baseUrl, roomToken);
 
         if (isGuest) {
             url += "/guests";
@@ -121,7 +123,7 @@ public class ApiUtils {
     public static int getConversationApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
         boolean hasApiV4 = false;
         for (int version : versions) {
-            hasApiV4 |= version == 4;
+            hasApiV4 |= version == APIv4;
         }
 
         if (!hasApiV4) {
@@ -135,11 +137,11 @@ public class ApiUtils {
             }
 
             // Fallback for old API versions
-            if ((version == 1 || version == 2)) {
+            if ((version == APIv1 || version == APIv2)) {
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation-v2")) {
                     return version;
                 }
-                if (version == 1  &&
+                if (version == APIv1  &&
                         CapabilitiesUtil.hasSpreedFeatureCapability(user, "mention-flag") &&
                         !CapabilitiesUtil.hasSpreedFeatureCapability(user, "conversation-v4")) {
                     return version;
@@ -155,13 +157,13 @@ public class ApiUtils {
                 return version;
             }
 
-            if (version == 2 &&
+            if (version == APIv2 &&
                     CapabilitiesUtil.hasSpreedFeatureCapability(user, "sip-support") &&
                     !CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v3")) {
                 return version;
             }
 
-            if (version == 1 &&
+            if (version == APIv1 &&
                     !CapabilitiesUtil.hasSpreedFeatureCapability(user, "signaling-v3")) {
                 // Has no capability, we just assume it is always there when there is no v3 or later
                 return version;
@@ -172,7 +174,7 @@ public class ApiUtils {
 
     public static int getChatApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
         for (int version : versions) {
-            if (version == 1 && CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-v2")) {
+            if (version == APIv1 && CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-v2")) {
                 // Do not question that chat-v2 capability shows the availability of api/v1/ endpoint *see no evil*
                 return version;
             }
@@ -406,4 +408,8 @@ public class ApiUtils {
 
     public static String getUrlForHoverCard(String baseUrl, String userId) { return baseUrl + ocsApiVersion +
         "/hovercard/v1/" + userId; }
+
+    public static String getUrlForSetChatReadMarker(int version, String baseUrl, String roomToken) {
+        return getUrlForChat(version, baseUrl, roomToken) + "/read";
+    }
 }

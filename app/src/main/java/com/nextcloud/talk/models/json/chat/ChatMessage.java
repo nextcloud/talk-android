@@ -62,6 +62,8 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     public boolean isDeleted;
     @JsonField(name = "id")
     public int jsonMessageId;
+    @JsonIgnore
+    public int previousMessageId = -1;
     @JsonField(name = "token")
     public String token;
     // guests or users

@@ -429,4 +429,11 @@ public interface NcApi {
 
     @GET
     Observable<HoverCardOverall> hoverCard(@Header("Authorization") String authorization, @Url String url);
+
+    // Url is: /api/{apiVersion}/chat/{token}/read
+    @FormUrlEncoded
+    @POST
+    Observable<GenericOverall> setChatReadMarker(@Header("Authorization") String authorization,
+                                                 @Url String url,
+                                                 @Field("lastReadMessage") int lastReadMessage);
 }
