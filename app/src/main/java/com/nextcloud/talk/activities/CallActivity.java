@@ -1625,13 +1625,13 @@ public class CallActivity extends CallBaseActivity {
 
 
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
-        String currentSessiondId = callSession;
+        String currentSessionId = callSession;
         if (hasMCU) {
-            currentSessiondId = webSocketClient.getSessionId();
+            currentSessionId = webSocketClient.getSessionId();
         }
 
         for (HashMap<String, Object> participant : users) {
-            if (!participant.get("sessionId").equals(currentSessiondId)) {
+            if (!participant.get("sessionId").equals(currentSessionId)) {
                 Object inCallObject = participant.get("inCall");
                 boolean isNewSession;
                 if (inCallObject instanceof Boolean) {
