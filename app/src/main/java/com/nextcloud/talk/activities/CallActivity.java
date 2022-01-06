@@ -1277,11 +1277,11 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void performCall() {
-        Integer inCallFlag;
+        int inCallFlag;
         if (isVoiceOnlyCall) {
-            inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO.getValue();
+            inCallFlag = Participant.InCallFlags.WITH_AUDIO;
         } else {
-            inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
+            inCallFlag = Participant.InCallFlags.WITH_VIDEO;
         }
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
