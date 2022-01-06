@@ -1279,9 +1279,9 @@ public class CallActivity extends CallBaseActivity {
     private void performCall() {
         int inCallFlag;
         if (isVoiceOnlyCall) {
-            inCallFlag = Participant.InCallFlags.WITH_AUDIO;
+            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO;
         } else {
-            inCallFlag = Participant.InCallFlags.WITH_VIDEO;
+            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_VIDEO;
         }
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
@@ -1523,6 +1523,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void hangup(boolean shutDownView) {
+        Log.d(TAG, "hangup! shutDownView=" + shutDownView);
         stopCallingSound();
         dispose(null);
 
@@ -1538,9 +1539,7 @@ public class CallActivity extends CallBaseActivity {
                 videoCapturer = null;
             }
 
-            if (binding.selfVideoRenderer != null) {
-                binding.selfVideoRenderer.release();
-            }
+            binding.selfVideoRenderer.release();
 
             if (audioSource != null) {
                 audioSource.dispose();
@@ -1625,7 +1624,6 @@ public class CallActivity extends CallBaseActivity {
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
         Log.d(TAG, "   hasMCU is " + hasMCU);
 
-
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
         String currentSessionId = callSession;
         if (hasMCU) {
@@ -1635,17 +1633,11 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "   currentSessionId is " + currentSessionId);
 
         for (HashMap<String, Object> participant : users) {
-            if (!participant.get("sessionId").equals(currentSessionId)) {  // own session is skipped
-                Object inCallObject = participant.get("inCall");
+            long inCallFlag = (long)participant.get("inCall");
+            if (!participant.get("sessionId").equals(currentSessionId)) {
                 boolean isNewSession;
-                if (inCallObject instanceof Boolean) {
-                    isNewSession = (boolean) inCallObject;
-                } else {
-                    Log.d(TAG,
-                          "   inCallObject of participant " + participant.get("sessionId").toString().substring(0,4) +
-                              " : " + inCallObject);
-                    isNewSession = ((long) inCallObject) != 0;
-                }
+                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0,4) + " : " + inCallFlag);
+                isNewSession = inCallFlag != 0;
 
                 if (isNewSession) {
                     newSessions.add(participant.get("sessionId").toString());
@@ -1653,10 +1645,8 @@ public class CallActivity extends CallBaseActivity {
                     oldSessions.add(participant.get("sessionId").toString());
                 }
             } else {
-                Object inCallObject = participant.get("inCall");
-                Log.d(TAG, "   inCallObject of currentSessionId: " + inCallObject);
-                if(((long) inCallObject) == 0){
-                    Log.d(TAG, "     hangup!!!!!!!!!!");
+                Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
+                if (inCallFlag == 0){
                     hangup(true);
                 }
             }

@@ -311,7 +311,7 @@ public class CallNotificationActivity extends CallBaseActivity {
     }
 
     private boolean isInCallWithVideo(int callFlag) {
-        return (callFlag >= Participant.InCallFlags.WITH_VIDEO);
+        return (callFlag >= Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_VIDEO);
     }
 
     private void setUpAfterConversationIsKnown() {
