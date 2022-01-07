@@ -99,7 +99,6 @@
     <string name="nc_failed_signaling_settings">Su serbidore de destinatzione non permitit de intrare in una resonada pùblica cun telèfonos mòbiles. Podes proare a intrare tràmite navigadore in sa rete.</string>
     <string name="nc_failed_to_perform_operation">Ddoe at àpidu un\'errore!</string>
     <string name="nc_file_browser_back">In segus</string>
-    <string name="nc_file_browser_refresh">Agiorna</string>
     <string name="nc_file_browser_reshare_forbidden">Non tenes su permissu de torrare a cumpartzire custu archìviu</string>
     <string name="nc_following_link">Utente chi sighit unu ligòngiu pùblicu</string>
     <string name="nc_formatted_message_you">Tue: %1$s</string>
@@ -127,7 +126,6 @@
     <string name="nc_limit_hit">%s lìmite de caràteres lòmpidu</string>
     <string name="nc_lobby">Intrada</string>
     <string name="nc_lobby_waiting">Immoe ses abetende in s\'intrada</string>
-    <string name="nc_lobby_waiting_with_date">Immoe ses abetende in s\'intrada.\n Custa riunione est programmada pro %1$s.</string>
     <string name="nc_location_current_position_description">Sa positzione tua atuale</string>
     <string name="nc_location_permission_required">su permissu de positzione est rechertu</string>
     <string name="nc_location_unknown">Positzione disconnota</string>
@@ -141,8 +139,6 @@
     <string name="nc_message_sent">Messàgiu imbiadu</string>
     <string name="nc_microphone_permission_permanently_denied">Pro ativare comunicatzione de boghe cunsenti is permissos de \"Micròfonu\" in sa cunfiguratzione de sistema.</string>
     <string name="nc_moderator">Chie moderat</string>
-    <string name="nc_mute_calls">Pone is mutidas a sa muda</string>
-    <string name="nc_mute_calls_desc">In mutidas in intrada ant a èssere a sa muda</string>
     <string name="nc_never">Mai aderidu</string>
     <string name="nc_new_conversation">Resonada noa</string>
     <string name="nc_new_messages">Messàgios non lèghidos</string>
@@ -157,9 +153,6 @@
     <string name="nc_none">Perunu</string>
     <string name="nc_not_defined_error">Errore disconnotu</string>
     <string name="nc_notification_channel">%1$s in %2$s canale de notìfica</string>
-    <string name="nc_notification_channel_calls">Canale de notìfica de mutidas</string>
-    <string name="nc_notification_channel_calls_description">Mustra mutidas in intrada</string>
-    <string name="nc_notification_channel_messages">Canale de notìfica de messàgios</string>
     <string name="nc_notification_settings">Impostatziones de notìfica</string>
     <string name="nc_notify_me_always">Notificare semper</string>
     <string name="nc_notify_me_mention">Notificare cando mentovadu</string>
@@ -242,8 +235,6 @@
     <string name="nc_settings_incognito_keyboard_title">Tastiera in incògnita</string>
     <string name="nc_settings_no_ringtone">Perunu sonu</string>
     <string name="nc_settings_no_talk_installed"> S\'aplicatzione de mutidas no est installada in su serbidore a su chi as proadu a autenticare</string>
-    <string name="nc_settings_notification_sounds">Sonu</string>
-    <string name="nc_settings_other_notifications_ringtone">Notìficas</string>
     <string name="nc_settings_phone_book_integration_desc">Verìfica is cuntatos subra sa base de su nùmeru de telèfonu pro integrare su curtziadòrgiu de Talk in sìaplicatzione de is cuntatos de sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Podes impostare su nùmeru de telèfonu tuo aici is àteras utèntzias t\'ant a pòdere agatare</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nùmeru de telèfonu non bàlidu</string>

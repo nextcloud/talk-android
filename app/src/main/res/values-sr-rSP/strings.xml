@@ -51,7 +51,6 @@
     <string name="nc_external_server_failed">Greška prilikom dohvatanja podešavanja signaliziranja</string>
     <string name="nc_failed_to_perform_operation">Izvinjavamo se, nešto je pošlo naopako!</string>
     <string name="nc_file_browser_back">Nazad</string>
-    <string name="nc_file_browser_refresh">Osveži</string>
     <string name="nc_following_link">Korisnik koji je pratio javnu vezu</string>
     <string name="nc_formatted_message_you">Ti: %1$s</string>
     <string name="nc_get_from_provider">Imate li server?nKliknite ovde da napravite jedan kod provajdera</string>
@@ -79,7 +78,6 @@
     <string name="nc_manual">Nije postavljeno</string>
     <string name="nc_microphone_permission_permanently_denied">Da biste omogućili audio komunikaciju, dozvolite pristup mikrofonu u sistemskim postavkama.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Isključi ton poziva</string>
     <string name="nc_never">Nikad pridružen</string>
     <string name="nc_new_conversation">Novi razgovor</string>
     <string name="nc_new_messages">Nepročitane poruke</string>
@@ -94,9 +92,6 @@
     <string name="nc_none">Ništa</string>
     <string name="nc_not_defined_error">Nepoznata greška</string>
     <string name="nc_notification_channel">%1$s na kanalu za obaveštenje o %2$s</string>
-    <string name="nc_notification_channel_calls">Kanal obaveštenja o pozivima</string>
-    <string name="nc_notification_channel_calls_description">Prikaži dolazne pozive</string>
-    <string name="nc_notification_channel_messages">Kanal obaveštenja o porukama</string>
     <string name="nc_notification_settings">Postavke obaveštenja</string>
     <string name="nc_notify_me_always">Uvek obavesti</string>
     <string name="nc_notify_me_mention">Obavesti na pominjanje</string>

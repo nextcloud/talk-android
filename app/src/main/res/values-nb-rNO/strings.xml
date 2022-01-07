@@ -52,7 +52,6 @@
     <string name="nc_external_server_failed">Feilet ved henting av settinger for signalering</string>
     <string name="nc_failed_to_perform_operation">Noe gikk galt.</string>
     <string name="nc_file_browser_back">Tilbake</string>
-    <string name="nc_file_browser_refresh">Oppdater</string>
     <string name="nc_following_link">Bruker følger en offentlig lenke</string>
     <string name="nc_formatted_message_you">Du: %1$s</string>
     <string name="nc_get_from_provider">Har du ingen server enda?\nKlikk her for å opprette en hos en tilbyder</string>
@@ -80,7 +79,6 @@
     <string name="nc_manual">Ikke satt</string>
     <string name="nc_microphone_permission_permanently_denied">For å skru på stemmekommunikasjon, innvilg \"Mikrofon\"-tilgang i systeminnstillingene.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Slå av samtaler</string>
     <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_messages">Uleste meldinger</string>
@@ -95,9 +93,6 @@
     <string name="nc_none">Ingen</string>
     <string name="nc_not_defined_error">Ukjent feil</string>
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
-    <string name="nc_notification_channel_calls">Innringingsnotfikasjonskanal</string>
-    <string name="nc_notification_channel_calls_description">Viser innkommende anrop</string>
-    <string name="nc_notification_channel_messages">Meldingsnotifikasjonskanal </string>
     <string name="nc_notification_settings">Innstillinger for notifiseringer</string>
     <string name="nc_notify_me_always">Alltid varsle</string>
     <string name="nc_notify_me_mention">Varsle når nevnt</string>

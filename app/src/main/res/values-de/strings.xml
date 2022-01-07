@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
     <string name="nc_file_browser_back">Zurück</string>
-    <string name="nc_file_browser_refresh">Aktualisieren</string>
     <string name="nc_file_browser_reshare_forbidden">Sie dürfen diese Datei nicht weiterteilen</string>
     <string name="nc_following_link">Benutzer kommt von einem öffentlichen Link</string>
     <string name="nc_formatted_message_you">Sie: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Dieses Treffen ist geplant für %1$s</string>
     <string name="nc_lobby_start_soon">Das Treffen beginnt bald</string>
     <string name="nc_lobby_waiting">Sie warten aktuell in der Lobby.</string>
-    <string name="nc_lobby_waiting_with_date">Sie warten aktuell in der Lobby.\n Dieses Meeting ist für %1$s geplant.</string>
     <string name="nc_location_current_position_description">Ihre aktuelle Position</string>
     <string name="nc_location_permission_required">Standort-Berechtigung wird benötigt</string>
     <string name="nc_location_unknown">Position unbekannt</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Nachricht gesendet</string>
     <string name="nc_microphone_permission_permanently_denied">Um Audioanrufe zu ermöglichen, gewähren Sie die Berechtigung für das \"Mikrofon\" in den Systemeinstellungen</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Anrufe stummschalten</string>
-    <string name="nc_mute_calls_desc">Eingehende Anrufe werden stummgeschaltet</string>
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>
     <string name="nc_new_mention">Ungelesene Erwähnungen</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Keine</string>
     <string name="nc_not_defined_error">Unbekannter Fehler</string>
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
-    <string name="nc_notification_channel_calls">Benachrichtigungskanal für Anrufe</string>
-    <string name="nc_notification_channel_calls_description">Eingehende Anrufe anzeigen</string>
-    <string name="nc_notification_channel_messages">Benachrichtigungskanal für Nachrichten</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
     <string name="nc_notify_me_mention">Bei Erwähnung benachrichtigen</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
     <string name="nc_settings_no_talk_installed">Die Talk-App ist nicht auf dem Server installiert, auf dem Sie versucht haben sich zu authentisieren</string>
-    <string name="nc_settings_notification_sounds">Ton</string>
-    <string name="nc_settings_other_notifications_ringtone">Benachrichtigungen</string>
     <string name="nc_settings_phone_book_integration_desc">Abgleich von Kontakten basierend auf der Telefonnummer zur Integration der Talk-Verknüpfung im Telefonbuch</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Sie können Ihre Telefonnummer so einstellen, dass andere Benutzer Sie finden können.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ungültige Telefonnummer</string>

@@ -83,7 +83,6 @@
     <string name="nc_endless_error">Đã xảy ra lỗi khi tải thêm mục.</string>
     <string name="nc_failed_to_perform_operation">Thật xin lỗi, một số thứ đang bị sai sót!</string>
     <string name="nc_file_browser_back">Quay lại</string>
-    <string name="nc_file_browser_refresh">Làm mới</string>
     <string name="nc_get_from_provider">Bạn đã có một máy chủ chưa?\nBấm vào đây để tìm từ một nhà cung cấp.</string>
     <string name="nc_get_source_code">Lấy mã nguồn</string>
     <string name="nc_groups">Nhóm</string>
@@ -113,9 +112,6 @@
     <string name="nc_none">Không có</string>
     <string name="nc_not_defined_error">Lỗi chưa biết</string>
     <string name="nc_notification_channel">%1$s từ %2$s thông báo kênh</string>
-    <string name="nc_notification_channel_calls">Thông báo các kênh cuộc gọi</string>
-    <string name="nc_notification_channel_calls_description">Hiển thị cuộc gọi đến</string>
-    <string name="nc_notification_channel_messages">Kênh thông báo tin nhắn</string>
     <string name="nc_notification_settings">Cài đặt thông báo</string>
     <string name="nc_ok">OK</string>
     <string name="nc_owner">Chủ</string>
@@ -154,8 +150,6 @@
     <string name="nc_settings_appearance">Ngoại hình</string>
     <string name="nc_settings_call_ringtone">Cuộc gọi</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
-    <string name="nc_settings_notification_sounds">Âm thanh</string>
-    <string name="nc_settings_other_notifications_ringtone">Thông báo</string>
     <string name="nc_settings_privacy">Riêng tư</string>
     <string name="nc_settings_proxy_host_title">Máy chủ Proxy</string>
     <string name="nc_settings_proxy_port_title">Cổng Proxy</string>

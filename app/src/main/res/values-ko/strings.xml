@@ -51,7 +51,6 @@
     <string name="nc_external_server_failed">신호 설정을 가져오지 못함</string>
     <string name="nc_failed_to_perform_operation">죄송합니다, 무언가 잘못되었습니다!</string>
     <string name="nc_file_browser_back">뒤로</string>
-    <string name="nc_file_browser_refresh">새로 고침</string>
     <string name="nc_following_link">공개 링크를 따르는 사용자</string>
     <string name="nc_formatted_message_you">나: %1$s</string>
     <string name="nc_get_from_provider">서버가 없으신가요?\n공급자를 알아보려면 누르십시오</string>
@@ -79,7 +78,6 @@
     <string name="nc_manual">설정되지 않음</string>
     <string name="nc_microphone_permission_permanently_denied">음성 통화를 하려면 시스템 설정에서 \"마이크\" 권한을 허용하십시오.</string>
     <string name="nc_moderator">중재자</string>
-    <string name="nc_mute_calls">전화 무음</string>
     <string name="nc_never">참가하지 않음</string>
     <string name="nc_new_conversation">새 대화</string>
     <string name="nc_new_messages">읽지 않은 메세지</string>
@@ -94,9 +92,6 @@
     <string name="nc_none">없음</string>
     <string name="nc_not_defined_error">알 수 없는 오류</string>
     <string name="nc_notification_channel">%2$s 알림 채널의 %1$s</string>
-    <string name="nc_notification_channel_calls">통화 알림 채널</string>
-    <string name="nc_notification_channel_calls_description">수신 통화 표시</string>
-    <string name="nc_notification_channel_messages">메시지 알림 채널</string>
     <string name="nc_notification_settings">알림 설정</string>
     <string name="nc_notify_me_always">항상 알림</string>
     <string name="nc_notify_me_mention">언급 시 알림</string>

@@ -73,7 +73,6 @@
     <string name="nc_failed_signaling_settings">El servidor final no és compatible amb les converses públiques a través de telèfons mòbils. Podeu intentar unir-vos a la conversa mitjançant un navegador web.</string>
     <string name="nc_failed_to_perform_operation">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_file_browser_back">Enrere</string>
-    <string name="nc_file_browser_refresh">Actualitza</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_get_from_provider">Encara no teniu cap servidor?\nFeu clic aquí per obtenir-ne un d\'un proveïdor</string>
@@ -98,14 +97,12 @@
     <string name="nc_limit_hit">S\'ha arribat al límit de %s caràcters </string>
     <string name="nc_lobby">Vestíbul</string>
     <string name="nc_lobby_waiting">Esteu esperant al vestíbul.</string>
-    <string name="nc_lobby_waiting_with_date">Actualment esteu esperant al vestíbul.\n Aquesta trobada està prevista per a les %1$s.</string>
     <string name="nc_locked_tap_to_unlock">Toca per desblocar</string>
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_make_call_public">Fes que la conversa sigui pública</string>
     <string name="nc_manual">No establert</string>
     <string name="nc_microphone_permission_permanently_denied">Per activar la comunicació de veu, doneu permís al \"Micròfon\" dins de la configuració del sistema.</string>
     <string name="nc_moderator">Moderador</string>
-    <string name="nc_mute_calls">Silencia les trucades</string>
     <string name="nc_never">Mai no us hi heu unit</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_messages">Missatges sense llegir</string>
@@ -120,9 +117,6 @@
     <string name="nc_none">Cap</string>
     <string name="nc_not_defined_error">Error desconegut</string>
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
-    <string name="nc_notification_channel_calls">Canal de notificació de trucades</string>
-    <string name="nc_notification_channel_calls_description">Mostra les trucades entrants</string>
-    <string name="nc_notification_channel_messages">Canal de notificació de missatges</string>
     <string name="nc_notification_settings">Paràmetres de les notificacions</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
@@ -194,8 +188,6 @@
     <string name="nc_settings_incognito_keyboard_title">Teclat d\'incògnit</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
-    <string name="nc_settings_notification_sounds">So</string>
-    <string name="nc_settings_other_notifications_ringtone">Notificacions</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de telèfon</string>
     <string name="nc_settings_privacy">Privadesa</string>
     <string name="nc_settings_proxy_host_title">Servidor Proxy</string>

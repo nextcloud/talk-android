@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">O servidor de destino não oferece suporte para ingressar em conversas públicas por meio de telefones celulares. Você pode tentar entrar na conversa por meio do navegador da web.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, alguma coisa deu errada!</string>
     <string name="nc_file_browser_back">Voltar</string>
-    <string name="nc_file_browser_refresh">Atualizar</string>
     <string name="nc_file_browser_reshare_forbidden">Você não tem permissão para re-compartilhar este arquivo.</string>
     <string name="nc_following_link">Usuário seguindo um link público</string>
     <string name="nc_formatted_message_you">Você: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Esta reunião está agendada para %1$s</string>
     <string name="nc_lobby_start_soon">A reunião vai começar em breve</string>
     <string name="nc_lobby_waiting">Você está esperando no lobby no momento.</string>
-    <string name="nc_lobby_waiting_with_date">Você está na lista de espera.\n Esta reunião está agendada para %1$s.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
     <string name="nc_location_permission_required">permissão de localização é necessária</string>
     <string name="nc_location_unknown">Posição desconhecida </string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Mensagem enviada</string>
     <string name="nc_microphone_permission_permanently_denied">Para ativar a comunicação por voz, conceda a permissão \"Microfone\" nas configurações do sistema.</string>
     <string name="nc_moderator">Moderador</string>
-    <string name="nc_mute_calls">Silenciar chamadas</string>
-    <string name="nc_mute_calls_desc">Chamadas recebidas serão silenciadas</string>
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_mention">Menções não lidas</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Nada</string>
     <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
-    <string name="nc_notification_channel_calls">Chamadas do canal de notificação</string>
-    <string name="nc_notification_channel_calls_description">Exibir chamadas recebidas</string>
-    <string name="nc_notification_channel_messages">Mensagens do canal de notificação</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_notify_me_always">Sempre notificar</string>
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
-    <string name="nc_settings_notification_sounds">Som</string>
-    <string name="nc_settings_other_notifications_ringtone">Notificações</string>
     <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que outros usuários possam encontrar você</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>

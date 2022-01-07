@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
     <string name="nc_file_browser_back">Nazaj</string>
-    <string name="nc_file_browser_refresh">Osveži</string>
     <string name="nc_file_browser_reshare_forbidden">Nadaljnje omogočanje uporabi te datoteke ni dovoljeno</string>
     <string name="nc_following_link">Uporabnik, ki je sledil javni povezavi</string>
     <string name="nc_formatted_message_you">→ %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Začetek srečanja je načrtovan ob %1$s</string>
     <string name="nc_lobby_start_soon">Srečanje se bo kmalu začelo</string>
     <string name="nc_lobby_waiting">Trenutno še čakate v spletni čakalnici.</string>
-    <string name="nc_lobby_waiting_with_date">Trenutno še čakate v spletni čakalnici.\nSestanek je načrtovan za %1$s.</string>
     <string name="nc_location_current_position_description">Vaše trenutno mesto</string>
     <string name="nc_location_permission_required">zahtevano je dovoljenje objave trenutnega mesta</string>
     <string name="nc_location_unknown">Položaj ni znan</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Sporočilo je poslano</string>
     <string name="nc_microphone_permission_permanently_denied">Za omogočanje zvočnega pogovora je treba dodeliti ustrezna dovoljenja za dostop do »Mikrofona« med nastavitvami sistema.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Utišaj klice</string>
-    <string name="nc_mute_calls_desc">Dohodni klici bodo utišani</string>
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_new_conversation">Nov pogovor</string>
     <string name="nc_new_mention">Neprebrane omembe</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Brez</string>
     <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
-    <string name="nc_notification_channel_calls">Kanal obvestil klicev</string>
-    <string name="nc_notification_channel_calls_description">Pokaži dohodne klice</string>
-    <string name="nc_notification_channel_messages">Kanal obvestil sporočil</string>
     <string name="nc_notification_settings">Nastavitve obveščanja</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
-    <string name="nc_settings_notification_sounds">Zvok</string>
-    <string name="nc_settings_other_notifications_ringtone">Obvestila</string>
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Nastavite telefonsko številko, da vas bodo drugi uporabniki lahko našli.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>

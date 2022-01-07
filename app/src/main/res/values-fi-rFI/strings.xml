@@ -79,7 +79,6 @@
     <string name="nc_endless_error">Lisää tietueita ladattaessa tapahtui virhe.</string>
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_file_browser_back">Takaisin</string>
-    <string name="nc_file_browser_refresh">Päivitä</string>
     <string name="nc_file_browser_reshare_forbidden">Sinulla ei ole oikeutta jakaa tätä tiedostoa uudelleen</string>
     <string name="nc_formatted_message_you">Sinä: %1$s</string>
     <string name="nc_get_from_provider">Ei palvelinta?\nNapsauta tästä ja hanki palveluntarjoajalta</string>
@@ -113,8 +112,6 @@
     <string name="nc_message_read">Viesti luettu</string>
     <string name="nc_message_sent">Viesti lähetetty</string>
     <string name="nc_moderator">Moderaattori</string>
-    <string name="nc_mute_calls">Mykistä puhelut</string>
-    <string name="nc_mute_calls_desc">Saapuvat puhelut hiljennetään</string>
     <string name="nc_never">Ei koskaan liitytty</string>
     <string name="nc_new_conversation">Uusi keskustelu</string>
     <string name="nc_new_messages">Lukemattomat viestit</string>
@@ -128,9 +125,6 @@
     <string name="nc_no_proxy">Ei välityspalvelinta</string>
     <string name="nc_none">Ei mitään</string>
     <string name="nc_not_defined_error">Tuntematon virhe</string>
-    <string name="nc_notification_channel_calls">Puhelujen ilmoituskanava</string>
-    <string name="nc_notification_channel_calls_description">Näyttää saapuvat puhelut</string>
-    <string name="nc_notification_channel_messages">Viestien ilmoituskanava</string>
     <string name="nc_notification_settings">Ilmoitusasetukset</string>
     <string name="nc_notify_me_always">Ilmoita aina</string>
     <string name="nc_notify_me_mention">Ilmoita kun mainittu</string>
@@ -202,8 +196,6 @@
     <string name="nc_settings_incognito_keyboard_title">Incognito-näppäimistö</string>
     <string name="nc_settings_no_ringtone">Ei ääntä</string>
     <string name="nc_settings_no_talk_installed">Talk-sovellusta ei ole asennettu palvelimelle, johon koetit kirjautua</string>
-    <string name="nc_settings_notification_sounds">Ääni</string>
-    <string name="nc_settings_other_notifications_ringtone">Ilmoitukset</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Virheellinen puhelinnumero</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Puhelinnumero asetettu onnistuneesti</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Puhelinnumero</string>

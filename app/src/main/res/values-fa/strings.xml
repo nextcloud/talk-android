@@ -52,7 +52,6 @@
     <string name="nc_external_server_failed">" دریافت  تنظیمات سیگنال نا‌موفق بود"</string>
     <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
     <string name="nc_file_browser_back">بازگشت</string>
-    <string name="nc_file_browser_refresh">تازه‌سازی</string>
     <string name="nc_following_link"> کاربر  پس از  یک  پیوند  عمومی</string>
     <string name="nc_formatted_message_you">شما: %1$s</string>
     <string name="nc_get_from_provider">"آیا هیچ سروری در دسترس ندارید؟ برای گرفتن سرور از یک ارائه دهنده کلیک کنید "</string>
@@ -80,8 +79,6 @@
     <string name="nc_manual">تنظیم نشده</string>
     <string name="nc_microphone_permission_permanently_denied">برای فعال کردن ارتباط صوتی ، لطفاً در \"تنظیمات سیستم\" اجازه استفاه از \"میکروفون\" را قرار دهید.</string>
     <string name="nc_moderator">مدیر</string>
-    <string name="nc_mute_calls">بی‌صدا کردن تماسها</string>
-    <string name="nc_mute_calls_desc">تماسهای ورودی نادیده گرفته می شوند</string>
     <string name="nc_never">هرگز ملحق نشوید</string>
     <string name="nc_new_conversation">مکالمه جدید</string>
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
@@ -96,9 +93,6 @@
     <string name="nc_none">هیچ‌کدام</string>
     <string name="nc_not_defined_error">خطای نامشخص</string>
     <string name="nc_notification_channel">کانال اعلان %1$s روی %2$s</string>
-    <string name="nc_notification_channel_calls">کانال اعلان تماس ها</string>
-    <string name="nc_notification_channel_calls_description">تماسهای دریافتی را نشان می دهد</string>
-    <string name="nc_notification_channel_messages">کانال اعلان پیام‌ها</string>
     <string name="nc_notification_settings">تنظیمات اعلان</string>
     <string name="nc_notify_me_always">همیشه اعلان شود</string>
     <string name="nc_notify_me_mention">وقتی ذکر شد اطلاع دهید</string>

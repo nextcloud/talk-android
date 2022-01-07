@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Cieľový server nepodporuje pripájanie verejných rozhovorov cez mobil Môžete sa pokúsiť pripojiť na rozhovor cez webový prehliadač.</string>
     <string name="nc_failed_to_perform_operation">Prepáčte, niečo sa nepodarilo!</string>
     <string name="nc_file_browser_back">Späť</string>
-    <string name="nc_file_browser_refresh">Obnoviť</string>
     <string name="nc_file_browser_reshare_forbidden">Nemáte oprávnenie k ďalšiemu zdieľaniu tohoto súboru</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Tento rozhovor je naplánovaný na %1$s</string>
     <string name="nc_lobby_start_soon">Rozhovor začne čoskoro</string>
     <string name="nc_lobby_waiting">Momentálne čakáte v miestnosti.</string>
-    <string name="nc_lobby_waiting_with_date">Momentálne čakáte v miestnosti.\n Toto stretnutie je naplánované na %1$s.</string>
     <string name="nc_location_current_position_description">Vaša súčasná poloha</string>
     <string name="nc_location_permission_required">vyžaduje sa prístup k polohe</string>
     <string name="nc_location_unknown">Neznáma poloha</string>
@@ -150,11 +148,9 @@
     <string name="nc_message_sent">Správa bola odoslaná</string>
     <string name="nc_microphone_permission_permanently_denied">Na zapnutie hlasovej komunikácie, prosím povoľte \"Mikrofón\" v nastaveniach systému.</string>
     <string name="nc_moderator">Moderátor</string>
-    <string name="nc_mute_calls">Stíš hovory</string>
-    <string name="nc_mute_calls_desc">Príchadzajúce hovory budú stíšené</string>
     <string name="nc_never">Nikdy nepridaný</string>
     <string name="nc_new_conversation">Nový rozhovor</string>
-    <string name="nc_new_mention">Neprečítané spomenutia</string>
+    <string name="nc_new_mention">Neprečítané upozornenia</string>
     <string name="nc_new_messages">Neprečítané správy</string>
     <string name="nc_new_password">Nové heslo</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikácia %1$s nie je na serveri nainštalovaná, ruší sa</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">nič</string>
     <string name="nc_not_defined_error">Neznáma chyba</string>
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
-    <string name="nc_notification_channel_calls">Oznamovací kanál hovorov</string>
-    <string name="nc_notification_channel_calls_description">Ukazuje prichádzajúce hovory</string>
-    <string name="nc_notification_channel_messages">Oznamovací kanál správ</string>
     <string name="nc_notification_settings">Nastavenie notifikácií</string>
     <string name="nc_notify_me_always">Notifikuj vždy</string>
     <string name="nc_notify_me_mention">Notifikuj pri spomenutí</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Súkromná klávesnica</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
     <string name="nc_settings_no_talk_installed">Aplikácia Talk nie je na serveri, voči ktorému ste sa chceli overiť nainštalovaná.</string>
-    <string name="nc_settings_notification_sounds">Zvuk</string>
-    <string name="nc_settings_other_notifications_ringtone">Upozornenia</string>
     <string name="nc_settings_phone_book_integration_desc">Priradiť kontakty podľa telefónneho čísla a integrovať odkaz na Talk do aplikácie systémových kontaktov</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Môžete nastaviť vaše telefónne číslo aby vás ostatní uživatelia našli</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Zlé telefónne číslo</string>

@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
     <string name="nc_file_browser_back">Vissza</string>
-    <string name="nc_file_browser_refresh">Frissítés</string>
     <string name="nc_file_browser_reshare_forbidden">Nincs jogosultsága ennek a fájlnak az újramegosztására</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>
     <string name="nc_formatted_message_you">Ön: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">A találkozó ekkorra van ütemezve: %1$s</string>
     <string name="nc_lobby_start_soon">Ez a találkozó hamarosan elkezdődik</string>
     <string name="nc_lobby_waiting">Jelenleg a váróban van.</string>
-    <string name="nc_lobby_waiting_with_date">Jelenleg a váróban van.\nA találkozó ekkorra van ütemezve: %1$s.</string>
     <string name="nc_location_current_position_description">A jelenlegi helye</string>
     <string name="nc_location_permission_required">hely engedély szükséges</string>
     <string name="nc_location_unknown">Ismeretlen pozíci</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Üzenet elküldve</string>
     <string name="nc_microphone_permission_permanently_denied">A hanghívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_moderator">Moderátor</string>
-    <string name="nc_mute_calls">Hívások némítása</string>
-    <string name="nc_mute_calls_desc">A bejövő hívások némítva lesznek</string>
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_new_mention">Olvasatlan említések</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Nincs</string>
     <string name="nc_not_defined_error">Ismeretlen hiba</string>
     <string name="nc_notification_channel">%1$s a(z) %2$s értesítési csatornán</string>
-    <string name="nc_notification_channel_calls">Hívások értesítési csatornája</string>
-    <string name="nc_notification_channel_calls_description">Megjeleníti a bejövő hívásokat</string>
-    <string name="nc_notification_channel_messages">Üzenetek értesítési csatornája</string>
     <string name="nc_notification_settings">Értesítési beállítások</string>
     <string name="nc_notify_me_always">Mindig értesítsen</string>
     <string name="nc_notify_me_mention">Értesítsen, ha megemlítik Önt</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognító billentyűzet</string>
     <string name="nc_settings_no_ringtone">Nincs hang</string>
     <string name="nc_settings_no_talk_installed">A Beszélgetés alkalmazás nincs telepítve azon a kiszolgálón, ami felé hitelesíteni szeretne</string>
-    <string name="nc_settings_notification_sounds">Hang</string>
-    <string name="nc_settings_other_notifications_ringtone">Értesítések</string>
     <string name="nc_settings_phone_book_integration_desc">Párosítsa a névjegyeket telefonszám alapján, hogy integrálja a Beszélgetéseket a rendszer Névjegyek alkalmazásba</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Beállíthatja telefonszámát, hogy a többi felhasználó megtalálja Önt</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Érvénytelen telefonszám-formátum</string>
