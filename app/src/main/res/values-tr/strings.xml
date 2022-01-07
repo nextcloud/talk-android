@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
     <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
     <string name="nc_file_browser_back">Geri</string>
-    <string name="nc_file_browser_refresh">Yenile</string>
     <string name="nc_file_browser_reshare_forbidden">Bu dosyayı paylaşma izniniz yok</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
     <string name="nc_formatted_message_you">Siz: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Bu toplantı %1$s zamanına ayarlanmış</string>
     <string name="nc_lobby_start_soon">Toplantı yakında başlayacak</string>
     <string name="nc_lobby_waiting">Şu anda girişte bekliyorsunuz</string>
-    <string name="nc_lobby_waiting_with_date">Şu anda girişte bekliyorsunuz.\n Bu görüşme %1$s zamanında başlayacak.</string>
     <string name="nc_location_current_position_description">Geçerli konumunuz</string>
     <string name="nc_location_permission_required">konum izinleri gerekli</string>
     <string name="nc_location_unknown">Konum bilinmiyor</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">İleti gönderildi</string>
     <string name="nc_microphone_permission_permanently_denied">Sesli iletişim kurabilmek için sistem ayarlarından \"Mikrofon\" erişme iznini verin.</string>
     <string name="nc_moderator">Sorumlu</string>
-    <string name="nc_mute_calls">Bildirimleri kapat</string>
-    <string name="nc_mute_calls_desc">Gelen çağrılar sessize alınacak</string>
     <string name="nc_never">Hiç katılmadı</string>
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_new_mention">Okunmamış anmalar</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Yok</string>
     <string name="nc_not_defined_error">Bilinmeyen sorun</string>
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
-    <string name="nc_notification_channel_calls">Görüşme bildirimi kanalı</string>
-    <string name="nc_notification_channel_calls_description">Gelen görüşme çağrılarını görüntüler</string>
-    <string name="nc_notification_channel_messages">Bildirim kanalındaki ileti</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
     <string name="nc_notify_me_always">Her zaman bildirilsin</string>
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
-    <string name="nc_settings_notification_sounds">Ses</string>
-    <string name="nc_settings_other_notifications_ringtone">Bildirimler</string>
     <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Talk kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Telefon numaranızı ayarlayarak diğer kullanıcıların sizi bulmasını sağlayabilirsiniz</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefon numarası geçersiz</string>

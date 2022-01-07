@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">目標伺服器不支持通過流動電話加入公共對話。您可以嘗試通過網絡瀏覽器加入對話。</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了：（</string>
     <string name="nc_file_browser_back">返回</string>
-    <string name="nc_file_browser_refresh">重新整理</string>
     <string name="nc_file_browser_reshare_forbidden">您無權重新分享此檔案</string>
     <string name="nc_following_link">用戶關注公共連結</string>
     <string name="nc_formatted_message_you">你： %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">此次會議預定開始時間為 %1$s</string>
     <string name="nc_lobby_start_soon">會議即將開始</string>
     <string name="nc_lobby_waiting">您目前正在等候室等候。</string>
-    <string name="nc_lobby_waiting_with_date">您目前正在等候室等候。\n此會議定於%1$s開始。</string>
     <string name="nc_location_current_position_description">您目前的位置</string>
     <string name="nc_location_permission_required">需要位置權限</string>
     <string name="nc_location_unknown">位置不明</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">訊息已傳送</string>
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_moderator">主持人</string>
-    <string name="nc_mute_calls">靜音來電</string>
-    <string name="nc_mute_calls_desc">來電將被靜音</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
     <string name="nc_new_mention">未讀的提及</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">無</string>
     <string name="nc_not_defined_error">未知的錯誤</string>
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
-    <string name="nc_notification_channel_calls">來電通知頻道</string>
-    <string name="nc_notification_channel_calls_description">顯示來電</string>
-    <string name="nc_notification_channel_messages">訊息通知頻道</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">一律通知</string>
     <string name="nc_notify_me_mention">提及時通知</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">隱身鍵盤</string>
     <string name="nc_settings_no_ringtone">無聲</string>
     <string name="nc_settings_no_talk_installed">您進行身分驗證的伺服器上未安裝 Talk 應用程式</string>
-    <string name="nc_settings_notification_sounds">聲音 </string>
-    <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">設置您的電話號碼，以便其他用戶可以找到您</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話號碼無效</string>

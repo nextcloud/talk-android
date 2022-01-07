@@ -99,7 +99,6 @@
     <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih telefona. Možete se pokušati pridružiti razgovoru putem web-preglednika.</string>
     <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>
     <string name="nc_file_browser_back">Natrag</string>
-    <string name="nc_file_browser_refresh">Osvježi</string>
     <string name="nc_file_browser_reshare_forbidden">Nije vam dopušteno ponovno dijeliti ovu datoteku</string>
     <string name="nc_following_link">Korisnik slijedi javnu poveznicu</string>
     <string name="nc_formatted_message_you">Vi: %1$s</string>
@@ -127,7 +126,6 @@
     <string name="nc_limit_hit">Dostignuto je ograničenje od %s znakova</string>
     <string name="nc_lobby">Predvorje</string>
     <string name="nc_lobby_waiting">Trenutno čekate u predvorju.</string>
-    <string name="nc_lobby_waiting_with_date">Trenutno čekate u predvorju.\n Sastanak počinje u %1$s.</string>
     <string name="nc_location_current_position_description">Vaša trenutačna lokacija</string>
     <string name="nc_location_permission_required">potrebna je dozvola za lokaciju</string>
     <string name="nc_location_unknown">Nepoznat položaj</string>
@@ -141,8 +139,6 @@
     <string name="nc_message_sent">Poruka poslana</string>
     <string name="nc_microphone_permission_permanently_denied">Kako biste omogućili glasovnu komunikaciju, aktivirajte dopuštenje \“Mikrofon\“ u postavkama sustava.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Utišaj pozive</string>
-    <string name="nc_mute_calls_desc">Dolazni pozivi bit će utišani</string>
     <string name="nc_never">Nije se nikad pridružio</string>
     <string name="nc_new_conversation">Novi razgovor</string>
     <string name="nc_new_messages">Nove poruke</string>
@@ -157,9 +153,6 @@
     <string name="nc_none">Nema</string>
     <string name="nc_not_defined_error">Nepoznata pogreška</string>
     <string name="nc_notification_channel">%1$s na kanalu za obavijesti %2$s</string>
-    <string name="nc_notification_channel_calls">Kanal za obavijesti o pozivima</string>
-    <string name="nc_notification_channel_calls_description">Prikazuje dolazne pozive</string>
-    <string name="nc_notification_channel_messages">Kanal za obavijesti o porukama</string>
     <string name="nc_notification_settings">Postavke obavijesti</string>
     <string name="nc_notify_me_always">Uvijek šalji obavijesti</string>
     <string name="nc_notify_me_mention">Obavijesti kada se spomene</string>
@@ -242,8 +235,6 @@
     <string name="nc_settings_incognito_keyboard_title">Anonimna tipkovnica</string>
     <string name="nc_settings_no_ringtone">Bez zvuka</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Talk nije instalirana na poslužitelju s kojim ste se pokušali autentificirati</string>
-    <string name="nc_settings_notification_sounds">Zvuk</string>
-    <string name="nc_settings_other_notifications_ringtone">Obavijesti</string>
     <string name="nc_settings_phone_book_integration_desc">Izvršite podudaranje kontakata na temelju telefonskog broja radi integracije prečaca aplikacije Talk u aplikaciju sustava za kontakte</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Možete postaviti svoj telefonski broj kako bi vas drugi korisnici mogli pronaći</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nevažeći broj telefona</string>

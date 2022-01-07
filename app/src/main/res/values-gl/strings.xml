@@ -79,7 +79,6 @@
     <string name="nc_failed_signaling_settings">O servidor de destino non admite unirse a conversas públicas mediante teléfonos móbiles. Pode tentar unirse á chamada empregando o navegador web.</string>
     <string name="nc_failed_to_perform_operation">Sentímolo, algo foi mal!</string>
     <string name="nc_file_browser_back">Atrás</string>
-    <string name="nc_file_browser_refresh">Actualizar</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
     <string name="nc_formatted_message_you">Vostede: %1$s</string>
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedo</string>
@@ -104,7 +103,6 @@
     <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
     <string name="nc_lobby">Ástrago</string>
     <string name="nc_lobby_waiting">Actualmente está agardando no ástrago.</string>
-    <string name="nc_lobby_waiting_with_date">Actualmente está agardando no ástrago.\n Esta xuntanza está programada para %1$s.</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
     <string name="nc_make_call_private">Facer privada a conversa</string>
@@ -112,8 +110,6 @@
     <string name="nc_manual">Sen estabelecer</string>
     <string name="nc_microphone_permission_permanently_denied">Para permitir a comunicación por voz, conceda o permiso de «Micrófono» na configuración do sistema.</string>
     <string name="nc_moderator">Moderador</string>
-    <string name="nc_mute_calls">Silenciar as chamadas</string>
-    <string name="nc_mute_calls_desc">As chamadas entrantes serán silenciadas</string>
     <string name="nc_never">Non conectou nunca</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_messages">Mensaxes sen ler</string>
@@ -128,9 +124,6 @@
     <string name="nc_none">Ningún</string>
     <string name="nc_not_defined_error">Erro descoñecido</string>
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
-    <string name="nc_notification_channel_calls">Canle de notificación de chamadas</string>
-    <string name="nc_notification_channel_calls_description">Amosar as chamadas entrantes</string>
-    <string name="nc_notification_channel_messages">Canle de notificación de mensaxes</string>
     <string name="nc_notification_settings">Axustes de notificación</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
@@ -205,8 +198,6 @@
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
     <string name="nc_settings_no_talk_installed">A aplicación Talk non está instalada no servidor contra o que tentou autenticarse</string>
-    <string name="nc_settings_notification_sounds">Son</string>
-    <string name="nc_settings_other_notifications_ringtone">Notificacións</string>
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na axenda telefónica</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode establecer o seu número de teléfono para que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>

@@ -102,7 +102,6 @@
     <string name="nc_failed_signaling_settings">Ο υπόψη διακομιστής δεν υποστηρίζει την σύνδεση στις δημόσιες συζητήσεις από κινητά τηλέφωνα. Προσπαθήστε να συνδεθείτε μέσω φυλλομετρητή.</string>
     <string name="nc_failed_to_perform_operation">Συγγνώμη, κάτι πήγε στραβά!</string>
     <string name="nc_file_browser_back">Πίσω</string>
-    <string name="nc_file_browser_refresh">Ανανέωση</string>
     <string name="nc_file_browser_reshare_forbidden">Δεν επιτρέπεται ο εκ νέου διαμοιρασμός αυτού του αρχείου</string>
     <string name="nc_following_link">Χρήστης από δημόσιο σύνδεσμο</string>
     <string name="nc_formatted_message_you">Εσείς: %1$s</string>
@@ -130,7 +129,6 @@
     <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>
     <string name="nc_lobby">Αναμονή</string>
     <string name="nc_lobby_waiting">Αυτή τη στιγμή είστε σε αναμονή</string>
-    <string name="nc_lobby_waiting_with_date">Αυτή τη στιγμή είστε σε αναμονή.\n Η συνάντηση είναι προγραμματισμένη για %1$s.</string>
     <string name="nc_location_current_position_description">Η τρέχουσα τοποθεσία σας</string>
     <string name="nc_location_permission_required">απαιτείται δικαιώματα τοποθεσίας</string>
     <string name="nc_location_unknown">Άγνωστη θέση</string>
@@ -144,8 +142,6 @@
     <string name="nc_message_sent">Το μήνυμα στάλθηκε</string>
     <string name="nc_microphone_permission_permanently_denied">Για ενεργοποίηση συνομιλίας με ήχο παρακαλώ επιτρέψτε την πρόσβαση του \"Microphone\" στις ρυθμίσεις συστήματος.</string>
     <string name="nc_moderator">Συντονιστής</string>
-    <string name="nc_mute_calls">Σίγαση κλήσεων</string>
-    <string name="nc_mute_calls_desc">Οι εισερχόμενες κλήσεις θα τεθούν σε σίγαση</string>
     <string name="nc_never">Δεν ξανασυνδέθηκε</string>
     <string name="nc_new_conversation">Νέα συνομιλία</string>
     <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
@@ -160,9 +156,6 @@
     <string name="nc_none">κανένα</string>
     <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
     <string name="nc_notification_channel">%1$s από %2$s κανάλι ειδοποίησης</string>
-    <string name="nc_notification_channel_calls">Κανάλι ειδοποιήσης κλήσεων</string>
-    <string name="nc_notification_channel_calls_description">Εμφανίζει εισερχόμενες κλήσεις</string>
-    <string name="nc_notification_channel_messages">Κανάλι ειδοποιήσης μηνυμάτων</string>
     <string name="nc_notification_settings">Ρυθμίσεις ειδοποιήσεων</string>
     <string name="nc_notify_me_always">Πάντα ειδοποίηση</string>
     <string name="nc_notify_me_mention">Ειδοποίηση όταν αναφέρεται</string>
@@ -244,8 +237,6 @@
     <string name="nc_settings_incognito_keyboard_title">Πληκτρολόγιο ανώνυμης περιήγησης</string>
     <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
     <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
-    <string name="nc_settings_notification_sounds">Ήχος</string>
-    <string name="nc_settings_other_notifications_ringtone">Ειδοποιήσεις</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Μπορείτε να ορίσετε τον αριθμό τηλεφώνου σας, ώστε να μπορούν να σας βρίσκουν άλλοι χρήστες</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Μη έγκυρος αριθμός τηλεφώνου</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Επιτυχής ορισμός αριθμού τηλεφώνου</string>

@@ -50,7 +50,6 @@
     <string name="nc_external_server_failed">Anskaffelse af signaleringsindstillinger fejlede</string>
     <string name="nc_failed_to_perform_operation">Noget gik galt, undskyld!</string>
     <string name="nc_file_browser_back">Tilbage</string>
-    <string name="nc_file_browser_refresh">Opdater</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
     <string name="nc_formatted_message_you">Dig: %1$s</string>
     <string name="nc_get_from_provider">Har du ikke en server endnu?\nKlik her for at skaffe en udbyder</string>
@@ -78,7 +77,6 @@
     <string name="nc_manual">Ikke indstillet</string>
     <string name="nc_microphone_permission_permanently_denied">For at aktivere video kommunikation accepter venligst \"Mikrofon\" tilladelsen i system indstillingerne</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Gør opkald lydløs</string>
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_messages">Ulæste beskedder</string>
@@ -93,9 +91,6 @@
     <string name="nc_none">Ingen</string>
     <string name="nc_not_defined_error">Ukendt fejl</string>
     <string name="nc_notification_channel">%1$s på %2$s notifikationskanal</string>
-    <string name="nc_notification_channel_calls">Opkalds notifikations kanal</string>
-    <string name="nc_notification_channel_calls_description">Viser indkommende opkald</string>
-    <string name="nc_notification_channel_messages">Beskeder notifikations kanal</string>
     <string name="nc_notification_settings">Meddelelsesindstillinger</string>
     <string name="nc_notify_me_always">Giv altid besked</string>
     <string name="nc_notify_me_mention">Giv besked når du bliver omtalt</string>

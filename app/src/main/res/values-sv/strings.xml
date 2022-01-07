@@ -51,7 +51,6 @@
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_failed_to_perform_operation">Ledsen, någonting gick fel!</string>
     <string name="nc_file_browser_back">Tillbaka</string>
-    <string name="nc_file_browser_refresh">Uppdatera</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
     <string name="nc_formatted_message_you">Du: %1$s</string>
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
@@ -79,7 +78,6 @@
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_microphone_permission_permanently_denied">För att aktivera röstkommunikation vänligen bevilja \"Mikrofon\"-tillstånd i systeminställningar.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Tysta alla samtal</string>
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_new_messages">Olästa meddelanden</string>
@@ -94,9 +92,6 @@
     <string name="nc_none">Ingen</string>
     <string name="nc_not_defined_error">Okänt fel</string>
     <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
-    <string name="nc_notification_channel_calls">Samtal aviseringskanal</string>
-    <string name="nc_notification_channel_calls_description">Visar inkommande samtal</string>
-    <string name="nc_notification_channel_messages">Meddelande aviseringskanal</string>
     <string name="nc_notification_settings">Meddelandeinställningar</string>
     <string name="nc_notify_me_always">Meddela alltid</string>
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>

@@ -9,7 +9,7 @@
     <string name="encrypted">Zaszyfrowane</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
     <string name="file_list_folder">katalog</string>
-    <string name="file_list_loading">Ładowanie…</string>
+    <string name="file_list_loading">Wczytywanie…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
     <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Serwer docelowy nie obsługuje połączeń dla rozmów publicznych przez telefony komórkowe. Możesz spróbować dołączyć do rozmowy przez przeglądarkę internetową.</string>
     <string name="nc_failed_to_perform_operation">Przepraszamy, coś poszło nie tak!</string>
     <string name="nc_file_browser_back">Wstecz</string>
-    <string name="nc_file_browser_refresh">Odśwież</string>
     <string name="nc_file_browser_reshare_forbidden">Nie możesz ponownie udostępnić tego pliku</string>
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
     <string name="nc_formatted_message_you">Ty: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Spotkanie jest zaplanowane na %1$s</string>
     <string name="nc_lobby_start_soon">Spotkanie rozpocznie się wkrótce</string>
     <string name="nc_lobby_waiting">Aktualnie czekasz w poczekalni.</string>
-    <string name="nc_lobby_waiting_with_date">Obecnie czekasz w poczekalni.\n To spotkanie jest zaplanowane na %1$s.</string>
     <string name="nc_location_current_position_description">Twoja aktualna lokalizacja</string>
     <string name="nc_location_permission_required">wymagane jest pozwolenie na lokalizację</string>
     <string name="nc_location_unknown">Pozycja nieznana</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Wiadomość wysłana</string>
     <string name="nc_microphone_permission_permanently_denied">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\" w ustawieniach systemu.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Wycisz połączenia</string>
-    <string name="nc_mute_calls_desc">Połączenia przychodzące zostaną wyciszone</string>
     <string name="nc_never">Nigdy nie dołączył</string>
     <string name="nc_new_conversation">Nowa rozmowa</string>
     <string name="nc_new_mention">Nieprzeczytane wzmianki</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Brak</string>
     <string name="nc_not_defined_error">Nieznany błąd</string>
     <string name="nc_notification_channel">%1$s na %2$s kanale powiadomień</string>
-    <string name="nc_notification_channel_calls">Kanał powiadomienia o połączeniach</string>
-    <string name="nc_notification_channel_calls_description">Wyświetla połączenia przychodzące</string>
-    <string name="nc_notification_channel_messages">Kanał powiadomienia o wiadomościach</string>
     <string name="nc_notification_settings">Ustawienia powiadomień</string>
     <string name="nc_notify_me_always">Zawsze powiadamiaj</string>
     <string name="nc_notify_me_mention">Powiadom, gdy wspomniano</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Klawiatura incognito</string>
     <string name="nc_settings_no_ringtone">Bez dźwięku</string>
     <string name="nc_settings_no_talk_installed">Aplikacja Talk nie jest zainstalowana na serwerze, na którym próbowałeś się uwierzytelnić</string>
-    <string name="nc_settings_notification_sounds">Dźwięk</string>
-    <string name="nc_settings_other_notifications_ringtone">Powiadomienia</string>
     <string name="nc_settings_phone_book_integration_desc">Dopasuj kontakty na podstawie numeru telefonu, aby zintegrować skrót Talka z aplikacją systemową kontaktów</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Możesz ustawić swój numer telefonu, aby inni użytkownicy mogli Ciebie znaleźć</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nieprawidłowy numer telefonu</string>

@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Doelserver ondersteunt geen deelname aan publieke gesprekken via mobiele telefoons. Je kunt proberen om aan het gesprek deel te nemen via een browser.</string>
     <string name="nc_failed_to_perform_operation">Sorry, er is iets fout gegaan!</string>
     <string name="nc_file_browser_back">Terug</string>
-    <string name="nc_file_browser_refresh">Verversen</string>
     <string name="nc_file_browser_reshare_forbidden">Je mag het bestand niet verder delen</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
@@ -138,7 +137,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_lobby_start_date">Deze vergadering staat gepland voor %1$s</string>
     <string name="nc_lobby_start_soon">Deze vergadering zal binnenkort starten</string>
     <string name="nc_lobby_waiting">Je wacht nu in de lobby.</string>
-    <string name="nc_lobby_waiting_with_date">Je wacht nu in de lobby.\n Deze vergadering is ingepland voor %1$s.</string>
     <string name="nc_location_current_position_description">Je huidige locatie</string>
     <string name="nc_location_permission_required">Locatiemachtiging is vereist</string>
     <string name="nc_location_unknown">Positie onbekend</string>
@@ -152,8 +150,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
     <string name="nc_microphone_permission_permanently_denied">Om gesprekken te voeren, verleen \"Microfoon\" machtiging in de systeeminstellingen.</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_mute_calls">Gesprekken dempen</string>
-    <string name="nc_mute_calls_desc">Inkomende gesprekken worden gedempt</string>
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
     <string name="nc_new_mention">Ongelezen vermeldingen</string>
@@ -169,9 +165,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_none">Geen</string>
     <string name="nc_not_defined_error">Onbekende fout</string>
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
-    <string name="nc_notification_channel_calls">Oproepnotificatiekanaal</string>
-    <string name="nc_notification_channel_calls_description">Toont inkomende gesprekken</string>
-    <string name="nc_notification_channel_messages">Berichtennotificatiekanaal</string>
     <string name="nc_notification_settings">Meldingsinstellingen</string>
     <string name="nc_notify_me_always">Altijd waarschuwen</string>
     <string name="nc_notify_me_mention">Waarschuwen bij vermelding</string>
@@ -256,8 +249,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
-    <string name="nc_settings_notification_sounds">Geluid</string>
-    <string name="nc_settings_other_notifications_ringtone">Meldingen</string>
     <string name="nc_settings_phone_book_integration_desc">Match contactpersonen op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Je kunt je telefoonnummer instellen zodat andere gebruikers je kunnen vinden</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ongeldig telefoonnummer</string>

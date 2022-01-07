@@ -48,6 +48,7 @@
     <string name="nc_date_header_yesterday">Vakar</string>
     <string name="nc_delete">Ištrinti</string>
     <string name="nc_delete_call">Ištrinti pokalbį</string>
+    <string name="nc_delete_message">Ištrinti</string>
     <string name="nc_demote">Pažeminti iš moderatorių</string>
     <string name="nc_description_send_message_button">Siųsti žinutę</string>
     <string name="nc_empty_response_error">Tuščias atsakas</string>
@@ -56,7 +57,6 @@
     <string name="nc_external_server_failed">Nepavyko gauti signalizavimo nustatymų</string>
     <string name="nc_failed_to_perform_operation">Atleiskite, kažkas nutiko!</string>
     <string name="nc_file_browser_back">Atgal</string>
-    <string name="nc_file_browser_refresh">Įkelti iš naujo</string>
     <string name="nc_formatted_message_you">Jūs: %1$s</string>
     <string name="nc_get_from_provider">Neturite serverio? Spauskite čia, kad galėtumėte pasirinkti vieną iš paslaugų teikėjų</string>
     <string name="nc_get_source_code">Gauti išeities kodą</string>
@@ -80,7 +80,6 @@
     <string name="nc_manual">Nenustatyta</string>
     <string name="nc_microphone_permission_permanently_denied">Norėdami įjungti bendravimą balsu, sistemos nustatymuose suteikite prieigą prie \"Mikrofono\".</string>
     <string name="nc_moderator">Moderatorius</string>
-    <string name="nc_mute_calls">Nutildyti skambučius</string>
     <string name="nc_new_conversation">Naujas pokalbis</string>
     <string name="nc_new_messages">Neskaitytos žinutės</string>
     <string name="nc_new_password">Naujas slaptažodis</string>
@@ -92,7 +91,6 @@
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>
     <string name="nc_none">Nėra</string>
     <string name="nc_not_defined_error">Nežinoma klaida</string>
-    <string name="nc_notification_channel_calls_description">Rodo gaunamuosius skambučius</string>
     <string name="nc_notification_settings">Pranešimų nustatymai</string>
     <string name="nc_notify_me_always">Visada pranešti</string>
     <string name="nc_notify_me_mention">Pranešti, kai mane pamini</string>
@@ -107,6 +105,7 @@
     <string name="nc_plain_old_messages">Žinutės</string>
     <string name="nc_privacy">Privatumas</string>
     <string name="nc_proceed">Tęsti</string>
+    <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call">Naujas viešas pokalbis</string>
     <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>

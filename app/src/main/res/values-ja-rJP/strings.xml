@@ -93,7 +93,6 @@
     <string name="nc_failed_signaling_settings">ターゲットのサーバーは、モバイル経由での公開の会話への参加をサポートしていません。Webブラウザー経由で会話への参加を試みてください。</string>
     <string name="nc_failed_to_perform_operation">申し訳ありませんが、何かがおかしいです!</string>
     <string name="nc_file_browser_back">戻る</string>
-    <string name="nc_file_browser_refresh">更新</string>
     <string name="nc_file_browser_reshare_forbidden">このファイルの再共有を許可されていません</string>
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
     <string name="nc_formatted_message_you">あなた：%1$s</string>
@@ -119,7 +118,6 @@
     <string name="nc_limit_hit">%s文字の制限に達しました</string>
     <string name="nc_lobby">ロビー</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
-    <string name="nc_lobby_waiting_with_date">現在ロビーで待機中。\n この会議は%1$sに予定されています。</string>
     <string name="nc_locked">ロック</string>
     <string name="nc_locked_tap_to_unlock">タップしてロック解除</string>
     <string name="nc_make_call_private">会話を非公開にする</string>
@@ -130,8 +128,6 @@
     <string name="nc_message_sent">メッセージ送信済</string>
     <string name="nc_microphone_permission_permanently_denied">音声通信を有効にするには、システム設定で「マイク」権限を与えてください。</string>
     <string name="nc_moderator">モデレータ</string>
-    <string name="nc_mute_calls">通話をミュートする</string>
-    <string name="nc_mute_calls_desc">着信音をならしません</string>
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_new_conversation">新しい会話</string>
     <string name="nc_new_messages">未読のメッセージ</string>
@@ -146,9 +142,6 @@
     <string name="nc_none">なし</string>
     <string name="nc_not_defined_error">不明なエラー</string>
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
-    <string name="nc_notification_channel_calls">通知チャネルを呼び出す</string>
-    <string name="nc_notification_channel_calls_description">着信を表示する</string>
-    <string name="nc_notification_channel_messages">メッセージ通知チャネル</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">常に通知する</string>
     <string name="nc_notify_me_mention">言及したときに通知する</string>
@@ -226,8 +219,6 @@
     <string name="nc_settings_incognito_keyboard_title">シークレットモードキーボード</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
-    <string name="nc_settings_notification_sounds">音声</string>
-    <string name="nc_settings_other_notifications_ringtone">通知</string>
     <string name="nc_settings_phone_book_integration_desc">電話番号に基づいて連絡先を照合し、Talkのショートカットをシステムの連絡先アプリに統合します</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">電話番号を設定すると他のユーザーがあなたを見つけられるようになります</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話番号が正しくありません</string>

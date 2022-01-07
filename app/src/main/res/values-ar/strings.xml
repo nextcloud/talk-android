@@ -81,7 +81,6 @@
     <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
     <string name="nc_file_browser_back">العودة</string>
-    <string name="nc_file_browser_refresh">تحديث</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
     <string name="nc_get_from_provider">ليس لديك خادم حتى الآن ؟\nإضغط هنا للحصول على واحد من أحد المزودين</string>
@@ -106,7 +105,6 @@
     <string name="nc_limit_hit">%sتم الوصول إلى عدد الاحرف المسموح به</string>
     <string name="nc_lobby">ساحة الانتظار</string>
     <string name="nc_lobby_waiting">أنت حاليا في انتظار الاستقبال</string>
-    <string name="nc_lobby_waiting_with_date">أنت حاليًا في ساحة الانتظار.الاجتماع مجدول في %1$s.</string>
     <string name="nc_locked_tap_to_unlock">انقر لفك القفل</string>
     <string name="nc_make_call_private">اجعل المحادثة خاصة </string>
     <string name="nc_make_call_public">اجعل المحادثة عامة</string>
@@ -114,8 +112,6 @@
     <string name="nc_message_sent">تم إرسال الرسالة </string>
     <string name="nc_microphone_permission_permanently_denied">لتمكين الاتصال الصوتي ، يرجى منح وصول \"الميكروفون\" في إعدادات النظام.</string>
     <string name="nc_moderator">مشرِف</string>
-    <string name="nc_mute_calls">كتم المكالمات</string>
-    <string name="nc_mute_calls_desc">سوف تكون المكالمات الواردة على الوضع الصامت</string>
     <string name="nc_never">عدم الانضمام</string>
     <string name="nc_new_conversation">محادثة جديدة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
@@ -130,9 +126,6 @@
     <string name="nc_none">لا شيء</string>
     <string name="nc_not_defined_error">خطأ غير معروف</string>
     <string name="nc_notification_channel">قناة إشعار %1$s في %2$s </string>
-    <string name="nc_notification_channel_calls">قناة إشعار المكالمات</string>
-    <string name="nc_notification_channel_calls_description">عرض المكالمات الواردة</string>
-    <string name="nc_notification_channel_messages">قناة إشعار الرسائل</string>
     <string name="nc_notification_settings">إعدادات الإشعار</string>
     <string name="nc_notify_me_always">أخبرني دومًا </string>
     <string name="nc_notify_me_mention">أخبرني عند منشن</string>
@@ -207,8 +200,6 @@
     <string name="nc_settings_incognito_keyboard_title">لوحة المفاتيح في وضع المجهول</string>
     <string name="nc_settings_no_ringtone">بدون صوت</string>
     <string name="nc_settings_no_talk_installed">تطبيق التحدث غير مثبت على الخادم الذي تريد المصادقة إليه.</string>
-    <string name="nc_settings_notification_sounds">صوت</string>
-    <string name="nc_settings_other_notifications_ringtone">الإشعارات</string>
     <string name="nc_settings_phone_book_integration_desc">قم بمطابقة جهات الاتصال بناءً على رقم الهاتف لدمج اختصار التحدث في دفتر الهاتف</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">بإمكانك تعيين رقم هاتفك حتى يتمكن المستخدمون الآخرون من العثور عليك</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">رقم الهاتف غير صحيح </string>

@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Целевият сървър не поддържа присъединяване към обществени разговори чрез мобилни телефони. Може да опитате присъединяване към разговора чрез уеб браузър.</string>
     <string name="nc_failed_to_perform_operation">Съжалявам нещо се обърка!</string>
     <string name="nc_file_browser_back">Назад</string>
-    <string name="nc_file_browser_refresh">Опресни</string>
     <string name="nc_file_browser_reshare_forbidden">Нямате право да споделяте повторно този файл</string>
     <string name="nc_following_link">Потребител, който следва публична връзка</string>
     <string name="nc_formatted_message_you">Вие: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Тази среща е насрочена за %1$s</string>
     <string name="nc_lobby_start_soon">Срещата ще започне скоро</string>
     <string name="nc_lobby_waiting">В момента изчаквате в лобито.</string>
-    <string name="nc_lobby_waiting_with_date">В момента чакате във лобито. \ n Срещата е насрочена за %1$s.</string>
     <string name="nc_location_current_position_description">Вашето текущо местоположение</string>
     <string name="nc_location_permission_required">Нужно е право за местоположение</string>
     <string name="nc_location_unknown">Неизвестна позиция</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Съобщението е изпратено</string>
     <string name="nc_microphone_permission_permanently_denied">За активиране на гласова комуникация, моля, дайте право на „Микрофон“ в системните настройки.</string>
     <string name="nc_moderator">Модератор</string>
-    <string name="nc_mute_calls">Заглушаване на обажданията</string>
-    <string name="nc_mute_calls_desc">Входящите обаждания ще бъдат заглушени</string>
     <string name="nc_never">Никога не е присъединяван</string>
     <string name="nc_new_conversation">Нов разговор</string>
     <string name="nc_new_mention">Непрочетени споменавания</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Без</string>
     <string name="nc_not_defined_error">Неизвестна грешка</string>
     <string name="nc_notification_channel">%1$s на %2$s канал за известие</string>
-    <string name="nc_notification_channel_calls">Канал за известие за обаждания</string>
-    <string name="nc_notification_channel_calls_description">Покажи входящите обаждания</string>
-    <string name="nc_notification_channel_messages">Канал за известие за съобщения</string>
     <string name="nc_notification_settings">Настройки на известие</string>
     <string name="nc_notify_me_always">Винаги уведомявайте</string>
     <string name="nc_notify_me_mention">Уведомяване при споменаване</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Инкогнито клавиатура</string>
     <string name="nc_settings_no_ringtone">Без звук</string>
     <string name="nc_settings_no_talk_installed">Приложението Talk /разговор/ не е инсталирано на сървъра, в който сте се опитали да се удостоверите</string>
-    <string name="nc_settings_notification_sounds">Звук</string>
-    <string name="nc_settings_other_notifications_ringtone">Известия</string>
     <string name="nc_settings_phone_book_integration_desc">Съпоставяне на контакти въз основа на телефонен номер, за интегриране на пряк път Talk в приложението за системни контакти</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Можете да зададете телефонния си номер, така че други потребители да могат да ви намерят</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Невалиден телефонен номер</string>

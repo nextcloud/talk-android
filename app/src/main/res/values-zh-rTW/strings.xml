@@ -105,7 +105,6 @@
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
     <string name="nc_file_browser_back">返回</string>
-    <string name="nc_file_browser_refresh">重新整理</string>
     <string name="nc_file_browser_reshare_forbidden">你不被允許再分享這個檔案</string>
     <string name="nc_following_link">使用者追隨一個公開連結</string>
     <string name="nc_formatted_message_you">你: %1$s</string>
@@ -130,7 +129,6 @@
     <string name="nc_make_call_public">公開對話</string>
     <string name="nc_microphone_permission_permanently_denied">為了開啟聲音的通訊請在系統設定內同意\"麥克風\"的需求。</string>
     <string name="nc_moderator">主持人</string>
-    <string name="nc_mute_calls">靜音來電</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
     <string name="nc_new_password">新密碼</string>
@@ -142,9 +140,6 @@
     <string name="nc_none">無</string>
     <string name="nc_not_defined_error">未知的錯誤</string>
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
-    <string name="nc_notification_channel_calls">來電通知頻道</string>
-    <string name="nc_notification_channel_calls_description">顯示來電</string>
-    <string name="nc_notification_channel_messages">訊息通知頻道</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">總是通知</string>
     <string name="nc_notify_me_never">從不通知</string>

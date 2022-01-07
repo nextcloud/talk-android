@@ -75,7 +75,6 @@
     <string name="nc_failed_signaling_settings">שרת היעד אינו תומך בהצטרפות לדיונים ציבוריים דרך טלפונים ניידים. יש לך אפשרות להצטרף לדיון דרך דפדפן במחשב.</string>
     <string name="nc_failed_to_perform_operation">משהו השתבש, עמך הסליחה!</string>
     <string name="nc_file_browser_back">חזרה</string>
-    <string name="nc_file_browser_refresh">רענון</string>
     <string name="nc_following_link">משתמש שעוקב אחר קישור ציבורי</string>
     <string name="nc_formatted_message_you">אני: %1$s</string>
     <string name="nc_get_from_provider">עדיין אין לך שרת?\nניתן ללחוץ כאן ולקבל אחת מספק</string>
@@ -99,14 +98,12 @@
     <string name="nc_limit_hit">הגעת למגבלת %s התווים</string>
     <string name="nc_lobby">לובי</string>
     <string name="nc_lobby_waiting">כרגע מיקומך הוא בהמתנה בלובי.</string>
-    <string name="nc_lobby_waiting_with_date">כרגע מיקומך הוא בהמתנה בלובי.\n פגישה זו מתוזמנת ל־%1$s.</string>
     <string name="nc_locked_tap_to_unlock">יש לגעת כדי לשחרר</string>
     <string name="nc_make_call_private">להפוך את הדיון לפרטי</string>
     <string name="nc_make_call_public">להפוך את הדיון לציבורי</string>
     <string name="nc_manual">לא מוגדר</string>
     <string name="nc_microphone_permission_permanently_denied">כדי להפעיל תקשורת שמע נא להעניק את ההרשאה „מיקרופון” בהגדרות המערכת.</string>
     <string name="nc_moderator">פיקוח</string>
-    <string name="nc_mute_calls">השתקת שיחות</string>
     <string name="nc_never">מעולם לא הצטרף</string>
     <string name="nc_new_conversation">דיון חדש</string>
     <string name="nc_new_messages">הודעות שלא נקראו</string>
@@ -121,9 +118,6 @@
     <string name="nc_none">אין</string>
     <string name="nc_not_defined_error">שגיאה בלתי ידועה</string>
     <string name="nc_notification_channel">%1$s על %2$s בערוץ ההודעות</string>
-    <string name="nc_notification_channel_calls">ערוץ התראות על שיחות</string>
-    <string name="nc_notification_channel_calls_description">מציג שיחות נכנסות</string>
-    <string name="nc_notification_channel_messages">ערוץ התראות על הודעות</string>
     <string name="nc_notification_settings">הגדרות התראה</string>
     <string name="nc_notify_me_always">להודיע תמיד</string>
     <string name="nc_notify_me_mention">להודיע כשהזכירו אותי</string>
@@ -195,8 +189,6 @@
     <string name="nc_settings_incognito_keyboard_title">מקלדת אלמונית</string>
     <string name="nc_settings_no_ringtone">אין צליל</string>
     <string name="nc_settings_no_talk_installed">אפליקציית Talk אינה מותקנת בשרת שניסית לאמת נגדו</string>
-    <string name="nc_settings_notification_sounds">צליל</string>
-    <string name="nc_settings_other_notifications_ringtone">התראות</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">מספר טלפון</string>
     <string name="nc_settings_privacy">פרטיות</string>
     <string name="nc_settings_proxy_host_title">מארח מתווך</string>

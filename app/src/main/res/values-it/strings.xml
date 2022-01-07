@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Il server di destinazione non supporta la partecipazione a stanze pubbliche tramite cellulare. Puoi provare a unirti alla conversazioni tramite un browser web.</string>
     <string name="nc_failed_to_perform_operation">Spiacenti, qualcosa non ha funzionato!</string>
     <string name="nc_file_browser_back">Indietro</string>
-    <string name="nc_file_browser_refresh">Aggiorna</string>
     <string name="nc_file_browser_reshare_forbidden">Non ti è consentito ricondividere questo file</string>
     <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Questa riunione è programmata per %1$s</string>
     <string name="nc_lobby_start_soon">La riunione inizierà presto</string>
     <string name="nc_lobby_waiting">Stai attualmente aspettando nell\'ingresso.</string>
-    <string name="nc_lobby_waiting_with_date">Stai attualmente aspettando nell\'ingresso.\nQuesta riunione è pianificata per %1$s.</string>
     <string name="nc_location_current_position_description">La tua posizione attuale</string>
     <string name="nc_location_permission_required">Autorizzazione di geolocalizzazione richiesta</string>
     <string name="nc_location_unknown">Posizione sconosciuta</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Messaggio inviato</string>
     <string name="nc_microphone_permission_permanently_denied">Per abilitare la comunicazione vocale devi accordare il permesso per  \"Microfono\" nelle impostazioni di sistema.</string>
     <string name="nc_moderator">Moderatore</string>
-    <string name="nc_mute_calls">Silenzia le chiamate</string>
-    <string name="nc_mute_calls_desc">Le chiamate in ingresso saranno silenziate</string>
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_new_conversation">Nuova conversazione</string>
     <string name="nc_new_mention">Menzioni non lette</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Nessuno</string>
     <string name="nc_not_defined_error">Errore sconosciuto</string>
     <string name="nc_notification_channel">%1$s sul canale di notifica %2$s</string>
-    <string name="nc_notification_channel_calls">Canale di notifica delle chiamate</string>
-    <string name="nc_notification_channel_calls_description">Mostra le chiamate in ingresso</string>
-    <string name="nc_notification_channel_messages">Canale di notifica dei messaggi</string>
     <string name="nc_notification_settings">Impostazioni di notifica</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
     <string name="nc_notify_me_mention">Notifica su menzione</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Tastiera incognito</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
     <string name="nc_settings_no_talk_installed">L\'applicazione Talk non è installata sul server sul quale hai provato ad autenticarti</string>
-    <string name="nc_settings_notification_sounds">Suono</string>
-    <string name="nc_settings_other_notifications_ringtone">Notifiche</string>
     <string name="nc_settings_phone_book_integration_desc">Verifica i contatti in base al numero di telefono per integrare il collegamento di Talk nell\'applicazione dei contatti di sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Puoi impostare il tuo numero di telefono in modo che gli altri utenti ti trovino</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Numero di telefono non valido</string>

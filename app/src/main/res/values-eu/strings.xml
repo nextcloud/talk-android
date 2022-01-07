@@ -106,7 +106,6 @@
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
     <string name="nc_file_browser_back">Itzuli</string>
-    <string name="nc_file_browser_refresh">Freskatu</string>
     <string name="nc_file_browser_reshare_forbidden">Ez zaude fitxategi hau birpartekatzeko baimenduta</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
@@ -136,7 +135,6 @@
     <string name="nc_lobby_start_date">Bilera hau %1$s(r)etarako programatuta dago</string>
     <string name="nc_lobby_start_soon">Bilera laster hasiko da</string>
     <string name="nc_lobby_waiting">Sarreran itxaroten zabiltza momentu honetan.</string>
-    <string name="nc_lobby_waiting_with_date">Sarreran itxatoren ari zara momentu honetan.\n Bilera hau %1$s(r)(e)tan dago antolatuta.</string>
     <string name="nc_location_current_position_description">Zure uneko kokalekua</string>
     <string name="nc_location_permission_required">Kokalekua atzitzeko baimena beharrezkoa da</string>
     <string name="nc_location_unknown">Kokapen ezezaguna</string>
@@ -150,8 +148,6 @@
     <string name="nc_message_sent">Mezua bidalita</string>
     <string name="nc_microphone_permission_permanently_denied">Ahots komunikazioa gaitu nahi baduzu eman \"Mikrofonoa\" baimena sistemaren ezarpenetan.</string>
     <string name="nc_moderator">Moderatzailea</string>
-    <string name="nc_mute_calls">Mututu deiak</string>
-    <string name="nc_mute_calls_desc">Sarrerako deiak isilduko dira</string>
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_new_conversation">Elkarrizketa berria</string>
     <string name="nc_new_mention">Irakurri gabeko aipamenak</string>
@@ -167,9 +163,6 @@
     <string name="nc_none">Bat ere ez</string>
     <string name="nc_not_defined_error">Errore ezezaguna</string>
     <string name="nc_notification_channel">%1$s %2$s jakinarazpen kanalean</string>
-    <string name="nc_notification_channel_calls">Jakinarazpen kanala deitzen du</string>
-    <string name="nc_notification_channel_calls_description">Sarrerako deiak erakusten ditu</string>
-    <string name="nc_notification_channel_messages">Mezu jakinarazpen kanala</string>
     <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
     <string name="nc_notify_me_always">Jakinarazi beti</string>
     <string name="nc_notify_me_mention">Jakinarazi aipatzen nautenean</string>
@@ -254,8 +247,6 @@
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
-    <string name="nc_settings_notification_sounds">Soinua</string>
-    <string name="nc_settings_other_notifications_ringtone">Jakinarazpenak</string>
     <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu beste erabiltzaile batzuek aurkitu ahal izateko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
