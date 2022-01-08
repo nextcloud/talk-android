@@ -143,6 +143,8 @@
     <string name="nc_make_call_private">設成私密對話</string>
     <string name="nc_make_call_public">公開對話</string>
     <string name="nc_manual">未定</string>
+    <string name="nc_mark_as_read">標為已讀</string>
+    <string name="nc_mark_as_unread">標為未讀</string>
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
@@ -163,6 +165,10 @@
     <string name="nc_none">無</string>
     <string name="nc_not_defined_error">未知的錯誤</string>
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
+    <string name="nc_notification_channel_calls">通話</string>
+    <string name="nc_notification_channel_calls_description">來電通知</string>
+    <string name="nc_notification_channel_messages">訊息</string>
+    <string name="nc_notification_channel_messages_description">來訊通知</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">一律通知</string>
     <string name="nc_notify_me_mention">提及時通知</string>
@@ -247,6 +253,9 @@
     <string name="nc_settings_incognito_keyboard_title">隱身鍵盤</string>
     <string name="nc_settings_no_ringtone">無聲</string>
     <string name="nc_settings_no_talk_installed">您進行身分驗證的伺服器上未安裝 Talk 應用程式</string>
+    <string name="nc_settings_notification_sounds">通知聲響</string>
+    <string name="nc_settings_notification_sounds_post_oreo">通知</string>
+    <string name="nc_settings_other_notifications_ringtone">訊息</string>
     <string name="nc_settings_phone_book_integration_desc">根據電話號碼匹配聯絡人以將 Talk 快捷方式集成到電話簿中</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">設置您的電話號碼，以便其他用戶可以找到您</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話號碼無效</string>
