@@ -1594,9 +1594,16 @@ class ChatController(args: Bundle) :
             !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
             !ApplicationWideCurrentRoomHolder.getInstance().isDialing
         ) {
-            ApplicationWideCurrentRoomHolder.getInstance().clear()
-            wasDetached = true
-            leaveRoom()
+            val mainActivity = activity as MainActivity
+            if (mainActivity.ignoreNextDetach) {
+                Log.d(TAG, "onDetach: ignoring Detach event Controller: " + System.identityHashCode(this).toString() +
+                    " Activity: " + System.identityHashCode(activity).toString())
+                mainActivity.ignoreNextDetach = false
+            } else {
+                ApplicationWideCurrentRoomHolder.getInstance().clear()
+                wasDetached = true
+                leaveRoom()
+            }
         }
 
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
