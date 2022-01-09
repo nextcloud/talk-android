@@ -1393,6 +1393,7 @@ public class CallActivity extends CallBaseActivity {
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
+                Log.d(TAG, "onMessageEvent 'hello'");
                 if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
                     if (currentCallStatus.equals(CallStatus.RECONNECTING)) {
                         hangup(false);
@@ -1402,6 +1403,7 @@ public class CallActivity extends CallBaseActivity {
                 }
                 break;
             case "roomJoined":
+                Log.d(TAG, "onMessageEvent 'roomJoined'");
                 startSendingNick();
 
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
@@ -1409,6 +1411,7 @@ public class CallActivity extends CallBaseActivity {
                 }
                 break;
             case "participantsUpdate":
+                Log.d(TAG, "onMessageEvent 'participantsUpdate'");
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
                     processUsersInRoom(
                         (List<HashMap<String, Object>>) webSocketClient
@@ -1417,10 +1420,12 @@ public class CallActivity extends CallBaseActivity {
                 }
                 break;
             case "signalingMessage":
+                Log.d(TAG, "onMessageEvent 'signalingMessage'");
                 processMessage((NCSignalingMessage) webSocketClient.getJobWithId(
                     Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
             case "peerReadyForRequestingOffer":
+                Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
                 webSocketClient.requestOfferForSessionIdWithType(
                     webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
                 break;
@@ -1578,6 +1583,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
+        Log.d(TAG, "hangupNetworkCalls. shutDownView=" + shutDownView);
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
@@ -1647,6 +1653,7 @@ public class CallActivity extends CallBaseActivity {
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
                 if (inCallFlag == 0){
+                    Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
                 }
             }
