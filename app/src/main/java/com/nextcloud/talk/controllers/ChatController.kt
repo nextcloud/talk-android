@@ -268,7 +268,7 @@ class ChatController(args: Bundle) :
     var currentlyPlayedVoiceMessage: ChatMessage? = null
 
     init {
-        Log.d(TAG, "init ChatController")
+        Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
 
         setHasOptionsMenu(true)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -440,6 +440,7 @@ class ChatController(args: Bundle) :
         .ROOM_TYPE_ONE_TO_ONE_CALL
 
     override fun onViewBound(view: View) {
+        Log.d(TAG, "onViewBound: " + System.identityHashCode(this).toString())
         actionBar?.show()
         var adapterWasNull = false
 
@@ -1505,7 +1506,8 @@ class ChatController(args: Bundle) :
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        Log.d(TAG, "onAttach")
+        Log.d(TAG, "onAttach: Controller: " + System.identityHashCode(this).toString() +
+            " Activity: " + System.identityHashCode(activity).toString())
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" &&
@@ -1577,7 +1579,9 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        Log.d(TAG, "onDetach")
+        Log.d(TAG, "onDetach: Controller: " + System.identityHashCode(this).toString() +
+            " Activity: " + System.identityHashCode(activity).toString())
+
         eventBus?.unregister(this)
 
         if (activity != null) {
