@@ -51,6 +51,7 @@
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
     <string name="nc_change_password">パスワードを変更</string>
     <string name="nc_circles">サークル</string>
+    <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_password">パスワードを削除</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
@@ -71,6 +72,7 @@
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
     <string name="nc_delete">削除</string>
+    <string name="nc_delete_all">全て削除</string>
     <string name="nc_delete_call">会話を削除</string>
     <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者でも一緒に解除されます。</string>
     <string name="nc_delete_message">削除</string>
@@ -142,6 +144,7 @@
     <string name="nc_none">なし</string>
     <string name="nc_not_defined_error">不明なエラー</string>
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
+    <string name="nc_notification_channel_messages">メッセージ</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">常に通知する</string>
     <string name="nc_notify_me_mention">言及したときに通知する</string>
@@ -219,6 +222,9 @@
     <string name="nc_settings_incognito_keyboard_title">シークレットモードキーボード</string>
     <string name="nc_settings_no_ringtone">音無し</string>
     <string name="nc_settings_no_talk_installed">許可を得ようとしたサーバーにトークアプリがインストールされていません</string>
+    <string name="nc_settings_notification_sounds">通知音</string>
+    <string name="nc_settings_notification_sounds_post_oreo">通知</string>
+    <string name="nc_settings_other_notifications_ringtone">メッセージ</string>
     <string name="nc_settings_phone_book_integration_desc">電話番号に基づいて連絡先を照合し、Talkのショートカットをシステムの連絡先アプリに統合します</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">電話番号を設定すると他のユーザーがあなたを見つけられるようになります</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">電話番号が正しくありません</string>
@@ -256,6 +262,7 @@
     <string name="nc_settings_vibrate_desc">消音でない場合に振動させます</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
+    <string name="nc_share_contact">連絡先を共有</string>
     <string name="nc_share_link">リンクの共有</string>
     <string name="nc_share_link_via">経由でリンクを共有</string>
     <string name="nc_share_subject">%1$s を招待</string>
@@ -272,6 +279,7 @@
     <string name="nc_upload_from_cloud">%1$sから共有</string>
     <string name="nc_upload_in_progess">アップロード中</string>
     <string name="nc_upload_local_file">ローカルファイルをアップロード</string>
+    <string name="nc_upload_picture_from_cam">写真を撮る</string>
     <string name="nc_user">ユーザー</string>
     <string name="nc_webinar">ウェビナー</string>
     <string name="nc_wrong_link">会話リンクが無効です</string>
@@ -297,6 +305,8 @@
     <string name="send_to_three_dots">送信…</string>
     <string name="share">共有</string>
     <string name="starred">お気に入り</string>
+    <string name="take_photo">写真を撮る</string>
+    <string name="take_photo_send">送信</string>
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
     <string name="user_info_address">住所</string>
     <string name="user_info_displayname">フルネーム</string>
