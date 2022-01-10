@@ -1551,10 +1551,12 @@ public class CallActivity extends CallBaseActivity {
                 audioSource = null;
             }
 
-            if (audioManager != null) {
-                audioManager.stop();
-                audioManager = null;
-            }
+            runOnUiThread(() -> {
+                if (audioManager != null) {
+                    audioManager.stop();
+                    audioManager = null;
+                }
+            });
 
             if (videoSource != null) {
                 videoSource = null;
@@ -1755,7 +1757,8 @@ public class CallActivity extends CallBaseActivity {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                                                                             iceServers,
                                                                             sdpConstraintsForMCU,
-                                                                            sessionId, callSession,
+                                                                            sessionId,
+                                                                            callSession,
                                                                             localMediaStream,
                                                                             true,
                                                                             true,
