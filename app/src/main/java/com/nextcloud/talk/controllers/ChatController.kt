@@ -2539,7 +2539,7 @@ class ChatController(args: Bundle) :
             menu.findItem(R.id.action_forward_message).isVisible =
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType()
             menu.findItem(R.id.action_mark_as_unread).isVisible = message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
-                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType()
+                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() && BuildConfig.DEBUG
             if (menu.hasVisibleItems()) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                     setForceShowIcon(true)
