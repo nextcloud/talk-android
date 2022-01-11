@@ -143,6 +143,8 @@
     <string name="nc_make_call_private">Egin elkarrizketa pribatua</string>
     <string name="nc_make_call_public">Egin elkarrizketa publikoa</string>
     <string name="nc_manual">Ezarri gabe</string>
+    <string name="nc_mark_as_read">Markatu irakurri gisa</string>
+    <string name="nc_mark_as_unread">Markatu ez irakurri gisa</string>
     <string name="nc_message_quote_cancel_reply">Utzi erantzuna bertan behera</string>
     <string name="nc_message_read">Mezua irakurrita</string>
     <string name="nc_message_sent">Mezua bidalita</string>
@@ -163,6 +165,10 @@
     <string name="nc_none">Bat ere ez</string>
     <string name="nc_not_defined_error">Errore ezezaguna</string>
     <string name="nc_notification_channel">%1$s %2$s jakinarazpen kanalean</string>
+    <string name="nc_notification_channel_calls">Deiak</string>
+    <string name="nc_notification_channel_calls_description">Jakinarazi sarrera-deiei buruz</string>
+    <string name="nc_notification_channel_messages">Mezuak</string>
+    <string name="nc_notification_channel_messages_description">Jakinarazi sarrerako mezuei buruz</string>
     <string name="nc_notification_settings">Jakinarazpen-ezarpenak</string>
     <string name="nc_notify_me_always">Jakinarazi beti</string>
     <string name="nc_notify_me_mention">Jakinarazi aipatzen nautenean</string>
@@ -247,6 +253,9 @@
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
     <string name="nc_settings_no_talk_installed">Talk aplikazioa ez dago instalatuta baimendu nahi duzun zerbitzarian</string>
+    <string name="nc_settings_notification_sounds">Jakinarazpen soinuak</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Jakinarazpenak</string>
+    <string name="nc_settings_other_notifications_ringtone">Mezuak</string>
     <string name="nc_settings_phone_book_integration_desc">Lotu telefono zenbakiaren araberako kontaktuak Talk lasterbidea sistemako kontaktuen aplikazioan integratzeko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Zure telefono zenbakia ezarri dezakezu beste erabiltzaile batzuek aurkitu ahal izateko</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Telefono-zenbaki baliogabea</string>
