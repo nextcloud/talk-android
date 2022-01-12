@@ -50,6 +50,7 @@
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
     <string name="nc_change_password">パスワードを変更</string>
+    <string name="nc_circle">サークル</string>
     <string name="nc_circles">サークル</string>
     <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_password">パスワードを削除</string>
@@ -288,6 +289,7 @@
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
     <string name="open_in_files_app">アプリでファイルを開く</string>
     <string name="password_protected">パスワード保護</string>
+    <string name="play_pause_voice_message">音声メッセージを再生／一時停止</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>

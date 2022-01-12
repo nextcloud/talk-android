@@ -143,6 +143,8 @@
     <string name="nc_make_call_private">Fazer esta conversa privada</string>
     <string name="nc_make_call_public">Fazer esta conversa pública</string>
     <string name="nc_manual">Não definido</string>
+    <string name="nc_mark_as_read">Marcar como Lido</string>
+    <string name="nc_mark_as_unread">Marcar como não lido</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Leitura de mensagem</string>
     <string name="nc_message_sent">Mensagem enviada</string>
@@ -163,6 +165,10 @@
     <string name="nc_none">Nada</string>
     <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_notification_channel">%1$s no canal de notificação %2$s</string>
+    <string name="nc_notification_channel_calls">Chamadas</string>
+    <string name="nc_notification_channel_calls_description">Notifique sobre chamadas recebidas</string>
+    <string name="nc_notification_channel_messages">Mensagens</string>
+    <string name="nc_notification_channel_messages_description">Notificar sobre mensagens recebidas</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_notify_me_always">Sempre notificar</string>
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
@@ -247,6 +253,9 @@
     <string name="nc_settings_incognito_keyboard_title">Teclado incógnito</string>
     <string name="nc_settings_no_ringtone">Sem som</string>
     <string name="nc_settings_no_talk_installed">O aplicativo Talk não está instalado no servidor em que você tentou se autenticar</string>
+    <string name="nc_settings_notification_sounds">Sons de notificação</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Notificações</string>
+    <string name="nc_settings_other_notifications_ringtone">Mensagens</string>
     <string name="nc_settings_phone_book_integration_desc">Combine os contatos com base no número de telefone para integrar o atalho do Bate Papo no aplicativo de contatos do sistema</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Você pode definir seu número de telefone para que outros usuários possam encontrar você</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de telefone inválido</string>
