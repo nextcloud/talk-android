@@ -302,6 +302,8 @@ public class PushUtils {
                     }
                 }
             }
+        } else {
+            Log.e(TAG, "push token was empty when trying to register at nextcloud server");
         }
     }
 
