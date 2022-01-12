@@ -47,6 +47,7 @@ import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -55,6 +56,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -88,6 +90,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
     private FlexibleAdapter<AdvancedUserItem> adapter;
     private final List<AdvancedUserItem> userItems = new ArrayList<>();
+
+    private Status status;
 
     @SuppressLint("InflateParams")
     @NonNull
@@ -154,8 +158,12 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
         binding.setStatus.setOnClickListener(v -> {
             dismiss();
-            SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user);
-            setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
+
+            // TODO: better solution
+            if(status != null) {
+                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
+                setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
+            }
         });
 
         if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
@@ -200,28 +208,21 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             observeOn(AndroidSchedulers.mainThread()).
             subscribe(new Observer<StatusOverall>() {
 
-                private StatusOverall statusOverall;
-
                 @Override
-                public void onSubscribe(@NonNull Disposable d) {
-                    Log.d("x", "onSubscribe");
-                }
+                public void onSubscribe(@NonNull Disposable d) {}
 
                 @Override
                 public void onNext(@NonNull StatusOverall statusOverall) {
-                    Log.d("x", "onNext");
-                    this.statusOverall = statusOverall;
+                    status = statusOverall.ocs.data;
                 }
 
                 @Override
                 public void onError(@NonNull Throwable e) {
-                    Log.e("x", "Läuft net", e);
+                    Log.e(TAG, "Can't receive user status from server. ", e);
                 }
 
                 @Override
                 public void onComplete() {
-                    Log.d("x", "complete");
-
                 }
             });
     }

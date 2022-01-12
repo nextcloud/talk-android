@@ -424,4 +424,8 @@ public class ApiUtils {
     public static String getUrlForStatus(String baseUrl) {
         return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/user_status";
     }
+
+    public static String getUrlForStatusMessage(String baseUrl) {
+        return getUrlForStatus(baseUrl) + "/message";
+    }
 }

@@ -66,7 +66,7 @@ import com.nextcloud.talk.utils.database.user.UserModule
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils
 import com.vanniktech.emoji.EmojiManager
-import com.vanniktech.emoji.googlecompat.GoogleCompatEmojiProvider
+import com.vanniktech.emoji.google.GoogleEmojiProvider
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
 import okhttp3.OkHttpClient
@@ -188,7 +188,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         config.setReplaceAll(true)
         val emojiCompat = EmojiCompat.init(config)
 
-        EmojiManager.install(GoogleCompatEmojiProvider(emojiCompat))
+        EmojiManager.install(GoogleEmojiProvider())
 
         NotificationUtils.registerNotificationChannels(applicationContext, appPreferences)
     }

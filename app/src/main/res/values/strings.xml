@@ -288,6 +288,7 @@
     <string name="oneHour">1 hour</string>
     <string name="fourHours">4 hours</string>
     <string name="thisWeek">This week</string>
+    <string name="secondsAgo">seconds ago</string>
 
     <!-- Conversations List-->
     <string name="nc_new_mention">Unread mentions</string>

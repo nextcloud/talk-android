@@ -44,6 +44,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ClickableSpan;
@@ -86,6 +87,8 @@ import org.greenrobot.eventbus.EventBus;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -123,6 +126,8 @@ public class DisplayUtils {
     private static final String TWITTER_HANDLE_PREFIX = "@";
     private static final String HTTP_PROTOCOL = "http://";
     private static final String HTTPS_PROTOCOL = "https://";
+
+    private static final int DATE_TIME_PARTS_SIZE = 2;
 
     public static void setClickableString(String string, String url, TextView textView) {
         SpannableString spannableString = new SpannableString(string);
@@ -604,5 +609,67 @@ public class DisplayUtils {
             default:
                 return R.string.menu_item_sort_by_name_a_z;
         }
+    }
+
+    /**
+     * calculates the relative time string based on the given modification timestamp.
+     *
+     * @param context the app's context
+     * @param modificationTimestamp the UNIX timestamp of the file modification time in milliseconds.
+     * @return a relative time string
+     */
+
+    public static CharSequence getRelativeTimestamp(Context context, long modificationTimestamp, boolean showFuture) {
+        return getRelativeDateTimeString(context,
+                                         modificationTimestamp,
+                                         android.text.format.DateUtils.SECOND_IN_MILLIS,
+                                         DateUtils.WEEK_IN_MILLIS,
+                                         0,
+                                         showFuture);
+    }
+
+    public static CharSequence getRelativeDateTimeString(Context c,
+                                                         long time,
+                                                         long minResolution,
+                                                         long transitionResolution,
+                                                         int flags,
+                                                         boolean showFuture) {
+
+        CharSequence dateString = "";
+
+        // in Future
+        if (!showFuture && time > System.currentTimeMillis()) {
+            return DisplayUtils.unixTimeToHumanReadable(time);
+        }
+        // < 60 seconds -> seconds ago
+        long diff = System.currentTimeMillis() - time;
+        if (diff > 0 && diff < 60 * 1000 && minResolution == DateUtils.SECOND_IN_MILLIS) {
+            return c.getString(R.string.secondsAgo);
+        } else {
+            dateString = DateUtils.getRelativeDateTimeString(c, time, minResolution, transitionResolution, flags);
+        }
+
+        String[] parts = dateString.toString().split(",");
+        if (parts.length == DATE_TIME_PARTS_SIZE) {
+            if (parts[1].contains(":") && !parts[0].contains(":")) {
+                return parts[0];
+            } else if (parts[0].contains(":") && !parts[1].contains(":")) {
+                return parts[1];
+            }
+        }
+        // dateString contains unexpected format. fallback: use relative date time string from android api as is.
+        return dateString.toString();
+    }
+
+    /**
+     * Converts Unix time to human readable format
+     *
+     * @param milliseconds that have passed since 01/01/1970
+     * @return The human readable time for the users locale
+     */
+    public static String unixTimeToHumanReadable(long milliseconds) {
+        Date date = new Date(milliseconds);
+        DateFormat df = DateFormat.getDateTimeInstance();
+        return df.format(date);
     }
 }
