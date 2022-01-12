@@ -284,77 +284,7 @@ public class PushUtils {
                                             proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
                                                     .getData().getPublicKey());
 
-                                            ncApi.registerDeviceForNotificationsWithProxy(
-                                                    ApiUtils.getUrlPushProxy(), proxyMap)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .subscribe(new Observer<Void>() {
-                                                        @Override
-                                                        public void onSubscribe(@NonNull Disposable d) {
-                                                            // unused atm
-                                                        }
-
-                                                        @Override
-                                                        public void onNext(@NonNull Void aVoid) {
-                                                            PushConfigurationState pushConfigurationState =
-                                                                    new PushConfigurationState();
-                                                            pushConfigurationState.setPushToken(token);
-                                                            pushConfigurationState.setDeviceIdentifier(
-                                                                    pushRegistrationOverall.getOcs()
-                                                                            .getData().getDeviceIdentifier());
-                                                            pushConfigurationState.setDeviceIdentifierSignature(
-                                                                    pushRegistrationOverall
-                                                                            .getOcs().getData().getSignature());
-                                                            pushConfigurationState.setUserPublicKey(
-                                                                    pushRegistrationOverall.getOcs()
-                                                                            .getData().getPublicKey());
-                                                            pushConfigurationState.setUsesRegularPass(false);
-
-                                                            try {
-                                                                userUtils.createOrUpdateUser(null,
-                                                                        null, null,
-                                                                        userEntity.getDisplayName(),
-                                                                        LoganSquare.serialize(pushConfigurationState), null,
-                                                                        null, userEntity.getId(), null, null, null)
-                                                                        .subscribe(new Observer<UserEntity>() {
-                                                                            @Override
-                                                                            public void onSubscribe(@NonNull Disposable d) {
-                                                                                // unused atm
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onNext(@NonNull UserEntity userEntity) {
-                                                                                eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onError(@NonNull Throwable e) {
-                                                                                eventBus.post(new EventStatus
-                                                                                        (userEntity.getId(),
-                                                                                                EventStatus.EventType
-                                                                                                        .PUSH_REGISTRATION, false));
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onComplete() {
-                                                                                // unused atm
-                                                                            }
-                                                                        });
-                                                            } catch (IOException e) {
-                                                                Log.e(TAG, "IOException while updating user", e);
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onError(@NonNull Throwable e) {
-                                                            eventBus.post(new EventStatus(userEntity.getId(),
-                                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
-                                                        }
-
-                                                        @Override
-                                                        public void onComplete() {
-                                                            // unused atm
-                                                        }
-                                                    });
+                                            registerDeviceWithPushProxy(pushRegistrationOverall, proxyMap, token, userEntity);
                                         }
 
                                         @Override
@@ -373,6 +303,84 @@ public class PushUtils {
                 }
             }
         }
+    }
+
+    private void registerDeviceWithPushProxy(
+        @androidx.annotation.NonNull PushRegistrationOverall pushRegistrationOverall,
+        Map<String, String> proxyMap,
+        String token,
+        UserEntity userEntity) {
+        ncApi.registerDeviceForNotificationsWithPushProxy(
+            ApiUtils.getUrlPushProxy(), proxyMap)
+                .subscribeOn(Schedulers.io())
+                .subscribe(new Observer<Void>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                        // unused atm
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Void aVoid) {
+                        PushConfigurationState pushConfigurationState =
+                                new PushConfigurationState();
+                        pushConfigurationState.setPushToken(token);
+                        pushConfigurationState.setDeviceIdentifier(
+                            pushRegistrationOverall.getOcs()
+                                        .getData().getDeviceIdentifier());
+                        pushConfigurationState.setDeviceIdentifierSignature(
+                            pushRegistrationOverall
+                                        .getOcs().getData().getSignature());
+                        pushConfigurationState.setUserPublicKey(
+                            pushRegistrationOverall.getOcs()
+                                        .getData().getPublicKey());
+                        pushConfigurationState.setUsesRegularPass(false);
+
+                        try {
+                            userUtils.createOrUpdateUser(null,
+                                                         null, null,
+                                                         userEntity.getDisplayName(),
+                                                         LoganSquare.serialize(pushConfigurationState), null,
+                                                         null, userEntity.getId(), null, null, null)
+                                    .subscribe(new Observer<UserEntity>() {
+                                        @Override
+                                        public void onSubscribe(@NonNull Disposable d) {
+                                            // unused atm
+                                        }
+
+                                        @Override
+                                        public void onNext(@NonNull UserEntity userEntity) {
+                                            eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
+                                        }
+
+                                        @Override
+                                        public void onError(@NonNull Throwable e) {
+                                            eventBus.post(new EventStatus
+                                                    (userEntity.getId(),
+                                                     EventStatus.EventType
+                                                                    .PUSH_REGISTRATION, false));
+                                        }
+
+                                        @Override
+                                        public void onComplete() {
+                                            // unused atm
+                                        }
+                                    });
+                        } catch (IOException e) {
+                            Log.e(TAG, "IOException while updating user", e);
+                        }
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        eventBus.post(new EventStatus(userEntity.getId(),
+                                                      EventStatus.EventType.PUSH_REGISTRATION, false));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        // unused atm
+                    }
+                });
     }
 
     private Key readKeyFromString(boolean readPublicKey, String keyString) {
