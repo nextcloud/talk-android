@@ -27,6 +27,7 @@ package com.nextcloud.talk.models.json.converters
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_JOINED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_LEFT
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_MISSED
@@ -74,6 +75,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_RE
 * `call_joined` - {actor} joined the call
 * `call_left` - {actor} left the call
 * `call_ended` - Call with {user1}, {user2}, {user3}, {user4} and {user5} (Duration 30:23)
+* `call_ended_everyone` - {user1} ended the call with {user2}, {user3}, {user4} and {user5} (Duration 30:23)
 * `call_missed` - You missed a call from {user}
 * `call_tried` - You tried to call {user}
 * `read_only_off` - {actor} unlocked the conversation
@@ -115,6 +117,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "call_joined" -> return CALL_JOINED
             "call_left" -> return CALL_LEFT
             "call_ended" -> return CALL_ENDED
+            "call_ended_everyone" -> return CALL_ENDED_EVERYONE
             "call_missed" -> return CALL_MISSED
             "call_tried" -> return CALL_TRIED
             "read_only_off" -> return READ_ONLY_OFF
@@ -163,6 +166,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             CALL_JOINED -> return "call_joined"
             CALL_LEFT -> return "call_left"
             CALL_ENDED -> return "call_ended"
+            CALL_ENDED_EVERYONE -> return "call_ended_everyone"
             CALL_MISSED -> return "call_missed"
             CALL_TRIED -> return "call_tried"
             READ_ONLY_OFF -> return "read_only_off"

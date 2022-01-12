@@ -621,6 +621,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         CALL_JOINED,
         CALL_LEFT,
         CALL_ENDED,
+        CALL_ENDED_EVERYONE,
         CALL_MISSED,
         CALL_TRIED,
         READ_ONLY_OFF,

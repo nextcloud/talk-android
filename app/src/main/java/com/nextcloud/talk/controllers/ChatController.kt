@@ -2298,10 +2298,14 @@ class ChatController(args: Bundle) :
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
-        ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
-        val callIntent = getIntentForCall(isVoiceOnlyCall)
-        if (callIntent != null) {
-            startActivity(callIntent)
+        if (currentConversation?.canStartCall == false && currentConversation?.hasCall == false) {
+            Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
+        } else {
+            ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
+            val callIntent = getIntentForCall(isVoiceOnlyCall)
+            if (callIntent != null) {
+                startActivity(callIntent)
+            }
         }
     }
 

@@ -1277,11 +1277,11 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void performCall() {
-        Integer inCallFlag;
+        int inCallFlag;
         if (isVoiceOnlyCall) {
-            inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO.getValue();
+            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO;
         } else {
-            inCallFlag = (int) Participant.ParticipantFlags.IN_CALL_WITH_AUDIO_AND_VIDEO.getValue();
+            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_VIDEO;
         }
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
@@ -1393,6 +1393,7 @@ public class CallActivity extends CallBaseActivity {
     public void onMessageEvent(WebSocketCommunicationEvent webSocketCommunicationEvent) {
         switch (webSocketCommunicationEvent.getType()) {
             case "hello":
+                Log.d(TAG, "onMessageEvent 'hello'");
                 if (!webSocketCommunicationEvent.getHashMap().containsKey("oldResumeId")) {
                     if (currentCallStatus.equals(CallStatus.RECONNECTING)) {
                         hangup(false);
@@ -1402,6 +1403,7 @@ public class CallActivity extends CallBaseActivity {
                 }
                 break;
             case "roomJoined":
+                Log.d(TAG, "onMessageEvent 'roomJoined'");
                 startSendingNick();
 
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
@@ -1409,6 +1411,7 @@ public class CallActivity extends CallBaseActivity {
                 }
                 break;
             case "participantsUpdate":
+                Log.d(TAG, "onMessageEvent 'participantsUpdate'");
                 if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
                     processUsersInRoom(
                         (List<HashMap<String, Object>>) webSocketClient
@@ -1417,10 +1420,12 @@ public class CallActivity extends CallBaseActivity {
                 }
                 break;
             case "signalingMessage":
+                Log.d(TAG, "onMessageEvent 'signalingMessage'");
                 processMessage((NCSignalingMessage) webSocketClient.getJobWithId(
                     Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
             case "peerReadyForRequestingOffer":
+                Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
                 webSocketClient.requestOfferForSessionIdWithType(
                     webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
                 break;
@@ -1523,6 +1528,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void hangup(boolean shutDownView) {
+        Log.d(TAG, "hangup! shutDownView=" + shutDownView);
         stopCallingSound();
         dispose(null);
 
@@ -1538,19 +1544,19 @@ public class CallActivity extends CallBaseActivity {
                 videoCapturer = null;
             }
 
-            if (binding.selfVideoRenderer != null) {
-                binding.selfVideoRenderer.release();
-            }
+            binding.selfVideoRenderer.release();
 
             if (audioSource != null) {
                 audioSource.dispose();
                 audioSource = null;
             }
 
-            if (audioManager != null) {
-                audioManager.stop();
-                audioManager = null;
-            }
+            runOnUiThread(() -> {
+                if (audioManager != null) {
+                    audioManager.stop();
+                    audioManager = null;
+                }
+            });
 
             if (videoSource != null) {
                 videoSource = null;
@@ -1579,6 +1585,7 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void hangupNetworkCalls(boolean shutDownView) {
+        Log.d(TAG, "hangupNetworkCalls. shutDownView=" + shutDownView);
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
@@ -1618,32 +1625,38 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void processUsersInRoom(List<HashMap<String, Object>> users) {
+        Log.d(TAG, "processUsersInRoom");
         List<String> newSessions = new ArrayList<>();
         Set<String> oldSessions = new HashSet<>();
 
         hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient.hasMCU();
-
+        Log.d(TAG, "   hasMCU is " + hasMCU);
 
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
-        String currentSessiondId = callSession;
+        String currentSessionId = callSession;
         if (hasMCU) {
-            currentSessiondId = webSocketClient.getSessionId();
+            currentSessionId = webSocketClient.getSessionId();
         }
 
+        Log.d(TAG, "   currentSessionId is " + currentSessionId);
+
         for (HashMap<String, Object> participant : users) {
-            if (!participant.get("sessionId").equals(currentSessiondId)) {
-                Object inCallObject = participant.get("inCall");
+            long inCallFlag = (long)participant.get("inCall");
+            if (!participant.get("sessionId").equals(currentSessionId)) {
                 boolean isNewSession;
-                if (inCallObject instanceof Boolean) {
-                    isNewSession = (boolean) inCallObject;
-                } else {
-                    isNewSession = ((long) inCallObject) != 0;
-                }
+                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0,4) + " : " + inCallFlag);
+                isNewSession = inCallFlag != 0;
 
                 if (isNewSession) {
                     newSessions.add(participant.get("sessionId").toString());
                 } else {
                     oldSessions.add(participant.get("sessionId").toString());
+                }
+            } else {
+                Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
+                if (inCallFlag == 0){
+                    Log.d(TAG, "Most probably a moderator ended the call for all.");
+                    hangup(true);
                 }
             }
         }
@@ -1674,6 +1687,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         for (String sessionId : newSessions) {
+            Log.d(TAG, "   newSession joined: " + sessionId);
             getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
         }
 
@@ -1682,6 +1696,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         for (String sessionId : oldSessions) {
+            Log.d(TAG, "   oldSession that will be removed is: " + sessionId);
             endPeerConnection(sessionId, false);
         }
     }
@@ -1742,7 +1757,8 @@ public class CallActivity extends CallBaseActivity {
                 magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
                                                                             iceServers,
                                                                             sdpConstraintsForMCU,
-                                                                            sessionId, callSession,
+                                                                            sessionId,
+                                                                            callSession,
                                                                             localMediaStream,
                                                                             true,
                                                                             true,

@@ -82,23 +82,6 @@ public class Participant {
 
     public boolean selected;
 
-    public ParticipantFlags getParticipantFlags() {
-        ParticipantFlags participantFlags = ParticipantFlags.NOT_IN_CALL;
-        if (inCall != null) {
-            if (inCall instanceof Long) {
-                participantFlags = ParticipantFlags.fromValue((Long) inCall);
-            } else if (inCall instanceof Boolean) {
-                if ((boolean) inCall) {
-                    participantFlags = ParticipantFlags.IN_CALL;
-                } else {
-                    participantFlags = ParticipantFlags.NOT_IN_CALL;
-                }
-            }
-        }
-
-        return participantFlags;
-    }
-
     public Long getAttendeeId() {
         return attendeeId;
     }
@@ -345,41 +328,5 @@ public class Participant {
         public static final int WITH_AUDIO = 2;
         public static final int WITH_VIDEO = 4;
         public static final int WITH_PHONE = 8;
-    }
-
-    @Deprecated
-    public enum ParticipantFlags {
-        NOT_IN_CALL(0),
-        IN_CALL(1),
-        IN_CALL_WITH_AUDIO(3),
-        IN_CALL_WITH_VIDEO(5),
-        IN_CALL_WITH_AUDIO_AND_VIDEO(7);
-
-        private long value;
-
-        ParticipantFlags(long value) {
-            this.value = value;
-        }
-
-        public static ParticipantFlags fromValue(long value) {
-            if (value == 0) {
-                return NOT_IN_CALL;
-            } else if (value == 1) {
-                return IN_CALL;
-            } else if (value == 3) {
-                return IN_CALL_WITH_AUDIO;
-            } else if (value == 5) {
-                return IN_CALL_WITH_VIDEO;
-            } else if (value == 7) {
-                return IN_CALL_WITH_AUDIO_AND_VIDEO;
-            } else {
-                return NOT_IN_CALL;
-            }
-        }
-
-        public long getValue() {
-            return value;
-        }
-
     }
 }
