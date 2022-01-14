@@ -347,6 +347,7 @@
     <string name="send_to_three_dots">Senden an …</string>
     <string name="share">Freigabe</string>
     <string name="starred">Favorit</string>
+    <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="take_photo">Ein Foto aufnehmen</string>
     <string name="take_photo_error_deleting_picture">Fehler beim Aufnehmen des Fotos</string>
     <string name="take_photo_permission">Das Fotografieren ist ohne Berechtigungen nicht möglich</string>

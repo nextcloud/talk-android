@@ -347,6 +347,7 @@
     <string name="send_to_three_dots">Odeslat k…</string>
     <string name="share">Sdílet</string>
     <string name="starred">Oblíbené</string>
+    <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
     <string name="take_photo">Vyfotit</string>
     <string name="take_photo_error_deleting_picture">Chyba při pořizování obrázku</string>
     <string name="take_photo_permission">Focení není možné bez udělení oprávnění</string>

@@ -347,6 +347,7 @@
     <string name="send_to_three_dots">傳送到 ...</string>
     <string name="share">分享</string>
     <string name="starred">我的最愛</string>
+    <string name="startCallForbidden">你無權開始通話</string>
     <string name="take_photo">拍照</string>
     <string name="take_photo_error_deleting_picture">拍照時出錯</string>
     <string name="take_photo_permission">沒有權限就無法拍照</string>
