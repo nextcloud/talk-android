@@ -347,6 +347,7 @@
     <string name="send_to_three_dots">Odoslať do ...</string>
     <string name="share">Sprístupniť</string>
     <string name="starred">Obľúbené</string>
+    <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>
     <string name="take_photo">Urobiť fotografiu</string>
     <string name="take_photo_error_deleting_picture">Chyba pri vytváraní fotografie</string>
     <string name="take_photo_permission">Fotografovanie nie je možné bez oprávnení</string>
