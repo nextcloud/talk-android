@@ -87,8 +87,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private var router: Router? = null
 
-    var ignoreNextDetach: Boolean = false
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 
@@ -180,10 +178,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     override fun onResume() {
         Log.d(TAG, "onResume: Activity: " + System.identityHashCode(this).toString())
         super.onResume()
-        if (hasWindowFocus()) {
-            Log.d(TAG, "onResume: clear ignoreNextDetach")
-            ignoreNextDetach = false
-        }
     }
 
     override fun onPause() {
@@ -352,8 +346,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
             } else {
-                Log.d(TAG, "onNewIntent set ignoreNextDetach")
-                ignoreNextDetach = true
                 ConductorRemapping.remapChatController(
                     router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
                     intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false
