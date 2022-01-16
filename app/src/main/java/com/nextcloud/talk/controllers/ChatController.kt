@@ -311,7 +311,8 @@ class ChatController(args: Bundle) :
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-            Log.d(TAG, "getRoomInfo - getRoomAPI - calling")
+            val startNanoTime = System.nanoTime()
+            Log.d(TAG, "getRoomInfo - getRoom - calling: " + startNanoTime)
             ncApi?.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, conversationUser.baseUrl, roomToken))
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
@@ -322,7 +323,7 @@ class ChatController(args: Bundle) :
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "getRoomInfo - getRoomAPI - got response")
+                        Log.d(TAG, "getRoomInfo - getRoom - got response: " + startNanoTime)
                         currentConversation = roomOverall.ocs.data
                         Log.d(
                             TAG,
@@ -348,10 +349,11 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onError(e: Throwable) {
-                        // unused atm
+                        Log.e(TAG, "getRoomInfo - getRoom - ERROR", e)
                     }
 
                     override fun onComplete() {
+                        Log.d(TAG, "getRoomInfo - getRoom - onComplete: " + startNanoTime)
                         if (shouldRepeat) {
                             if (lobbyTimerHandler == null) {
                                 lobbyTimerHandler = Handler()
@@ -393,7 +395,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "handleFromNotification - getRooms - ERROR: ", e)
                 }
 
                 override fun onComplete() {
@@ -1659,7 +1661,8 @@ class ChatController(args: Bundle) :
                 apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
             }
 
-            Log.d(TAG, "joinRoomWithPassword - joinRoom - calling")
+            val startNanoTime = System.nanoTime()
+            Log.d(TAG, "joinRoomWithPassword - joinRoom - calling: " + startNanoTime)
             ncApi?.joinRoom(
                 credentials,
                 ApiUtils.getUrlForParticipantsActive(apiVersion, conversationUser?.baseUrl, roomToken),
@@ -1675,7 +1678,7 @@ class ChatController(args: Bundle) :
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
-                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response")
+                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs.data.sessionId
 
@@ -1711,7 +1714,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onError(e: Throwable) {
-                        // unused atm
+                        Log.e(TAG, "joinRoomWithPassword - joinRoom - ERROR", e)
                     }
 
                     override fun onComplete() {
@@ -1743,7 +1746,8 @@ class ChatController(args: Bundle) :
             apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
-        Log.d(TAG, "leaveRoom - leaveRoom - calling")
+        val startNanoTime = System.nanoTime()
+        Log.d(TAG, "leaveRoom - leaveRoom - calling: " + startNanoTime)
         ncApi?.leaveRoom(
             credentials,
             ApiUtils.getUrlForParticipantsActive(
@@ -1760,7 +1764,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "leaveRoom - leaveRoom - got response")
+                    Log.d(TAG, "leaveRoom - leaveRoom - got response: " + startNanoTime)
                     checkingLobbyStatus = false
 
                     if (lobbyTimerHandler != null) {
@@ -1783,7 +1787,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "leaveRoom - leaveRoom - ERROR", e)
                 }
 
                 override fun onComplete() {
@@ -1982,7 +1986,7 @@ class ChatController(args: Bundle) :
                         }
 
                         override fun onError(e: Throwable) {
-                            Log.e(TAG, "failed to pull chat messages", e)
+                            Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - ERROR", e)
                         }
 
                         override fun onComplete() {
@@ -2020,7 +2024,7 @@ class ChatController(args: Bundle) :
                         }
 
                         override fun onError(e: Throwable) {
-                            // unused atm
+                            Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - ERROR", e)
                         }
 
                         override fun onComplete() {
