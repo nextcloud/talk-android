@@ -279,6 +279,9 @@ public class PushUtils {
 
                 @Override
                 public void onNext(@NonNull PushRegistrationOverall pushRegistrationOverall) {
+                    Log.d(TAG,
+                          "pushToken successfully registered at nextcloud server. pushToken= " + token.substring(0,5) + "...");
+
                     Map<String, String> proxyMap = new HashMap<>();
                     proxyMap.put("pushToken", token);
                     proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
@@ -316,6 +319,9 @@ public class PushUtils {
                 @Override
                 public void onNext(@NonNull Void aVoid) {
                     try {
+                        Log.d(TAG,
+                              "pushToken successfully registered at pushproxy. pushToken= " + proxyMap.get("pushToken").substring(0,5) +
+                                  "...");
                         createOrUpdateUser(proxyMap, userEntity);
                     } catch (IOException e) {
                         Log.e(TAG, "IOException while updating user", e);
