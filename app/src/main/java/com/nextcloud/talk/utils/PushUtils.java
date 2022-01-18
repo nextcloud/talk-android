@@ -245,9 +245,12 @@ public class PushUtils {
                             accountPushData = null;
                         }
 
-                        if (((TextUtils.isEmpty(providerValue) || accountPushData == null)
-                            && !userEntity.getScheduledForDeletion()) ||
-                            (accountPushData != null && !accountPushData.getPushToken().equals(token) && !userEntity.getScheduledForDeletion())) {
+                        boolean userHasNoPushData = (TextUtils.isEmpty(providerValue) || accountPushData == null);
+                        boolean userIsNotMarkedForDeletion = !userEntity.getScheduledForDeletion();
+                        boolean tokenHasChanged =
+                            accountPushData != null && !accountPushData.getPushToken().equals(token);
+
+                        if (userIsNotMarkedForDeletion && (userHasNoPushData || tokenHasChanged)) {
 
                             Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
                             nextcloudRegisterPushMap.put("format", "json");
