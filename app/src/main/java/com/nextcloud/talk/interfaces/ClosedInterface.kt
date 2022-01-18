@@ -24,4 +24,5 @@ interface ClosedInterface {
 
     val isGooglePlayServicesAvailable: Boolean
     fun providerInstallerInstallIfNeededAsync()
+    fun setUpPushTokenRegistration()
 }

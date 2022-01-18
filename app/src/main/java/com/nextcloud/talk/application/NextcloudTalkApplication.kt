@@ -53,7 +53,6 @@ import com.nextcloud.talk.dagger.modules.DatabaseModule
 import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
-import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DeviceUtils
@@ -165,7 +164,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
         DeviceUtils.ignoreSpecialBatteryFeatures()
 
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
+        ClosedInterfaceImpl().setUpPushTokenRegistration()
+
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
             CapabilitiesWorker::class.java,
@@ -174,11 +174,10 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
 
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
-        WorkManager.getInstance().enqueue(accountRemovalWork)
-        WorkManager.getInstance().enqueue(capabilitiesUpdateWork)
-        WorkManager.getInstance().enqueue(signalingSettingsWork)
-        WorkManager.getInstance().enqueueUniquePeriodicWork(
+        WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
+        WorkManager.getInstance(applicationContext).enqueue(capabilitiesUpdateWork)
+        WorkManager.getInstance(applicationContext).enqueue(signalingSettingsWork)
+        WorkManager.getInstance(applicationContext).enqueueUniquePeriodicWork(
             "DailyCapabilitiesUpdateWork",
             ExistingPeriodicWorkPolicy.REPLACE,
             periodicCapabilitiesUpdateWork

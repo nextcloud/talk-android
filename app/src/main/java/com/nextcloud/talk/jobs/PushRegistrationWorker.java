@@ -21,9 +21,13 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
+
+import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.PushUtils;
 
 public class PushRegistrationWorker extends Worker {
@@ -36,10 +40,15 @@ public class PushRegistrationWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        PushUtils pushUtils = new PushUtils();
-        pushUtils.generateRsa2048KeyPair();
-        pushUtils.pushRegistrationToServer();
+        if(new ClosedInterfaceImpl().isGooglePlayServicesAvailable()){
+            PushUtils pushUtils = new PushUtils();
+            pushUtils.generateRsa2048KeyPair();
+            pushUtils.pushRegistrationToServer();
 
-        return Result.success();
+            return Result.success();
+        }
+        Log.w(TAG, "executing PushRegistrationWorker doesn't make sense because Google Play Services are not " +
+            "available");
+        return Result.failure();
     }
 }

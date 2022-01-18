@@ -33,4 +33,9 @@ public class ClosedInterfaceImpl implements ClosedInterface {
     public boolean isGooglePlayServicesAvailable() {
         return false;
     }
+
+    @Override
+    public void setUpPushTokenRegistration() {
+        // no push notifications for generic build flavour :(
+    }
 }
