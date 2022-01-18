@@ -229,29 +229,10 @@ public class PushUtils {
                 devicePublicKeyBase64 = "-----BEGIN PUBLIC KEY-----\n" + devicePublicKeyBase64 + "\n-----END PUBLIC KEY-----\n";
 
                 if (userUtils.anyUserExists()) {
-                    String providerValue;
-                    PushConfigurationState accountPushData = null;
                     for (Object userEntityObject : userUtils.getUsers()) {
                         UserEntity userEntity = (UserEntity) userEntityObject;
-                        providerValue = userEntity.getPushConfigurationState();
-                        if (!TextUtils.isEmpty(providerValue)) {
-                            try {
-                                accountPushData = LoganSquare.parse(providerValue, PushConfigurationState.class);
-                            } catch (IOException e) {
-                                Log.d(TAG, "Failed to parse account push data");
-                                accountPushData = null;
-                            }
-                        } else {
-                            accountPushData = null;
-                        }
 
-                        boolean userHasNoPushData = (TextUtils.isEmpty(providerValue) || accountPushData == null);
-                        boolean userIsNotMarkedForDeletion = !userEntity.getScheduledForDeletion();
-                        boolean tokenHasChanged =
-                            accountPushData != null && !accountPushData.getPushToken().equals(token);
-
-                        if (userIsNotMarkedForDeletion && (userHasNoPushData || tokenHasChanged)) {
-
+                        if (!userEntity.getScheduledForDeletion()) {
                             Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
                             nextcloudRegisterPushMap.put("format", "json");
                             nextcloudRegisterPushMap.put("pushTokenHash", pushTokenHash);
