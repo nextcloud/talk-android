@@ -21,7 +21,9 @@ If your problem still occurs after checking all these hints, create an issue at 
 
 ## 🤖 Check android settings
 
-Please take into account that the android settings might be different for each manufacturer. It might be worth it to check what other messaging apps recommend to get their apps running on a certain smartphone and adapt this to the talk app.
+Please take into account that the android settings might be different for each manufacturer.
+It might be worth it to check what other messaging apps recommend to get their apps running on a certain smartphone and adapt this to the talk app.
+Also [https://dontkillmyapp.com/](https://dontkillmyapp.com/) might be good starting point.
 
 - Check that your phone is not in "do not disturb" mode
 - Check that your phone has internet access
