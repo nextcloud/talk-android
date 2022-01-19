@@ -35,23 +35,6 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     override fun onProviderInstallFailed(p0: Int, p1: Intent?) {
     }
 
-    override fun setUpPushTokenRegistration() {
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
-        WorkManager.getInstance().enqueue(pushRegistrationWork)
-
-        val periodicPushRegistration = PeriodicWorkRequest.Builder(
-            GetFirebasePushTokenWorker::class.java, 15,  // TODO: discuss intervall. joas 24h, google 1 month
-            TimeUnit.MINUTES
-        )
-            .build()
-
-        WorkManager.getInstance()
-            .enqueueUniquePeriodicWork(
-                "periodicPushRegistration", ExistingPeriodicWorkPolicy.REPLACE,
-                periodicPushRegistration
-            )
-    }
-
     private fun isGPlayServicesAvailable() : Boolean {
         val api = GoogleApiAvailability.getInstance()
         val code =
@@ -61,5 +44,44 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
                 )
             }
         return code == ConnectionResult.SUCCESS
+    }
+
+    override fun setUpPushTokenRegistration() {
+        registerLocalToken()
+        setUpPeriodicLocalTokenRegistration()
+        setUpPeriodicTokenRefreshFromFCM()
+    }
+
+    private fun registerLocalToken(){
+        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
+        WorkManager.getInstance().enqueue(pushRegistrationWork)
+    }
+
+    private fun setUpPeriodicLocalTokenRegistration () {
+        val periodicTokenRegistration = PeriodicWorkRequest.Builder(
+            PushRegistrationWorker::class.java, 1,
+            TimeUnit.DAYS
+        )
+            .build()
+
+        WorkManager.getInstance()
+            .enqueueUniquePeriodicWork(
+                "periodicTokenRegistration", ExistingPeriodicWorkPolicy.REPLACE,
+                periodicTokenRegistration
+            )
+    }
+
+    private fun setUpPeriodicTokenRefreshFromFCM () {
+        val periodicTokenRefreshFromFCM = PeriodicWorkRequest.Builder(
+            GetFirebasePushTokenWorker::class.java, 30,
+            TimeUnit.DAYS
+        )
+            .build()
+
+        WorkManager.getInstance()
+            .enqueueUniquePeriodicWork(
+                "periodicTokenRefreshFromFCM", ExistingPeriodicWorkPolicy.REPLACE,
+                periodicTokenRefreshFromFCM
+            )
     }
 }
