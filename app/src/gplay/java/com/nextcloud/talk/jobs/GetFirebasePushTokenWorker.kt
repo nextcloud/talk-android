@@ -23,6 +23,7 @@ package com.nextcloud.talk.jobs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import androidx.work.Worker
@@ -50,7 +51,11 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
             val token = task.result
 
             appPreferences?.pushToken = token
-            val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
+
+            val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "GetFirebasePushTokenWorker").build()
+            val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+                .setInputData(data)
+                .build()
             WorkManager.getInstance(context).enqueue(pushRegistrationWork)
         })
 

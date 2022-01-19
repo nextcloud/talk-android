@@ -131,7 +131,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         sharedApplication!!.componentApplication.inject(this)
         appPreferences!!.pushToken = token
         Log.d(TAG, "onNewToken. token = $token")
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
+
+        val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "onNewToken").build()
+        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+            .setInputData(data)
+            .build()
         WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 

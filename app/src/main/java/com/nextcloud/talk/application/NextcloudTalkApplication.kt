@@ -130,6 +130,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     //region Overridden methods
     override fun onCreate() {
+        Log.d(TAG, "onCreate")
         sharedApplication = this
 
         val securityKeyManager = SecurityKeyManager.getInstance()

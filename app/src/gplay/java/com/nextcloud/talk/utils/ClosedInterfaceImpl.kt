@@ -22,6 +22,7 @@
 package com.nextcloud.talk.utils
 
 import android.content.Intent
+import androidx.work.Data
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
@@ -74,15 +75,21 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     }
 
     private fun registerLocalToken() {
-        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
+        val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "ClosedInterfaceImpl#registerLocalToken").build()
+        val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+            .setInputData(data)
+            .build()
         WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 
     private fun setUpPeriodicLocalTokenRegistration() {
+        val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "ClosedInterfaceImpl#setUpPeriodicLocalTokenRegistration").build()
+
         val periodicTokenRegistration = PeriodicWorkRequest.Builder(
             PushRegistrationWorker::class.java, 1,
             TimeUnit.DAYS
         )
+            .setInputData(data)
             .build()
 
         WorkManager.getInstance()

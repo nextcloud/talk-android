@@ -26,6 +26,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
@@ -34,6 +35,7 @@ import com.nextcloud.talk.utils.PushUtils;
 
 public class PushRegistrationWorker extends Worker {
     public static final String TAG = "PushRegistrationWorker";
+    public static final String ORIGIN = "origin";
 
     public PushRegistrationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -43,6 +45,10 @@ public class PushRegistrationWorker extends Worker {
     @Override
     public Result doWork() {
         if(new ClosedInterfaceImpl().isGooglePlayServicesAvailable()){
+            Data data = getInputData();
+            String origin = data.getString("origin");
+            Log.d(TAG, "PushRegistrationWorker called via " + origin);
+
             PushUtils pushUtils = new PushUtils();
             pushUtils.generateRsa2048KeyPair();
             pushUtils.pushRegistrationToServer();

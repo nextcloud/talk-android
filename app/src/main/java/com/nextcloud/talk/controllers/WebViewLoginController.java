@@ -76,6 +76,7 @@ import javax.inject.Inject;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 import autodagger.AutoInjector;
@@ -407,7 +408,12 @@ public class WebViewLoginController extends BaseController {
                                                 ApplicationWideMessageHolder.getInstance().setMessageType(finalMessageType);
                                             }
 
-                                            OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+                                            Data data =
+                                                   new Data.Builder().putString(PushRegistrationWorker.ORIGIN,
+                                                                                "WebViewLoginController#parseAndLoginFromWebView").build();
+                                            OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class)
+                                                .setInputData(data)
+                                                .build();
                                             WorkManager.getInstance().enqueue(pushRegistrationWork);
 
                                             getRouter().popCurrentController();
