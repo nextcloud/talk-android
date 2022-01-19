@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit
 @AutoInjector(NextcloudTalkApplication::class)
 class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallListener {
 
-    override val isGooglePlayServicesAvailable : Boolean = isGPlayServicesAvailable()
+    override val isGooglePlayServicesAvailable: Boolean = isGPlayServicesAvailable()
 
     override fun providerInstallerInstallIfNeededAsync() {
         NextcloudTalkApplication.sharedApplication?.let {
@@ -56,7 +56,7 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     override fun onProviderInstallFailed(p0: Int, p1: Intent?) {
     }
 
-    private fun isGPlayServicesAvailable() : Boolean {
+    private fun isGPlayServicesAvailable(): Boolean {
         val api = GoogleApiAvailability.getInstance()
         val code =
             NextcloudTalkApplication.sharedApplication?.let {
@@ -73,12 +73,12 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         setUpPeriodicTokenRefreshFromFCM()
     }
 
-    private fun registerLocalToken(){
+    private fun registerLocalToken() {
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()
         WorkManager.getInstance().enqueue(pushRegistrationWork)
     }
 
-    private fun setUpPeriodicLocalTokenRegistration () {
+    private fun setUpPeriodicLocalTokenRegistration() {
         val periodicTokenRegistration = PeriodicWorkRequest.Builder(
             PushRegistrationWorker::class.java, 1,
             TimeUnit.DAYS
@@ -92,7 +92,7 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
             )
     }
 
-    private fun setUpPeriodicTokenRefreshFromFCM () {
+    private fun setUpPeriodicTokenRefreshFromFCM() {
         val periodicTokenRefreshFromFCM = PeriodicWorkRequest.Builder(
             GetFirebasePushTokenWorker::class.java, 30,
             TimeUnit.DAYS
