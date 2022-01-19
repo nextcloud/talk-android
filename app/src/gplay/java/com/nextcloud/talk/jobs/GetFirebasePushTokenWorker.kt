@@ -48,7 +48,6 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
             }
 
             val token = task.result
-            Log.d(TAG, "Fetching FCM registration token succeeded. token = $token")
 
             appPreferences?.pushToken = token
             val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java).build()

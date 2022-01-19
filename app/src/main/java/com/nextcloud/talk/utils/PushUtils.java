@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -254,7 +256,8 @@ public class PushUtils {
 
         ncApi.registerDeviceForNotificationsWithNextcloud(
             credentials,
-            ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), nextcloudRegisterPushMap)
+            ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()),
+            nextcloudRegisterPushMap)
             .subscribe(new Observer<PushRegistrationOverall>() {
                 @Override
                 public void onSubscribe(@NonNull Disposable d) {
@@ -263,8 +266,7 @@ public class PushUtils {
 
                 @Override
                 public void onNext(@NonNull PushRegistrationOverall pushRegistrationOverall) {
-                    Log.d(TAG,
-                          "pushToken successfully registered at nextcloud server. pushToken= " + token.substring(0,5) + "...");
+                    Log.d(TAG, "pushToken successfully registered at nextcloud server.");
 
                     Map<String, String> proxyMap = new HashMap<>();
                     proxyMap.put("pushToken", token);
@@ -303,9 +305,7 @@ public class PushUtils {
                 @Override
                 public void onNext(@NonNull Void aVoid) {
                     try {
-                        Log.d(TAG,
-                              "pushToken successfully registered at pushproxy. pushToken= " + proxyMap.get("pushToken").substring(0,5) +
-                                  "...");
+                        Log.d(TAG, "pushToken successfully registered at pushproxy.");
                         createOrUpdateUser(proxyMap, userEntity);
                     } catch (IOException e) {
                         Log.e(TAG, "IOException while updating user", e);
