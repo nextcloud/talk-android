@@ -230,13 +230,9 @@ public class PushUtils {
 
                 devicePublicKeyBase64 = "-----BEGIN PUBLIC KEY-----\n" + devicePublicKeyBase64 + "\n-----END PUBLIC KEY-----\n";
 
-                Log.d(TAG, "userUtils.getUsers().size(): " + userUtils.getUsers().size());
-
                 if (userUtils.anyUserExists()) {
                     for (Object userEntityObject : userUtils.getUsers()) {
                         UserEntity userEntity = (UserEntity) userEntityObject;
-
-                        Log.d(TAG, "userEntity.getUsername(): " + userEntity.getUsername());
 
                         if (!userEntity.getScheduledForDeletion()) {
                             Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
@@ -270,7 +266,7 @@ public class PushUtils {
 
                 @Override
                 public void onNext(@NonNull PushRegistrationOverall pushRegistrationOverall) {
-                    Log.d(TAG, "pushToken successfully registered at nextcloud server.");
+                    Log.d(TAG, "pushTokenHash successfully registered at nextcloud server.");
 
                     Map<String, String> proxyMap = new HashMap<>();
                     proxyMap.put("pushToken", token);
