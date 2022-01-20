@@ -167,8 +167,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
         DeviceUtils.ignoreSpecialBatteryFeatures()
 
-        ClosedInterfaceImpl().setUpPushTokenRegistration()
-
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
             CapabilitiesWorker::class.java,
