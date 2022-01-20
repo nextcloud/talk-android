@@ -4,9 +4,11 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Marcel Hibbe
+ * @author Tim Krüger
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,6 +35,20 @@ apply plugin: 'io.gitlab.arturbosch.detekt'
 configurations {
     ktlint
 }
+
+def urlFile = { url, fileName ->
+    File file = new File("$buildDir/download/${fileName}")
+    file.parentFile.mkdirs()
+    if (!file.exists()) {
+        new URL(url).withInputStream { downloadStream ->
+            file.withOutputStream { fileOut ->
+                fileOut << downloadStream
+            }
+        }
+    }
+    files(file.absolutePath)
+}
+
 
 android {
     compileSdkVersion 30
@@ -134,6 +150,7 @@ android {
     }
 
     check.dependsOn 'spotbugsGplayDebugReport', 'lint', 'ktlint', 'detekt'
+    lint.dependsOn 'preBuild'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -240,7 +257,8 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation 'org.webrtc:google-webrtc:1.0.32006'
+    implementation urlFile('https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/96.4664.0-RC1/libwebrtc-96.4664.0.aar',
+        'libwebrtc-96.4664.0.aar')
     implementation 'com.yarolegovich:lovely-dialog:1.1.1'
     implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'

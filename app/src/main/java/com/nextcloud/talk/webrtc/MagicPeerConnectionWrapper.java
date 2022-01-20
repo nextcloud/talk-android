@@ -105,9 +105,12 @@ public class MagicPeerConnectionWrapper {
         magicSdpObserver = new MagicSdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
         this.isMCUPublisher = isMCUPublisher;
-        
-        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, sdpConstraints,
-                new MagicPeerConnectionObserver());
+
+        PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
+        configuration.sdpSemantics = PeerConnection.SdpSemantics.PLAN_B;
+
+        peerConnection = peerConnectionFactory.createPeerConnection(configuration, sdpConstraints,
+                                                                    new MagicPeerConnectionObserver());
 
         if (peerConnection != null) {
             if (localMediaStream != null) {
