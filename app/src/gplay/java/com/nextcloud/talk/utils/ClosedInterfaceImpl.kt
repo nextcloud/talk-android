@@ -86,8 +86,11 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "ClosedInterfaceImpl#setUpPeriodicLocalTokenRegistration").build()
 
         val periodicTokenRegistration = PeriodicWorkRequest.Builder(
-            PushRegistrationWorker::class.java, 1,
-            TimeUnit.DAYS
+            PushRegistrationWorker::class.java,
+            24,
+            TimeUnit.HOURS,
+            10,
+            TimeUnit.HOURS
         )
             .setInputData(data)
             .build()
@@ -101,8 +104,11 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
 
     private fun setUpPeriodicTokenRefreshFromFCM() {
         val periodicTokenRefreshFromFCM = PeriodicWorkRequest.Builder(
-            GetFirebasePushTokenWorker::class.java, 30,
-            TimeUnit.DAYS
+            GetFirebasePushTokenWorker::class.java,
+            30,
+            TimeUnit.DAYS,
+            10,
+            TimeUnit.DAYS,
         )
             .build()
 
