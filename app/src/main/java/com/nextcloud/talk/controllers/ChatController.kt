@@ -1791,6 +1791,7 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onComplete() {
+                    Log.d(TAG, "leaveRoom - leaveRoom - completed: " + startNanoTime)
                     dispose()
                 }
             })
