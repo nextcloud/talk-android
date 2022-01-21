@@ -61,22 +61,31 @@ import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
 import eu.davidea.flexibleadapter.items.IFlexible;
+import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
+public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements ISectionable<ConversationItem.ConversationItemViewHolder, GenericTextHeaderItem>,
         IFilterable<String> {
 
 
     private Conversation conversation;
     private UserEntity userEntity;
     private Context context;
+    private GenericTextHeaderItem header;
 
-    public ConversationItem(Conversation conversation, UserEntity userEntity,
-                            Context activityContext) {
+    public ConversationItem(Conversation conversation, UserEntity userEntity, Context activityContext) {
         this.conversation = conversation;
         this.userEntity = userEntity;
         this.context = activityContext;
+    }
+
+    public ConversationItem(Conversation conversation, UserEntity userEntity,
+                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem) {
+        this.conversation = conversation;
+        this.userEntity = userEntity;
+        this.context = activityContext;
+        this.header = genericTextHeaderItem;
     }
 
     @Override
@@ -284,6 +293,16 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
                 Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
+    }
+
+    @Override
+    public GenericTextHeaderItem getHeader() {
+        return header;
+    }
+
+    @Override
+    public void setHeader(GenericTextHeaderItem header) {
+        this.header = header;
     }
 
     static class ConversationItemViewHolder extends FlexibleViewHolder {

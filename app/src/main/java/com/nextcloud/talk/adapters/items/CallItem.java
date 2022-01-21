@@ -49,17 +49,25 @@ import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
+import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements IFilterable<String> {
+public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> implements ISectionable<CallItem.RoomItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
     private Conversation conversation;
     private UserEntity userEntity;
+    private GenericTextHeaderItem header;
 
     public CallItem(Conversation conversation, UserEntity userEntity) {
         this.conversation = conversation;
         this.userEntity = userEntity;
+    }
+
+    public CallItem(Conversation conversation, UserEntity userEntity, GenericTextHeaderItem genericTextHeaderItem) {
+        this.conversation = conversation;
+        this.userEntity = userEntity;
+        this.header = genericTextHeaderItem;
     }
 
     @Override
@@ -166,6 +174,16 @@ public class CallItem extends AbstractFlexibleItem<CallItem.RoomItemViewHolder> 
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
                 Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
+    }
+
+    @Override
+    public GenericTextHeaderItem getHeader() {
+        return header;
+    }
+
+    @Override
+    public void setHeader(GenericTextHeaderItem header) {
+        this.header = header;
     }
 
     static class RoomItemViewHolder extends FlexibleViewHolder {
