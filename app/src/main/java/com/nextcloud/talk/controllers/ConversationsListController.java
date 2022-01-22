@@ -525,6 +525,14 @@ public class ConversationsListController extends BaseController implements Searc
                 .subscribe(roomsOverall -> {
                     Log.d(TAG, "fetchData - getRooms - got response: " + startNanoTime);
 
+                    // This is invoked asynchronously, when server returns a response the view might have been
+                    // unbound in the meantime. Check if the view is still there.
+                    // FIXME - does it make sense to update internal data structures even when view has been unbound?
+                    if (!viewIsBound()) {
+                        Log.d(TAG, "fetchData - getRooms - view is not bound: " + startNanoTime);
+                        return;
+                    }
+
                     if (adapterWasNull) {
                         adapterWasNull = false;
                         loadingContent.setVisibility(View.GONE);
