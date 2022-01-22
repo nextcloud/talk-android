@@ -102,6 +102,7 @@
     <string name="nc_limit_hit">%s 문자 제한에 도달됨</string>
     <string name="nc_lobby">로비</string>
     <string name="nc_lobby_waiting">현재 로비에서 대기중</string>
+    <string name="nc_locked_tap_to_unlock">탭하여 잠금해제</string>
     <string name="nc_make_call_private">비공개 대화로 전환</string>
     <string name="nc_make_call_public">공개 대화로 전환</string>
     <string name="nc_manual">설정되지 않음</string>
