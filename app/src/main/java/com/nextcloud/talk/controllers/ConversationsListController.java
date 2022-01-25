@@ -44,6 +44,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -684,6 +685,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void prepareViews() {
         layoutManager = new SmoothScrollLinearLayoutManager(Objects.requireNonNull(getActivity()));
         recyclerView.setLayoutManager(layoutManager);
@@ -697,6 +699,13 @@ public class ConversationsListController extends BaseController implements Searc
                     checkToShowUnreadBubble();
                 }
             }
+        });
+
+        recyclerView.setOnTouchListener((v, event) -> {
+            InputMethodManager imm =
+                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            return false;
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
