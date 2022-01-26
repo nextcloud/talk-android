@@ -75,7 +75,11 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     }
 
     private fun registerLocalToken() {
-        val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "ClosedInterfaceImpl#registerLocalToken").build()
+        val data: Data = Data.Builder().putString(
+            PushRegistrationWorker.ORIGIN,
+            "ClosedInterfaceImpl#registerLocalToken"
+        )
+            .build()
         val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
             .setInputData(data)
             .build()
@@ -83,7 +87,11 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     }
 
     private fun setUpPeriodicLocalTokenRegistration() {
-        val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "ClosedInterfaceImpl#setUpPeriodicLocalTokenRegistration").build()
+        val data: Data = Data.Builder().putString(
+            PushRegistrationWorker.ORIGIN,
+            "ClosedInterfaceImpl#setUpPeriodicLocalTokenRegistration"
+        )
+            .build()
 
         val periodicTokenRegistration = PeriodicWorkRequest.Builder(
             PushRegistrationWorker::class.java,

@@ -42,22 +42,27 @@ class GetFirebasePushTokenWorker(val context: Context, workerParameters: WorkerP
 
     @SuppressLint("LongLogTag")
     override fun doWork(): Result {
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(
+            OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
+
+                val token = task.result
+
+                appPreferences?.pushToken = token
+
+                val data: Data =
+                    Data.Builder()
+                        .putString(PushRegistrationWorker.ORIGIN, "GetFirebasePushTokenWorker")
+                        .build()
+                val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
+                    .setInputData(data)
+                    .build()
+                WorkManager.getInstance(context).enqueue(pushRegistrationWork)
             }
-
-            val token = task.result
-
-            appPreferences?.pushToken = token
-
-            val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "GetFirebasePushTokenWorker").build()
-            val pushRegistrationWork = OneTimeWorkRequest.Builder(PushRegistrationWorker::class.java)
-                .setInputData(data)
-                .build()
-            WorkManager.getInstance(context).enqueue(pushRegistrationWork)
-        })
+        )
 
         return Result.success()
     }
