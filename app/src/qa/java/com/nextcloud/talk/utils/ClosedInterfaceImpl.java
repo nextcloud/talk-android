@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,5 +34,10 @@ public class ClosedInterfaceImpl implements ClosedInterface {
     @Override
     public boolean isGooglePlayServicesAvailable() {
         return false;
+    }
+
+    @Override
+    public void setUpPushTokenRegistration() {
+        // no push notifications for qa build flavour :(
     }
 }

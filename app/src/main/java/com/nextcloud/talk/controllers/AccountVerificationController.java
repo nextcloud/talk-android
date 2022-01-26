@@ -377,7 +377,12 @@ public class AccountVerificationController extends BaseController {
     }
 
     private void registerForPush() {
-        OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class).build();
+        Data data =
+            new Data.Builder().putString(PushRegistrationWorker.ORIGIN, "AccountVerificationController#registerForPush").build();
+
+        OneTimeWorkRequest pushRegistrationWork = new OneTimeWorkRequest.Builder(PushRegistrationWorker.class)
+            .setInputData(data)
+            .build();
         WorkManager.getInstance().enqueue(pushRegistrationWork);
     }
 

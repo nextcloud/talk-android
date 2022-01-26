@@ -3,7 +3,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Marcel Hibbe
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -47,12 +49,15 @@
     <string name="nc_import_accounts_from" translatable="false">com.nextcloud.client</string>
     <string name="nc_import_account_type" translatable="false">nextcloud</string>
 
-    <!-- Push notifications -->
+    <!-- Push notifications. -->
+    <!-- Find the keys in FirebaseOptions.java -->
+    <!-- Find the values google-services.json in firebase console -->
     <string name="default_web_client_id" translatable="false">829118773643-cq33cmhv7mnv7iq8mjv6rt7t15afc70k.apps.googleusercontent.com</string>
     <string name="firebase_database_url" translatable="false">https://nextcloud-a7dea.firebaseio.com</string>
     <string name="gcm_defaultSenderId" translatable="false">829118773643</string>
     <string name="google_api_key" translatable="false">AIzaSyAWIyOcLafaFp8PFL61h64cy1NNZW2cU_s</string>
     <string name="google_app_id" translatable="false">1:829118773643:android:54b65087c544d819</string>
+    <string name="project_id" translatable="false">nextcloud-a7dea</string>
     <string name="google_crash_reporting_api_key" translatable="false">AIzaSyAWIyOcLafaFp8PFL61h64cy1NNZW2cU_s</string>
     <string name="google_storage_bucket" translatable="false">nextcloud-a7dea.appspot.com</string>
 

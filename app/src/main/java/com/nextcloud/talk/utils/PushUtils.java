@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,23 +87,19 @@ public class PushUtils {
     @Inject
     NcApi ncApi;
 
-    private File keysFile;
-    private File publicKeyFile;
-    private File privateKeyFile;
+    private final File publicKeyFile;
+    private final File privateKeyFile;
 
-    private String proxyServer;
+    private final String proxyServer;
 
     public PushUtils() {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        keysFile = NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeyStore", Context.MODE_PRIVATE);
-
-        publicKeyFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
-                Context.MODE_PRIVATE), "push_key.pub");
-        privateKeyFile = new File(NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore",
-                Context.MODE_PRIVATE), "push_key.priv");
+        String keyPath = NextcloudTalkApplication.Companion.getSharedApplication().getDir("PushKeystore", Context.MODE_PRIVATE).getAbsolutePath();
+        publicKeyFile = new File(keyPath, "push_key.pub");
+        privateKeyFile = new File(keyPath, "push_key.priv");
         proxyServer = NextcloudTalkApplication.Companion.getSharedApplication().getResources().
-                getString(R.string.nc_push_server_url);
+            getString(R.string.nc_push_server_url);
     }
 
     public SignatureVerification verifySignature(byte[] signatureBytes, byte[] subjectBytes) {
@@ -118,9 +116,9 @@ public class PushUtils {
                 for (UserEntity userEntity : userEntities) {
                     if (!TextUtils.isEmpty(userEntity.getPushConfigurationState())) {
                         pushConfigurationState = LoganSquare.parse(userEntity.getPushConfigurationState(),
-                                PushConfigurationState.class);
+                                                                   PushConfigurationState.class);
                         publicKey = (PublicKey) readKeyFromString(true,
-                                pushConfigurationState.getUserPublicKey());
+                                                                  pushConfigurationState.getUserPublicKey());
                         signature.initVerify(publicKey);
                         signature.update(subjectBytes);
                         if (signature.verify(signatureBytes)) {
@@ -183,16 +181,13 @@ public class PushUtils {
         StringBuilder result = new StringBuilder();
         for (byte individualByte : bytes) {
             result.append(Integer.toString((individualByte & 0xff) + 0x100, 16)
-                    .substring(1));
+                              .substring(1));
         }
         return result.toString();
     }
 
     public int generateRsa2048KeyPair() {
         if (!publicKeyFile.exists() && !privateKeyFile.exists()) {
-            if (!keysFile.exists()) {
-                keysFile.mkdirs();
-            }
 
             KeyPairGenerator keyGen = null;
             try {
@@ -226,162 +221,159 @@ public class PushUtils {
         String token = appPreferences.getPushToken();
 
         if (!TextUtils.isEmpty(token)) {
-            String credentials;
             String pushTokenHash = generateSHA512Hash(token).toLowerCase();
             PublicKey devicePublicKey = (PublicKey) readKeyFromFile(true);
             if (devicePublicKey != null) {
-                byte[] publicKeyBytes = Base64.encode(devicePublicKey.getEncoded(), Base64.NO_WRAP);
-                String publicKey = new String(publicKeyBytes);
-                publicKey = publicKey.replaceAll("(.{64})", "$1\n");
+                byte[] devicePublicKeyBytes = Base64.encode(devicePublicKey.getEncoded(), Base64.NO_WRAP);
+                String devicePublicKeyBase64 = new String(devicePublicKeyBytes);
+                devicePublicKeyBase64 = devicePublicKeyBase64.replaceAll("(.{64})", "$1\n");
 
-                publicKey = "-----BEGIN PUBLIC KEY-----\n" + publicKey + "\n-----END PUBLIC KEY-----\n";
+                devicePublicKeyBase64 = "-----BEGIN PUBLIC KEY-----\n" + devicePublicKeyBase64 + "\n-----END PUBLIC KEY-----\n";
 
                 if (userUtils.anyUserExists()) {
-                    String providerValue;
-                    PushConfigurationState accountPushData = null;
                     for (Object userEntityObject : userUtils.getUsers()) {
                         UserEntity userEntity = (UserEntity) userEntityObject;
-                        providerValue = userEntity.getPushConfigurationState();
-                        if (!TextUtils.isEmpty(providerValue)) {
-                            try {
-                                accountPushData = LoganSquare.parse(providerValue, PushConfigurationState.class);
-                            } catch (IOException e) {
-                                Log.d(TAG, "Failed to parse account push data");
-                                accountPushData = null;
-                            }
-                        } else {
-                            accountPushData = null;
-                        }
 
-                        if (((TextUtils.isEmpty(providerValue) || accountPushData == null) && !userEntity.getScheduledForDeletion()) ||
-                                (accountPushData != null && !accountPushData.getPushToken().equals(token) && !userEntity.getScheduledForDeletion())) {
+                        if (!userEntity.getScheduledForDeletion()) {
+                            Map<String, String> nextcloudRegisterPushMap = new HashMap<>();
+                            nextcloudRegisterPushMap.put("format", "json");
+                            nextcloudRegisterPushMap.put("pushTokenHash", pushTokenHash);
+                            nextcloudRegisterPushMap.put("devicePublicKey", devicePublicKeyBase64);
+                            nextcloudRegisterPushMap.put("proxyServer", proxyServer);
 
-                            Map<String, String> queryMap = new HashMap<>();
-                            queryMap.put("format", "json");
-                            queryMap.put("pushTokenHash", pushTokenHash);
-                            queryMap.put("devicePublicKey", publicKey);
-                            queryMap.put("proxyServer", proxyServer);
-
-                            credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
-
-                            ncApi.registerDeviceForNotificationsWithNextcloud(
-                                    credentials,
-                                    ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()), queryMap)
-                                    .subscribe(new Observer<PushRegistrationOverall>() {
-                                        @Override
-                                        public void onSubscribe(@NonNull Disposable d) {
-                                            // unused atm
-                                        }
-
-                                        @Override
-                                        public void onNext(@NonNull PushRegistrationOverall pushRegistrationOverall) {
-                                            Map<String, String> proxyMap = new HashMap<>();
-                                            proxyMap.put("pushToken", token);
-                                            proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
-                                                    getDeviceIdentifier());
-                                            proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
-                                                    .getData().getSignature());
-                                            proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
-                                                    .getData().getPublicKey());
-
-                                            ncApi.registerDeviceForNotificationsWithProxy(
-                                                    ApiUtils.getUrlPushProxy(), proxyMap)
-                                                    .subscribeOn(Schedulers.io())
-                                                    .subscribe(new Observer<Void>() {
-                                                        @Override
-                                                        public void onSubscribe(@NonNull Disposable d) {
-                                                            // unused atm
-                                                        }
-
-                                                        @Override
-                                                        public void onNext(@NonNull Void aVoid) {
-                                                            PushConfigurationState pushConfigurationState =
-                                                                    new PushConfigurationState();
-                                                            pushConfigurationState.setPushToken(token);
-                                                            pushConfigurationState.setDeviceIdentifier(
-                                                                    pushRegistrationOverall.getOcs()
-                                                                            .getData().getDeviceIdentifier());
-                                                            pushConfigurationState.setDeviceIdentifierSignature(
-                                                                    pushRegistrationOverall
-                                                                            .getOcs().getData().getSignature());
-                                                            pushConfigurationState.setUserPublicKey(
-                                                                    pushRegistrationOverall.getOcs()
-                                                                            .getData().getPublicKey());
-                                                            pushConfigurationState.setUsesRegularPass(false);
-
-                                                            try {
-                                                                userUtils.createOrUpdateUser(null,
-                                                                        null, null,
-                                                                        userEntity.getDisplayName(),
-                                                                        LoganSquare.serialize(pushConfigurationState), null,
-                                                                        null, userEntity.getId(), null, null, null)
-                                                                        .subscribe(new Observer<UserEntity>() {
-                                                                            @Override
-                                                                            public void onSubscribe(@NonNull Disposable d) {
-                                                                                // unused atm
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onNext(@NonNull UserEntity userEntity) {
-                                                                                eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onError(@NonNull Throwable e) {
-                                                                                eventBus.post(new EventStatus
-                                                                                        (userEntity.getId(),
-                                                                                                EventStatus.EventType
-                                                                                                        .PUSH_REGISTRATION, false));
-                                                                            }
-
-                                                                            @Override
-                                                                            public void onComplete() {
-                                                                                // unused atm
-                                                                            }
-                                                                        });
-                                                            } catch (IOException e) {
-                                                                Log.e(TAG, "IOException while updating user", e);
-                                                            }
-                                                        }
-
-                                                        @Override
-                                                        public void onError(@NonNull Throwable e) {
-                                                            eventBus.post(new EventStatus(userEntity.getId(),
-                                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
-                                                        }
-
-                                                        @Override
-                                                        public void onComplete() {
-                                                            // unused atm
-                                                        }
-                                                    });
-                                        }
-
-                                        @Override
-                                        public void onError(@NonNull Throwable e) {
-                                            eventBus.post(new EventStatus(userEntity.getId(),
-                                                    EventStatus.EventType.PUSH_REGISTRATION, false));
-                                        }
-
-                                        @Override
-                                        public void onComplete() {
-                                            // unused atm
-                                        }
-                                    });
+                            registerDeviceWithNextcloud(nextcloudRegisterPushMap, token, userEntity);
                         }
                     }
                 }
             }
+        } else {
+            Log.e(TAG, "push token was empty when trying to register at nextcloud server");
         }
+    }
+
+    private void registerDeviceWithNextcloud(Map<String, String> nextcloudRegisterPushMap, String token, UserEntity userEntity) {
+        String credentials = ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken());
+
+        ncApi.registerDeviceForNotificationsWithNextcloud(
+            credentials,
+            ApiUtils.getUrlNextcloudPush(userEntity.getBaseUrl()),
+            nextcloudRegisterPushMap)
+            .subscribe(new Observer<PushRegistrationOverall>() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+                    // unused atm
+                }
+
+                @Override
+                public void onNext(@NonNull PushRegistrationOverall pushRegistrationOverall) {
+                    Log.d(TAG, "pushTokenHash successfully registered at nextcloud server.");
+
+                    Map<String, String> proxyMap = new HashMap<>();
+                    proxyMap.put("pushToken", token);
+                    proxyMap.put("deviceIdentifier", pushRegistrationOverall.getOcs().getData().
+                        getDeviceIdentifier());
+                    proxyMap.put("deviceIdentifierSignature", pushRegistrationOverall.getOcs()
+                        .getData().getSignature());
+                    proxyMap.put("userPublicKey", pushRegistrationOverall.getOcs()
+                        .getData().getPublicKey());
+
+                    registerDeviceWithPushProxy(proxyMap, userEntity);
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+                    eventBus.post(new EventStatus(userEntity.getId(),
+                                                  EventStatus.EventType.PUSH_REGISTRATION, false));
+                }
+
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
+    }
+
+    private void registerDeviceWithPushProxy(Map<String, String> proxyMap, UserEntity userEntity) {
+        ncApi.registerDeviceForNotificationsWithPushProxy(ApiUtils.getUrlPushProxy(), proxyMap)
+            .subscribeOn(Schedulers.io())
+            .subscribe(new Observer<Void>() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+                    // unused atm
+                }
+
+                @Override
+                public void onNext(@NonNull Void aVoid) {
+                    try {
+                        Log.d(TAG, "pushToken successfully registered at pushproxy.");
+                        createOrUpdateUser(proxyMap, userEntity);
+                    } catch (IOException e) {
+                        Log.e(TAG, "IOException while updating user", e);
+                    }
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+                    eventBus.post(new EventStatus(userEntity.getId(),
+                                                  EventStatus.EventType.PUSH_REGISTRATION, false));
+                }
+
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
+    }
+
+    private void createOrUpdateUser(Map<String, String> proxyMap, UserEntity userEntity) throws IOException {
+        PushConfigurationState pushConfigurationState = new PushConfigurationState();
+        pushConfigurationState.setPushToken(proxyMap.get("pushToken"));
+        pushConfigurationState.setDeviceIdentifier(proxyMap.get("deviceIdentifier"));
+        pushConfigurationState.setDeviceIdentifierSignature(proxyMap.get("deviceIdentifierSignature"));
+        pushConfigurationState.setUserPublicKey(proxyMap.get("userPublicKey"));
+        pushConfigurationState.setUsesRegularPass(false);
+
+        userUtils.createOrUpdateUser(null,
+                                     null,
+                                     null,
+                                     userEntity.getDisplayName(),
+                                     LoganSquare.serialize(pushConfigurationState),
+                                     null,
+                                     null,
+                                     userEntity.getId(),
+                                     null,
+                                     null,
+                                     null)
+            .subscribe(new Observer<UserEntity>() {
+                @Override
+                public void onSubscribe(@NonNull Disposable d) {
+                    // unused atm
+                }
+
+                @Override
+                public void onNext(@NonNull UserEntity userEntity) {
+                    eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, true));
+                }
+
+                @Override
+                public void onError(@NonNull Throwable e) {
+                    eventBus.post(new EventStatus(userEntity.getId(), EventStatus.EventType.PUSH_REGISTRATION, false));
+                }
+
+                @Override
+                public void onComplete() {
+                    // unused atm
+                }
+            });
     }
 
     private Key readKeyFromString(boolean readPublicKey, String keyString) {
         if (readPublicKey) {
             keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PUBLIC KEY-----",
-                    "").replace("-----END PUBLIC KEY-----", "");
+                                                                "").replace("-----END PUBLIC KEY-----", "");
         } else {
             keyString = keyString.replaceAll("\\n", "").replace("-----BEGIN PRIVATE KEY-----",
-                    "").replace("-----END PRIVATE KEY-----", "");
+                                                                "").replace("-----END PRIVATE KEY-----", "");
         }
 
         KeyFactory keyFactory = null;

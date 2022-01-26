@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,4 +26,5 @@ interface ClosedInterface {
 
     val isGooglePlayServicesAvailable: Boolean
     fun providerInstallerInstallIfNeededAsync()
+    fun setUpPushTokenRegistration()
 }

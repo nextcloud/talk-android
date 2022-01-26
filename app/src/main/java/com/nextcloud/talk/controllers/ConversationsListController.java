@@ -85,6 +85,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.KeyboardUtils;
@@ -285,6 +286,9 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     protected void onAttach(@NonNull View view) {
         super.onAttach(view);
+
+        new ClosedInterfaceImpl().setUpPushTokenRegistration();
+
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this);
         }

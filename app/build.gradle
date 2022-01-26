@@ -317,7 +317,8 @@ dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.11.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.4.7'
 
-    gplayImplementation "com.google.firebase:firebase-messaging:20.1.2"
+    gplayImplementation 'com.google.android.gms:play-services-base:18.0.1'
+    gplayImplementation "com.google.firebase:firebase-messaging:23.0.0"
 }
 
 task ktlint(type: JavaExec, group: "verification") {

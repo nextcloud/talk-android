@@ -283,8 +283,8 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<Void> registerDeviceForNotificationsWithProxy(@Url String url,
-                                                             @FieldMap Map<String, String> fields);
+    Observable<Void> registerDeviceForNotificationsWithPushProxy(@Url String url,
+                                                                 @FieldMap Map<String, String> fields);
 
 
     /*
