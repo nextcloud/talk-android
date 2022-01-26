@@ -23,7 +23,7 @@
 
     <include
         android:id="@+id/current_account"
-        layout="@layout/account_item"
+        layout="@layout/current_account_item"
         android:layout_width="0dp"
         android:layout_height="72dp"
         android:layout_margin="4dp"

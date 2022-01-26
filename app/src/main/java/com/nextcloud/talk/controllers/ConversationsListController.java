@@ -65,7 +65,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
-import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.adapters.items.ConversationItem;
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
@@ -183,9 +182,9 @@ public class ConversationsListController extends BaseController implements Searc
     private Disposable roomsQueryDisposable;
     private Disposable openConversationsQueryDisposable;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
-    private List<AbstractFlexibleItem> callItems = new ArrayList<>();
-    private List<AbstractFlexibleItem> callItemsWithHeader = new ArrayList<>();
-    private List<AbstractFlexibleItem> searchableCallItems = new ArrayList<>();
+    private List<AbstractFlexibleItem> conversationItems = new ArrayList<>();
+    private List<AbstractFlexibleItem> conversationItemsWithHeader = new ArrayList<>();
+    private final List<AbstractFlexibleItem> searchableConversationItems = new ArrayList<>();
 
     private BottomSheet bottomSheet;
     private MenuItem searchItem;
@@ -193,7 +192,6 @@ public class ConversationsListController extends BaseController implements Searc
     private String searchQuery;
 
     private View view;
-    private boolean shouldUseLastMessageLayout;
 
     private String credentials;
 
@@ -246,7 +244,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
+            adapter = new FlexibleAdapter<>(conversationItems, getActivity(), true);
         } else {
             loadingContent.setVisibility(View.GONE);
         }
@@ -309,8 +307,6 @@ public class ConversationsListController extends BaseController implements Searc
             }
 
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-            shouldUseLastMessageLayout = CapabilitiesUtil.hasSpreedFeatureCapability(currentUser,
-                                                                                     "last-room-activity");
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
             }
@@ -372,7 +368,7 @@ public class ConversationsListController extends BaseController implements Searc
         } else {
             MainActivity activity = (MainActivity) getActivity();
 
-            searchItem.setVisible(callItems.size() > 0);
+            searchItem.setVisible(conversationItems.size() > 0);
             if (activity != null) {
                 if (adapter.hasFilter()) {
                     showSearchView(activity, searchView, searchItem);
@@ -409,7 +405,7 @@ public class ConversationsListController extends BaseController implements Searc
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
                     adapter.setHeadersShown(true);
-                    adapter.updateDataSet(searchableCallItems, false);
+                    adapter.updateDataSet(searchableConversationItems, false);
                     adapter.showAllHeaders();
                     swipeRefreshLayout.setEnabled(false);
                     return true;
@@ -418,7 +414,7 @@ public class ConversationsListController extends BaseController implements Searc
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
                     adapter.setHeadersShown(false);
-                    adapter.updateDataSet(callItems, false);
+                    adapter.updateDataSet(conversationItems, false);
                     adapter.hideAllHeaders();
                     swipeRefreshLayout.setEnabled(true);
 
@@ -478,8 +474,8 @@ public class ConversationsListController extends BaseController implements Searc
 
         isRefreshing = true;
 
-        callItems = new ArrayList<>();
-        callItemsWithHeader = new ArrayList<>();
+        conversationItems = new ArrayList<>();
+        conversationItemsWithHeader = new ArrayList<>();
 
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
 
@@ -528,41 +524,26 @@ public class ConversationsListController extends BaseController implements Searc
                             callHeaderItems.put(headerTitle, genericTextHeaderItem);
                         }
 
-                        if (shouldUseLastMessageLayout) {
-                            if (getActivity() != null) {
-                                ConversationItem conversationItem = new ConversationItem(
-                                    conversation,
-                                    currentUser,
-                                    getActivity());
-                                callItems.add(conversationItem);
-
-                                ConversationItem conversationItemWithHeader = new ConversationItem(
-                                    conversation,
-                                    currentUser,
-                                    getActivity(),
-                                    callHeaderItems.get(headerTitle));
-
-                                callItemsWithHeader.add(conversationItemWithHeader);
-                            }
-                        } else {
-                            CallItem callItem = new CallItem(
-                                conversation,
-                                currentUser);
-                            callItems.add(callItem);
-
-                            CallItem callItemWithHeader = new CallItem(
+                        if (getActivity() != null) {
+                            ConversationItem conversationItem = new ConversationItem(
                                 conversation,
                                 currentUser,
-                                callHeaderItems.get(headerTitle));
+                                getActivity());
+                            conversationItems.add(conversationItem);
 
-                            callItemsWithHeader.add(callItemWithHeader);
+                            ConversationItem conversationItemWithHeader = new ConversationItem(
+                                conversation,
+                                currentUser,
+                                getActivity(),
+                                callHeaderItems.get(headerTitle));
+                            conversationItemsWithHeader.add(conversationItemWithHeader);
                         }
                     }
 
-                    sortConversations(callItems);
-                    sortConversations(callItemsWithHeader);
+                    sortConversations(conversationItems);
+                    sortConversations(conversationItemsWithHeader);
 
-                    adapter.updateDataSet(callItems, false);
+                    adapter.updateDataSet(conversationItems, false);
 
                     new Handler().postDelayed(this::checkToShowUnreadBubble, UNREAD_BUBBLE_DELAY);
 
@@ -597,26 +578,20 @@ public class ConversationsListController extends BaseController implements Searc
                 });
     }
 
-    private void sortConversations(List<AbstractFlexibleItem> callItems) {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")) {
-            Collections.sort(callItems, (o1, o2) -> {
-                Conversation conversation1 = ((ConversationItem) o1).getModel();
-                Conversation conversation2 = ((ConversationItem) o2).getModel();
-                return new CompareToBuilder()
-                        .append(conversation2.isFavorite(), conversation1.isFavorite())
-                        .append(conversation2.getLastActivity(), conversation1.getLastActivity())
-                        .toComparison();
-            });
-        } else {
-            Collections.sort(callItems, (callItem, t1) ->
-                    Long.compare(((CallItem) t1).getModel().getLastPing(),
-                                 ((CallItem) callItem).getModel().getLastPing()));
-        }
+    private void sortConversations(List<AbstractFlexibleItem> conversationItems) {
+        Collections.sort(conversationItems, (o1, o2) -> {
+            Conversation conversation1 = ((ConversationItem) o1).getModel();
+            Conversation conversation2 = ((ConversationItem) o2).getModel();
+            return new CompareToBuilder()
+                    .append(conversation2.isFavorite(), conversation1.isFavorite())
+                    .append(conversation2.getLastActivity(), conversation1.getLastActivity())
+                    .toComparison();
+        });
     }
 
     private void fetchOpenConversations(int apiVersion){
-        searchableCallItems.clear();
-        searchableCallItems.addAll(callItemsWithHeader);
+        searchableConversationItems.clear();
+        searchableConversationItems.addAll(conversationItemsWithHeader);
 
         if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
             List<AbstractFlexibleItem> openConversationItems = new ArrayList<>();
@@ -637,20 +612,15 @@ public class ConversationsListController extends BaseController implements Searc
                             callHeaderItems.put(headerTitle, genericTextHeaderItem);
                         }
 
+                        ConversationItem conversationItem = new ConversationItem(
+                            conversation,
+                            currentUser,
+                            getActivity(),
+                            callHeaderItems.get(headerTitle));
 
-                        if (shouldUseLastMessageLayout) {
-                            if (getActivity() != null) {
-                                ConversationItem conversationItem = new ConversationItem(conversation
-                                    , currentUser, getActivity(), callHeaderItems.get(headerTitle));
-                                openConversationItems.add(conversationItem);
-                            }
-                        } else {
-                            CallItem callItem = new CallItem(conversation, currentUser, callHeaderItems.get(headerTitle));
-                            openConversationItems.add(callItem);
-                        }
+                        openConversationItems.add(conversationItem);
                     }
-
-                    searchableCallItems.addAll(openConversationItems);
+                    searchableConversationItems.addAll(openConversationItems);
 
                 }, throwable -> {
                     handleHttpExceptions(throwable);
@@ -746,7 +716,7 @@ public class ConversationsListController extends BaseController implements Searc
     private void checkToShowUnreadBubble() {
         try {
             int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
-            for (AbstractFlexibleItem flexItem : callItems) {
+            for (AbstractFlexibleItem flexItem : conversationItems) {
                 Conversation conversationItem = ((ConversationItem) flexItem).getModel();
                 int position = adapter.getGlobalPositionOf(flexItem);
                 if ((conversationItem.unreadMention ||
@@ -902,7 +872,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public boolean onItemClick(View view, int position) {
-        selectedConversation = getConversation(position);
+        selectedConversation = ((ConversationItem) Objects.requireNonNull(adapter.getItem(position))).getModel();
         if (selectedConversation != null && getActivity() != null) {
             if (showShareToScreen) {
                 handleSharedData();
@@ -973,20 +943,13 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public void onItemLongClick(int position) {
-
         if (showShareToScreen) {
             Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.");
 
-        } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")) {
+        } else {
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
-                Conversation conversation;
-                if (shouldUseLastMessageLayout) {
-                    conversation = ((ConversationItem) clickedItem).getModel();
-                } else {
-                    conversation = ((CallItem) clickedItem).getModel();
-                }
-
+                Conversation conversation = ((ConversationItem) clickedItem).getModel();
                 MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
                 onMessageEvent(moreMenuClickEvent);
             }
@@ -1108,17 +1071,6 @@ public class ConversationsListController extends BaseController implements Searc
             ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                                                             selectedConversation.getToken(), bundle, false);
         }
-    }
-
-    private Conversation getConversation(int position) {
-        Object clickedItem = adapter.getItem(position);
-        Conversation conversation;
-        if (shouldUseLastMessageLayout) {
-            conversation = ((ConversationItem) clickedItem).getModel();
-        } else {
-            conversation = ((CallItem) clickedItem).getModel();
-        }
-        return conversation;
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
