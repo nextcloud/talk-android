@@ -44,6 +44,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -64,8 +65,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
-import com.nextcloud.talk.adapters.items.CallItem;
 import com.nextcloud.talk.adapters.items.ConversationItem;
+import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -106,6 +107,7 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -178,8 +180,11 @@ public class ConversationsListController extends BaseController implements Searc
 
     private UserEntity currentUser;
     private Disposable roomsQueryDisposable;
+    private Disposable openConversationsQueryDisposable;
     private FlexibleAdapter<AbstractFlexibleItem> adapter;
-    private List<AbstractFlexibleItem> callItems = new ArrayList<>();
+    private List<AbstractFlexibleItem> conversationItems = new ArrayList<>();
+    private List<AbstractFlexibleItem> conversationItemsWithHeader = new ArrayList<>();
+    private final List<AbstractFlexibleItem> searchableConversationItems = new ArrayList<>();
 
     private BottomSheet bottomSheet;
     private MenuItem searchItem;
@@ -187,7 +192,6 @@ public class ConversationsListController extends BaseController implements Searc
     private String searchQuery;
 
     private View view;
-    private boolean shouldUseLastMessageLayout;
 
     private String credentials;
 
@@ -211,6 +215,8 @@ public class ConversationsListController extends BaseController implements Searc
     private int nextUnreadConversationScrollPosition = 0;
 
     private SmoothScrollLinearLayoutManager layoutManager;
+
+    private HashMap<String, GenericTextHeaderItem> callHeaderItems = new HashMap<>();
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -238,7 +244,7 @@ public class ConversationsListController extends BaseController implements Searc
         }
 
         if (adapter == null) {
-            adapter = new FlexibleAdapter<>(callItems, getActivity(), true);
+            adapter = new FlexibleAdapter<>(conversationItems, getActivity(), true);
         } else {
             loadingContent.setVisibility(View.GONE);
         }
@@ -301,8 +307,6 @@ public class ConversationsListController extends BaseController implements Searc
             }
 
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
-            shouldUseLastMessageLayout = CapabilitiesUtil.hasSpreedFeatureCapability(currentUser,
-                                                                                     "last-room-activity");
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
             }
@@ -364,7 +368,7 @@ public class ConversationsListController extends BaseController implements Searc
         } else {
             MainActivity activity = (MainActivity) getActivity();
 
-            searchItem.setVisible(callItems.size() > 0);
+            searchItem.setVisible(conversationItems.size() > 0);
             if (activity != null) {
                 if (adapter.hasFilter()) {
                     showSearchView(activity, searchView, searchItem);
@@ -400,11 +404,20 @@ public class ConversationsListController extends BaseController implements Searc
             searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
                 @Override
                 public boolean onMenuItemActionExpand(MenuItem item) {
+                    adapter.setHeadersShown(true);
+                    adapter.updateDataSet(searchableConversationItems, false);
+                    adapter.showAllHeaders();
+                    swipeRefreshLayout.setEnabled(false);
                     return true;
                 }
 
                 @Override
                 public boolean onMenuItemActionCollapse(MenuItem item) {
+                    adapter.setHeadersShown(false);
+                    adapter.updateDataSet(conversationItems, false);
+                    adapter.hideAllHeaders();
+                    swipeRefreshLayout.setEnabled(true);
+
                     searchView.onActionViewCollapsed();
                     MainActivity activity = (MainActivity) getActivity();
                     if (activity != null) {
@@ -461,7 +474,8 @@ public class ConversationsListController extends BaseController implements Searc
 
         isRefreshing = true;
 
-        callItems = new ArrayList<>();
+        conversationItems = new ArrayList<>();
+        conversationItemsWithHeader = new ArrayList<>();
 
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
 
@@ -494,69 +508,53 @@ public class ConversationsListController extends BaseController implements Searc
                         }
                     }
 
-                    Conversation conversation;
-                    for (int i = 0; i < roomsOverall.getOcs().getData().size(); i++) {
-                        conversation = roomsOverall.getOcs().getData().get(i);
-
+                    for (Conversation conversation : roomsOverall.getOcs().getData()) {
                         if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()) && conversation.roomId.equals(bundle.getString(
                             BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()))) {
                             continue;
                         }
 
-                        if (shouldUseLastMessageLayout) {
-                            if (getActivity() != null) {
-                                ConversationItem conversationItem = new ConversationItem(conversation
-                                        , currentUser, getActivity());
-                                callItems.add(conversationItem);
-                            }
-                        } else {
-                            CallItem callItem = new CallItem(conversation, currentUser);
-                            callItems.add(callItem);
+                        String headerTitle;
+
+                        headerTitle = getResources().getString(R.string.conversations);
+
+                        GenericTextHeaderItem genericTextHeaderItem;
+                        if (!callHeaderItems.containsKey(headerTitle)) {
+                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                            callHeaderItems.put(headerTitle, genericTextHeaderItem);
+                        }
+
+                        if (getActivity() != null) {
+                            ConversationItem conversationItem = new ConversationItem(
+                                conversation,
+                                currentUser,
+                                getActivity());
+                            conversationItems.add(conversationItem);
+
+                            ConversationItem conversationItemWithHeader = new ConversationItem(
+                                conversation,
+                                currentUser,
+                                getActivity(),
+                                callHeaderItems.get(headerTitle));
+                            conversationItemsWithHeader.add(conversationItemWithHeader);
                         }
                     }
 
-                    if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")) {
-                        Collections.sort(callItems, (o1, o2) -> {
-                            Conversation conversation1 = ((ConversationItem) o1).getModel();
-                            Conversation conversation2 = ((ConversationItem) o2).getModel();
-                            return new CompareToBuilder()
-                                    .append(conversation2.isFavorite(), conversation1.isFavorite())
-                                    .append(conversation2.getLastActivity(), conversation1.getLastActivity())
-                                    .toComparison();
-                        });
-                    } else {
-                        Collections.sort(callItems, (callItem, t1) ->
-                                Long.compare(((CallItem) t1).getModel().getLastPing(),
-                                             ((CallItem) callItem).getModel().getLastPing()));
-                    }
+                    sortConversations(conversationItems);
+                    sortConversations(conversationItemsWithHeader);
 
-                    adapter.updateDataSet(callItems, false);
+                    adapter.updateDataSet(conversationItems, false);
+
                     new Handler().postDelayed(this::checkToShowUnreadBubble, UNREAD_BUBBLE_DELAY);
+
+                    fetchOpenConversations(apiVersion);
 
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
                 }, throwable -> {
-                    if (throwable instanceof HttpException) {
-                        HttpException exception = (HttpException) throwable;
-                        switch (exception.code()) {
-                            case 401:
-                                if (getParentController() != null && getParentController().getRouter() != null) {
-                                    Log.d(TAG, "Starting reauth webview via getParentController()");
-                                    getParentController().getRouter().pushController((RouterTransaction.with
-                                            (new WebViewLoginController(currentUser.getBaseUrl(), true))
-                                            .pushChangeHandler(new VerticalChangeHandler())
-                                            .popChangeHandler(new VerticalChangeHandler())));
-                                } else {
-                                    Log.d(TAG, "Starting reauth webview via ConversationsListController");
-                                    showUnauthorizedDialog();
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    handleHttpExceptions(throwable);
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -580,6 +578,84 @@ public class ConversationsListController extends BaseController implements Searc
                 });
     }
 
+    private void sortConversations(List<AbstractFlexibleItem> conversationItems) {
+        Collections.sort(conversationItems, (o1, o2) -> {
+            Conversation conversation1 = ((ConversationItem) o1).getModel();
+            Conversation conversation2 = ((ConversationItem) o2).getModel();
+            return new CompareToBuilder()
+                    .append(conversation2.isFavorite(), conversation1.isFavorite())
+                    .append(conversation2.getLastActivity(), conversation1.getLastActivity())
+                    .toComparison();
+        });
+    }
+
+    private void fetchOpenConversations(int apiVersion){
+        searchableConversationItems.clear();
+        searchableConversationItems.addAll(conversationItemsWithHeader);
+
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "listable-rooms")) {
+            List<AbstractFlexibleItem> openConversationItems = new ArrayList<>();
+
+            openConversationsQueryDisposable = ncApi.getOpenConversations(
+                credentials,
+                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.getBaseUrl()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(roomsOverall -> {
+
+                    for (Conversation conversation : roomsOverall.getOcs().getData()) {
+                        String headerTitle = getResources().getString(R.string.openConversations);
+
+                        GenericTextHeaderItem genericTextHeaderItem;
+                        if (!callHeaderItems.containsKey(headerTitle)) {
+                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                            callHeaderItems.put(headerTitle, genericTextHeaderItem);
+                        }
+
+                        ConversationItem conversationItem = new ConversationItem(
+                            conversation,
+                            currentUser,
+                            getActivity(),
+                            callHeaderItems.get(headerTitle));
+
+                        openConversationItems.add(conversationItem);
+                    }
+                    searchableConversationItems.addAll(openConversationItems);
+
+                }, throwable -> {
+                    handleHttpExceptions(throwable);
+                    dispose(openConversationsQueryDisposable);
+                }, () -> {
+                    dispose(openConversationsQueryDisposable);
+                });
+        } else {
+            Log.d(TAG, "no open conversations fetched because of missing capability");
+        }
+    }
+
+    private void handleHttpExceptions(Throwable throwable) {
+        if (throwable instanceof HttpException) {
+            HttpException exception = (HttpException) throwable;
+            switch (exception.code()) {
+                case 401:
+                    if (getParentController() != null && getParentController().getRouter() != null) {
+                        Log.d(TAG, "Starting reauth webview via getParentController()");
+                        getParentController().getRouter().pushController((RouterTransaction.with
+                            (new WebViewLoginController(currentUser.getBaseUrl(), true))
+                            .pushChangeHandler(new VerticalChangeHandler())
+                            .popChangeHandler(new VerticalChangeHandler())));
+                    } else {
+                        Log.d(TAG, "Starting reauth webview via ConversationsListController");
+                        showUnauthorizedDialog();
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private void prepareViews() {
         layoutManager = new SmoothScrollLinearLayoutManager(Objects.requireNonNull(getActivity()));
         recyclerView.setLayoutManager(layoutManager);
@@ -593,6 +669,13 @@ public class ConversationsListController extends BaseController implements Searc
                     checkToShowUnreadBubble();
                 }
             }
+        });
+
+        recyclerView.setOnTouchListener((v, event) -> {
+            InputMethodManager imm =
+                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            return false;
         });
 
         swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
@@ -633,7 +716,7 @@ public class ConversationsListController extends BaseController implements Searc
     private void checkToShowUnreadBubble() {
         try {
             int lastVisibleItem = layoutManager.findLastCompletelyVisibleItemPosition();
-            for (AbstractFlexibleItem flexItem : callItems) {
+            for (AbstractFlexibleItem flexItem : conversationItems) {
                 Conversation conversationItem = ((ConversationItem) flexItem).getModel();
                 int position = adapter.getGlobalPositionOf(flexItem);
                 if ((conversationItem.unreadMention ||
@@ -671,6 +754,10 @@ public class ConversationsListController extends BaseController implements Searc
                 roomsQueryDisposable != null && !roomsQueryDisposable.isDisposed()) {
             roomsQueryDisposable.dispose();
             roomsQueryDisposable = null;
+        } else if (disposable == null &&
+            openConversationsQueryDisposable != null && !openConversationsQueryDisposable.isDisposed()) {
+            openConversationsQueryDisposable.dispose();
+            openConversationsQueryDisposable = null;
         }
     }
 
@@ -716,11 +803,6 @@ public class ConversationsListController extends BaseController implements Searc
                 adapter.filterItems(300);
             }
         }
-
-        if (swipeRefreshLayout != null) {
-            swipeRefreshLayout.setEnabled(!adapter.hasFilter());
-        }
-
         return true;
     }
 
@@ -790,7 +872,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public boolean onItemClick(View view, int position) {
-        selectedConversation = getConversation(position);
+        selectedConversation = ((ConversationItem) Objects.requireNonNull(adapter.getItem(position))).getModel();
         if (selectedConversation != null && getActivity() != null) {
             if (showShareToScreen) {
                 handleSharedData();
@@ -861,20 +943,13 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public void onItemLongClick(int position) {
-
         if (showShareToScreen) {
             Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.");
 
-        } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")) {
+        } else {
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
-                Conversation conversation;
-                if (shouldUseLastMessageLayout) {
-                    conversation = ((ConversationItem) clickedItem).getModel();
-                } else {
-                    conversation = ((CallItem) clickedItem).getModel();
-                }
-
+                Conversation conversation = ((ConversationItem) clickedItem).getModel();
                 MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
                 onMessageEvent(moreMenuClickEvent);
             }
@@ -996,17 +1071,6 @@ public class ConversationsListController extends BaseController implements Searc
             ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                                                             selectedConversation.getToken(), bundle, false);
         }
-    }
-
-    private Conversation getConversation(int position) {
-        Object clickedItem = adapter.getItem(position);
-        Conversation conversation;
-        if (shouldUseLastMessageLayout) {
-            conversation = ((ConversationItem) clickedItem).getModel();
-        } else {
-            conversation = ((CallItem) clickedItem).getModel();
-        }
-        return conversation;
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)

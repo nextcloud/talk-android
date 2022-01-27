@@ -57,6 +57,16 @@
                 fresco:placeholderImage="@drawable/account_circle_48dp"
                 fresco:failureImage="@drawable/account_circle_48dp"
                 app:roundAsCircle="true"/>
+
+            <ImageView
+                android:id="@+id/ticker"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/round_bgnd"
+                android:contentDescription="@string/nc_account_chooser_active_user"
+                android:src="@drawable/ic_check_circle"
+                tools:visibility="gone" />
         </FrameLayout>
 
 
@@ -86,6 +96,20 @@
                 tools:text="Firstname Lastname" />
 
             <TextView
+                android:id="@+id/status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_half_margin"
+                android:layout_marginEnd="@dimen/standard_double_margin"
+                android:layout_marginBottom="4dp"
+                android:ellipsize="end"
+                android:gravity="top"
+                android:maxLines="1"
+                android:textColor="?android:attr/textColorSecondary"
+                android:visibility="gone"
+                tools:text="☁️ My custom status" />
+
+            <TextView
                 android:id="@+id/account"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -101,6 +125,20 @@
                 tools:text="https://server.com/nextcloud" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/account_menu"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:clickable="true"
+            android:contentDescription="@string/nc_account_chooser_active_user"
+            android:focusable="true"
+            android:paddingStart="@dimen/standard_half_padding"
+            android:paddingEnd="10dp"
+            android:src="@drawable/ic_check_circle"
+            app:tint="@color/colorPrimary" />
 
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

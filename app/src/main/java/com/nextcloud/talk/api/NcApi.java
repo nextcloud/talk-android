@@ -436,4 +436,11 @@ public interface NcApi {
     Observable<GenericOverall> setChatReadMarker(@Header("Authorization") String authorization,
                                                  @Url String url,
                                                  @Field("lastReadMessage") int lastReadMessage);
+
+    /*
+    Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /listed-room
+    */
+    @GET
+    Observable<RoomsOverall> getOpenConversations(@Header("Authorization") String authorization, @Url String url);
+
 }

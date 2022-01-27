@@ -273,6 +273,8 @@
 
     <!-- Conversations List-->
     <string name="nc_new_mention">Unread mentions</string>
+    <string name="conversations">Conversations</string>
+    <string name="openConversations">Open conversations</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message…</string>
@@ -492,4 +494,5 @@
     <string name="take_photo_send">Send</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
+
 </resources>

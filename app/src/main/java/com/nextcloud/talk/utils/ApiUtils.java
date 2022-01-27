@@ -275,6 +275,10 @@ public class ApiUtils {
         return getUrlForSignaling(version, baseUrl) + "/" + token;
     }
 
+    public static String getUrlForOpenConversations(int version, String baseUrl) {
+        return getUrlForApi(version, baseUrl) + "/listed-room";
+    }
+
     public static RetrofitBucket getRetrofitBucketForCreateRoom(int version, String baseUrl, String roomType,
                                                                 @Nullable String source,
                                                                 @Nullable String invite,

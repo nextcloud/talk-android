@@ -100,7 +100,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_conversation;
+        return R.layout.account_item;
     }
 
     @Override
@@ -145,11 +145,6 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
             holder.avatarImageView.setController(draweeController);
         } else {
             holder.avatarImageView.setVisibility(View.GONE);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) holder.linearLayout.getLayoutParams();
-            layoutParams.setMarginStart((int) NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext()
-                    .getResources().getDimension(R.dimen.activity_horizontal_margin));
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_START);
-            holder.linearLayout.setLayoutParams(layoutParams);
         }
     }
 
@@ -162,18 +157,12 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     static class UserItemViewHolder extends FlexibleViewHolder {
 
-        @BindView(R.id.name_text)
+        @BindView(R.id.user_name)
         public EmojiTextView contactDisplayName;
-        @BindView(R.id.secondary_text)
+        @BindView(R.id.account)
         public TextView serverUrl;
-        @BindView(R.id.avatar_image)
+        @BindView(R.id.user_icon)
         public SimpleDraweeView avatarImageView;
-        @BindView(R.id.linear_layout)
-        LinearLayout linearLayout;
-        @BindView(R.id.more_menu)
-        ImageButton moreMenuButton;
-        @BindView(R.id.password_protected_image_view)
-        ImageView passwordProtectedImageView;
 
         /**
          * Default constructor.
@@ -181,8 +170,6 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         UserItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             ButterKnife.bind(this, view);
-            moreMenuButton.setVisibility(View.GONE);
-            passwordProtectedImageView.setVisibility(View.GONE);
         }
     }
 }

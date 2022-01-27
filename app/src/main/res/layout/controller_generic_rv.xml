@@ -43,6 +43,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_anchor="@+id/swipe_refresh_layout"
-        app:layout_anchorGravity="center"
-        tools:listitem="@layout/rv_item_conversation" />
+        app:layout_anchorGravity="center" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
