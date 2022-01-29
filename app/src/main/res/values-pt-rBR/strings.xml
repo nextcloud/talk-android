@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Procurar em 1%s</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
+    <string name="conversations">Conversas</string>
     <string name="delete_avatar">Excluir avatar</string>
     <string name="edit">Editar</string>
     <string name="encrypted">Criptografado</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Senha incorreta</string>
     <string name="nc_yes">Sim</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
+    <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="password_protected">Protegido por senha</string>
     <string name="play_pause_voice_message">Tocar/parar mensagem de voz</string>

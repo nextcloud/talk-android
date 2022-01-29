@@ -4,6 +4,7 @@
     <string name="appbar_search_in">%s內搜尋</string>
     <string name="avatar">頭像</string>
     <string name="choose_avatar_from_cloud">從雲中選擇頭像</string>
+    <string name="conversations">對話</string>
     <string name="delete_avatar">刪除頭像</string>
     <string name="edit">編輯</string>
     <string name="encrypted">已加密</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">密碼錯誤</string>
     <string name="nc_yes">是</string>
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
+    <string name="openConversations">開放對話</string>
     <string name="open_in_files_app">在“檔案”應用程式中打開</string>
     <string name="password_protected">密碼保護</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>

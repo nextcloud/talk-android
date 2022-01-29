@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Szukaj w %s</string>
     <string name="avatar">Awatar</string>
     <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
+    <string name="conversations">Rozmowy</string>
     <string name="delete_avatar">Usuń awatar</string>
     <string name="edit">Edytuj</string>
     <string name="encrypted">Zaszyfrowane</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Złe hasło</string>
     <string name="nc_yes">Tak</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
+    <string name="openConversations">Otwarte rozmowy</string>
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="password_protected">Zabezpieczone hasłem</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
