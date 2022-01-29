@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Hledat v %s</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
+    <string name="conversations">Konverzace</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
     <string name="edit">Upravit</string>
     <string name="encrypted">Šifrované</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Nesprávné heslo</string>
     <string name="nc_yes">Ano</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
+    <string name="openConversations">Otevřít konverzace</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="password_protected">Chráněno heslem</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>

@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Suche in %s</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Avatar aus der Cloud auswählen</string>
+    <string name="conversations">Unterhaltungen</string>
     <string name="delete_avatar">Avatar löschen</string>
     <string name="edit">Bearbeiten</string>
     <string name="encrypted">Verschlüsselt</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Falsches Passwort</string>
     <string name="nc_yes">Ja</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
+    <string name="openConversations">Unterhaltungen öffnen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="password_protected">Passwortgeschützt</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
