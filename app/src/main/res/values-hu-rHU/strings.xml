@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Keresés itt: %s</string>
     <string name="avatar">Profilkép</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
+    <string name="conversations">Beszélgetések</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="edit">Szerkesztés</string>
     <string name="encrypted">Titkosított</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_yes">Igen</string>
     <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>
+    <string name="openConversations">Beszélgetések megnyitása</string>
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
     <string name="password_protected">Jelszóval védett</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
