@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -82,6 +83,8 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
+import com.nextcloud.talk.ui.dialog.ScopeDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -142,6 +145,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.drawable.DrawableCompat;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -327,16 +331,20 @@ public class CallActivity extends CallBaseActivity {
     private void initClickListeners() {
         binding.pictureInPictureButton.setOnClickListener(l -> enterPipMode());
 
-        binding.speakerButton.setOnClickListener(l -> {
-            if (audioManager != null) {
-                audioManager.toggleUseSpeakerphone();
-                if (audioManager.isSpeakerphoneAutoOn()) {
-                    binding.speakerButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_up_white_24dp);
-                } else {
-                    binding.speakerButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp);
-                }
-            }
-        });
+        binding.audioOutputButton.setOnClickListener(v -> new AudioOutputDialog(
+            this
+        ).show());
+
+//        binding.audioOutputButton.setOnClickListener(l -> {
+//            if (audioManager != null) {
+//                audioManager.toggleUseSpeakerphone();
+//                if (audioManager.isSpeakerphoneAutoOn()) {
+//                    binding.audioOutputButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_up_white_24dp);
+//                } else {
+//                    binding.audioOutputButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp);
+//                }
+//            }
+//        });
 
         binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
         binding.microphoneButton.setOnLongClickListener(l -> {
@@ -371,6 +379,11 @@ public class CallActivity extends CallBaseActivity {
                 hangupNetworkCalls(false);
             }
         });
+    }
+
+    public void setAudioOutputIcon(Drawable drawable){
+        binding.audioOutputButton.getHierarchy().setPlaceholderImage(drawable);
+        DrawableCompat.setTint(drawable, Color.WHITE);
     }
 
     private void createCameraEnumerator() {
@@ -496,7 +509,7 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if (isVoiceOnlyCall) {
-            binding.speakerButton.setVisibility(View.VISIBLE);
+            binding.audioOutputButton.setVisibility(View.VISIBLE);
             binding.switchSelfVideoButton.setVisibility(View.GONE);
             binding.cameraButton.setVisibility(View.GONE);
             binding.selfVideoRenderer.setVisibility(View.GONE);
@@ -513,7 +526,7 @@ public class CallActivity extends CallBaseActivity {
             params.setMargins(0, 0, 0, 0);
             binding.gridview.setLayoutParams(params);
 
-            binding.speakerButton.setVisibility(View.GONE);
+            binding.audioOutputButton.setVisibility(View.GONE);
             if (cameraEnumerator.getDeviceNames().length < 2) {
                 binding.switchSelfVideoButton.setVisibility(View.GONE);
             }

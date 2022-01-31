@@ -153,7 +153,7 @@
             app:roundAsCircle="true" />
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/speakerButton"
+            android:id="@+id/audioOutputButton"
             android:layout_width="60dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"

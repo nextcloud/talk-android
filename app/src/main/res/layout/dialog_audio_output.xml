@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Marcel Hibbe
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021 Marcel Hibbe <marcel.hibbe@nextcloud.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#121212"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/standard_padding">
+
+    <TextView
+        android:id="@+id/upload"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/standard_padding"
+        android:text="@string/audio_output_dialog_headline"
+        android:textAlignment="viewStart"
+        android:textColor="#99ffffff"
+        android:textSize="@dimen/bottom_sheet_text_size" />
+
+    <LinearLayout
+        android:id="@+id/audio_output_bluetooth"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/standard_padding"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingRight="@dimen/standard_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/audio_output_bluetooth_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_bluetooth_audio_24"
+            app:tint="@color/colorPrimary" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/audio_output_bluetooth_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@string/audio_output_bluetooth"
+            android:textAlignment="viewStart"
+            android:textColor="#99ffffff"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/audio_output_speaker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/standard_padding"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingRight="@dimen/standard_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/audio_output_speaker_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_volume_up_white_24dp"
+            app:tint="@color/colorPrimary" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/audio_output_speaker_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@string/audio_output_speaker"
+            android:textAlignment="viewStart"
+            android:textColor="#99ffffff"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/audio_output_earspeaker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/standard_padding"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingRight="@dimen/standard_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/audio_output_earspeaker_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_phone_in_talk_24"
+            app:tint="@color/colorPrimary" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/audio_output_earspeaker_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@string/audio_output_phone"
+            android:textAlignment="viewStart"
+            android:textColor="#99ffffff"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
+</LinearLayout>
