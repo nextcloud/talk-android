@@ -32,7 +32,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
@@ -84,7 +83,6 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
-import com.nextcloud.talk.ui.dialog.ScopeDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -145,6 +143,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.drawable.DrawableCompat;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
@@ -335,17 +334,6 @@ public class CallActivity extends CallBaseActivity {
             this
         ).show());
 
-//        binding.audioOutputButton.setOnClickListener(l -> {
-//            if (audioManager != null) {
-//                audioManager.toggleUseSpeakerphone();
-//                if (audioManager.isSpeakerphoneAutoOn()) {
-//                    binding.audioOutputButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_up_white_24dp);
-//                } else {
-//                    binding.audioOutputButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp);
-//                }
-//            }
-//        });
-
         binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
         binding.microphoneButton.setOnLongClickListener(l -> {
             if (!microphoneOn) {
@@ -381,9 +369,31 @@ public class CallActivity extends CallBaseActivity {
         });
     }
 
-    public void setAudioOutputIcon(Drawable drawable){
-        binding.audioOutputButton.getHierarchy().setPlaceholderImage(drawable);
-        DrawableCompat.setTint(drawable, Color.WHITE);
+    public void setAudioOutputChannel(MagicAudioManager.AudioDevice audioDevice) {
+        if (audioManager == null) {
+            return;
+        }
+
+        audioManager.selectAudioDevice(audioDevice);
+
+        switch (audioManager.getResultingAudioDevice()) {
+            case BLUETOOTH:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_bluetooth_audio_24));
+                break;
+            case SPEAKER_PHONE:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_volume_up_white_24dp));
+                break;
+            case EARPIECE:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_phone_in_talk_24));
+                break;
+            default:
+                Log.e(TAG, "Invalid audio device selection");
+                break;
+        }
+        DrawableCompat.setTint(binding.audioOutputButton.getDrawable(), Color.WHITE);
     }
 
     private void createCameraEnumerator() {
@@ -391,7 +401,7 @@ public class CallActivity extends CallBaseActivity {
         try {
             camera2EnumeratorIsSupported = Camera2Enumerator.isSupported(this);
         } catch (final Throwable throwable) {
-            Log.w(TAG, "Camera2Enumator threw an error");
+            Log.w(TAG, "Camera2Enumerator threw an error");
         }
 
         if (camera2EnumeratorIsSupported) {
@@ -726,7 +736,8 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-        final MagicAudioManager.AudioDevice device, final Set<MagicAudioManager.AudioDevice> availableDevices) {
+        final MagicAudioManager.AudioDevice device,
+        final Set<MagicAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
             + "selected: " + device);
 

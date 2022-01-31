@@ -55,13 +55,9 @@ import java.util.Set;
  */
 public class MagicAudioManager {
     private static final String TAG = "MagicAudioManager";
-    private static final String SPEAKERPHONE_AUTO = "auto";
-    private static final String SPEAKERPHONE_FALSE = "false";
     private final Context magicContext;
-    // Handles all tasks related to Bluetooth headset devices.
     private final MagicBluetoothManager bluetoothManager;
-    // Contains speakerphone setting: auto, true or false
-    private String useSpeakerphone;
+    private boolean controlSpeakerByProximitySensor;
     private AudioManager audioManager;
     private AudioManagerEvents audioManagerEvents;
     private AudioManagerState amState;
@@ -69,31 +65,15 @@ public class MagicAudioManager {
     private boolean savedIsSpeakerPhoneOn = false;
     private boolean savedIsMicrophoneMute = false;
     private boolean hasWiredHeadset = false;
-    // Default audio device; speaker phone for video calls or earpiece for audio
-    // only calls.
-    private AudioDevice defaultAudioDevice;
-    // Contains the currently selected audio device.
-    // This device is changed automatically using a certain scheme where e.g.
-    // a wired headset "wins" over speaker phone. It is also possible for a
-    // user to explicitly select a device (and overrid any predefined scheme).
-    // See |userSelectedAudioDevice| for details.
-    private AudioDevice selectedAudioDevice;
-    // Contains the user-selected audio device which overrides the predefined
-    // selection scheme.
-    // TODO(henrika): always set to AudioDevice.NONE today. Add support for
-    // explicit selection based on choice by userSelectedAudioDevice.
+
     private AudioDevice userSelectedAudioDevice;
-    // Proximity sensor object. It measures the proximity of an object in cm
-    // relative to the view screen of a device and can therefore be used to
-    // assist device switching (close to ear <=> use headset earpiece if
-    // available, far from ear <=> use speaker phone).
+    private AudioDevice resultingAudioDevice;
+
     private MagicProximitySensor proximitySensor = null;
-    // Contains a list of available audio devices. A Set collection is used to
-    // avoid duplicate elements.
+
     private Set<AudioDevice> audioDevices = new HashSet<>();
-    // Broadcast receiver for wired headset intent broadcasts.
+
     private BroadcastReceiver wiredHeadsetReceiver;
-    // Callback method for changes in audio focus.
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
 
     private PowerManagerUtils powerManagerUtils;
@@ -110,18 +90,8 @@ public class MagicAudioManager {
         powerManagerUtils = new PowerManagerUtils();
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
 
-        if (useProximitySensor) {
-            useSpeakerphone = SPEAKERPHONE_AUTO;
-        } else {
-            useSpeakerphone = SPEAKERPHONE_FALSE;
-        }
-
-
-        if (useSpeakerphone.equals(SPEAKERPHONE_FALSE)) {
-            defaultAudioDevice = AudioDevice.EARPIECE;
-        } else {
-            defaultAudioDevice = AudioDevice.SPEAKER_PHONE;
-        }
+        controlSpeakerByProximitySensor = useProximitySensor;
+        updateAudioDeviceState();
 
         // Create and initialize the proximity sensor.
         // Tablet devices (e.g. Nexus 7) does not support proximity sensors.
@@ -134,8 +104,6 @@ public class MagicAudioManager {
                 onProximitySensorChangedState();
             }
         });
-
-        Log.d(TAG, "defaultAudioDevice: " + defaultAudioDevice);
     }
 
     /**
@@ -145,29 +113,13 @@ public class MagicAudioManager {
         return new MagicAudioManager(context, useProximitySensor);
     }
 
-    public void toggleUseSpeakerphone() {
-        if (useSpeakerphone.equals(SPEAKERPHONE_FALSE)) {
-            useSpeakerphone = SPEAKERPHONE_AUTO;
-            setDefaultAudioDevice(AudioDevice.SPEAKER_PHONE);
-        } else {
-            useSpeakerphone = SPEAKERPHONE_FALSE;
-            setDefaultAudioDevice(AudioDevice.EARPIECE);
-        }
-
-        updateAudioDeviceState();
-    }
-
-    public boolean isSpeakerphoneAutoOn() {
-        return (useSpeakerphone.equals(SPEAKERPHONE_AUTO));
-    }
-
     /**
      * This method is called when the proximity sensor reports a state change,
      * e.g. from "NEAR to FAR" or from "FAR to NEAR".
      */
     private void onProximitySensorChangedState() {
 
-        if (!useSpeakerphone.equals(SPEAKERPHONE_AUTO)) {
+        if (!controlSpeakerByProximitySensor) {
             return;
         }
 
@@ -274,7 +226,7 @@ public class MagicAudioManager {
 
         // Set initial device states.
         userSelectedAudioDevice = AudioDevice.NONE;
-        selectedAudioDevice = AudioDevice.NONE;
+        resultingAudioDevice = AudioDevice.NONE;
         audioDevices.clear();
 
         // Initialize and start Bluetooth if a BT device is available or initiate
@@ -355,33 +307,8 @@ public class MagicAudioManager {
                     Log.e(TAG, "Invalid audio device selection");
                     break;
             }
-            selectedAudioDevice = device;
+            resultingAudioDevice = device;
         }
-    }
-
-    /**
-     * Changes default audio device.
-     * TODO(henrika): add usage of this method in the AppRTCMobile client.
-     */
-    public void setDefaultAudioDevice(AudioDevice defaultDevice) {
-        ThreadUtils.checkIsOnMainThread();
-        switch (defaultDevice) {
-            case SPEAKER_PHONE:
-                defaultAudioDevice = defaultDevice;
-                break;
-            case EARPIECE:
-                if (hasEarpiece()) {
-                    defaultAudioDevice = defaultDevice;
-                } else {
-                    defaultAudioDevice = AudioDevice.SPEAKER_PHONE;
-                }
-                break;
-            default:
-                Log.e(TAG, "Invalid default audio device selection");
-                break;
-        }
-        Log.d(TAG, "setDefaultAudioDevice(device=" + defaultAudioDevice + ")");
-        updateAudioDeviceState();
     }
 
     /**
@@ -392,7 +319,15 @@ public class MagicAudioManager {
         if (!audioDevices.contains(device)) {
             Log.e(TAG, "Can not select " + device + " from available " + audioDevices);
         }
+
         userSelectedAudioDevice = device;
+
+        if (device == AudioDevice.SPEAKER_PHONE) {
+            controlSpeakerByProximitySensor = true;
+        } else {
+            controlSpeakerByProximitySensor = false;
+        }
+
         updateAudioDeviceState();
     }
 
@@ -407,9 +342,9 @@ public class MagicAudioManager {
     /**
      * Returns the currently selected audio device.
      */
-    public AudioDevice getSelectedAudioDevice() {
+    public AudioDevice getResultingAudioDevice() {
         ThreadUtils.checkIsOnMainThread();
-        return selectedAudioDevice;
+        return resultingAudioDevice;
     }
 
     /**
@@ -482,10 +417,6 @@ public class MagicAudioManager {
         }
     }
 
-    /**
-     * Updates list of possible audio devices and make new device selection.
-     * TODO(henrika): add unit test to verify all state transitions.
-     */
     public void updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread();
         Log.d(TAG, "--- updateAudioDeviceState: "
@@ -493,19 +424,18 @@ public class MagicAudioManager {
                 + "BT state=" + bluetoothManager.getState());
         Log.d(TAG, "Device status: "
                 + "available=" + audioDevices + ", "
-                + "selected=" + selectedAudioDevice + ", "
+                + "resulting(current)=" + resultingAudioDevice + ", "
                 + "user selected=" + userSelectedAudioDevice);
 
-        // Check if any Bluetooth headset is connected. The internal BT state will
-        // change accordingly.
-        // TODO(henrika): perhaps wrap required state into BT manager.
+
+
+
         if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE
                 || bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE
                 || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_DISCONNECTING) {
             bluetoothManager.updateDevice();
         }
 
-        // Update the set of available audio devices.
         Set<AudioDevice> newAudioDevices = new HashSet<>();
 
         if (bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED
@@ -518,33 +448,31 @@ public class MagicAudioManager {
             // If a wired headset is connected, then it is the only possible option.
             newAudioDevices.add(AudioDevice.WIRED_HEADSET);
         } else {
-            // No wired headset, hence the audio-device list can contain speaker
-            // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
             newAudioDevices.add(AudioDevice.SPEAKER_PHONE);
             if (hasEarpiece()) {
                 newAudioDevices.add(AudioDevice.EARPIECE);
             }
         }
-        // Store state which is set to true if the device list has changed.
+
         boolean audioDeviceSetUpdated = !audioDevices.equals(newAudioDevices);
-        // Update the existing audio device set.
         audioDevices = newAudioDevices;
+
+
+
         // Correct user selected audio devices if needed.
-        if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE
-                && userSelectedAudioDevice == AudioDevice.BLUETOOTH) {
-            // If BT is not available, it can't be the user selection.
+        if (userSelectedAudioDevice == AudioDevice.BLUETOOTH
+            && bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE) {
             userSelectedAudioDevice = AudioDevice.NONE;
         }
-        if (hasWiredHeadset && userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE) {
-            // If user selected speaker phone, but then plugged wired headset then make
-            // wired headset as user selected device.
+        if (userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE && hasWiredHeadset) {
             userSelectedAudioDevice = AudioDevice.WIRED_HEADSET;
         }
-        if (!hasWiredHeadset && userSelectedAudioDevice == AudioDevice.WIRED_HEADSET) {
-            // If user selected wired headset, but then unplugged wired headset then make
-            // speaker phone as user selected device.
+        if (userSelectedAudioDevice == AudioDevice.WIRED_HEADSET && !hasWiredHeadset) {
             userSelectedAudioDevice = AudioDevice.SPEAKER_PHONE;
         }
+
+
+
 
         // Need to start Bluetooth if it is available and user either selected it explicitly or
         // user did not select any output device.
@@ -586,34 +514,34 @@ public class MagicAudioManager {
 
 
         // Update selected audio device.
-        AudioDevice newAudioDevice = selectedAudioDevice;
+        AudioDevice newResultingAudioDevice;
 
         if (bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED) {
             // If a Bluetooth is connected, then it should be used as output audio
             // device. Note that it is not sufficient that a headset is available;
             // an active SCO channel must also be up and running.
-            newAudioDevice = AudioDevice.BLUETOOTH;
+            newResultingAudioDevice = AudioDevice.BLUETOOTH;
         } else if (hasWiredHeadset) {
             // If a wired headset is connected, but Bluetooth is not, then wired headset is used as
             // audio device.
-            newAudioDevice = AudioDevice.WIRED_HEADSET;
+            newResultingAudioDevice = AudioDevice.WIRED_HEADSET;
         } else {
             // No wired headset and no Bluetooth, hence the audio-device list can contain speaker
             // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
             // |defaultAudioDevice| contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
             // depending on the user's selection.
-            newAudioDevice = defaultAudioDevice;
+            newResultingAudioDevice = userSelectedAudioDevice;
         }
         // Switch to new device but only if there has been any changes.
-        if (newAudioDevice != selectedAudioDevice || audioDeviceSetUpdated) {
+        if (newResultingAudioDevice != resultingAudioDevice || audioDeviceSetUpdated) {
             // Do the required device switch.
-            setAudioDeviceInternal(newAudioDevice);
+            setAudioDeviceInternal(newResultingAudioDevice);
             Log.d(TAG, "New device status: "
                     + "available=" + audioDevices + ", "
-                    + "selected=" + newAudioDevice);
+                    + "resulting(new)=" + newResultingAudioDevice);
             if (audioManagerEvents != null) {
                 // Notify a listening client that audio device has been changed.
-                audioManagerEvents.onAudioDeviceChanged(selectedAudioDevice, audioDevices);
+                audioManagerEvents.onAudioDeviceChanged(resultingAudioDevice, audioDevices);
             }
         }
         Log.d(TAG, "--- updateAudioDeviceState done");

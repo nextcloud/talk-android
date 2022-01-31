@@ -23,7 +23,6 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -31,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.databinding.DialogAudioOutputBinding
+import com.nextcloud.talk.webrtc.MagicAudioManager
 
 class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(callActivity) {
 
@@ -44,22 +44,17 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
 
         dialogAudioOutputBinding.audioOutputBluetooth.setOnClickListener {
-            Log.d(TAG, "bluetooth button clicked")
-            callActivity.setAudioOutputIcon(dialogAudioOutputBinding.audioOutputBluetoothIcon.drawable)
+            callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.BLUETOOTH)
             dismiss()
         }
 
         dialogAudioOutputBinding.audioOutputSpeaker.setOnClickListener {
-            Log.d(TAG, "speaker button clicked")
-            callActivity.setAudioOutputIcon(dialogAudioOutputBinding.audioOutputSpeakerIcon.drawable)
-
+            callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
             dismiss()
         }
 
         dialogAudioOutputBinding.audioOutputEarspeaker.setOnClickListener {
-            Log.d(TAG, "earspeaker button clicked")
-            callActivity.setAudioOutputIcon(dialogAudioOutputBinding.audioOutputEarspeakerIcon.drawable)
-
+            callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.EARPIECE)
             dismiss()
         }
     }
