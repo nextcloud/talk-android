@@ -519,7 +519,6 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if (isVoiceOnlyCall) {
-            binding.audioOutputButton.setVisibility(View.VISIBLE);
             binding.switchSelfVideoButton.setVisibility(View.GONE);
             binding.cameraButton.setVisibility(View.GONE);
             binding.selfVideoRenderer.setVisibility(View.GONE);
@@ -536,7 +535,6 @@ public class CallActivity extends CallBaseActivity {
             params.setMargins(0, 0, 0, 0);
             binding.gridview.setLayoutParams(params);
 
-            binding.audioOutputButton.setVisibility(View.GONE);
             if (cameraEnumerator.getDeviceNames().length < 2) {
                 binding.switchSelfVideoButton.setVisibility(View.GONE);
             }
