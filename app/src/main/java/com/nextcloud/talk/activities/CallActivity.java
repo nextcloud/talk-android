@@ -475,6 +475,10 @@ public class CallActivity extends CallBaseActivity {
                 binding.audioOutputButton.getHierarchy().setPlaceholderImage(
                     AppCompatResources.getDrawable(context, R.drawable.ic_baseline_phone_in_talk_24));
                 break;
+            case WIRED_HEADSET:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_headset_mic_24));
+                break;
             default:
                 Log.e(TAG, "Icon for audio output not available");
                 break;
@@ -745,14 +749,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-        final MagicAudioManager.AudioDevice device,
+        final MagicAudioManager.AudioDevice currentDevice,
         final Set<MagicAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
-            + "result: " + device);
+            + "currentDevice: " + currentDevice);
 
-        final boolean shouldDisableProximityLock = (device.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
-            || device.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
-            || device.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
+        final boolean shouldDisableProximityLock = (currentDevice.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
+            || currentDevice.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
+            || currentDevice.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
@@ -760,10 +764,10 @@ public class CallActivity extends CallBaseActivity {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
         }
 
-        if (audioOutputDialog != null){
+        if (audioOutputDialog != null) {
             audioOutputDialog.updateOutputDeviceList();
         }
-        updateAudioOutputButton(device);
+        updateAudioOutputButton(currentDevice);
     }
 
 

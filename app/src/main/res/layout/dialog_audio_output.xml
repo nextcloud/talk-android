@@ -138,4 +138,37 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/audio_output_wired_headset"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/standard_padding"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingRight="@dimen/standard_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/audio_output_wired_headset_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_baseline_headset_mic_24"
+            app:tint="#99ffffff" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/audio_output_wired_headset_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:text="@string/audio_output_wired_headset"
+            android:textAlignment="viewStart"
+            android:textColor="#99ffffff"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
 </LinearLayout>

@@ -43,22 +43,37 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
         updateOutputDeviceList()
-        highlightActiveOutputChannel()
         initClickListeners()
     }
 
     fun updateOutputDeviceList() {
-        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.BLUETOOTH) == false){
+        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.BLUETOOTH) == false) {
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.EARPIECE) == false){
+        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.EARPIECE) == false) {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.VISIBLE
         }
+
+        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.SPEAKER_PHONE) == false) {
+            dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.GONE
+        } else {
+            dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.VISIBLE
+        }
+
+        if (callActivity.audioManager?.currentAudioDevice?.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET) == true) {
+            dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
+            dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.GONE
+            dialogAudioOutputBinding.audioOutputWiredHeadset.visibility = View.VISIBLE
+        } else {
+            dialogAudioOutputBinding.audioOutputWiredHeadset.visibility = View.GONE
+        }
+
+        highlightActiveOutputChannel()
     }
 
     private fun highlightActiveOutputChannel() {
@@ -96,6 +111,17 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     ), android.graphics.PorterDuff.Mode.SRC_IN
                 )
                 dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(callActivity.resources.getColor(R.color.colorPrimary))
+            }
+
+            MagicAudioManager.AudioDevice.WIRED_HEADSET -> {
+                dialogAudioOutputBinding.audioOutputWiredHeadsetIcon.setColorFilter(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.colorPrimary
+                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                )
+                dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(callActivity.resources.getColor(R.color
+                    .colorPrimary))
             }
 
             else -> Log.d(TAG, "AudioOutputDialog doesn't know this AudioDevice")
