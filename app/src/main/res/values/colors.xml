@@ -78,6 +78,8 @@
     <color name="bg_message_list_outcoming_bubble_deleted">#800082C9</color>
 
     <color name="bg_bottom_sheet">#46ffffff</color>
+    <color name="bg_call_screen_dialog">#121212</color>
+    <color name="call_screen_text">#ffffffff</color>
 
     <color name="call_buttons_background">#BF999999</color>
     <color name="favorite_icon_tint">#FFCC00</color>

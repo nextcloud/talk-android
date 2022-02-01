@@ -2,9 +2,7 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Marcel Hibbe
-  ~ @author Andy Scherzinger
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
-  ~ Copyright (C) 2021 Marcel Hibbe <marcel.hibbe@nextcloud.com>
+  ~ Copyright (C) 2022 Marcel Hibbe <marcel.hibbe@nextcloud.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -25,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#121212"
+    android:background="@color/bg_call_screen_dialog"
     android:orientation="vertical"
     android:paddingBottom="@dimen/standard_padding">
 
@@ -36,7 +34,7 @@
         android:padding="@dimen/standard_padding"
         android:text="@string/audio_output_dialog_headline"
         android:textAlignment="viewStart"
-        android:textColor="#99ffffff"
+        android:textColor="@color/grey_600"
         android:textSize="@dimen/bottom_sheet_text_size" />
 
     <LinearLayout
@@ -57,7 +55,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_bluetooth_audio_24"
-            app:tint="#99ffffff" />
+            app:tint="@color/grey_600" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_bluetooth_text"
@@ -67,7 +65,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             android:text="@string/audio_output_bluetooth"
             android:textAlignment="viewStart"
-            android:textColor="#99ffffff"
+            android:textColor="@color/call_screen_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
@@ -90,7 +88,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_volume_up_white_24dp"
-            app:tint="#99ffffff" />
+            app:tint="@color/grey_600" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_speaker_text"
@@ -100,7 +98,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             android:text="@string/audio_output_speaker"
             android:textAlignment="viewStart"
-            android:textColor="#99ffffff"
+            android:textColor="@color/call_screen_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
@@ -123,7 +121,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_phone_in_talk_24"
-            app:tint="#99ffffff" />
+            app:tint="@color/grey_600" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_earspeaker_text"
@@ -133,7 +131,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             android:text="@string/audio_output_phone"
             android:textAlignment="viewStart"
-            android:textColor="#99ffffff"
+            android:textColor="@color/call_screen_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
@@ -156,7 +154,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_headset_mic_24"
-            app:tint="#99ffffff" />
+            app:tint="@color/grey_600" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_wired_headset_text"
@@ -166,7 +164,7 @@
             android:layout_marginStart="@dimen/standard_margin"
             android:text="@string/audio_output_wired_headset"
             android:textAlignment="viewStart"
-            android:textColor="#99ffffff"
+            android:textColor="@color/call_screen_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>

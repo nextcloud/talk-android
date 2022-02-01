@@ -65,7 +65,10 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
             dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.currentAudioDevice?.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET) == true) {
+        if (callActivity.audioManager?.currentAudioDevice?.equals(
+                MagicAudioManager.AudioDevice.WIRED_HEADSET
+            ) == true
+        ) {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
             dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.GONE
             dialogAudioOutputBinding.audioOutputWiredHeadset.visibility = View.VISIBLE
@@ -81,15 +84,13 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
             MagicAudioManager.AudioDevice.BLUETOOTH -> {
                 dialogAudioOutputBinding.audioOutputBluetoothIcon.setColorFilter(
                     ContextCompat.getColor(
-                        context, R.color
-                            .colorPrimary
-                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                        context,
+                        R.color.colorPrimary
+                    ),
+                    android.graphics.PorterDuff.Mode.SRC_IN
                 )
                 dialogAudioOutputBinding.audioOutputBluetoothText.setTextColor(
-                    callActivity.resources.getColor(
-                        R.color
-                            .colorPrimary
-                    )
+                    callActivity.resources.getColor(R.color.colorPrimary)
                 )
             }
 
@@ -98,9 +99,12 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     ContextCompat.getColor(
                         context,
                         R.color.colorPrimary
-                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                    ),
+                    android.graphics.PorterDuff.Mode.SRC_IN
                 )
-                dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(callActivity.resources.getColor(R.color.colorPrimary))
+                dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(
+                    callActivity.resources.getColor(R.color.colorPrimary)
+                )
             }
 
             MagicAudioManager.AudioDevice.EARPIECE -> {
@@ -108,9 +112,12 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     ContextCompat.getColor(
                         context,
                         R.color.colorPrimary
-                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                    ),
+                    android.graphics.PorterDuff.Mode.SRC_IN
                 )
-                dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(callActivity.resources.getColor(R.color.colorPrimary))
+                dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(
+                    callActivity.resources.getColor(R.color.colorPrimary)
+                )
             }
 
             MagicAudioManager.AudioDevice.WIRED_HEADSET -> {
@@ -118,10 +125,12 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     ContextCompat.getColor(
                         context,
                         R.color.colorPrimary
-                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                    ),
+                    android.graphics.PorterDuff.Mode.SRC_IN
                 )
-                dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(callActivity.resources.getColor(R.color
-                    .colorPrimary))
+                dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(
+                    callActivity.resources.getColor(R.color.colorPrimary)
+                )
             }
 
             else -> Log.d(TAG, "AudioOutputDialog doesn't know this AudioDevice")

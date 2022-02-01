@@ -377,8 +377,8 @@ public class CallActivity extends CallBaseActivity {
         boolean camera2EnumeratorIsSupported = false;
         try {
             camera2EnumeratorIsSupported = Camera2Enumerator.isSupported(this);
-        } catch (final Throwable throwable) {
-            Log.w(TAG, "Camera2Enumerator threw an error");
+        } catch (final Throwable t) {
+            Log.w(TAG, "Camera2Enumerator threw an error", t);
         }
 
         if (camera2EnumeratorIsSupported) {
