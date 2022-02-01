@@ -173,6 +173,8 @@ public class CallActivity extends CallBaseActivity {
 
     public static final String TAG = "CallActivity";
 
+    public MagicAudioManager audioManager;
+
     private static final String[] PERMISSIONS_CALL = {
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.RECORD_AUDIO,
@@ -198,7 +200,6 @@ public class CallActivity extends CallBaseActivity {
     private MediaConstraints videoConstraints;
     private MediaConstraints sdpConstraints;
     private MediaConstraints sdpConstraintsForMCU;
-    private MagicAudioManager audioManager;
     private VideoSource videoSource;
     private VideoTrack localVideoTrack;
     private AudioSource audioSource;
@@ -369,33 +370,6 @@ public class CallActivity extends CallBaseActivity {
         });
     }
 
-    public void setAudioOutputChannel(MagicAudioManager.AudioDevice audioDevice) {
-        if (audioManager == null) {
-            return;
-        }
-
-        audioManager.selectAudioDevice(audioDevice);
-
-        switch (audioManager.getResultingAudioDevice()) {
-            case BLUETOOTH:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_bluetooth_audio_24));
-                break;
-            case SPEAKER_PHONE:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_volume_up_white_24dp));
-                break;
-            case EARPIECE:
-                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
-                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_phone_in_talk_24));
-                break;
-            default:
-                Log.e(TAG, "Invalid audio device selection");
-                break;
-        }
-        DrawableCompat.setTint(binding.audioOutputButton.getDrawable(), Color.WHITE);
-    }
-
     private void createCameraEnumerator() {
         boolean camera2EnumeratorIsSupported = false;
         try {
@@ -441,6 +415,12 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "Starting the audio manager...");
         audioManager.start(this::onAudioManagerDevicesChanged);
 
+        if (isVoiceOnlyCall) {
+            setAudioOutputChannel(MagicAudioManager.AudioDevice.EARPIECE);
+        } else {
+            setAudioOutputChannel(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+        }
+
         iceServers = new ArrayList<>();
 
         //create sdpConstraints
@@ -469,6 +449,33 @@ public class CallActivity extends CallBaseActivity {
         }
 
         microphoneInitialization();
+    }
+
+    public void setAudioOutputChannel(MagicAudioManager.AudioDevice selectedAudioDevice) {
+        if (audioManager == null) {
+            return;
+        }
+
+        audioManager.selectAudioDevice(selectedAudioDevice);
+
+        switch (audioManager.getResultingAudioDevice()) {
+            case BLUETOOTH:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_bluetooth_audio_24));
+                break;
+            case SPEAKER_PHONE:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_volume_up_white_24dp));
+                break;
+            case EARPIECE:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_phone_in_talk_24));
+                break;
+            default:
+                Log.e(TAG, "Icon for audio output not available");
+                break;
+        }
+        DrawableCompat.setTint(binding.audioOutputButton.getDrawable(), Color.WHITE);
     }
 
     private void handleFromNotification() {

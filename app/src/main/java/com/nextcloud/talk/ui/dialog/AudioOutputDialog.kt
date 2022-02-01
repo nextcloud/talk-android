@@ -2,9 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
- * @author Andy Scherzinger
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
- * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +21,10 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
@@ -42,7 +42,52 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
         setContentView(dialogAudioOutputBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        highlightActiveOutputChannel()
+        initClickListeners()
+    }
 
+    private fun highlightActiveOutputChannel() {
+        when (callActivity.audioManager?.resultingAudioDevice) {
+            MagicAudioManager.AudioDevice.BLUETOOTH -> {
+                dialogAudioOutputBinding.audioOutputBluetoothIcon.setColorFilter(
+                    ContextCompat.getColor(
+                        context, R.color
+                            .colorPrimary
+                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                )
+                dialogAudioOutputBinding.audioOutputBluetoothText.setTextColor(
+                    callActivity.resources.getColor(
+                        R.color
+                            .colorPrimary
+                    )
+                )
+            }
+
+            MagicAudioManager.AudioDevice.SPEAKER_PHONE -> {
+                dialogAudioOutputBinding.audioOutputSpeakerIcon.setColorFilter(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.colorPrimary
+                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                )
+                dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(callActivity.resources.getColor(R.color.colorPrimary))
+            }
+
+            MagicAudioManager.AudioDevice.EARPIECE -> {
+                dialogAudioOutputBinding.audioOutputEarspeakerIcon.setColorFilter(
+                    ContextCompat.getColor(
+                        context,
+                        R.color.colorPrimary
+                    ), android.graphics.PorterDuff.Mode.SRC_IN
+                )
+                dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(callActivity.resources.getColor(R.color.colorPrimary))
+            }
+
+            else -> Log.d(TAG, "AudioOutputDialog doesn't know this AudioDevice")
+        }
+    }
+
+    private fun initClickListeners() {
         dialogAudioOutputBinding.audioOutputBluetooth.setOnClickListener {
             callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.BLUETOOTH)
             dismiss()
