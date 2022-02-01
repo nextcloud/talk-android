@@ -57,7 +57,7 @@ public class MagicAudioManager {
     private static final String TAG = "MagicAudioManager";
     private final Context magicContext;
     private final MagicBluetoothManager bluetoothManager;
-    private boolean controlSpeakerByProximitySensor;
+    private boolean useProximitySensor;
     private AudioManager audioManager;
     private AudioManagerListener audioManagerListener;
     private AudioManagerState amState;
@@ -67,7 +67,7 @@ public class MagicAudioManager {
     private boolean hasWiredHeadset = false;
 
     private AudioDevice userSelectedAudioDevice;
-    private AudioDevice resultingAudioDevice;
+    private AudioDevice currentAudioDevice;
 
     private MagicProximitySensor proximitySensor = null;
 
@@ -90,7 +90,7 @@ public class MagicAudioManager {
         powerManagerUtils = new PowerManagerUtils();
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
 
-        controlSpeakerByProximitySensor = useProximitySensor;
+        this.useProximitySensor = useProximitySensor;
         updateAudioDeviceState();
 
         // Create and initialize the proximity sensor.
@@ -118,27 +118,24 @@ public class MagicAudioManager {
      * e.g. from "NEAR to FAR" or from "FAR to NEAR".
      */
     private void onProximitySensorChangedState() {
-
-        if (!controlSpeakerByProximitySensor) {
+        if (!useProximitySensor) {
             return;
         }
 
-        // The proximity sensor should only be activated when there are exactly two
-        // available audio devices.
-        if (audioDevices.size() == 2 && audioDevices.contains(MagicAudioManager.AudioDevice.EARPIECE)
-                && audioDevices.contains(MagicAudioManager.AudioDevice.SPEAKER_PHONE)) {
+        if (userSelectedAudioDevice.equals(AudioDevice.SPEAKER_PHONE)
+            && audioDevices.contains(AudioDevice.EARPIECE)
+            && audioDevices.contains(AudioDevice.SPEAKER_PHONE)) {
+
             if (proximitySensor.sensorReportsNearState()) {
-                // Sensor reports that a "handset is being held up to a person's ear",
-                // or "something is covering the light sensor".
-                setAudioDeviceInternal(MagicAudioManager.AudioDevice.EARPIECE);
+                setAudioDeviceInternal(AudioDevice.EARPIECE);
+                Log.d(TAG,"switched to EARPIECE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=near");
 
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .SENSOR_NEAR, null, null, null, null));
 
             } else {
-                // Sensor reports that a "handset is removed from a person's ear", or
-                // "the light sensor is no longer covered".
                 setAudioDeviceInternal(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+                Log.d(TAG,"switched to SPEAKER_PHONE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=far");
 
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .SENSOR_FAR, null, null, null, null));
@@ -226,7 +223,7 @@ public class MagicAudioManager {
 
         // Set initial device states.
         userSelectedAudioDevice = AudioDevice.NONE;
-        resultingAudioDevice = AudioDevice.NONE;
+        currentAudioDevice = AudioDevice.NONE;
         audioDevices.clear();
 
         // Initialize and start Bluetooth if a BT device is available or initiate
@@ -285,21 +282,16 @@ public class MagicAudioManager {
     /**
      * Changes selection of the currently active audio device.
      */
-    private void setAudioDeviceInternal(AudioDevice device) {
-        Log.d(TAG, "setAudioDeviceInternal(device=" + device + ")");
+    private void setAudioDeviceInternal(AudioDevice audioDevice) {
+        Log.d(TAG, "setAudioDeviceInternal(device=" + audioDevice + ")");
 
-        if (audioDevices.contains(device)) {
-
-            switch (device) {
+        if (audioDevices.contains(audioDevice)) {
+            switch (audioDevice) {
                 case SPEAKER_PHONE:
                     setSpeakerphoneOn(true);
                     break;
                 case EARPIECE:
-                    setSpeakerphoneOn(false);
-                    break;
                 case WIRED_HEADSET:
-                    setSpeakerphoneOn(false);
-                    break;
                 case BLUETOOTH:
                     setSpeakerphoneOn(false);
                     break;
@@ -307,7 +299,7 @@ public class MagicAudioManager {
                     Log.e(TAG, "Invalid audio device selection");
                     break;
             }
-            resultingAudioDevice = device;
+            currentAudioDevice = audioDevice;
         }
     }
 
@@ -322,11 +314,11 @@ public class MagicAudioManager {
 
         userSelectedAudioDevice = device;
 
-        if (device == AudioDevice.SPEAKER_PHONE) {
-            controlSpeakerByProximitySensor = true;
-        } else {
-            controlSpeakerByProximitySensor = false;
-        }
+//        if (device == AudioDevice.SPEAKER_PHONE) {
+//            controlSpeakerByProximitySensor = true;
+//        } else {
+//            controlSpeakerByProximitySensor = false;
+//        }
 
         updateAudioDeviceState();
     }
@@ -342,9 +334,9 @@ public class MagicAudioManager {
     /**
      * Returns the currently selected audio device.
      */
-    public AudioDevice getResultingAudioDevice() {
+    public AudioDevice getCurrentAudioDevice() {
         ThreadUtils.checkIsOnMainThread();
-        return resultingAudioDevice;
+        return currentAudioDevice;
     }
 
     /**
@@ -424,11 +416,8 @@ public class MagicAudioManager {
                 + "BT state=" + bluetoothManager.getState());
         Log.d(TAG, "Device status: "
                 + "available=" + audioDevices + ", "
-                + "resulting(current)=" + resultingAudioDevice + ", "
+                + "current=" + currentAudioDevice + ", "
                 + "user selected=" + userSelectedAudioDevice);
-
-
-
 
         if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE
                 || bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE
@@ -514,34 +503,34 @@ public class MagicAudioManager {
 
 
         // Update selected audio device.
-        AudioDevice newResultingAudioDevice;
+        AudioDevice newCurrentAudioDevice;
 
         if (bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED) {
             // If a Bluetooth is connected, then it should be used as output audio
             // device. Note that it is not sufficient that a headset is available;
             // an active SCO channel must also be up and running.
-            newResultingAudioDevice = AudioDevice.BLUETOOTH;
+            newCurrentAudioDevice = AudioDevice.BLUETOOTH;
         } else if (hasWiredHeadset) {
             // If a wired headset is connected, but Bluetooth is not, then wired headset is used as
             // audio device.
-            newResultingAudioDevice = AudioDevice.WIRED_HEADSET;
+            newCurrentAudioDevice = AudioDevice.WIRED_HEADSET;
         } else {
             // No wired headset and no Bluetooth, hence the audio-device list can contain speaker
             // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
             // |defaultAudioDevice| contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
             // depending on the user's selection.
-            newResultingAudioDevice = userSelectedAudioDevice;
+            newCurrentAudioDevice = userSelectedAudioDevice;
         }
         // Switch to new device but only if there has been any changes.
-        if (newResultingAudioDevice != resultingAudioDevice || audioDeviceSetUpdated) {
+        if (newCurrentAudioDevice != currentAudioDevice || audioDeviceSetUpdated) {
             // Do the required device switch.
-            setAudioDeviceInternal(newResultingAudioDevice);
+            setAudioDeviceInternal(newCurrentAudioDevice);
             Log.d(TAG, "New device status: "
                     + "available=" + audioDevices + ", "
-                    + "resulting(new)=" + newResultingAudioDevice);
+                    + "current(new)=" + newCurrentAudioDevice);
             if (audioManagerListener != null) {
                 // Notify a listening client that audio device has been changed.
-                audioManagerListener.onAudioDeviceChanged(resultingAudioDevice, audioDevices);
+                audioManagerListener.onAudioDeviceChanged(currentAudioDevice, audioDevices);
             }
         }
         Log.d(TAG, "--- updateAudioDeviceState done");

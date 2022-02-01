@@ -412,7 +412,7 @@ public class CallActivity extends CallBaseActivity {
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
-        audioManager = MagicAudioManager.create(getApplicationContext(), !isVoiceOnlyCall);
+        audioManager = MagicAudioManager.create(getApplicationContext(), isVoiceOnlyCall);
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...");
@@ -457,7 +457,7 @@ public class CallActivity extends CallBaseActivity {
     public void setAudioOutputChannel(MagicAudioManager.AudioDevice selectedAudioDevice) {
         if (audioManager != null) {
             audioManager.selectAudioDevice(selectedAudioDevice);
-            updateAudioOutputButton(audioManager.getResultingAudioDevice());
+            updateAudioOutputButton(audioManager.getCurrentAudioDevice());
         }
     }
 

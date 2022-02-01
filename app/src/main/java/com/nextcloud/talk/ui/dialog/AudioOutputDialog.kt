@@ -62,7 +62,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     }
 
     private fun highlightActiveOutputChannel() {
-        when (callActivity.audioManager?.resultingAudioDevice) {
+        when (callActivity.audioManager?.currentAudioDevice) {
             MagicAudioManager.AudioDevice.BLUETOOTH -> {
                 dialogAudioOutputBinding.audioOutputBluetoothIcon.setColorFilter(
                     ContextCompat.getColor(
