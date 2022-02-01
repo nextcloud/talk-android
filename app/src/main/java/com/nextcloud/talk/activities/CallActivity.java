@@ -158,7 +158,7 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallActivity extends CallBaseActivity {
+public class CallActivity extends CallBaseActivity implements MagicAudioManager.AudioManagerEvents {
 
     @Inject
     NcApi ncApi;
@@ -255,6 +255,11 @@ public class CallActivity extends CallBaseActivity {
     private ParticipantsAdapter participantsAdapter;
 
     private CallActivityBinding binding;
+
+    @Override
+    public void onAudioDeviceChanged(MagicAudioManager.AudioDevice selectedAudioDevice, Set<MagicAudioManager.AudioDevice> availableAudioDevices) {
+        setAudioOutputChannel(selectedAudioDevice);
+    }
 
     @Parcel
     public enum CallStatus {
