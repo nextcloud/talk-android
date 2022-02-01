@@ -158,7 +158,7 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class CallActivity extends CallBaseActivity implements MagicAudioManager.AudioManagerEvents {
+public class CallActivity extends CallBaseActivity {
 
     @Inject
     NcApi ncApi;
@@ -256,10 +256,7 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
 
     private CallActivityBinding binding;
 
-    @Override
-    public void onAudioDeviceChanged(MagicAudioManager.AudioDevice selectedAudioDevice, Set<MagicAudioManager.AudioDevice> availableAudioDevices) {
-        setAudioOutputChannel(selectedAudioDevice);
-    }
+    private AudioOutputDialog audioOutputDialog;
 
     @Parcel
     public enum CallStatus {
@@ -336,9 +333,10 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
     private void initClickListeners() {
         binding.pictureInPictureButton.setOnClickListener(l -> enterPipMode());
 
-        binding.audioOutputButton.setOnClickListener(v -> new AudioOutputDialog(
-            this
-        ).show());
+        binding.audioOutputButton.setOnClickListener(v -> {
+            audioOutputDialog = new AudioOutputDialog(this);
+            audioOutputDialog.show();
+        });
 
         binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
         binding.microphoneButton.setOnLongClickListener(l -> {
@@ -457,13 +455,14 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
     }
 
     public void setAudioOutputChannel(MagicAudioManager.AudioDevice selectedAudioDevice) {
-        if (audioManager == null) {
-            return;
+        if (audioManager != null) {
+            audioManager.selectAudioDevice(selectedAudioDevice);
+            updateAudioOutputButton(audioManager.getResultingAudioDevice());
         }
+    }
 
-        audioManager.selectAudioDevice(selectedAudioDevice);
-
-        switch (audioManager.getResultingAudioDevice()) {
+    private void updateAudioOutputButton(MagicAudioManager.AudioDevice activeAudioDevice) {
+        switch (activeAudioDevice) {
             case BLUETOOTH:
                 binding.audioOutputButton.getHierarchy().setPlaceholderImage(
                     AppCompatResources.getDrawable(context, R.drawable.ic_baseline_bluetooth_audio_24));
@@ -749,7 +748,7 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
         final MagicAudioManager.AudioDevice device,
         final Set<MagicAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
-            + "selected: " + device);
+            + "result: " + device);
 
         final boolean shouldDisableProximityLock = (device.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
             || device.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
@@ -760,6 +759,11 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
         } else {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
         }
+
+        if (audioOutputDialog != null){
+            audioOutputDialog.updateOutputDeviceList();
+        }
+        updateAudioOutputButton(device);
     }
 
 
@@ -1675,10 +1679,10 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
         Log.d(TAG, "   currentSessionId is " + currentSessionId);
 
         for (HashMap<String, Object> participant : users) {
-            long inCallFlag = (long)participant.get("inCall");
+            long inCallFlag = (long) participant.get("inCall");
             if (!participant.get("sessionId").equals(currentSessionId)) {
                 boolean isNewSession;
-                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0,4) + " : " + inCallFlag);
+                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0, 4) + " : " + inCallFlag);
                 isNewSession = inCallFlag != 0;
 
                 if (isNewSession) {
@@ -1688,7 +1692,7 @@ public class CallActivity extends CallBaseActivity implements MagicAudioManager.
                 }
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
-                if (inCallFlag == 0){
+                if (inCallFlag == 0) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
                 }

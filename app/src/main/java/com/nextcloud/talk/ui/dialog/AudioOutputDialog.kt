@@ -42,17 +42,22 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
         setContentView(dialogAudioOutputBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        hideUnavailableOutputChannels()
+        updateOutputDeviceList()
         highlightActiveOutputChannel()
         initClickListeners()
     }
 
-    private fun hideUnavailableOutputChannels() {
+    fun updateOutputDeviceList() {
         if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.BLUETOOTH) == false){
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.GONE
+        } else {
+            dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.VISIBLE
         }
+
         if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.EARPIECE) == false){
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
+        } else {
+            dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.VISIBLE
         }
     }
 

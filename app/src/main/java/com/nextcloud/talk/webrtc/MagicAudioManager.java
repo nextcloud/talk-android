@@ -59,7 +59,7 @@ public class MagicAudioManager {
     private final MagicBluetoothManager bluetoothManager;
     private boolean controlSpeakerByProximitySensor;
     private AudioManager audioManager;
-    private AudioManagerEvents audioManagerEvents;
+    private AudioManagerListener audioManagerListener;
     private AudioManagerState amState;
     private int savedAudioMode = AudioManager.MODE_INVALID;
     private boolean savedIsSpeakerPhoneOn = false;
@@ -147,7 +147,7 @@ public class MagicAudioManager {
     }
 
     @SuppressLint("WrongConstant")
-    public void start(AudioManagerEvents audioManagerEvents) {
+    public void start(AudioManagerListener audioManagerListener) {
         Log.d(TAG, "start");
         ThreadUtils.checkIsOnMainThread();
         if (amState == AudioManagerState.RUNNING) {
@@ -157,7 +157,7 @@ public class MagicAudioManager {
         // TODO(henrika): perhaps call new method called preInitAudio() here if UNINITIALIZED.
 
         Log.d(TAG, "AudioManager starts...");
-        this.audioManagerEvents = audioManagerEvents;
+        this.audioManagerListener = audioManagerListener;
         amState = AudioManagerState.RUNNING;
 
         // Store current audio state so we can restore it when stop() is called.
@@ -276,7 +276,7 @@ public class MagicAudioManager {
 
         powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.IDLE);
 
-        audioManagerEvents = null;
+        audioManagerListener = null;
         Log.d(TAG, "AudioManager stopped");
     }
 
@@ -462,7 +462,7 @@ public class MagicAudioManager {
         // Correct user selected audio devices if needed.
         if (userSelectedAudioDevice == AudioDevice.BLUETOOTH
             && bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE) {
-            userSelectedAudioDevice = AudioDevice.NONE;
+            userSelectedAudioDevice = AudioDevice.SPEAKER_PHONE;
         }
         if (userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE && hasWiredHeadset) {
             userSelectedAudioDevice = AudioDevice.WIRED_HEADSET;
@@ -539,9 +539,9 @@ public class MagicAudioManager {
             Log.d(TAG, "New device status: "
                     + "available=" + audioDevices + ", "
                     + "resulting(new)=" + newResultingAudioDevice);
-            if (audioManagerEvents != null) {
+            if (audioManagerListener != null) {
                 // Notify a listening client that audio device has been changed.
-                audioManagerEvents.onAudioDeviceChanged(resultingAudioDevice, audioDevices);
+                audioManagerListener.onAudioDeviceChanged(resultingAudioDevice, audioDevices);
             }
         }
         Log.d(TAG, "--- updateAudioDeviceState done");
@@ -567,7 +567,7 @@ public class MagicAudioManager {
     /**
      * Selected audio device change event.
      */
-    public static interface AudioManagerEvents {
+    public static interface AudioManagerListener {
         // Callback fired once audio device is changed or list of available audio devices changed.
         void onAudioDeviceChanged(
                 AudioDevice selectedAudioDevice, Set<AudioDevice> availableAudioDevices);
