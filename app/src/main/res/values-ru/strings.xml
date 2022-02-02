@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Искать в %s</string>
     <string name="avatar">Аватар</string>
     <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>
+    <string name="conversations">Разговоры</string>
     <string name="delete_avatar">Удалить аватар</string>
     <string name="edit">Редактировать</string>
     <string name="encrypted">Зашифровано</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Неправильный пароль</string>
     <string name="nc_yes">Да</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
+    <string name="openConversations">Открыть разговоры</string>
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="password_protected">Защищено паролем</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>

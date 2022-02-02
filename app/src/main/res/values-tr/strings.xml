@@ -4,6 +4,7 @@
     <string name="appbar_search_in">%s içinde arama</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
+    <string name="conversations">Görüşmeler</string>
     <string name="delete_avatar">Avatarı sil</string>
     <string name="edit">Düzenle</string>
     <string name="encrypted">Şifrelenmiş</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Parola yanlış</string>
     <string name="nc_yes">Evet</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
+    <string name="openConversations">Açık görüşmeler</string>
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="password_protected">Parola korumalı</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
