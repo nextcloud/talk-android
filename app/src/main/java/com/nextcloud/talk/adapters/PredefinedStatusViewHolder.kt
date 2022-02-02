@@ -26,7 +26,7 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.PredefinedStatusBinding
-import com.nextcloud.talk.models.json.status.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.nextcloud.talk.utils.DisplayUtils
 
 private const val ONE_SECOND_IN_MILLIS = 1000

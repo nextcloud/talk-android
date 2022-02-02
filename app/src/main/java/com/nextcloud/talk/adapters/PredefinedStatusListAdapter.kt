@@ -27,7 +27,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.databinding.PredefinedStatusBinding
-import com.nextcloud.talk.models.json.status.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 
 class PredefinedStatusListAdapter(
     private val clickListener: PredefinedStatusClickListener,

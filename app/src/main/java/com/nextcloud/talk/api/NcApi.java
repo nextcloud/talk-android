@@ -451,6 +451,9 @@ public interface NcApi {
     @GET
     Observable<StatusOverall> status(@Header("Authorization") String authorization, @Url String url);
 
+    @GET
+    Observable<ResponseBody> getPredefinedStatuses(@Header("Authorization") String authorization, @Url String url);
+
     @DELETE
     Observable<GenericOverall> statusDeleteMessage(@Header("Authorization") String authorization, @Url String url);
 

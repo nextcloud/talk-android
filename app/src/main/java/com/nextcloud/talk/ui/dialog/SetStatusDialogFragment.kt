@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
 import com.nextcloud.talk.adapters.PredefinedStatusListAdapter
@@ -45,9 +46,10 @@ import com.nextcloud.talk.databinding.DialogSetStatusBinding
 import com.nextcloud.talk.models.database.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.ClearAt
-import com.nextcloud.talk.models.json.status.PredefinedStatus
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.StatusType
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiPopup
@@ -55,6 +57,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import okhttp3.ResponseBody
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
@@ -88,13 +91,16 @@ class SetStatusDialogFragment :
 
     private var currentUser: User? = null
     private var currentStatus: Status? = null
+
     // private lateinit var accountManager: UserAccountManager
-    private lateinit var predefinedStatus: ArrayList<PredefinedStatus>
+    // private lateinit var predefinedStatus: ArrayList<PredefinedStatus>
+    val predefinedStatusesList = ArrayList<PredefinedStatus>()
+
     private lateinit var adapter: PredefinedStatusListAdapter
     private var selectedPredefinedMessageId: String? = null
     private var clearAt: Long? = -1
     private lateinit var popup: EmojiPopup
-    //
+
     // @Inject
     // lateinit var arbitraryDataProvider: ArbitraryDataProvider
     //
@@ -109,19 +115,36 @@ class SetStatusDialogFragment :
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
         arguments?.let {
             currentUser = it.getParcelable(ARG_CURRENT_USER_PARAM)
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
-            // val json = arbitraryDataProvider.getValue(currentUser, ArbitraryDataProvider.PREDEFINED_STATUS)
+            val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+            ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<ResponseBody> {
 
-            // if (json.isNotEmpty()) {
-            //     val myType = object : TypeToken<ArrayList<PredefinedStatus>>() {}.type
-            //     predefinedStatus = Gson().fromJson(json, myType)
-            // }
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(responseBody: ResponseBody) {
+                        val predefinedStatusOverall : PredefinedStatusOverall = LoganSquare.parse(responseBody
+                                .string(),
+                                PredefinedStatusOverall::class.java)
+                        predefinedStatusesList.addAll(predefinedStatusOverall.getOcs().data)
+                    }
+
+                    override fun onError(e: Throwable) {
+                    }
+
+                    override fun onComplete() {}
+
+                })
         }
-
-
 
       //  EmojiManager.install(GoogleEmojiProvider())
     }
@@ -166,9 +189,10 @@ class SetStatusDialogFragment :
         }
 
         adapter = PredefinedStatusListAdapter(this, requireContext())
-        if (this::predefinedStatus.isInitialized) {
-            adapter.list = predefinedStatus
-        }
+
+        adapter.list = predefinedStatusesList
+
+
         binding.predefinedStatusList.adapter = adapter
         binding.predefinedStatusList.layoutManager = LinearLayoutManager(context)
 

@@ -22,7 +22,7 @@
 
 package com.nextcloud.talk.adapters
 
-import com.nextcloud.talk.models.json.status.PredefinedStatus
+import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 
 interface PredefinedStatusClickListener {
     fun onClick(predefinedStatus: PredefinedStatus)

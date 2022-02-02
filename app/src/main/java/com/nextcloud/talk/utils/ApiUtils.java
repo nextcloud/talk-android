@@ -425,7 +425,13 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/user_status";
     }
 
+    public static String getUrlForPredefinedStatuses(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/predefined_statuses";
+    }
+
     public static String getUrlForStatusMessage(String baseUrl) {
         return getUrlForStatus(baseUrl) + "/message";
     }
+
+
 }

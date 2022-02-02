@@ -56,7 +56,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -66,7 +65,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import autodagger.AutoInjector;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
