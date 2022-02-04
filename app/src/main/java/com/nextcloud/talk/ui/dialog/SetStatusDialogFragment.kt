@@ -136,6 +136,8 @@ class SetStatusDialogFragment :
                                 .string(),
                                 PredefinedStatusOverall::class.java)
                         predefinedStatusesList.addAll(predefinedStatusOverall.getOcs().data)
+
+                        adapter.notifyDataSetChanged()
                     }
 
                     override fun onError(e: Throwable) {
