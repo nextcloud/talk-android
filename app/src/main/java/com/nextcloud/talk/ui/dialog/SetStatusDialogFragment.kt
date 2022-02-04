@@ -98,7 +98,7 @@ class SetStatusDialogFragment :
 
     private lateinit var adapter: PredefinedStatusListAdapter
     private var selectedPredefinedMessageId: String? = null
-    private var clearAt: Long? = -1
+    private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
 
     // @Inject
@@ -113,6 +113,8 @@ class SetStatusDialogFragment :
     @Inject
     lateinit var ncApi: NcApi
 
+    lateinit var credentials: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -122,7 +124,7 @@ class SetStatusDialogFragment :
             currentUser = it.getParcelable(ARG_CURRENT_USER_PARAM)
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
-            val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+            credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
             ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -408,6 +410,61 @@ class SetStatusDialogFragment :
 
 
     private fun setStatusMessage() {
+        if (selectedPredefinedMessageId != null) {
+
+            ncApi.setPredefinedStatusMessage(
+                credentials,
+                ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
+                selectedPredefinedMessageId,
+                clearAt)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
+
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(t: GenericOverall) {
+                        Log.d(TAG, "PredefinedStatusMessage successfully set")
+                        dismiss()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d(TAG, "failed to set PredefinedStatusMessage", e)
+                    }
+
+                    override fun onComplete() {}
+
+                })
+        } else {
+            ncApi.setCustomStatusMessage(
+                credentials,
+                ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
+                binding.emoji.text.toString(),
+                binding.customStatusInput.text.toString(),
+                clearAt)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
+
+                    override fun onSubscribe(d: Disposable) {
+                    }
+
+                    override fun onNext(t: GenericOverall) {
+                        Log.d(TAG, "CustomStatusMessage successfully set")
+                        dismiss()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.d(TAG, "failed to set CustomStatusMessage", e)
+                    }
+
+                    override fun onComplete() {}
+
+                })
+        }
+
+
         // if (selectedPredefinedMessageId != null) {
         //     asyncRunner.postQuickTask(
         //         SetPredefinedCustomStatusTask(
@@ -438,25 +495,6 @@ class SetStatusDialogFragment :
     //     }
     // }
 
-
-
-    /**
-     * Fragment creator
-     */
-    companion object {
-        @JvmStatic
-        fun newInstance(user: User, status: Status): SetStatusDialogFragment {
-            val args = Bundle()
-            args.putParcelable(ARG_CURRENT_USER_PARAM, user)
-            args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
-
-
-            val dialogFragment = SetStatusDialogFragment()
-            dialogFragment.arguments = args
-            // dialogFragment.setStyle(STYLE_NORMAL, R.style.Theme_ownCloud_Dialog)
-            return dialogFragment
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
@@ -502,5 +540,24 @@ class SetStatusDialogFragment :
     // }
 
 
+    /**
+     * Fragment creator
+     */
+    companion object {
+        private const val TAG = "SetStatusDialogFragment"
+
+        @JvmStatic
+        fun newInstance(user: User, status: Status): SetStatusDialogFragment {
+            val args = Bundle()
+            args.putParcelable(ARG_CURRENT_USER_PARAM, user)
+            args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
+
+
+            val dialogFragment = SetStatusDialogFragment()
+            dialogFragment.arguments = args
+            // dialogFragment.setStyle(STYLE_NORMAL, R.style.Theme_ownCloud_Dialog)
+            return dialogFragment
+        }
+    }
 
 }

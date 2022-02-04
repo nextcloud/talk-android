@@ -458,4 +458,18 @@ public interface NcApi {
     Observable<GenericOverall> statusDeleteMessage(@Header("Authorization") String authorization, @Url String url);
 
 
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setPredefinedStatusMessage(@Header("Authorization") String authorization,
+                                      @Url String url,
+                                      @Field("messageId") String selectedPredefinedMessageId,
+                                      @Field("clearAt") Long clearAt);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setCustomStatusMessage(@Header("Authorization") String authorization,
+                                  @Url String url,
+                                  @Field("statusIcon") String statusIcon,
+                                  @Field("message") String message,
+                                  @Field("clearAt") Long clearAt);
 }
