@@ -335,18 +335,13 @@ class SetStatusDialogFragment :
 
 
     private fun clearStatus() {
-        // asyncRunner.postQuickTask(
-        //     ClearStatusTask(accountManager.currentOwnCloudAccount?.savedAccount, context),
-        //     { dismiss(it) }
-        // )
-
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
-        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatus(currentUser?.baseUrl)).subscribeOn(Schedulers.io())
+        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl)).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(statusOverall: GenericOverall) {}
                 override fun onError(e: Throwable) {
-                    Log.e(logTag, "Error removing attendee from conversation", e)
+                    Log.e(logTag, "Failed to clear status", e)
                 }
                 override fun onComplete() {
                     dismiss()
@@ -463,30 +458,6 @@ class SetStatusDialogFragment :
 
                 })
         }
-
-
-        // if (selectedPredefinedMessageId != null) {
-        //     asyncRunner.postQuickTask(
-        //         SetPredefinedCustomStatusTask(
-        //             selectedPredefinedMessageId!!,
-        //             clearAt,
-        //             accountManager.currentOwnCloudAccount?.savedAccount,
-        //             context
-        //         ),
-        //         { dismiss(it) }
-        //     )
-        // } else {
-        //     asyncRunner.postQuickTask(
-        //         SetUserDefinedCustomStatusTask(
-        //             binding.customStatusInput.text.toString(),
-        //             binding.emoji.text.toString(),
-        //             clearAt,
-        //             accountManager.currentOwnCloudAccount?.savedAccount,
-        //             context
-        //         ),
-        //         { dismiss(it) }
-        //     )
-        // }
     }
 
     // private fun dismiss(boolean: Boolean) {
