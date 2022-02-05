@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Hľadať v %s</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Vyberte si avatara z cloudu</string>
+    <string name="conversations">Konverzácie</string>
     <string name="delete_avatar">Zmazať avatara</string>
     <string name="edit">Upraviť</string>
     <string name="encrypted">Šifrované</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Nesprávne heslo</string>
     <string name="nc_yes">Áno</string>
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre nedostatok práv</string>
+    <string name="openConversations">Otvoriť konverzácie</string>
     <string name="open_in_files_app">Otvoriť v aplikácii Súbory</string>
     <string name="password_protected">Chránené heslom</string>
     <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
