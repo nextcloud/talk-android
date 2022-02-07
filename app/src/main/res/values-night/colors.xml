@@ -67,4 +67,5 @@
     <color name="nc_shimmer_darker_color">#282828</color>
 
     <color name="list_divider_background">#222222</color>
+    <color name="grey_200">#818181</color>
 </resources>
