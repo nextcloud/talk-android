@@ -157,10 +157,11 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         binding.setStatus.setOnClickListener(v -> {
             dismiss();
 
-            // TODO: better solution
             if(status != null) {
                 SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
                 setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
+            } else {
+                Log.w(TAG, "status was null");
             }
         });
 
@@ -212,6 +213,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 @Override
                 public void onNext(@NonNull StatusOverall statusOverall) {
                     status = statusOverall.ocs.data;
+                    binding.setStatus.setEnabled(true);
                 }
 
                 @Override

@@ -62,6 +62,7 @@
             android:textAlignment="textStart"
             android:textAllCaps="false"
             android:textColor="@color/fontAppbar"
+            android:enabled="false"
             app:icon="@drawable/ic_edit"
             app:iconGravity="start"
             app:iconPadding="22dp"
