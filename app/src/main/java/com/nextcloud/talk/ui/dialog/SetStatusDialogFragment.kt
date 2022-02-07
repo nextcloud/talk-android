@@ -278,8 +278,8 @@ class SetStatusDialogFragment :
             POS_FOUR_HOURS -> {
                 // four hours
                 clearAt =
-                    System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
-                +FOUR_HOURS * ONE_MINUTE_IN_SECONDS * ONE_MINUTE_IN_SECONDS
+                    System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + FOUR_HOURS * ONE_MINUTE_IN_SECONDS *
+                        ONE_MINUTE_IN_SECONDS
             }
 
             POS_TODAY -> {
