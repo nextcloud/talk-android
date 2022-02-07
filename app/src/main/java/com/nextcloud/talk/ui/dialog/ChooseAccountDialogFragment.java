@@ -139,7 +139,6 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 binding.currentAccount.userIcon.setVisibility(View.INVISIBLE);
             }
 
-
             loadCurrentStatus(user);
         }
 
@@ -167,10 +166,6 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 Log.w(TAG, "status was null");
             }
         });
-
-        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
-            binding.statusView.setVisibility(View.VISIBLE);
-        }
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
@@ -205,30 +200,36 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
     private void loadCurrentStatus(User user) {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
-        ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).
-            subscribeOn(Schedulers.io()).
-            observeOn(AndroidSchedulers.mainThread()).
-            subscribe(new Observer<StatusOverall>() {
 
-                @Override
-                public void onSubscribe(@NonNull Disposable d) {}
+        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
+            binding.statusView.setVisibility(View.VISIBLE);
 
-                @Override
-                public void onNext(@NonNull StatusOverall statusOverall) {
-                    status = statusOverall.ocs.data;
-                    binding.setStatus.setEnabled(true);
-                    drawStatus();
-                }
+            ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<StatusOverall>() {
 
-                @Override
-                public void onError(@NonNull Throwable e) {
-                    Log.e(TAG, "Can't receive user status from server. ", e);
-                }
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {}
 
-                @Override
-                public void onComplete() {
-                }
-            });
+                    @Override
+                    public void onNext(@NonNull StatusOverall statusOverall) {
+                        status = statusOverall.ocs.data;
+
+                        binding.setStatus.setEnabled(true);
+                        drawStatus();
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.e(TAG, "Can't receive user status from server. ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+        }
     }
 
     private void prepareViews() {
