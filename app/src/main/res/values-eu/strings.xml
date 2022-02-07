@@ -4,6 +4,7 @@
     <string name="appbar_search_in">Bilatu %s(e)n</string>
     <string name="avatar">Avatarra</string>
     <string name="choose_avatar_from_cloud">Aukeratu avatarra cloudetik</string>
+    <string name="conversations">Elkarrizketak</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
     <string name="edit">Editatu</string>
     <string name="encrypted">Zifratua</string>
@@ -327,6 +328,7 @@
     <string name="nc_wrong_password">Pasahitz okerra</string>
     <string name="nc_yes">Bai</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
+    <string name="openConversations">Ireki elkarrizketak</string>
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
     <string name="password_protected">Pasahitz bidez babestuta</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
