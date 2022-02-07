@@ -25,28 +25,26 @@
     android:layout_height="wrap_content"
     android:background="@color/bg_call_screen_dialog"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/standard_padding">
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingEnd="@dimen/standard_padding"
+    android:paddingBottom="@dimen/standard_half_padding">
 
     <TextView
         android:id="@+id/upload"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/standard_padding"
+        android:layout_height="@dimen/headline_item_height"
+        android:gravity="start|center_vertical"
         android:text="@string/audio_output_dialog_headline"
-        android:textAlignment="viewStart"
-        android:textColor="@color/grey_600"
+        android:textColor="@color/medium_emphasis_text_dark_background"
         android:textSize="@dimen/bottom_sheet_text_size" />
 
     <LinearLayout
         android:id="@+id/audio_output_bluetooth"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -62,10 +60,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_bluetooth"
             android:textAlignment="viewStart"
-            android:textColor="@color/call_screen_text"
+            android:textColor="@color/high_emphasis_text_dark_background"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
@@ -73,13 +72,10 @@
     <LinearLayout
         android:id="@+id/audio_output_speaker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -95,10 +91,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_speaker"
             android:textAlignment="viewStart"
-            android:textColor="@color/call_screen_text"
+            android:textColor="@color/high_emphasis_text_dark_background"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
@@ -106,13 +103,10 @@
     <LinearLayout
         android:id="@+id/audio_output_earspeaker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -128,10 +122,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_phone"
             android:textAlignment="viewStart"
-            android:textColor="@color/call_screen_text"
+            android:textColor="@color/high_emphasis_text_dark_background"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
@@ -139,13 +134,10 @@
     <LinearLayout
         android:id="@+id/audio_output_wired_headset"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -161,10 +153,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/audio_output_wired_headset"
             android:textAlignment="viewStart"
-            android:textColor="@color/call_screen_text"
+            android:textColor="@color/high_emphasis_text_dark_background"
             android:textSize="@dimen/bottom_sheet_text_size" />
 
     </LinearLayout>
