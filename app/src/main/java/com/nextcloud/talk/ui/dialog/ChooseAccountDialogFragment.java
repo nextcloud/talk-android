@@ -49,6 +49,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusOverall;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -73,6 +74,8 @@ import io.reactivex.schedulers.Schedulers;
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChooseAccountDialogFragment extends DialogFragment {
     private static final String TAG = ChooseAccountDialogFragment.class.getSimpleName();
+
+    private static final float STATUS_SIZE_IN_DP = 9f;
 
     @Inject
     UserUtils userUtils;
@@ -214,6 +217,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 public void onNext(@NonNull StatusOverall statusOverall) {
                     status = statusOverall.ocs.data;
                     binding.setStatus.setEnabled(true);
+                    drawStatus();
                 }
 
                 @Override
@@ -300,5 +304,23 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             }
         };
 
+    private void drawStatus() {
+        float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, getContext());
+        binding.currentAccount.ticker.setBackground(null);
+        binding.currentAccount.ticker.setImageDrawable(new StatusDrawable(
+            status.getStatus(),
+            status.getIcon(),
+            size,
+            getContext()));
+        binding.currentAccount.ticker.setVisibility(View.VISIBLE);
 
+
+        if (status.getMessage() != null && !status.getMessage().isEmpty()){
+            binding.currentAccount.status.setText(status.getMessage());
+            binding.currentAccount.status.setVisibility(View.VISIBLE);
+        } else {
+            binding.currentAccount.status.setText("");
+            binding.currentAccount.status.setVisibility(View.GONE);
+        }
+    }
 }
