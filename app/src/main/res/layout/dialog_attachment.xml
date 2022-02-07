@@ -27,13 +27,15 @@
     android:layout_height="wrap_content"
     android:background="@color/bg_bottom_sheet"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/standard_padding">
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingEnd="@dimen/standard_padding"
+    android:paddingBottom="@dimen/standard_half_padding">
 
     <TextView
         android:id="@+id/upload"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/standard_padding"
+        android:layout_height="@dimen/headline_item_height"
+        android:gravity="start|center_vertical"
         android:text="@string/nc_add_file"
         android:textAlignment="viewStart"
         android:textColor="@color/medium_emphasis_text"
@@ -42,13 +44,10 @@
     <LinearLayout
         android:id="@+id/menu_attach_contact"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -64,7 +63,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/nc_share_contact"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
@@ -75,13 +75,10 @@
     <LinearLayout
         android:id="@+id/menu_share_location"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -97,7 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/nc_share_location"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
@@ -108,13 +106,10 @@
     <LinearLayout
         android:id="@+id/menu_attach_picture_from_cam"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -130,7 +125,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/nc_upload_picture_from_cam"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
@@ -141,13 +137,10 @@
     <LinearLayout
         android:id="@+id/menu_attach_file_from_local"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_half_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -163,7 +156,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:text="@string/nc_upload_local_file"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
@@ -174,13 +168,10 @@
     <LinearLayout
         android:id="@+id/menu_attach_file_from_cloud"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/small_item_height"
         android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingLeft="@dimen/standard_padding"
-        android:paddingTop="@dimen/standard_half_padding"
-        android:paddingRight="@dimen/standard_padding"
-        android:paddingBottom="@dimen/standard_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -196,7 +187,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:layout_marginStart="@dimen/standard_margin"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size"
