@@ -32,7 +32,7 @@
     <TextView
         android:id="@+id/upload"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/headline_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:gravity="start|center_vertical"
         android:text="@string/audio_output_dialog_headline"
         android:textColor="@color/medium_emphasis_text_dark_background"
@@ -41,7 +41,7 @@
     <LinearLayout
         android:id="@+id/audio_output_bluetooth"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -72,7 +72,7 @@
     <LinearLayout
         android:id="@+id/audio_output_speaker"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -103,7 +103,7 @@
     <LinearLayout
         android:id="@+id/audio_output_earspeaker"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -134,7 +134,7 @@
     <LinearLayout
         android:id="@+id/audio_output_wired_headset"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"

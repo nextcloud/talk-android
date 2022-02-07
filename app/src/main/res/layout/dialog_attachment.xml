@@ -34,7 +34,7 @@
     <TextView
         android:id="@+id/upload"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/headline_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:gravity="start|center_vertical"
         android:text="@string/nc_add_file"
         android:textAlignment="viewStart"
@@ -44,7 +44,7 @@
     <LinearLayout
         android:id="@+id/menu_attach_contact"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -75,7 +75,7 @@
     <LinearLayout
         android:id="@+id/menu_share_location"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -106,7 +106,7 @@
     <LinearLayout
         android:id="@+id/menu_attach_picture_from_cam"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -137,7 +137,7 @@
     <LinearLayout
         android:id="@+id/menu_attach_file_from_local"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
@@ -168,7 +168,7 @@
     <LinearLayout
         android:id="@+id/menu_attach_file_from_cloud"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/small_item_height"
+        android:layout_height="@dimen/bottom_sheet_item_height"
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
