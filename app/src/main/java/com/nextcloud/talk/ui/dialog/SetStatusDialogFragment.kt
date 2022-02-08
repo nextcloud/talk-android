@@ -352,19 +352,20 @@ class SetStatusDialogFragment :
     private fun setStatus(statusType: StatusType) {
         visualizeStatus(statusType)
 
-        // asyncRunner.postQuickTask(
-        //     SetStatusTask(
-        //         statusType,
-        //         accountManager.currentOwnCloudAccount?.savedAccount,
-        //         context
-        //     ),
-        //     {
-        //         if (!it) {
-        //             clearTopStatus()
-        //         }
-        //     },
-        //     { clearTopStatus() }
-        // )
+        ncApi.setStatusType(credentials, ApiUtils.getUrlForSetStatusType(currentUser?.baseUrl), statusType.string)
+            .subscribeOn(Schedulers
+            .io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(statusOverall: GenericOverall) {
+                    Log.d(TAG, "statusType successfully set")
+                }
+                override fun onError(e: Throwable) {
+                    Log.e(logTag, "Failed to set statusType", e)
+                    clearTopStatus()
+                }
+                override fun onComplete() {}
+            })
     }
 
     private fun visualizeStatus(statusType: String) {

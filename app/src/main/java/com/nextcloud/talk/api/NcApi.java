@@ -472,4 +472,10 @@ public interface NcApi {
                                   @Field("statusIcon") String statusIcon,
                                   @Field("message") String message,
                                   @Field("clearAt") Long clearAt);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setStatusType(@Header("Authorization") String authorization,
+                                                      @Url String url,
+                                                      @Field("statusType") String statusType);
 }
