@@ -494,5 +494,10 @@
     <string name="take_photo_send">Send</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_speaker">Speaker</string>
+    <string name="audio_output_phone">Phone</string>
+    <string name="audio_output_dialog_headline">Audio output</string>
+    <string name="audio_output_wired_headset">Wired headset</string>
 
 </resources>

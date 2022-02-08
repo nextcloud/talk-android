@@ -82,6 +82,7 @@ import com.nextcloud.talk.models.json.signaling.Signaling;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.IceServer;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
+import com.nextcloud.talk.ui.dialog.AudioOutputDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
@@ -142,6 +143,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.drawable.DrawableCompat;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
@@ -170,6 +173,8 @@ public class CallActivity extends CallBaseActivity {
 
     public static final String TAG = "CallActivity";
 
+    public MagicAudioManager audioManager;
+
     private static final String[] PERMISSIONS_CALL = {
         android.Manifest.permission.CAMERA,
         android.Manifest.permission.RECORD_AUDIO,
@@ -195,7 +200,6 @@ public class CallActivity extends CallBaseActivity {
     private MediaConstraints videoConstraints;
     private MediaConstraints sdpConstraints;
     private MediaConstraints sdpConstraintsForMCU;
-    private MagicAudioManager audioManager;
     private VideoSource videoSource;
     private VideoTrack localVideoTrack;
     private AudioSource audioSource;
@@ -251,6 +255,8 @@ public class CallActivity extends CallBaseActivity {
     private ParticipantsAdapter participantsAdapter;
 
     private CallActivityBinding binding;
+
+    private AudioOutputDialog audioOutputDialog;
 
     @Parcel
     public enum CallStatus {
@@ -327,15 +333,9 @@ public class CallActivity extends CallBaseActivity {
     private void initClickListeners() {
         binding.pictureInPictureButton.setOnClickListener(l -> enterPipMode());
 
-        binding.speakerButton.setOnClickListener(l -> {
-            if (audioManager != null) {
-                audioManager.toggleUseSpeakerphone();
-                if (audioManager.isSpeakerphoneAutoOn()) {
-                    binding.speakerButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_up_white_24dp);
-                } else {
-                    binding.speakerButton.getHierarchy().setPlaceholderImage(R.drawable.ic_volume_mute_white_24dp);
-                }
-            }
+        binding.audioOutputButton.setOnClickListener(v -> {
+            audioOutputDialog = new AudioOutputDialog(this);
+            audioOutputDialog.show();
         });
 
         binding.microphoneButton.setOnClickListener(l -> onMicrophoneClick());
@@ -377,8 +377,8 @@ public class CallActivity extends CallBaseActivity {
         boolean camera2EnumeratorIsSupported = false;
         try {
             camera2EnumeratorIsSupported = Camera2Enumerator.isSupported(this);
-        } catch (final Throwable throwable) {
-            Log.w(TAG, "Camera2Enumator threw an error");
+        } catch (final Throwable t) {
+            Log.w(TAG, "Camera2Enumerator threw an error", t);
         }
 
         if (camera2EnumeratorIsSupported) {
@@ -412,11 +412,17 @@ public class CallActivity extends CallBaseActivity {
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
-        audioManager = MagicAudioManager.create(getApplicationContext(), !isVoiceOnlyCall);
+        audioManager = MagicAudioManager.create(getApplicationContext(), isVoiceOnlyCall);
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...");
         audioManager.start(this::onAudioManagerDevicesChanged);
+
+        if (isVoiceOnlyCall) {
+            setAudioOutputChannel(MagicAudioManager.AudioDevice.EARPIECE);
+        } else {
+            setAudioOutputChannel(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+        }
 
         iceServers = new ArrayList<>();
 
@@ -446,6 +452,38 @@ public class CallActivity extends CallBaseActivity {
         }
 
         microphoneInitialization();
+    }
+
+    public void setAudioOutputChannel(MagicAudioManager.AudioDevice selectedAudioDevice) {
+        if (audioManager != null) {
+            audioManager.selectAudioDevice(selectedAudioDevice);
+            updateAudioOutputButton(audioManager.getCurrentAudioDevice());
+        }
+    }
+
+    private void updateAudioOutputButton(MagicAudioManager.AudioDevice activeAudioDevice) {
+        switch (activeAudioDevice) {
+            case BLUETOOTH:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_bluetooth_audio_24));
+                break;
+            case SPEAKER_PHONE:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_volume_up_white_24dp));
+                break;
+            case EARPIECE:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_phone_in_talk_24));
+                break;
+            case WIRED_HEADSET:
+                binding.audioOutputButton.getHierarchy().setPlaceholderImage(
+                    AppCompatResources.getDrawable(context, R.drawable.ic_baseline_headset_mic_24));
+                break;
+            default:
+                Log.e(TAG, "Icon for audio output not available");
+                break;
+        }
+        DrawableCompat.setTint(binding.audioOutputButton.getDrawable(), Color.WHITE);
     }
 
     private void handleFromNotification() {
@@ -496,7 +534,6 @@ public class CallActivity extends CallBaseActivity {
         }
 
         if (isVoiceOnlyCall) {
-            binding.speakerButton.setVisibility(View.VISIBLE);
             binding.switchSelfVideoButton.setVisibility(View.GONE);
             binding.cameraButton.setVisibility(View.GONE);
             binding.selfVideoRenderer.setVisibility(View.GONE);
@@ -513,7 +550,6 @@ public class CallActivity extends CallBaseActivity {
             params.setMargins(0, 0, 0, 0);
             binding.gridview.setLayoutParams(params);
 
-            binding.speakerButton.setVisibility(View.GONE);
             if (cameraEnumerator.getDeviceNames().length < 2) {
                 binding.switchSelfVideoButton.setVisibility(View.GONE);
             }
@@ -713,19 +749,25 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-        final MagicAudioManager.AudioDevice device, final Set<MagicAudioManager.AudioDevice> availableDevices) {
+        final MagicAudioManager.AudioDevice currentDevice,
+        final Set<MagicAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
-            + "selected: " + device);
+            + "currentDevice: " + currentDevice);
 
-        final boolean shouldDisableProximityLock = (device.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
-            || device.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
-            || device.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
+        final boolean shouldDisableProximityLock = (currentDevice.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
+            || currentDevice.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
+            || currentDevice.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
         } else {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITH_PROXIMITY_SENSOR_LOCK);
         }
+
+        if (audioOutputDialog != null) {
+            audioOutputDialog.updateOutputDeviceList();
+        }
+        updateAudioOutputButton(currentDevice);
     }
 
 
@@ -1641,10 +1683,10 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "   currentSessionId is " + currentSessionId);
 
         for (HashMap<String, Object> participant : users) {
-            long inCallFlag = (long)participant.get("inCall");
+            long inCallFlag = (long) participant.get("inCall");
             if (!participant.get("sessionId").equals(currentSessionId)) {
                 boolean isNewSession;
-                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0,4) + " : " + inCallFlag);
+                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0, 4) + " : " + inCallFlag);
                 isNewSession = inCallFlag != 0;
 
                 if (isNewSession) {
@@ -1654,7 +1696,7 @@ public class CallActivity extends CallBaseActivity {
                 }
             } else {
                 Log.d(TAG, "   inCallFlag of currentSessionId: " + inCallFlag);
-                if (inCallFlag == 0){
+                if (inCallFlag == 0) {
                     Log.d(TAG, "Most probably a moderator ended the call for all.");
                     hangup(true);
                 }

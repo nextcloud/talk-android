@@ -50,7 +50,7 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
         this.title = title;
         this.tag = tag;
         this.icon = icon;
-        padding = (int) DisplayUtils.convertDpToPixel(16,
+        padding = (int) DisplayUtils.convertDpToPixel(32,
                 NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext());
     }
 

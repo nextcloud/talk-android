@@ -140,59 +140,66 @@
         android:animateLayoutChanges="true"
         android:background="@android:color/transparent"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:weightSum="5">
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/pictureInPictureButton"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
             android:layout_marginEnd="10dp"
             android:elevation="10dp"
             app:backgroundImage="@color/call_buttons_background"
             app:placeholderImage="@drawable/ic_baseline_picture_in_picture_alt_24"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            android:layout_weight="1"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/speakerButton"
-            android:layout_width="60dp"
+            android:id="@+id/audioOutputButton"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             app:backgroundImage="@color/call_buttons_background"
             app:placeholderImage="@drawable/ic_volume_mute_white_24dp"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            android:layout_weight="1"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/cameraButton"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:alpha="0.7"
             app:backgroundImage="@color/call_buttons_background"
             app:placeholderImage="@drawable/ic_videocam_white_24px"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            android:layout_weight="1"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/microphoneButton"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:alpha="0.7"
             app:backgroundImage="@color/call_buttons_background"
             app:placeholderImage="@drawable/ic_mic_off_white_24px"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            android:layout_weight="1"/>
 
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/hangupButton"
-            android:layout_width="60dp"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="20dp"
             app:backgroundImage="@color/nc_darkRed"
             app:placeholderImage="@drawable/ic_call_end_white_24px"
-            app:roundAsCircle="true" />
+            app:roundAsCircle="true"
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <LinearLayout

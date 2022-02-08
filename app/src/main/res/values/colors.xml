@@ -40,6 +40,10 @@
     <color name="medium_emphasis_text">#99000000</color>
     <color name="low_emphasis_text">#61000000</color>
 
+    <!-- general text colors for dark background -->
+    <color name="high_emphasis_text_dark_background">#deffffff</color>
+    <color name="medium_emphasis_text_dark_background">#99ffffff</color>
+
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
     <!-- Text color of received messages -->
@@ -78,6 +82,8 @@
     <color name="bg_message_list_outcoming_bubble_deleted">#800082C9</color>
 
     <color name="bg_bottom_sheet">#46ffffff</color>
+    <color name="bg_call_screen_dialog">#121212</color>
+    <color name="call_screen_text">#ffffffff</color>
 
     <color name="call_buttons_background">#BF999999</color>
     <color name="favorite_icon_tint">#FFCC00</color>

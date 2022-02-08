@@ -24,7 +24,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_default">
+    android:background="@color/bg_default"
+    android:minHeight="@dimen/bottom_sheet_item_height">
 
     <TextView
         android:id="@+id/menu_text"
@@ -35,9 +36,9 @@
         android:focusableInTouchMode="false"
         android:gravity="start|center_vertical"
         android:textAlignment="viewStart"
-        android:textColor="@color/conversation_item_header"
+        android:textColor="@color/high_emphasis_text"
         android:textSize="16sp"
-        tools:drawablePadding="16dp"
+        tools:drawablePadding="32dp"
         tools:drawableStart="@drawable/ic_add_grey600_24px"
         tools:text="Start a new conversation" />
 </RelativeLayout>
