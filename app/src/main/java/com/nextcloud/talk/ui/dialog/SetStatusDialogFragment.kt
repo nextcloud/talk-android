@@ -92,23 +92,12 @@ class SetStatusDialogFragment :
     private var currentUser: User? = null
     private var currentStatus: Status? = null
 
-    // private lateinit var accountManager: UserAccountManager
-    // private lateinit var predefinedStatus: ArrayList<PredefinedStatus>
     val predefinedStatusesList = ArrayList<PredefinedStatus>()
 
     private lateinit var adapter: PredefinedStatusListAdapter
     private var selectedPredefinedMessageId: String? = null
     private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
-
-    // @Inject
-    // lateinit var arbitraryDataProvider: ArbitraryDataProvider
-    //
-    // @Inject
-    // lateinit var asyncRunner: AsyncRunner
-    //
-    // @Inject
-    // lateinit var clientFactory: ClientFactory
 
     @Inject
     lateinit var ncApi: NcApi
@@ -166,9 +155,6 @@ class SetStatusDialogFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
-        // accountManager = (activity as BaseActivity).userAccountManager
-        //
         currentStatus?.let {
             binding.emoji.setText(it.icon)
             binding.customStatusInput.text?.clear()
@@ -246,14 +232,8 @@ class SetStatusDialogFragment :
 
         binding.clearStatus.setTextColor(resources.getColor(R.color.colorPrimary))
         binding.setStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
-        // ThemeButtonUtils.colorPrimaryButton(binding.setStatus, context)
 
         binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary)
-        // ThemeTextInputUtils.colorTextInput(
-        //     binding.customStatusInputContainer,
-        //     binding.customStatusInput,
-        //     ThemeColorUtils.primaryColor(activity)
-        // )
     }
 
     @Suppress("ComplexMethod")
@@ -404,7 +384,6 @@ class SetStatusDialogFragment :
         }
     }
 
-
     private fun setStatusMessage() {
         if (selectedPredefinedMessageId != null) {
 
@@ -461,13 +440,6 @@ class SetStatusDialogFragment :
         }
     }
 
-    // private fun dismiss(boolean: Boolean) {
-    //     if (boolean) {
-    //         dismiss()
-    //     }
-    // }
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
     }
@@ -504,13 +476,6 @@ class SetStatusDialogFragment :
         }
         setClearStatusAfterValue(binding.clearStatusAfterSpinner.selectedItemPosition)
     }
-    //
-    // @VisibleForTesting
-    // fun setPredefinedStatus(predefinedStatus: ArrayList<PredefinedStatus>) {
-    //     adapter.list = predefinedStatus
-    //     binding.predefinedStatusList.adapter?.notifyDataSetChanged()
-    // }
-
 
     /**
      * Fragment creator
