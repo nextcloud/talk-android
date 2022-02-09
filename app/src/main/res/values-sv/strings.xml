@@ -94,6 +94,7 @@
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
+    <string name="nc_locked">Låst</string>
     <string name="nc_make_call_private">Gör samtalet privat</string>
     <string name="nc_make_call_public">Gör konversationen offentlig</string>
     <string name="nc_manual">Inte inställd</string>
@@ -113,6 +114,8 @@
     <string name="nc_none">Ingen</string>
     <string name="nc_not_defined_error">Okänt fel</string>
     <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
+    <string name="nc_notification_channel_calls">Samtal</string>
+    <string name="nc_notification_channel_messages">Meddelanden</string>
     <string name="nc_notification_settings">Meddelandeinställningar</string>
     <string name="nc_notify_me_always">Meddela alltid</string>
     <string name="nc_notify_me_mention">Meddela när omnämnd</string>
@@ -165,15 +168,18 @@
     <string name="nc_server_import_accounts_plain">Importera konton</string>
     <string name="nc_server_maintenance">Vänligen inaktivera underhållningsläge för din %1$s </string>
     <string name="nc_server_not_installed">Vänligen slutför din %1$s-installation</string>
+    <string name="nc_server_url">Serveradress https://…</string>
     <string name="nc_server_version">%1$s fungerar bara med %2$s 13 och uppåt</string>
     <string name="nc_set_password">Sätt ett lösenord</string>
     <string name="nc_settings">Inställningar</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_settings_appearance">Utseende</string>
+    <string name="nc_settings_call_ringtone">Samtal</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruerar tangentbordet att inaktivera personlig inlärning (utan garantier)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-tangentbord</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
+    <string name="nc_settings_other_notifications_ringtone">Meddelanden</string>
     <string name="nc_settings_proxy_host_title">Proxy-värd</string>
     <string name="nc_settings_proxy_port_title">Proxy-port</string>
     <string name="nc_settings_proxy_type_title">Proxy-typ</string>
@@ -191,6 +197,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Ljus</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_vibrate">Vibrera</string>
     <string name="nc_settings_vibrate_desc">Din telefon kommer att vibrera om den inte tystas</string>
     <string name="nc_settings_wrong_account">Bara nuvarande konto kan återautentiseras</string>
     <string name="nc_share_link">Dela länk</string>
