@@ -151,82 +151,82 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
         menuItems = new ArrayList<>();
 
         if (menuType.equals(MenuType.REGULAR)) {
-            if (!TextUtils.isEmpty(conversation.getDisplayName())) {
-                menuItems.add(new MenuItem(conversation.getDisplayName(), 0, null));
-            } else if (!TextUtils.isEmpty(conversation.getName())) {
-                menuItems.add(new MenuItem(conversation.getName(), 0, null));
-            } else {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
-            }
-
-            currentUser = userUtils.getCurrentUser();
-
-            if (conversation.isFavorite()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
-            } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "favorites")) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites),
-                                           98,
-                                           DisplayUtils.getTintedDrawable(getResources(),
-                                                                          R.drawable.ic_star_black_24dp,
-                                                                          R.color.grey_600)));
-            }
-
-            if(conversation.unreadMessages > ALL_MESSAGES_READ && CapabilitiesUtil.canSetChatReadMarker(currentUser)) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_mark_as_read),
-                                           96,
-                                           ContextCompat.getDrawable(context, R.drawable.ic_eye)));
-            }
-
-            if (conversation.isNameEditable(currentUser)) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename),
-                                           2,
-                                           ContextCompat.getDrawable(context,
-                                                                     R.drawable.ic_pencil_grey600_24dp)));
-            }
-
-            if (conversation.canModerate(currentUser)) {
-                if (!conversation.isPublic()) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public),
-                                               3, ContextCompat.getDrawable(context,
-                                                                            R.drawable.ic_link_grey600_24px)));
-                } else {
-                    if (conversation.isHasPassword()) {
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password),
-                                                   4, ContextCompat.getDrawable(context,
-                                                                                R.drawable.ic_lock_grey600_24px)));
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password),
-                                                   5,
-                                                   ContextCompat.getDrawable(context,
-                                                                             R.drawable.ic_lock_open_grey600_24dp)));
-                    } else {
-                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password),
-                                                   6, ContextCompat.getDrawable(context,
-                                                                                R.drawable.ic_lock_plus_grey600_24dp)));
-                    }
-                }
-
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call),
-                                           9, ContextCompat.getDrawable(context,
-                                                                        R.drawable.ic_delete_grey600_24dp)));
-            }
-
-            if (conversation.isPublic()) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link),
-                                           7, ContextCompat.getDrawable(context,
-                                                                        R.drawable.ic_link_grey600_24px)));
-                if (conversation.canModerate(currentUser)) {
-                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private),
-                                               8, ContextCompat.getDrawable(context,
-                                                                            R.drawable.ic_group_grey600_24px)));
-                }
-            }
-
-            if (conversation.canLeave(currentUser)) {
-                menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1,
-                        DisplayUtils.getTintedDrawable(getResources(),
-                                R.drawable.ic_exit_to_app_black_24dp, R.color.grey_600)
-                ));
-            }
+//            if (!TextUtils.isEmpty(conversation.getDisplayName())) {
+//                menuItems.add(new MenuItem(conversation.getDisplayName(), 0, null));
+//            } else if (!TextUtils.isEmpty(conversation.getName())) {
+//                menuItems.add(new MenuItem(conversation.getName(), 0, null));
+//            } else {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_configure_room), 0, null));
+//            }
+//
+//            currentUser = userUtils.getCurrentUser();
+//
+//            if (conversation.isFavorite()) {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_remove_from_favorites), 97, DisplayUtils.getTintedDrawable(getResources(), R.drawable.ic_star_border_black_24dp, R.color.grey_600)));
+//            } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "favorites")) {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_add_to_favorites),
+//                                           98,
+//                                           DisplayUtils.getTintedDrawable(getResources(),
+//                                                                          R.drawable.ic_star_black_24dp,
+//                                                                          R.color.grey_600)));
+//            }
+//
+//            if(conversation.unreadMessages > ALL_MESSAGES_READ && CapabilitiesUtil.canSetChatReadMarker(currentUser)) {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_mark_as_read),
+//                                           96,
+//                                           ContextCompat.getDrawable(context, R.drawable.ic_eye)));
+//            }
+//
+//            if (conversation.isNameEditable(currentUser)) {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_rename),
+//                                           2,
+//                                           ContextCompat.getDrawable(context,
+//                                                                     R.drawable.ic_pencil_grey600_24dp)));
+//            }
+//
+//            if (conversation.canModerate(currentUser)) {
+//                if (!conversation.isPublic()) {
+//                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_public),
+//                                               3, ContextCompat.getDrawable(context,
+//                                                                            R.drawable.ic_link_grey600_24px)));
+//                } else {
+//                    if (conversation.isHasPassword()) {
+//                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_change_password),
+//                                                   4, ContextCompat.getDrawable(context,
+//                                                                                R.drawable.ic_lock_grey600_24px)));
+//                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_clear_password),
+//                                                   5,
+//                                                   ContextCompat.getDrawable(context,
+//                                                                             R.drawable.ic_lock_open_grey600_24dp)));
+//                    } else {
+//                        menuItems.add(new MenuItem(getResources().getString(R.string.nc_set_password),
+//                                                   6, ContextCompat.getDrawable(context,
+//                                                                                R.drawable.ic_lock_plus_grey600_24dp)));
+//                    }
+//                }
+//
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_delete_call),
+//                                           9, ContextCompat.getDrawable(context,
+//                                                                        R.drawable.ic_delete_grey600_24dp)));
+//            }
+//
+//            if (conversation.isPublic()) {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_share_link),
+//                                           7, ContextCompat.getDrawable(context,
+//                                                                        R.drawable.ic_link_grey600_24px)));
+//                if (conversation.canModerate(currentUser)) {
+//                    menuItems.add(new MenuItem(getResources().getString(R.string.nc_make_call_private),
+//                                               8, ContextCompat.getDrawable(context,
+//                                                                            R.drawable.ic_group_grey600_24px)));
+//                }
+//            }
+//
+//            if (conversation.canLeave(currentUser)) {
+//                menuItems.add(new MenuItem(getResources().getString(R.string.nc_leave), 1,
+//                        DisplayUtils.getTintedDrawable(getResources(),
+//                                R.drawable.ic_exit_to_app_black_24dp, R.color.grey_600)
+//                ));
+//            }
         } else if (menuType.equals(MenuType.SHARE)) {
             prepareIntent();
             List<AppAdapter.AppInfo> appInfoList = ShareUtils.getShareApps(getActivity(), shareIntent, null,
@@ -282,13 +282,20 @@ public class CallMenuController extends BaseController implements FlexibleAdapte
                         }
                         eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     } else {
+
+                        // TODO: continue here to extract more setOnClickListeners to ConversationOperationDialog.kt
+
                         bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), tag);
                         if (tag != 2 && tag != 4 && tag != 6 && tag != 7) {
+                            //  3=make call public, 5=clear pw, 8=make call private ..
                             eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
                             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));
                         } else if (tag != 7) {
+                            //  3=make call public, 5=clear pw, 8=make call private ..
+
+                            // rename and set password !?
                             getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                     .pushChangeHandler(new HorizontalChangeHandler())
                                     .popChangeHandler(new HorizontalChangeHandler()));

@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_call_screen_dialog"
+    android:orientation="vertical"
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingEnd="@dimen/standard_padding"
+    android:paddingBottom="@dimen/standard_half_padding">
+
+    <TextView
+        android:id="@+id/conversation_operation_header"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="start|center_vertical"
+        android:textColor="@color/medium_emphasis_text_dark_background"
+        android:textSize="@dimen/bottom_sheet_text_size"
+        tools:text="conversation name"/>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_remove_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_star_border_black_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_remove_from_favorites"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_add_favorite"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_star_black_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_add_to_favorites"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_mark_as_read"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_eye"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_mark_as_read"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_rename"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_pencil_grey600_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_rename"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_make_public"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_link_grey600_24px"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_make_call_public"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_change_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_lock_grey600_24px"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_change_password"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_clear_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_lock_open_grey600_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_clear_password"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_set_password"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_lock_plus_grey600_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_set_password"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_delete"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_delete_grey600_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_delete_call"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_share_link"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_link_grey600_24px"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_share_link"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_make_private"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_group_grey600_24px"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_make_call_private"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/conversation_operation_leave"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/ic_exit_to_app_black_24dp"
+            app:tint="@color/grey_600" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/nc_leave"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+    </LinearLayout>
+
+</LinearLayout>
