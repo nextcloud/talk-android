@@ -2,6 +2,11 @@
   <resources>
     <string name="account_icon">Hesap simgesi</string>
     <string name="appbar_search_in">%s içinde arama</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Ses çıkışı</string>
+    <string name="audio_output_phone">Telefon</string>
+    <string name="audio_output_speaker">Hoparlör</string>
+    <string name="audio_output_wired_headset">Kablolu kulaklık</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
     <string name="conversations">Görüşmeler</string>

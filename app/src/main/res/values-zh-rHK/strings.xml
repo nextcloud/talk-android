@@ -2,6 +2,11 @@
   <resources>
     <string name="account_icon">賬戶圖示</string>
     <string name="appbar_search_in">%s內搜尋</string>
+    <string name="audio_output_bluetooth">藍牙</string>
+    <string name="audio_output_dialog_headline">語音輸出</string>
+    <string name="audio_output_phone">電話</string>
+    <string name="audio_output_speaker">喇叭</string>
+    <string name="audio_output_wired_headset">有線耳機</string>
     <string name="avatar">頭像</string>
     <string name="choose_avatar_from_cloud">從雲中選擇頭像</string>
     <string name="conversations">對話</string>

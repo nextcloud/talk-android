@@ -2,8 +2,14 @@
   <resources>
     <string name="account_icon">Icône du compte</string>
     <string name="appbar_search_in">Recherche dans %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Sortie audio</string>
+    <string name="audio_output_phone">Téléphone</string>
+    <string name="audio_output_speaker">Haut-parleur</string>
+    <string name="audio_output_wired_headset">Écouteurs sans fil</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
+    <string name="conversations">Discussions</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="edit">Modifier</string>
     <string name="encrypted">Chiffré</string>
@@ -327,6 +333,7 @@
     <string name="nc_wrong_password">Mot de passe incorrect</string>
     <string name="nc_yes">Oui</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+    <string name="openConversations">Discussions en cours</string>
     <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="password_protected">Protégé par mot de passe</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>

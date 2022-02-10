@@ -2,6 +2,11 @@
   <resources>
     <string name="account_icon">Ikona konta</string>
     <string name="appbar_search_in">Szukaj w %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Wyjście audio</string>
+    <string name="audio_output_phone">Telefon</string>
+    <string name="audio_output_speaker">Głośnik</string>
+    <string name="audio_output_wired_headset">Słuchawki przewodowe</string>
     <string name="avatar">Awatar</string>
     <string name="choose_avatar_from_cloud">Wybierz awatar z chmury</string>
     <string name="conversations">Rozmowy</string>
