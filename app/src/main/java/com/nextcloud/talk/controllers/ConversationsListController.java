@@ -71,6 +71,7 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
+import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
@@ -469,7 +470,7 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     @SuppressLint("LongLogTag")
-    private void fetchData(boolean fromBottomSheet) {
+    public void fetchData(boolean fromBottomSheet) {
         dispose(null);
 
         isRefreshing = true;
@@ -1246,6 +1247,16 @@ public class ConversationsListController extends BaseController implements Searc
             default:
                 break;
         }
+    }
+
+
+    public void pushSomeOtherController(Bundle bundle) {
+
+        getRouter().pushController(
+            RouterTransaction.with(new OperationsMenuController(bundle))
+                .pushChangeHandler(new HorizontalChangeHandler())
+                .popChangeHandler(new HorizontalChangeHandler()));
+
     }
 
     @Override

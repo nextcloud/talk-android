@@ -9,9 +9,10 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
+import com.bluelinelabs.conductor.Conductor
+import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
@@ -40,6 +41,9 @@ class ConversationOperationDialog(
     val currentUser: UserEntity,
     val conversation: Conversation
 ) : BottomSheetDialog(activity) {
+
+    private var dialogRouter: Router? = null
+
 
     private lateinit var binding: DialogConversationOperationsBinding
 
@@ -132,173 +136,168 @@ class ConversationOperationDialog(
     }
 
     private fun initClickListeners() {
-        // // val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-        // // val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
-        //
-        // binding.conversationOperationAddFavorite.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 98)
-        //
-        //     // controller.router.pushController(
-        //     //     RouterTransaction.with(OperationsMenuController(bundle))
-        //     //         .pushChangeHandler(HorizontalChangeHandler())
-        //     //         .popChangeHandler(HorizontalChangeHandler())
-        //     // )
-        //
-        //
-        //
-        //     // var view = activity.layoutInflater.inflate(R.layout.bottom_sheet, null, true)
-        //     // controller.getChildRouter((view as ViewGroup?)!!).setRoot(
-        //     //     RouterTransaction.with(OperationsMenuController(bundle))
-        //     //         .popChangeHandler(VerticalChangeHandler())
-        //     //         .pushChangeHandler(VerticalChangeHandler())
-        //     // )
-        //
-        //
-        //
-        //     // dismiss()
-        // }
-        //
-        // binding.conversationOperationRemoveFavorite.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 97)
-        //
-        //     controller.router.pushController(
-        //         RouterTransaction.with(OperationsMenuController(bundle))
-        //             .pushChangeHandler(HorizontalChangeHandler())
-        //             .popChangeHandler(HorizontalChangeHandler())
-        //     )
-        //
-        //     dismiss()
-        // }
-        //
-        // binding.conversationOperationClearPassword.setOnClickListener {
-        //     conversation.setPassword("")
-        // }
-        //
-        // binding.conversationOperationLeave.setOnClickListener {
-        //     val dataBuilder = Data.Builder()
-        //     dataBuilder.putString(KEY_ROOM_TOKEN, conversation.getToken())
-        //     dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
-        //     val data = dataBuilder.build()
-        //
-        //     val leaveConversationWorker =
-        //         OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(
-        //             data
-        //         ).build()
-        //     WorkManager.getInstance().enqueue(leaveConversationWorker)
-        //
-        //     dismiss()
-        // }
-        //
-        // binding.conversationOperationDelete.setOnClickListener {
-        //     if (!TextUtils.isEmpty(conversation.getToken())) {
-        //         val bundle = Bundle()
-        //         bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
-        //         bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //
-        //         controller.openLovelyDialogWithIdAndBundle(
-        //             ConversationsListController.ID_DELETE_CONVERSATION_DIALOG,
-        //             bundle
-        //         )
-        //     }
-        //
-        //     dismiss()
-        // }
-        //
-        // binding.conversationOperationMakePublic.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 3)
-        //
-        //     controller.router.pushController(
-        //         RouterTransaction.with(OperationsMenuController(bundle))
-        //             .pushChangeHandler(HorizontalChangeHandler())
-        //             .popChangeHandler(HorizontalChangeHandler())
-        //     )
-        // }
-        //
-        // binding.conversationOperationMakePrivate.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 8)
-        //
-        //     controller.router.pushController(
-        //         RouterTransaction.with(OperationsMenuController(bundle))
-        //             .pushChangeHandler(HorizontalChangeHandler())
-        //             .popChangeHandler(HorizontalChangeHandler())
-        //     )
-        // }
-        //
-        // binding.conversationOperationClearPassword.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 5)
-        //
-        //     controller.router.pushController(
-        //         RouterTransaction.with(OperationsMenuController(bundle))
-        //             .pushChangeHandler(HorizontalChangeHandler())
-        //             .popChangeHandler(HorizontalChangeHandler())
-        //     )
-        // }
-        //
-        // binding.conversationOperationRename.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 2)
-        //
-        //     controller.router.pushController(
-        //         RouterTransaction.with(EntryMenuController(bundle))
-        //             .pushChangeHandler(HorizontalChangeHandler())
-        //             .popChangeHandler(HorizontalChangeHandler())
-        //     )
-        // }
-        //
-        // binding.conversationOperationSetPassword.setOnClickListener {
-        //     // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
-        //     //  CallMenuController was replaced with the class you're in here.
-        //     //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
-        //
-        //     val bundle = Bundle()
-        //     bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        //     bundle.putInt(KEY_OPERATION_CODE, 6)
-        //
-        //     controller.router.pushController(
-        //         RouterTransaction.with(EntryMenuController(bundle))
-        //             .pushChangeHandler(HorizontalChangeHandler())
-        //             .popChangeHandler(HorizontalChangeHandler())
-        //     )
-        // }
-        //
-        // binding.conversationOperationShareLink.setOnClickListener {
-        //     // TODO share by intent
-        // }
+        // val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+        // val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+
+        binding.conversationOperationAddFavorite.setOnClickListener {
+
+            binding.textEditWrapper.visibility = View.VISIBLE
+            binding.operationItemsLayout.visibility = View.GONE
+
+
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 98)
+
+            dismiss()
+
+            // just a test
+            controller.pushSomeOtherController(bundle)
+
+        }
+
+        binding.conversationOperationRemoveFavorite.setOnClickListener {
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 97)
+
+            binding.operationItemsLayout.visibility = View.GONE
+
+            dialogRouter = Conductor.attachRouter(activity, binding.root, null)
+
+            dialogRouter!!.pushController(
+                RouterTransaction.with(OperationsMenuController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+
+            controller.fetchData(false)
+        }
+
+        binding.conversationOperationClearPassword.setOnClickListener {
+            conversation.setPassword("")
+        }
+
+        binding.conversationOperationLeave.setOnClickListener {
+            val dataBuilder = Data.Builder()
+            dataBuilder.putString(KEY_ROOM_TOKEN, conversation.getToken())
+            dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
+            val data = dataBuilder.build()
+
+            val leaveConversationWorker =
+                OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java).setInputData(
+                    data
+                ).build()
+            WorkManager.getInstance().enqueue(leaveConversationWorker)
+
+            dismiss()
+        }
+
+        binding.conversationOperationDelete.setOnClickListener {
+            if (!TextUtils.isEmpty(conversation.getToken())) {
+                val bundle = Bundle()
+                bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
+                bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+
+                controller.openLovelyDialogWithIdAndBundle(
+                    ConversationsListController.ID_DELETE_CONVERSATION_DIALOG,
+                    bundle
+                )
+            }
+
+            dismiss()
+        }
+
+        binding.conversationOperationMakePublic.setOnClickListener {
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 3)
+
+            controller.router.pushController(
+                RouterTransaction.with(OperationsMenuController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+
+        binding.conversationOperationMakePrivate.setOnClickListener {
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 8)
+
+            controller.router.pushController(
+                RouterTransaction.with(OperationsMenuController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+
+        binding.conversationOperationClearPassword.setOnClickListener {
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 5)
+
+            controller.router.pushController(
+                RouterTransaction.with(OperationsMenuController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+
+        binding.conversationOperationRename.setOnClickListener {
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 2)
+
+            controller.router.pushController(
+                RouterTransaction.with(EntryMenuController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+
+        binding.conversationOperationSetPassword.setOnClickListener {
+            // TODO: this weird KEY_OPERATION_CODE stuff came from CallMenuController.
+            //  CallMenuController was replaced with the class you're in here.
+            //  This KEY_OPERATION_CODE stuff still needs to be deleted/rewritten in the classes where it's passed to.
+
+            val bundle = Bundle()
+            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+            bundle.putInt(KEY_OPERATION_CODE, 6)
+
+            controller.router.pushController(
+                RouterTransaction.with(EntryMenuController(bundle))
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        }
+
+        binding.conversationOperationShareLink.setOnClickListener {
+            // TODO share by intent
+        }
     }
 
     override fun onStart() {
