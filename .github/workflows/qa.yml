@@ -13,11 +13,12 @@ jobs:
                 id: check-secrets
             -   uses: actions/checkout@v2
                 if: ${{ steps.check-secrets.outputs.ok == 'true' }}
-            -   name: set up JDK 1.8
+            -   name: set up JDK 8
                 if: ${{ steps.check-secrets.outputs.ok == 'true' }}
                 uses: actions/setup-java@v2.5.0
                 with:
-                    java-version: 1.8
+                    distribution: "temurin"
+                    java-version: 8.0
             -   name: Build QA
                 if: ${{ steps.check-secrets.outputs.ok == 'true' }}
                 env:
