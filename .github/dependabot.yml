@@ -10,7 +10,8 @@ updates:
                 interval: daily
                 time: "03:00"
                 timezone: Europe/Paris
-            open-pull-requests-limit: 10
-            labels:
-                - "3. to review"
-                - "dependencies"
+        rebase-strategy: "disabled"
+        open-pull-requests-limit: 10
+        labels:
+            - 3. to review
+            - dependencies
