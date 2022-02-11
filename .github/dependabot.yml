@@ -11,7 +11,7 @@ updates:
             time: "03:00"
             timezone: Europe/Paris
         rebase-strategy: "disabled"
-        open-pull-requests-limit: 10
+        open-pull-requests-limit: 20
         labels:
-            - 3. to review
-            - dependencies
+            - "3. to review"
+            - "dependencies"
