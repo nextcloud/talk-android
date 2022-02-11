@@ -123,7 +123,7 @@ class ConversationOperationDialog(
         )
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
-            conversation.canLeave(currentUser)
+            conversation.canLeave()
         )
     }
 

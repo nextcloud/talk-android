@@ -598,13 +598,13 @@ class ConversationInfoController(args: Bundle) :
 
                             setupWebinaryView()
 
-                            if (!conversation!!.canLeave(conversationUser)) {
+                            if (!conversation!!.canLeave()) {
                                 binding.leaveConversationAction.visibility = View.GONE
                             } else {
                                 binding.leaveConversationAction.visibility = View.VISIBLE
                             }
 
-                            if (!conversation!!.canDelete(conversationUser)) {
+                            if (!conversation!!.canDelete()) {
                                 binding.deleteConversationAction.visibility = View.GONE
                             } else {
                                 binding.deleteConversationAction.visibility = View.VISIBLE
