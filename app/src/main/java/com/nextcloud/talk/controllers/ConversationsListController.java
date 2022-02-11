@@ -82,7 +82,7 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
-import com.nextcloud.talk.ui.dialog.ConversationOperationDialog;
+import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.ConductorRemapping;
@@ -214,7 +214,7 @@ public class ConversationsListController extends BaseController implements Searc
 
     private HashMap<String, GenericTextHeaderItem> callHeaderItems = new HashMap<>();
 
-    private ConversationOperationDialog conversationOperationDialog;
+    private ConversationsListBottomDialog conversationsListBottomDialog;
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -904,12 +904,12 @@ public class ConversationsListController extends BaseController implements Searc
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
                 Conversation conversation = ((ConversationItem) clickedItem).getModel();
-                conversationOperationDialog = new ConversationOperationDialog(
+                conversationsListBottomDialog = new ConversationsListBottomDialog(
                     getActivity(),
                     this,
                     userUtils.getCurrentUser(),
                     conversation);
-                conversationOperationDialog.show();
+                conversationsListBottomDialog.show();
             }
         }
     }
@@ -1025,6 +1025,17 @@ public class ConversationsListController extends BaseController implements Searc
             || selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
             bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
             prepareAndShowBottomSheetWithBundle(bundle);
+
+
+            // instead to use prepareAnd...
+            // use something like
+            //
+            //              conversationOperationDialog = new ConversationOperationDialog(
+            //                    getActivity(),
+            //                    this,
+            //                    userUtils.getCurrentUser(),
+            //                    conversation);
+            //                conversationOperationDialog.show();
 
         } else {
             currentUser = userUtils.getCurrentUser();

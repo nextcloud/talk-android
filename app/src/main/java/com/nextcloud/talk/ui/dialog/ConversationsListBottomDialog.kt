@@ -37,7 +37,7 @@ import org.parceler.Parcels
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ConversationOperationDialog(
+class ConversationsListBottomDialog(
     val activity: Activity,
     val controller: ConversationsListController,
     val currentUser: UserEntity,
