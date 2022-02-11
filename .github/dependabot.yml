@@ -1,15 +1,15 @@
 version: 2
 updates:
     -   package-ecosystem: "github-actions"
-            directory: "/" # Location of package manifests
-            schedule:
-                interval: "weekly"
+        directory: "/"
+        schedule:
+            interval: "weekly"
     -   package-ecosystem: gradle
-            directory: "/"
-            schedule:
-                interval: daily
-                time: "03:00"
-                timezone: Europe/Paris
+        directory: "/"
+        schedule:
+            interval: daily
+            time: "03:00"
+            timezone: Europe/Paris
         rebase-strategy: "disabled"
         open-pull-requests-limit: 10
         labels:
