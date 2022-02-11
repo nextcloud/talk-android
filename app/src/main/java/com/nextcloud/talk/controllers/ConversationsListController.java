@@ -566,15 +566,6 @@ public class ConversationsListController extends BaseController implements Searc
                         swipeRefreshLayout.setRefreshing(false);
                     }
 
-                    if (fromBottomSheet) {
-                        new Handler().postDelayed(() -> {
-                            bottomSheet.setCancelable(true);
-                            if (bottomSheet.isShowing()) {
-                                bottomSheet.cancel();
-                            }
-                        }, 2500);
-                    }
-
                     isRefreshing = false;
                 });
     }
@@ -1247,16 +1238,6 @@ public class ConversationsListController extends BaseController implements Searc
             default:
                 break;
         }
-    }
-
-
-    public void pushSomeOtherController(Bundle bundle) {
-
-        getRouter().pushController(
-            RouterTransaction.with(new OperationsMenuController(bundle))
-                .pushChangeHandler(new HorizontalChangeHandler())
-                .popChangeHandler(new HorizontalChangeHandler()));
-
     }
 
     @Override
