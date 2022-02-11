@@ -43,6 +43,8 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.CallNotificationClick;
+import com.nextcloud.talk.events.OpenConversationEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -291,7 +293,7 @@ public class OperationsMenuController extends BaseController {
         5: clear password
         6: set password
         8: make private
-        10: create conversation ??
+        10: get/join room
         11: invite users to conversation
         96: set chat read marker
         97: remove favorite
@@ -752,10 +754,7 @@ public class OperationsMenuController extends BaseController {
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
         bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
 
-        if (getParentController() != null) {
-            ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), currentUser.getId(),
-                                                            conversation.getToken(), bundle, true);
-        }
+        eventBus.post(new OpenConversationEvent(conversation, bundle));
     }
 
     private void handleObserverError(@io.reactivex.annotations.NonNull Throwable e) {

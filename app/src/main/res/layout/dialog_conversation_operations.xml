@@ -13,37 +13,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/text_edit_wrapper"
-        android:orientation="vertical"
-        android:visibility="gone"
-        tools:visibility="visible">
-
-        <TextView
-            android:id="@+id/text_edit"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:gravity="start|center_vertical"
-            android:textColor="@color/medium_emphasis_text_dark_background"
-            android:textSize="@dimen/bottom_sheet_text_size"
-            android:text="aaaaaaaaaaa"
-            tools:text="conversation name"/>
-
-        <EditText
-            android:id="@+id/Id"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="joooo"
-            android:textColor="@color/white"
-            android:background="@android:color/transparent" >
-        </EditText>
-
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/operation_items_layout"
         android:orientation="vertical">
 

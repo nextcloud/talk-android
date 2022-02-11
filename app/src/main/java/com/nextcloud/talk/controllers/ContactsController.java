@@ -25,7 +25,6 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -50,8 +49,8 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
-import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.OpenConversationEvent;
+import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.jobs.AddParticipantsToConversation;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
@@ -62,6 +61,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.ui.dialog.ContactsBottomDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -112,7 +112,7 @@ import okhttp3.ResponseBody;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ContactsController extends BaseController implements SearchView.OnQueryTextListener,
-        FlexibleAdapter.OnItemClickListener {
+    FlexibleAdapter.OnItemClickListener {
 
     public static final String TAG = "ContactsController";
 
@@ -191,6 +191,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private boolean isAddingParticipantsView;
     private String conversationToken;
 
+    private ContactsBottomDialog contactsBottomDialog;
+
     public ContactsController() {
         super();
         setHasOptionsMenu(true);
@@ -265,12 +267,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     private void setupAdapter() {
         adapter.setNotifyChangeOfUnfilteredItems(true)
-                .setMode(SelectableAdapter.Mode.MULTI);
+            .setMode(SelectableAdapter.Mode.MULTI);
 
         adapter.setStickyHeaderElevation(5)
-                .setUnlinkAllItemsOnRemoveHeaders(true)
-                .setDisplayHeadersAtStartUp(true)
-                .setStickyHeaders(true);
+            .setUnlinkAllItemsOnRemoveHeaders(true)
+            .setDisplayHeadersAtStartUp(true)
+            .setStickyHeaders(true);
 
         adapter.addListener(this);
     }
@@ -293,7 +295,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     userId = selectedUserIds.iterator().next();
                 }
 
-                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, 1});
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
@@ -301,65 +303,65 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                                                                         userId,
                                                                                         null);
                 ncApi.createRoom(credentials,
-                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<RoomOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onNext(RoomOverall roomOverall) {
-                                Bundle bundle = new Bundle();
-                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
-                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
+                            bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
 
-                                // FIXME once APIv2 or later is used only, the createRoom already returns all the data
-                                ncApi.getRoom(credentials,
-                                              ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
-                                                                     roomOverall.getOcs().getData().getToken()))
-                                        .subscribeOn(Schedulers.io())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(new Observer<RoomOverall>() {
+                            // FIXME once APIv2 or later is used only, the createRoom already returns all the data
+                            ncApi.getRoom(credentials,
+                                          ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
+                                                                 roomOverall.getOcs().getData().getToken()))
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(new Observer<RoomOverall>() {
 
-                                            @Override
-                                            public void onSubscribe(Disposable d) {
+                                    @Override
+                                    public void onSubscribe(Disposable d) {
 
-                                            }
+                                    }
 
-                                            @Override
-                                            public void onNext(RoomOverall roomOverall) {
-                                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
-                                                                     Parcels.wrap(roomOverall.getOcs().getData()));
+                                    @Override
+                                    public void onNext(RoomOverall roomOverall) {
+                                        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+                                                             Parcels.wrap(roomOverall.getOcs().getData()));
 
-                                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                                                                roomOverall.getOcs().getData().getToken(), bundle, true);
-                                            }
+                                        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                                                        roomOverall.getOcs().getData().getToken(), bundle, true);
+                                    }
 
-                                            @Override
-                                            public void onError(Throwable e) {
+                                    @Override
+                                    public void onError(Throwable e) {
 
-                                            }
+                                    }
 
-                                            @Override
-                                            public void onComplete() {
+                                    @Override
+                                    public void onComplete() {
 
-                                            }
-                                        });
-                            }
+                                    }
+                                });
+                        }
 
-                            @Override
-                            public void onError(Throwable e) {
+                        @Override
+                        public void onError(Throwable e) {
 
-                            }
+                        }
 
-                            @Override
-                            public void onComplete() {
-                            }
-                        });
+                        @Override
+                        public void onComplete() {
+                        }
+                    });
             } else {
 
                 Bundle bundle = new Bundle();
@@ -382,7 +384,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_EMAIL(), emailsArray);
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_CIRCLE(), circleIdsArray);
                 bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
-                prepareAndShowBottomSheetWithBundle(bundle, true);
+                prepareAndShowBottomSheetWithBundle(bundle);
             }
         } else {
             String[] userIdsArray = selectedUserIds.toArray(new String[selectedUserIds.size()]);
@@ -399,7 +401,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             data.putStringArray(BundleKeys.INSTANCE.getKEY_SELECTED_CIRCLES(), circleIdsArray);
 
             OneTimeWorkRequest addParticipantsToConversationWorker =
-                    new OneTimeWorkRequest.Builder(AddParticipantsToConversation.class).setInputData(data.build()).build();
+                new OneTimeWorkRequest.Builder(AddParticipantsToConversation.class).setInputData(data.build()).build();
             WorkManager.getInstance().enqueue(addParticipantsToConversationWorker);
 
             getRouter().popCurrentController();
@@ -499,186 +501,186 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         modifiedQueryMap.put("shareTypes[]", shareTypesList);
 
         ncApi.getContactsWithSearchParam(
-                credentials,
-                retrofitBucket.getUrl(), shareTypesList, modifiedQueryMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(3)
-                .subscribe(new Observer<ResponseBody>() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        contactsQueryDisposable = d;
-                    }
+            credentials,
+            retrofitBucket.getUrl(), shareTypesList, modifiedQueryMap)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(3)
+            .subscribe(new Observer<ResponseBody>() {
+                @Override
+                public void onSubscribe(Disposable d) {
+                    contactsQueryDisposable = d;
+                }
 
-                    @Override
-                    public void onNext(ResponseBody responseBody) {
-                        if (responseBody != null) {
-                            Participant participant;
+                @Override
+                public void onNext(ResponseBody responseBody) {
+                    if (responseBody != null) {
+                        Participant participant;
 
-                            List<AbstractFlexibleItem> newUserItemList = new ArrayList<>();
-                            EnumActorTypeConverter actorTypeConverter = new EnumActorTypeConverter();
+                        List<AbstractFlexibleItem> newUserItemList = new ArrayList<>();
+                        EnumActorTypeConverter actorTypeConverter = new EnumActorTypeConverter();
 
-                            try {
-                                AutocompleteOverall autocompleteOverall = LoganSquare.parse(
-                                        responseBody.string(),
-                                        AutocompleteOverall.class);
-                                autocompleteUsersHashSet.addAll(autocompleteOverall.getOcs().getData());
+                        try {
+                            AutocompleteOverall autocompleteOverall = LoganSquare.parse(
+                                responseBody.string(),
+                                AutocompleteOverall.class);
+                            autocompleteUsersHashSet.addAll(autocompleteOverall.getOcs().getData());
 
-                                for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
-                                    if (!autocompleteUser.getId().equals(currentUser.getUserId())
-                                            && !existingParticipants.contains(autocompleteUser.getId())) {
-                                        participant = new Participant();
-                                        participant.setActorId(autocompleteUser.getId());
-                                        participant.setActorType(actorTypeConverter.getFromString(autocompleteUser.getSource()));
-                                        participant.setDisplayName(autocompleteUser.getLabel());
-                                        participant.setSource(autocompleteUser.getSource());
+                            for (AutocompleteUser autocompleteUser : autocompleteUsersHashSet) {
+                                if (!autocompleteUser.getId().equals(currentUser.getUserId())
+                                    && !existingParticipants.contains(autocompleteUser.getId())) {
+                                    participant = new Participant();
+                                    participant.setActorId(autocompleteUser.getId());
+                                    participant.setActorType(actorTypeConverter.getFromString(autocompleteUser.getSource()));
+                                    participant.setDisplayName(autocompleteUser.getLabel());
+                                    participant.setSource(autocompleteUser.getSource());
 
-                                        String headerTitle;
+                                    String headerTitle;
 
-                                        if (participant.getActorType() == Participant.ActorType.GROUPS) {
-                                            headerTitle = getResources().getString(R.string.nc_groups);
-                                        } else if (participant.getActorType() == Participant.ActorType.CIRCLES) {
-                                            headerTitle = getResources().getString(R.string.nc_circles);
-                                        } else {
-                                            headerTitle =
-                                                participant.getDisplayName().substring(0, 1).toUpperCase(Locale.getDefault());
-                                        }
+                                    if (participant.getActorType() == Participant.ActorType.GROUPS) {
+                                        headerTitle = getResources().getString(R.string.nc_groups);
+                                    } else if (participant.getActorType() == Participant.ActorType.CIRCLES) {
+                                        headerTitle = getResources().getString(R.string.nc_circles);
+                                    } else {
+                                        headerTitle =
+                                            participant.getDisplayName().substring(0, 1).toUpperCase(Locale.getDefault());
+                                    }
 
-                                        GenericTextHeaderItem genericTextHeaderItem;
-                                        if (!userHeaderItems.containsKey(headerTitle)) {
-                                            genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
-                                            userHeaderItems.put(headerTitle, genericTextHeaderItem);
-                                        }
+                                    GenericTextHeaderItem genericTextHeaderItem;
+                                    if (!userHeaderItems.containsKey(headerTitle)) {
+                                        genericTextHeaderItem = new GenericTextHeaderItem(headerTitle);
+                                        userHeaderItems.put(headerTitle, genericTextHeaderItem);
+                                    }
 
-                                        UserItem newContactItem = new UserItem(
-                                                participant,
-                                                currentUser,
-                                                userHeaderItems.get(headerTitle)
-                                        );
+                                    UserItem newContactItem = new UserItem(
+                                        participant,
+                                        currentUser,
+                                        userHeaderItems.get(headerTitle)
+                                    );
 
-                                        if (!contactItems.contains(newContactItem)) {
-                                            newUserItemList.add(newContactItem);
-                                        }
+                                    if (!contactItems.contains(newContactItem)) {
+                                        newUserItemList.add(newContactItem);
                                     }
                                 }
-                            } catch (IOException ioe) {
-                                Log.e(TAG, "Parsing response body failed while getting contacts", ioe);
+                            }
+                        } catch (IOException ioe) {
+                            Log.e(TAG, "Parsing response body failed while getting contacts", ioe);
+                        }
+
+                        userHeaderItems = new HashMap<>();
+                        contactItems.addAll(newUserItemList);
+
+                        Collections.sort(newUserItemList, (o1, o2) -> {
+                            String firstName;
+                            String secondName;
+
+                            if (o1 instanceof UserItem) {
+                                firstName = ((UserItem) o1).getModel().getDisplayName();
+                            } else {
+                                firstName = ((GenericTextHeaderItem) o1).getModel();
                             }
 
-                            userHeaderItems = new HashMap<>();
-                            contactItems.addAll(newUserItemList);
+                            if (o2 instanceof UserItem) {
+                                secondName = ((UserItem) o2).getModel().getDisplayName();
+                            } else {
+                                secondName = ((GenericTextHeaderItem) o2).getModel();
+                            }
 
-                            Collections.sort(newUserItemList, (o1, o2) -> {
-                                String firstName;
-                                String secondName;
-
-                                if (o1 instanceof UserItem) {
-                                    firstName = ((UserItem) o1).getModel().getDisplayName();
-                                } else {
-                                    firstName = ((GenericTextHeaderItem) o1).getModel();
-                                }
-
-                                if (o2 instanceof UserItem) {
-                                    secondName = ((UserItem) o2).getModel().getDisplayName();
-                                } else {
-                                    secondName = ((GenericTextHeaderItem) o2).getModel();
-                                }
-
-                                if (o1 instanceof UserItem && o2 instanceof UserItem) {
-                                    String firstSource = ((UserItem) o1).getModel().getSource();
-                                    String secondSource = ((UserItem) o2).getModel().getSource();
-                                    if (firstSource.equals(secondSource)) {
-                                        return firstName.compareToIgnoreCase(secondName);
-                                    }
-
-                                    // First users
-                                    if ("users".equals(firstSource)) {
-                                        return -1;
-                                    } else if ("users".equals(secondSource)) {
-                                        return 1;
-                                    }
-
-                                    // Then groups
-                                    if ("groups".equals(firstSource)) {
-                                        return -1;
-                                    } else if ("groups".equals(secondSource)) {
-                                        return 1;
-                                    }
-
-                                    // Then circles
-                                    if ("circles".equals(firstSource)) {
-                                        return -1;
-                                    } else if ("circles".equals(secondSource)) {
-                                        return 1;
-                                    }
-
-                                    // Otherwise fall back to name sorting
+                            if (o1 instanceof UserItem && o2 instanceof UserItem) {
+                                String firstSource = ((UserItem) o1).getModel().getSource();
+                                String secondSource = ((UserItem) o2).getModel().getSource();
+                                if (firstSource.equals(secondSource)) {
                                     return firstName.compareToIgnoreCase(secondName);
                                 }
 
+                                // First users
+                                if ("users".equals(firstSource)) {
+                                    return -1;
+                                } else if ("users".equals(secondSource)) {
+                                    return 1;
+                                }
+
+                                // Then groups
+                                if ("groups".equals(firstSource)) {
+                                    return -1;
+                                } else if ("groups".equals(secondSource)) {
+                                    return 1;
+                                }
+
+                                // Then circles
+                                if ("circles".equals(firstSource)) {
+                                    return -1;
+                                } else if ("circles".equals(secondSource)) {
+                                    return 1;
+                                }
+
+                                // Otherwise fall back to name sorting
                                 return firstName.compareToIgnoreCase(secondName);
-                            });
+                            }
 
-                            Collections.sort(contactItems, (o1, o2) -> {
-                                String firstName;
-                                String secondName;
+                            return firstName.compareToIgnoreCase(secondName);
+                        });
 
-                                if (o1 instanceof UserItem) {
-                                    firstName = ((UserItem) o1).getModel().getDisplayName();
-                                } else {
-                                    firstName = ((GenericTextHeaderItem) o1).getModel();
-                                }
+                        Collections.sort(contactItems, (o1, o2) -> {
+                            String firstName;
+                            String secondName;
 
-                                if (o2 instanceof UserItem) {
-                                    secondName = ((UserItem) o2).getModel().getDisplayName();
-                                } else {
-                                    secondName = ((GenericTextHeaderItem) o2).getModel();
-                                }
-
-                                if (o1 instanceof UserItem && o2 instanceof UserItem) {
-                                    if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
-                                        return firstName.compareToIgnoreCase(secondName);
-                                    } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
-                                        return -1;
-                                    } else if ("groups".equals(((UserItem) o2).getModel().getSource())) {
-                                        return 1;
-                                    }
-                                }
-
-                                return firstName.compareToIgnoreCase(secondName);
-                            });
-
-                            if (newUserItemList.size() > 0) {
-                                adapter.updateDataSet(newUserItemList);
+                            if (o1 instanceof UserItem) {
+                                firstName = ((UserItem) o1).getModel().getDisplayName();
                             } else {
-                                adapter.filterItems();
+                                firstName = ((GenericTextHeaderItem) o1).getModel();
                             }
 
-                            if (swipeRefreshLayout != null) {
-                                swipeRefreshLayout.setRefreshing(false);
+                            if (o2 instanceof UserItem) {
+                                secondName = ((UserItem) o2).getModel().getDisplayName();
+                            } else {
+                                secondName = ((GenericTextHeaderItem) o2).getModel();
                             }
+
+                            if (o1 instanceof UserItem && o2 instanceof UserItem) {
+                                if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
+                                    return firstName.compareToIgnoreCase(secondName);
+                                } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
+                                    return -1;
+                                } else if ("groups".equals(((UserItem) o2).getModel().getSource())) {
+                                    return 1;
+                                }
+                            }
+
+                            return firstName.compareToIgnoreCase(secondName);
+                        });
+
+                        if (newUserItemList.size() > 0) {
+                            adapter.updateDataSet(newUserItemList);
+                        } else {
+                            adapter.filterItems();
                         }
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
                         if (swipeRefreshLayout != null) {
                             swipeRefreshLayout.setRefreshing(false);
                         }
-                        dispose(contactsQueryDisposable);
                     }
+                }
 
-                    @Override
-                    public void onComplete() {
-                        if (swipeRefreshLayout != null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                        dispose(contactsQueryDisposable);
-                        alreadyFetching = false;
-
-                        disengageProgressBar();
+                @Override
+                public void onError(Throwable e) {
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
                     }
-                });
+                    dispose(contactsQueryDisposable);
+                }
+
+                @Override
+                public void onComplete() {
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    dispose(contactsQueryDisposable);
+                    alreadyFetching = false;
+
+                    disengageProgressBar();
+                }
+            });
 
     }
 
@@ -693,14 +695,14 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
 
         joinConversationViaLinkImageView
-                .getBackground()
-                .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorBackgroundDarker, null),
-                                PorterDuff.Mode.SRC_IN);
+            .getBackground()
+            .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorBackgroundDarker, null),
+                            PorterDuff.Mode.SRC_IN);
 
         publicCallLinkImageView
-                .getBackground()
-                .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null),
-                                PorterDuff.Mode.SRC_IN);
+            .getBackground()
+            .setColorFilter(ResourcesCompat.getColor(getResources(), R.color.colorPrimary, null),
+                            PorterDuff.Mode.SRC_IN);
 
         disengageProgressBar();
     }
@@ -800,57 +802,21 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-    private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean showEntrySheet) {
-        if (view == null) {
-            view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
-        }
-
-        if (bottomSheet == null) {
-            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-        }
-
-        if (showEntrySheet) {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new EntryMenuController(bundle))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
-        } else {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new OperationsMenuController(bundle))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
-        }
-
-        bottomSheet.setOnShowListener(dialog -> {
-            if (showEntrySheet) {
-//                new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true);
-            } else {
-                eventBus.post(new BottomSheetLockEvent(false, 0,
-                        false, false));
-            }
-        });
-
-        bottomSheet.setOnDismissListener(dialog -> getActionBar().setDisplayHomeAsUpEnabled(getRouter().getBackstackSize() > 1));
-
-        bottomSheet.show();
+    private void prepareAndShowBottomSheetWithBundle(Bundle bundle) {
+        // 11: create conversation-enter name for new conversation
+        // 10: get&join room when enter link
+        contactsBottomDialog = new ContactsBottomDialog(getActivity(), bundle);
+        contactsBottomDialog.show();
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
-
-        if (bottomSheet != null) {
-            if (!bottomSheetLockEvent.isCancelable()) {
-                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-            } else {
-                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-                if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                    new Handler().postDelayed(() -> {
-                        bottomSheet.setOnCancelListener(null);
-                        bottomSheet.cancel();
-
-                    }, bottomSheetLockEvent.getDelay());
-                }
-            }
+    public void onMessageEvent(OpenConversationEvent openConversationEvent) {
+        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                        openConversationEvent.getConversation().getToken(),
+                                                        openConversationEvent.getBundle(), true);
+        if (contactsBottomDialog != null) {
+            contactsBottomDialog.dismiss();
         }
     }
 
@@ -871,7 +837,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     roomType = "2";
                 }
 
-                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, 1});
+                int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, 1});
 
                 RetrofitBucket retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(apiVersion,
                                                                                         currentUser.getBaseUrl(),
@@ -881,40 +847,40 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                                                                         null);
 
                 ncApi.createRoom(credentials,
-                        retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<RoomOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                                 retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<RoomOverall>() {
+                        @Override
+                        public void onSubscribe(Disposable d) {
 
+                        }
+
+                        @Override
+                        public void onNext(RoomOverall roomOverall) {
+                            if (getActivity() != null) {
+                                Bundle bundle = new Bundle();
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
+                                bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
+                                bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
+                                                     Parcels.wrap(roomOverall.getOcs().getData()));
+
+                                ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                                                roomOverall.getOcs().getData().getToken(), bundle, true);
                             }
+                        }
 
-                            @Override
-                            public void onNext(RoomOverall roomOverall) {
-                                if (getActivity() != null) {
-                                    Bundle bundle = new Bundle();
-                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
-                                    bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), roomOverall.getOcs().getData().getToken());
-                                    bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), roomOverall.getOcs().getData().getRoomId());
-                                    bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(),
-                                                         Parcels.wrap(roomOverall.getOcs().getData()));
+                        @Override
+                        public void onError(Throwable e) {
 
-                                    ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                                                    roomOverall.getOcs().getData().getToken(), bundle, true);
-                                }
-                            }
+                        }
 
-                            @Override
-                            public void onError(Throwable e) {
+                        @Override
+                        public void onComplete() {
 
-                            }
-
-                            @Override
-                            public void onComplete() {
-
-                            }
-                        });
+                        }
+                    });
             } else {
                 Participant participant = ((UserItem) adapter.getItem(position)).getModel();
                 participant.setSelected(!participant.isSelected());
@@ -946,17 +912,17 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 }
 
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")
-                        && !CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
-                        "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
-                        participant.isSelected() &&
-                        adapter.getSelectedItemCount() > 1) {
+                    && !CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
+                    "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
+                    participant.isSelected() &&
+                    adapter.getSelectedItemCount() > 1) {
                     List<UserItem> currentItems = adapter.getCurrentItems();
                     Participant internalParticipant;
                     for (int i = 0; i < currentItems.size(); i++) {
                         internalParticipant = currentItems.get(i).getModel();
                         if (internalParticipant.getActorId().equals(participant.getActorId()) &&
-                                internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
-                                internalParticipant.isSelected()) {
+                            internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
+                            internalParticipant.isSelected()) {
                             internalParticipant.setSelected(false);
                             selectedGroupIds.remove(internalParticipant.getActorId());
                         }
@@ -977,7 +943,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         Bundle bundle = new Bundle();
         bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 10);
 
-        prepareAndShowBottomSheetWithBundle(bundle, true);
+        prepareAndShowBottomSheetWithBundle(bundle);
     }
 
     @Optional
@@ -999,7 +965,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 if (currentItems.get(i) instanceof UserItem) {
                     internalParticipant = ((UserItem) currentItems.get(i)).getModel();
                     if (internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
-                            internalParticipant.isSelected()) {
+                        internalParticipant.isSelected()) {
                         internalParticipant.setSelected(false);
                         selectedGroupIds.remove(internalParticipant.getActorId());
                     }
