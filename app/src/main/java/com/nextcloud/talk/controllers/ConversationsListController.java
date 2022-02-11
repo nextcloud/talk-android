@@ -62,7 +62,7 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kennyc.bottomsheet.BottomSheet;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.ConversationItem;
@@ -71,8 +71,6 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
-import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
@@ -185,7 +183,6 @@ public class ConversationsListController extends BaseController implements Searc
     private List<AbstractFlexibleItem> conversationItemsWithHeader = new ArrayList<>();
     private final List<AbstractFlexibleItem> searchableConversationItems = new ArrayList<>();
 
-    private BottomSheet bottomSheet;
     private MenuItem searchItem;
     private SearchView searchView;
     private String searchQuery;
@@ -311,7 +308,7 @@ public class ConversationsListController extends BaseController implements Searc
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
             }
-            fetchData(false);
+            fetchData();
         }
     }
 
@@ -470,7 +467,7 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     @SuppressLint("LongLogTag")
-    public void fetchData(boolean fromBottomSheet) {
+    public void fetchData() {
         dispose(null);
 
         isRefreshing = true;
@@ -670,7 +667,7 @@ public class ConversationsListController extends BaseController implements Searc
             return false;
         });
 
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
 
@@ -803,60 +800,23 @@ public class ConversationsListController extends BaseController implements Searc
         return onQueryTextChange(query);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
-        if (bottomSheet != null) {
-            if (!bottomSheetLockEvent.isCancelable()) {
-                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-            } else {
-                if (bottomSheetLockEvent.getDelay() != 0 && bottomSheetLockEvent.isShouldRefreshData()) {
-                    fetchData(true);
-                } else {
-                    bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-                    if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                        bottomSheet.cancel();
-                    }
-                }
-            }
-        }
-    }
-
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
-////        Bundle bundle = new Bundle();
-////        Conversation conversation = moreMenuClickEvent.getConversation();
-////        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
-////        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE(), Parcels.wrap(CallMenuController.MenuType.REGULAR));
-////
-////        prepareAndShowBottomSheetWithBundle(bundle, true);
-//    }
-
-    private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean shouldShowCallMenuController) {
+    private void prepareAndShowBottomSheetWithBundle(Bundle bundle) {
         if (view == null) {
             view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
         }
 
-        if (shouldShowCallMenuController) {
+//        if (shouldShowCallMenuController) {
 //            getChildRouter((ViewGroup) view).setRoot(
 //                    RouterTransaction.with(new CallMenuController(bundle, this))
 //                            .popChangeHandler(new VerticalChangeHandler())
 //                            .pushChangeHandler(new VerticalChangeHandler()));
-
-
-        } else {
+//        } else {
             getChildRouter((ViewGroup) view).setRoot(
                     RouterTransaction.with(new EntryMenuController(bundle))
                             .popChangeHandler(new VerticalChangeHandler())
                             .pushChangeHandler(new VerticalChangeHandler()));
-        }
 
-//        if (bottomSheet == null) {
-//            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
 //        }
-//
-////        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
-//        bottomSheet.setOnDismissListener(dialog -> showSearchOrToolbar());
-//        bottomSheet.show();
     }
 
     @Override
@@ -1057,11 +1017,15 @@ public class ConversationsListController extends BaseController implements Searc
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
 
-        if (selectedConversation.hasPassword && selectedConversation.participantType ==
-                Participant.ParticipantType.GUEST ||
-                selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
+        // TODO debug & fix dialog???
+        // when is    hasPassword && ParticipantType.GUEST    true? currently the app can't be used as guest?!
+        // when is    USER_FOLLOWING_LINK   true? --> from contactsController via enter link?
+        if ((selectedConversation.hasPassword
+            && selectedConversation.participantType == Participant.ParticipantType.GUEST)
+            || selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
             bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
-            prepareAndShowBottomSheetWithBundle(bundle, false);
+            prepareAndShowBottomSheetWithBundle(bundle);
+
         } else {
             currentUser = userUtils.getCurrentUser();
 
@@ -1077,7 +1041,7 @@ public class ConversationsListController extends BaseController implements Searc
             switch (eventStatus.getEventType()) {
                 case CONVERSATION_UPDATE:
                     if (eventStatus.isAllGood() && !isRefreshing) {
-                        fetchData(false);
+                        fetchData();
                     }
                     break;
                 default:

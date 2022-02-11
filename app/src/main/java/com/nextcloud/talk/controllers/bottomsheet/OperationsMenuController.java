@@ -283,6 +283,23 @@ public class OperationsMenuController extends BaseController {
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, ApiUtils.APIv1});
         int chatApiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {ApiUtils.APIv1});
 
+
+        /*
+        2: renameRoom
+        3: make public
+        4: change password
+        5: clear password
+        6: set password
+        8: make private
+        10: create conversation ??
+        11: invite users to conversation
+        96: set chat read marker
+        97: remove favorite
+        98: add favorite
+        99: join room
+         */
+
+
         switch (operationCode) {
             case 2:
                 ncApi.renameRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),

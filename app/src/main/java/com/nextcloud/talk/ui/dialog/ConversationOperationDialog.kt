@@ -1,6 +1,7 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -19,7 +20,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
-import com.nextcloud.talk.controllers.bottomsheet.CallMenuController
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
@@ -27,19 +27,14 @@ import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.database.user.UserUtils
 import org.parceler.Parcels
 import javax.inject.Inject
-import androidx.core.content.ContextCompat.startActivity
-
-import android.content.Intent
-import androidx.core.content.ContextCompat
-import com.nextcloud.talk.utils.ShareUtils
-import com.nextcloud.talk.utils.database.user.UserUtils
-import kotlinx.android.synthetic.main.activity_take_picture.*
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationOperationDialog(
@@ -96,8 +91,7 @@ class ConversationOperationDialog(
         )
 
         binding.conversationOperationMarkAsRead.visibility = setVisibleIf(
-            conversation.unreadMessages > CallMenuController.ALL_MESSAGES_READ
-                && CapabilitiesUtil.canSetChatReadMarker(currentUser)
+            conversation.unreadMessages > 0 && CapabilitiesUtil.canSetChatReadMarker(currentUser)
         )
 
         binding.conversationOperationRename.visibility = setVisibleIf(
@@ -248,7 +242,7 @@ class ConversationOperationDialog(
                 .popChangeHandler(HorizontalChangeHandler())
         )
 
-        controller.fetchData(false)
+        controller.fetchData()
     }
 
     private fun executeEntryMenuController(operationCode: Int) {
@@ -266,6 +260,7 @@ class ConversationOperationDialog(
             //  into EntryMenuController to execute fetch data... ?!)
             // for example if you set a password, the dialog items should be refreshed for the next time you open it
             // without to manually have to refresh the conversations list
+            // also see BottomSheetLockEvent ??
 
             RouterTransaction.with(EntryMenuController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
