@@ -33,6 +33,13 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import org.parceler.Parcels
 import javax.inject.Inject
+import androidx.core.content.ContextCompat.startActivity
+
+import android.content.Intent
+import androidx.core.content.ContextCompat
+import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.database.user.UserUtils
+import kotlinx.android.synthetic.main.activity_take_picture.*
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationOperationDialog(
@@ -49,6 +56,10 @@ class ConversationOperationDialog(
     @Inject
     @JvmField
     var ncApi: NcApi? = null
+
+    @Inject
+    @JvmField
+    var userUtils: UserUtils? = null
 
     init {
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
@@ -198,7 +209,27 @@ class ConversationOperationDialog(
         }
 
         binding.conversationOperationShareLink.setOnClickListener {
-            // TODO share by intent
+            val sendIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    String.format(
+                        activity.resources.getString(R.string.nc_share_subject),
+                        activity.resources.getString(R.string.nc_app_product_name)
+                    )
+                )
+                // password should not be shared!!
+                putExtra(
+                    Intent.EXTRA_TEXT,
+                    ShareUtils.getStringForIntent(activity, null, userUtils, conversation)
+                )
+            }
+
+            val shareIntent = Intent.createChooser(sendIntent, null)
+            activity.startActivity(shareIntent)
+
+            dismiss()
         }
     }
 
