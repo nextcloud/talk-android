@@ -141,11 +141,11 @@ class ConversationsListBottomDialog(
 
     private fun initClickListeners() {
         binding.conversationOperationAddFavorite.setOnClickListener {
-            executeOperationsMenuController(98)
+            executeOperationsMenuController(OPS_CODE_ADD_FAVORITE)
         }
 
         binding.conversationOperationRemoveFavorite.setOnClickListener {
-            executeOperationsMenuController(97)
+            executeOperationsMenuController(OPS_CODE_REMOVE_FAVORITE)
         }
 
         binding.conversationOperationLeave.setOnClickListener {
@@ -179,27 +179,27 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationOperationMakePublic.setOnClickListener {
-            executeOperationsMenuController(3)
+            executeOperationsMenuController(OPS_CODE_MAKE_PUBLIC)
         }
 
         binding.conversationOperationMakePrivate.setOnClickListener {
-            executeOperationsMenuController(8)
+            executeOperationsMenuController(OPS_CODE_MAKE_PRIVATE)
         }
 
         binding.conversationOperationChangePassword.setOnClickListener {
-            executeEntryMenuController(4)
+            executeEntryMenuController(OPS_CODE_CHANGE_PASSWORD)
         }
 
         binding.conversationOperationClearPassword.setOnClickListener {
-            executeOperationsMenuController(5)
+            executeOperationsMenuController(OPS_CODE_CLEAR_PASSWORD)
         }
 
         binding.conversationOperationSetPassword.setOnClickListener {
-            executeEntryMenuController(6)
+            executeEntryMenuController(OPS_CODE_SET_PASSWORD)
         }
 
         binding.conversationOperationRename.setOnClickListener {
-            executeEntryMenuController(2)
+            executeEntryMenuController(OPS_CODE_RENAME)
         }
 
         binding.conversationOperationShareLink.setOnClickListener {
@@ -277,5 +277,14 @@ class ConversationsListBottomDialog(
 
     companion object {
         private const val TAG = "ConversationOperationDialog"
+
+        private const val OPS_CODE_RENAME = 2
+        private const val OPS_CODE_MAKE_PUBLIC = 3
+        private const val OPS_CODE_CHANGE_PASSWORD = 4
+        private const val OPS_CODE_CLEAR_PASSWORD = 5
+        private const val OPS_CODE_SET_PASSWORD = 6
+        private const val OPS_CODE_MAKE_PRIVATE = 8
+        private const val OPS_CODE_REMOVE_FAVORITE = 97
+        private const val OPS_CODE_ADD_FAVORITE = 98
     }
 }

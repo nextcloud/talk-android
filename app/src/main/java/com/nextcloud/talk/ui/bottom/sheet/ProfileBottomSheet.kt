@@ -63,6 +63,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : io.reactivex.Observer<HoverCardOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(hoverCardOverall: HoverCardOverall) {
@@ -74,6 +75,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
