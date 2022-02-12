@@ -231,7 +231,7 @@ dependencies {
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'io.requery:requery:1.6.1'
     implementation 'io.requery:requery-android:1.6.1'
-    implementation 'net.zetetic:android-database-sqlcipher:3.5.9'
+    implementation 'net.zetetic:android-database-sqlcipher:4.5.0'
     kapt 'io.requery:requery-processor:1.6.1'
     implementation "org.parceler:parceler-api:$parcelerVersion"
     kapt "org.parceler:parceler:$parcelerVersion"
