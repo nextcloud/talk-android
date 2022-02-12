@@ -1,19 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Marcel Hibbe
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_call_screen_dialog"
+    android:background="@color/bg_bottom_sheet"
     android:orientation="vertical"
     android:paddingStart="@dimen/standard_padding"
     android:paddingEnd="@dimen/standard_padding"
     android:paddingBottom="@dimen/standard_half_padding">
 
     <LinearLayout
+        android:id="@+id/operation_items_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/operation_items_layout"
         android:orientation="vertical">
 
         <TextView
@@ -21,9 +42,9 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/bottom_sheet_item_height"
             android:gravity="start|center_vertical"
-            android:textColor="@color/medium_emphasis_text_dark_background"
+            android:textColor="@color/medium_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size"
-            tools:text="conversation name"/>
+            tools:text="conversation name" />
 
         <LinearLayout
             android:id="@+id/conversation_operation_remove_favorite"
@@ -44,11 +65,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_remove_from_favorites"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -71,11 +92,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_add_to_favorites"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -98,11 +119,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_mark_as_read"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -125,11 +146,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_rename"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -152,11 +173,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_make_call_public"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -179,11 +200,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_change_password"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -206,11 +227,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_clear_password"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -233,11 +254,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_set_password"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -260,11 +281,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_delete_call"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -287,11 +308,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_share_link"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -314,11 +335,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_make_call_private"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
@@ -341,16 +362,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingStart="40dp"
                 android:paddingEnd="@dimen/zero"
                 android:text="@string/nc_leave"
                 android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text_dark_background"
+                android:textColor="@color/high_emphasis_text"
                 android:textSize="@dimen/bottom_sheet_text_size" />
         </LinearLayout>
 
     </LinearLayout>
-
-
 
 </LinearLayout>
