@@ -275,7 +275,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:bottomsheets:${materialDialogsVersion}"
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
-    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'com.google.android.exoplayer:exoplayer:2.16.0'
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
