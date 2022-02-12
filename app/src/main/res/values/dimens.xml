@@ -24,6 +24,7 @@
 
     <dimen name="item_height">72dp</dimen>
     <dimen name="bottom_sheet_item_height">56dp</dimen>
+    <dimen name="bottom_sheet_text_size">16dp</dimen>
     <dimen name="small_item_height">48dp</dimen>
 
     <dimen name="min_size_clickable_area">48dp</dimen>

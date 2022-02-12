@@ -266,7 +266,6 @@ dependencies {
 
     implementation 'com.novoda:merlin:1.2.1'
 
-    implementation 'com.github.Kennyc1012:BottomSheet:2.4.1'
     implementation 'com.github.nextcloud:PopupBubble:1.0.6'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 

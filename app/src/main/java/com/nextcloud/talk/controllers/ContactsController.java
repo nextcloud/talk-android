@@ -38,19 +38,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.bluelinelabs.conductor.RouterTransaction;
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler;
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.kennyc.bottomsheet.BottomSheet;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.OpenConversationEvent;
-import com.nextcloud.talk.events.PeerConnectionEvent;
 import com.nextcloud.talk.jobs.AddParticipantsToConversation;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
@@ -166,8 +161,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     private Disposable cacheQueryDisposable;
     private FlexibleAdapter adapter;
     private List<AbstractFlexibleItem> contactItems;
-    private BottomSheet bottomSheet;
-    private View view;
 
     private SmoothScrollLinearLayoutManager layoutManager;
 
