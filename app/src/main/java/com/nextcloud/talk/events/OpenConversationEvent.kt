@@ -24,8 +24,8 @@ import android.os.Bundle
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 class OpenConversationEvent {
-    var conversation : Conversation? = null
-    var bundle : Bundle? = null
+    var conversation: Conversation? = null
+    var bundle: Bundle? = null
 
     constructor(conversation: Conversation?, bundle: Bundle?) {
         this.conversation = conversation
