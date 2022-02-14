@@ -155,7 +155,7 @@ public class EntryMenuController extends BaseController {
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
-        } else if (operation != ConversationOperationEnum.SHARE_LINK && operation != ConversationOperationEnum.GET_JOIN_ROOM && operation != ConversationOperationEnum.INVITE_USERS) {
+        } else if (operation != ConversationOperationEnum.SHARE_LINK && operation != ConversationOperationEnum.GET_AND_JOIN_ROOM && operation != ConversationOperationEnum.INVITE_USERS) {
             bundle = new Bundle();
             if (operation == ConversationOperationEnum.CHANGE_PASSWORD || operation == ConversationOperationEnum.SET_PASSWORD) {
                 conversation.setPassword(editText.getText().toString());
@@ -238,7 +238,7 @@ public class EntryMenuController extends BaseController {
                             }
                             textInputLayout.setError(getResources().getString(R.string.nc_call_name_is_same));
                         }
-                    } else if (operation != ConversationOperationEnum.GET_JOIN_ROOM) {
+                    } else if (operation != ConversationOperationEnum.GET_AND_JOIN_ROOM) {
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
@@ -247,7 +247,6 @@ public class EntryMenuController extends BaseController {
                     } else if ((editText.getText().toString().startsWith("http://") ||
                             editText.getText().toString().startsWith("https://")) &&
                                     editText.getText().toString().contains("/call/")) {
-                        // operation code 10
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
@@ -312,7 +311,7 @@ public class EntryMenuController extends BaseController {
                 labelText = getResources().getString(R.string.nc_password);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
-            case GET_JOIN_ROOM:
+            case GET_AND_JOIN_ROOM:
                 labelText = getResources().getString(R.string.nc_conversation_link);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
                 break;

@@ -803,6 +803,7 @@ public class ConversationsListController extends BaseController implements Searc
         return onQueryTextChange(query);
     }
 
+    // TODO check when this is executed and if handling is correct
     private void prepareAndShowBottomSheetWithBundle(Bundle bundle) {
         if (view == null) {
             view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
@@ -1020,7 +1021,7 @@ public class ConversationsListController extends BaseController implements Searc
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
 
-        // TODO debug & fix dialog???
+        // TODO check when this is executed and if handling is correct
         // when is    hasPassword && ParticipantType.GUEST    true? currently the app can't be used as guest?!
         // when is    USER_FOLLOWING_LINK   true? --> from contactsController via enter link?
         if ((selectedConversation.hasPassword

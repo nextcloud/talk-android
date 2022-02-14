@@ -322,7 +322,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case GET_JOIN_ROOM:
+            case GET_AND_JOIN_ROOM:
                 ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

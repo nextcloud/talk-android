@@ -935,7 +935,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @OnClick(R.id.joinConversationViaLinkRelativeLayout)
     void joinConversationViaLink() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), ConversationOperationEnum.GET_JOIN_ROOM);
+        bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), ConversationOperationEnum.GET_AND_JOIN_ROOM);
 
         prepareAndShowBottomSheetWithBundle(bundle);
     }
