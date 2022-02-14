@@ -70,6 +70,7 @@ import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
@@ -1023,7 +1024,7 @@ public class ConversationsListController extends BaseController implements Searc
         if ((selectedConversation.hasPassword
             && selectedConversation.participantType == Participant.ParticipantType.GUEST)
             || selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
-            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
+            bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), ConversationOperationEnum.JOIN_ROOM);
             prepareAndShowBottomSheetWithBundle(bundle);
 
 

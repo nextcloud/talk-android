@@ -45,6 +45,7 @@ import com.nextcloud.talk.adapters.items.UserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum;
 import com.nextcloud.talk.events.OpenConversationEvent;
 import com.nextcloud.talk.jobs.AddParticipantsToConversation;
 import com.nextcloud.talk.models.RetrofitBucket;
@@ -376,7 +377,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_GROUP(), groupIdsArray);
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_EMAIL(), emailsArray);
                 bundle.putStringArrayList(BundleKeys.INSTANCE.getKEY_INVITED_CIRCLE(), circleIdsArray);
-                bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 11);
+                bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), ConversationOperationEnum.INVITE_USERS);
                 prepareAndShowBottomSheetWithBundle(bundle);
             }
         } else {
@@ -934,7 +935,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     @OnClick(R.id.joinConversationViaLinkRelativeLayout)
     void joinConversationViaLink() {
         Bundle bundle = new Bundle();
-        bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 10);
+        bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), ConversationOperationEnum.GET_JOIN_ROOM);
 
         prepareAndShowBottomSheetWithBundle(bundle);
     }

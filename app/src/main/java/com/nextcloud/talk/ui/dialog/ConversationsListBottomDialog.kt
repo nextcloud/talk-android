@@ -20,6 +20,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
@@ -128,6 +129,9 @@ class ConversationsListBottomDialog(
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
             conversation.canLeave()
+                // leaving is by api not possible for the last user with moderator permissions.
+                // for now, hide this option for all moderators.
+                && !conversation.canModerate(currentUser)
         )
     }
 
@@ -141,11 +145,11 @@ class ConversationsListBottomDialog(
 
     private fun initClickListeners() {
         binding.conversationOperationAddFavorite.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_ADD_FAVORITE)
+            executeOperationsMenuController(ConversationOperationEnum.ADD_FAVORITE)
         }
 
         binding.conversationOperationRemoveFavorite.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_REMOVE_FAVORITE)
+            executeOperationsMenuController(ConversationOperationEnum.REMOVE_FAVORITE)
         }
 
         binding.conversationOperationLeave.setOnClickListener {
@@ -179,27 +183,27 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationOperationMakePublic.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_MAKE_PUBLIC)
+            executeOperationsMenuController(ConversationOperationEnum.MAKE_PUBLIC)
         }
 
         binding.conversationOperationMakePrivate.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_MAKE_PRIVATE)
+            executeOperationsMenuController(ConversationOperationEnum.MAKE_PRIVATE)
         }
 
         binding.conversationOperationChangePassword.setOnClickListener {
-            executeEntryMenuController(OPS_CODE_CHANGE_PASSWORD)
+            executeEntryMenuController(ConversationOperationEnum.CHANGE_PASSWORD)
         }
 
         binding.conversationOperationClearPassword.setOnClickListener {
-            executeOperationsMenuController(OPS_CODE_CLEAR_PASSWORD)
+            executeOperationsMenuController(ConversationOperationEnum.CLEAR_PASSWORD)
         }
 
         binding.conversationOperationSetPassword.setOnClickListener {
-            executeEntryMenuController(OPS_CODE_SET_PASSWORD)
+            executeEntryMenuController(ConversationOperationEnum.SET_PASSWORD)
         }
 
         binding.conversationOperationRename.setOnClickListener {
-            executeEntryMenuController(OPS_CODE_RENAME)
+            executeEntryMenuController(ConversationOperationEnum.RENAME_ROOM)
         }
 
         binding.conversationOperationShareLink.setOnClickListener {
@@ -227,10 +231,10 @@ class ConversationsListBottomDialog(
         }
     }
 
-    private fun executeOperationsMenuController(operationCode: Int) {
+    private fun executeOperationsMenuController(operation: ConversationOperationEnum) {
         val bundle = Bundle()
         bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        bundle.putInt(KEY_OPERATION_CODE, operationCode)
+        bundle.putSerializable(KEY_OPERATION_CODE, operation)
 
         binding.operationItemsLayout.visibility = View.GONE
 
@@ -245,10 +249,10 @@ class ConversationsListBottomDialog(
         controller.fetchData()
     }
 
-    private fun executeEntryMenuController(operationCode: Int) {
+    private fun executeEntryMenuController(operation: ConversationOperationEnum) {
         val bundle = Bundle()
         bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-        bundle.putInt(KEY_OPERATION_CODE, operationCode)
+        bundle.putSerializable(KEY_OPERATION_CODE, operation)
 
         binding.operationItemsLayout.visibility = View.GONE
 
@@ -277,14 +281,5 @@ class ConversationsListBottomDialog(
 
     companion object {
         private const val TAG = "ConversationOperationDialog"
-
-        private const val OPS_CODE_RENAME = 2
-        private const val OPS_CODE_MAKE_PUBLIC = 3
-        private const val OPS_CODE_CHANGE_PASSWORD = 4
-        private const val OPS_CODE_CLEAR_PASSWORD = 5
-        private const val OPS_CODE_SET_PASSWORD = 6
-        private const val OPS_CODE_MAKE_PRIVATE = 8
-        private const val OPS_CODE_REMOVE_FAVORITE = 97
-        private const val OPS_CODE_ADD_FAVORITE = 98
     }
 }

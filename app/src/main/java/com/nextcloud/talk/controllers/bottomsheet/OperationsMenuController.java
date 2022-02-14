@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -43,7 +42,6 @@ import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.events.BottomSheetLockEvent;
-import com.nextcloud.talk.events.CallNotificationClick;
 import com.nextcloud.talk.events.OpenConversationEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
@@ -55,7 +53,6 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NoSupportedApiException;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -77,7 +74,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -110,7 +106,7 @@ public class OperationsMenuController extends BaseController {
     @Inject
     EventBus eventBus;
 
-    private int operationCode;
+    private ConversationOperationEnum operation;
     private Conversation conversation;
 
     private UserEntity currentUser;
@@ -132,7 +128,7 @@ public class OperationsMenuController extends BaseController {
 
     public OperationsMenuController(Bundle args) {
         super(args);
-        this.operationCode = args.getInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
+        this.operation = (ConversationOperationEnum) args.getSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
         if (args.containsKey(BundleKeys.INSTANCE.getKEY_ROOM())) {
             this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
         }
@@ -285,25 +281,8 @@ public class OperationsMenuController extends BaseController {
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, ApiUtils.APIv1});
         int chatApiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {ApiUtils.APIv1});
 
-
-        /*
-        2: renameRoom
-        3: make public
-        4: change password
-        5: clear password
-        6: set password
-        8: make private
-        10: get/join room
-        11: invite users to conversation
-        96: set chat read marker
-        97: remove favorite
-        98: add favorite
-        99: join room
-         */
-
-
-        switch (operationCode) {
-            case 2:
+        switch (operation) {
+            case RENAME_ROOM:
                 ncApi.renameRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
                                                                      conversation.getToken()),
                         conversation.getName())
@@ -312,7 +291,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 3:
+            case MAKE_PUBLIC:
                 ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
                                                                                conversation.getToken()))
                         .subscribeOn(Schedulers.io())
@@ -320,9 +299,9 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 4:
-            case 5:
-            case 6:
+            case CHANGE_PASSWORD:
+            case CLEAR_PASSWORD:
+            case SET_PASSWORD:
                 String pass = "";
                 if (conversation.getPassword() != null) {
                     pass = conversation.getPassword();
@@ -334,10 +313,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 7:
-                // Operation 7 is sharing, so we handle this differently
-                break;
-            case 8:
+            case MAKE_PRIVATE:
                 ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion,
                                                                                 currentUser.getBaseUrl(),
                                                                                 conversation.getToken()))
@@ -346,7 +322,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 10:
+            case GET_JOIN_ROOM:
                 ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -374,7 +350,8 @@ public class OperationsMenuController extends BaseController {
                                         Log.e(TAG, "Failed to parse capabilities for guest");
                                         showResultImage(false, false);
                                     }
-                                    bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
+                                    bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(),
+                                                           ConversationOperationEnum.JOIN_ROOM);
                                     getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                                                        .pushChangeHandler(new HorizontalChangeHandler())
                                                                        .popChangeHandler(new HorizontalChangeHandler()));
@@ -426,7 +403,7 @@ public class OperationsMenuController extends BaseController {
                             }
                         });
                 break;
-            case 11:
+            case INVITE_USERS:
                 RetrofitBucket retrofitBucket;
                 String invite = null;
 
@@ -502,7 +479,7 @@ public class OperationsMenuController extends BaseController {
                         });
 
                 break;
-            case 96:
+            case MARK_AS_READ:
                 ncApi.setChatReadMarker(credentials,
                                         ApiUtils.getUrlForSetChatReadMarker(chatApiVersion,
                                                                             currentUser.getBaseUrl(),
@@ -513,9 +490,9 @@ public class OperationsMenuController extends BaseController {
                     .retry(1)
                     .subscribe(genericOperationsObserver);
                 break;
-            case 97:
-            case 98:
-                if (operationCode == 97) {
+            case REMOVE_FAVORITE:
+            case ADD_FAVORITE:
+                if (operation == ConversationOperationEnum.REMOVE_FAVORITE) {
                     ncApi.removeConversationFromFavorites(credentials,
                                                           ApiUtils.getUrlForRoomFavorite(apiVersion,
                                                                                          currentUser.getBaseUrl(),
@@ -535,7 +512,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(genericOperationsObserver);
                 }
                 break;
-            case 99:
+            case JOIN_ROOM:
                 ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion,
                                                                                  baseUrl,
                                                                                  conversationToken),
@@ -591,8 +568,9 @@ public class OperationsMenuController extends BaseController {
         } else {
             resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, operationCode != 99
-                    && operationCode != 10, true)));
+            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0,
+                                                                                    operation != ConversationOperationEnum.JOIN_ROOM
+                    && operation != ConversationOperationEnum.GET_JOIN_ROOM, true)));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -758,7 +736,7 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void handleObserverError(@io.reactivex.annotations.NonNull Throwable e) {
-        if (operationCode != 99 || !(e instanceof HttpException)) {
+        if (operation != ConversationOperationEnum.JOIN_ROOM || !(e instanceof HttpException)) {
             showResultImage(false, false);
         } else {
             Response<?> response = ((HttpException) e).response();
@@ -783,7 +761,7 @@ public class OperationsMenuController extends BaseController {
 
         @Override
         public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-            if (operationCode != 99) {
+            if (operation != ConversationOperationEnum.JOIN_ROOM) {
                 showResultImage(true, false);
             } else {
                 throw new IllegalArgumentException("Unsupported operation code observed!");
@@ -811,7 +789,7 @@ public class OperationsMenuController extends BaseController {
         @Override
         public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
             conversation = roomOverall.getOcs().getData();
-            if (operationCode != 99) {
+            if (operation != ConversationOperationEnum.JOIN_ROOM) {
                 showResultImage(true, false);
             } else {
                 conversation = roomOverall.getOcs().getData();
