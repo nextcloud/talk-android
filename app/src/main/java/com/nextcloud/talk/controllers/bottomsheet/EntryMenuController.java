@@ -41,7 +41,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.EmojiTextInputEditText;
 import com.nextcloud.talk.utils.ShareUtils;
@@ -144,7 +143,6 @@ public class EntryMenuController extends BaseController {
     public void onProceedButtonClick() {
         Bundle bundle;
         if (operation == ConversationOperationEnum.JOIN_ROOM) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
             bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
@@ -158,7 +156,6 @@ public class EntryMenuController extends BaseController {
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
         } else if (operation != ConversationOperationEnum.SHARE_LINK && operation != ConversationOperationEnum.GET_JOIN_ROOM && operation != ConversationOperationEnum.INVITE_USERS) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             if (operation == ConversationOperationEnum.CHANGE_PASSWORD || operation == ConversationOperationEnum.SET_PASSWORD) {
                 conversation.setPassword(editText.getText().toString());
@@ -178,10 +175,8 @@ public class EntryMenuController extends BaseController {
                 intent.setComponent(new ComponentName(packageName, name));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
-                eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
             }
         } else if (operation != ConversationOperationEnum.INVITE_USERS) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             bundle = new Bundle();
             bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operation);
             bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), editText.getText().toString());
@@ -190,7 +185,6 @@ public class EntryMenuController extends BaseController {
                     .popChangeHandler(new HorizontalChangeHandler()));
 
         } else if (operation == ConversationOperationEnum.INVITE_USERS) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
             originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), editText.getText().toString());
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(originalBundle))
                     .pushChangeHandler(new HorizontalChangeHandler())

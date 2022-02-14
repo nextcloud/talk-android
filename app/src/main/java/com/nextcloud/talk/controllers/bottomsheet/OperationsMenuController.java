@@ -41,7 +41,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.OpenConversationEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
@@ -337,8 +337,7 @@ public class OperationsMenuController extends BaseController {
                             public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                                 conversation = roomOverall.getOcs().getData();
                                 if (conversation.isHasPassword() && conversation.isGuest()) {
-                                    eventBus.post(new BottomSheetLockEvent(true, 0,
-                                                                           true, false));
+                                    eventBus.post(new ConversationsListFetchDataEvent());
                                     Bundle bundle = new Bundle();
                                     bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
                                     bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
@@ -553,10 +552,8 @@ public class OperationsMenuController extends BaseController {
             } else {
                 resultsTextView.setText(R.string.nc_failed_signaling_settings);
                 webButton.setOnClickListener(v -> {
-                    eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(callUrl));
                     startActivity(browserIntent);
-                    new BottomSheetLockEvent(true, 0, false, true);
                 });
                 webButton.setVisibility(View.VISIBLE);
             }
@@ -564,13 +561,11 @@ public class OperationsMenuController extends BaseController {
 
         resultsTextView.setVisibility(View.VISIBLE);
         if (everythingOK) {
-            eventBus.post(new BottomSheetLockEvent(true, 2500, true, true));
+            eventBus.post(new ConversationsListFetchDataEvent());
         } else {
             resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0,
-                                                                                    operation != ConversationOperationEnum.JOIN_ROOM
-                    && operation != ConversationOperationEnum.GET_JOIN_ROOM, true)));
+            okButton.setOnClickListener(v -> eventBus.post(new ConversationsListFetchDataEvent()));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -721,8 +716,7 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void initiateConversation(boolean dismissView) {
-        eventBus.post(new BottomSheetLockEvent(true, 0,
-                                               true, true, dismissView));
+        eventBus.post(new ConversationsListFetchDataEvent());
 
         Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
@@ -741,8 +735,6 @@ public class OperationsMenuController extends BaseController {
         } else {
             Response<?> response = ((HttpException) e).response();
             if (response != null && response.code() == 403) {
-                eventBus.post(new BottomSheetLockEvent(true, 0, false,
-                                                       false));
                 ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
                 getRouter().popCurrentController();
             } else {

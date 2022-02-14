@@ -72,6 +72,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
+import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
@@ -1061,6 +1062,11 @@ public class ConversationsListController extends BaseController implements Searc
                     break;
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    public void onMessageEvent(ConversationsListFetchDataEvent conversationsListFetchDataEvent) {
+        fetchData();
     }
 
     private void showDeleteConversationDialog(Bundle savedInstanceState) {
