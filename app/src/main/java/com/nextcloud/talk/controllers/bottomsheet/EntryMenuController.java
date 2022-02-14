@@ -338,4 +338,9 @@ public class EntryMenuController extends BaseController {
         textInputLayout.setHint(labelText);
         textInputLayout.requestFocus();
     }
+
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.SEARCH_BAR;
+    }
 }
