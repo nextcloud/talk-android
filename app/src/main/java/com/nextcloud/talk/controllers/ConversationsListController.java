@@ -452,6 +452,7 @@ public class ConversationsListController extends BaseController implements Searc
         return false;
     }
 
+    @Override
     protected void showSearchOrToolbar() {
         if (TextUtils.isEmpty(searchQuery)) {
             super.showSearchOrToolbar();

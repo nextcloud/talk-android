@@ -807,4 +807,9 @@ public class OperationsMenuController extends BaseController {
             dispose();
         }
     }
+
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.SEARCH_BAR;
+    }
 }
