@@ -63,7 +63,7 @@ class ConversationsListBottomDialog(
     val controller: ConversationsListController,
     val currentUser: UserEntity,
     val conversation: Conversation
-) : BottomSheetDialog(activity) {
+) : BottomSheetDialog(activity, R.style.BottomSheetDialogThemeNoFloating) {
 
     private var dialogRouter: Router? = null
 

@@ -40,7 +40,7 @@ import com.nextcloud.talk.databinding.DialogBottomContactsBinding
 class ContactsBottomDialog(
     val activity: Activity,
     val bundle: Bundle
-) : BottomSheetDialog(activity) {
+) : BottomSheetDialog(activity, R.style.BottomSheetDialogThemeNoFloating) {
 
     private var dialogRouter: Router? = null
 
