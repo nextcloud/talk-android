@@ -3,8 +3,10 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2020 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
