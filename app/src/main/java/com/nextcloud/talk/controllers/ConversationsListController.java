@@ -1023,9 +1023,15 @@ public class ConversationsListController extends BaseController implements Searc
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(ConversationsListFetchDataEvent conversationsListFetchDataEvent) {
         fetchData();
+
+        new Handler().postDelayed(() -> {
+            if (conversationsListBottomDialog.isShowing()) {
+                conversationsListBottomDialog.dismiss();
+            }
+        }, 2500);
     }
 
     private void showDeleteConversationDialog(Bundle savedInstanceState) {
