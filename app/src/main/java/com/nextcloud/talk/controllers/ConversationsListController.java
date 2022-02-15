@@ -803,26 +803,6 @@ public class ConversationsListController extends BaseController implements Searc
         return onQueryTextChange(query);
     }
 
-    // TODO check when this is executed and if handling is correct
-    private void prepareAndShowBottomSheetWithBundle(Bundle bundle) {
-        if (view == null) {
-            view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
-        }
-
-//        if (shouldShowCallMenuController) {
-//            getChildRouter((ViewGroup) view).setRoot(
-//                    RouterTransaction.with(new CallMenuController(bundle, this))
-//                            .popChangeHandler(new VerticalChangeHandler())
-//                            .pushChangeHandler(new VerticalChangeHandler()));
-//        } else {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new EntryMenuController(bundle))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
-
-//        }
-    }
-
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_app_product_name);
@@ -1017,37 +997,13 @@ public class ConversationsListController extends BaseController implements Searc
     private void openConversation(String textToPaste) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(selectedConversation));
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
 
-        // TODO check when this is executed and if handling is correct
-        // when is    hasPassword && ParticipantType.GUEST    true? currently the app can't be used as guest?!
-        // when is    USER_FOLLOWING_LINK   true? --> from contactsController via enter link?
-        if ((selectedConversation.hasPassword
-            && selectedConversation.participantType == Participant.ParticipantType.GUEST)
-            || selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
-            bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), ConversationOperationEnum.JOIN_ROOM);
-            prepareAndShowBottomSheetWithBundle(bundle);
-
-
-            // instead to use prepareAnd...
-            // use something like
-            //
-            //              conversationOperationDialog = new ConversationOperationDialog(
-            //                    getActivity(),
-            //                    this,
-            //                    userUtils.getCurrentUser(),
-            //                    conversation);
-            //                conversationOperationDialog.show();
-
-        } else {
-            currentUser = userUtils.getCurrentUser();
-
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(selectedConversation));
-            ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                            selectedConversation.getToken(), bundle, false);
-        }
+        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                        selectedConversation.getToken(), bundle, false);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
