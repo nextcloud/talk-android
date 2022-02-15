@@ -41,6 +41,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.*
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
@@ -165,11 +166,11 @@ class ConversationsListBottomDialog(
 
     private fun initClickListeners() {
         binding.conversationOperationAddFavorite.setOnClickListener {
-            executeOperationsMenuController(ConversationOperationEnum.ADD_FAVORITE)
+            executeOperationsMenuController(OPS_CODE_ADD_FAVORITE)
         }
 
         binding.conversationOperationRemoveFavorite.setOnClickListener {
-            executeOperationsMenuController(ConversationOperationEnum.REMOVE_FAVORITE)
+            executeOperationsMenuController(OPS_CODE_REMOVE_FAVORITE)
         }
 
         binding.conversationOperationLeave.setOnClickListener {
@@ -203,27 +204,27 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationOperationMakePublic.setOnClickListener {
-            executeOperationsMenuController(ConversationOperationEnum.MAKE_PUBLIC)
+            executeOperationsMenuController(OPS_CODE_MAKE_PUBLIC)
         }
 
         binding.conversationOperationMakePrivate.setOnClickListener {
-            executeOperationsMenuController(ConversationOperationEnum.MAKE_PRIVATE)
+            executeOperationsMenuController(OPS_CODE_MAKE_PRIVATE)
         }
 
         binding.conversationOperationChangePassword.setOnClickListener {
-            executeEntryMenuController(ConversationOperationEnum.CHANGE_PASSWORD)
+            executeEntryMenuController(OPS_CODE_CHANGE_PASSWORD)
         }
 
         binding.conversationOperationClearPassword.setOnClickListener {
-            executeOperationsMenuController(ConversationOperationEnum.CLEAR_PASSWORD)
+            executeOperationsMenuController(OPS_CODE_CLEAR_PASSWORD)
         }
 
         binding.conversationOperationSetPassword.setOnClickListener {
-            executeEntryMenuController(ConversationOperationEnum.SET_PASSWORD)
+            executeEntryMenuController(OPS_CODE_SET_PASSWORD)
         }
 
         binding.conversationOperationRename.setOnClickListener {
-            executeEntryMenuController(ConversationOperationEnum.RENAME_ROOM)
+            executeEntryMenuController(OPS_CODE_RENAME_ROOM)
         }
 
         binding.conversationOperationShareLink.setOnClickListener {
