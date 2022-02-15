@@ -163,6 +163,9 @@
     <string name="nc_none">无</string>
     <string name="nc_not_defined_error">未知错误</string>
     <string name="nc_notification_channel">%1$s在%2$s通知频道中</string>
+    <string name="nc_notification_channel_calls">通话</string>
+    <string name="nc_notification_channel_calls_description">来电通知</string>
+    <string name="nc_notification_channel_messages">消息</string>
     <string name="nc_notification_settings">通知设置</string>
     <string name="nc_notify_me_always">始终提醒</string>
     <string name="nc_notify_me_mention">当被提及时提醒</string>
@@ -247,6 +250,8 @@
     <string name="nc_settings_incognito_keyboard_title">匿名键盘</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
+    <string name="nc_settings_notification_sounds">通知声音</string>
+    <string name="nc_settings_other_notifications_ringtone">消息</string>
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成 Talk 快捷方式到系统联系人应用</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">你可以设置你的电话号码，这样其他用户能够找到你 </string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">无效电话号码</string>
