@@ -31,21 +31,21 @@
     android:paddingEnd="@dimen/standard_padding"
     android:paddingBottom="@dimen/standard_half_padding">
 
-    <TextView
-        android:id="@+id/conversation_operation_header"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/bottom_sheet_item_height"
-        android:gravity="start|center_vertical"
-        android:textColor="@color/medium_emphasis_text"
-        android:textSize="@dimen/bottom_sheet_text_size"
-        tools:text="conversation name" />
-
     <LinearLayout
         android:id="@+id/operation_items_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         tools:ignore="UseCompoundDrawables">
+
+        <TextView
+            android:id="@+id/conversation_operation_header"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:gravity="start|center_vertical"
+            android:textColor="@color/medium_emphasis_text"
+            android:textSize="@dimen/bottom_sheet_text_size"
+            tools:text="conversation name" />
 
         <LinearLayout
             android:id="@+id/conversation_operation_remove_favorite"
