@@ -49,6 +49,7 @@ import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_READ
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
@@ -232,6 +233,10 @@ class ConversationsListBottomDialog(
 
         binding.conversationOperationRename.setOnClickListener {
             executeEntryMenuController(OPS_CODE_RENAME_ROOM)
+        }
+
+        binding.conversationOperationMarkAsRead.setOnClickListener {
+            executeOperationsMenuController(OPS_CODE_MARK_AS_READ)
         }
 
         binding.conversationOperationShareLink.setOnClickListener {
