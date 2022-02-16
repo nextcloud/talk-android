@@ -41,7 +41,14 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.*
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_ADD_FAVORITE
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SET_PASSWORD
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CLEAR_PASSWORD
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding

@@ -20,7 +20,8 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
-import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.*;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_JOIN_ROOM;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

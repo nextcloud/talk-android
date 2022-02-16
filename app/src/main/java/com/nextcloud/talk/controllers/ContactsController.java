@@ -22,7 +22,8 @@
 
 package com.nextcloud.talk.controllers;
 
-import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.*;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_INVITE_USERS;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM;
 
 import android.app.SearchManager;
 import android.content.Context;

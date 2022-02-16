@@ -22,7 +22,13 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
-import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.*;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_JOIN_ROOM;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_INVITE_USERS;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SET_PASSWORD;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SHARE_LINK;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM;
 
 import android.content.ComponentName;
 import android.content.Intent;
