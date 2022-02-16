@@ -385,59 +385,31 @@ class SetStatusDialogFragment :
     }
 
     private fun setStatusMessage() {
-        if (selectedPredefinedMessageId != null) {
+        ncApi.setCustomStatusMessage(
+            credentials,
+            ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
+            binding.emoji.text.toString(),
+            binding.customStatusInput.text.toString(),
+            clearAt)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
 
-            ncApi.setPredefinedStatusMessage(
-                credentials,
-                ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
-                selectedPredefinedMessageId,
-                clearAt)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
 
-                    override fun onSubscribe(d: Disposable) {
-                    }
+                override fun onNext(t: GenericOverall) {
+                    Log.d(TAG, "CustomStatusMessage successfully set")
+                    dismiss()
+                }
 
-                    override fun onNext(t: GenericOverall) {
-                        Log.d(TAG, "PredefinedStatusMessage successfully set")
-                        dismiss()
-                    }
+                override fun onError(e: Throwable) {
+                    Log.d(TAG, "failed to set CustomStatusMessage", e)
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.d(TAG, "failed to set PredefinedStatusMessage", e)
-                    }
+                override fun onComplete() {}
 
-                    override fun onComplete() {}
-
-                })
-        } else {
-            ncApi.setCustomStatusMessage(
-                credentials,
-                ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
-                binding.emoji.text.toString(),
-                binding.customStatusInput.text.toString(),
-                clearAt)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<GenericOverall> {
-
-                    override fun onSubscribe(d: Disposable) {
-                    }
-
-                    override fun onNext(t: GenericOverall) {
-                        Log.d(TAG, "CustomStatusMessage successfully set")
-                        dismiss()
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.d(TAG, "failed to set CustomStatusMessage", e)
-                    }
-
-                    override fun onComplete() {}
-
-                })
-        }
+            })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -445,7 +417,6 @@ class SetStatusDialogFragment :
     }
 
     override fun onClick(predefinedStatus: PredefinedStatus) {
-        selectedPredefinedMessageId = predefinedStatus.id
         clearAt = clearAtToUnixTime(predefinedStatus.clearAt)
         binding.emoji.setText(predefinedStatus.icon)
         binding.customStatusInput.text?.clear()
