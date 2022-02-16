@@ -93,7 +93,7 @@ import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
-import com.nextcloud.talk.webrtc.MagicPeerConnectionWrapper;
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
@@ -215,7 +215,7 @@ public class CallActivity extends CallBaseActivity {
     private String callSession;
     private MediaStream localStream;
     private String credentials;
-    private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
+    private List<PeerConnectionWrapper> peerConnectionWrapperList = new ArrayList<>();
     private Map<String, Participant> participantMap = new HashMap<>();
 
     private boolean videoOn = false;
@@ -985,15 +985,15 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        if (isConnectionEstablished() && magicPeerConnectionWrapperList != null) {
+        if (isConnectionEstablished() && peerConnectionWrapperList != null) {
             if (!hasMCU) {
-                for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-                    magicPeerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
+                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                    peerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
                 }
             } else {
-                for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-                    if (magicPeerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
-                        magicPeerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
+                for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+                    if (peerConnectionWrapper.getSessionId().equals(webSocketClient.getSessionId())) {
+                        peerConnectionWrapper.sendChannelData(new DataChannelMessage(message));
                         break;
                     }
                 }
@@ -1517,7 +1517,7 @@ public class CallActivity extends CallBaseActivity {
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
-            MagicPeerConnectionWrapper magicPeerConnectionWrapper =
+            PeerConnectionWrapper peerConnectionWrapper =
                 getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
                                                             ncSignalingMessage.getRoomType(), false);
 
@@ -1535,7 +1535,7 @@ public class CallActivity extends CallBaseActivity {
                         break;
                     case "offer":
                     case "answer":
-                        magicPeerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
+                        peerConnectionWrapper.setNick(ncSignalingMessage.getPayload().getNick());
                         SessionDescription sessionDescriptionWithPreferredCodec;
 
                         String sessionDescriptionStringWithPreferredCodec = MagicWebRTCUtils.preferCodec
@@ -1546,8 +1546,8 @@ public class CallActivity extends CallBaseActivity {
                             SessionDescription.Type.fromCanonicalForm(type),
                             sessionDescriptionStringWithPreferredCodec);
 
-                        if (magicPeerConnectionWrapper.getPeerConnection() != null) {
-                            magicPeerConnectionWrapper.getPeerConnection().setRemoteDescription(magicPeerConnectionWrapper
+                        if (peerConnectionWrapper.getPeerConnection() != null) {
+                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(peerConnectionWrapper
                                                                                                     .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
                         }
                         break;
@@ -1555,10 +1555,10 @@ public class CallActivity extends CallBaseActivity {
                         NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
                         IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
                                                                      ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
-                        magicPeerConnectionWrapper.addCandidate(iceCandidate);
+                        peerConnectionWrapper.addCandidate(iceCandidate);
                         break;
                     case "endOfCandidates":
-                        magicPeerConnectionWrapper.drainIceCandidates();
+                        peerConnectionWrapper.drainIceCandidates();
                         break;
                     default:
                         break;
@@ -1624,8 +1624,8 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-            endPeerConnection(magicPeerConnectionWrapperList.get(i).getSessionId(), false);
+        for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
+            endPeerConnection(peerConnectionWrapperList.get(i).getSessionId(), false);
         }
 
         hangupNetworkCalls(shutDownView);
@@ -1709,9 +1709,9 @@ public class CallActivity extends CallBaseActivity {
             }
         }
 
-        for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            if (!magicPeerConnectionWrapper.isMCUPublisher()) {
-                oldSessions.add(magicPeerConnectionWrapper.getSessionId());
+        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+            if (!peerConnectionWrapper.isMCUPublisher()) {
+                oldSessions.add(peerConnectionWrapper.getSessionId());
             }
         }
 
@@ -1781,86 +1781,86 @@ public class CallActivity extends CallBaseActivity {
             });
     }
 
-    private void deleteMagicPeerConnection(MagicPeerConnectionWrapper magicPeerConnectionWrapper) {
-        magicPeerConnectionWrapper.removePeerConnection();
-        magicPeerConnectionWrapperList.remove(magicPeerConnectionWrapper);
+    private void deletePeerConnection(PeerConnectionWrapper peerConnectionWrapper) {
+        peerConnectionWrapper.removePeerConnection();
+        peerConnectionWrapperList.remove(peerConnectionWrapper);
     }
 
-    private MagicPeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId, String type) {
-        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-            if (magicPeerConnectionWrapperList.get(i).getSessionId().equals(sessionId) && magicPeerConnectionWrapperList.get(i).getVideoStreamType().equals(type)) {
-                return magicPeerConnectionWrapperList.get(i);
+    private PeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId, String type) {
+        for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
+            if (peerConnectionWrapperList.get(i).getSessionId().equals(sessionId) && peerConnectionWrapperList.get(i).getVideoStreamType().equals(type)) {
+                return peerConnectionWrapperList.get(i);
             }
         }
 
         return null;
     }
 
-    private MagicPeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId, String type, boolean publisher) {
-        MagicPeerConnectionWrapper magicPeerConnectionWrapper;
-        if ((magicPeerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId, type)) != null) {
-            return magicPeerConnectionWrapper;
+    private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId, String type, boolean publisher) {
+        PeerConnectionWrapper peerConnectionWrapper;
+        if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId, type)) != null) {
+            return peerConnectionWrapper;
         } else {
             if (hasMCU && publisher) {
-                magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                            iceServers,
-                                                                            sdpConstraintsForMCU,
-                                                                            sessionId,
-                                                                            callSession,
-                                                                            localStream,
-                                                                            true,
-                                                                            true,
-                                                                            type);
+                peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                                                                  iceServers,
+                                                                  sdpConstraintsForMCU,
+                                                                  sessionId,
+                                                                  callSession,
+                                                                  localStream,
+                                                                  true,
+                                                                  true,
+                                                                  type);
 
             } else if (hasMCU) {
-                magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                            iceServers,
-                                                                            sdpConstraints,
-                                                                            sessionId,
-                                                                            callSession,
-                                                                            null,
-                                                                            false,
-                                                                            true,
-                                                                            type);
+                peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                                                                  iceServers,
+                                                                  sdpConstraints,
+                                                                  sessionId,
+                                                                  callSession,
+                                                                  null,
+                                                                  false,
+                                                                  true,
+                                                                  type);
             } else {
                 if (!"screen".equals(type)) {
-                    magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                                iceServers,
-                                                                                sdpConstraints,
-                                                                                sessionId,
-                                                                                callSession,
-                                                                                localStream,
-                                                                                false,
-                                                                                false,
-                                                                                type);
+                    peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                                                                      iceServers,
+                                                                      sdpConstraints,
+                                                                      sessionId,
+                                                                      callSession,
+                                                                      localStream,
+                                                                      false,
+                                                                      false,
+                                                                      type);
                 } else {
-                    magicPeerConnectionWrapper = new MagicPeerConnectionWrapper(peerConnectionFactory,
-                                                                                iceServers,
-                                                                                sdpConstraints,
-                                                                                sessionId,
-                                                                                callSession,
-                                                                                null,
-                                                                                false,
-                                                                                false,
-                                                                                type);
+                    peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
+                                                                      iceServers,
+                                                                      sdpConstraints,
+                                                                      sessionId,
+                                                                      callSession,
+                                                                      null,
+                                                                      false,
+                                                                      false,
+                                                                      type);
                 }
             }
 
-            magicPeerConnectionWrapperList.add(magicPeerConnectionWrapper);
+            peerConnectionWrapperList.add(peerConnectionWrapper);
 
             if (publisher) {
                 startSendingNick();
             }
 
-            return magicPeerConnectionWrapper;
+            return peerConnectionWrapper;
         }
     }
 
-    private List<MagicPeerConnectionWrapper> getPeerConnectionWrapperListForSessionId(String sessionId) {
-        List<MagicPeerConnectionWrapper> internalList = new ArrayList<>();
-        for (MagicPeerConnectionWrapper magicPeerConnectionWrapper : magicPeerConnectionWrapperList) {
-            if (magicPeerConnectionWrapper.getSessionId().equals(sessionId)) {
-                internalList.add(magicPeerConnectionWrapper);
+    private List<PeerConnectionWrapper> getPeerConnectionWrapperListForSessionId(String sessionId) {
+        List<PeerConnectionWrapper> internalList = new ArrayList<>();
+        for (PeerConnectionWrapper peerConnectionWrapper : peerConnectionWrapperList) {
+            if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+                internalList.add(peerConnectionWrapper);
             }
         }
 
@@ -1868,15 +1868,15 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void endPeerConnection(String sessionId, boolean justScreen) {
-        List<MagicPeerConnectionWrapper> magicPeerConnectionWrappers;
-        MagicPeerConnectionWrapper magicPeerConnectionWrapper;
-        if (!(magicPeerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
-            for (int i = 0; i < magicPeerConnectionWrappers.size(); i++) {
-                magicPeerConnectionWrapper = magicPeerConnectionWrappers.get(i);
-                if (magicPeerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (magicPeerConnectionWrapper.getVideoStreamType().equals("screen") || !justScreen) {
+        List<PeerConnectionWrapper> peerConnectionWrappers;
+        PeerConnectionWrapper peerConnectionWrapper;
+        if (!(peerConnectionWrappers = getPeerConnectionWrapperListForSessionId(sessionId)).isEmpty()) {
+            for (int i = 0; i < peerConnectionWrappers.size(); i++) {
+                peerConnectionWrapper = peerConnectionWrappers.get(i);
+                if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+                    if (peerConnectionWrapper.getVideoStreamType().equals("screen") || !justScreen) {
                         runOnUiThread(() -> removeMediaStream(sessionId));
-                        deleteMagicPeerConnection(magicPeerConnectionWrapper);
+                        deletePeerConnection(peerConnectionWrapper);
                     }
                 }
             }
@@ -1988,10 +1988,10 @@ public class CallActivity extends CallBaseActivity {
         nickChangedPayload.put("userid", conversationUser.getUserId());
         nickChangedPayload.put("name", conversationUser.getDisplayName());
         dataChannelMessage.setPayload(nickChangedPayload);
-        final MagicPeerConnectionWrapper magicPeerConnectionWrapper;
-        for (int i = 0; i < magicPeerConnectionWrapperList.size(); i++) {
-            if (magicPeerConnectionWrapperList.get(i).isMCUPublisher()) {
-                magicPeerConnectionWrapper = magicPeerConnectionWrapperList.get(i);
+        final PeerConnectionWrapper peerConnectionWrapper;
+        for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
+            if (peerConnectionWrapperList.get(i).isMCUPublisher()) {
+                peerConnectionWrapper = peerConnectionWrapperList.get(i);
                 Observable
                     .interval(1, TimeUnit.SECONDS)
                     .repeatUntil(() -> (!isConnectionEstablished() || isDestroyed()))
@@ -2004,7 +2004,7 @@ public class CallActivity extends CallBaseActivity {
 
                         @Override
                         public void onNext(@io.reactivex.annotations.NonNull Long aLong) {
-                            magicPeerConnectionWrapper.sendNickChannelData(dataChannelMessage);
+                            peerConnectionWrapper.sendNickChannelData(dataChannelMessage);
                         }
 
                         @Override

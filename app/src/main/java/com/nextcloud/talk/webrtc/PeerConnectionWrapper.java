@@ -68,9 +68,9 @@ import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicPeerConnectionWrapper {
+public class PeerConnectionWrapper {
 
-    private static final String TAG = MagicPeerConnectionWrapper.class.getCanonicalName();
+    private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
@@ -90,11 +90,11 @@ public class MagicPeerConnectionWrapper {
     @Inject
     Context context;
 
-    public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
-                                      List<PeerConnection.IceServer> iceServerList,
-                                      MediaConstraints mediaConstraints,
-                                      String sessionId, String localSession, @Nullable MediaStream localStream,
-                                      boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
+    public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
+                                 List<PeerConnection.IceServer> iceServerList,
+                                 MediaConstraints mediaConstraints,
+                                 String sessionId, String localSession, @Nullable MediaStream localStream,
+                                 boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
@@ -392,8 +392,8 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onDataChannel(DataChannel dataChannel) {
             if (dataChannel.label().equals("status") || dataChannel.label().equals("JanusDataChannel")) {
-                MagicPeerConnectionWrapper.this.dataChannel = dataChannel;
-                MagicPeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
+                PeerConnectionWrapper.this.dataChannel = dataChannel;
+                PeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
             }
         }
 
