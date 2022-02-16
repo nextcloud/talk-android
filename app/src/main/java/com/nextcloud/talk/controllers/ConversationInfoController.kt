@@ -287,15 +287,19 @@ class ConversationInfoController(args: Bundle) :
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onComplete() {
+                    // unused atm
                 }
 
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(t: GenericOverall) {
+                    // unused atm
                 }
 
                 override fun onError(e: Throwable) {
+                    // unused atm
                 }
             })
     }
@@ -305,6 +309,7 @@ class ConversationInfoController(args: Bundle) :
             ID_DELETE_CONVERSATION_DIALOG -> showDeleteConversationDialog(savedInstanceState)
             ID_CLEAR_CHAT_DIALOG -> showClearHistoryDialog(savedInstanceState)
             else -> {
+                // unused atm
             }
         }
     }
@@ -444,6 +449,7 @@ class ConversationInfoController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
+                    // unused atm
                 }
 
                 override fun onComplete() {
@@ -525,6 +531,7 @@ class ConversationInfoController(args: Bundle) :
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
@@ -538,6 +545,7 @@ class ConversationInfoController(args: Bundle) :
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -598,13 +606,13 @@ class ConversationInfoController(args: Bundle) :
 
                             setupWebinaryView()
 
-                            if (!conversation!!.canLeave(conversationUser)) {
+                            if (!conversation!!.canLeave()) {
                                 binding.leaveConversationAction.visibility = View.GONE
                             } else {
                                 binding.leaveConversationAction.visibility = View.VISIBLE
                             }
 
-                            if (!conversation!!.canDelete(conversationUser)) {
+                            if (!conversation!!.canDelete()) {
                                 binding.deleteConversationAction.visibility = View.GONE
                             } else {
                                 binding.deleteConversationAction.visibility = View.VISIBLE
@@ -647,6 +655,7 @@ class ConversationInfoController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
+                    // unused atm
                 }
 
                 override fun onComplete() {
@@ -731,6 +740,7 @@ class ConversationInfoController(args: Bundle) :
             }
 
             else -> {
+                // unused atm
             }
         }
     }
@@ -738,6 +748,7 @@ class ConversationInfoController(args: Bundle) :
     private fun toggleModeratorStatus(apiVersion: Int, participant: Participant) {
         val subscriber = object : Observer<GenericOverall> {
             override fun onSubscribe(d: Disposable) {
+                // unused atm
             }
 
             override fun onNext(genericOverall: GenericOverall) {
@@ -750,6 +761,7 @@ class ConversationInfoController(args: Bundle) :
             }
 
             override fun onComplete() {
+                // unused atm
             }
         }
 
@@ -789,6 +801,7 @@ class ConversationInfoController(args: Bundle) :
     private fun toggleModeratorStatusLegacy(apiVersion: Int, participant: Participant) {
         val subscriber = object : Observer<GenericOverall> {
             override fun onSubscribe(d: Disposable) {
+                // unused atm
             }
 
             override fun onNext(genericOverall: GenericOverall) {
@@ -801,6 +814,7 @@ class ConversationInfoController(args: Bundle) :
             }
 
             override fun onComplete() {
+                // unused atm
             }
         }
 
@@ -848,6 +862,7 @@ class ConversationInfoController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<GenericOverall> {
                     override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
 
                     override fun onNext(genericOverall: GenericOverall) {
@@ -860,6 +875,7 @@ class ConversationInfoController(args: Bundle) :
                     }
 
                     override fun onComplete() {
+                        // unused atm
                     }
                 })
         } else {
@@ -879,6 +895,7 @@ class ConversationInfoController(args: Bundle) :
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
+                            // unused atm
                         }
 
                         override fun onNext(genericOverall: GenericOverall) {
@@ -891,6 +908,7 @@ class ConversationInfoController(args: Bundle) :
                         }
 
                         override fun onComplete() {
+                            // unused atm
                         }
                     })
             } else {
@@ -907,6 +925,7 @@ class ConversationInfoController(args: Bundle) :
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe(object : Observer<GenericOverall> {
                         override fun onSubscribe(d: Disposable) {
+                            // unused atm
                         }
 
                         override fun onNext(genericOverall: GenericOverall) {
@@ -919,6 +938,7 @@ class ConversationInfoController(args: Bundle) :
                         }
 
                         override fun onComplete() {
+                            // unused atm
                         }
                     })
             }

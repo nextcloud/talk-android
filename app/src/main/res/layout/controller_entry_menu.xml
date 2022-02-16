@@ -52,7 +52,9 @@
         android:layout_marginEnd="@dimen/standard_half_margin"
         android:layout_toStartOf="@id/smileyButton"
         app:errorTextAppearance="@style/ErrorAppearance"
-        app:passwordToggleTint="@color/grey_600">
+        app:passwordToggleTint="@color/grey_600"
+        app:boxStrokeColor="@color/colorPrimary"
+        app:hintTextColor="@color/colorPrimary">
 
         <com.nextcloud.talk.utils.EmojiTextInputEditText
             android:id="@+id/text_edit"

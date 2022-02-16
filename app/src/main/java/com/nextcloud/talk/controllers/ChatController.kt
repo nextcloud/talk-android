@@ -149,7 +149,6 @@ import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
-import com.nextcloud.talk.utils.KeyboardUtils
 import com.nextcloud.talk.utils.MagicCharPolicy
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
@@ -347,6 +346,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onError(e: Throwable) {
+                        // unused atm
                     }
 
                     override fun onComplete() {
@@ -389,9 +389,11 @@ class ChatController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
+                    // unused atm
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -666,6 +668,7 @@ class ChatController(args: Bundle) :
             }
 
             override fun afterTextChanged(s: Editable) {
+                // unused atm
             }
         })
 
@@ -1262,7 +1265,9 @@ class ChatController(args: Bundle) :
                             UploadAndShareFilesWorker.requestStoragePermission(this)
                         }
                     }
-                    .setNegativeButton(R.string.nc_no) {}
+                    .setNegativeButton(R.string.nc_no) {
+                        // unused atm
+                    }
                     .show()
             } catch (e: IllegalStateException) {
                 Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
@@ -1541,10 +1546,6 @@ class ChatController(args: Bundle) :
             cancelReply()
         }
 
-        if (activity != null) {
-            KeyboardUtils(activity, getView(), false)
-        }
-
         cancelNotificationsForCurrentConversation()
 
         if (inConversation) {
@@ -1698,9 +1699,11 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onError(e: Throwable) {
+                        // unused atm
                     }
 
                     override fun onComplete() {
+                        // unused atm
                     }
                 })
         } else {
@@ -1764,7 +1767,9 @@ class ChatController(args: Bundle) :
                     }
                 }
 
-                override fun onError(e: Throwable) {}
+                override fun onError(e: Throwable) {
+                    // unused atm
+                }
 
                 override fun onComplete() {
                     dispose()

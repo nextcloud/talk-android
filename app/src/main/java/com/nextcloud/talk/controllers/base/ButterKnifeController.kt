@@ -46,7 +46,9 @@ abstract class ButterKnifeController : Controller {
         return view
     }
 
-    protected open fun onViewBound(view: View) {}
+    protected open fun onViewBound(view: View) {
+        // unused atm
+    }
 
     override fun onDestroyView(view: View) {
         super.onDestroyView(view)

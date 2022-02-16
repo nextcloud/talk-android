@@ -148,23 +148,12 @@ public class Conversation {
         return (canModerate(conversationUser) && !ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL.equals(type));
     }
 
-    public boolean canLeave(UserEntity conversationUser) {
-        if (canLeaveConversation != null) {
-            // Available since APIv2
-            return canLeaveConversation;
-        }
-        // Fallback for APIv1
-        return !canModerate(conversationUser) ||
-                (getType() != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL && this.participants.size() > 1);
+    public boolean canLeave() {
+        return canLeaveConversation;
     }
 
-    public boolean canDelete(UserEntity conversationUser) {
-        if (canDeleteConversation != null) {
-            // Available since APIv2
-            return canDeleteConversation;
-        }
-        // Fallback for APIv1
-        return canModerate(conversationUser);
+    public boolean canDelete() {
+        return canDeleteConversation;
     }
 
     public String getRoomId() {

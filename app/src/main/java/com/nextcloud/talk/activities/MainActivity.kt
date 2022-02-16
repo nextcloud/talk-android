@@ -246,7 +246,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
-                override fun onSubscribe(d: Disposable) {}
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(KEY_USER_ENTITY, currentUser)
@@ -265,7 +267,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(object : Observer<RoomOverall> {
-                            override fun onSubscribe(d: Disposable) {}
+                            override fun onSubscribe(d: Disposable) {
+                                // unused atm
+                            }
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     KEY_ACTIVE_CONVERSATION,
@@ -277,13 +281,21 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                 )
                             }
 
-                            override fun onError(e: Throwable) {}
-                            override fun onComplete() {}
+                            override fun onError(e: Throwable) {
+                                // unused atm
+                            }
+                            override fun onComplete() {
+                                // unused atm
+                            }
                         })
                 }
 
-                override fun onError(e: Throwable) {}
-                override fun onComplete() {}
+                override fun onError(e: Throwable) {
+                    // unused atm
+                }
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 

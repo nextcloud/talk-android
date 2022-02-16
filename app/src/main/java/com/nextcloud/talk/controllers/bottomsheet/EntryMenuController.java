@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,6 +21,14 @@
  */
 
 package com.nextcloud.talk.controllers.bottomsheet;
+
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_JOIN_ROOM;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_INVITE_USERS;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SET_PASSWORD;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SHARE_LINK;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -41,7 +51,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.utils.EmojiTextInputEditText;
 import com.nextcloud.talk.utils.ShareUtils;
@@ -86,7 +95,7 @@ public class EntryMenuController extends BaseController {
     @Inject
     UserUtils userUtils;
 
-    private int operationCode;
+    private ConversationOperationEnum operation;
     private Conversation conversation;
     private Intent shareIntent;
     private String packageName;
@@ -101,7 +110,7 @@ public class EntryMenuController extends BaseController {
         super(args);
         originalBundle = args;
 
-        this.operationCode = args.getInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
+        this.operation = (ConversationOperationEnum) args.getSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
         if (args.containsKey(BundleKeys.INSTANCE.getKEY_ROOM())) {
             this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
         }
@@ -143,13 +152,12 @@ public class EntryMenuController extends BaseController {
     @OnClick(R.id.ok_button)
     public void onProceedButtonClick() {
         Bundle bundle;
-        if (operationCode == 99) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+        if (operation == OPS_CODE_JOIN_ROOM) {
             bundle = new Bundle();
             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
             bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
             bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), editText.getText().toString());
-            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operationCode);
+            bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operation);
             if (originalBundle.containsKey(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES())) {
                 bundle.putParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES(), originalBundle.getParcelable(BundleKeys.INSTANCE.getKEY_SERVER_CAPABILITIES()));
             }
@@ -157,20 +165,19 @@ public class EntryMenuController extends BaseController {
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
-        } else if (operationCode != 7 && operationCode != 10 && operationCode != 11) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+        } else if (operation != OPS_CODE_SHARE_LINK && operation != OPS_CODE_GET_AND_JOIN_ROOM && operation != OPS_CODE_INVITE_USERS) {
             bundle = new Bundle();
-            if (operationCode == 4 || operationCode == 6) {
+            if (operation == OPS_CODE_CHANGE_PASSWORD || operation == OPS_CODE_SET_PASSWORD) {
                 conversation.setPassword(editText.getText().toString());
             } else {
                 conversation.setName(editText.getText().toString());
             }
             bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
-            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operationCode);
+            bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operation);
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
-        } else if (operationCode == 7) {
+        } else if (operation == OPS_CODE_SHARE_LINK) {
             if (getActivity() != null) {
                 shareIntent.putExtra(Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(getActivity(),
                         editText.getText().toString(), userUtils, conversation));
@@ -178,19 +185,16 @@ public class EntryMenuController extends BaseController {
                 intent.setComponent(new ComponentName(packageName, name));
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getActivity().startActivity(intent);
-                eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
             }
-        } else if (operationCode != 11) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+        } else if (operation != OPS_CODE_INVITE_USERS) {
             bundle = new Bundle();
-            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operationCode);
+            bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), operation);
             bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), editText.getText().toString());
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(bundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
                     .popChangeHandler(new HorizontalChangeHandler()));
 
-        } else if (operationCode == 11) {
-            eventBus.post(new BottomSheetLockEvent(false, 0, false, false));
+        } else if (operation == OPS_CODE_INVITE_USERS) {
             originalBundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), editText.getText().toString());
             getRouter().pushController(RouterTransaction.with(new OperationsMenuController(originalBundle))
                     .pushChangeHandler(new HorizontalChangeHandler())
@@ -204,7 +208,7 @@ public class EntryMenuController extends BaseController {
         super.onViewBound(view);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        if (conversation != null && operationCode == 2) {
+        if (conversation != null && operation == OPS_CODE_RENAME_ROOM) {
             editText.setText(conversation.getName());
         }
 
@@ -230,7 +234,7 @@ public class EntryMenuController extends BaseController {
             @Override
             public void afterTextChanged(Editable s) {
                 if (!TextUtils.isEmpty(s)) {
-                    if (operationCode == 2) {
+                    if (operation == OPS_CODE_RENAME_ROOM) {
                         if (conversation.getName() == null || !conversation.getName().equals(s.toString())) {
                             if (!proceedButton.isEnabled()) {
                                 proceedButton.setEnabled(true);
@@ -244,7 +248,7 @@ public class EntryMenuController extends BaseController {
                             }
                             textInputLayout.setError(getResources().getString(R.string.nc_call_name_is_same));
                         }
-                    } else if (operationCode != 10) {
+                    } else if (operation != OPS_CODE_GET_AND_JOIN_ROOM) {
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
@@ -253,7 +257,6 @@ public class EntryMenuController extends BaseController {
                     } else if ((editText.getText().toString().startsWith("http://") ||
                             editText.getText().toString().startsWith("https://")) &&
                                     editText.getText().toString().contains("/call/")) {
-                        // operation code 10
                         if (!proceedButton.isEnabled()) {
                             proceedButton.setEnabled(true);
                             proceedButton.setAlpha(1.0f);
@@ -277,9 +280,9 @@ public class EntryMenuController extends BaseController {
         });
 
         String labelText = "";
-        switch (operationCode) {
-            case 11:
-            case 2:
+        switch (operation) {
+            case OPS_CODE_INVITE_USERS:
+            case OPS_CODE_RENAME_ROOM:
                 labelText = getResources().getString(R.string.nc_call_name);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 smileyButton.setVisibility(View.VISIBLE);
@@ -307,18 +310,18 @@ public class EntryMenuController extends BaseController {
                 }).build(editText);
 
                 break;
-            case 4:
+            case OPS_CODE_CHANGE_PASSWORD:
                 labelText = getResources().getString(R.string.nc_new_password);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
-            case 6:
-            case 7:
-            case 99:
+            case OPS_CODE_SET_PASSWORD:
+            case OPS_CODE_SHARE_LINK:
+            case OPS_CODE_JOIN_ROOM:
                 // 99 is joining a conversation via password
                 labelText = getResources().getString(R.string.nc_password);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 break;
-            case 10:
+            case OPS_CODE_GET_AND_JOIN_ROOM:
                 labelText = getResources().getString(R.string.nc_conversation_link);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
                 break;
@@ -326,7 +329,10 @@ public class EntryMenuController extends BaseController {
                 break;
         }
 
-        if (operationCode == 99 || operationCode == 4 || operationCode == 6 || operationCode == 7) {
+        if (operation == OPS_CODE_JOIN_ROOM
+            || operation == OPS_CODE_CHANGE_PASSWORD
+            || operation == OPS_CODE_SET_PASSWORD
+            || operation == OPS_CODE_SHARE_LINK) {
             textInputLayout.setEndIconMode(TextInputLayout.END_ICON_PASSWORD_TOGGLE);
         } else {
             textInputLayout.setEndIconMode(TextInputLayout.END_ICON_NONE);
@@ -334,5 +340,10 @@ public class EntryMenuController extends BaseController {
 
         textInputLayout.setHint(labelText);
         textInputLayout.requestFocus();
+    }
+
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.SEARCH_BAR;
     }
 }

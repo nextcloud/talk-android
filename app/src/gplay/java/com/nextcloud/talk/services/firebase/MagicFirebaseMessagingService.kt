@@ -304,7 +304,9 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }
 
-                override fun onError(e: Throwable) {}
+                override fun onError(e: Throwable) {
+                    // unused atm
+                }
                 override fun onComplete() {
                     stopForeground(true)
                     handler.removeCallbacksAndMessages(null)

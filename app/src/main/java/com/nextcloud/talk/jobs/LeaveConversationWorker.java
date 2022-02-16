@@ -21,6 +21,8 @@
 package com.nextcloud.talk.jobs;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -47,6 +49,8 @@ import java.net.CookieManager;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class LeaveConversationWorker extends Worker {
+
+    private static String TAG = "LeaveConversationWorker";
 
     @Inject
     Retrofit retrofit;
@@ -106,7 +110,7 @@ public class LeaveConversationWorker extends Worker {
 
                         @Override
                         public void onError(Throwable e) {
-
+                            Log.e(TAG, "failed to remove self from room", e);
                         }
 
                         @Override

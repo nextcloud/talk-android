@@ -20,6 +20,9 @@
 
 package com.nextcloud.talk.controllers.bottomsheet;
 
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_JOIN_ROOM;
+import static com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,7 +36,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bluelinelabs.conductor.RouterTransaction;
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler;
@@ -42,7 +44,8 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
+import com.nextcloud.talk.events.OpenConversationEvent;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -53,7 +56,6 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.NoSupportedApiException;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
@@ -75,7 +77,6 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import retrofit2.HttpException;
 import retrofit2.Response;
 
@@ -108,7 +109,7 @@ public class OperationsMenuController extends BaseController {
     @Inject
     EventBus eventBus;
 
-    private int operationCode;
+    private ConversationOperationEnum operation;
     private Conversation conversation;
 
     private UserEntity currentUser;
@@ -130,7 +131,7 @@ public class OperationsMenuController extends BaseController {
 
     public OperationsMenuController(Bundle args) {
         super(args);
-        this.operationCode = args.getInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
+        this.operation = (ConversationOperationEnum) args.getSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE());
         if (args.containsKey(BundleKeys.INSTANCE.getKEY_ROOM())) {
             this.conversation = Parcels.unwrap(args.getParcelable(BundleKeys.INSTANCE.getKEY_ROOM()));
         }
@@ -283,8 +284,8 @@ public class OperationsMenuController extends BaseController {
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[] {ApiUtils.APIv4, ApiUtils.APIv1});
         int chatApiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {ApiUtils.APIv1});
 
-        switch (operationCode) {
-            case 2:
+        switch (operation) {
+            case OPS_CODE_RENAME_ROOM:
                 ncApi.renameRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, currentUser.getBaseUrl(),
                                                                      conversation.getToken()),
                         conversation.getName())
@@ -293,7 +294,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 3:
+            case OPS_CODE_MAKE_PUBLIC:
                 ncApi.makeRoomPublic(credentials, ApiUtils.getUrlForRoomPublic(apiVersion, currentUser.getBaseUrl(),
                                                                                conversation.getToken()))
                         .subscribeOn(Schedulers.io())
@@ -301,9 +302,9 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 4:
-            case 5:
-            case 6:
+            case OPS_CODE_CHANGE_PASSWORD:
+            case OPS_CODE_CLEAR_PASSWORD:
+            case OPS_CODE_SET_PASSWORD:
                 String pass = "";
                 if (conversation.getPassword() != null) {
                     pass = conversation.getPassword();
@@ -315,10 +316,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 7:
-                // Operation 7 is sharing, so we handle this differently
-                break;
-            case 8:
+            case OPS_CODE_MAKE_PRIVATE:
                 ncApi.makeRoomPrivate(credentials, ApiUtils.getUrlForRoomPublic(apiVersion,
                                                                                 currentUser.getBaseUrl(),
                                                                                 conversation.getToken()))
@@ -327,7 +325,7 @@ public class OperationsMenuController extends BaseController {
                         .retry(1)
                         .subscribe(genericOperationsObserver);
                 break;
-            case 10:
+            case OPS_CODE_GET_AND_JOIN_ROOM:
                 ncApi.getRoom(credentials, ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken))
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -342,8 +340,7 @@ public class OperationsMenuController extends BaseController {
                             public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
                                 conversation = roomOverall.getOcs().getData();
                                 if (conversation.isHasPassword() && conversation.isGuest()) {
-                                    eventBus.post(new BottomSheetLockEvent(true, 0,
-                                                                           true, false));
+                                    eventBus.post(new ConversationsListFetchDataEvent());
                                     Bundle bundle = new Bundle();
                                     bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
                                     bundle.putString(BundleKeys.INSTANCE.getKEY_CALL_URL(), callUrl);
@@ -355,7 +352,7 @@ public class OperationsMenuController extends BaseController {
                                         Log.e(TAG, "Failed to parse capabilities for guest");
                                         showResultImage(false, false);
                                     }
-                                    bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
+                                    bundle.putSerializable(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), OPS_CODE_JOIN_ROOM);
                                     getRouter().pushController(RouterTransaction.with(new EntryMenuController(bundle))
                                                                        .pushChangeHandler(new HorizontalChangeHandler())
                                                                        .popChangeHandler(new HorizontalChangeHandler()));
@@ -407,7 +404,7 @@ public class OperationsMenuController extends BaseController {
                             }
                         });
                 break;
-            case 11:
+            case OPS_CODE_INVITE_USERS:
                 RetrofitBucket retrofitBucket;
                 String invite = null;
 
@@ -483,7 +480,7 @@ public class OperationsMenuController extends BaseController {
                         });
 
                 break;
-            case 96:
+            case OPS_CODE_MARK_AS_READ:
                 ncApi.setChatReadMarker(credentials,
                                         ApiUtils.getUrlForSetChatReadMarker(chatApiVersion,
                                                                             currentUser.getBaseUrl(),
@@ -494,9 +491,9 @@ public class OperationsMenuController extends BaseController {
                     .retry(1)
                     .subscribe(genericOperationsObserver);
                 break;
-            case 97:
-            case 98:
-                if (operationCode == 97) {
+            case OPS_CODE_REMOVE_FAVORITE:
+            case OPS_CODE_ADD_FAVORITE:
+                if (operation == OPS_CODE_REMOVE_FAVORITE) {
                     ncApi.removeConversationFromFavorites(credentials,
                                                           ApiUtils.getUrlForRoomFavorite(apiVersion,
                                                                                          currentUser.getBaseUrl(),
@@ -516,7 +513,7 @@ public class OperationsMenuController extends BaseController {
                             .subscribe(genericOperationsObserver);
                 }
                 break;
-            case 99:
+            case OPS_CODE_JOIN_ROOM:
                 ncApi.joinRoom(credentials, ApiUtils.getUrlForParticipantsActive(apiVersion,
                                                                                  baseUrl,
                                                                                  conversationToken),
@@ -557,10 +554,8 @@ public class OperationsMenuController extends BaseController {
             } else {
                 resultsTextView.setText(R.string.nc_failed_signaling_settings);
                 webButton.setOnClickListener(v -> {
-                    eventBus.post(new BottomSheetLockEvent(true, 0, false, true));
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(callUrl));
                     startActivity(browserIntent);
-                    new BottomSheetLockEvent(true, 0, false, true);
                 });
                 webButton.setVisibility(View.VISIBLE);
             }
@@ -568,12 +563,11 @@ public class OperationsMenuController extends BaseController {
 
         resultsTextView.setVisibility(View.VISIBLE);
         if (everythingOK) {
-            eventBus.post(new BottomSheetLockEvent(true, 2500, true, true));
+            eventBus.post(new ConversationsListFetchDataEvent());
         } else {
             resultImageView.setImageDrawable(DisplayUtils.getTintedDrawable(getResources(), R.drawable
                     .ic_cancel_black_24dp, R.color.nc_darkRed));
-            okButton.setOnClickListener(v -> eventBus.post(new BottomSheetLockEvent(true, 0, operationCode != 99
-                    && operationCode != 10, true)));
+            okButton.setOnClickListener(v -> eventBus.post(new ConversationsListFetchDataEvent()));
             okButton.setVisibility(View.VISIBLE);
         }
     }
@@ -724,8 +718,7 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void initiateConversation(boolean dismissView) {
-        eventBus.post(new BottomSheetLockEvent(true, 0,
-                                               true, true, dismissView));
+        eventBus.post(new ConversationsListFetchDataEvent());
 
         Bundle bundle = new Bundle();
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), conversation.getToken());
@@ -735,20 +728,15 @@ public class OperationsMenuController extends BaseController {
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(conversation));
         bundle.putString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), callPassword);
 
-        if (getParentController() != null) {
-            ConductorRemapping.INSTANCE.remapChatController(getParentController().getRouter(), currentUser.getId(),
-                                                            conversation.getToken(), bundle, true);
-        }
+        eventBus.post(new OpenConversationEvent(conversation, bundle));
     }
 
     private void handleObserverError(@io.reactivex.annotations.NonNull Throwable e) {
-        if (operationCode != 99 || !(e instanceof HttpException)) {
+        if (operation != OPS_CODE_JOIN_ROOM || !(e instanceof HttpException)) {
             showResultImage(false, false);
         } else {
             Response<?> response = ((HttpException) e).response();
             if (response != null && response.code() == 403) {
-                eventBus.post(new BottomSheetLockEvent(true, 0, false,
-                                                       false));
                 ApplicationWideMessageHolder.getInstance().setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG);
                 getRouter().popCurrentController();
             } else {
@@ -767,7 +755,7 @@ public class OperationsMenuController extends BaseController {
 
         @Override
         public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-            if (operationCode != 99) {
+            if (operation != OPS_CODE_JOIN_ROOM) {
                 showResultImage(true, false);
             } else {
                 throw new IllegalArgumentException("Unsupported operation code observed!");
@@ -795,7 +783,7 @@ public class OperationsMenuController extends BaseController {
         @Override
         public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
             conversation = roomOverall.getOcs().getData();
-            if (operationCode != 99) {
+            if (operation != OPS_CODE_JOIN_ROOM) {
                 showResultImage(true, false);
             } else {
                 conversation = roomOverall.getOcs().getData();
@@ -812,5 +800,10 @@ public class OperationsMenuController extends BaseController {
         public void onComplete() {
             dispose();
         }
+    }
+
+    @Override
+    public AppBarLayoutType getAppBarLayoutType() {
+        return AppBarLayoutType.SEARCH_BAR;
     }
 }

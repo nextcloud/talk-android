@@ -165,8 +165,6 @@
     <string name="nc_profile_personal_info_title">Personal Info</string>
 
     <!-- Conversation menu -->
-    <string name="nc_start_conversation">Start a conversation</string>
-    <string name="nc_configure_room">Configure conversation</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
@@ -176,7 +174,6 @@
     <string name="nc_change_password">Change password</string>
     <string name="nc_clear_password">Clear password</string>
     <string name="nc_share_link">Share link</string>
-    <string name="nc_share_link_via">Share link via</string>
     <string name="nc_make_call_public">Make conversation public</string>
     <string name="nc_make_call_private">Make conversation private</string>
     <string name="nc_delete_call">Delete conversation</string>

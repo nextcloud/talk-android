@@ -3,8 +3,10 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2020 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -62,7 +64,7 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.kennyc.bottomsheet.BottomSheet;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.ConversationItem;
@@ -70,11 +72,10 @@ import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.controllers.bottomsheet.CallMenuController;
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum;
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
-import com.nextcloud.talk.events.BottomSheetLockEvent;
+import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.EventStatus;
-import com.nextcloud.talk.events.MoreMenuClickEvent;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
 import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
@@ -85,11 +86,11 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
+import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.KeyboardUtils;
 import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -186,7 +187,6 @@ public class ConversationsListController extends BaseController implements Searc
     private List<AbstractFlexibleItem> conversationItemsWithHeader = new ArrayList<>();
     private final List<AbstractFlexibleItem> searchableConversationItems = new ArrayList<>();
 
-    private BottomSheet bottomSheet;
     private MenuItem searchItem;
     private SearchView searchView;
     private String searchQuery;
@@ -217,6 +217,8 @@ public class ConversationsListController extends BaseController implements Searc
     private SmoothScrollLinearLayoutManager layoutManager;
 
     private HashMap<String, GenericTextHeaderItem> callHeaderItems = new HashMap<>();
+
+    private ConversationsListBottomDialog conversationsListBottomDialog;
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -310,7 +312,7 @@ public class ConversationsListController extends BaseController implements Searc
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
             }
-            fetchData(false);
+            fetchData();
         }
     }
 
@@ -453,6 +455,7 @@ public class ConversationsListController extends BaseController implements Searc
         return false;
     }
 
+    @Override
     protected void showSearchOrToolbar() {
         if (TextUtils.isEmpty(searchQuery)) {
             super.showSearchOrToolbar();
@@ -469,7 +472,7 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     @SuppressLint("LongLogTag")
-    private void fetchData(boolean fromBottomSheet) {
+    public void fetchData() {
         dispose(null);
 
         isRefreshing = true;
@@ -563,15 +566,6 @@ public class ConversationsListController extends BaseController implements Searc
                     dispose(roomsQueryDisposable);
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    if (fromBottomSheet) {
-                        new Handler().postDelayed(() -> {
-                            bottomSheet.setCancelable(true);
-                            if (bottomSheet.isShowing()) {
-                                bottomSheet.cancel();
-                            }
-                        }, 2500);
                     }
 
                     isRefreshing = false;
@@ -678,7 +672,7 @@ public class ConversationsListController extends BaseController implements Searc
             return false;
         });
 
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(false));
+        swipeRefreshLayout.setOnRefreshListener(() -> fetchData());
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
 
@@ -811,60 +805,6 @@ public class ConversationsListController extends BaseController implements Searc
         return onQueryTextChange(query);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(BottomSheetLockEvent bottomSheetLockEvent) {
-        if (bottomSheet != null) {
-            if (!bottomSheetLockEvent.isCancelable()) {
-                bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-            } else {
-                if (bottomSheetLockEvent.getDelay() != 0 && bottomSheetLockEvent.isShouldRefreshData()) {
-                    fetchData(true);
-                } else {
-                    bottomSheet.setCancelable(bottomSheetLockEvent.isCancelable());
-                    if (bottomSheet.isShowing() && bottomSheetLockEvent.isCancel()) {
-                        bottomSheet.cancel();
-                    }
-                }
-            }
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent(MoreMenuClickEvent moreMenuClickEvent) {
-        Bundle bundle = new Bundle();
-        Conversation conversation = moreMenuClickEvent.getConversation();
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ROOM(), Parcels.wrap(conversation));
-        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_MENU_TYPE(), Parcels.wrap(CallMenuController.MenuType.REGULAR));
-
-        prepareAndShowBottomSheetWithBundle(bundle, true);
-    }
-
-    private void prepareAndShowBottomSheetWithBundle(Bundle bundle, boolean shouldShowCallMenuController) {
-        if (view == null) {
-            view = getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet, null, false);
-        }
-
-        if (shouldShowCallMenuController) {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new CallMenuController(bundle, this))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
-        } else {
-            getChildRouter((ViewGroup) view).setRoot(
-                    RouterTransaction.with(new EntryMenuController(bundle))
-                            .popChangeHandler(new VerticalChangeHandler())
-                            .pushChangeHandler(new VerticalChangeHandler()));
-        }
-
-        if (bottomSheet == null) {
-            bottomSheet = new BottomSheet.Builder(getActivity()).setView(view).create();
-        }
-
-        bottomSheet.setOnShowListener(dialog -> new KeyboardUtils(getActivity(), bottomSheet.getLayout(), true));
-        bottomSheet.setOnDismissListener(dialog -> showSearchOrToolbar());
-        bottomSheet.show();
-    }
-
     @Override
     protected String getTitle() {
         return getResources().getString(R.string.nc_app_product_name);
@@ -950,8 +890,12 @@ public class ConversationsListController extends BaseController implements Searc
             Object clickedItem = adapter.getItem(position);
             if (clickedItem != null) {
                 Conversation conversation = ((ConversationItem) clickedItem).getModel();
-                MoreMenuClickEvent moreMenuClickEvent = new MoreMenuClickEvent(conversation);
-                onMessageEvent(moreMenuClickEvent);
+                conversationsListBottomDialog = new ConversationsListBottomDialog(
+                    getActivity(),
+                    this,
+                    userUtils.getCurrentUser(),
+                    conversation);
+                conversationsListBottomDialog.show();
             }
         }
     }
@@ -1055,22 +999,13 @@ public class ConversationsListController extends BaseController implements Searc
     private void openConversation(String textToPaste) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(BundleKeys.INSTANCE.getKEY_USER_ENTITY(), currentUser);
+        bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(selectedConversation));
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
 
-        if (selectedConversation.hasPassword && selectedConversation.participantType ==
-                Participant.ParticipantType.GUEST ||
-                selectedConversation.participantType == Participant.ParticipantType.USER_FOLLOWING_LINK) {
-            bundle.putInt(BundleKeys.INSTANCE.getKEY_OPERATION_CODE(), 99);
-            prepareAndShowBottomSheetWithBundle(bundle, false);
-        } else {
-            currentUser = userUtils.getCurrentUser();
-
-            bundle.putParcelable(BundleKeys.INSTANCE.getKEY_ACTIVE_CONVERSATION(), Parcels.wrap(selectedConversation));
-            ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
-                                                            selectedConversation.getToken(), bundle, false);
-        }
+        ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
+                                                        selectedConversation.getToken(), bundle, false);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.BACKGROUND)
@@ -1079,13 +1014,24 @@ public class ConversationsListController extends BaseController implements Searc
             switch (eventStatus.getEventType()) {
                 case CONVERSATION_UPDATE:
                     if (eventStatus.isAllGood() && !isRefreshing) {
-                        fetchData(false);
+                        fetchData();
                     }
                     break;
                 default:
                     break;
             }
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(ConversationsListFetchDataEvent conversationsListFetchDataEvent) {
+        fetchData();
+
+        new Handler().postDelayed(() -> {
+            if (conversationsListBottomDialog.isShowing()) {
+                conversationsListBottomDialog.dismiss();
+            }
+        }, 2500);
     }
 
     private void showDeleteConversationDialog(Bundle savedInstanceState) {
@@ -1240,7 +1186,6 @@ public class ConversationsListController extends BaseController implements Searc
             default:
                 break;
         }
-
     }
 
     @Override
