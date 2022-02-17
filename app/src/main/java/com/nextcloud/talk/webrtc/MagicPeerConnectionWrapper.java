@@ -57,6 +57,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -98,7 +99,7 @@ public class MagicPeerConnectionWrapper {
                                       String sessionId, String localSession, @Nullable MediaStream localStream,
                                       boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
         this.localStream = localStream;
         this.videoStreamType = videoStreamType;
@@ -231,7 +232,7 @@ public class MagicPeerConnectionWrapper {
         if (!TextUtils.isEmpty(nick)) {
             return nick;
         } else {
-            return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
+            return Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getString(R.string.nc_nick_guest);
         }
     }
 
