@@ -64,6 +64,9 @@ import javax.inject.Inject;
 import androidx.annotation.Nullable;
 import autodagger.AutoInjector;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPeerConnectionWrapper {
 
@@ -77,9 +80,6 @@ public class MagicPeerConnectionWrapper {
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
     private MediaStream remoteStream;
-
-    private boolean remoteVideoOn;
-    private boolean remoteAudioOn;
 
     private final boolean hasInitiated;
 
@@ -303,23 +303,18 @@ public class MagicPeerConnectionWrapper {
                                     .NICK_CHANGE, sessionId, payloadHashMap.get("name"), null, videoStreamType));
                         }
                     }
-
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
-                    remoteAudioOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn, videoStreamType));
+                            .AUDIO_CHANGE, sessionId, null, TRUE, videoStreamType));
                 } else if ("audioOff".equals(dataChannelMessage.getType())) {
-                    remoteAudioOn = false;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn, videoStreamType));
+                            .AUDIO_CHANGE, sessionId, null, FALSE, videoStreamType));
                 } else if ("videoOn".equals(dataChannelMessage.getType())) {
-                    remoteVideoOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn, videoStreamType));
+                            .VIDEO_CHANGE, sessionId, null, TRUE, videoStreamType));
                 } else if ("videoOff".equals(dataChannelMessage.getType())) {
-                    remoteVideoOn = false;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn, videoStreamType));
+                            .VIDEO_CHANGE, sessionId, null, FALSE, videoStreamType));
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
