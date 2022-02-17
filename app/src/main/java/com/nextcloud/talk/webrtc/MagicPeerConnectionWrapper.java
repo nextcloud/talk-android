@@ -76,7 +76,7 @@ public class MagicPeerConnectionWrapper {
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
-    private MediaStream remoteMediaStream;
+    private MediaStream remoteStream;
 
     private boolean remoteVideoOn;
     private boolean remoteAudioOn;
@@ -340,7 +340,7 @@ public class MagicPeerConnectionWrapper {
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
 
                 if (!isMCUPublisher) {
-                    EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId, videoStreamType));
+                    EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
                 }
 
                 if (hasInitiated) {
@@ -384,7 +384,7 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            remoteMediaStream = mediaStream;
+            remoteStream = mediaStream;
         }
 
         @Override
