@@ -41,6 +41,7 @@ import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
+import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
@@ -478,4 +479,8 @@ public interface NcApi {
     Observable<GenericOverall> setStatusType(@Header("Authorization") String authorization,
                                                       @Url String url,
                                                       @Field("statusType") String statusType);
+
+    @GET
+    Observable<StatusesOverall> getUserStatuses(@Header("Authorization") String authorization, @Url String url);
+
 }

@@ -440,4 +440,8 @@ public class ApiUtils {
     public static String getUrlForSetCustomStatus(String baseUrl) {
         return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/user_status/message/custom";
     }
+
+    public static String getUrlForUserStatuses(String baseUrl) {
+        return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/statuses";
+    }
 }

@@ -56,6 +56,24 @@
             app:tint="@color/favorite_icon_tint"
             app:tintMode="src_in" />
 
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/userStatusEmoji"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:background="@color/transparent"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/default_emoji"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/userStatusOnlineState"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="@null"
+            android:src="@drawable/online_status"/>
     </FrameLayout>
 
     <RelativeLayout
