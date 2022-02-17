@@ -74,7 +74,7 @@ public class MagicPeerConnectionWrapper {
     private String sessionId;
     private String nick;
     private final MediaConstraints mediaConstraints;
-    private DataChannel magicDataChannel;
+    private DataChannel dataChannel;
     private final MagicSdpObserver magicSdpObserver;
     private MediaStream remoteMediaStream;
 
@@ -126,8 +126,8 @@ public class MagicPeerConnectionWrapper {
             if (hasMCU || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
-                magicDataChannel = peerConnection.createDataChannel("status", init);
-                magicDataChannel.registerObserver(new MagicDataChannelObserver());
+                dataChannel = peerConnection.createDataChannel("status", init);
+                dataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
                     peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 } else if (hasMCU && this.videoStreamType.equals("video")) {
@@ -148,9 +148,9 @@ public class MagicPeerConnectionWrapper {
     }
 
     public void removePeerConnection() {
-        if (magicDataChannel != null) {
-            magicDataChannel.dispose();
-            magicDataChannel = null;
+        if (dataChannel != null) {
+            dataChannel.dispose();
+            dataChannel = null;
             Log.d(TAG, "Disposed DataChannel");
         } else {
             Log.d(TAG, "DataChannel is null.");
@@ -190,10 +190,10 @@ public class MagicPeerConnectionWrapper {
 
     public void sendNickChannelData(DataChannelMessageNick dataChannelMessage) {
         ByteBuffer buffer;
-        if (magicDataChannel != null) {
+        if (dataChannel != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+                dataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
@@ -202,10 +202,10 @@ public class MagicPeerConnectionWrapper {
 
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
-        if (magicDataChannel != null) {
+        if (dataChannel != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+                dataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
@@ -265,8 +265,8 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (magicDataChannel != null && magicDataChannel.state().equals(DataChannel.State.OPEN) &&
-                    magicDataChannel.label().equals("status")) {
+            if (dataChannel != null && dataChannel.state().equals(DataChannel.State.OPEN) &&
+                    dataChannel.label().equals("status")) {
                 sendInitialMediaStatus();
             }
         }
@@ -397,8 +397,8 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onDataChannel(DataChannel dataChannel) {
             if (dataChannel.label().equals("status") || dataChannel.label().equals("JanusDataChannel")) {
-                magicDataChannel = dataChannel;
-                magicDataChannel.registerObserver(new MagicDataChannelObserver());
+                MagicPeerConnectionWrapper.this.dataChannel = dataChannel;
+                MagicPeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
             }
         }
 
