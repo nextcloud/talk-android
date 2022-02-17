@@ -207,7 +207,7 @@ public class ProfileController extends BaseController {
                 item.setTitle(R.string.edit);
                 getActivity().findViewById(R.id.avatar_buttons).setVisibility(View.INVISIBLE);
 
-                if (adapter.filteredDisplayList.size() == 0) {
+                if (adapter.filteredDisplayList.isEmpty()) {
                     getActivity().findViewById(R.id.emptyList).setVisibility(View.VISIBLE);
                     getActivity().findViewById(R.id.userinfo_list).setVisibility(View.GONE);
                 }
