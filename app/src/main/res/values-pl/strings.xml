@@ -50,7 +50,7 @@
     <string name="nc_call_state_in_call">%1$s w trakcie połączenia</string>
     <string name="nc_call_state_with_phone">%1$s z telefonem</string>
     <string name="nc_call_state_with_video">%1$s z wideo</string>
-    <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, stuknij aby spróbować ponownie</string>
+    <string name="nc_call_timeout">Brak odpowiedzi przez 45 sekund, dotknij, aby spróbować ponownie</string>
     <string name="nc_call_unknown">%s połączenie</string>
     <string name="nc_call_video">%s połączenie wideo</string>
     <string name="nc_call_voice">%s połączenie głosowe</string>
