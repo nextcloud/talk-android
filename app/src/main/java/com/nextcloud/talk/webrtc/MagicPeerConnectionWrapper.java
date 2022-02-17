@@ -66,26 +66,27 @@ import autodagger.AutoInjector;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MagicPeerConnectionWrapper {
+
     private static final String TAG = MagicPeerConnectionWrapper.class.getCanonicalName();
 
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
     private String nick;
-    private MediaConstraints sdpConstraints;
+    private final MediaConstraints sdpConstraints;
     private DataChannel magicDataChannel;
-    private MagicSdpObserver magicSdpObserver;
+    private final MagicSdpObserver magicSdpObserver;
     private MediaStream remoteMediaStream;
 
     private boolean remoteVideoOn;
     private boolean remoteAudioOn;
 
-    private boolean hasInitiated;
+    private final boolean hasInitiated;
 
-    private MediaStream localStream;
-    private boolean isMCUPublisher;
+    private final MediaStream localStream;
+    private final boolean isMCUPublisher;
     private boolean hasMCU;
-    private String videoStreamType;
+    private final String videoStreamType;
 
     private int connectionAttempts = 0;
     private PeerConnection.IceConnectionState peerIceConnectionState;
