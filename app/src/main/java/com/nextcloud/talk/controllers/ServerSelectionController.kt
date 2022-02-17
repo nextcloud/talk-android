@@ -110,8 +110,10 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
         ) {
             binding.helperTextView.visibility = View.INVISIBLE
         } else {
-            if ((TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
-                    findAccounts(userUtils.users as List<UserEntity>).isEmpty()) &&
+            if (
+                (TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
+                    findAccounts(userUtils.users as List<UserEntity>).isEmpty()
+                    ) &&
                 userUtils.users.size == 0
             ) {
                 binding.helperTextView.setText(R.string.nc_get_from_provider)
@@ -126,28 +128,21 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
                 }
             } else if (findAccounts(userUtils.users as List<UserEntity>).size > 0) {
                 if (!TextUtils.isEmpty(
-                        getAppNameBasedOnPackage(
-                            resources!!
-                                .getString(R.string.nc_import_accounts_from)
-                        )
+                        getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
                     )
                 ) {
                     if (findAccounts(userUtils.users as List<UserEntity>).size > 1) {
                         binding.helperTextView.setText(
                             String.format(
-                                resources!!.getString(R.string.nc_server_import_accounts), getAppNameBasedOnPackage(
-                                    resources!!
-                                        .getString(R.string.nc_import_accounts_from)
-                                )
+                                resources!!.getString(R.string.nc_server_import_accounts),
+                                getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
                             )
                         )
                     } else {
                         binding.helperTextView.setText(
                             String.format(
-                                resources!!.getString(R.string.nc_server_import_account), getAppNameBasedOnPackage(
-                                    resources!!
-                                        .getString(R.string.nc_import_accounts_from)
-                                )
+                                resources!!.getString(R.string.nc_server_import_account),
+                                getAppNameBasedOnPackage(resources!!.getString(R.string.nc_import_accounts_from))
                             )
                         )
                     }
