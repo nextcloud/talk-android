@@ -73,7 +73,7 @@ public class MagicPeerConnectionWrapper {
     private PeerConnection peerConnection;
     private String sessionId;
     private String nick;
-    private final MediaConstraints sdpConstraints;
+    private final MediaConstraints mediaConstraints;
     private DataChannel magicDataChannel;
     private final MagicSdpObserver magicSdpObserver;
     private MediaStream remoteMediaStream;
@@ -92,7 +92,7 @@ public class MagicPeerConnectionWrapper {
 
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
-                                      MediaConstraints sdpConstraints,
+                                      MediaConstraints mediaConstraints,
                                       String sessionId, String localSession, @Nullable MediaStream localStream,
                                       boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
@@ -102,7 +102,7 @@ public class MagicPeerConnectionWrapper {
         this.videoStreamType = videoStreamType;
 
         this.sessionId = sessionId;
-        this.sdpConstraints = sdpConstraints;
+        this.mediaConstraints = mediaConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
@@ -129,7 +129,7 @@ public class MagicPeerConnectionWrapper {
                 magicDataChannel = peerConnection.createDataChannel("status", init);
                 magicDataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
-                    peerConnection.createOffer(magicSdpObserver, sdpConstraints);
+                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 } else if (hasMCU && this.videoStreamType.equals("video")) {
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be requested only for videos.
@@ -137,7 +137,7 @@ public class MagicPeerConnectionWrapper {
                     hashMap.put("sessionId", sessionId);
                     EventBus.getDefault().post(new WebSocketCommunicationEvent("peerReadyForRequestingOffer", hashMap));
                 } else if (!hasMCU && hasInitiated) {
-                    peerConnection.createOffer(magicSdpObserver, sdpConstraints);
+                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 }
             }
         }
@@ -449,7 +449,7 @@ public class MagicPeerConnectionWrapper {
         public void onSetSuccess() {
             if (peerConnection != null) {
                 if (peerConnection.getLocalDescription() == null) {
-                    peerConnection.createAnswer(magicSdpObserver, sdpConstraints);
+                    peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
                 }
 
                 if (peerConnection.getRemoteDescription() != null) {
