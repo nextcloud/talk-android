@@ -159,7 +159,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         binding.setStatus.setOnClickListener(v -> {
             dismiss();
 
-            if(status != null) {
+            if (status != null) {
                 SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
                 setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
             } else {
@@ -210,7 +210,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 subscribe(new Observer<StatusOverall>() {
 
                     @Override
-                    public void onSubscribe(@NonNull Disposable d) {}
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
 
                     @Override
                     public void onNext(@NonNull StatusOverall statusOverall) {
@@ -316,7 +317,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
 
 
-        if (status.getMessage() != null && !status.getMessage().isEmpty()){
+        if (status.getMessage() != null && !status.getMessage().isEmpty()) {
             binding.currentAccount.status.setText(status.getMessage());
             binding.currentAccount.status.setVisibility(View.VISIBLE);
         } else {

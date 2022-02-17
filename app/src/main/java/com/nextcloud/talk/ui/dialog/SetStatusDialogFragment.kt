@@ -86,7 +86,6 @@ class SetStatusDialogFragment :
 
     private val logTag = ChooseAccountDialogFragment::class.java.simpleName
 
-
     private lateinit var binding: DialogSetStatusBinding
 
     private var currentUser: User? = null
@@ -95,7 +94,6 @@ class SetStatusDialogFragment :
     val predefinedStatusesList = ArrayList<PredefinedStatus>()
 
     private lateinit var adapter: PredefinedStatusListAdapter
-    private var selectedPredefinedMessageId: String? = null
     private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
 
@@ -123,9 +121,11 @@ class SetStatusDialogFragment :
                     }
 
                     override fun onNext(responseBody: ResponseBody) {
-                        val predefinedStatusOverall : PredefinedStatusOverall = LoganSquare.parse(responseBody
+                        val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
+                            responseBody
                                 .string(),
-                                PredefinedStatusOverall::class.java)
+                            PredefinedStatusOverall::class.java
+                        )
                         predefinedStatusesList.addAll(predefinedStatusOverall.getOcs().data)
 
                         adapter.notifyDataSetChanged()
@@ -135,11 +135,8 @@ class SetStatusDialogFragment :
                     }
 
                     override fun onComplete() {}
-
                 })
         }
-
-      //  EmojiManager.install(GoogleEmojiProvider())
     }
 
     @SuppressLint("InflateParams")
@@ -179,9 +176,7 @@ class SetStatusDialogFragment :
         }
 
         adapter = PredefinedStatusListAdapter(this, requireContext())
-
         adapter.list = predefinedStatusesList
-
 
         binding.predefinedStatusList.adapter = adapter
         binding.predefinedStatusList.layoutManager = LinearLayoutManager(context)
@@ -310,19 +305,20 @@ class SetStatusDialogFragment :
     }
 
     private fun openEmojiPopup() {
-      popup.show()
+        popup.show()
     }
-
 
     private fun clearStatus() {
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
-        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl)).subscribeOn(Schedulers.io())
+        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl))
+            .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(statusOverall: GenericOverall) {}
                 override fun onError(e: Throwable) {
                     Log.e(logTag, "Failed to clear status", e)
                 }
+
                 override fun onComplete() {
                     dismiss()
                 }
@@ -333,17 +329,21 @@ class SetStatusDialogFragment :
         visualizeStatus(statusType)
 
         ncApi.setStatusType(credentials, ApiUtils.getUrlForSetStatusType(currentUser?.baseUrl), statusType.string)
-            .subscribeOn(Schedulers
-            .io())
+            .subscribeOn(
+                Schedulers
+                    .io()
+            )
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(statusOverall: GenericOverall) {
-                    Log.d(TAG, "statusType successfully set")
+                    Log.d(logTag, "statusType successfully set")
                 }
+
                 override fun onError(e: Throwable) {
                     Log.e(logTag, "Failed to set statusType", e)
                     clearTopStatus()
                 }
+
                 override fun onComplete() {}
             })
     }
@@ -386,7 +386,7 @@ class SetStatusDialogFragment :
 
     private fun setStatusMessage() {
         var inputText = binding.customStatusInput.text.toString()
-        if (inputText.isEmpty()){
+        if (inputText.isEmpty()) {
             inputText = " "
         }
 
@@ -395,7 +395,8 @@ class SetStatusDialogFragment :
             ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
             binding.emoji.text.toString(),
             inputText,
-            clearAt)
+            clearAt
+        )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -404,16 +405,15 @@ class SetStatusDialogFragment :
                 }
 
                 override fun onNext(t: GenericOverall) {
-                    Log.d(TAG, "CustomStatusMessage successfully set")
+                    Log.d(logTag, "CustomStatusMessage successfully set")
                     dismiss()
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.d(TAG, "failed to set CustomStatusMessage", e)
+                    Log.e(logTag, "failed to set CustomStatusMessage", e)
                 }
 
                 override fun onComplete() {}
-
             })
     }
 
@@ -457,20 +457,15 @@ class SetStatusDialogFragment :
      * Fragment creator
      */
     companion object {
-        private const val TAG = "SetStatusDialogFragment"
-
         @JvmStatic
         fun newInstance(user: User, status: Status): SetStatusDialogFragment {
             val args = Bundle()
             args.putParcelable(ARG_CURRENT_USER_PARAM, user)
             args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
 
-
             val dialogFragment = SetStatusDialogFragment()
             dialogFragment.arguments = args
-            // dialogFragment.setStyle(STYLE_NORMAL, R.style.Theme_ownCloud_Dialog)
             return dialogFragment
         }
     }
-
 }
