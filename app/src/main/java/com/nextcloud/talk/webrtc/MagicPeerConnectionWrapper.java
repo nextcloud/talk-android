@@ -85,11 +85,7 @@ public class MagicPeerConnectionWrapper {
 
     private final MediaStream localStream;
     private final boolean isMCUPublisher;
-    private boolean hasMCU;
     private final String videoStreamType;
-
-    private int connectionAttempts = 0;
-    private PeerConnection.IceConnectionState peerIceConnectionState;
 
     @Inject
     Context context;
@@ -104,7 +100,6 @@ public class MagicPeerConnectionWrapper {
 
         this.localStream = localStream;
         this.videoStreamType = videoStreamType;
-        this.hasMCU = hasMCU;
 
         this.sessionId = sessionId;
         this.sdpConstraints = sdpConstraints;
@@ -332,26 +327,6 @@ public class MagicPeerConnectionWrapper {
         }
     }
 
-    private void restartIce() {
-        if (connectionAttempts <= 5) {
-            if (!hasMCU || isMCUPublisher) {
-                MediaConstraints.KeyValuePair iceRestartConstraint =
-                        new MediaConstraints.KeyValuePair("IceRestart", "true");
-
-                if (sdpConstraints.mandatory.contains(iceRestartConstraint)) {
-                    sdpConstraints.mandatory.add(iceRestartConstraint);
-                }
-
-                peerConnection.createOffer(magicSdpObserver, sdpConstraints);
-            } else {
-                // we have an MCU and this is not the publisher
-                // Do something if we have an MCU
-            }
-
-            connectionAttempts++;
-        }
-    }
-
     private class MagicPeerConnectionObserver implements PeerConnection.Observer {
 
         @Override
@@ -360,13 +335,9 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-            peerIceConnectionState = iceConnectionState;
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
-                connectionAttempts = 0;
-                /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .PEER_CONNECTED, sessionId, null, null));*/
 
                 if (!isMCUPublisher) {
                     EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId, videoStreamType));
@@ -379,11 +350,7 @@ public class MagicPeerConnectionWrapper {
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
-                connectionAttempts = 0;
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
-                /*if (MerlinTheWizard.isConnectedToInternet() && connectionAttempts < 5) {
-                    restartIce();
-                }*/
                 if (isMCUPublisher) {
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, null));
                 }
@@ -490,9 +457,5 @@ public class MagicPeerConnectionWrapper {
                 }
             }
         }
-    }
-
-    public PeerConnection.IceConnectionState getPeerIceConnectionState() {
-        return peerIceConnectionState;
     }
 }
