@@ -125,7 +125,12 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         }
 
         if (userEntity != null && !TextUtils.isEmpty(userEntity.getBaseUrl())) {
-            holder.serverUrl.setText((Uri.parse(userEntity.getBaseUrl()).getHost()));
+            String host = Uri.parse(userEntity.getBaseUrl()).getHost();
+            if (!TextUtils.isEmpty(host)) {
+                holder.serverUrl.setText(Uri.parse(userEntity.getBaseUrl()).getHost());
+            } else {
+                holder.serverUrl.setText(userEntity.getBaseUrl());
+            }
         }
 
         holder.avatarImageView.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
@@ -134,17 +139,14 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         if (userEntity != null && userEntity.getBaseUrl() != null &&
                 userEntity.getBaseUrl().startsWith("http://") ||
                 userEntity.getBaseUrl().startsWith("https://")) {
-            holder.avatarImageView.setVisibility(View.VISIBLE);
 
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(holder.avatarImageView.getController())
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                            participant.getActorId(), R.dimen.small_item_height), null))
-                    .build();
+                .setOldController(holder.avatarImageView.getController())
+                .setAutoPlayAnimations(true)
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                                                                                     participant.getActorId(), R.dimen.small_item_height), null))
+                .build();
             holder.avatarImageView.setController(draweeController);
-        } else {
-            holder.avatarImageView.setVisibility(View.GONE);
         }
     }
 
