@@ -385,11 +385,16 @@ class SetStatusDialogFragment :
     }
 
     private fun setStatusMessage() {
+        var inputText = binding.customStatusInput.text.toString()
+        if (inputText.isEmpty()){
+            inputText = " "
+        }
+
         ncApi.setCustomStatusMessage(
             credentials,
             ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
             binding.emoji.text.toString(),
-            binding.customStatusInput.text.toString(),
+            inputText,
             clearAt)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
