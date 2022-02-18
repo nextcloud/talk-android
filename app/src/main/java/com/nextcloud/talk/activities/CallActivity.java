@@ -1755,7 +1755,7 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "getPeersForCall");
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), null)
             .subscribeOn(Schedulers.io())
             .subscribe(new Observer<ParticipantsOverall>() {
                 @Override

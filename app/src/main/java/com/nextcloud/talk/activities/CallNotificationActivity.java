@@ -215,7 +215,7 @@ public class CallNotificationActivity extends CallBaseActivity {
         int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
-                                                                  currentConversation.getToken()))
+                                                                  currentConversation.getToken()), null)
             .subscribeOn(Schedulers.io())
             .repeatWhen(completed -> completed.zipWith(Observable.range(1, 12), (n, i) -> i)
                 .flatMap(retryCount -> Observable.timer(5, TimeUnit.SECONDS))

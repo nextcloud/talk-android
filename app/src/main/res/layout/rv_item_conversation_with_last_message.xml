@@ -43,8 +43,7 @@
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"
             android:contentDescription="@null"
-            app:roundAsCircle="true"
-            tools:src="@drawable/ic_call_black_24dp" />
+            app:roundAsCircle="true" />
 
         <ImageView
             android:id="@+id/favoriteConversationImageView"

@@ -187,7 +187,8 @@ public interface NcApi {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
     @GET
-    Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url);
+    Observable<ParticipantsOverall> getPeersForCall(@Header("Authorization") String authorization, @Url String url,
+                                                   @QueryMap Map<String, Boolean> fields);
 
     @FormUrlEncoded
     @POST

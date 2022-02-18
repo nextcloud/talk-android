@@ -135,7 +135,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         if (SOURCE_CALLS.equals(source)) {
-            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
+            holder.participantAvatar.setImageResource(R.drawable.ic_circular_group);
         } else {
             String avatarId = objectId;
             String avatarUrl = ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
@@ -149,13 +149,13 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                         R.dimen.avatar_size_big);
             }
 
-            holder.simpleDraweeView.setController(null);
+            holder.participantAvatar.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(holder.simpleDraweeView.getController())
+                    .setOldController(holder.participantAvatar.getController())
                     .setAutoPlayAnimations(true)
                     .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl, null))
                     .build();
-            holder.simpleDraweeView.setController(draweeController);
+            holder.participantAvatar.setController(draweeController);
         }
     }
 
