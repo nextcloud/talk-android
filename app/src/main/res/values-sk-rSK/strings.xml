@@ -2,6 +2,11 @@
   <resources>
     <string name="account_icon">Ikona účtu</string>
     <string name="appbar_search_in">Hľadať v %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Zvukový výstup</string>
+    <string name="audio_output_phone">Telefón</string>
+    <string name="audio_output_speaker">Reproduktor</string>
+    <string name="audio_output_wired_headset">Drátové sluchátka</string>
     <string name="avatar">Avatar</string>
     <string name="choose_avatar_from_cloud">Vyberte si avatara z cloudu</string>
     <string name="conversations">Konverzácie</string>
