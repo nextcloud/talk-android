@@ -55,8 +55,4 @@ abstract class ButterKnifeController : Controller {
         unbinder!!.unbind()
         unbinder = null
     }
-
-    protected fun viewIsBound() : Boolean {
-        return unbinder != null
-    }
 }

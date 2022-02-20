@@ -528,7 +528,7 @@ public class ConversationsListController extends BaseController implements Searc
                     // This is invoked asynchronously, when server returns a response the view might have been
                     // unbound in the meantime. Check if the view is still there.
                     // FIXME - does it make sense to update internal data structures even when view has been unbound?
-                    if (!viewIsBound()) {
+                    if (getView() == null) {
                         Log.d(TAG, "fetchData - getRooms - view is not bound: " + startNanoTime);
                         return;
                     }
