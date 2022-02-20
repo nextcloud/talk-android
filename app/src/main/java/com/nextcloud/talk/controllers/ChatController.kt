@@ -239,7 +239,6 @@ class ChatController(args: Bundle) :
     val roomId: String
     val voiceOnly: Boolean
     var isFirstMessagesProcessing = true
-    var wasDetached: Boolean = false
     var emojiPopup: EmojiPopup? = null
 
     var myFirstMessage: CharSequence? = null
@@ -252,7 +251,6 @@ class ChatController(args: Bundle) :
     var magicWebSocketInstance: MagicWebSocketInstance? = null
 
     var lobbyTimerHandler: Handler? = null
-    val roomJoined: Boolean = false
     var pastPreconditionFailed = false
     var futurePreconditionFailed = false
 
@@ -1556,14 +1554,11 @@ class ChatController(args: Bundle) :
 
         cancelNotificationsForCurrentConversation()
 
-        Log.d(TAG, "onAttach inConversation: " + inConversation.toString() + " wasDetached: " + wasDetached.toString())
+        Log.d(TAG, "onAttach inConversation: " + inConversation.toString())
         if (inConversation) {
-            if (wasDetached) {
-                currentConversation?.sessionId = "0"
-                wasDetached = false
-                Log.d(TAG, "execute joinRoomWithPassword in onAttach")
-                joinRoomWithPassword()
-            }
+            currentConversation?.sessionId = "0"
+            Log.d(TAG, "execute joinRoomWithPassword in onAttach")
+            joinRoomWithPassword()
         }
     }
 
@@ -1602,8 +1597,9 @@ class ChatController(args: Bundle) :
             !ApplicationWideCurrentRoomHolder.getInstance().isDialing
         ) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
-            wasDetached = true
-            leaveRoom()
+            if (inConversation) {
+                leaveRoom()
+            }
         }
 
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
@@ -1779,11 +1775,6 @@ class ChatController(args: Bundle) :
                     } else {
                         Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
                     }
-
-                    if (!isDestroyed && !isBeingDestroyed && !wasDetached) {
-                        Log.d(TAG, "leaveRoom - leaveRoom - popCurrentController")
-                        router.popCurrentController()
-                    }
                 }
 
                 override fun onError(e: Throwable) {
@@ -1945,94 +1936,90 @@ class ChatController(args: Bundle) :
             fieldMap["lastCommonReadId"] = it
         }
 
-        if (!wasDetached) {
-            var apiVersion = 1
-            // FIXME this is a best guess, guests would need to get the capabilities themselves
-            if (conversationUser != null) {
-                apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-            }
+        var apiVersion = 1
+        // FIXME this is a best guess, guests would need to get the capabilities themselves
+        if (conversationUser != null) {
+            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+        }
 
-            if (lookIntoFuture > 0) {
-                val finalTimeout = timeout
-                Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
-                ncApi?.pullChatMessages(
-                    credentials,
-                    ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
-                )
-                    ?.subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.takeWhile { observable -> inConversation && !wasDetached }
-                    ?.subscribe(object : Observer<Response<*>> {
-                        override fun onSubscribe(d: Disposable) {
-                            disposableList.add(d)
-                        }
+        if (lookIntoFuture > 0) {
+            val finalTimeout = timeout
+            Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - calling")
+            ncApi?.pullChatMessages(
+                credentials,
+                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
+            )
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<Response<*>> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposableList.add(d)
+                    }
 
-                        @Suppress("Detekt.TooGenericExceptionCaught")
-                        override fun onNext(response: Response<*>) {
-                            Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - got response")
-                            try {
-                                if (response.code() == 304) {
-                                    Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
-                                    pullChatMessages(1, setReadMarker, xChatLastCommonRead)
-                                } else if (response.code() == 412) {
-                                    futurePreconditionFailed = true
-                                } else {
-                                    processMessages(response, true, finalTimeout)
-                                }
-                            } catch (npe: NullPointerException) {
-                                // view binding can be null
-                                // since this is called asynchrously and UI might have been destroyed in the meantime
-                                Log.i(TAG, "UI destroyed - view binding already gone")
+                    @Suppress("Detekt.TooGenericExceptionCaught")
+                    override fun onNext(response: Response<*>) {
+                        Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - got response")
+                        try {
+                            if (response.code() == 304) {
+                                Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
+                                pullChatMessages(1, setReadMarker, xChatLastCommonRead)
+                            } else if (response.code() == 412) {
+                                futurePreconditionFailed = true
+                            } else {
+                                processMessages(response, true, finalTimeout)
                             }
+                        } catch (npe: NullPointerException) {
+                            // view binding can be null
+                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            Log.i(TAG, "UI destroyed - view binding already gone")
                         }
+                    }
 
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - ERROR", e)
-                        }
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - ERROR", e)
+                    }
 
-                        override fun onComplete() {
-                            // unused atm
-                        }
-                    })
-            } else {
-                Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - calling")
-                ncApi?.pullChatMessages(
-                    credentials,
-                    ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
-                )
-                    ?.subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.takeWhile { observable -> inConversation && !wasDetached }
-                    ?.subscribe(object : Observer<Response<*>> {
-                        override fun onSubscribe(d: Disposable) {
-                            disposableList.add(d)
-                        }
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        } else {
+            Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - calling")
+            ncApi?.pullChatMessages(
+                credentials,
+                ApiUtils.getUrlForChat(apiVersion, conversationUser?.baseUrl, roomToken), fieldMap
+            )
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<Response<*>> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposableList.add(d)
+                    }
 
-                        @Suppress("Detekt.TooGenericExceptionCaught")
-                        override fun onNext(response: Response<*>) {
-                            Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - got response")
-                            try {
-                                if (response.code() == 412) {
-                                    pastPreconditionFailed = true
-                                } else {
-                                    processMessages(response, false, 0)
-                                }
-                            } catch (npe: NullPointerException) {
-                                // view binding can be null
-                                // since this is called asynchrously and UI might have been destroyed in the meantime
-                                Log.i(TAG, "UI destroyed - view binding already gone")
+                    @Suppress("Detekt.TooGenericExceptionCaught")
+                    override fun onNext(response: Response<*>) {
+                        Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - got response")
+                        try {
+                            if (response.code() == 412) {
+                                pastPreconditionFailed = true
+                            } else {
+                                processMessages(response, false, 0)
                             }
+                        } catch (npe: NullPointerException) {
+                            // view binding can be null
+                            // since this is called asynchrously and UI might have been destroyed in the meantime
+                            Log.i(TAG, "UI destroyed - view binding already gone")
                         }
+                    }
 
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - ERROR", e)
-                        }
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - ERROR", e)
+                    }
 
-                        override fun onComplete() {
-                            // unused atm
-                        }
-                    })
-            }
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         }
     }
 
