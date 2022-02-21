@@ -575,7 +575,9 @@ public class PeerConnectionWrapper {
         @Override
         public void onSetSuccess() {
             if (peerConnection != null) {
-                if (peerConnection.getLocalDescription() == null) {
+                // Local provisional answers ("pranswer") are not used anywhere,
+                // so the "have-local-pranswer" state is not taken into account.
+                if (peerConnection.signalingState() == PeerConnection.SignalingState.HAVE_REMOTE_OFFER) {
 
                     if (shouldNotReceiveVideo()) {
                         for (RtpTransceiver t : peerConnection.getTransceivers()) {
