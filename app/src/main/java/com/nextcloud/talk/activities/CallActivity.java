@@ -213,7 +213,7 @@ public class CallActivity extends CallBaseActivity {
     private UserEntity conversationUser;
     private String conversationName;
     private String callSession;
-    private MediaStream localMediaStream;
+    private MediaStream localStream;
     private String credentials;
     private List<MagicPeerConnectionWrapper> magicPeerConnectionWrapperList = new ArrayList<>();
     private Map<String, Participant> participantMap = new HashMap<>();
@@ -408,7 +408,7 @@ public class CallActivity extends CallBaseActivity {
         audioConstraints = new MediaConstraints();
         videoConstraints = new MediaConstraints();
 
-        localMediaStream = peerConnectionFactory.createLocalMediaStream("NCMS");
+        localStream = peerConnectionFactory.createLocalMediaStream("NCMS");
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
@@ -781,7 +781,7 @@ public class CallActivity extends CallBaseActivity {
             videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
         }
         localVideoTrack = peerConnectionFactory.createVideoTrack("NCv0", videoSource);
-        localMediaStream.addTrack(localVideoTrack);
+        localStream.addTrack(localVideoTrack);
         localVideoTrack.setEnabled(false);
         localVideoTrack.addSink(binding.selfVideoRenderer);
     }
@@ -791,7 +791,7 @@ public class CallActivity extends CallBaseActivity {
         audioSource = peerConnectionFactory.createAudioSource(audioConstraints);
         localAudioTrack = peerConnectionFactory.createAudioTrack("NCa0", audioSource);
         localAudioTrack.setEnabled(false);
-        localMediaStream.addTrack(localAudioTrack);
+        localStream.addTrack(localAudioTrack);
     }
 
     private VideoCapturer createCameraCapturer(CameraEnumerator enumerator) {
@@ -963,8 +963,8 @@ public class CallActivity extends CallBaseActivity {
                 }
             }
 
-            if (localMediaStream != null && localMediaStream.videoTracks.size() > 0) {
-                localMediaStream.videoTracks.get(0).setEnabled(enable);
+            if (localStream != null && localStream.videoTracks.size() > 0) {
+                localStream.videoTracks.get(0).setEnabled(enable);
             }
             if (enable) {
                 binding.selfVideoRenderer.setVisibility(View.VISIBLE);
@@ -980,8 +980,8 @@ public class CallActivity extends CallBaseActivity {
                 binding.microphoneButton.setAlpha(0.7f);
             }
 
-            if (localMediaStream != null && localMediaStream.audioTracks.size() > 0) {
-                localMediaStream.audioTracks.get(0).setEnabled(enable);
+            if (localStream != null && localStream.audioTracks.size() > 0) {
+                localStream.audioTracks.get(0).setEnabled(enable);
             }
         }
 
@@ -1608,12 +1608,12 @@ public class CallActivity extends CallBaseActivity {
                 peerConnectionFactory = null;
             }
 
-            if(localMediaStream != null) {
-                localMediaStream.dispose();
-                localMediaStream = null;
-                Log.d(TAG, "Disposed localMediaStream");
+            if(localStream != null) {
+                localStream.dispose();
+                localStream = null;
+                Log.d(TAG, "Disposed localStream");
             } else {
-                Log.d(TAG, "localMediaStream is null");
+                Log.d(TAG, "localStream is null");
             }
             localAudioTrack = null;
             localVideoTrack = null;
@@ -1807,7 +1807,7 @@ public class CallActivity extends CallBaseActivity {
                                                                             sdpConstraintsForMCU,
                                                                             sessionId,
                                                                             callSession,
-                                                                            localMediaStream,
+                                                                            localStream,
                                                                             true,
                                                                             true,
                                                                             type);
@@ -1829,7 +1829,7 @@ public class CallActivity extends CallBaseActivity {
                                                                                 sdpConstraints,
                                                                                 sessionId,
                                                                                 callSession,
-                                                                                localMediaStream,
+                                                                                localStream,
                                                                                 false,
                                                                                 false,
                                                                                 type);

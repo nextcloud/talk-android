@@ -81,7 +81,7 @@ public class MagicPeerConnectionWrapper {
 
     private boolean hasInitiated;
 
-    private MediaStream localMediaStream;
+    private MediaStream localStream;
     private boolean isMCUPublisher;
     private boolean hasMCU;
     private String videoStreamType;
@@ -95,12 +95,12 @@ public class MagicPeerConnectionWrapper {
     public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
                                       List<PeerConnection.IceServer> iceServerList,
                                       MediaConstraints sdpConstraints,
-                                      String sessionId, String localSession, @Nullable MediaStream mediaStream,
+                                      String sessionId, String localSession, @Nullable MediaStream localStream,
                                       boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
 
-        this.localMediaStream = mediaStream;
+        this.localStream = localStream;
         this.videoStreamType = videoStreamType;
         this.hasMCU = hasMCU;
 
@@ -116,13 +116,13 @@ public class MagicPeerConnectionWrapper {
         peerConnection = peerConnectionFactory.createPeerConnection(configuration, new MagicPeerConnectionObserver());
 
         if (peerConnection != null) {
-            if (localStream != null) {
-                List<String> localMediaStreamIds = Collections.singletonList(localMediaStream.getId());
-                for(AudioTrack track : localMediaStream.audioTracks) {
-                    peerConnection.addTrack(track, localMediaStreamIds);
+            if (this.localStream != null) {
+                List<String> localStreamIds = Collections.singletonList(this.localStream.getId());
+                for(AudioTrack track : this.localStream.audioTracks) {
+                    peerConnection.addTrack(track, localStreamIds);
                 }
-                for(VideoTrack track : localStream.videoTracks) {
-                    peerConnection.addTrack(track, localMediaStreamIds);
+                for(VideoTrack track : this.localStream.videoTracks) {
+                    peerConnection.addTrack(track, localStreamIds);
                 }
             }
 
@@ -240,14 +240,14 @@ public class MagicPeerConnectionWrapper {
     }
 
     private void sendInitialMediaStatus() {
-        if (localMediaStream != null) {
-            if (localMediaStream.videoTracks.size() == 1 && localMediaStream.videoTracks.get(0).enabled()) {
+        if (localStream != null) {
+            if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
                 sendChannelData(new DataChannelMessage("videoOn"));
             } else {
                 sendChannelData(new DataChannelMessage("videoOff"));
             }
 
-            if (localMediaStream.audioTracks.size() == 1 && localMediaStream.audioTracks.get(0).enabled()) {
+            if (localStream.audioTracks.size() == 1 && localStream.audioTracks.get(0).enabled()) {
                 sendChannelData(new DataChannelMessage("audioOn"));
             } else {
                 sendChannelData(new DataChannelMessage("audioOff"));
