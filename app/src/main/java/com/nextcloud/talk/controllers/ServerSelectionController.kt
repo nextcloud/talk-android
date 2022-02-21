@@ -111,15 +111,17 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
             binding.helperTextView.visibility = View.INVISIBLE
         } else {
             if (
-                (TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
-                    findAccounts(userUtils.users as List<UserEntity>).isEmpty()
+                (
+                    TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type)) ||
+                        findAccounts(userUtils.users as List<UserEntity>).isEmpty()
                     ) &&
                 userUtils.users.size == 0
             ) {
                 binding.helperTextView.setText(R.string.nc_get_from_provider)
                 binding.helperTextView.setOnClickListener {
                     val browserIntent = Intent(
-                        Intent.ACTION_VIEW, Uri.parse(
+                        Intent.ACTION_VIEW,
+                        Uri.parse(
                             resources!!
                                 .getString(R.string.nc_providers_url)
                         )
