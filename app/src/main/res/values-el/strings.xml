@@ -156,6 +156,9 @@
     <string name="nc_none">κανένα</string>
     <string name="nc_not_defined_error">Άγνωστο σφάλμα</string>
     <string name="nc_notification_channel">%1$s από %2$s κανάλι ειδοποίησης</string>
+    <string name="nc_notification_channel_calls">Kλήσεις</string>
+    <string name="nc_notification_channel_calls_description">Ειδοποίηση για εισερχόμενες κλήσεις</string>
+    <string name="nc_notification_channel_messages">Μηνύματα</string>
     <string name="nc_notification_settings">Ρυθμίσεις ειδοποιήσεων</string>
     <string name="nc_notify_me_always">Πάντα ειδοποίηση</string>
     <string name="nc_notify_me_mention">Ειδοποίηση όταν αναφέρεται</string>
@@ -237,6 +240,8 @@
     <string name="nc_settings_incognito_keyboard_title">Πληκτρολόγιο ανώνυμης περιήγησης</string>
     <string name="nc_settings_no_ringtone">Χωρίς ήχο</string>
     <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
+    <string name="nc_settings_notification_sounds">Ήχοι ειδοποίησης</string>
+    <string name="nc_settings_other_notifications_ringtone">Μηνύματα</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Μπορείτε να ορίσετε τον αριθμό τηλεφώνου σας, ώστε να μπορούν να σας βρίσκουν άλλοι χρήστες</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Μη έγκυρος αριθμός τηλεφώνου</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Επιτυχής ορισμός αριθμού τηλεφώνου</string>
