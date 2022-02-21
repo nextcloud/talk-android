@@ -129,18 +129,19 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
+        if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
+            holder.participantEmoji.setText(participant.statusIcon);
+        } else {
+            holder.participantEmoji.setVisibility(View.GONE);
+        }
+
         if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
             setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
-        } else if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
-            holder.participantOnlineStateImage.setVisibility(View.GONE);
-            holder.participantEmoji.setVisibility(View.VISIBLE);
-            holder.participantEmoji.setText(participant.statusIcon);
         } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
             setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
         } else if (participant.status != null && participant.status.equals(StatusType.ONLINE.getString())) {
             setOnlineStateIcon(holder, R.drawable.online_status_with_border);
         } else {
-            holder.participantEmoji.setVisibility(View.GONE);
             holder.participantOnlineStateImage.setVisibility(View.GONE);
         }
 
@@ -277,8 +278,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     }
 
     private void setOnlineStateIcon(UserItem.UserItemViewHolder holder, int icon) {
-        holder.participantEmoji.setVisibility(View.GONE);
-        holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
         holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, icon));
     }
 
