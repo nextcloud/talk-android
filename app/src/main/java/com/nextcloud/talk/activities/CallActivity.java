@@ -1608,7 +1608,13 @@ public class CallActivity extends CallBaseActivity {
                 peerConnectionFactory = null;
             }
 
-            localMediaStream = null;
+            if(localMediaStream != null) {
+                localMediaStream.dispose();
+                localMediaStream = null;
+                Log.d(TAG, "Disposed localMediaStream");
+            } else {
+                Log.d(TAG, "localMediaStream is null");
+            }
             localAudioTrack = null;
             localVideoTrack = null;
 
