@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
@@ -116,6 +117,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         return new UserItemViewHolder(view, adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
 
@@ -277,8 +279,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                         break;
                 }
 
-                if (!holder.contactMentionId.getText().equals(userType)) {
-                    holder.contactMentionId.setText(userType);
+                if (!userType.equals(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_user))) {
+                    holder.contactMentionId.setText("(" + userType + ")");
                 }
             }
         }

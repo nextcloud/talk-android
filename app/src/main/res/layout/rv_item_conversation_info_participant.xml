@@ -39,7 +39,7 @@
 
     <com.vanniktech.emoji.EmojiEditText
         android:id="@+id/conversation_info_participant_emoji"
-        android:layout_width="28dp"
+        android:layout_width="22dp"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
         android:cursorVisible="false"
@@ -82,7 +82,7 @@
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
-        android:textColor="@color/conversation_item_header"
+        android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintStart_toEndOf="@+id/conversation_info_participant_emoji"
         app:layout_constraintTop_toBottomOf="@+id/name_text"
         tools:text="gone shopping" />
