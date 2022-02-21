@@ -129,6 +129,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
+        if (participant.statusMessage != null) {
+            holder.statusMessage.setText(participant.statusMessage);
+        }
+
         if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
             holder.participantEmoji.setText(participant.statusIcon);
         } else {
@@ -137,17 +141,20 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
             setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
+            if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                holder.statusMessage.setText(R.string.dnd);
+            }
         } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
             setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
+            if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                holder.statusMessage.setText(R.string.away);
+            }
         } else if (participant.status != null && participant.status.equals(StatusType.ONLINE.getString())) {
             setOnlineStateIcon(holder, R.drawable.online_status_with_border);
         } else {
             holder.participantOnlineStateImage.setVisibility(View.GONE);
         }
 
-        if (participant.statusMessage != null) {
-            holder.statusMessage.setText(participant.statusMessage);
-        }
 
         if (!isOnline) {
             holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(
