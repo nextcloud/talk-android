@@ -180,8 +180,8 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities.getUserStatusCapability() != null &&
-                    capabilities.getUserStatusCapability().isEnabled() &&
-                    capabilities.getUserStatusCapability().isSupportsEmoji()) {
+                    capabilities.getUserStatusCapability().getEnabled() &&
+                    capabilities.getUserStatusCapability().getSupportsEmoji()) {
                     return true;
                 }
             } catch (IOException e) {
