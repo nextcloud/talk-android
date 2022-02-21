@@ -384,7 +384,7 @@ class ConversationInfoController(args: Bundle) :
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = UserItem(context, participant, conversationUser, null)
+            userItem = UserItem(router.activity, participant, conversationUser, null)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
