@@ -31,7 +31,7 @@
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,15 +39,14 @@
 
     <com.vanniktech.emoji.EmojiEditText
         android:id="@+id/conversation_info_participant_emoji"
-        android:layout_width="wrap_content"
+        android:layout_width="28dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:background="@color/transparent"
         android:cursorVisible="false"
-        android:gravity="center"
+        android:gravity="center|start"
         android:text="@string/default_emoji"
         android:textSize="16sp"
-        app:layout_constraintStart_toEndOf="@+id/conversation_info_participant_avatar"
+        app:layout_constraintStart_toStartOf="@+id/name_text"
         app:layout_constraintTop_toBottomOf="@+id/name_text" />
 
     <ImageView
@@ -64,22 +63,21 @@
         android:id="@+id/name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="2dp"
         android:ellipsize="middle"
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textColor="@color/conversation_item_header"
         app:layout_constraintStart_toEndOf="@id/conversation_info_participant_avatar"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/conversation_info_participant_avatar"
         tools:text="Jane Doe" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/conversation_info_status_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:ellipsize="middle"
         android:singleLine="true"
         android:textAlignment="viewStart"
