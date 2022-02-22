@@ -23,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/item_height">
+    android:layout_height="wrap_content">
 
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -76,16 +76,17 @@
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/conversation_info_status_message"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:ellipsize="middle"
-        android:singleLine="true"
+        android:maxLines="2"
+        android:ellipsize="end"
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textColor="?android:attr/textColorSecondary"
         app:layout_constraintStart_toEndOf="@+id/conversation_info_participant_emoji"
         app:layout_constraintTop_toBottomOf="@+id/name_text"
-        tools:text="gone shopping" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="this is a very long status message. server allows only 81 chars here. 0123456789" />
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/secondary_text"
