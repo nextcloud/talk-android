@@ -35,7 +35,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin">
 
         <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/simple_drawee_view"
+            android:id="@+id/conversation_info_participant_avatar"
             android:layout_width="@dimen/avatar_size"
             android:layout_height="@dimen/avatar_size"
             app:roundAsCircle="true" />

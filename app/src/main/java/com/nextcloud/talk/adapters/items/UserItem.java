@@ -311,6 +311,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         @BindView(R.id.name_text)
         public EmojiTextView contactDisplayName;
+        @Nullable
         @BindView(R.id.conversation_info_participant_avatar)
         public SimpleDraweeView participantAvatar;
         @Nullable
@@ -322,10 +323,13 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.checkedImageView)
         ImageView checkedImageView;
+        @Nullable
         @BindView(R.id.conversation_info_participant_emoji)
         com.vanniktech.emoji.EmojiEditText participantEmoji;
+        @Nullable
         @BindView(R.id.conversation_info_participant_online_state)
         ImageView participantOnlineStateImage;
+        @Nullable
         @BindView(R.id.conversation_info_status_message)
         EmojiTextView statusMessage;
 
