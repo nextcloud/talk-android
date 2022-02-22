@@ -29,12 +29,15 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.mention.Mention;
+import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -50,18 +53,20 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
     private String objectId;
     private String displayName;
     private String source;
+    private String status;
+    private String statusIcon;
     private UserEntity currentUser;
     private Context context;
 
     public MentionAutocompleteItem(
-            String objectId,
-            String displayName,
-            String source,
+            Mention mention,
             UserEntity currentUser,
             Context activityContext) {
-        this.objectId = objectId;
-        this.displayName = displayName;
-        this.source = source;
+        this.objectId = mention.getId();
+        this.displayName = mention.getLabel();
+        this.source = mention.getSource();
+        this.status = mention.getStatus();
+        this.statusIcon = mention.getStatusIcon();
         this.currentUser = currentUser;
         this.context = activityContext;
     }
@@ -157,6 +162,26 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                     .build();
             holder.participantAvatar.setController(draweeController);
         }
+        if (status != null && status.equals(StatusType.DND.getString())) {
+            setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
+        } else if (statusIcon != null && statusIcon.isEmpty()) {
+            holder.participantOnlineStateImage.setVisibility(View.GONE);
+            holder.participantEmoji.setVisibility(View.VISIBLE);
+            holder.participantEmoji.setText(statusIcon);
+        } else if (status != null && status.equals(StatusType.AWAY.getString())) {
+            setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
+        } else if (status != null && status.equals(StatusType.ONLINE.getString())) {
+            setOnlineStateIcon(holder, R.drawable.online_status_with_border);
+        } else {
+            holder.participantEmoji.setVisibility(View.GONE);
+            holder.participantOnlineStateImage.setVisibility(View.GONE);
+        }
+    }
+
+    private void setOnlineStateIcon(UserItem.UserItemViewHolder holder, int icon) {
+        holder.participantEmoji.setVisibility(View.GONE);
+        holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
+        holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, icon));
     }
 
     @Override
