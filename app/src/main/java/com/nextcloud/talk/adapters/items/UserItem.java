@@ -145,17 +145,20 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
 
             if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
-                setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
+                holder.participantOnlineStateImage.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.ic_user_status_dnd_with_border));
                 if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
                     holder.statusMessage.setText(R.string.dnd);
                 }
             } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
-                setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
+                holder.participantOnlineStateImage.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.ic_user_status_away_with_border));
                 if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
                     holder.statusMessage.setText(R.string.away);
                 }
             } else if (participant.status != null && participant.status.equals(StatusType.ONLINE.getString())) {
-                setOnlineStateIcon(holder, R.drawable.online_status_with_border);
+                holder.participantOnlineStateImage.setImageDrawable(
+                    ContextCompat.getDrawable(context, R.drawable.online_status_with_border));
             } else {
                 holder.participantOnlineStateImage.setVisibility(View.GONE);
             }
@@ -287,10 +290,6 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 }
             }
         }
-    }
-
-    private void setOnlineStateIcon(UserItem.UserItemViewHolder holder, int icon) {
-        holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, icon));
     }
 
     @Override

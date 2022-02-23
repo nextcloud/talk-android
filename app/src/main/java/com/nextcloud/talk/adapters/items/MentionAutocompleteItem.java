@@ -35,6 +35,7 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
@@ -50,14 +51,14 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     public static final String SOURCE_CALLS = "calls";
     public static final String SOURCE_GUESTS = "guests";
-    private String objectId;
-    private String displayName;
     private String source;
-    private String status;
-    private String statusIcon;
-    private String statusMessage;
-    private UserEntity currentUser;
-    private Context context;
+    private final String objectId;
+    private final String displayName;
+    private final String status;
+    private final String statusIcon;
+    private final String statusMessage;
+    private final UserEntity currentUser;
+    private final Context context;
 
     public MentionAutocompleteItem(
             Mention mention,
@@ -125,7 +126,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             FlexibleUtils.highlightText(holder.contactDisplayName,
                                         displayName,
                                         String.valueOf(adapter.getFilter(String.class)),
-                                        NextcloudTalkApplication.Companion.getSharedApplication()
+                                        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication())
                                             .getResources().getColor(R.color.colorPrimary));
             if (holder.contactMentionId != null) {
                 FlexibleUtils.highlightText(holder.contactMentionId,
@@ -142,7 +143,9 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
 
         if (SOURCE_CALLS.equals(source)) {
-            holder.participantAvatar.setImageResource(R.drawable.ic_circular_group);
+            if (holder.participantAvatar != null){
+                holder.participantAvatar.setImageResource(R.drawable.ic_circular_group);
+            }
         } else {
             String avatarId = objectId;
             String avatarUrl = ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
@@ -156,7 +159,10 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                     R.dimen.avatar_size_big);
             }
 
-            holder.participantAvatar.setController(null);
+            if(holder.participantAvatar != null){
+                holder.participantAvatar.setController(null);
+            }
+
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.participantAvatar.getController())
                 .setAutoPlayAnimations(true)
@@ -165,41 +171,43 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             holder.participantAvatar.setController(draweeController);
         }
 
-        if (statusMessage != null) {
-            holder.statusMessage.setText(statusMessage);
-        } else {
-            holder.statusMessage.setText("");
-        }
-
-        if (statusIcon != null && !statusIcon.isEmpty()) {
-            holder.participantEmoji.setVisibility(View.VISIBLE);
-            holder.participantEmoji.setText(statusIcon);
-        } else {
-            holder.participantEmoji.setVisibility(View.GONE);
-            holder.participantEmoji.setText("");
-        }
-
-        if (status != null && status.equals(StatusType.DND.getString())) {
-            setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
-            if (statusMessage == null || statusMessage.isEmpty()) {
-                holder.statusMessage.setText(R.string.dnd);
+        if (holder.statusMessage != null && holder.participantEmoji != null && holder.participantOnlineStateImage != null) {
+            if (statusMessage != null) {
+                holder.statusMessage.setText(statusMessage);
+            } else {
+                holder.statusMessage.setText("");
             }
-        } else if (status != null && status.equals(StatusType.AWAY.getString())) {
-            setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
-            if (statusMessage == null || statusMessage.isEmpty()) {
-                holder.statusMessage.setText(R.string.away);
+
+            if (statusIcon != null && !statusIcon.isEmpty()) {
+                holder.participantEmoji.setVisibility(View.VISIBLE);
+                holder.participantEmoji.setText(statusIcon);
+            } else {
+                holder.participantEmoji.setVisibility(View.GONE);
+                holder.participantEmoji.setText("");
             }
-        } else if (status != null && status.equals(StatusType.ONLINE.getString())) {
-            setOnlineStateIcon(holder, R.drawable.online_status_with_border);
-        } else {
-            holder.participantOnlineStateImage.setVisibility(View.GONE);
+
+            if (status != null && status.equals(StatusType.DND.getString())) {
+                holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
+                holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_user_status_dnd_with_border));
+
+                if (statusMessage == null || statusMessage.isEmpty()) {
+                    holder.statusMessage.setText(R.string.dnd);
+                }
+            } else if (status != null && status.equals(StatusType.AWAY.getString())) {
+                holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
+                holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_user_status_away_with_border));
+
+                if (statusMessage == null || statusMessage.isEmpty()) {
+                    holder.statusMessage.setText(R.string.away);
+                }
+            } else if (status != null && status.equals(StatusType.ONLINE.getString())) {
+                holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
+                holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.online_status_with_border));
+
+            } else {
+                holder.participantOnlineStateImage.setVisibility(View.GONE);
+            }
         }
-    }
-
-
-    private void setOnlineStateIcon(UserItem.UserItemViewHolder holder, int icon) {
-        holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
-        holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, icon));
     }
 
     @Override

@@ -126,7 +126,7 @@ class SetStatusDialogFragment :
                                 .string(),
                             PredefinedStatusOverall::class.java
                         )
-                        predefinedStatusesList.addAll(predefinedStatusOverall.getOcs().data)
+                        predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
 
                         adapter.notifyDataSetChanged()
                     }
