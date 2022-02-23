@@ -20,77 +20,70 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout3"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/item_height"
-    android:orientation="vertical">
+    android:layout_height="@dimen/item_height">
 
-    <FrameLayout
-        android:id="@+id/frame_layout"
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/conversation_info_participant_avatar"
+        android:layout_width="@dimen/small_item_height"
+        android:layout_height="@dimen/small_item_height"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundAsCircle="true" />
+
+    <com.vanniktech.emoji.EmojiEditText
+        android:id="@+id/participant_status_emoji"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin">
+        android:background="@color/transparent"
+        android:cursorVisible="false"
+        android:gravity="center"
+        android:text="@string/default_emoji"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/participant_online_state"
+        app:layout_constraintEnd_toEndOf="@+id/participant_online_state" />
 
-        <com.facebook.drawee.view.SimpleDraweeView
-            android:id="@+id/conversation_info_participant_avatar"
-            android:layout_width="@dimen/avatar_size"
-            android:layout_height="@dimen/avatar_size"
-            app:roundAsCircle="true" />
+    <ImageView
+        android:id="@+id/participant_online_state"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginEnd="-4dp"
+        android:layout_marginBottom="-4dp"
+        android:contentDescription="@null"
+        android:src="@drawable/online_status"
+        app:layout_constraintBottom_toBottomOf="@+id/conversation_info_participant_avatar"
+        app:layout_constraintEnd_toEndOf="@+id/conversation_info_participant_avatar" />
 
-        <com.vanniktech.emoji.EmojiEditText
-            android:id="@+id/participant_status_emoji"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:background="@color/transparent"
-            android:cursorVisible="false"
-            android:gravity="center"
-            android:text="@string/default_emoji"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:id="@+id/participant_online_state"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_gravity="bottom|end"
-            android:contentDescription="@null"
-            android:src="@drawable/online_status"/>
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/linear_layout"
-        android:layout_width="match_parent"
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/name_text"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/margin_between_elements"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:layout_toEndOf="@id/frame_layout"
-        android:orientation="vertical">
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/ListItem"
+        app:layout_constraintStart_toEndOf="@+id/conversation_info_participant_avatar"
+        app:layout_constraintTop_toTopOf="@+id/conversation_info_participant_avatar"
+        tools:text="username" />
 
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@+id/name_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textAppearance="@style/ListItem"
-            tools:text="Call item text" />
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/secondary_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="middle"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textColor="@color/textColorMaxContrast"
+        app:layout_constraintStart_toStartOf="@+id/name_text"
+        app:layout_constraintTop_toBottomOf="@+id/name_text"
+        tools:text="\@userid" />
 
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@+id/secondary_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textColor="@color/textColorMaxContrast"
-            tools:text="A week ago" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
