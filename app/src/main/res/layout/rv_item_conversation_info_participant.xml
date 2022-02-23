@@ -23,15 +23,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/standard_half_margin"
+    android:layout_marginTop="@dimen/standard_margin">
 
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/conversation_info_participant_avatar"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="@dimen/standard_margin"
         android:contentDescription="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -63,9 +64,8 @@
         android:id="@+id/name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginTop="2dp"
-        android:ellipsize="middle"
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
@@ -78,14 +78,17 @@
         android:id="@+id/conversation_info_status_message"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:maxLines="2"
+        android:layout_marginBottom="4dp"
         android:ellipsize="end"
+        android:maxLines="3"
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginEnd="@dimen/side_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/participant_status_emoji"
         app:layout_constraintTop_toBottomOf="@+id/name_text"
-        app:layout_constraintEnd_toEndOf="parent"
         tools:text="this is a very long status message. server allows only 81 chars here. 0123456789" />
 
     <androidx.emoji.widget.EmojiTextView
@@ -93,27 +96,28 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:ellipsize="middle"
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginEnd="@dimen/side_margin"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/name_text"
         app:layout_constraintTop_toTopOf="@+id/name_text"
-        tools:text="@string/nc_moderator" />
+        tools:text="Moderator (or userid for autocomplete mention)" />
 
 
     <ImageView
         android:id="@+id/videoCallIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_half_margin"
         android:contentDescription="@null"
         android:src="@drawable/ic_videocam_grey_600_24dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/secondary_text"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

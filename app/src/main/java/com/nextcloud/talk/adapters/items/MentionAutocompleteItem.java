@@ -55,6 +55,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
     private String source;
     private String status;
     private String statusIcon;
+    private String statusMessage;
     private UserEntity currentUser;
     private Context context;
 
@@ -67,6 +68,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         this.source = mention.getSource();
         this.status = mention.getStatus();
         this.statusIcon = mention.getStatusIcon();
+        this.statusMessage = mention.getStatusMessage();
         this.currentUser = currentUser;
         this.context = activityContext;
     }
@@ -99,7 +101,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
     @Override
     public int getLayoutRes() {
-        return R.layout.rv_item_mention;
+        return R.layout.rv_item_conversation_info_participant;
     }
 
     @Override
@@ -124,13 +126,13 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                                         displayName,
                                         String.valueOf(adapter.getFilter(String.class)),
                                         NextcloudTalkApplication.Companion.getSharedApplication()
-                                                .getResources().getColor(R.color.colorPrimary));
+                                            .getResources().getColor(R.color.colorPrimary));
             if (holder.contactMentionId != null) {
                 FlexibleUtils.highlightText(holder.contactMentionId,
                                             "@" + objectId,
                                             String.valueOf(adapter.getFilter(String.class)),
                                             NextcloudTalkApplication.Companion.getSharedApplication()
-                                                    .getResources().getColor(R.color.colorPrimary));
+                                                .getResources().getColor(R.color.colorPrimary));
             }
         } else {
             holder.contactDisplayName.setText(displayName);
@@ -149,37 +151,53 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             if (SOURCE_GUESTS.equals(source)) {
                 avatarId = displayName;
                 avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(
-                        currentUser.getBaseUrl(),
-                        avatarId,
-                        R.dimen.avatar_size_big);
+                    currentUser.getBaseUrl(),
+                    avatarId,
+                    R.dimen.avatar_size_big);
             }
 
             holder.participantAvatar.setController(null);
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(holder.participantAvatar.getController())
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl, null))
-                    .build();
+                .setOldController(holder.participantAvatar.getController())
+                .setAutoPlayAnimations(true)
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarUrl, null))
+                .build();
             holder.participantAvatar.setController(draweeController);
         }
-        if (status != null && status.equals(StatusType.DND.getString())) {
-            setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
-        } else if (statusIcon != null && statusIcon.isEmpty()) {
-            holder.participantOnlineStateImage.setVisibility(View.GONE);
+
+        if (statusMessage != null) {
+            holder.statusMessage.setText(statusMessage);
+        } else {
+            holder.statusMessage.setText("");
+        }
+
+        if (statusIcon != null && !statusIcon.isEmpty()) {
             holder.participantEmoji.setVisibility(View.VISIBLE);
             holder.participantEmoji.setText(statusIcon);
+        } else {
+            holder.participantEmoji.setVisibility(View.GONE);
+            holder.participantEmoji.setText("");
+        }
+
+        if (status != null && status.equals(StatusType.DND.getString())) {
+            setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
+            if (statusMessage == null || statusMessage.isEmpty()) {
+                holder.statusMessage.setText(R.string.dnd);
+            }
         } else if (status != null && status.equals(StatusType.AWAY.getString())) {
             setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
+            if (statusMessage == null || statusMessage.isEmpty()) {
+                holder.statusMessage.setText(R.string.away);
+            }
         } else if (status != null && status.equals(StatusType.ONLINE.getString())) {
             setOnlineStateIcon(holder, R.drawable.online_status_with_border);
         } else {
-            holder.participantEmoji.setVisibility(View.GONE);
             holder.participantOnlineStateImage.setVisibility(View.GONE);
         }
     }
 
+
     private void setOnlineStateIcon(UserItem.UserItemViewHolder holder, int icon) {
-        holder.participantEmoji.setVisibility(View.GONE);
         holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
         holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, icon));
     }

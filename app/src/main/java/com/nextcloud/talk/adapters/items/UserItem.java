@@ -133,6 +133,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         if (participant.statusMessage != null) {
             holder.statusMessage.setText(participant.statusMessage);
+        } else {
+            holder.statusMessage.setText("");
         }
 
         if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {

@@ -26,6 +26,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem;
 import com.nextcloud.talk.api.NcApi;
@@ -91,6 +92,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         adapter = new FlexibleAdapter<>(abstractFlexibleItemList, context, false);
         adapter.addListener(this);
         return adapter;
+    }
+
+    @Override
+    protected PopupDimensions getPopupDimensions() {
+        PopupDimensions popupDimensions = new PopupDimensions();
+        popupDimensions.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        popupDimensions.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        return popupDimensions;
     }
 
     @Override
