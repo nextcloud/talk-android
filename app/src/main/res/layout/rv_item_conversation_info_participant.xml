@@ -29,7 +29,7 @@
 
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/conversation_info_participant_avatar"
+        android:id="@+id/avatar_drawee_view"
         android:layout_width="@dimen/small_item_height"
         android:layout_height="@dimen/small_item_height"
         android:layout_marginStart="@dimen/standard_margin"
@@ -56,8 +56,8 @@
         android:layout_height="16dp"
         android:contentDescription="@null"
         android:src="@drawable/online_status"
-        app:layout_constraintBottom_toBottomOf="@+id/conversation_info_participant_avatar"
-        app:layout_constraintEnd_toEndOf="@+id/conversation_info_participant_avatar" />
+        app:layout_constraintBottom_toBottomOf="@+id/avatar_drawee_view"
+        app:layout_constraintEnd_toEndOf="@+id/avatar_drawee_view" />
 
 
     <androidx.emoji.widget.EmojiTextView
@@ -70,8 +70,8 @@
         android:textAlignment="viewStart"
         android:textAppearance="?android:attr/textAppearanceListItem"
         android:textColor="@color/conversation_item_header"
-        app:layout_constraintStart_toEndOf="@id/conversation_info_participant_avatar"
-        app:layout_constraintTop_toTopOf="@+id/conversation_info_participant_avatar"
+        app:layout_constraintStart_toEndOf="@id/avatar_drawee_view"
+        app:layout_constraintTop_toTopOf="@+id/avatar_drawee_view"
         tools:text="Jane Doe" />
 
     <androidx.emoji.widget.EmojiTextView

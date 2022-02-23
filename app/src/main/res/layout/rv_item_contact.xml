@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toStartOf="@id/checkedImageView"
-        android:layout_toEndOf="@id/simple_drawee_view"
+        android:layout_toEndOf="@id/avatar_drawee_view"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="viewStart"
@@ -56,7 +56,7 @@
         tools:text="Jane Doe" />
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/simple_drawee_view"
+        android:id="@+id/avatar_drawee_view"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_centerVertical="true"
