@@ -17,7 +17,7 @@ data class PredefinedStatus(
     var message: String,
     @JsonField(name = ["clearAt"])
     var clearAt: ClearAt?
-    ) : Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this("id", "icon", "message", null)
 }

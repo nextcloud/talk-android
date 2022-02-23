@@ -12,7 +12,7 @@ data class ClearAt(
     var type: String,
     @JsonField(name = ["time"])
     var time: String
-    ) : Parcelable{
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this("type", "time")
 }
