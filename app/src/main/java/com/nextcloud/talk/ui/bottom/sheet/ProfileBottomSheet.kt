@@ -135,7 +135,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
             null
         )
         val credentials = ApiUtils.getCredentials(userEntity.username, userEntity.token)
-        ncApi!!.createRoom(
+        ncApi.createRoom(
             credentials,
             retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
         )
@@ -153,7 +153,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                     bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
 
                     // FIXME once APIv2+ is used only, the createRoom already returns all the data
-                    ncApi!!.getRoom(
+                    ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, userEntity.baseUrl,
