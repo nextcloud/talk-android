@@ -1608,13 +1608,7 @@ public class CallActivity extends CallBaseActivity {
                 peerConnectionFactory = null;
             }
 
-            if(localStream != null) {
-                localStream.dispose();
-                localStream = null;
-                Log.d(TAG, "Disposed localStream");
-            } else {
-                Log.d(TAG, "localStream is null");
-            }
+
             localAudioTrack = null;
             localVideoTrack = null;
 
@@ -1626,6 +1620,14 @@ public class CallActivity extends CallBaseActivity {
 
         for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
             endPeerConnection(peerConnectionWrapperList.get(i).getSessionId(), false);
+        }
+
+        if(localStream != null) {
+            localStream.dispose();
+            localStream = null;
+            Log.d(TAG, "Disposed localStream");
+        } else {
+            Log.d(TAG, "localStream is null");
         }
 
         hangupNetworkCalls(shutDownView);
