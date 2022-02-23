@@ -20,6 +20,7 @@
  */
 package com.nextcloud.talk.ui.bottom.sheet
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -84,6 +85,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
             })
     }
 
+    @SuppressLint("CheckResult")
     private fun bottomSheet(actions: List<HoverCardAction>, displayName: String, userId: String, context: Context) {
 
         val filteredActions = actions.filter { allowedAppIds.contains(it.appId) }
