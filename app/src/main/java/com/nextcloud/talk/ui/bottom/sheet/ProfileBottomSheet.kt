@@ -67,7 +67,11 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                 }
 
                 override fun onNext(hoverCardOverall: HoverCardOverall) {
-                    bottomSheet(hoverCardOverall.ocs.data.actions, hoverCardOverall.ocs.data.displayName, user, context)
+                    bottomSheet(
+                        hoverCardOverall.ocs!!.data!!.actions!!, hoverCardOverall.ocs!!.data!!.displayName!!,
+                        user,
+                        context
+                    )
                 }
 
                 override fun onError(e: Throwable) {
@@ -94,8 +98,8 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                 val action = filteredActions[index]
 
                 when (AllowedAppIds.createFor(action)) {
-                    PROFILE -> openProfile(action.hyperlink, context)
-                    EMAIL -> composeEmail(action.title, context)
+                    PROFILE -> openProfile(action.hyperlink!!, context)
+                    EMAIL -> composeEmail(action.title!!, context)
                     SPREED -> talkTo(userId)
                 }
             }
@@ -112,7 +116,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
 
         return BasicListItemWithImage(
             drawable,
-            action.title
+            action.title!!
         )
     }
 
@@ -213,7 +217,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
         EMAIL("email");
 
         companion object {
-            fun createFor(action: HoverCardAction): AllowedAppIds = valueOf(action.appId.uppercase())
+            fun createFor(action: HoverCardAction): AllowedAppIds = valueOf(action.appId!!.uppercase())
         }
     }
 }
