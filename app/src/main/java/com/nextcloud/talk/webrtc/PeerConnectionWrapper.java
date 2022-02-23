@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,6 +39,7 @@ import com.nextcloud.talk.models.json.signaling.DataChannelMessageNick;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 
 import org.greenrobot.eventbus.EventBus;
+import org.webrtc.AudioTrack;
 import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaConstraints;
@@ -46,81 +49,87 @@ import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RtpReceiver;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
+import org.webrtc.VideoTrack;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
 import autodagger.AutoInjector;
 
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 @AutoInjector(NextcloudTalkApplication.class)
-public class MagicPeerConnectionWrapper {
-    private static final String TAG = "MagicPeerConWrapper";
+public class PeerConnectionWrapper {
+
+    private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
     private List<IceCandidate> iceCandidates = new ArrayList<>();
     private PeerConnection peerConnection;
     private String sessionId;
     private String nick;
-    private MediaConstraints sdpConstraints;
-    private DataChannel magicDataChannel;
-    private MagicSdpObserver magicSdpObserver;
-    private MediaStream remoteMediaStream;
+    private final MediaConstraints mediaConstraints;
+    private DataChannel dataChannel;
+    private final MagicSdpObserver magicSdpObserver;
+    private MediaStream remoteStream;
 
-    private boolean remoteVideoOn;
-    private boolean remoteAudioOn;
+    private final boolean hasInitiated;
 
-    private boolean hasInitiated;
-
-    private MediaStream localMediaStream;
-    private boolean isMCUPublisher;
-    private boolean hasMCU;
-    private String videoStreamType;
-
-    private int connectionAttempts = 0;
-    private PeerConnection.IceConnectionState peerIceConnectionState;
+    private final MediaStream localStream;
+    private final boolean isMCUPublisher;
+    private final String videoStreamType;
 
     @Inject
     Context context;
 
-    public MagicPeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
-                                      List<PeerConnection.IceServer> iceServerList,
-                                      MediaConstraints sdpConstraints,
-                                      String sessionId, String localSession, @Nullable MediaStream mediaStream,
-                                      boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
+    public PeerConnectionWrapper(PeerConnectionFactory peerConnectionFactory,
+                                 List<PeerConnection.IceServer> iceServerList,
+                                 MediaConstraints mediaConstraints,
+                                 String sessionId, String localSession, @Nullable MediaStream localStream,
+                                 boolean isMCUPublisher, boolean hasMCU, String videoStreamType) {
 
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
-        this.localMediaStream = mediaStream;
+        this.localStream = localStream;
         this.videoStreamType = videoStreamType;
-        this.hasMCU = hasMCU;
 
         this.sessionId = sessionId;
-        this.sdpConstraints = sdpConstraints;
+        this.mediaConstraints = mediaConstraints;
 
         magicSdpObserver = new MagicSdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
         this.isMCUPublisher = isMCUPublisher;
-        
-        peerConnection = peerConnectionFactory.createPeerConnection(iceServerList, sdpConstraints,
-                new MagicPeerConnectionObserver());
+
+        PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
+        configuration.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN;
+        peerConnection = peerConnectionFactory.createPeerConnection(configuration, new MagicPeerConnectionObserver());
 
         if (peerConnection != null) {
-            if (localMediaStream != null) {
-                peerConnection.addStream(localMediaStream);
+            if (this.localStream != null) {
+                List<String> localStreamIds = Collections.singletonList(this.localStream.getId());
+                for(AudioTrack track : this.localStream.audioTracks) {
+                    peerConnection.addTrack(track, localStreamIds);
+                }
+                for(VideoTrack track : this.localStream.videoTracks) {
+                    peerConnection.addTrack(track, localStreamIds);
+                }
             }
 
             if (hasMCU || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
-                magicDataChannel = peerConnection.createDataChannel("status", init);
-                magicDataChannel.registerObserver(new MagicDataChannelObserver());
+                dataChannel = peerConnection.createDataChannel("status", init);
+                dataChannel.registerObserver(new MagicDataChannelObserver());
                 if (isMCUPublisher) {
-                    peerConnection.createOffer(magicSdpObserver, sdpConstraints);
+                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 } else if (hasMCU && this.videoStreamType.equals("video")) {
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be requested only for videos.
@@ -128,7 +137,7 @@ public class MagicPeerConnectionWrapper {
                     hashMap.put("sessionId", sessionId);
                     EventBus.getDefault().post(new WebSocketCommunicationEvent("peerReadyForRequestingOffer", hashMap));
                 } else if (!hasMCU && hasInitiated) {
-                    peerConnection.createOffer(magicSdpObserver, sdpConstraints);
+                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
                 }
             }
         }
@@ -139,18 +148,20 @@ public class MagicPeerConnectionWrapper {
     }
 
     public void removePeerConnection() {
-        if (magicDataChannel != null) {
-            magicDataChannel.dispose();
-            magicDataChannel = null;
+        if (dataChannel != null) {
+            dataChannel.dispose();
+            dataChannel = null;
+            Log.d(TAG, "Disposed DataChannel");
+        } else {
+            Log.d(TAG, "DataChannel is null.");
         }
 
         if (peerConnection != null) {
-            if (localMediaStream != null) {
-                peerConnection.removeStream(localMediaStream);
-            }
-
             peerConnection.close();
             peerConnection = null;
+            Log.d(TAG, "Disposed PeerConnection");
+        } else {
+            Log.d(TAG, "PeerConnection is null.");
         }
     }
 
@@ -179,10 +190,10 @@ public class MagicPeerConnectionWrapper {
 
     public void sendNickChannelData(DataChannelMessageNick dataChannelMessage) {
         ByteBuffer buffer;
-        if (magicDataChannel != null) {
+        if (dataChannel != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+                dataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
@@ -191,10 +202,10 @@ public class MagicPeerConnectionWrapper {
 
     public void sendChannelData(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
-        if (magicDataChannel != null) {
+        if (dataChannel != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                magicDataChannel.send(new DataChannel.Buffer(buffer, false));
+                dataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (IOException e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
@@ -217,7 +228,7 @@ public class MagicPeerConnectionWrapper {
         if (!TextUtils.isEmpty(nick)) {
             return nick;
         } else {
-            return NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_nick_guest);
+            return Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getString(R.string.nc_nick_guest);
         }
     }
 
@@ -226,14 +237,14 @@ public class MagicPeerConnectionWrapper {
     }
 
     private void sendInitialMediaStatus() {
-        if (localMediaStream != null) {
-            if (localMediaStream.videoTracks.size() == 1 && localMediaStream.videoTracks.get(0).enabled()) {
+        if (localStream != null) {
+            if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
                 sendChannelData(new DataChannelMessage("videoOn"));
             } else {
                 sendChannelData(new DataChannelMessage("videoOff"));
             }
 
-            if (localMediaStream.audioTracks.size() == 1 && localMediaStream.audioTracks.get(0).enabled()) {
+            if (localStream.audioTracks.size() == 1 && localStream.audioTracks.get(0).enabled()) {
                 sendChannelData(new DataChannelMessage("audioOn"));
             } else {
                 sendChannelData(new DataChannelMessage("audioOff"));
@@ -254,8 +265,8 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (magicDataChannel != null && magicDataChannel.state().equals(DataChannel.State.OPEN) &&
-                    magicDataChannel.label().equals("status")) {
+            if (dataChannel != null && dataChannel.state().equals(DataChannel.State.OPEN) &&
+                    dataChannel.label().equals("status")) {
                 sendInitialMediaStatus();
             }
         }
@@ -292,47 +303,22 @@ public class MagicPeerConnectionWrapper {
                                     .NICK_CHANGE, sessionId, payloadHashMap.get("name"), null, videoStreamType));
                         }
                     }
-
                 } else if ("audioOn".equals(dataChannelMessage.getType())) {
-                    remoteAudioOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn, videoStreamType));
+                            .AUDIO_CHANGE, sessionId, null, TRUE, videoStreamType));
                 } else if ("audioOff".equals(dataChannelMessage.getType())) {
-                    remoteAudioOn = false;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .AUDIO_CHANGE, sessionId, null, remoteAudioOn, videoStreamType));
+                            .AUDIO_CHANGE, sessionId, null, FALSE, videoStreamType));
                 } else if ("videoOn".equals(dataChannelMessage.getType())) {
-                    remoteVideoOn = true;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn, videoStreamType));
+                            .VIDEO_CHANGE, sessionId, null, TRUE, videoStreamType));
                 } else if ("videoOff".equals(dataChannelMessage.getType())) {
-                    remoteVideoOn = false;
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                            .VIDEO_CHANGE, sessionId, null, remoteVideoOn, videoStreamType));
+                            .VIDEO_CHANGE, sessionId, null, FALSE, videoStreamType));
                 }
             } catch (IOException e) {
                 Log.d(TAG, "Failed to parse data channel message");
             }
-        }
-    }
-
-    private void restartIce() {
-        if (connectionAttempts <= 5) {
-            if (!hasMCU || isMCUPublisher) {
-                MediaConstraints.KeyValuePair iceRestartConstraint =
-                        new MediaConstraints.KeyValuePair("IceRestart", "true");
-
-                if (sdpConstraints.mandatory.contains(iceRestartConstraint)) {
-                    sdpConstraints.mandatory.add(iceRestartConstraint);
-                }
-
-                peerConnection.createOffer(magicSdpObserver, sdpConstraints);
-            } else {
-                // we have an MCU and this is not the publisher
-                // Do something if we have an MCU
-            }
-
-            connectionAttempts++;
         }
     }
 
@@ -344,16 +330,12 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
-            peerIceConnectionState = iceConnectionState;
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
-                connectionAttempts = 0;
-                /*EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
-                        .PEER_CONNECTED, sessionId, null, null));*/
 
                 if (!isMCUPublisher) {
-                    EventBus.getDefault().post(new MediaStreamEvent(remoteMediaStream, sessionId, videoStreamType));
+                    EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
                 }
 
                 if (hasInitiated) {
@@ -363,11 +345,7 @@ public class MagicPeerConnectionWrapper {
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.CLOSED)) {
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
                         .PEER_CLOSED, sessionId, null, null, videoStreamType));
-                connectionAttempts = 0;
             } else if (iceConnectionState.equals(PeerConnection.IceConnectionState.FAILED)) {
-                /*if (MerlinTheWizard.isConnectedToInternet() && connectionAttempts < 5) {
-                    restartIce();
-                }*/
                 if (isMCUPublisher) {
                     EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED, sessionId, null, null, null));
                 }
@@ -401,7 +379,7 @@ public class MagicPeerConnectionWrapper {
 
         @Override
         public void onAddStream(MediaStream mediaStream) {
-            remoteMediaStream = mediaStream;
+            remoteStream = mediaStream;
         }
 
         @Override
@@ -414,8 +392,8 @@ public class MagicPeerConnectionWrapper {
         @Override
         public void onDataChannel(DataChannel dataChannel) {
             if (dataChannel.label().equals("status") || dataChannel.label().equals("JanusDataChannel")) {
-                magicDataChannel = dataChannel;
-                magicDataChannel.registerObserver(new MagicDataChannelObserver());
+                PeerConnectionWrapper.this.dataChannel = dataChannel;
+                PeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
             }
         }
 
@@ -466,7 +444,7 @@ public class MagicPeerConnectionWrapper {
         public void onSetSuccess() {
             if (peerConnection != null) {
                 if (peerConnection.getLocalDescription() == null) {
-                    peerConnection.createAnswer(magicSdpObserver, sdpConstraints);
+                    peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
                 }
 
                 if (peerConnection.getRemoteDescription() != null) {
@@ -474,9 +452,5 @@ public class MagicPeerConnectionWrapper {
                 }
             }
         }
-    }
-
-    public PeerConnection.IceConnectionState getPeerIceConnectionState() {
-        return peerIceConnectionState;
     }
 }
