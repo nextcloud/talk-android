@@ -197,16 +197,21 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.pinnedConversationImageView.setVisibility(View.GONE);
         }
 
-        if (status != null && status.getStatus().equals(StatusType.DND.getString())) {
-            setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
-        } else if (status != null && status.getIcon() != null && !status.getIcon().isEmpty()) {
-            holder.userStatusOnlineState.setVisibility(View.GONE);
-            holder.userStatusEmoji.setVisibility(View.VISIBLE);
-            holder.userStatusEmoji.setText(status.getIcon());
-        } else if (status != null && status.getStatus().equals(StatusType.AWAY.getString())) {
-            setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
-        } else if (status != null && status.getStatus().equals(StatusType.ONLINE.getString())) {
-            setOnlineStateIcon(holder, R.drawable.online_status_with_border);
+        if (!Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+            if (status != null && status.getStatus().equals(StatusType.DND.getString())) {
+                setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
+            } else if (status != null && status.getIcon() != null && !status.getIcon().isEmpty()) {
+                holder.userStatusOnlineState.setVisibility(View.GONE);
+                holder.userStatusEmoji.setVisibility(View.VISIBLE);
+                holder.userStatusEmoji.setText(status.getIcon());
+            } else if (status != null && status.getStatus().equals(StatusType.AWAY.getString())) {
+                setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
+            } else if (status != null && status.getStatus().equals(StatusType.ONLINE.getString())) {
+                setOnlineStateIcon(holder, R.drawable.online_status_with_border);
+            } else {
+                holder.userStatusEmoji.setVisibility(View.GONE);
+                holder.userStatusOnlineState.setVisibility(View.GONE);
+            }
         } else {
             holder.userStatusEmoji.setVisibility(View.GONE);
             holder.userStatusOnlineState.setVisibility(View.GONE);
