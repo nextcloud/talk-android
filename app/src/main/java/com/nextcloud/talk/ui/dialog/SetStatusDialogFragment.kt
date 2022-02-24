@@ -358,19 +358,19 @@ class SetStatusDialogFragment :
         clearTopStatus()
         when (statusType) {
             StatusType.ONLINE -> {
-                binding.onlineStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.onlineStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
                 binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             StatusType.AWAY -> {
-                binding.awayStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.awayStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
                 binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             StatusType.DND -> {
-                binding.dndStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.dndStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
                 binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             StatusType.INVISIBLE -> {
-                binding.invisibleStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.invisibleStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
                 binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             else -> Log.d(logTag, "unknown status")
@@ -380,10 +380,10 @@ class SetStatusDialogFragment :
     private fun clearTopStatus() {
         context?.let {
             val grey = it.resources.getColor(R.color.grey_200)
-            binding.onlineStatus.setBackgroundColor(grey)
-            binding.awayStatus.setBackgroundColor(grey)
-            binding.dndStatus.setBackgroundColor(grey)
-            binding.invisibleStatus.setBackgroundColor(grey)
+            binding.onlineStatus.setCardBackgroundColor(grey)
+            binding.awayStatus.setCardBackgroundColor(grey)
+            binding.dndStatus.setCardBackgroundColor(grey)
+            binding.invisibleStatus.setCardBackgroundColor(grey)
 
             binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
             binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
