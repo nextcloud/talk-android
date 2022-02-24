@@ -26,7 +26,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:ignore="VectorRaster">
     <path
-        android:fillColor="#00ff00"
+        android:fillColor="#49b382"
         android:pathData="m12,2c-5.52,0 -10,4.48 -10,10s4.48,10 10,10 10,-4.48 10,-10 -4.48,-10 -10,-10z" />
 </vector>
 
