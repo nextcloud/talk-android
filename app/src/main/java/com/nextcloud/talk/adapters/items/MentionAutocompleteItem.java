@@ -192,9 +192,10 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
 
             if (statusMessage != null) {
                 holder.statusMessage.setText(statusMessage);
+                alignUsernameVertical(holder, 0);
             } else {
                 holder.statusMessage.setText("");
-                alignUsernameVertical(holder);
+                alignUsernameVertical(holder, 10);
             }
 
             if (statusIcon != null && !statusIcon.isEmpty()) {
@@ -215,10 +216,10 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
         }
     }
 
-    private void alignUsernameVertical(UserItem.UserItemViewHolder holder) {
+    private void alignUsernameVertical(UserItem.UserItemViewHolder holder, float densityPixelsFromTop) {
         ConstraintLayout.LayoutParams layoutParams =
             (ConstraintLayout.LayoutParams) holder.contactDisplayName.getLayoutParams();
-        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(10, context);
+        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(densityPixelsFromTop, context);
         holder.contactDisplayName.setLayoutParams(layoutParams);
     }
 
