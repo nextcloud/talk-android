@@ -37,6 +37,7 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags;
 import com.nextcloud.talk.models.json.status.StatusType;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -44,7 +45,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
@@ -58,6 +58,9 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
     ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
+
+    private static final float STATUS_SIZE_IN_DP = 9f;
+    private static final String NO_ICON = "";
 
     private Context context;
     private Participant participant;
@@ -131,7 +134,15 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
-        if (holder.statusMessage != null && holder.participantEmoji != null && holder.participantOnlineStateImage != null) {
+        if (holder.statusMessage != null && holder.participantEmoji != null && holder.userStatusImage != null) {
+            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
+            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+                participant.status,
+                NO_ICON,
+                size,
+                context.getResources().getColor(R.color.bg_default),
+                context));
+
             if (participant.statusMessage != null) {
                 holder.statusMessage.setText(participant.statusMessage);
             } else {
@@ -145,22 +156,13 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
 
             if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
-                holder.participantOnlineStateImage.setImageDrawable(
-                    ContextCompat.getDrawable(context, R.drawable.ic_user_status_dnd_with_border));
                 if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
                     holder.statusMessage.setText(R.string.dnd);
                 }
             } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
-                holder.participantOnlineStateImage.setImageDrawable(
-                    ContextCompat.getDrawable(context, R.drawable.ic_user_status_away_with_border));
                 if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
                     holder.statusMessage.setText(R.string.away);
                 }
-            } else if (participant.status != null && participant.status.equals(StatusType.ONLINE.getString())) {
-                holder.participantOnlineStateImage.setImageDrawable(
-                    ContextCompat.getDrawable(context, R.drawable.online_status_with_border));
-            } else {
-                holder.participantOnlineStateImage.setVisibility(View.GONE);
             }
         }
 
@@ -328,9 +330,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.participant_status_emoji)
         com.vanniktech.emoji.EmojiEditText participantEmoji;
-        @Nullable
-        @BindView(R.id.participant_online_state)
-        ImageView participantOnlineStateImage;
+        @BindView(R.id.user_status_image)
+        ImageView userStatusImage;
         @Nullable
         @BindView(R.id.conversation_info_status_message)
         EmojiTextView statusMessage;

@@ -60,7 +60,8 @@
             android:layout_width="18dp"
             android:layout_height="18dp"
             android:layout_gravity="bottom|end"
-            android:contentDescription="@string/nc_account_chooser_active_user" />
+            android:contentDescription="@string/nc_account_chooser_active_user"
+            tools:src="@drawable/emoji_one_category_smileysandpeople"/>
     </FrameLayout>
 
     <RelativeLayout

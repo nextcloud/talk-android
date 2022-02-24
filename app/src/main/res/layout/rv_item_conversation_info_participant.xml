@@ -51,14 +51,14 @@
         app:layout_constraintTop_toBottomOf="@+id/name_text" />
 
     <ImageView
-        android:id="@+id/participant_online_state"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:contentDescription="@null"
-        android:src="@drawable/online_status"
+        android:id="@+id/user_status_image"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/nc_account_chooser_active_user"
         app:layout_constraintBottom_toBottomOf="@+id/avatar_drawee_view"
-        app:layout_constraintEnd_toEndOf="@+id/avatar_drawee_view" />
-
+        app:layout_constraintEnd_toEndOf="@+id/avatar_drawee_view"
+        tools:src="@drawable/emoji_one_category_smileysandpeople"/>
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/name_text"

@@ -31,6 +31,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.status.StatusType;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -38,7 +39,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -49,8 +49,11 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder>
         implements IFilterable<String> {
 
+    private static final float STATUS_SIZE_IN_DP = 9f;
+    private static final String NO_ICON = "";
     public static final String SOURCE_CALLS = "calls";
     public static final String SOURCE_GUESTS = "guests";
+
     private String source;
     private final String objectId;
     private final String displayName;
@@ -171,7 +174,16 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             holder.participantAvatar.setController(draweeController);
         }
 
-        if (holder.statusMessage != null && holder.participantEmoji != null && holder.participantOnlineStateImage != null) {
+
+        if (holder.statusMessage != null && holder.participantEmoji != null && holder.userStatusImage != null) {
+            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
+            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+                status,
+                NO_ICON,
+                size,
+                context.getResources().getColor(R.color.bg_default),
+                context));
+
             if (statusMessage != null) {
                 holder.statusMessage.setText(statusMessage);
             } else {
@@ -179,33 +191,19 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             }
 
             if (statusIcon != null && !statusIcon.isEmpty()) {
-                holder.participantEmoji.setVisibility(View.VISIBLE);
                 holder.participantEmoji.setText(statusIcon);
             } else {
                 holder.participantEmoji.setVisibility(View.GONE);
-                holder.participantEmoji.setText("");
             }
 
             if (status != null && status.equals(StatusType.DND.getString())) {
-                holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
-                holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_user_status_dnd_with_border));
-
                 if (statusMessage == null || statusMessage.isEmpty()) {
                     holder.statusMessage.setText(R.string.dnd);
                 }
             } else if (status != null && status.equals(StatusType.AWAY.getString())) {
-                holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
-                holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_user_status_away_with_border));
-
                 if (statusMessage == null || statusMessage.isEmpty()) {
                     holder.statusMessage.setText(R.string.away);
                 }
-            } else if (status != null && status.equals(StatusType.ONLINE.getString())) {
-                holder.participantOnlineStateImage.setVisibility(View.VISIBLE);
-                holder.participantOnlineStateImage.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.online_status_with_border));
-
-            } else {
-                holder.participantOnlineStateImage.setVisibility(View.GONE);
             }
         }
     }
