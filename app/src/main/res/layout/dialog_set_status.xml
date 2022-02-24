@@ -32,6 +32,7 @@
         android:layout_marginBottom="@dimen/standard_half_margin"
         android:text="@string/online_status"
         android:textColor="@color/high_emphasis_text"
+        android:textSize="@dimen/activity_list_item_title_header_text_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
