@@ -68,4 +68,6 @@
 
     <color name="list_divider_background">#222222</color>
     <color name="grey_200">#818181</color>
+
+    <color name="dialog_background">#353535</color>
 </resources>

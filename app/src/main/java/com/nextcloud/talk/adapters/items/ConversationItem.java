@@ -48,6 +48,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.status.StatusType;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -70,6 +71,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements ISectionable<ConversationItem.ConversationItemViewHolder, GenericTextHeaderItem>,
     IFilterable<String> {
 
+    private static final float STATUS_SIZE_IN_DP = 9f;
 
     private Conversation conversation;
     private UserEntity userEntity;
@@ -198,23 +200,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
 
         if (!Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
-            if (status != null && status.getStatus().equals(StatusType.DND.getString())) {
-                setOnlineStateIcon(holder, R.drawable.ic_user_status_dnd_with_border);
-            } else if (status != null && status.getIcon() != null && !status.getIcon().isEmpty()) {
-                holder.userStatusOnlineState.setVisibility(View.GONE);
-                holder.userStatusEmoji.setVisibility(View.VISIBLE);
-                holder.userStatusEmoji.setText(status.getIcon());
-            } else if (status != null && status.getStatus().equals(StatusType.AWAY.getString())) {
-                setOnlineStateIcon(holder, R.drawable.ic_user_status_away_with_border);
-            } else if (status != null && status.getStatus().equals(StatusType.ONLINE.getString())) {
-                setOnlineStateIcon(holder, R.drawable.online_status_with_border);
-            } else {
-                holder.userStatusEmoji.setVisibility(View.GONE);
-                holder.userStatusOnlineState.setVisibility(View.GONE);
-            }
-        } else {
-            holder.userStatusEmoji.setVisibility(View.GONE);
-            holder.userStatusOnlineState.setVisibility(View.GONE);
+            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext);
+            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+                status != null ? status.getStatus() : "",
+                status != null ? status.getIcon() : "",
+                size,
+                context.getResources().getColor(R.color.bg_default),
+                appContext));
         }
 
         if (conversation.getLastMessage() != null) {
@@ -314,12 +306,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
     }
 
-    private void setOnlineStateIcon(ConversationItemViewHolder holder, int icon) {
-        holder.userStatusEmoji.setVisibility(View.GONE);
-        holder.userStatusOnlineState.setVisibility(View.VISIBLE);
-        holder.userStatusOnlineState.setImageDrawable(ContextCompat.getDrawable(context, icon));
-    }
-
     @Override
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
@@ -349,11 +335,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         Chip dialogUnreadBubble;
         @BindView(R.id.favoriteConversationImageView)
         ImageView pinnedConversationImageView;
-        @BindView(R.id.userStatusEmoji)
-        com.vanniktech.emoji.EmojiEditText userStatusEmoji;
-        @BindView(R.id.userStatusOnlineState)
-        ImageView userStatusOnlineState;
-
+        @BindView(R.id.user_status_image)
+        ImageView userStatusImage;
 
         ConversationItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);

@@ -43,49 +43,38 @@ public class StatusDrawable extends Drawable {
     private String text;
     private @DrawableRes int icon = -1;
     private Paint textPaint;
-    private Paint backgroundPaint;
+    private int backgroundColor;
     private final float radius;
     private Context context;
-    private final static int whiteBackground = Color.argb(200, 255, 255, 255);
-    private final static int onlineStatus = Color.argb(255, 73, 179, 130);
 
-    public StatusDrawable(String status, String statusIcon, float statusSize, Context context) {
-        backgroundPaint = new Paint();
-        backgroundPaint.setStyle(Paint.Style.FILL);
-        backgroundPaint.setAntiAlias(true);
-
+    public StatusDrawable(String status, String statusIcon, float statusSize, int backgroundColor, Context context) {
         radius = statusSize;
+        this.backgroundColor = backgroundColor;
 
-        if (TextUtils.isEmpty(statusIcon)) {
+
+        if ("dnd".equals(status)) {
+            icon = R.drawable.ic_user_status_dnd;
+            this.context = context;
+        } else if (TextUtils.isEmpty(statusIcon)) {
             switch (status) {
-                case "dnd":
-                    icon = R.drawable.ic_user_status_dnd;
-                    backgroundPaint.setColor(whiteBackground);
-                    this.context = context;
-                    break;
-
                 case "online":
-                    backgroundPaint.setColor(onlineStatus);
+                    icon = R.drawable.online_status;
+                    this.context = context;
                     break;
 
                 case "away":
                     icon = R.drawable.ic_user_status_away;
-                    backgroundPaint.setColor(whiteBackground);
                     this.context = context;
                     break;
 
                 default:
                     // do not show
-                    backgroundPaint = null;
                     break;
             }
         } else {
             text = statusIcon;
 
-            backgroundPaint.setColor(whiteBackground);
-
             textPaint = new Paint();
-            textPaint.setColor(Color.WHITE);
             textPaint.setTextSize(statusSize);
             textPaint.setAntiAlias(true);
             textPaint.setTextAlign(Paint.Align.CENTER);
@@ -100,16 +89,20 @@ public class StatusDrawable extends Drawable {
      */
     @Override
     public void draw(@NonNull Canvas canvas) {
-        if (backgroundPaint != null) {
-            canvas.drawCircle(radius, radius, radius, backgroundPaint);
-        }
-
         if (text != null) {
             textPaint.setTextSize(1.6f * radius);
             canvas.drawText(text, radius, radius - ((textPaint.descent() + textPaint.ascent()) / 2), textPaint);
         }
 
         if (icon != -1) {
+
+            Paint backgroundPaint = new Paint();
+            backgroundPaint.setStyle(Paint.Style.FILL);
+            backgroundPaint.setAntiAlias(true);
+            backgroundPaint.setColor(backgroundColor);
+
+            canvas.drawCircle(radius, radius, radius, backgroundPaint);
+
             Drawable drawable = ResourcesCompat.getDrawable(context.getResources(), icon, null);
 
             if (drawable != null) {

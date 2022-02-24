@@ -84,7 +84,7 @@ private const val LAST_SECOND_OF_MINUTE = 59
 class SetStatusDialogFragment :
     DialogFragment(), PredefinedStatusClickListener {
 
-    private val logTag = ChooseAccountDialogFragment::class.java.simpleName
+    private val logTag = SetStatusDialogFragment::class.java.simpleName
 
     private lateinit var binding: DialogSetStatusBinding
 
