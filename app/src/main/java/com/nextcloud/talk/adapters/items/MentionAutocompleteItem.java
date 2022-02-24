@@ -174,7 +174,10 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
             holder.participantAvatar.setController(draweeController);
         }
 
+        drawStatus(holder);
+    }
 
+    private void drawStatus(UserItem.UserItemViewHolder holder) {
         if (holder.statusMessage != null && holder.participantEmoji != null && holder.userStatusImage != null) {
             float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
             holder.userStatusImage.setImageDrawable(new StatusDrawable(

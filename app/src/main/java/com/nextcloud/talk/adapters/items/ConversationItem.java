@@ -199,7 +199,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.pinnedConversationImageView.setVisibility(View.GONE);
         }
 
-        if (!Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+        if (Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
             float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext);
             holder.userStatusImage.setImageDrawable(new StatusDrawable(
                 status != null ? status.getStatus() : "",
@@ -214,13 +214,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.dialogDate.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
                                                                           System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
-            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM == conversation.getType()) {
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
                 String authorDisplayName = "";
                 conversation.getLastMessage().setActiveUser(userEntity);
                 String text;
-                if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
+                if (conversation.getLastMessage().getMessageType() == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
                     if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
                         text = String.format(appContext.getString(R.string.nc_formatted_message_you),
                                              conversation.getLastMessage().getLastMessageDisplayText());

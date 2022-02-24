@@ -459,7 +459,6 @@
     <string name="starred">Favorite</string>
     <string name="user_status">Status</string>
     <string name="encrypted">Encrypted</string>
-    <string name="password_protected">Password protected</string>
 
     <string name="avatar">Avatar</string>
     <string name="account_icon">Account icon</string>

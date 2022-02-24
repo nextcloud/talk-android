@@ -124,7 +124,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
 
-        holder.participantAvatar.setController(null);
+        if (holder.participantAvatar != null) {
+            holder.participantAvatar.setController(null);
+        }
 
         if (holder.checkedImageView != null) {
             if (participant.isSelected()) {
@@ -134,37 +136,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
-        if (holder.statusMessage != null && holder.participantEmoji != null && holder.userStatusImage != null) {
-            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
-            holder.userStatusImage.setImageDrawable(new StatusDrawable(
-                participant.status,
-                NO_ICON,
-                size,
-                context.getResources().getColor(R.color.bg_default),
-                context));
-
-            if (participant.statusMessage != null) {
-                holder.statusMessage.setText(participant.statusMessage);
-            } else {
-                holder.statusMessage.setText("");
-            }
-
-            if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
-                holder.participantEmoji.setText(participant.statusIcon);
-            } else {
-                holder.participantEmoji.setVisibility(View.GONE);
-            }
-
-            if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
-                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
-                    holder.statusMessage.setText(R.string.dnd);
-                }
-            } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
-                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
-                    holder.statusMessage.setText(R.string.away);
-                }
-            }
-        }
+        drawStatus(holder);
 
         if (!isOnline) {
             holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(
@@ -289,6 +261,40 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
                 if (!userType.equals(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_user))) {
                     holder.contactMentionId.setText("(" + userType + ")");
+                }
+            }
+        }
+    }
+
+    private void drawStatus(UserItemViewHolder holder) {
+        if (holder.statusMessage != null && holder.participantEmoji != null && holder.userStatusImage != null) {
+            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
+            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+                participant.status,
+                NO_ICON,
+                size,
+                context.getResources().getColor(R.color.bg_default),
+                context));
+
+            if (participant.statusMessage != null) {
+                holder.statusMessage.setText(participant.statusMessage);
+            } else {
+                holder.statusMessage.setText("");
+            }
+
+            if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
+                holder.participantEmoji.setText(participant.statusIcon);
+            } else {
+                holder.participantEmoji.setVisibility(View.GONE);
+            }
+
+            if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
+                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                    holder.statusMessage.setText(R.string.dnd);
+                }
+            } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
+                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                    holder.statusMessage.setText(R.string.away);
                 }
             }
         }
