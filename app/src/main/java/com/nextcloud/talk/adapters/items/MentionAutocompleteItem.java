@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
@@ -193,6 +194,7 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                 holder.statusMessage.setText(statusMessage);
             } else {
                 holder.statusMessage.setText("");
+                alignUsernameVertical(holder);
             }
 
             if (statusIcon != null && !statusIcon.isEmpty()) {
@@ -211,6 +213,13 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<UserItem.UserI
                 }
             }
         }
+    }
+
+    private void alignUsernameVertical(UserItem.UserItemViewHolder holder) {
+        ConstraintLayout.LayoutParams layoutParams =
+            (ConstraintLayout.LayoutParams) holder.contactDisplayName.getLayoutParams();
+        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(10, context);
+        holder.contactDisplayName.setLayoutParams(layoutParams);
     }
 
     @Override

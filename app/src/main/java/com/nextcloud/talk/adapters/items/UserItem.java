@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
@@ -282,6 +283,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 holder.statusMessage.setText(participant.statusMessage);
             } else {
                 holder.statusMessage.setText("");
+                alignUsernameVertical(holder);
             }
 
             if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
@@ -300,6 +302,13 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 }
             }
         }
+    }
+
+    private void alignUsernameVertical(UserItemViewHolder holder) {
+        ConstraintLayout.LayoutParams layoutParams =
+            (ConstraintLayout.LayoutParams) holder.contactDisplayName.getLayoutParams();
+        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(10, context);
+        holder.contactDisplayName.setLayoutParams(layoutParams);
     }
 
     @Override
