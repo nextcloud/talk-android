@@ -330,6 +330,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.participant_status_emoji)
         com.vanniktech.emoji.EmojiEditText participantEmoji;
+        @Nullable
         @BindView(R.id.user_status_image)
         ImageView userStatusImage;
         @Nullable
