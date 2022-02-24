@@ -235,6 +235,9 @@ class SetStatusDialogFragment :
 
     @Suppress("ComplexMethod")
     private fun setClearStatusAfterValue(item: Int) {
+
+        val currentTime = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
+
         when (item) {
             POS_DONT_CLEAR -> {
                 // don't clear
@@ -243,20 +246,17 @@ class SetStatusDialogFragment :
 
             POS_HALF_AN_HOUR -> {
                 // 30 minutes
-                clearAt = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + THIRTY_MINUTES * ONE_MINUTE_IN_SECONDS
+                clearAt = currentTime + THIRTY_MINUTES * ONE_MINUTE_IN_SECONDS
             }
 
             POS_AN_HOUR -> {
                 // one hour
-                clearAt =
-                    System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + ONE_MINUTE_IN_SECONDS * ONE_MINUTE_IN_SECONDS
+                clearAt = currentTime + ONE_MINUTE_IN_SECONDS * ONE_MINUTE_IN_SECONDS
             }
 
             POS_FOUR_HOURS -> {
                 // four hours
-                clearAt =
-                    System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + FOUR_HOURS * ONE_MINUTE_IN_SECONDS *
-                        ONE_MINUTE_IN_SECONDS
+                clearAt = currentTime + FOUR_HOURS * ONE_MINUTE_IN_SECONDS * ONE_MINUTE_IN_SECONDS
             }
 
             POS_TODAY -> {
