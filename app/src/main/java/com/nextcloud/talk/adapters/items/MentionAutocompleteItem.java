@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Marcel Hibbe
  * @author Mario Danic
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify

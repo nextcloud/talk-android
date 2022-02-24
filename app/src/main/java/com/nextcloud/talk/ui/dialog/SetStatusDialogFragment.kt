@@ -1,8 +1,11 @@
+
 /*
  * Nextcloud Android client application
  *
  * @author Tobias Kaminsky
+ * @author Marcel Hibbe
  * Copyright (C) 2020 Nextcloud GmbH
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU AFFERO GENERAL PUBLIC LICENSE
@@ -17,7 +20,6 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package com.nextcloud.talk.ui.dialog
 
 import android.annotation.SuppressLint

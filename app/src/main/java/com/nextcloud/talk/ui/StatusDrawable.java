@@ -2,7 +2,9 @@
  * Nextcloud Android client application
  *
  * @author Tobias Kaminsky
+ * @author Marcel Hibbe
  * Copyright (C) 2020 Tobias Kaminsky
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2020 Nextcloud GmbH
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,7 +25,6 @@ package com.nextcloud.talk.ui;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
