@@ -39,6 +39,7 @@
     <color name="high_emphasis_text">#de000000</color>
     <color name="medium_emphasis_text">#99000000</color>
     <color name="low_emphasis_text">#61000000</color>
+    <color name="high_emphasis_text_inverse">#deffffff</color>
 
     <!-- general text colors for dark background -->
     <color name="high_emphasis_text_dark_background">#deffffff</color>

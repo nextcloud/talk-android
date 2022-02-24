@@ -355,24 +355,25 @@ class SetStatusDialogFragment :
     }
 
     private fun visualizeStatus(statusType: StatusType) {
+        clearTopStatus()
         when (statusType) {
             StatusType.ONLINE -> {
-                clearTopStatus()
                 binding.onlineStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             StatusType.AWAY -> {
-                clearTopStatus()
                 binding.awayStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             StatusType.DND -> {
-                clearTopStatus()
                 binding.dndStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
             StatusType.INVISIBLE -> {
-                clearTopStatus()
                 binding.invisibleStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+                binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
             }
-            else -> clearTopStatus()
+            else -> Log.d(logTag, "unknown status")
         }
     }
 
@@ -383,6 +384,11 @@ class SetStatusDialogFragment :
             binding.awayStatus.setBackgroundColor(grey)
             binding.dndStatus.setBackgroundColor(grey)
             binding.invisibleStatus.setBackgroundColor(grey)
+
+            binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
+            binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
+            binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
+            binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
         }
     }
 
