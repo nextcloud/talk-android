@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,20 +26,14 @@ import android.content.Context;
 import android.text.format.Formatter;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.content.res.AppCompatResources;
-import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
+import com.nextcloud.talk.databinding.RvItemBrowserFileBinding;
 import com.nextcloud.talk.interfaces.SelectionInterface;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -49,9 +45,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import autodagger.AutoInjector;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -59,12 +54,12 @@ import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHolder> implements IFilterable<String> {
+public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.BrowserFileItemViewHolder> implements IFilterable<String> {
     @Inject
     Context context;
-    private BrowserFile browserFile;
-    private UserEntity activeUser;
-    private SelectionInterface selectionInterface;
+    private final BrowserFile browserFile;
+    private final UserEntity activeUser;
+    private final SelectionInterface selectionInterface;
     private boolean selected;
 
     public BrowserFileItem(BrowserFile browserFile, UserEntity activeUser, SelectionInterface selectionInterface) {
@@ -94,9 +89,8 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
     }
 
     @Override
-    public ViewHolder createViewHolder(View view, FlexibleAdapter<IFlexible> adapter) {
-        return new ViewHolder(view, adapter);
-
+    public BrowserFileItemViewHolder createViewHolder(View view, FlexibleAdapter<IFlexible> adapter) {
+        return new BrowserFileItemViewHolder(view, adapter);
     }
 
     private boolean isSelected() {
@@ -108,8 +102,11 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ViewHolder holder, int position, List<Object> payloads) {
-        holder.fileIconImageView.setController(null);
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter,
+                               BrowserFileItemViewHolder holder,
+                               int position,
+                               List<Object> payloads) {
+        holder.binding.fileIcon.setController(null);
         if (!browserFile.isAllowedToReShare() || browserFile.isEncrypted()) {
             holder.itemView.setEnabled(false);
             holder.itemView.setAlpha(0.38f);
@@ -119,31 +116,32 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
         }
 
         if (browserFile.isEncrypted()) {
-            holder.fileEncryptedImageView.setVisibility(View.VISIBLE);
+            holder.binding.fileEncryptedImageView.setVisibility(View.VISIBLE);
 
         } else {
-            holder.fileEncryptedImageView.setVisibility(View.GONE);
+            holder.binding.fileEncryptedImageView.setVisibility(View.GONE);
         }
 
         if (browserFile.isFavorite()) {
-            holder.fileFavoriteImageView.setVisibility(View.VISIBLE);
+            holder.binding.fileFavoriteImageView.setVisibility(View.VISIBLE);
         } else {
-            holder.fileFavoriteImageView.setVisibility(View.GONE);
+            holder.binding.fileFavoriteImageView.setVisibility(View.GONE);
         }
 
         if (selectionInterface.shouldOnlySelectOneImageFile()) {
             if (browserFile.isFile && browserFile.mimeType.startsWith("image/")) {
-                holder.selectFileCheckbox.setVisibility(View.VISIBLE);
+                holder.binding.selectFileCheckbox.setVisibility(View.VISIBLE);
             } else {
-                holder.selectFileCheckbox.setVisibility(View.GONE);
+                holder.binding.selectFileCheckbox.setVisibility(View.GONE);
             }
         } else {
-            holder.selectFileCheckbox.setVisibility(View.VISIBLE);
+            holder.binding.selectFileCheckbox.setVisibility(View.VISIBLE);
         }
 
         if (context != null) {
             holder
-                .fileIconImageView
+                .binding
+                .fileIcon
                 .getHierarchy()
                 .setPlaceholderImage(
                     AppCompatResources.getDrawable(
@@ -160,25 +158,28 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
                         .setAutoPlayAnimations(true)
                         .setImageRequest(DisplayUtils.getImageRequestForUrl(path, null))
                         .build();
-                holder.fileIconImageView.setController(draweeController);
+                holder.binding.fileIcon.setController(draweeController);
             }
         }
 
-        holder.filenameTextView.setText(browserFile.getDisplayName());
-        holder.fileModifiedTextView.setText(String.format(context.getString(R.string.nc_last_modified),
+        holder.binding.filenameTextView.setText(browserFile.getDisplayName());
+        holder.binding.fileModifiedInfo.setText(String.format(context.getString(R.string.nc_last_modified),
                 Formatter.formatShortFileSize(context, browserFile.getSize()),
                 DateUtils.INSTANCE.getLocalDateTimeStringFromTimestamp(browserFile.getModifiedTimestamp())));
         setSelected(selectionInterface.isPathSelected(browserFile.getPath()));
-        holder.selectFileCheckbox.setChecked(isSelected());
+        holder.binding.selectFileCheckbox.setChecked(isSelected());
 
         if (!browserFile.isEncrypted()) {
-            holder.selectFileCheckbox.setOnClickListener(new View.OnClickListener() {
+            holder.binding.selectFileCheckbox.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (!browserFile.isAllowedToReShare()) {
                         ((CheckBox) v).setChecked(false);
-                        Toast.makeText(context, context.getResources().getString(R.string.nc_file_browser_reshare_forbidden),
-                                Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                            context,
+                            context.getResources().getString(R.string.nc_file_browser_reshare_forbidden),
+                            Toast.LENGTH_LONG)
+                            .show();
                     } else if (((CheckBox) v).isChecked() != isSelected()) {
                         setSelected(((CheckBox) v).isChecked());
                         selectionInterface.toggleBrowserItemSelection(browserFile.getPath());
@@ -187,8 +188,8 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
             });
         }
 
-        holder.filenameTextView.setSelected(true);
-        holder.fileModifiedTextView.setSelected(true);
+        holder.binding.filenameTextView.setSelected(true);
+        holder.binding.fileModifiedInfo.setSelected(true);
     }
 
     @Override
@@ -196,24 +197,13 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.ViewHo
         return false;
     }
 
-    static class ViewHolder extends FlexibleViewHolder {
+    static class BrowserFileItemViewHolder extends FlexibleViewHolder {
 
-        @BindView(R.id.file_icon)
-        public SimpleDraweeView fileIconImageView;
-        @BindView(R.id.file_modified_info)
-        public TextView fileModifiedTextView;
-        @BindView(R.id.filename_text_view)
-        public TextView filenameTextView;
-        @BindView(R.id.select_file_checkbox)
-        public CheckBox selectFileCheckbox;
-        @BindView(R.id.fileEncryptedImageView)
-        public ImageView fileEncryptedImageView;
-        @BindView(R.id.fileFavoriteImageView)
-        public ImageView fileFavoriteImageView;
+        RvItemBrowserFileBinding binding;
 
-        ViewHolder(View view, FlexibleAdapter adapter) {
+        BrowserFileItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = RvItemBrowserFileBinding.bind(view);
         }
     }
 }
