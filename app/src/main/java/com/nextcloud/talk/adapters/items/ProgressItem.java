@@ -27,20 +27,19 @@ package com.nextcloud.talk.adapters.items;
 import android.animation.Animator;
 import android.content.Context;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import androidx.annotation.NonNull;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.databinding.RvItemProgressBinding;
+
+import java.util.List;
+
+import androidx.annotation.NonNull;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.Payload;
 import eu.davidea.flexibleadapter.helpers.AnimatorHelper;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
-
-import java.util.List;
 
 /**
  * @author Davide Steduto
@@ -71,8 +70,8 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ProgressViewHolder holder, int position, List<Object> payloads) {
         Context context = holder.itemView.getContext();
-        holder.progressBar.setVisibility(View.GONE);
-        holder.progressMessage.setVisibility(View.VISIBLE);
+        holder.binding.progressBar.setVisibility(View.GONE);
+        holder.binding.progressMessage.setVisibility(View.VISIBLE);
 
         if (!adapter.isEndlessScrollEnabled()) {
             setStatus(StatusEnum.DISABLE_ENDLESS);
@@ -82,27 +81,27 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
 
         switch (this.status) {
             case NO_MORE_LOAD:
-                holder.progressMessage.setText(
+                holder.binding.progressMessage.setText(
                         context.getString(R.string.nc_no_more_load_retry));
                 // Reset to default status for next binding
                 setStatus(StatusEnum.MORE_TO_LOAD);
                 break;
             case DISABLE_ENDLESS:
-                holder.progressMessage.setText(context.getString(R.string.nc_endless_disabled));
+                holder.binding.progressMessage.setText(context.getString(R.string.nc_endless_disabled));
                 break;
             case ON_CANCEL:
-                holder.progressMessage.setText(context.getString(R.string.nc_endless_cancel));
+                holder.binding.progressMessage.setText(context.getString(R.string.nc_endless_cancel));
                 // Reset to default status for next binding
                 setStatus(StatusEnum.MORE_TO_LOAD);
                 break;
             case ON_ERROR:
-                holder.progressMessage.setText(context.getString(R.string.nc_endless_error));
+                holder.binding.progressMessage.setText(context.getString(R.string.nc_endless_error));
                 // Reset to default status for next binding
                 setStatus(StatusEnum.MORE_TO_LOAD);
                 break;
             default:
-                holder.progressBar.setVisibility(View.VISIBLE);
-                holder.progressMessage.setVisibility(View.GONE);
+                holder.binding.progressBar.setVisibility(View.VISIBLE);
+                holder.binding.progressMessage.setVisibility(View.GONE);
                 break;
         }
     }
@@ -123,14 +122,11 @@ public class ProgressItem extends AbstractFlexibleItem<ProgressItem.ProgressView
 
     static class ProgressViewHolder extends FlexibleViewHolder {
 
-        @BindView(R.id.progress_bar)
-        ProgressBar progressBar;
-        @BindView(R.id.progress_message)
-        TextView progressMessage;
+        RvItemProgressBinding binding;
 
         ProgressViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = RvItemProgressBinding.bind(view);
         }
 
         @Override

@@ -82,6 +82,10 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
         return participant;
     }
 
+    public UserEntity getEntity() {
+        return userEntity;
+    }
+
     @Nullable
     public Account getAccount() {
         return account;

@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,21 +24,21 @@ package com.nextcloud.talk.adapters.items;
 
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.databinding.RvItemTitleHeaderBinding;
+
+import java.util.List;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractHeaderItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-import java.util.List;
-
 public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderItem.HeaderViewHolder> {
     private static final String TAG = "GenericTextHeaderItem";
 
-    private String title;
+    private final String title;
 
     public GenericTextHeaderItem(String title) {
         super();
@@ -68,9 +70,8 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
         if (payloads.size() > 0) {
             Log.d(TAG, "We have payloads, so ignoring!");
         } else {
-            holder.titleTextView.setText(title);
+            holder.binding.titleTextView.setText(title);
         }
-
     }
 
     @Override
@@ -80,16 +81,14 @@ public class GenericTextHeaderItem extends AbstractHeaderItem<GenericTextHeaderI
 
     static class HeaderViewHolder extends FlexibleViewHolder {
 
-        @BindView(R.id.title_text_view)
-        public TextView titleTextView;
+        RvItemTitleHeaderBinding binding;
 
         /**
          * Default constructor.
          */
         HeaderViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter, true);
-            ButterKnife.bind(this, view);
+            binding = RvItemTitleHeaderBinding.bind(view);
         }
     }
-
 }

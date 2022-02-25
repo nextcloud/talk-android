@@ -4,7 +4,7 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
- * Copyright (C) 2018 Andy Scherzinger
+ * Copyright (C) 2018 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,36 +22,38 @@
 
 package com.nextcloud.talk.adapters.items;
 
-
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.TextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.databinding.RvItemMenuBinding;
 import com.nextcloud.talk.utils.DisplayUtils;
+
+import java.util.List;
+
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-import java.util.List;
-
 public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> {
-    private String title;
-    private Drawable icon;
-    private int tag;
-    private int padding;
+    private final String title;
+    private final Drawable icon;
+    private final int tag;
+    private final int padding;
 
     public MenuItem(String title, int tag, Drawable icon) {
         this.title = title;
         this.tag = tag;
         this.icon = icon;
         padding = (int) DisplayUtils.convertDpToPixel(32,
-                NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext());
+                                                      NextcloudTalkApplication
+                                                          .Companion
+                                                          .getSharedApplication()
+                                                          .getApplicationContext());
     }
 
     @Override
@@ -81,29 +83,34 @@ public class MenuItem extends AbstractFlexibleItem<MenuItem.MenuItemViewHolder> 
     public void bindViewHolder(FlexibleAdapter adapter, MenuItem.MenuItemViewHolder holder, int position, List payloads) {
         if (position == 0) {
             Spannable spannableString = new SpannableString(title);
-            spannableString.setSpan(new ForegroundColorSpan(NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources().getColor(R.color.grey_600)), 0,
-                    spannableString.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.menuTitle.setText(spannableString);
+            spannableString.setSpan(
+                new ForegroundColorSpan(
+                    NextcloudTalkApplication
+                        .Companion
+                        .getSharedApplication()
+                        .getResources()
+                        .getColor(R.color.grey_600)),
+                0,
+                spannableString.length(),
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.binding.menuText.setText(spannableString);
         } else {
-            holder.menuTitle.setText(title);
-            holder.menuTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
-            holder.menuTitle.setCompoundDrawablePadding(padding);
+            holder.binding.menuText.setText(title);
+            holder.binding.menuText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+            holder.binding.menuText.setCompoundDrawablePadding(padding);
         }
     }
 
     static class MenuItemViewHolder extends FlexibleViewHolder {
 
-        @BindView(R.id.menu_text)
-        public TextView menuTitle;
+        RvItemMenuBinding binding;
 
         /**
          * Default constructor.
          */
         MenuItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = RvItemMenuBinding.bind(view);
         }
     }
 }

@@ -25,26 +25,25 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import androidx.annotation.Nullable;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.databinding.RvItemAppBinding;
+
+import java.util.List;
+
+import androidx.annotation.Nullable;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-import java.util.List;
-
 public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
-    private String title;
-    private String packageName;
-    private String name;
+    private final String title;
+    private final String packageName;
+    private final String name;
     @Nullable
-    private Drawable drawable;
+    private final Drawable drawable;
 
     public AppItem(String title, String packageName, String name, @Nullable Drawable drawable) {
         this.title = title;
@@ -84,10 +83,10 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, AppItemViewHolder holder, int position, List<Object> payloads) {
         if (drawable != null) {
-            holder.iconImageView.setVisibility(View.VISIBLE);
-            holder.iconImageView.setImageDrawable(drawable);
+            holder.binding.iconImageView.setVisibility(View.VISIBLE);
+            holder.binding.iconImageView.setImageDrawable(drawable);
         } else {
-            holder.iconImageView.setVisibility(View.GONE);
+            holder.binding.iconImageView.setVisibility(View.GONE);
         }
 
         if (position == 0) {
@@ -96,9 +95,9 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
                             .getResources().getColor(R.color.grey_600)), 0,
                     spannableString.length(),
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.appTitleTextView.setText(spannableString);
+            holder.binding.appTitleTextView.setText(spannableString);
         } else {
-            holder.appTitleTextView.setText(title);
+            holder.binding.appTitleTextView.setText(title);
         }
     }
 
@@ -108,18 +107,15 @@ public class AppItem extends AbstractFlexibleItem<AppItem.AppItemViewHolder> {
     }
 
     static class AppItemViewHolder extends FlexibleViewHolder {
-        @BindView(R.id.icon_image_view)
-        public ImageView iconImageView;
-        @BindView(R.id.app_title_text_view)
-        public TextView appTitleTextView;
+
+        RvItemAppBinding binding;
 
         /**
          * Default constructor.
          */
         AppItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = RvItemAppBinding.bind(view);
         }
     }
-
 }
