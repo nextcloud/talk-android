@@ -1,6 +1,5 @@
-
 /*
- * Nextcloud Android client application
+ * Nextcloud Talk application
  *
  * @author Tobias Kaminsky
  * @author Marcel Hibbe
@@ -20,6 +19,7 @@
  * You should have received a copy of the GNU Affero General Public
  * License along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.nextcloud.talk.ui.dialog
 
 import android.annotation.SuppressLint

@@ -1,6 +1,5 @@
 /*
- *
- * Nextcloud Android client application
+ * Nextcloud Talk application
  *
  * @author Tobias Kaminsky
  * Copyright (C) 2020 Tobias Kaminsky
