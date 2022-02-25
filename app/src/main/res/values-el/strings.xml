@@ -242,6 +242,7 @@
     <string name="nc_settings_no_talk_installed">Προσπαθείτε να πιστοποιήσετε ξανά την εφάρμογή Talk που δεν είναι εγκατεστημένη στον διακομιστή</string>
     <string name="nc_settings_notification_sounds">Ήχοι ειδοποίησης</string>
     <string name="nc_settings_other_notifications_ringtone">Μηνύματα</string>
+    <string name="nc_settings_phone_book_integration_desc">Αντιστοιχίστε επαφές σύμφωνα με τον αριθμό τηλεφώνου για την ενσωμάτωση συντόμευσης Ομιλίας στο σύστημα επαφών της εφαρμογής</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Μπορείτε να ορίσετε τον αριθμό τηλεφώνου σας, ώστε να μπορούν να σας βρίσκουν άλλοι χρήστες</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Μη έγκυρος αριθμός τηλεφώνου</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Επιτυχής ορισμός αριθμού τηλεφώνου</string>
