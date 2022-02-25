@@ -551,7 +551,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                     }
 
                                     UserItem newContactItem = new UserItem(
-                                        getApplicationContext(),
                                         participant,
                                         currentUser,
                                         userHeaderItems.get(headerTitle)
