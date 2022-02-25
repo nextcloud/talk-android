@@ -160,6 +160,9 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
 
+    public static final String VIDEO_STREAM_TYPE_SCREEN = "screen";
+    public static final String VIDEO_STREAM_TYPE_VIDEO = "video";
+
     @Inject
     NcApi ncApi;
     @Inject
@@ -396,7 +399,8 @@ public class CallActivity extends CallBaseActivity {
         PeerConnectionFactory.Options options = new PeerConnectionFactory.Options();
         DefaultVideoEncoderFactory defaultVideoEncoderFactory = new DefaultVideoEncoderFactory(
             rootEglBase.getEglBaseContext(), true, true);
-        DefaultVideoDecoderFactory defaultVideoDecoderFactory = new DefaultVideoDecoderFactory(rootEglBase.getEglBaseContext());
+        DefaultVideoDecoderFactory defaultVideoDecoderFactory = new DefaultVideoDecoderFactory(
+            rootEglBase.getEglBaseContext());
 
         peerConnectionFactory = PeerConnectionFactory.builder()
             .setOptions(options)
@@ -436,7 +440,8 @@ public class CallActivity extends CallBaseActivity {
             offerToReceiveVideoString = "false";
         }
 
-        sdpConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString));
+        sdpConstraints.mandatory.add(
+            new MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString));
 
         sdpConstraintsForMCU.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"));
         sdpConstraintsForMCU.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"));
@@ -600,7 +605,8 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "initGridAdapter");
         int columns;
         int participantsInGrid = participantDisplayItems.size();
-        if (getResources() != null && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        if (getResources() != null
+            && getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             if (participantsInGrid > 2) {
                 columns = 2;
             } else {
@@ -618,7 +624,9 @@ public class CallActivity extends CallBaseActivity {
 
         binding.gridview.setNumColumns(columns);
 
-        binding.conversationRelativeLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        binding.conversationRelativeLayout
+            .getViewTreeObserver()
+            .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -627,7 +635,10 @@ public class CallActivity extends CallBaseActivity {
             }
         });
 
-        binding.callInfosLinearLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        binding
+            .callInfosLinearLayout
+            .getViewTreeObserver()
+            .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -776,7 +787,8 @@ public class CallActivity extends CallBaseActivity {
 
         //Create a VideoSource instance
         if (videoCapturer != null) {
-            SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread", rootEglBase.getEglBaseContext());
+            SurfaceTextureHelper surfaceTextureHelper = SurfaceTextureHelper.create("CaptureThread",
+                                                                                    rootEglBase.getEglBaseContext());
             videoSource = peerConnectionFactory.createVideoSource(false);
             videoCapturer.initialize(surfaceTextureHelper, getApplicationContext(), videoSource.getCapturerObserver());
         }
@@ -1141,14 +1153,19 @@ public class CallActivity extends CallBaseActivity {
 
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull SignalingSettingsOverall signalingSettingsOverall) {
-                    if (signalingSettingsOverall.getOcs() != null && signalingSettingsOverall.getOcs().getSettings() != null) {
+                    if (signalingSettingsOverall.getOcs() != null
+                        && signalingSettingsOverall.getOcs().getSettings() != null) {
                         externalSignalingServer = new ExternalSignalingServer();
 
-                        if (!TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
-                            !TextUtils.isEmpty(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
+                        if (!TextUtils.isEmpty(
+                            signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer()) &&
+                            !TextUtils.isEmpty(
+                                signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket())) {
                             externalSignalingServer = new ExternalSignalingServer();
-                            externalSignalingServer.setExternalSignalingServer(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
-                            externalSignalingServer.setExternalSignalingTicket(signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
+                            externalSignalingServer.setExternalSignalingServer(
+                                signalingSettingsOverall.getOcs().getSettings().getExternalSignalingServer());
+                            externalSignalingServer.setExternalSignalingTicket(
+                                signalingSettingsOverall.getOcs().getSettings().getExternalSignalingTicket());
                             hasExternalSignalingServer = true;
                         } else {
                             hasExternalSignalingServer = false;
@@ -1157,8 +1174,17 @@ public class CallActivity extends CallBaseActivity {
 
                         if (!conversationUser.getUserId().equals("?")) {
                             try {
-                                userUtils.createOrUpdateUser(null, null, null, null, null, null, null,
-                                                             conversationUser.getId(), null, null, LoganSquare.serialize(externalSignalingServer))
+                                userUtils.createOrUpdateUser(null,
+                                                             null,
+                                                             null,
+                                                             null,
+                                                             null,
+                                                             null,
+                                                             null,
+                                                             conversationUser.getId(),
+                                                             null,
+                                                             null,
+                                                             LoganSquare.serialize(externalSignalingServer))
                                     .subscribeOn(Schedulers.io())
                                     .subscribe();
                             } catch (IOException exception) {
@@ -1547,14 +1573,16 @@ public class CallActivity extends CallBaseActivity {
                             sessionDescriptionStringWithPreferredCodec);
 
                         if (peerConnectionWrapper.getPeerConnection() != null) {
-                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(peerConnectionWrapper
-                                                                                                    .getMagicSdpObserver(), sessionDescriptionWithPreferredCodec);
+                            peerConnectionWrapper.getPeerConnection().setRemoteDescription(
+                                peerConnectionWrapper.getMagicSdpObserver(),
+                                sessionDescriptionWithPreferredCodec);
                         }
                         break;
                     case "candidate":
                         NCIceCandidate ncIceCandidate = ncSignalingMessage.getPayload().getIceCandidate();
                         IceCandidate iceCandidate = new IceCandidate(ncIceCandidate.getSdpMid(),
-                                                                     ncIceCandidate.getSdpMLineIndex(), ncIceCandidate.getCandidate());
+                                                                     ncIceCandidate.getSdpMLineIndex(),
+                                                                     ncIceCandidate.getCandidate());
                         peerConnectionWrapper.addCandidate(iceCandidate);
                         break;
                     case "endOfCandidates":
@@ -1651,7 +1679,8 @@ public class CallActivity extends CallBaseActivity {
                 public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
                     if (shutDownView) {
                         finish();
-                    } else if (currentCallStatus == CallStatus.RECONNECTING || currentCallStatus == CallStatus.PUBLISHER_FAILED) {
+                    } else if (currentCallStatus == CallStatus.RECONNECTING
+                        || currentCallStatus == CallStatus.PUBLISHER_FAILED) {
                         initiateCall();
                     }
                 }
@@ -1694,7 +1723,10 @@ public class CallActivity extends CallBaseActivity {
             long inCallFlag = (long) participant.get("inCall");
             if (!participant.get("sessionId").equals(currentSessionId)) {
                 boolean isNewSession;
-                Log.d(TAG, "   inCallFlag of participant " + participant.get("sessionId").toString().substring(0, 4) + " : " + inCallFlag);
+                Log.d(TAG, "   inCallFlag of participant "
+                    + participant.get("sessionId").toString().substring(0, 4)
+                    + " : "
+                    + inCallFlag);
                 isNewSession = inCallFlag != 0;
 
                 if (isNewSession) {
@@ -1733,12 +1765,12 @@ public class CallActivity extends CallBaseActivity {
 
         if (hasMCU) {
             // Ensure that own publishing peer is set up.
-            getPeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), "video", true);
+            getPeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
         }
 
         for (String sessionId : newSessions) {
             Log.d(TAG, "   newSession joined: " + sessionId);
-            getPeerConnectionWrapperForSessionIdAndType(sessionId, "video", false);
+            getPeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
         }
 
         if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
@@ -1755,7 +1787,7 @@ public class CallActivity extends CallBaseActivity {
         Log.d(TAG, "getPeersForCall");
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken))
+        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), null)
             .subscribeOn(Schedulers.io())
             .subscribe(new Observer<ParticipantsOverall>() {
                 @Override
@@ -1790,7 +1822,8 @@ public class CallActivity extends CallBaseActivity {
 
     private PeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId, String type) {
         for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
-            if (peerConnectionWrapperList.get(i).getSessionId().equals(sessionId) && peerConnectionWrapperList.get(i).getVideoStreamType().equals(type)) {
+            if (peerConnectionWrapperList.get(i).getSessionId().equals(sessionId)
+                && peerConnectionWrapperList.get(i).getVideoStreamType().equals(type)) {
                 return peerConnectionWrapperList.get(i);
             }
         }
@@ -1798,7 +1831,9 @@ public class CallActivity extends CallBaseActivity {
         return null;
     }
 
-    private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId, String type, boolean publisher) {
+    private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId,
+                                                                              String type,
+                                                                              boolean publisher) {
         PeerConnectionWrapper peerConnectionWrapper;
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId, type)) != null) {
             return peerConnectionWrapper;
@@ -1876,7 +1911,7 @@ public class CallActivity extends CallBaseActivity {
             for (int i = 0; i < peerConnectionWrappers.size(); i++) {
                 peerConnectionWrapper = peerConnectionWrappers.get(i);
                 if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
-                    if (peerConnectionWrapper.getVideoStreamType().equals("screen") || !justScreen) {
+                    if (VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionWrapper.getVideoStreamType()) || !justScreen) {
                         runOnUiThread(() -> removeMediaStream(sessionId));
                         deletePeerConnection(peerConnectionWrapper);
                     }
@@ -1904,7 +1939,8 @@ public class CallActivity extends CallBaseActivity {
     private void updateSelfVideoViewPosition() {
         Log.d(TAG, "updateSelfVideoViewPosition");
         if (!isInPipMode) {
-            FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) binding.selfVideoRenderer.getLayoutParams();
+            FrameLayout.LayoutParams layoutParams =
+                (FrameLayout.LayoutParams) binding.selfVideoRenderer.getLayoutParams();
 
             DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
             int screenWidthPx = displayMetrics.widthPixels;
@@ -1941,42 +1977,46 @@ public class CallActivity extends CallBaseActivity {
     public void onMessageEvent(PeerConnectionEvent peerConnectionEvent) {
         String sessionId = peerConnectionEvent.getSessionId();
 
-        if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType
-                                                                        .PEER_CLOSED)) {
-            endPeerConnection(sessionId, peerConnectionEvent.getVideoStreamType().equals("screen"));
-        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                                                                               .PeerConnectionEventType.SENSOR_FAR) ||
-            peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                                                                        .PeerConnectionEventType.SENSOR_NEAR)) {
+        if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.PEER_CLOSED) {
+            endPeerConnection(sessionId, VIDEO_STREAM_TYPE_SCREEN.equals(peerConnectionEvent.getVideoStreamType()));
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR ||
+            peerConnectionEvent.getPeerConnectionEventType() ==
+                PeerConnectionEvent.PeerConnectionEventType.SENSOR_NEAR) {
 
             if (!isVoiceOnlyCall) {
-                boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent
-                                                                                                  .PeerConnectionEventType.SENSOR_FAR) && videoOn;
+                boolean enableVideo = peerConnectionEvent.getPeerConnectionEventType() ==
+                    PeerConnectionEvent.PeerConnectionEventType.SENSOR_FAR && videoOn;
                 if (EffortlessPermissions.hasPermissions(this, PERMISSIONS_CAMERA) &&
                     (currentCallStatus.equals(CallStatus.CONNECTING) || isConnectionEstablished()) && videoOn
                     && enableVideo != localVideoTrack.enabled()) {
                     toggleMedia(enableVideo, true);
                 }
             }
-        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE)) {
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.NICK_CHANGE) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setNick(peerConnectionEvent.getNick());
             }
             participantsAdapter.notifyDataSetChanged();
 
-        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE) && !isVoiceOnlyCall) {
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.VIDEO_CHANGE && !isVoiceOnlyCall) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setStreamEnabled(peerConnectionEvent.getChangeValue());
             }
             participantsAdapter.notifyDataSetChanged();
 
-        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE)) {
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.AUDIO_CHANGE) {
             if (participantDisplayItems.get(sessionId) != null) {
                 participantDisplayItems.get(sessionId).setAudioEnabled(peerConnectionEvent.getChangeValue());
             }
             participantsAdapter.notifyDataSetChanged();
 
-        } else if (peerConnectionEvent.getPeerConnectionEventType().equals(PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED)) {
+        } else if (peerConnectionEvent.getPeerConnectionEventType() ==
+            PeerConnectionEvent.PeerConnectionEventType.PUBLISHER_FAILED) {
             currentCallStatus = CallStatus.PUBLISHER_FAILED;
             webSocketClient.clearResumeId();
             hangup(false);
@@ -2074,7 +2114,8 @@ public class CallActivity extends CallBaseActivity {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append("{")
                 .append("\"fn\":\"")
-                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage()))).append("\"")
+                .append(StringEscapeUtils.escapeJson(LoganSquare.serialize(ncMessageWrapper.getSignalingMessage())))
+                .append("\"")
                 .append(",")
                 .append("\"sessionId\":")
                 .append("\"").append(StringEscapeUtils.escapeJson(callSession)).append("\"")
@@ -2127,7 +2168,10 @@ public class CallActivity extends CallBaseActivity {
                                                          this);
     }
 
-    private void setupVideoStreamForLayout(@Nullable MediaStream mediaStream, String session, boolean videoStreamEnabled, String videoStreamType) {
+    private void setupVideoStreamForLayout(@Nullable MediaStream mediaStream,
+                                           String session,
+                                           boolean videoStreamEnabled,
+                                           String videoStreamType) {
         String nick;
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
@@ -2416,13 +2460,12 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     public void onMessageEvent(NetworkEvent networkEvent) {
-        if (networkEvent.getNetworkConnectionEvent()
-            .equals(NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED)) {
+        if (networkEvent.getNetworkConnectionEvent() == NetworkEvent.NetworkConnectionEvent.NETWORK_CONNECTED) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
             }
-        } else if (networkEvent.getNetworkConnectionEvent()
-            .equals(NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED)) {
+        } else if (networkEvent.getNetworkConnectionEvent() ==
+            NetworkEvent.NetworkConnectionEvent.NETWORK_DISCONNECTED) {
             if (handler != null) {
                 handler.removeCallbacksAndMessages(null);
             }
@@ -2516,7 +2559,8 @@ public class CallActivity extends CallBaseActivity {
         if (isVoiceOnlyCall) {
             binding.callControls.setVisibility(View.VISIBLE);
         } else {
-            binding.callControls.setVisibility(View.INVISIBLE); // animateCallControls needs this to be invisible for a check.
+            // animateCallControls needs this to be invisible for a check.
+            binding.callControls.setVisibility(View.INVISIBLE);
         }
         initViews();
 

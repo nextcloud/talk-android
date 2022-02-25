@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -22,8 +24,11 @@
 
 package com.nextcloud.talk.presenters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.nextcloud.talk.adapters.items.MentionAutocompleteItem;
 import com.nextcloud.talk.api.NcApi;
@@ -38,7 +43,9 @@ import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -54,6 +61,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention> implements FlexibleAdapter.OnItemClickListener {
+    private static final String TAG = "MentionAutocompletePresenter";
     @Inject
     NcApi ncApi;
     @Inject
@@ -89,6 +97,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     }
 
     @Override
+    protected PopupDimensions getPopupDimensions() {
+        PopupDimensions popupDimensions = new PopupDimensions();
+        popupDimensions.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        popupDimensions.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+        return popupDimensions;
+    }
+
+    @Override
     protected void onQuery(@Nullable CharSequence query) {
 
         String queryString;
@@ -101,10 +117,14 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
         int apiVersion = ApiUtils.getChatApiVersion(currentUser, new int[] {1});
 
         adapter.setFilter(queryString);
+
+        Map<String, String> queryMap = new HashMap<>();
+        queryMap.put("includeStatus", "true");
+
         ncApi.getMentionAutocompleteSuggestions(
                 ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken()),
                 ApiUtils.getUrlForMentionSuggestions(apiVersion, currentUser.getBaseUrl(), roomToken),
-                queryString, 5)
+                queryString, 5, queryMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(3)
@@ -125,9 +145,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                             for (Mention mention : mentionsList) {
                                 internalAbstractFlexibleItemList.add(
                                         new MentionAutocompleteItem(
-                                                mention.getId(),
-                                                mention.getLabel(),
-                                                mention.getSource(),
+                                                mention,
                                                 currentUser,
                                                 context));
                             }
@@ -140,9 +158,11 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
                         }
                     }
 
+                    @SuppressLint("LongLogTag")
                     @Override
                     public void onError(@NotNull Throwable e) {
                         adapter.clear();
+                        Log.e(TAG, "failed to get MentionAutocompleteSuggestions", e);
                     }
 
                     @Override

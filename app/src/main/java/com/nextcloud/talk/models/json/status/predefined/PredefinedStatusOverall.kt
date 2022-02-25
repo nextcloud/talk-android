@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.capabilities
+package com.nextcloud.talk.models.json.status.predefined
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
@@ -28,20 +28,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class Capabilities(
-    @JsonField(name = ["spreed"])
-    var spreedCapability: SpreedCapability?,
-    @JsonField(name = ["notifications"])
-    var notificationsCapability: NotificationsCapability?,
-    @JsonField(name = ["theming"])
-    var themingCapability: ThemingCapability?,
-    @JsonField(name = ["external"])
-    var externalCapability: HashMap<String, List<String>>?,
-    @JsonField(name = ["provisioning_api"])
-    var provisioningCapability: ProvisioningCapability?,
-    @JsonField(name = ["user_status"])
-    var userStatusCapability: UserStatusCapability?
+data class PredefinedStatusOverall(
+    @JsonField(name = ["ocs"])
+    var ocs: PredefinedStatusOCS? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null)
 }

@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Andy Scherzinger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -46,6 +48,9 @@ import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.status.Status;
+import com.nextcloud.talk.models.json.status.StatusType;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
@@ -66,26 +71,30 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements ISectionable<ConversationItem.ConversationItemViewHolder, GenericTextHeaderItem>,
-        IFilterable<String> {
+    IFilterable<String> {
 
+    private static final float STATUS_SIZE_IN_DP = 9f;
 
     private Conversation conversation;
     private UserEntity userEntity;
     private Context context;
     private GenericTextHeaderItem header;
+    private Status status;
 
-    public ConversationItem(Conversation conversation, UserEntity userEntity, Context activityContext) {
+    public ConversationItem(Conversation conversation, UserEntity userEntity, Context activityContext, Status status) {
         this.conversation = conversation;
         this.userEntity = userEntity;
         this.context = activityContext;
+        this.status = status;
     }
 
     public ConversationItem(Conversation conversation, UserEntity userEntity,
-                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem) {
+                            Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status) {
         this.conversation = conversation;
         this.userEntity = userEntity;
         this.context = activityContext;
         this.header = genericTextHeaderItem;
+        this.status = status;
     }
 
     @Override
@@ -120,7 +129,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
         Context appContext =
-                NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
+            NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
         holder.dialogAvatar.setController(null);
 
         holder.dialogName.setTextColor(ResourcesCompat.getColor(context.getResources(),
@@ -129,8 +138,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources().getColor(R.color.colorPrimary));
+                                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
+                                            .getResources().getColor(R.color.colorPrimary));
         } else {
             holder.dialogName.setText(conversation.getDisplayName());
         }
@@ -147,19 +156,19 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
             ColorStateList lightBubbleFillColor = ColorStateList.valueOf(
                 ContextCompat.getColor(context,
-                R.color.conversation_unread_bubble));
+                                       R.color.conversation_unread_bubble));
             int lightBubbleTextColor = ContextCompat.getColor(
                 context,
                 R.color.conversation_unread_bubble_text);
             ColorStateList lightBubbleStrokeColor = ColorStateList.valueOf(
                 ContextCompat.getColor(context,
-                R.color.colorPrimary));
+                                       R.color.colorPrimary));
 
             if (conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
                 holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                 holder.dialogUnreadBubble.setTextColor(Color.WHITE);
             } else if (conversation.isUnreadMention()) {
-                if (CapabilitiesUtil.hasSpreedFeatureCapability(userEntity, "direct-mention-flag")){
+                if (CapabilitiesUtil.hasSpreedFeatureCapability(userEntity, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
                         holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                         holder.dialogUnreadBubble.setTextColor(Color.WHITE);
@@ -192,28 +201,38 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.pinnedConversationImageView.setVisibility(View.GONE);
         }
 
+        if (Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
+            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext);
+            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+                status != null ? status.getStatus() : "",
+                status != null ? status.getIcon() : "",
+                size,
+                context.getResources().getColor(R.color.bg_default),
+                appContext));
+        }
+
         if (conversation.getLastMessage() != null) {
             holder.dialogDate.setVisibility(View.VISIBLE);
             holder.dialogDate.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
-                    System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
+                                                                          System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
 
-            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM.equals(conversation.getType())) {
+            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM == conversation.getType()) {
                 holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
                 String authorDisplayName = "";
                 conversation.getLastMessage().setActiveUser(userEntity);
                 String text;
-                if (conversation.getLastMessage().getMessageType().equals(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE)) {
+                if (conversation.getLastMessage().getMessageType() == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
                     if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
                         text = String.format(appContext.getString(R.string.nc_formatted_message_you),
-                                conversation.getLastMessage().getLastMessageDisplayText());
+                                             conversation.getLastMessage().getLastMessageDisplayText());
                     } else {
                         authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
-                                conversation.getLastMessage().getActorDisplayName() :
-                                "guests".equals(conversation.getLastMessage().getActorType()) ? appContext.getString(R.string.nc_guest) : "";
+                            conversation.getLastMessage().getActorDisplayName() :
+                            "guests".equals(conversation.getLastMessage().getActorType()) ? appContext.getString(R.string.nc_guest) : "";
                         text = String.format(appContext.getString(R.string.nc_formatted_message),
-                                authorDisplayName,
-                                conversation.getLastMessage().getLastMessageDisplayText());
+                                             authorDisplayName,
+                                             conversation.getLastMessage().getLastMessageDisplayText());
                     }
                 } else {
                     text = conversation.getLastMessage().getLastMessageDisplayText();
@@ -266,22 +285,22 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 case ROOM_TYPE_ONE_TO_ONE_CALL:
                     if (!TextUtils.isEmpty(conversation.getName())) {
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                                .setOldController(holder.dialogAvatar.getController())
-                                .setAutoPlayAnimations(true)
-                                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getName(), R.dimen.avatar_size), userEntity))
-                                .build();
+                            .setOldController(holder.dialogAvatar.getController())
+                            .setAutoPlayAnimations(true)
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getName(), R.dimen.avatar_size), userEntity))
+                            .build();
                         holder.dialogAvatar.setController(draweeController);
                     } else {
                         holder.dialogAvatar.setVisibility(View.GONE);
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                        holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
-                                                                                       R.drawable.ic_circular_group));
+                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
+                                                                                   R.drawable.ic_circular_group));
                     break;
                 case ROOM_PUBLIC_CALL:
-                        holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
-                                                                                       R.drawable.ic_circular_link));
+                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
+                                                                                   R.drawable.ic_circular_link));
                     break;
                 default:
                     holder.dialogAvatar.setVisibility(View.GONE);
@@ -292,7 +311,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
-                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
+            Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
     }
 
     @Override
@@ -318,6 +337,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         Chip dialogUnreadBubble;
         @BindView(R.id.favoriteConversationImageView)
         ImageView pinnedConversationImageView;
+        @BindView(R.id.user_status_image)
+        ImageView userStatusImage;
 
         ConversationItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);

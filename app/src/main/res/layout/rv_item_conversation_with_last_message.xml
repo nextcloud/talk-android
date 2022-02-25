@@ -43,8 +43,7 @@
             android:layout_width="@dimen/small_item_height"
             android:layout_height="@dimen/small_item_height"
             android:contentDescription="@null"
-            app:roundAsCircle="true"
-            tools:src="@drawable/ic_call_black_24dp" />
+            app:roundAsCircle="true" />
 
         <ImageView
             android:id="@+id/favoriteConversationImageView"
@@ -56,6 +55,13 @@
             app:tint="@color/favorite_icon_tint"
             app:tintMode="src_in" />
 
+        <ImageView
+            android:id="@+id/user_status_image"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom|end"
+            android:contentDescription="@string/nc_account_chooser_active_user"
+            tools:src="@drawable/emoji_one_category_smileysandpeople"/>
     </FrameLayout>
 
     <RelativeLayout

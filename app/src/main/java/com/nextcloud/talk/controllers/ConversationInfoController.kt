@@ -4,6 +4,8 @@
  * @author Mario Danic
  * @author Andy Scherzinger
  * @author Tim Krüger
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -88,6 +90,7 @@ import org.greenrobot.eventbus.ThreadMode
 import java.util.Calendar
 import java.util.Collections
 import java.util.Comparator
+import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
@@ -120,7 +123,7 @@ class ConversationInfoController(args: Bundle) :
     private var conversation: Conversation? = null
 
     private var adapter: FlexibleAdapter<UserItem>? = null
-    private var recyclerViewItems: MutableList<UserItem> = ArrayList()
+    private var userItems: MutableList<UserItem> = ArrayList()
 
     private var saveStateHandler: LovelySaveStateHandler? = null
 
@@ -362,7 +365,7 @@ class ConversationInfoController(args: Bundle) :
     private fun setupAdapter() {
         if (activity != null) {
             if (adapter == null) {
-                adapter = FlexibleAdapter(recyclerViewItems, activity, true)
+                adapter = FlexibleAdapter(userItems, activity, true)
             }
 
             val layoutManager = SmoothScrollLinearLayoutManager(activity)
@@ -378,12 +381,12 @@ class ConversationInfoController(args: Bundle) :
         var userItem: UserItem
         var participant: Participant
 
-        recyclerViewItems = ArrayList()
+        userItems = ArrayList()
         var ownUserItem: UserItem? = null
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = UserItem(participant, conversationUser, null)
+            userItem = UserItem(router.activity, participant, conversationUser, null)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
@@ -395,20 +398,20 @@ class ConversationInfoController(args: Bundle) :
                 ownUserItem.model.sessionId = "-1"
                 ownUserItem.isOnline = true
             } else {
-                recyclerViewItems.add(userItem)
+                userItems.add(userItem)
             }
         }
 
-        Collections.sort(recyclerViewItems, UserItemComparator())
+        Collections.sort(userItems, UserItemComparator())
 
         if (ownUserItem != null) {
-            recyclerViewItems.add(0, ownUserItem)
+            userItems.add(0, ownUserItem)
         }
 
         setupAdapter()
 
         binding.participantsListCategory.visibility = View.VISIBLE
-        adapter!!.updateDataSet(recyclerViewItems)
+        adapter!!.updateDataSet(userItems)
     }
 
     override val title: String
@@ -426,9 +429,12 @@ class ConversationInfoController(args: Bundle) :
             apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
         }
 
+        val fieldMap = HashMap<String, Boolean>()
+        fieldMap["includeStatus"] = true
+
         ncApi?.getPeersForCall(
             credentials,
-            ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken)
+            ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken), fieldMap
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -462,7 +468,7 @@ class ConversationInfoController(args: Bundle) :
         val bundle = Bundle()
         val existingParticipantsId = arrayListOf<String>()
 
-        for (userItem in recyclerViewItems) {
+        for (userItem in userItems) {
             if (userItem.model.getActorType() == USERS) {
                 existingParticipantsId.add(userItem.model.getActorId())
             }

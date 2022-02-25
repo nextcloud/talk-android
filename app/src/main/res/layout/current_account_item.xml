@@ -107,6 +107,7 @@
                 android:maxLines="1"
                 android:textColor="?android:attr/textColorSecondary"
                 android:visibility="gone"
+                tools:visibility="visible"
                 tools:text="☁️ My custom status" />
 
             <TextView

@@ -18,67 +18,105 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/item_height"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/standard_half_margin"
+    android:layout_marginTop="@dimen/standard_margin">
 
 
     <com.facebook.drawee.view.SimpleDraweeView
-        android:id="@+id/simple_drawee_view"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
+        android:id="@+id/avatar_drawee_view"
+        android:layout_width="@dimen/small_item_height"
+        android:layout_height="@dimen/small_item_height"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:contentDescription="@null"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:roundAsCircle="true" />
+
+    <com.vanniktech.emoji.EmojiEditText
+        android:id="@+id/participant_status_emoji"
+        android:layout_width="22dp"
+        android:layout_height="wrap_content"
+        android:background="@color/transparent"
+        android:cursorVisible="false"
+        android:gravity="center|start"
+        android:text="@string/default_emoji"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="@+id/name_text"
+        app:layout_constraintTop_toBottomOf="@+id/name_text" />
+
+    <ImageView
+        android:id="@+id/user_status_image"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_gravity="bottom|end"
+        android:contentDescription="@string/nc_account_chooser_active_user"
+        app:layout_constraintBottom_toBottomOf="@+id/avatar_drawee_view"
+        app:layout_constraintEnd_toEndOf="@+id/avatar_drawee_view"
+        tools:src="@drawable/emoji_one_category_smileysandpeople"/>
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="2dp"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="@color/conversation_item_header"
+        app:layout_constraintStart_toEndOf="@id/avatar_drawee_view"
+        app:layout_constraintTop_toTopOf="@+id/avatar_drawee_view"
+        tools:text="Jane Doe" />
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/conversation_info_status_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:textAlignment="viewStart"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginEnd="@dimen/side_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/participant_status_emoji"
+        app:layout_constraintTop_toBottomOf="@+id/name_text"
+        tools:text="this is a very long status message. server allows only 81 chars here. 0123456789" />
+
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/secondary_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:singleLine="true"
+        android:textAlignment="viewStart"
+        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginEnd="@dimen/side_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/name_text"
+        app:layout_constraintTop_toTopOf="@+id/name_text"
+        tools:text="Moderator (or userid for autocomplete mention)" />
+
 
     <ImageView
         android:id="@+id/videoCallIcon"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_centerInParent="true"
-        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:src="@drawable/ic_videocam_grey_600_24dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:layout_marginEnd="@dimen/standard_half_margin"
         android:contentDescription="@null"
+        android:src="@drawable/ic_videocam_grey_600_24dp"
         android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/secondary_text"
         tools:visibility="visible" />
 
-    <LinearLayout
-        android:id="@+id/linear_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="@dimen/margin_between_elements"
-        android:layout_marginEnd="@dimen/margin_between_elements"
-        android:layout_toEndOf="@id/simple_drawee_view"
-        android:layout_toStartOf="@id/videoCallIcon"
-        android:orientation="vertical">
-
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@+id/name_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textAppearance="?android:attr/textAppearanceListItem"
-            android:textColor="@color/conversation_item_header"
-            tools:text="Jane Doe" />
-
-        <androidx.emoji.widget.EmojiTextView
-            android:id="@+id/secondary_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="middle"
-            android:singleLine="true"
-            android:textAlignment="viewStart"
-            android:textColor="?android:attr/textColorSecondary"
-            tools:text="@string/nc_moderator" />
-
-    </LinearLayout>
-
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

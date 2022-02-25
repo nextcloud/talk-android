@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,17 +26,12 @@ import android.accounts.Account;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.databinding.AccountItemBinding;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -44,9 +41,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import androidx.annotation.Nullable;
-import androidx.emoji.widget.EmojiTextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -56,10 +50,10 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.UserItemViewHolder> implements
         IFilterable<String> {
 
-    private Participant participant;
-    private UserEntity userEntity;
+    private final Participant participant;
+    private final UserEntity userEntity;
     @Nullable
-    private Account account;
+    private final Account account;
 
     public AdvancedUserItem(Participant participant, UserEntity userEntity, @Nullable Account account) {
         this.participant = participant;
@@ -110,68 +104,70 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
 
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
-        holder.avatarImageView.setController(null);
+        holder.binding.userIcon.setController(null);
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(
-                    holder.contactDisplayName,
+                    holder.binding.userName,
                     participant.getDisplayName(),
                     String.valueOf(adapter.getFilter(String.class)),
                     NextcloudTalkApplication.Companion.getSharedApplication()
                             .getResources()
                             .getColor(R.color.colorPrimary));
         } else {
-            holder.contactDisplayName.setText(participant.getDisplayName());
+            holder.binding.userName.setText(participant.getDisplayName());
         }
 
         if (userEntity != null && !TextUtils.isEmpty(userEntity.getBaseUrl())) {
             String host = Uri.parse(userEntity.getBaseUrl()).getHost();
             if (!TextUtils.isEmpty(host)) {
-                holder.serverUrl.setText(Uri.parse(userEntity.getBaseUrl()).getHost());
+                holder.binding.account.setText(Uri.parse(userEntity.getBaseUrl()).getHost());
             } else {
-                holder.serverUrl.setText(userEntity.getBaseUrl());
+                holder.binding.account.setText(userEntity.getBaseUrl());
             }
         }
 
-        holder.avatarImageView.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
-        holder.avatarImageView.getHierarchy().setFailureImage(R.drawable.account_circle_48dp);
+        holder.binding.userIcon.getHierarchy().setPlaceholderImage(R.drawable.account_circle_48dp);
+        holder.binding.userIcon.getHierarchy().setFailureImage(R.drawable.account_circle_48dp);
 
         if (userEntity != null && userEntity.getBaseUrl() != null &&
                 userEntity.getBaseUrl().startsWith("http://") ||
                 userEntity.getBaseUrl().startsWith("https://")) {
 
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.avatarImageView.getController())
+                .setOldController(holder.binding.userIcon.getController())
                 .setAutoPlayAnimations(true)
-                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                                                                                     participant.getActorId(), R.dimen.small_item_height), null))
+                .setImageRequest(
+                    DisplayUtils.getImageRequestForUrl(
+                        ApiUtils.getUrlForAvatarWithName(
+                            userEntity.getBaseUrl(),
+                            participant.getActorId(),
+                            R.dimen.small_item_height),
+                        null))
                 .build();
-            holder.avatarImageView.setController(draweeController);
+            holder.binding.userIcon.setController(draweeController);
         }
     }
 
     @Override
     public boolean filter(String constraint) {
         return participant.getDisplayName() != null &&
-                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find();
+                Pattern
+                    .compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
+                    .matcher(participant.getDisplayName().trim())
+                    .find();
     }
-
 
     static class UserItemViewHolder extends FlexibleViewHolder {
 
-        @BindView(R.id.user_name)
-        public EmojiTextView contactDisplayName;
-        @BindView(R.id.account)
-        public TextView serverUrl;
-        @BindView(R.id.user_icon)
-        public SimpleDraweeView avatarImageView;
+        public AccountItemBinding binding;
 
         /**
          * Default constructor.
          */
         UserItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = AccountItemBinding.bind(view);
         }
     }
 }

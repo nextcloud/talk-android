@@ -78,6 +78,15 @@ public class Participant {
     @JsonField(name = "inCall")
     public Object inCall;
 
+    @JsonField(name = "status")
+    public String status;
+
+    @JsonField(name = "statusIcon")
+    public String statusIcon;
+
+    @JsonField(name = "statusMessage")
+    public String statusMessage;
+
     public String source;
 
     public boolean selected;

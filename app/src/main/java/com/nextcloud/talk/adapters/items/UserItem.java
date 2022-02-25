@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,14 +22,12 @@
 
 package com.nextcloud.talk.adapters.items;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-
-import androidx.annotation.Nullable;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.emoji.widget.EmojiTextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -38,12 +38,18 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags;
+import com.nextcloud.talk.models.json.status.StatusType;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.emoji.widget.EmojiTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
@@ -54,14 +60,22 @@ import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
-        ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
+    ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
+    private static final float STATUS_SIZE_IN_DP = 9f;
+    private static final String NO_ICON = "";
+
+    private Context context;
     private Participant participant;
     private UserEntity userEntity;
     private GenericTextHeaderItem header;
     public boolean isOnline = true;
 
-    public UserItem(Participant participant, UserEntity userEntity, GenericTextHeaderItem genericTextHeaderItem) {
+    public UserItem(Context activityContext,
+                    Participant participant,
+                    UserEntity userEntity,
+                    GenericTextHeaderItem genericTextHeaderItem) {
+        this.context = activityContext;
         this.participant = participant;
         this.userEntity = userEntity;
         this.header = genericTextHeaderItem;
@@ -72,7 +86,7 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         if (o instanceof UserItem) {
             UserItem inItem = (UserItem) o;
             return participant.getActorType() == inItem.getModel().getActorType() &&
-                    participant.getActorId().equals(inItem.getModel().getActorId());
+                participant.getActorId().equals(inItem.getModel().getActorId());
         }
         return false;
     }
@@ -109,10 +123,13 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         return new UserItemViewHolder(view, adapter);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
 
-        holder.simpleDraweeView.setController(null);
+        if (holder.participantAvatar != null) {
+            holder.participantAvatar.setController(null);
+        }
 
         if (holder.checkedImageView != null) {
             if (participant.isSelected()) {
@@ -122,69 +139,71 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
             }
         }
 
+        drawStatus(holder);
+
         if (!isOnline) {
             holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(
-                    holder.contactDisplayName.getContext().getResources(),
-                    R.color.medium_emphasis_text,
-                    null)
-            );
-            holder.simpleDraweeView.setAlpha(0.38f);
+                holder.contactDisplayName.getContext().getResources(),
+                R.color.medium_emphasis_text,
+                null)
+                                                  );
+            holder.participantAvatar.setAlpha(0.38f);
         } else {
             holder.contactDisplayName.setTextColor(ResourcesCompat.getColor(
-                    holder.contactDisplayName.getContext().getResources(),
-                    R.color.high_emphasis_text,
-                    null)
-            );
-            holder.simpleDraweeView.setAlpha(1.0f);
+                holder.contactDisplayName.getContext().getResources(),
+                R.color.high_emphasis_text,
+                null)
+                                                  );
+            holder.participantAvatar.setAlpha(1.0f);
         }
 
         if (adapter.hasFilter()) {
             FlexibleUtils.highlightText(holder.contactDisplayName, participant.getDisplayName(),
-                    String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                            .getResources().getColor(R.color.colorPrimary));
+                                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
+                                            .getResources().getColor(R.color.colorPrimary));
         }
 
         holder.contactDisplayName.setText(participant.getDisplayName());
 
         if (TextUtils.isEmpty(participant.getDisplayName()) &&
-                (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
+            (participant.getType().equals(Participant.ParticipantType.GUEST) || participant.getType().equals(Participant.ParticipantType.USER_FOLLOWING_LINK))) {
             holder.contactDisplayName.setText(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest));
         }
 
         if (participant.getActorType() == Participant.ActorType.GROUPS ||
-                "groups".equals(participant.getSource()) ||
-                participant.getActorType() == Participant.ActorType.CIRCLES ||
-                "circles".equals(participant.getSource())) {
-            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_group);
+            "groups".equals(participant.getSource()) ||
+            participant.getActorType() == Participant.ActorType.CIRCLES ||
+            "circles".equals(participant.getSource())) {
+            holder.participantAvatar.setImageResource(R.drawable.ic_circular_group);
         } else if (participant.getActorType() == Participant.ActorType.EMAILS) {
-            holder.simpleDraweeView.setImageResource(R.drawable.ic_circular_mail);
+            holder.participantAvatar.setImageResource(R.drawable.ic_circular_mail);
         } else if (participant.getActorType() == Participant.ActorType.GUESTS ||
-                Participant.ParticipantType.GUEST.equals(participant.getType()) ||
-                Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
+            Participant.ParticipantType.GUEST.equals(participant.getType()) ||
+            Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
 
             String displayName = NextcloudTalkApplication.Companion.getSharedApplication()
-                    .getResources().getString(R.string.nc_guest);
+                .getResources().getString(R.string.nc_guest);
 
             if (!TextUtils.isEmpty(participant.getDisplayName())) {
                 displayName = participant.getDisplayName();
             }
 
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(holder.simpleDraweeView.getController())
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(),
-                                                                                                                  displayName, R.dimen.avatar_size), null))
-                    .build();
-            holder.simpleDraweeView.setController(draweeController);
+                .setOldController(holder.participantAvatar.getController())
+                .setAutoPlayAnimations(true)
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(),
+                                                                                                              displayName, R.dimen.avatar_size), null))
+                .build();
+            holder.participantAvatar.setController(draweeController);
 
         } else if (participant.getActorType() == Participant.ActorType.USERS || participant.getSource().equals("users")) {
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                    .setOldController(holder.simpleDraweeView.getController())
-                    .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                                                                                         participant.getActorId(), R.dimen.avatar_size), null))
-                    .build();
-            holder.simpleDraweeView.setController(draweeController);
+                .setOldController(holder.participantAvatar.getController())
+                .setAutoPlayAnimations(true)
+                .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                                                                                     participant.getActorId(), R.dimen.avatar_size), null))
+                .build();
+            holder.participantAvatar.setController(draweeController);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
@@ -195,17 +214,17 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                 holder.videoCallIconView.setImageResource(R.drawable.ic_call_grey_600_24dp);
                 holder.videoCallIconView.setVisibility(View.VISIBLE);
                 holder.videoCallIconView.setContentDescription(
-                        resources.getString(R.string.nc_call_state_with_phone, participant.displayName));
+                    resources.getString(R.string.nc_call_state_with_phone, participant.displayName));
             } else if ((inCallFlag & InCallFlags.WITH_VIDEO) > 0) {
                 holder.videoCallIconView.setImageResource(R.drawable.ic_videocam_grey_600_24dp);
                 holder.videoCallIconView.setVisibility(View.VISIBLE);
                 holder.videoCallIconView.setContentDescription(
-                        resources.getString(R.string.nc_call_state_with_video, participant.displayName));
+                    resources.getString(R.string.nc_call_state_with_video, participant.displayName));
             } else if (inCallFlag > InCallFlags.DISCONNECTED) {
                 holder.videoCallIconView.setImageResource(R.drawable.ic_mic_grey_600_24dp);
                 holder.videoCallIconView.setVisibility(View.VISIBLE);
                 holder.videoCallIconView.setContentDescription(
-                        resources.getString(R.string.nc_call_state_in_call, participant.displayName));
+                    resources.getString(R.string.nc_call_state_in_call, participant.displayName));
             } else {
                 holder.videoCallIconView.setVisibility(View.GONE);
             }
@@ -243,18 +262,61 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
                         break;
                 }
 
-                if (!holder.contactMentionId.getText().equals(userType)) {
-                    holder.contactMentionId.setText(userType);
+                if (!userType.equals(NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_user))) {
+                    holder.contactMentionId.setText("(" + userType + ")");
                 }
             }
         }
     }
 
+    private void drawStatus(UserItemViewHolder holder) {
+        if (holder.statusMessage != null && holder.participantEmoji != null && holder.userStatusImage != null) {
+            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
+            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+                participant.status,
+                NO_ICON,
+                size,
+                context.getResources().getColor(R.color.bg_default),
+                context));
+
+            if (participant.statusMessage != null) {
+                holder.statusMessage.setText(participant.statusMessage);
+                alignUsernameVertical(holder, 0);
+            } else {
+                holder.statusMessage.setText("");
+                alignUsernameVertical(holder, 10);
+            }
+
+            if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
+                holder.participantEmoji.setText(participant.statusIcon);
+            } else {
+                holder.participantEmoji.setVisibility(View.GONE);
+            }
+
+            if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
+                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                    holder.statusMessage.setText(R.string.dnd);
+                }
+            } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
+                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                    holder.statusMessage.setText(R.string.away);
+                }
+            }
+        }
+    }
+
+    private void alignUsernameVertical(UserItem.UserItemViewHolder holder, float densityPixelsFromTop) {
+        ConstraintLayout.LayoutParams layoutParams =
+            (ConstraintLayout.LayoutParams) holder.contactDisplayName.getLayoutParams();
+        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(densityPixelsFromTop, context);
+        holder.contactDisplayName.setLayoutParams(layoutParams);
+    }
+
     @Override
     public boolean filter(String constraint) {
         return participant.getDisplayName() != null &&
-                (Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find() ||
-                        Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getActorId().trim()).find());
+            (Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getDisplayName().trim()).find() ||
+                Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(participant.getActorId().trim()).find());
     }
 
     @Override
@@ -271,8 +333,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
         @BindView(R.id.name_text)
         public EmojiTextView contactDisplayName;
-        @BindView(R.id.simple_drawee_view)
-        public SimpleDraweeView simpleDraweeView;
+        @Nullable
+        @BindView(R.id.avatar_drawee_view)
+        public SimpleDraweeView participantAvatar;
         @Nullable
         @BindView(R.id.secondary_text)
         public EmojiTextView contactMentionId;
@@ -282,6 +345,15 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         @Nullable
         @BindView(R.id.checkedImageView)
         ImageView checkedImageView;
+        @Nullable
+        @BindView(R.id.participant_status_emoji)
+        com.vanniktech.emoji.EmojiEditText participantEmoji;
+        @Nullable
+        @BindView(R.id.user_status_image)
+        ImageView userStatusImage;
+        @Nullable
+        @BindView(R.id.conversation_info_status_message)
+        EmojiTextView statusMessage;
 
         /**
          * Default constructor.

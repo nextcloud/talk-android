@@ -38,6 +38,7 @@
     <color name="high_emphasis_text">#deffffff</color>
     <color name="medium_emphasis_text">#99ffffff</color>
     <color name="low_emphasis_text">#61ffffff</color>
+    <color name="high_emphasis_text_inverse">#de000000</color>
 
     <color name="bg_default">#121212</color>
     <color name="bg_default_semitransparent">#99121212</color>
@@ -65,4 +66,9 @@
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#4B4B4B</color>
     <color name="nc_shimmer_darker_color">#282828</color>
+
+    <color name="list_divider_background">#222222</color>
+    <color name="grey_200">#818181</color>
+
+    <color name="dialog_background">#353535</color>
 </resources>

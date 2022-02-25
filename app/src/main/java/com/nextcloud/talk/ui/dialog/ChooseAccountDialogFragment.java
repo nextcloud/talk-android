@@ -3,8 +3,10 @@
  *
  * @author Andy Scherzinger
  * @author Mario Danic
+ * @author Marcel Hibbe
  * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,11 +42,16 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
+import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
+import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.User;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.status.Status;
+import com.nextcloud.talk.models.json.status.StatusOverall;
+import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
@@ -62,11 +69,15 @@ import autodagger.AutoInjector;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class ChooseAccountDialogFragment extends DialogFragment {
     private static final String TAG = ChooseAccountDialogFragment.class.getSimpleName();
+
+    private static final float STATUS_SIZE_IN_DP = 9f;
 
     @Inject
     UserUtils userUtils;
@@ -74,11 +85,16 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @Inject
     CookieManager cookieManager;
 
+    @Inject
+    NcApi ncApi;
+
     private DialogChooseAccountBinding binding;
     private View dialogView;
 
     private FlexibleAdapter<AdvancedUserItem> adapter;
     private final List<AdvancedUserItem> userItems = new ArrayList<>();
+
+    private Status status;
 
     @SuppressLint("InflateParams")
     @NonNull
@@ -106,24 +122,26 @@ public class ChooseAccountDialogFragment extends DialogFragment {
             binding.currentAccount.account.setText((Uri.parse(user.getBaseUrl()).getHost()));
 
             if (user.getBaseUrl() != null &&
-                    (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
+                (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
                 binding.currentAccount.userIcon.setVisibility(View.VISIBLE);
 
                 DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                        .setOldController(binding.currentAccount.userIcon.getController())
-                        .setAutoPlayAnimations(true)
-                        .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                                ApiUtils.getUrlForAvatarWithName(
-                                        user.getBaseUrl(),
-                                        user.getUserId(),
-                                        R.dimen.small_item_height),
-                                null))
-                        .build();
+                    .setOldController(binding.currentAccount.userIcon.getController())
+                    .setAutoPlayAnimations(true)
+                    .setImageRequest(DisplayUtils.getImageRequestForUrl(
+                        ApiUtils.getUrlForAvatarWithName(
+                            user.getBaseUrl(),
+                            user.getUserId(),
+                            R.dimen.small_item_height),
+                        null))
+                    .build();
                 binding.currentAccount.userIcon.setController(draweeController);
 
             } else {
                 binding.currentAccount.userIcon.setVisibility(View.INVISIBLE);
             }
+
+            loadCurrentStatus(user);
         }
 
         // Creating listeners for quick-actions
@@ -139,6 +157,17 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 ((MainActivity) getActivity()).openSettings();
             });
         }
+
+        binding.setStatus.setOnClickListener(v -> {
+            dismiss();
+
+            if (status != null) {
+                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(user, status);
+                setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
+            } else {
+                Log.w(TAG, "status was null");
+            }
+        });
 
         if (adapter == null) {
             adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
@@ -171,6 +200,41 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         prepareViews();
     }
 
+    private void loadCurrentStatus(User user) {
+        String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
+
+        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
+            binding.statusView.setVisibility(View.VISIBLE);
+
+            ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Observer<StatusOverall>() {
+
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
+                    }
+
+                    @Override
+                    public void onNext(@NonNull StatusOverall statusOverall) {
+                        status = statusOverall.ocs.data;
+
+                        binding.setStatus.setEnabled(true);
+                        drawStatus();
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        Log.e(TAG, "Can't receive user status from server. ", e);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                    }
+                });
+        }
+    }
+
     private void prepareViews() {
         if (getActivity() != null) {
             LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
@@ -196,21 +260,21 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     }
 
     private final FlexibleAdapter.OnItemClickListener onSwitchItemClickListener =
-            new FlexibleAdapter.OnItemClickListener() {
-        @Override
-        public boolean onItemClick(View view, int position) {
-            if (userItems.size() > position) {
-                UserEntity userEntity = (userItems.get(position)).getEntity();
-                userUtils.createOrUpdateUser(null,
-                                             null,
-                                             null,
-                                             null,
-                                             null,
-                                             Boolean.TRUE,
-                                             null, userEntity.getId(),
-                                             null,
-                                             null,
-                                             null)
+        new FlexibleAdapter.OnItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position) {
+                if (userItems.size() > position) {
+                    UserEntity userEntity = (userItems.get(position)).getEntity();
+                    userUtils.createOrUpdateUser(null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 null,
+                                                 Boolean.TRUE,
+                                                 null, userEntity.getId(),
+                                                 null,
+                                                 null,
+                                                 null)
                         .subscribe(new Observer<UserEntity>() {
                             @Override
                             public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -223,7 +287,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
                                 if (getActivity() != null) {
                                     getActivity().runOnUiThread(
-                                            () -> ((MainActivity) getActivity()).resetConversationsList());
+                                        () -> ((MainActivity) getActivity()).resetConversationsList());
                                 }
                                 dismiss();
                             }
@@ -238,9 +302,30 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                 // DONE
                             }
                         });
-            }
+                }
 
-            return true;
+                return true;
+            }
+        };
+
+    private void drawStatus() {
+        float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, getContext());
+        binding.currentAccount.ticker.setBackground(null);
+        binding.currentAccount.ticker.setImageDrawable(new StatusDrawable(
+            status.getStatus(),
+            status.getIcon(),
+            size,
+            getContext().getResources().getColor(R.color.dialog_background),
+            getContext()));
+        binding.currentAccount.ticker.setVisibility(View.VISIBLE);
+
+
+        if (status.getMessage() != null && !status.getMessage().isEmpty()) {
+            binding.currentAccount.status.setText(status.getMessage());
+            binding.currentAccount.status.setVisibility(View.VISIBLE);
+        } else {
+            binding.currentAccount.status.setText("");
+            binding.currentAccount.status.setVisibility(View.GONE);
         }
-    };
+    }
 }

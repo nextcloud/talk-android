@@ -64,7 +64,6 @@ import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.ConversationItem;
@@ -72,8 +71,6 @@ import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum;
-import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController;
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
@@ -84,7 +81,8 @@ import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.conversations.Conversation;
-import com.nextcloud.talk.models.json.participants.Participant;
+import com.nextcloud.talk.models.json.status.Status;
+import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -132,6 +130,7 @@ import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -191,8 +190,6 @@ public class ConversationsListController extends BaseController implements Searc
     private SearchView searchView;
     private String searchQuery;
 
-    private View view;
-
     private String credentials;
 
     private boolean adapterWasNull = true;
@@ -219,6 +216,8 @@ public class ConversationsListController extends BaseController implements Searc
     private HashMap<String, GenericTextHeaderItem> callHeaderItems = new HashMap<>();
 
     private ConversationsListBottomDialog conversationsListBottomDialog;
+
+    private HashMap<String, Status> userStatuses = new HashMap<>();
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -473,6 +472,37 @@ public class ConversationsListController extends BaseController implements Searc
 
     @SuppressLint("LongLogTag")
     public void fetchData() {
+        fetchUserStatuses();
+    }
+
+    private void fetchUserStatuses() {
+        ncApi.getUserStatuses(credentials, ApiUtils.getUrlForUserStatuses(currentUser.getBaseUrl()))
+            .subscribe(new Observer<StatusesOverall>() {
+                @Override
+                public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
+                }
+
+                @Override
+                public void onNext(@NonNull StatusesOverall statusesOverall) {
+                    for (Status status : statusesOverall.getOcs().getData()) {
+                        userStatuses.put(status.getUserId(), status);
+                    }
+                    fetchRooms();
+                }
+
+                @Override
+                public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                    Log.e(TAG, "failed to fetch user statuses", e);
+                }
+
+                @Override
+                public void onComplete() {
+                }
+            });
+
+    }
+
+    private void fetchRooms() {
         dispose(null);
 
         isRefreshing = true;
@@ -531,14 +561,16 @@ public class ConversationsListController extends BaseController implements Searc
                             ConversationItem conversationItem = new ConversationItem(
                                 conversation,
                                 currentUser,
-                                getActivity());
+                                getActivity(),
+                                userStatuses.get(conversation.name));
                             conversationItems.add(conversationItem);
 
                             ConversationItem conversationItemWithHeader = new ConversationItem(
                                 conversation,
                                 currentUser,
                                 getActivity(),
-                                callHeaderItems.get(headerTitle));
+                                callHeaderItems.get(headerTitle),
+                                userStatuses.get(conversation.name));
                             conversationItemsWithHeader.add(conversationItemWithHeader);
                         }
                     }
@@ -610,7 +642,8 @@ public class ConversationsListController extends BaseController implements Searc
                             conversation,
                             currentUser,
                             getActivity(),
-                            callHeaderItems.get(headerTitle));
+                            callHeaderItems.get(headerTitle),
+                            userStatuses.get(conversation.name));
 
                         openConversationItems.add(conversationItem);
                     }
