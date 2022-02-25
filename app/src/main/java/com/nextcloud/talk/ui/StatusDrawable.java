@@ -56,7 +56,7 @@ public class StatusDrawable extends Drawable {
         if ("dnd".equals(status)) {
             icon = R.drawable.ic_user_status_dnd;
             this.context = context;
-        } else if (TextUtils.isEmpty(statusIcon)) {
+        } else if (TextUtils.isEmpty(statusIcon) && status != null) {
             switch (status) {
                 case "online":
                     icon = R.drawable.online_status;
