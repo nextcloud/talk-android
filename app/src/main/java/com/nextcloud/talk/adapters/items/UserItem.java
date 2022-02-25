@@ -281,9 +281,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
             if (participant.statusMessage != null) {
                 holder.statusMessage.setText(participant.statusMessage);
+                alignUsernameVertical(holder, 0);
             } else {
                 holder.statusMessage.setText("");
-                alignUsernameVertical(holder);
+                alignUsernameVertical(holder, 10);
             }
 
             if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
@@ -304,10 +305,10 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         }
     }
 
-    private void alignUsernameVertical(UserItemViewHolder holder) {
+    private void alignUsernameVertical(UserItem.UserItemViewHolder holder, float densityPixelsFromTop) {
         ConstraintLayout.LayoutParams layoutParams =
             (ConstraintLayout.LayoutParams) holder.contactDisplayName.getLayoutParams();
-        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(10, context);
+        layoutParams.topMargin = (int) DisplayUtils.convertDpToPixel(densityPixelsFromTop, context);
         holder.contactDisplayName.setLayoutParams(layoutParams);
     }
 
