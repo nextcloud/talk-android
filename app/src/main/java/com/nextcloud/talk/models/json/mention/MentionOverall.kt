@@ -28,21 +28,10 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class Mention(
-    @JsonField(name = ["id"])
-    var id: String?,
-    @JsonField(name = ["label"])
-    var label: String?,
-    // type of user (guests or users or calls)
-    @JsonField(name = ["source"])
-    var source: String?,
-    @JsonField(name = ["status"])
-    var status: String?,
-    @JsonField(name = ["statusIcon"])
-    var statusIcon: String?,
-    @JsonField(name = ["statusMessage"])
-    var statusMessage: String?
+data class MentionOverall(
+    @JsonField(name = ["ocs"])
+    var ocs: MentionOCS?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null)
 }
