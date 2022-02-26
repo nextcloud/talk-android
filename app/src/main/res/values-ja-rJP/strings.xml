@@ -319,4 +319,4 @@
     <string name="userinfo_error_text">ユーザー情報を取得できませんでした</string>
     <string name="userinfo_no_info_headline">個人情報はありません</string>
     <string name="userinfo_no_info_text">プロフィールページに名前、写真、連絡先の詳細を追加します。</string>
-</resources>
+    </resources>

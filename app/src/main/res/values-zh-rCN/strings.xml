@@ -362,4 +362,4 @@
     <string name="userinfo_error_text">未能检索个人用户信息</string>
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
-</resources>
+    </resources>

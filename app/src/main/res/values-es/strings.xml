@@ -375,4 +375,4 @@
     <string name="userinfo_error_text">Fallo al obtener la información personal del usuario.</string>
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
-</resources>
+    </resources>

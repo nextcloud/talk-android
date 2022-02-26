@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">無法檢索個人用戶資訊。</string>
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
-</resources>
+    </resources>

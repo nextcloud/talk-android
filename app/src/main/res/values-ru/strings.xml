@@ -369,4 +369,4 @@
     <string name="userinfo_error_text">Не удалось получить личную информации о пользователе</string>
     <string name="userinfo_no_info_headline">Личная информация не указана</string>
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
-</resources>
+    </resources>

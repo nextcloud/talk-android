@@ -337,4 +337,4 @@
     <string name="userinfo_error_text">Αποτυχία ανάκτησης προσωπικών πληροφοριών χρήστη.</string>
     <string name="userinfo_no_info_headline">Δεν ορίστηκαν προσωπικές πληροφορίες</string>
     <string name="userinfo_no_info_text">Προσθέστε όνομα, εικόνα και λεπτομέρειες επικοινωνίας στο προφίλ σας.</string>
-</resources>
+    </resources>

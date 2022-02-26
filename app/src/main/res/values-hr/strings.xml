@@ -332,4 +332,4 @@
     <string name="userinfo_error_text">Dohvaćanje osobnih korisničkih podataka nije uspjelo.</string>
     <string name="userinfo_no_info_headline">Nisu postavljeni osobni podaci</string>
     <string name="userinfo_no_info_text">Dodajte ime, sliku i kontaktne podatke na stranicu profila.</string>
-</resources>
+    </resources>

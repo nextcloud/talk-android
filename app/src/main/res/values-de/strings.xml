@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">Fehler beim Laden der persönlichen Nutzerinformationen.</string>
     <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
-</resources>
+    </resources>

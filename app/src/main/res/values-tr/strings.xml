@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">Kullanıcının kişisel bilgileri alınamadı</string>
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
-</resources>
+    </resources>

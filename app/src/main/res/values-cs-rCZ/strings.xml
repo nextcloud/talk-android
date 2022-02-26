@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">Nepodařilo se získat osobní údaje uživatele.</string>
     <string name="userinfo_no_info_headline">Osobní údaje nejsou nastaveny</string>
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
-</resources>
+    </resources>

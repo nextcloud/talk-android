@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">Nie udało się pobrać osobistych informacji o użytkowniku.</string>
     <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
-</resources>
+    </resources>

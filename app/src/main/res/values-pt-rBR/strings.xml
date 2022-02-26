@@ -369,4 +369,4 @@
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
-</resources>
+    </resources>

@@ -357,4 +357,4 @@
     <string name="userinfo_error_text">Pridobivanje uporabniških podrobnosti je spodletelo.</string>
     <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
     <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>
-</resources>
+    </resources>

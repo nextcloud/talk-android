@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">Zlyhalo načítanie osobných údajov uživateľa.</string>
     <string name="userinfo_no_info_headline">Osobné informácie neboli nastavené</string>
     <string name="userinfo_no_info_text">Pridaj meno, obrázok a kontakt na profilovú stránku.</string>
-</resources>
+    </resources>

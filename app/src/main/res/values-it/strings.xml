@@ -374,4 +374,4 @@
     <string name="userinfo_error_text">Impossibile ottenere le informazioni personali dell\'utente.</string>
     <string name="userinfo_no_info_headline">Nessuna informazione personale impostata</string>
     <string name="userinfo_no_info_text">Aggiungi nome, immagine e dettagli di contatto sulla tua pagina di profilo.</string>
-</resources>
+    </resources>

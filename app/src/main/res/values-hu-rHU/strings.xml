@@ -369,4 +369,4 @@
     <string name="userinfo_error_text">Nem sikerült beolvasni a személyes felhasználói adatokat.</string>
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
-</resources>
+    </resources>

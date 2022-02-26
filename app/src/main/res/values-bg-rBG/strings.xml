@@ -357,4 +357,4 @@
     <string name="userinfo_error_text">Извличането на лична информация на потребител не беше успешно.</string>
     <string name="userinfo_no_info_headline">Няма зададена лична информация</string>
     <string name="userinfo_no_info_text">Добавяне на име, снимка и подробности за контакт към страницата на вашия профил.</string>
-</resources>
+    </resources>
