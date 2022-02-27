@@ -212,7 +212,7 @@
     <string name="nc_settings_warning">Avís</string>
     <string name="nc_settings_wrong_account">Només el compte actual pot ser re-autoritzat</string>
     <string name="nc_share_link">Comparteix un enllaç</string>
-    <string name="nc_share_link_via">Comparteix un enllaç via</string>
+    <string name="nc_share_link_via">Comparteix un enllaç mitjançant</string>
     <string name="nc_share_subject">%1$s invitació</string>
     <string name="nc_share_text">Afegiu-vos a la conversa a %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContrasenya: %1$s</string>
