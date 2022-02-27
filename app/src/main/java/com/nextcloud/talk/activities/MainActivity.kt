@@ -48,9 +48,9 @@ import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.databinding.ActivityMainBinding
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -346,8 +346,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
             } else {
-                ConductorRemapping.remapChatController(
-                    router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                remapChatController(
+                    router!!, intent.getParcelableExtra<UserEntity>(KEY_USER_ENTITY)!!.id,
                     intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false
                 )
             }
