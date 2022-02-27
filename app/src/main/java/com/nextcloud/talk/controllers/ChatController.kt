@@ -1509,7 +1509,7 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun validSessionId() : Boolean {
+    private fun validSessionId(): Boolean {
         return currentConversation != null &&
             !TextUtils.isEmpty(currentConversation?.sessionId) &&
             currentConversation?.sessionId != "0"
@@ -1517,8 +1517,11 @@ class ChatController(args: Bundle) :
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        Log.d(TAG, "onAttach: Controller: " + System.identityHashCode(this).toString() +
-            " Activity: " + System.identityHashCode(activity).toString())
+        Log.d(
+            TAG,
+            "onAttach: Controller: " + System.identityHashCode(this).toString() +
+                " Activity: " + System.identityHashCode(activity).toString()
+        )
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" &&
@@ -1587,8 +1590,11 @@ class ChatController(args: Bundle) :
 
     override fun onDetach(view: View) {
         super.onDetach(view)
-        Log.d(TAG, "onDetach: Controller: " + System.identityHashCode(this).toString() +
-            " Activity: " + System.identityHashCode(activity).toString())
+        Log.d(
+            TAG,
+            "onDetach: Controller: " + System.identityHashCode(this).toString() +
+                " Activity: " + System.identityHashCode(activity).toString()
+        )
 
         eventBus?.unregister(this)
 
@@ -1651,9 +1657,11 @@ class ChatController(args: Bundle) :
     }
 
     private fun joinRoomWithPassword() {
-        Log.d(TAG,
+        Log.d(
+            TAG,
             "joinRoomWithPassword start: " + (currentConversation == null).toString() +
-            " sessionId: " + currentConversation?.sessionId)
+                "  sessionId: " + currentConversation?.sessionId
+        )
 
         if (! validSessionId()) {
             var apiVersion = 1
@@ -1682,7 +1690,7 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs.data.sessionId
-                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response - sessionId: " + currentConversation?.sessionId)
+                        Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
