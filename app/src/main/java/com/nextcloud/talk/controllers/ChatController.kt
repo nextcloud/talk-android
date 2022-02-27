@@ -1508,6 +1508,12 @@ class ChatController(args: Bundle) :
         }
     }
 
+    private fun validSessionId() : Boolean {
+        return currentConversation != null &&
+            !TextUtils.isEmpty(currentConversation?.sessionId) &&
+            currentConversation?.sessionId != "0"
+    }
+
     override fun onAttach(view: View) {
         super.onAttach(view)
         Log.d(TAG, "onAttach: Controller: " + System.identityHashCode(this).toString() +
@@ -1556,7 +1562,6 @@ class ChatController(args: Bundle) :
 
         Log.d(TAG, "onAttach inConversation: " + inConversation.toString())
         if (inConversation) {
-            currentConversation?.sessionId = "0"
             Log.d(TAG, "execute joinRoomWithPassword in onAttach")
             joinRoomWithPassword()
         }
@@ -1597,7 +1602,7 @@ class ChatController(args: Bundle) :
             !ApplicationWideCurrentRoomHolder.getInstance().isDialing
         ) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
-            if (inConversation) {
+            if (inConversation && validSessionId()) {
                 leaveRoom()
             }
         }
@@ -1645,12 +1650,11 @@ class ChatController(args: Bundle) :
     }
 
     private fun joinRoomWithPassword() {
-        Log.d(TAG, "joinRoomWithPassword start: " + (currentConversation == null).toString())
+        Log.d(TAG,
+            "joinRoomWithPassword start: " + (currentConversation == null).toString() +
+            " sessionId: " + currentConversation?.sessionId)
 
-        if (currentConversation == null ||
-            TextUtils.isEmpty(currentConversation?.sessionId) ||
-            currentConversation?.sessionId == "0"
-        ) {
+        if (! validSessionId()) {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
@@ -1677,6 +1681,7 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
                         inConversation = true
                         currentConversation?.sessionId = roomOverall.ocs.data.sessionId
+                        Log.d(TAG, "joinRoomWithPassword - joinRoom - got response - sessionId: " + currentConversation?.sessionId)
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
                             currentConversation?.sessionId
@@ -1775,6 +1780,8 @@ class ChatController(args: Bundle) :
                     } else {
                         Log.e(TAG, "magicWebSocketInstance or currentConversation were null! Failed to leave the room!")
                     }
+
+                    currentConversation?.sessionId = "0"
                 }
 
                 override fun onError(e: Throwable) {
