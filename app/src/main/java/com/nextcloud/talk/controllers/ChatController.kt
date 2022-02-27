@@ -233,6 +233,7 @@ class ChatController(args: Bundle) :
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
+    var pullChatMessagesPending = false
     var lookingIntoFuture = false
     var newMessagesCount = 0
     var startCallFromNotification: Boolean? = null
@@ -1902,6 +1903,16 @@ class ChatController(args: Bundle) :
             return
         }
 
+        if (pullChatMessagesPending) {
+            // Sometimes pullChatMessages may be called before response to a previous call is received.
+            // In such cases just ignore the second call. Message processing will continue when response to the
+            // earlier call is received.
+            // More details: https://github.com/nextcloud/talk-android/pull/1766
+            Log.d(TAG, "pullChatMessages - pullChatMessagesPending is true, exiting")
+            return
+        }
+        pullChatMessagesPending = true
+
         if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)) {
             // return
         }
@@ -1966,6 +1977,7 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(response: Response<*>) {
                         Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - got response")
+                        pullChatMessagesPending = false
                         try {
                             if (response.code() == 304) {
                                 Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
@@ -1984,10 +1996,11 @@ class ChatController(args: Bundle) :
 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - ERROR", e)
+                        pullChatMessagesPending = false
                     }
 
                     override fun onComplete() {
-                        // unused atm
+                        pullChatMessagesPending = false
                     }
                 })
         } else {
@@ -2006,6 +2019,7 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(response: Response<*>) {
                         Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - got response")
+                        pullChatMessagesPending = false
                         try {
                             if (response.code() == 412) {
                                 pastPreconditionFailed = true
@@ -2021,10 +2035,11 @@ class ChatController(args: Bundle) :
 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - ERROR", e)
+                        pullChatMessagesPending = false
                     }
 
                     override fun onComplete() {
-                        // unused atm
+                        pullChatMessagesPending = false
                     }
                 })
         }
