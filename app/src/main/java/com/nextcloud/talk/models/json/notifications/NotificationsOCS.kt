@@ -19,30 +19,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.mention
+package com.nextcloud.talk.models.json.notifications
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.generic.GenericOCS
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class Mention(
-    @JsonField(name = ["id"])
-    var id: String?,
-    @JsonField(name = ["label"])
-    var label: String?,
-    // type of user (guests or users or calls)
-    @JsonField(name = ["source"])
-    var source: String?,
-    @JsonField(name = ["status"])
-    var status: String?,
-    @JsonField(name = ["statusIcon"])
-    var statusIcon: String?,
-    @JsonField(name = ["statusMessage"])
-    var statusMessage: String?
-) : Parcelable {
+class NotificationsOCS(
+    @JsonField(name = ["data"])
+    var notificationsList: List<Notification>?
+) : GenericOCS(), Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, null, null, null)
+    constructor() : this(null)
 }
