@@ -2,16 +2,28 @@
   <resources>
     <string name="account_icon">Fiók ikon</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Hangkimenet</string>
+    <string name="audio_output_phone">Telefo</string>
+    <string name="audio_output_speaker">Hangszóró</string>
+    <string name="audio_output_wired_headset">Vezetékes fejhallgató</string>
     <string name="avatar">Profilkép</string>
+    <string name="away">Távo</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
+    <string name="clear_status_message">Állapotüzenet törlése</string>
+    <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
     <string name="conversations">Beszélgetések</string>
     <string name="delete_avatar">Profilkép törlése</string>
+    <string name="dnd">Ne zavarjanak</string>
+    <string name="dontClear">Ne törölje</string>
     <string name="edit">Szerkesztés</string>
     <string name="encrypted">Titkosított</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
     <string name="file_list_folder">mappa</string>
     <string name="file_list_loading">Betöltés…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 óra </string>
+    <string name="invisible">Láthatatlan</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="menu_item_sort_by_date_newest_first">Legújabb elöl</string>
     <string name="menu_item_sort_by_date_oldest_first">Régebbiek elöl</string>
@@ -328,6 +340,9 @@
     <string name="nc_wrong_password">Hibás jelszó</string>
     <string name="nc_yes">Igen</string>
     <string name="no_phone_book_integration_due_to_permissions">Nincs telefonszám integráció hiányzó engedélyek miatt</string>
+    <string name="oneHour">1 óra</string>
+    <string name="online">Elérhető</string>
+    <string name="online_status">Elérhető állapot</string>
     <string name="openConversations">Beszélgetések megnyitása</string>
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
     <string name="password_protected">Jelszóval védett</string>
@@ -344,12 +359,16 @@
     <string name="scope_published_title">Közzétett</string>
     <string name="scope_toggle">Hatókör váltása</string>
     <string name="scope_toggle_description">A(z) %1$s adatvédelmi szintjének módosítása</string>
+    <string name="secondsAgo">pár másodperce</string>
     <string name="selected_list_item">Kiválasztott</string>
     <string name="send_to">Küldés</string>
     <string name="send_to_three_dots">Küldés…</string>
+    <string name="set_status">Állapot beállítása</string>
+    <string name="set_status_message">Állapotüzenet beállítása</string>
     <string name="share">Megosztás</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>
+    <string name="status_message">Állapotüzenet</string>
     <string name="take_photo">Fénykép készítése</string>
     <string name="take_photo_error_deleting_picture">Hiba a fénykép készítése során</string>
     <string name="take_photo_permission">Engedély nélkül a fénykép készítése nem lehetséges</string>
@@ -359,6 +378,9 @@
     <string name="take_photo_toggle_crop">Fénykép levágása</string>
     <string name="take_photo_toggle_lowres">Képméret csökkentése</string>
     <string name="take_photo_toggle_torch">Lámpa be/ki</string>
+    <string name="thirtyMinutes">30 perc</string>
+    <string name="thisWeek">Ez a hét</string>
+    <string name="today">Ma</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_info_address">Cím</string>
     <string name="user_info_displayname">Teljes név</string>
@@ -366,7 +388,9 @@
     <string name="user_info_phone">Telefonszám</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Weboldal</string>
+    <string name="user_status">Állapot</string>
     <string name="userinfo_error_text">Nem sikerült beolvasni a személyes felhasználói adatokat.</string>
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
+    <string name="whats_your_status">Mi az állapota?</string>
     </resources>
