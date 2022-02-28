@@ -102,9 +102,6 @@
     <string name="nc_settings_message_ringtone_key" translatable="false">message_ringtone</string>
     <string name="nc_settings_default_ringtone" translatable="false">Librem by feandesign</string>
     <string name="nc_settings_no_ringtone">No sound</string>
-    <string name="nc_settings_vibrate">Vibrate</string>
-    <string name="nc_settings_vibrate_desc">Phone will vibrate unless it\'s silenced</string>
-    <string name="nc_settings_vibrate_key" translatable="false">notifications_vibrate</string>
 
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_theme_title">Theme</string>
@@ -329,16 +326,7 @@
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_add_attachment">Add attachment</string>
 
-    <!-- Contacts endless loading -->
-    <string name="nc_no_more_load_retry">No more items to load. Refresh to retry.</string>
-    <string name="nc_endless_disabled">No more items to load (max reached).</string>
-    <string name="nc_endless_cancel">Cancelled by the user.</string>
-    <string name="nc_endless_error">An error occurred while loading more items.</string>
-
     <!-- Content descriptions -->
-    <string name="nc_description_more_menu_one_to_one">Menu for conversation with %1$s</string>
-    <string name="nc_description_more_menu_public">Menu for group conversation %1$s</string>
-    <string name="nc_description_more_menu_group">Menu for public conversation %1$s</string>
     <string name="nc_description_send_message_button">Send message</string>
 
     <!-- Empty states -->

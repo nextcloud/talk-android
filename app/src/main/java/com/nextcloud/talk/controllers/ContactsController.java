@@ -46,7 +46,7 @@ import android.widget.RelativeLayout;
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
-import com.nextcloud.talk.adapters.items.UserItem;
+import com.nextcloud.talk.adapters.items.ContactItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -550,8 +550,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                         userHeaderItems.put(headerTitle, genericTextHeaderItem);
                                     }
 
-                                    UserItem newContactItem = new UserItem(
-                                        getApplicationContext(),
+                                    ContactItem newContactItem = new ContactItem(
                                         participant,
                                         currentUser,
                                         userHeaderItems.get(headerTitle)
@@ -573,21 +572,21 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             String firstName;
                             String secondName;
 
-                            if (o1 instanceof UserItem) {
-                                firstName = ((UserItem) o1).getModel().getDisplayName();
+                            if (o1 instanceof ContactItem) {
+                                firstName = ((ContactItem) o1).getModel().getDisplayName();
                             } else {
                                 firstName = ((GenericTextHeaderItem) o1).getModel();
                             }
 
-                            if (o2 instanceof UserItem) {
-                                secondName = ((UserItem) o2).getModel().getDisplayName();
+                            if (o2 instanceof ContactItem) {
+                                secondName = ((ContactItem) o2).getModel().getDisplayName();
                             } else {
                                 secondName = ((GenericTextHeaderItem) o2).getModel();
                             }
 
-                            if (o1 instanceof UserItem && o2 instanceof UserItem) {
-                                String firstSource = ((UserItem) o1).getModel().getSource();
-                                String secondSource = ((UserItem) o2).getModel().getSource();
+                            if (o1 instanceof ContactItem && o2 instanceof ContactItem) {
+                                String firstSource = ((ContactItem) o1).getModel().getSource();
+                                String secondSource = ((ContactItem) o2).getModel().getSource();
                                 if (firstSource.equals(secondSource)) {
                                     return firstName.compareToIgnoreCase(secondName);
                                 }
@@ -624,24 +623,24 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             String firstName;
                             String secondName;
 
-                            if (o1 instanceof UserItem) {
-                                firstName = ((UserItem) o1).getModel().getDisplayName();
+                            if (o1 instanceof ContactItem) {
+                                firstName = ((ContactItem) o1).getModel().getDisplayName();
                             } else {
                                 firstName = ((GenericTextHeaderItem) o1).getModel();
                             }
 
-                            if (o2 instanceof UserItem) {
-                                secondName = ((UserItem) o2).getModel().getDisplayName();
+                            if (o2 instanceof ContactItem) {
+                                secondName = ((ContactItem) o2).getModel().getDisplayName();
                             } else {
                                 secondName = ((GenericTextHeaderItem) o2).getModel();
                             }
 
-                            if (o1 instanceof UserItem && o2 instanceof UserItem) {
-                                if ("groups".equals(((UserItem) o1).getModel().getSource()) && "groups".equals(((UserItem) o2).getModel().getSource())) {
+                            if (o1 instanceof ContactItem && o2 instanceof ContactItem) {
+                                if ("groups".equals(((ContactItem) o1).getModel().getSource()) && "groups".equals(((ContactItem) o2).getModel().getSource())) {
                                     return firstName.compareToIgnoreCase(secondName);
-                                } else if ("groups".equals(((UserItem) o1).getModel().getSource())) {
+                                } else if ("groups".equals(((ContactItem) o1).getModel().getSource())) {
                                     return -1;
-                                } else if ("groups".equals(((UserItem) o2).getModel().getSource())) {
+                                } else if ("groups".equals(((ContactItem) o2).getModel().getSource())) {
                                     return 1;
                                 }
                             }
@@ -827,12 +826,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
     @Override
     public boolean onItemClick(View view, int position) {
-        if (adapter.getItem(position) instanceof UserItem) {
+        if (adapter.getItem(position) instanceof ContactItem) {
             if (!isNewConversationView && !isAddingParticipantsView) {
-                UserItem userItem = (UserItem) adapter.getItem(position);
+                ContactItem contactItem = (ContactItem) adapter.getItem(position);
                 String roomType = "1";
 
-                if ("groups".equals(userItem.getModel().getSource())) {
+                if ("groups".equals(contactItem.getModel().getSource())) {
                     roomType = "2";
                 }
 
@@ -842,7 +841,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                                                                                         currentUser.getBaseUrl(),
                                                                                         roomType,
                                                                                         null,
-                                                                                        userItem.getModel().getActorId(),
+                                                                                        contactItem.getModel().getActorId(),
                                                                                         null);
 
                 ncApi.createRoom(credentials,
@@ -881,7 +880,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                         }
                     });
             } else {
-                Participant participant = ((UserItem) adapter.getItem(position)).getModel();
+                Participant participant = ((ContactItem) adapter.getItem(position)).getModel();
                 participant.setSelected(!participant.isSelected());
 
                 if ("groups".equals(participant.getSource())) {
@@ -912,10 +911,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
 
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity")
                     && !CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
-                    "groups".equals(((UserItem) adapter.getItem(position)).getModel().getSource()) &&
+                    "groups".equals(((ContactItem) adapter.getItem(position)).getModel().getSource()) &&
                     participant.isSelected() &&
                     adapter.getSelectedItemCount() > 1) {
-                    List<UserItem> currentItems = adapter.getCurrentItems();
+                    List<ContactItem> currentItems = adapter.getCurrentItems();
                     Participant internalParticipant;
                     for (int i = 0; i < currentItems.size(); i++) {
                         internalParticipant = currentItems.get(i).getModel();
@@ -961,8 +960,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             List<AbstractFlexibleItem> currentItems = adapter.getCurrentItems();
             Participant internalParticipant;
             for (int i = 0; i < currentItems.size(); i++) {
-                if (currentItems.get(i) instanceof UserItem) {
-                    internalParticipant = ((UserItem) currentItems.get(i)).getModel();
+                if (currentItems.get(i) instanceof ContactItem) {
+                    internalParticipant = ((ContactItem) currentItems.get(i)).getModel();
                     if (internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
                         internalParticipant.isSelected()) {
                         internalParticipant.setSelected(false);
@@ -973,10 +972,10 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
 
         for (int i = 0; i < adapter.getItemCount(); i++) {
-            if (adapter.getItem(i) instanceof UserItem) {
-                UserItem userItem = (UserItem) adapter.getItem(i);
-                if ("groups".equals(userItem.getModel().getSource())) {
-                    userItem.setEnabled(!isPublicCall);
+            if (adapter.getItem(i) instanceof ContactItem) {
+                ContactItem contactItem = (ContactItem) adapter.getItem(i);
+                if ("groups".equals(contactItem.getModel().getSource())) {
+                    contactItem.setEnabled(!isPublicCall);
                 }
             }
         }

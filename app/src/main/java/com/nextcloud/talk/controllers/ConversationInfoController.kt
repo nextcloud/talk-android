@@ -49,7 +49,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.items.UserItem
+import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
@@ -87,6 +87,7 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.util.ArrayList
 import java.util.Calendar
 import java.util.Collections
 import java.util.Comparator
@@ -122,8 +123,8 @@ class ConversationInfoController(args: Bundle) :
     private var databaseStorageModule: DatabaseStorageModule? = null
     private var conversation: Conversation? = null
 
-    private var adapter: FlexibleAdapter<UserItem>? = null
-    private var userItems: MutableList<UserItem> = ArrayList()
+    private var adapter: FlexibleAdapter<ParticipantItem>? = null
+    private var userItems: MutableList<ParticipantItem> = ArrayList()
 
     private var saveStateHandler: LovelySaveStateHandler? = null
 
@@ -378,15 +379,15 @@ class ConversationInfoController(args: Bundle) :
     }
 
     private fun handleParticipants(participants: List<Participant>) {
-        var userItem: UserItem
+        var userItem: ParticipantItem
         var participant: Participant
 
         userItems = ArrayList()
-        var ownUserItem: UserItem? = null
+        var ownUserItem: ParticipantItem? = null
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = UserItem(router.activity, participant, conversationUser, null)
+            userItem = ParticipantItem(router.activity, participant, conversationUser)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
@@ -402,7 +403,7 @@ class ConversationInfoController(args: Bundle) :
             }
         }
 
-        Collections.sort(userItems, UserItemComparator())
+        Collections.sort(userItems, ParticipantItemComparator())
 
         if (ownUserItem != null) {
             userItems.add(0, ownUserItem)
@@ -956,7 +957,7 @@ class ConversationInfoController(args: Bundle) :
             return true
         }
 
-        val userItem = adapter?.getItem(position) as UserItem
+        val userItem = adapter?.getItem(position) as ParticipantItem
         val participant = userItem.model
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
@@ -1108,8 +1109,8 @@ class ConversationInfoController(args: Bundle) :
     /**
      * Comparator for participants, sorts by online-status, moderator-status and display name.
      */
-    class UserItemComparator : Comparator<UserItem> {
-        override fun compare(left: UserItem, right: UserItem): Int {
+    class ParticipantItemComparator : Comparator<ParticipantItem> {
+        override fun compare(left: ParticipantItem, right: ParticipantItem): Int {
             val leftIsGroup = left.model.actorType == GROUPS || left.model.actorType == CIRCLES
             val rightIsGroup = right.model.actorType == GROUPS || right.model.actorType == CIRCLES
             if (leftIsGroup != rightIsGroup) {

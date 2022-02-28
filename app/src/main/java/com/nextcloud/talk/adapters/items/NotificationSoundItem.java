@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -22,13 +24,11 @@ package com.nextcloud.talk.adapters.items;
 
 import android.view.View;
 
-import com.google.android.material.radiobutton.MaterialRadioButton;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.databinding.RvItemNotificationSoundBinding;
 
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFlexible;
@@ -68,21 +68,24 @@ public class NotificationSoundItem extends AbstractFlexibleItem<NotificationSoun
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, NotificationSoundItemViewHolder holder, int position, List<Object> payloads) {
-        holder.notificationName.setText(notificationSoundName);
-        holder.notificationName.setChecked(adapter.isSelected(position));
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter,
+                               NotificationSoundItemViewHolder holder,
+                               int position,
+                               List<Object> payloads) {
+        holder.binding.notificationNameTextView.setText(notificationSoundName);
+        holder.binding.notificationNameTextView.setChecked(adapter.isSelected(position));
     }
 
     static class NotificationSoundItemViewHolder extends FlexibleViewHolder {
-        @BindView(R.id.notificationNameTextView)
-        public MaterialRadioButton notificationName;
+
+        RvItemNotificationSoundBinding binding;
 
         /**
          * Default constructor.
          */
         NotificationSoundItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = RvItemNotificationSoundBinding.bind(view);
         }
     }
 }

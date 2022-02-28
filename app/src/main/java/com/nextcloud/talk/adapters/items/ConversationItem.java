@@ -36,20 +36,17 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
-import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.material.chip.Chip;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
-import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -59,9 +56,6 @@ import java.util.regex.Pattern;
 
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
-import androidx.emoji.widget.EmojiTextView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
 import eu.davidea.flexibleadapter.items.IFilterable;
@@ -70,16 +64,16 @@ import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements ISectionable<ConversationItem.ConversationItemViewHolder, GenericTextHeaderItem>,
-    IFilterable<String> {
+public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
+    ISectionable<ConversationItem.ConversationItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
     private static final float STATUS_SIZE_IN_DP = 9f;
 
-    private Conversation conversation;
-    private UserEntity userEntity;
-    private Context context;
+    private final Conversation conversation;
+    private final UserEntity userEntity;
+    private final Context context;
     private GenericTextHeaderItem header;
-    private Status status;
+    private final Status status;
 
     public ConversationItem(Conversation conversation, UserEntity userEntity, Context activityContext, Status status) {
         this.conversation = conversation;
@@ -127,31 +121,38 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, ConversationItemViewHolder holder, int position, List<Object> payloads) {
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter,
+                               ConversationItemViewHolder holder,
+                               int position,
+                               List<Object> payloads) {
         Context appContext =
             NextcloudTalkApplication.Companion.getSharedApplication().getApplicationContext();
-        holder.dialogAvatar.setController(null);
+        holder.binding.dialogAvatar.setController(null);
 
-        holder.dialogName.setTextColor(ResourcesCompat.getColor(context.getResources(),
-                                                                R.color.conversation_item_header,
-                                                                null));
+        holder.binding.dialogName.setTextColor(ResourcesCompat.getColor(context.getResources(),
+                                                                        R.color.conversation_item_header,
+                                                                        null));
 
         if (adapter.hasFilter()) {
-            FlexibleUtils.highlightText(holder.dialogName, conversation.getDisplayName(),
-                                        String.valueOf(adapter.getFilter(String.class)), NextcloudTalkApplication.Companion.getSharedApplication()
-                                            .getResources().getColor(R.color.colorPrimary));
+            FlexibleUtils.highlightText(holder.binding.dialogName, conversation.getDisplayName(),
+                                        String.valueOf(adapter.getFilter(String.class)),
+                                        NextcloudTalkApplication
+                                            .Companion
+                                            .getSharedApplication()
+                                            .getResources()
+                                            .getColor(R.color.colorPrimary));
         } else {
-            holder.dialogName.setText(conversation.getDisplayName());
+            holder.binding.dialogName.setText(conversation.getDisplayName());
         }
 
         if (conversation.getUnreadMessages() > 0) {
-            holder.dialogName.setTypeface(holder.dialogName.getTypeface(), Typeface.BOLD);
-            holder.dialogLastMessage.setTypeface(holder.dialogLastMessage.getTypeface(), Typeface.BOLD);
-            holder.dialogUnreadBubble.setVisibility(View.VISIBLE);
+            holder.binding.dialogName.setTypeface(holder.binding.dialogName.getTypeface(), Typeface.BOLD);
+            holder.binding.dialogLastMessage.setTypeface(holder.binding.dialogLastMessage.getTypeface(), Typeface.BOLD);
+            holder.binding.dialogUnreadBubble.setVisibility(View.VISIBLE);
             if (conversation.getUnreadMessages() < 1000) {
-                holder.dialogUnreadBubble.setText(Long.toString(conversation.getUnreadMessages()));
+                holder.binding.dialogUnreadBubble.setText(Long.toString(conversation.getUnreadMessages()));
             } else {
-                holder.dialogUnreadBubble.setText(R.string.tooManyUnreadMessages);
+                holder.binding.dialogUnreadBubble.setText(R.string.tooManyUnreadMessages);
             }
 
             ColorStateList lightBubbleFillColor = ColorStateList.valueOf(
@@ -165,45 +166,45 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                                        R.color.colorPrimary));
 
             if (conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                holder.dialogUnreadBubble.setTextColor(Color.WHITE);
+                holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
+                holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
             } else if (conversation.isUnreadMention()) {
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(userEntity, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
-                        holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                        holder.dialogUnreadBubble.setTextColor(Color.WHITE);
+                        holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
+                        holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
                     } else {
-                        holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.bg_default);
-                        holder.dialogUnreadBubble.setTextColor(ContextCompat.getColor(
+                        holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.bg_default);
+                        holder.binding.dialogUnreadBubble.setTextColor(ContextCompat.getColor(
                             context,
                             R.color.colorPrimary));
-                        holder.dialogUnreadBubble.setChipStrokeWidth(6.0f);
-                        holder.dialogUnreadBubble.setChipStrokeColor(lightBubbleStrokeColor);
+                        holder.binding.dialogUnreadBubble.setChipStrokeWidth(6.0f);
+                        holder.binding.dialogUnreadBubble.setChipStrokeColor(lightBubbleStrokeColor);
                     }
                 } else {
-                    holder.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
-                    holder.dialogUnreadBubble.setTextColor(Color.WHITE);
+                    holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
+                    holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
                 }
             } else {
-                holder.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);
-                holder.dialogUnreadBubble.setTextColor(lightBubbleTextColor);
+                holder.binding.dialogUnreadBubble.setChipBackgroundColor(lightBubbleFillColor);
+                holder.binding.dialogUnreadBubble.setTextColor(lightBubbleTextColor);
             }
         } else {
-            holder.dialogName.setTypeface(null, Typeface.NORMAL);
-            holder.dialogDate.setTypeface(null, Typeface.NORMAL);
-            holder.dialogLastMessage.setTypeface(null, Typeface.NORMAL);
-            holder.dialogUnreadBubble.setVisibility(View.GONE);
+            holder.binding.dialogName.setTypeface(null, Typeface.NORMAL);
+            holder.binding.dialogDate.setTypeface(null, Typeface.NORMAL);
+            holder.binding.dialogLastMessage.setTypeface(null, Typeface.NORMAL);
+            holder.binding.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
         if (conversation.isFavorite()) {
-            holder.pinnedConversationImageView.setVisibility(View.VISIBLE);
+            holder.binding.favoriteConversationImageView.setVisibility(View.VISIBLE);
         } else {
-            holder.pinnedConversationImageView.setVisibility(View.GONE);
+            holder.binding.favoriteConversationImageView.setVisibility(View.GONE);
         }
 
         if (Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
             float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext);
-            holder.userStatusImage.setImageDrawable(new StatusDrawable(
+            holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
                 status != null ? status.getStatus() : "",
                 status != null ? status.getIcon() : "",
                 size,
@@ -212,12 +213,16 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
         }
 
         if (conversation.getLastMessage() != null) {
-            holder.dialogDate.setVisibility(View.VISIBLE);
-            holder.dialogDate.setText(DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
-                                                                          System.currentTimeMillis(), 0, DateUtils.FORMAT_ABBREV_RELATIVE));
+            holder.binding.dialogDate.setVisibility(View.VISIBLE);
+            holder.binding.dialogDate.setText(
+                DateUtils.getRelativeTimeSpanString(conversation.getLastActivity() * 1000L,
+                                                    System.currentTimeMillis(),
+                                                    0,
+                                                    DateUtils.FORMAT_ABBREV_RELATIVE));
 
-            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) || Conversation.ConversationType.ROOM_SYSTEM == conversation.getType()) {
-                holder.dialogLastMessage.setText(conversation.getLastMessage().getText());
+            if (!TextUtils.isEmpty(conversation.getLastMessage().getSystemMessage()) ||
+                Conversation.ConversationType.ROOM_SYSTEM == conversation.getType()) {
+                holder.binding.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
                 String authorDisplayName = "";
                 conversation.getLastMessage().setActiveUser(userEntity);
@@ -229,7 +234,8 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     } else {
                         authorDisplayName = !TextUtils.isEmpty(conversation.getLastMessage().getActorDisplayName()) ?
                             conversation.getLastMessage().getActorDisplayName() :
-                            "guests".equals(conversation.getLastMessage().getActorType()) ? appContext.getString(R.string.nc_guest) : "";
+                            "guests".equals(conversation.getLastMessage().getActorType()) ?
+                                appContext.getString(R.string.nc_guest) : "";
                         text = String.format(appContext.getString(R.string.nc_formatted_message),
                                              authorDisplayName,
                                              conversation.getLastMessage().getLastMessageDisplayText());
@@ -238,14 +244,14 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                     text = conversation.getLastMessage().getLastMessageDisplayText();
                 }
 
-                holder.dialogLastMessage.setText(text);
+                holder.binding.dialogLastMessage.setText(text);
             }
         } else {
-            holder.dialogDate.setVisibility(View.GONE);
-            holder.dialogLastMessage.setText(R.string.nc_no_messages_yet);
+            holder.binding.dialogDate.setVisibility(View.GONE);
+            holder.binding.dialogLastMessage.setText(R.string.nc_no_messages_yet);
         }
 
-        holder.dialogAvatar.setVisibility(View.VISIBLE);
+        holder.binding.dialogAvatar.setVisibility(View.VISIBLE);
 
         boolean shouldLoadAvatar = true;
         String objectType;
@@ -253,13 +259,15 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             switch (objectType) {
                 case "share:password":
                     shouldLoadAvatar = false;
-                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
-                                                                                   R.drawable.ic_circular_lock));
+                    holder.binding.dialogAvatar.setImageDrawable(
+                        ContextCompat.getDrawable(context,
+                                                  R.drawable.ic_circular_lock));
                     break;
                 case "file":
                     shouldLoadAvatar = false;
-                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
-                                                                                   R.drawable.ic_circular_document));
+                    holder.binding.dialogAvatar.setImageDrawable(
+                        ContextCompat.getDrawable(context,
+                                                  R.drawable.ic_circular_document));
                     break;
                 default:
                     break;
@@ -273,9 +281,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground);
                 LayerDrawable layerDrawable = new LayerDrawable(layers);
 
-                holder.dialogAvatar.getHierarchy().setPlaceholderImage(DisplayUtils.getRoundedDrawable(layerDrawable));
+                holder.binding.dialogAvatar.getHierarchy().setPlaceholderImage(
+                    DisplayUtils.getRoundedDrawable(layerDrawable));
             } else {
-                holder.dialogAvatar.getHierarchy().setPlaceholderImage(R.mipmap.ic_launcher);
+                holder.binding.dialogAvatar.getHierarchy().setPlaceholderImage(R.mipmap.ic_launcher);
             }
             shouldLoadAvatar = false;
         }
@@ -285,25 +294,31 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 case ROOM_TYPE_ONE_TO_ONE_CALL:
                     if (!TextUtils.isEmpty(conversation.getName())) {
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                            .setOldController(holder.dialogAvatar.getController())
+                            .setOldController(holder.binding.dialogAvatar.getController())
                             .setAutoPlayAnimations(true)
-                            .setImageRequest(DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(), conversation.getName(), R.dimen.avatar_size), userEntity))
+                            .setImageRequest(DisplayUtils.getImageRequestForUrl(
+                                ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
+                                                                 conversation.getName(),
+                                                                 R.dimen.avatar_size),
+                                userEntity))
                             .build();
-                        holder.dialogAvatar.setController(draweeController);
+                        holder.binding.dialogAvatar.setController(draweeController);
                     } else {
-                        holder.dialogAvatar.setVisibility(View.GONE);
+                        holder.binding.dialogAvatar.setVisibility(View.GONE);
                     }
                     break;
                 case ROOM_GROUP_CALL:
-                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
-                                                                                   R.drawable.ic_circular_group));
+                    holder.binding.dialogAvatar.setImageDrawable(
+                        ContextCompat.getDrawable(context,
+                                                  R.drawable.ic_circular_group));
                     break;
                 case ROOM_PUBLIC_CALL:
-                    holder.dialogAvatar.setImageDrawable(ContextCompat.getDrawable(context,
-                                                                                   R.drawable.ic_circular_link));
+                    holder.binding.dialogAvatar.setImageDrawable(
+                        ContextCompat.getDrawable(context,
+                                                  R.drawable.ic_circular_link));
                     break;
                 default:
-                    holder.dialogAvatar.setVisibility(View.GONE);
+                    holder.binding.dialogAvatar.setVisibility(View.GONE);
             }
         }
     }
@@ -311,7 +326,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public boolean filter(String constraint) {
         return conversation.getDisplayName() != null &&
-            Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL).matcher(conversation.getDisplayName().trim()).find();
+            Pattern
+                .compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
+                .matcher(conversation.getDisplayName().trim())
+                .find();
     }
 
     @Override
@@ -325,24 +343,13 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     }
 
     static class ConversationItemViewHolder extends FlexibleViewHolder {
-        @BindView(R.id.dialogAvatar)
-        SimpleDraweeView dialogAvatar;
-        @BindView(R.id.dialogName)
-        EmojiTextView dialogName;
-        @BindView(R.id.dialogDate)
-        TextView dialogDate;
-        @BindView(R.id.dialogLastMessage)
-        EmojiTextView dialogLastMessage;
-        @BindView(R.id.dialogUnreadBubble)
-        Chip dialogUnreadBubble;
-        @BindView(R.id.favoriteConversationImageView)
-        ImageView pinnedConversationImageView;
-        @BindView(R.id.user_status_image)
         ImageView userStatusImage;
+
+        RvItemConversationWithLastMessageBinding binding;
 
         ConversationItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            ButterKnife.bind(this, view);
+            binding = RvItemConversationWithLastMessageBinding.bind(view);
         }
     }
 }
