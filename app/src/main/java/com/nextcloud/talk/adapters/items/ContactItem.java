@@ -49,8 +49,8 @@ import eu.davidea.flexibleadapter.items.ISectionable;
 import eu.davidea.flexibleadapter.utils.FlexibleUtils;
 import eu.davidea.viewholders.FlexibleViewHolder;
 
-public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> implements
-    ISectionable<UserItem.UserItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
+public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemViewHolder> implements
+    ISectionable<ContactItem.ContactItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
     public static final String PARTICIPANT_SOURCE_CIRCLES = "circles";
     public static final String PARTICIPANT_SOURCE_GROUPS = "groups";
@@ -61,9 +61,9 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     private GenericTextHeaderItem header;
     public boolean isOnline = true;
 
-    public UserItem(Participant participant,
-                    UserEntity userEntity,
-                    GenericTextHeaderItem genericTextHeaderItem) {
+    public ContactItem(Participant participant,
+                       UserEntity userEntity,
+                       GenericTextHeaderItem genericTextHeaderItem) {
         this.participant = participant;
         this.userEntity = userEntity;
         this.header = genericTextHeaderItem;
@@ -71,8 +71,8 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof UserItem) {
-            UserItem inItem = (UserItem) o;
+        if (o instanceof ContactItem) {
+            ContactItem inItem = (ContactItem) o;
             return participant.getActorType() == inItem.getModel().getActorType() &&
                 participant.getActorId().equals(inItem.getModel().getActorId());
         }
@@ -98,24 +98,19 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
     }
 
     @Override
-    public UserItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
-        return new UserItemViewHolder(view, adapter);
+    public ContactItemViewHolder createViewHolder(View view, FlexibleAdapter adapter) {
+        return new ContactItemViewHolder(view, adapter);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void bindViewHolder(FlexibleAdapter adapter, UserItemViewHolder holder, int position, List payloads) {
+    public void bindViewHolder(FlexibleAdapter adapter, ContactItemViewHolder holder, int position, List payloads) {
+        holder.binding.avatarDraweeView.setController(null);
 
-        if (holder.binding.avatarDraweeView != null) {
-            holder.binding.avatarDraweeView.setController(null);
-        }
-
-        if (holder.binding.checkedImageView != null) {
-            if (participant.isSelected()) {
-                holder.binding.checkedImageView.setVisibility(View.VISIBLE);
-            } else {
-                holder.binding.checkedImageView.setVisibility(View.GONE);
-            }
+        if (participant.isSelected()) {
+            holder.binding.checkedImageView.setVisibility(View.VISIBLE);
+        } else {
+            holder.binding.checkedImageView.setVisibility(View.GONE);
         }
 
         if (!isOnline) {
@@ -227,14 +222,14 @@ public class UserItem extends AbstractFlexibleItem<UserItem.UserItemViewHolder> 
         this.header = header;
     }
 
-    static class UserItemViewHolder extends FlexibleViewHolder {
+    static class ContactItemViewHolder extends FlexibleViewHolder {
 
         RvItemContactBinding binding;
 
         /**
          * Default constructor.
          */
-        UserItemViewHolder(View view, FlexibleAdapter adapter) {
+        ContactItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
             binding = RvItemContactBinding.bind(view);
         }
