@@ -61,9 +61,9 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
     private static final float STATUS_SIZE_IN_DP = 9f;
     private static final String NO_ICON = "";
 
-    private Context context;
-    private Participant participant;
-    private UserEntity userEntity;
+    private final Context context;
+    private final Participant participant;
+    private final UserEntity userEntity;
     public boolean isOnline = true;
 
     public ParticipantItem(Context activityContext,
@@ -80,8 +80,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof UserItem) {
-            UserItem inItem = (UserItem) o;
+        if (o instanceof ParticipantItem) {
+            ParticipantItem inItem = (ParticipantItem) o;
             return participant.getActorType() == inItem.getModel().getActorType() &&
                 participant.getActorId().equals(inItem.getModel().getActorId());
         }
@@ -268,39 +268,35 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
     }
 
     private void drawStatus(ParticipantItemViewHolder holder) {
-        if (holder.binding.conversationInfoStatusMessage != null &&
-            holder.binding.participantStatusEmoji != null &&
-            holder.binding.userStatusImage != null) {
-            float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
-            holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
-                participant.status,
-                NO_ICON,
-                size,
-                context.getResources().getColor(R.color.bg_default),
-                context));
+        float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
+        holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
+            participant.status,
+            NO_ICON,
+            size,
+            context.getResources().getColor(R.color.bg_default),
+            context));
 
-            if (participant.statusMessage != null) {
-                holder.binding.conversationInfoStatusMessage.setText(participant.statusMessage);
-                alignUsernameVertical(holder, 0);
-            } else {
-                holder.binding.conversationInfoStatusMessage.setText("");
-                alignUsernameVertical(holder, 10);
+        if (participant.statusMessage != null) {
+            holder.binding.conversationInfoStatusMessage.setText(participant.statusMessage);
+            alignUsernameVertical(holder, 0);
+        } else {
+            holder.binding.conversationInfoStatusMessage.setText("");
+            alignUsernameVertical(holder, 10);
+        }
+
+        if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
+            holder.binding.participantStatusEmoji.setText(participant.statusIcon);
+        } else {
+            holder.binding.participantStatusEmoji.setVisibility(View.GONE);
+        }
+
+        if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
+            if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                holder.binding.conversationInfoStatusMessage.setText(R.string.dnd);
             }
-
-            if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
-                holder.binding.participantStatusEmoji.setText(participant.statusIcon);
-            } else {
-                holder.binding.participantStatusEmoji.setVisibility(View.GONE);
-            }
-
-            if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
-                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
-                    holder.binding.conversationInfoStatusMessage.setText(R.string.dnd);
-                }
-            } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
-                if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
-                    holder.binding.conversationInfoStatusMessage.setText(R.string.away);
-                }
+        } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
+            if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+                holder.binding.conversationInfoStatusMessage.setText(R.string.away);
             }
         }
     }
