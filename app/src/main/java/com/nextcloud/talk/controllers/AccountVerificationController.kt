@@ -255,10 +255,11 @@ class AccountVerificationController(args: Bundle? = null) :
                         registerForPush()
                     } else {
                         activity!!.runOnUiThread {
-                            binding.progressText.text = """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_push_disabled)}
-                            """.trimIndent()
+                            binding.progressText.text =
+                                """
+                                    ${binding.progressText.text}
+                                    ${resources!!.getString(R.string.nc_push_disabled)}
+                                """.trimIndent()
                         }
                         fetchAndStoreCapabilities()
                     }
@@ -266,12 +267,11 @@ class AccountVerificationController(args: Bundle? = null) :
 
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
-                    binding.progressText.text = """
-                        ${binding.progressText.text}
-                        """.trimIndent() +
-                        resources!!.getString(
-                            R.string.nc_display_name_not_stored
-                        )
+                    binding.progressText.text =
+                        """
+                            ${binding.progressText.text}
+                    """.trimIndent() +
+                        resources!!.getString(R.string.nc_display_name_not_stored)
                     abortVerification()
                 }
 
@@ -303,10 +303,11 @@ class AccountVerificationController(args: Bundle? = null) :
                     } else {
                         if (activity != null) {
                             activity!!.runOnUiThread {
-                                binding.progressText.text = """
-                                ${binding.progressText.text}
-                                ${resources!!.getString(R.string.nc_display_name_not_fetched)}
-                                """.trimIndent()
+                                binding.progressText.text =
+                                    """
+                                        ${binding.progressText.text}
+                                        ${resources!!.getString(R.string.nc_display_name_not_fetched)}
+                                    """.trimIndent()
                             }
                         }
                         abortVerification()
@@ -317,10 +318,11 @@ class AccountVerificationController(args: Bundle? = null) :
                 override fun onError(e: Throwable) {
                     if (activity != null) {
                         activity!!.runOnUiThread {
-                            binding.progressText.text = """
-                            ${binding.progressText.text}
-                            ${resources!!.getString(R.string.nc_display_name_not_fetched)}
-                            """.trimIndent()
+                            binding.progressText.text =
+                                """
+                                    ${binding.progressText.text}
+                                    ${resources!!.getString(R.string.nc_display_name_not_fetched)}
+                                """.trimIndent()
                         }
                     }
                     abortVerification()
@@ -348,9 +350,10 @@ class AccountVerificationController(args: Bundle? = null) :
         if (eventStatus.eventType == EventStatus.EventType.PUSH_REGISTRATION) {
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood && activity != null) {
                 activity!!.runOnUiThread {
-                    binding.progressText!!.text = """
-                        ${binding.progressText!!.text}
-                        ${resources!!.getString(R.string.nc_push_disabled)}
+                    binding.progressText.text =
+                        """
+                            ${binding.progressText.text}
+                            ${resources!!.getString(R.string.nc_push_disabled)}
                         """.trimIndent()
                 }
             }
@@ -359,9 +362,10 @@ class AccountVerificationController(args: Bundle? = null) :
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
                 if (activity != null) {
                     activity!!.runOnUiThread {
-                        binding.progressText!!.text = """
-                            ${binding.progressText!!.text}
-                            ${resources!!.getString(R.string.nc_capabilities_failed)}
+                        binding.progressText.text =
+                            """
+                                ${binding.progressText.text}
+                                ${resources!!.getString(R.string.nc_capabilities_failed)}
                             """.trimIndent()
                     }
                 }
@@ -373,9 +377,10 @@ class AccountVerificationController(args: Bundle? = null) :
             if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
                 if (activity != null) {
                     activity!!.runOnUiThread {
-                        binding.progressText!!.text = """
-                            ${binding.progressText!!.text}
-                            ${resources!!.getString(R.string.nc_external_server_failed)}
+                        binding.progressText.text =
+                            """
+                                ${binding.progressText.text}
+                                ${resources!!.getString(R.string.nc_external_server_failed)}
                             """.trimIndent()
                     }
                 }
