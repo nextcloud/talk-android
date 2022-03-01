@@ -29,6 +29,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.text.TextUtils
+import android.util.Log
 import androidx.annotation.RequiresApi
 import autodagger.AutoInjector
 import com.bluelinelabs.conductor.Conductor
@@ -47,9 +48,9 @@ import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
 import com.nextcloud.talk.databinding.ActivityMainBinding
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -87,6 +88,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     private var router: Router? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
+
         super.onCreate(savedInstanceState)
         // Set the default theme to replace the launch screen theme.
         setTheme(R.style.AppTheme)
@@ -162,12 +165,29 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     override fun onStart() {
+        Log.d(TAG, "onStart: Activity: " + System.identityHashCode(this).toString())
+
         super.onStart()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkIfWeAreSecure()
         }
 
         handleActionFromContact(intent)
+    }
+
+    override fun onResume() {
+        Log.d(TAG, "onResume: Activity: " + System.identityHashCode(this).toString())
+        super.onResume()
+    }
+
+    override fun onPause() {
+        Log.d(TAG, "onPause: Activity: " + System.identityHashCode(this).toString())
+        super.onPause()
+    }
+
+    override fun onStop() {
+        Log.d(TAG, "onStop: Activity: " + System.identityHashCode(this).toString())
+        super.onStop()
     }
 
     fun resetConversationsList() {
@@ -317,6 +337,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     override fun onNewIntent(intent: Intent) {
+        Log.d(TAG, "onNewIntent Activity: " + System.identityHashCode(this).toString())
         super.onNewIntent(intent)
         handleActionFromContact(intent)
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
@@ -325,8 +346,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
             } else {
-                ConductorRemapping.remapChatController(
-                    router!!, intent.getLongExtra(BundleKeys.KEY_INTERNAL_USER_ID, -1),
+                remapChatController(
+                    router!!, intent.getParcelableExtra<UserEntity>(KEY_USER_ENTITY)!!.id,
                     intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false
                 )
             }

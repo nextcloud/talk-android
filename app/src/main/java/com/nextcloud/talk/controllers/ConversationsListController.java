@@ -292,6 +292,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     protected void onAttach(@NonNull View view) {
+        Log.d(TAG, "onAttach: Controller: " + System.identityHashCode(this) +
+            " Activity: " + System.identityHashCode(getActivity()));
         super.onAttach(view);
 
         new ClosedInterfaceImpl().setUpPushTokenRegistration();
@@ -317,6 +319,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     protected void onDetach(@NonNull View view) {
+        Log.d(TAG, "onDetach: Controller: " + System.identityHashCode(this) +
+            " Activity: " + System.identityHashCode(getActivity()));
         super.onDetach(view);
         eventBus.unregister(this);
     }
@@ -512,11 +516,22 @@ public class ConversationsListController extends BaseController implements Searc
 
         int apiVersion = ApiUtils.getConversationApiVersion(currentUser, new int[]{ApiUtils.APIv4, ApiUtils.APIv3, 1});
 
+        long startNanoTime = System.nanoTime();
+        Log.d(TAG, "fetchData - getRooms - calling: " + startNanoTime);
         roomsQueryDisposable = ncApi.getRooms(credentials, ApiUtils.getUrlForRooms(apiVersion,
                                                                                    currentUser.getBaseUrl()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {
+                    Log.d(TAG, "fetchData - getRooms - got response: " + startNanoTime);
+
+                    // This is invoked asynchronously, when server returns a response the view might have been
+                    // unbound in the meantime. Check if the view is still there.
+                    // FIXME - does it make sense to update internal data structures even when view has been unbound?
+                    if (getView() == null) {
+                        Log.d(TAG, "fetchData - getRooms - view is not bound: " + startNanoTime);
+                        return;
+                    }
 
                     if (adapterWasNull) {
                         adapterWasNull = false;
@@ -650,6 +665,7 @@ public class ConversationsListController extends BaseController implements Searc
                     searchableConversationItems.addAll(openConversationItems);
 
                 }, throwable -> {
+                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable);
                     handleHttpExceptions(throwable);
                     dispose(openConversationsQueryDisposable);
                 }, () -> {
