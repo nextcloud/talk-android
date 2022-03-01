@@ -49,12 +49,7 @@ import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
-import com.vanniktech.emoji.EmojiImageView
 import com.vanniktech.emoji.EmojiPopup
-import com.vanniktech.emoji.emoji.Emoji
-import com.vanniktech.emoji.listeners.OnEmojiClickListener
-import com.vanniktech.emoji.listeners.OnEmojiPopupDismissListener
-import com.vanniktech.emoji.listeners.OnEmojiPopupShownListener
 import org.greenrobot.eventbus.EventBus
 import org.parceler.Parcels
 import org.parceler.Parcels.unwrap
@@ -143,8 +138,11 @@ class EntryMenuController(args: Bundle) :
                             binding.okButton.alpha = 1.0f
                         }
                         binding.textInputLayout.isErrorEnabled = false
-                    } else if ((binding.textEdit.text.toString().startsWith("http://") ||
-                            binding.textEdit.text.toString().startsWith("https://")) &&
+                    } else if (
+                        (
+                            binding.textEdit.text.toString().startsWith("http://") ||
+                                binding.textEdit.text.toString().startsWith("https://")
+                            ) &&
                         binding.textEdit.text.toString().contains("/call/")
                     ) {
                         if (!binding.okButton.isEnabled) {
@@ -274,9 +272,12 @@ class EntryMenuController(args: Bundle) :
         } else if (operation === ConversationOperationEnum.OPS_CODE_SHARE_LINK) {
             if (activity != null) {
                 shareIntent?.putExtra(
-                    Intent.EXTRA_TEXT, ShareUtils.getStringForIntent(
+                    Intent.EXTRA_TEXT,
+                    ShareUtils.getStringForIntent(
                         activity,
-                        binding.textEdit.text.toString(), userUtils, conversation
+                        binding.textEdit.text.toString(),
+                        userUtils,
+                        conversation
                     )
                 )
                 val intent = Intent(shareIntent)
