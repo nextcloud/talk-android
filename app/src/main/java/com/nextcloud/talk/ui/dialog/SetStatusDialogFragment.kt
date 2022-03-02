@@ -393,15 +393,15 @@ class SetStatusDialogFragment :
     }
 
     private fun setStatusMessage() {
-        var inputText = binding.customStatusInput.text.toString()
-        if (inputText.isEmpty()) {
-            inputText = " "
-        }
+
+        val inputText = binding.customStatusInput.text.toString().ifEmpty { " " }
+        // The endpoint '/message/custom' expects a valid emoji as string or null
+        val statusIcon = binding.emoji.text.toString().ifEmpty { null }
 
         ncApi.setCustomStatusMessage(
             credentials,
             ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
-            binding.emoji.text.toString(),
+            statusIcon,
             inputText,
             clearAt
         )
