@@ -297,9 +297,9 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                             .setOldController(holder.binding.dialogAvatar.getController())
                             .setAutoPlayAnimations(true)
                             .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                                ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                                                 conversation.getName(),
-                                                                 R.dimen.avatar_size),
+                                ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
+                                                         conversation.getName(),
+                                                         false),
                                 userEntity))
                             .build();
                         holder.binding.dialogAvatar.setController(draweeController);

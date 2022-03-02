@@ -44,6 +44,8 @@ public class ApiUtils {
     public static final int APIv2 = 2;
     public static final int APIv3 = 3;
     public static final int APIv4 = 4;
+    public static final int AVATAR_SIZE_BIG = 512;
+    public static final int AVATAR_SIZE_SMALL = 64;
     private static final String TAG = "ApiUtils";
     private static final String ocsApiVersion = "/ocs/v2.php";
     private static final String spreedApiVersion = "/apps/spreed/api/v1";
@@ -347,22 +349,13 @@ public class ApiUtils {
         return "/status.php";
     }
 
-    public static String getUrlForAvatarWithNameAndPixels(String baseUrl, String name, int avatarSize) {
+    public static String getUrlForAvatar(String baseUrl, String name, boolean requestBigSize) {
+        int avatarSize = requestBigSize ? AVATAR_SIZE_BIG : AVATAR_SIZE_SMALL;
         return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
     }
 
-    public static String getUrlForAvatarWithName(String baseUrl, String name, @DimenRes int avatarSize) {
-        avatarSize = Math.round(NextcloudTalkApplication
-                .Companion.getSharedApplication().getResources().getDimension(avatarSize));
-
-        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize;
-    }
-
-    public static String getUrlForAvatarWithNameForGuests(String baseUrl, String name,
-                                                          @DimenRes int avatarSize) {
-        avatarSize = Math.round(NextcloudTalkApplication
-                .Companion.getSharedApplication().getResources().getDimension(avatarSize));
-
+    public static String getUrlForGuestAvatar(String baseUrl, String name, boolean requestBigSize) {
+        int avatarSize = requestBigSize ? AVATAR_SIZE_BIG : AVATAR_SIZE_SMALL;
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize;
     }
 

@@ -722,9 +722,9 @@ class ConversationInfoController(args: Bundle) :
                     .setAutoPlayAnimations(true)
                     .setImageRequest(
                         DisplayUtils.getImageRequestForUrl(
-                            ApiUtils.getUrlForAvatarWithName(
+                            ApiUtils.getUrlForAvatar(
                                 conversationUser!!.baseUrl,
-                                conversation!!.name, R.dimen.avatar_size_big
+                                conversation!!.name, true
                             ),
                             conversationUser
                         )

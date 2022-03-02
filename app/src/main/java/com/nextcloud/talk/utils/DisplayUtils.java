@@ -318,11 +318,11 @@ public class DisplayUtils {
         chip.setBounds(0, 0, chip.getIntrinsicWidth(), chip.getIntrinsicHeight());
 
         if (!isCall) {
-            String url = ApiUtils.getUrlForAvatarWithName(conversationUser.getBaseUrl(), id, R.dimen.avatar_size_big);
+            String url = ApiUtils.getUrlForAvatar(conversationUser.getBaseUrl(), id, true);
             if ("guests".equals(type) || "guest".equals(type)) {
-                url = ApiUtils.getUrlForAvatarWithNameForGuests(
+                url = ApiUtils.getUrlForGuestAvatar(
                     conversationUser.getBaseUrl(),
-                    String.valueOf(label), R.dimen.avatar_size_big);
+                    String.valueOf(label), true);
             }
             ImageRequest imageRequest = getImageRequestForUrl(url, null);
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
@@ -572,7 +572,7 @@ public class DisplayUtils {
             avatarId = user.getUsername();
         }
 
-        String avatarString = ApiUtils.getUrlForAvatarWithName(user.getBaseUrl(), avatarId, R.dimen.avatar_size_big);
+        String avatarString = ApiUtils.getUrlForAvatar(user.getBaseUrl(), avatarId, true);
 
         // clear cache
         if (deleteCache) {

@@ -129,10 +129,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                     .setOldController(binding.currentAccount.userIcon.getController())
                     .setAutoPlayAnimations(true)
                     .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatarWithName(
+                        ApiUtils.getUrlForAvatar(
                             user.getBaseUrl(),
                             user.getUserId(),
-                            R.dimen.small_item_height),
+                            false),
                         null))
                     .build();
                 binding.currentAccount.userIcon.setController(draweeController);
