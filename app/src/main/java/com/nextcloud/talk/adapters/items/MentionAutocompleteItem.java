@@ -157,15 +157,15 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
             }
         } else {
             String avatarId = objectId;
-            String avatarUrl = ApiUtils.getUrlForAvatarWithName(currentUser.getBaseUrl(),
-                                                                avatarId, R.dimen.avatar_size_big);
+            String avatarUrl = ApiUtils.getUrlForAvatar(currentUser.getBaseUrl(),
+                                                        avatarId, true);
 
             if (SOURCE_GUESTS.equals(source)) {
                 avatarId = displayName;
-                avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(
+                avatarUrl = ApiUtils.getUrlForGuestAvatar(
                     currentUser.getBaseUrl(),
                     avatarId,
-                    R.dimen.avatar_size_big);
+                    false);
             }
 
             if (holder.binding.avatarDraweeView != null) {

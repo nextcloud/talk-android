@@ -290,10 +290,10 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
             @Override
             public String getAvatar() {
                 if (getActorType().equals("users")) {
-                    return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), actorId, R.dimen.avatar_size);
+                    return ApiUtils.getUrlForAvatar(getActiveUser().getBaseUrl(), actorId, true);
                 } else if (getActorType().equals("bridged")) {
-                    return ApiUtils.getUrlForAvatarWithName(getActiveUser().getBaseUrl(), "bridge-bot",
-                                                            R.dimen.avatar_size);
+                    return ApiUtils.getUrlForAvatar(getActiveUser().getBaseUrl(), "bridge-bot",
+                                                    true);
                 } else {
                     String apiId =
                             NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
@@ -301,7 +301,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
                     if (!TextUtils.isEmpty(getActorDisplayName())) {
                         apiId = getActorDisplayName();
                     }
-                    return ApiUtils.getUrlForAvatarWithNameForGuests(getActiveUser().getBaseUrl(), apiId, R.dimen.avatar_size);
+                    return ApiUtils.getUrlForGuestAvatar(getActiveUser().getBaseUrl(), apiId, true);
                 }
             }
         };

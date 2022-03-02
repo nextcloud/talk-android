@@ -138,10 +138,10 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
                 .setAutoPlayAnimations(true)
                 .setImageRequest(
                     DisplayUtils.getImageRequestForUrl(
-                        ApiUtils.getUrlForAvatarWithName(
+                        ApiUtils.getUrlForAvatar(
                             userEntity.getBaseUrl(),
                             participant.getActorId(),
-                            R.dimen.small_item_height),
+                            true),
                         null))
                 .build();
             holder.binding.userIcon.setController(draweeController);

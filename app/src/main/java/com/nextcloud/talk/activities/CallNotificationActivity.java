@@ -330,9 +330,9 @@ public class CallNotificationActivity extends CallBaseActivity {
     private void setAvatarForOneToOneCall() {
         ImageRequest imageRequest =
             DisplayUtils.getImageRequestForUrl(
-                ApiUtils.getUrlForAvatarWithName(userBeingCalled.getBaseUrl(),
-                                                 currentConversation.getName(),
-                                                 R.dimen.avatar_size_big), null);
+                ApiUtils.getUrlForAvatar(userBeingCalled.getBaseUrl(),
+                                         currentConversation.getName(),
+                                         true), null);
 
         ImagePipeline imagePipeline = Fresco.getImagePipeline();
         DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);

@@ -168,8 +168,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatarWithNameForGuests(userEntity.getBaseUrl(),
-                                                              displayName, R.dimen.avatar_size), null))
+                    ApiUtils.getUrlForGuestAvatar(userEntity.getBaseUrl(),
+                                                  displayName, false), null))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
 
@@ -179,8 +179,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatarWithName(userEntity.getBaseUrl(),
-                                                     participant.getActorId(), R.dimen.avatar_size), null))
+                    ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
+                                             participant.getActorId(), false), null))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
         }

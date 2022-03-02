@@ -379,11 +379,13 @@ public class NotificationWorker extends Worker {
             notificationBuilder.setOnlyAlertOnce(true);
 
             if (decryptedPushMessage.getNotificationUser().getType().equals("user") || decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
-                String avatarUrl = ApiUtils.getUrlForAvatarWithName(signatureVerification.getUserEntity().getBaseUrl(), decryptedPushMessage.getNotificationUser().getId(), R.dimen.avatar_size);
+                String avatarUrl = ApiUtils.getUrlForAvatar(signatureVerification.getUserEntity().getBaseUrl(),
+                                                            decryptedPushMessage.getNotificationUser().getId(), false);
 
                 if (decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
-                    avatarUrl = ApiUtils.getUrlForAvatarWithNameForGuests(signatureVerification.getUserEntity().getBaseUrl(),
-                            decryptedPushMessage.getNotificationUser().getName(), R.dimen.avatar_size);
+                    avatarUrl = ApiUtils.getUrlForGuestAvatar(signatureVerification.getUserEntity().getBaseUrl(),
+                                                              decryptedPushMessage.getNotificationUser().getName(),
+                                                              false);
                 }
 
                 ImageRequest imageRequest =

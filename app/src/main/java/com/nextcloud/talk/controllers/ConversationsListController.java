@@ -256,16 +256,12 @@ public class ConversationsListController extends BaseController implements Searc
 
     private void loadUserAvatar(MaterialButton button) {
         if (getActivity() != null) {
-            int avatarSize;
-
-            if (getResources() != null) {
-                avatarSize = getResources().getDimensionPixelSize(R.dimen.avatar_size_app_bar);
-            } else {
-                avatarSize = (int) DisplayUtils.convertDpToPixel(30.0f, context);
-            }
-
-            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(ApiUtils.getUrlForAvatarWithNameAndPixels(currentUser.getBaseUrl(),
-                                                                                                                     currentUser.getUserId(), avatarSize), currentUser);
+            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(
+                ApiUtils.getUrlForAvatar(
+                    currentUser.getBaseUrl(),
+                    currentUser.getUserId(),
+                    false),
+                currentUser);
 
             ImagePipeline imagePipeline = Fresco.getImagePipeline();
             DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, null);

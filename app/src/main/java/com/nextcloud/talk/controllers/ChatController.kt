@@ -192,6 +192,7 @@ import java.util.HashMap
 import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatController(args: Bundle) :
@@ -405,16 +406,11 @@ class ChatController(args: Bundle) :
 
     private fun loadAvatarForStatusBar() {
         if (inOneToOneCall() && activity != null && conversationVoiceCallMenuItem != null) {
-            val avatarSize = DisplayUtils.convertDpToPixel(
-                conversationVoiceCallMenuItem?.icon!!
-                    .intrinsicWidth.toFloat(),
-                activity
-            ).toInt()
 
             val imageRequest = DisplayUtils.getImageRequestForUrl(
-                ApiUtils.getUrlForAvatarWithNameAndPixels(
+                ApiUtils.getUrlForAvatar(
                     conversationUser?.baseUrl,
-                    currentConversation?.name, avatarSize / 2
+                    currentConversation?.name, true
                 ),
                 conversationUser!!
             )
@@ -426,7 +422,11 @@ class ChatController(args: Bundle) :
                 object : BaseBitmapDataSubscriber() {
                     override fun onNewResultImpl(bitmap: Bitmap?) {
                         if (actionBar != null && bitmap != null && resources != null) {
-                            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources!!, bitmap)
+
+                            val avatarSize = (actionBar?.height!! / 1.5).roundToInt()
+                            val bitmapResized = Bitmap.createScaledBitmap(bitmap, avatarSize, avatarSize, false)
+
+                            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources!!, bitmapResized)
                             roundedBitmapDrawable.isCircular = true
                             roundedBitmapDrawable.setAntiAlias(true)
                             actionBar?.setIcon(roundedBitmapDrawable)

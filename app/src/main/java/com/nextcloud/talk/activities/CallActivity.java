@@ -2188,13 +2188,13 @@ public class CallActivity extends CallBaseActivity {
 
         String urlForAvatar;
         if (!TextUtils.isEmpty(userId)) {
-            urlForAvatar = ApiUtils.getUrlForAvatarWithName(baseUrl,
-                                                            userId,
-                                                            R.dimen.avatar_size_big);
+            urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl,
+                                                    userId,
+                                                    true);
         } else {
-            urlForAvatar = ApiUtils.getUrlForAvatarWithNameForGuests(baseUrl,
-                                                                     nick,
-                                                                     R.dimen.avatar_size_big);
+            urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl,
+                                                         nick,
+                                                         true);
         }
 
         ParticipantDisplayItem participantDisplayItem = new ParticipantDisplayItem(userId,
