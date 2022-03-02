@@ -289,10 +289,10 @@ class SetStatusDialogFragment :
     @Suppress("ReturnCount")
     private fun clearAtToUnixTime(clearAt: ClearAt?): Long {
         if (clearAt != null) {
-            if (clearAt.type.equals("period")) {
+            if (clearAt.type == "period") {
                 return System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + clearAt.time.toLong()
-            } else if (clearAt.type.equals("end-of")) {
-                if (clearAt.time.equals("day")) {
+            } else if (clearAt.type == "end-of") {
+                if (clearAt.time == "day") {
                     val date = Calendar.getInstance().apply {
                         set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_DAY)
                         set(Calendar.MINUTE, LAST_MINUTE_OF_HOUR)
@@ -443,14 +443,14 @@ class SetStatusDialogFragment :
             binding.clearStatusAfterSpinner.setSelection(0)
         } else {
             val clearAt = predefinedStatus.clearAt!!
-            if (clearAt.type.equals("period")) {
+            if (clearAt.type == "period") {
                 when (clearAt.time) {
                     "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
                     "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
                     "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
                     else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
                 }
-            } else if (clearAt.type.equals("end-of")) {
+            } else if (clearAt.type == "end-of") {
                 when (clearAt.time) {
                     "day" -> binding.clearStatusAfterSpinner.setSelection(POS_TODAY)
                     "week" -> binding.clearStatusAfterSpinner.setSelection(POS_END_OF_WEEK)
