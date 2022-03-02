@@ -154,7 +154,7 @@ public class DisplayUtils {
     }
 
     private static void updateViewSize(@Nullable ImageInfo imageInfo, SimpleDraweeView draweeView) {
-        if (imageInfo != null) {
+        if (imageInfo != null && draweeView.getId() != R.id.messageUserAvatar) {
             int maxSize = draweeView.getContext().getResources().getDimensionPixelSize(R.dimen.maximum_file_preview_size);
             draweeView.getLayoutParams().width = imageInfo.getWidth() > maxSize ? maxSize : imageInfo.getWidth();
             draweeView.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
