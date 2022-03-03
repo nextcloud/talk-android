@@ -513,11 +513,11 @@ public class NotificationWorker extends Worker {
                             DecryptedPushMessage.class);
 
                     decryptedPushMessage.setTimestamp(System.currentTimeMillis());
-                    if (decryptedPushMessage.isDelete()) {
+                    if (decryptedPushMessage.getDelete()) {
                         NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), decryptedPushMessage.getNotificationId());
-                    } else if (decryptedPushMessage.isDeleteAll()) {
+                    } else if (decryptedPushMessage.getDeleteAll()) {
                         NotificationUtils.INSTANCE.cancelAllNotificationsForAccount(context, signatureVerification.getUserEntity());
-                    } else if (decryptedPushMessage.isDeleteMultiple()) {
+                    } else if (decryptedPushMessage.getDeleteMultiple()) {
                         for (long notificationId : decryptedPushMessage.getNotificationIds()) {
                             NotificationUtils.INSTANCE.cancelExistingNotificationWithId(context, signatureVerification.getUserEntity(), notificationId);
                         }
