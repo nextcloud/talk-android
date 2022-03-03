@@ -662,7 +662,7 @@ class ConversationInfoController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "failed to fetch room info", e)
                 }
 
                 override fun onComplete() {
