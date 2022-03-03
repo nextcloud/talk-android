@@ -217,7 +217,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
                     @Override
                     public void onNext(@NonNull StatusOverall statusOverall) {
-                        status = statusOverall.ocs.data;
+                        if (statusOverall.getOcs() != null) {
+                            status = statusOverall.getOcs().getData();
+                        }
 
                         binding.setStatus.setEnabled(true);
                         drawStatus();
