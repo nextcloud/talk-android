@@ -611,6 +611,9 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         VOICE_MESSAGE
     }
 
+    /**
+     * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
+     */
     public enum SystemMessageType {
         DUMMY,
         CONVERSATION_CREATED,
@@ -638,6 +641,10 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         PASSWORD_REMOVED,
         USER_ADDED,
         USER_REMOVED,
+        GROUP_ADDED,
+        GROUP_REMOVED,
+        CIRCLE_ADDED,
+        CIRCLE_REMOVED,
         MODERATOR_PROMOTED,
         MODERATOR_DEMOTED,
         GUEST_MODERATOR_PROMOTED,

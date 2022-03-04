@@ -41,6 +41,8 @@ class ChatUtils {
                         } else {
                             individualHashMap["link"].toString()
                         }
+                    } else {
+                        resultMessage = individualHashMap?.get("name")?.let { resultMessage?.replace("{$key}", it) }
                     }
                 }
             }
