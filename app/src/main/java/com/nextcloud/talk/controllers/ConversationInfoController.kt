@@ -613,13 +613,13 @@ class ConversationInfoController(args: Bundle) :
 
                             setupWebinaryView()
 
-                            if (!conversation!!.canLeave()) {
+                            if (!conversation!!.canLeave(conversationUser)) {
                                 binding.leaveConversationAction.visibility = View.GONE
                             } else {
                                 binding.leaveConversationAction.visibility = View.VISIBLE
                             }
 
-                            if (!conversation!!.canDelete()) {
+                            if (!conversation!!.canDelete(conversationUser)) {
                                 binding.deleteConversationAction.visibility = View.GONE
                             } else {
                                 binding.deleteConversationAction.visibility = View.VISIBLE
@@ -662,7 +662,7 @@ class ConversationInfoController(args: Bundle) :
                 }
 
                 override fun onError(e: Throwable) {
-                    // unused atm
+                    Log.e(TAG, "failed to fetch room info", e)
                 }
 
                 override fun onComplete() {
