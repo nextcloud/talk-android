@@ -1,17 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="account_icon">Ícone de conta</string>
-    <string name="appbar_search_in">Procurar em 1%s</string>
+    <string name="account_icon">Ícone da conta</string>
+    <string name="appbar_search_in">Pesquisar em %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Saída de áudio</string>
+    <string name="audio_output_phone">Celular</string>
+    <string name="audio_output_speaker">Alto falante</string>
+    <string name="audio_output_wired_headset">Fone de ouvido</string>
     <string name="avatar">Avatar</string>
+    <string name="away">Ausente</string>
     <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
+    <string name="clear_status_message">Limpar mensagem de status</string>
+    <string name="clear_status_message_after">Limpar mensagem de status após</string>
     <string name="conversations">Conversas</string>
     <string name="delete_avatar">Excluir avatar</string>
+    <string name="dnd">Não perturbe</string>
+    <string name="dontClear">Não limpe</string>
     <string name="edit">Editar</string>
     <string name="encrypted">Criptografado</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
     <string name="file_list_folder">pasta</string>
     <string name="file_list_loading">Carregando...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 horas</string>
+    <string name="invisible">Invisível</string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="menu_item_sort_by_date_newest_first">Mais novo primeiro</string>
     <string name="menu_item_sort_by_date_oldest_first">Mais antigo primeiro</string>
@@ -328,6 +340,9 @@
     <string name="nc_wrong_password">Senha incorreta</string>
     <string name="nc_yes">Sim</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
+    <string name="oneHour">1 hora</string>
+    <string name="online">Online</string>
+    <string name="online_status">Status online</string>
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="password_protected">Protegido por senha</string>
@@ -344,12 +359,16 @@
     <string name="scope_published_title">Publicado</string>
     <string name="scope_toggle">Alternância de escopo</string>
     <string name="scope_toggle_description">Alterar o nível de privacidade %1$s</string>
+    <string name="secondsAgo">segundos atrás</string>
     <string name="selected_list_item">Selecionado</string>
     <string name="send_to">Enviar para</string>
     <string name="send_to_three_dots">Enviar para …</string>
+    <string name="set_status">Definir status</string>
+    <string name="set_status_message">Definir mensagem de status</string>
     <string name="share">Compartilhar </string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma ligação</string>
+    <string name="status_message">Mensagem de status</string>
     <string name="take_photo">Tirar uma fotos</string>
     <string name="take_photo_error_deleting_picture">Erro ao tirar foto</string>
     <string name="take_photo_permission">Tirar uma foto não é possível sem permissões</string>
@@ -359,6 +378,9 @@
     <string name="take_photo_toggle_crop">Cortar foto</string>
     <string name="take_photo_toggle_lowres">Reduza o tamanho da imagem</string>
     <string name="take_photo_toggle_torch">Alternar tocha</string>
+    <string name="thirtyMinutes">30 minutos</string>
+    <string name="thisWeek">Esta semana</string>
+    <string name="today">Hoje</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
     <string name="user_info_address">Endereço</string>
     <string name="user_info_displayname">Nome completo</string>
@@ -366,7 +388,9 @@
     <string name="user_info_phone">Número do Telefone</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
+    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
+    <string name="whats_your_status">Qual é o seu status?</string>
     </resources>
