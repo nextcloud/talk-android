@@ -1606,7 +1606,8 @@ class ChatController(args: Bundle) :
             activity != null &&
             !activity?.isChangingConfigurations!! &&
             !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
-            !ApplicationWideCurrentRoomHolder.getInstance().isDialing
+            !ApplicationWideCurrentRoomHolder.getInstance().isDialing &&
+            !ApplicationWideCurrentRoomHolder.getInstance().isIncoming
         ) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (inConversation && validSessionId()) {

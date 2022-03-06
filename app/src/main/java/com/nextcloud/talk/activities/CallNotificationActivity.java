@@ -60,6 +60,7 @@ import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 
 import org.greenrobot.eventbus.EventBus;
 import org.parceler.Parcels;
@@ -169,12 +170,14 @@ public class CallNotificationActivity extends CallBaseActivity {
     private void initClickListeners() {
         binding.callAnswerVoiceOnlyView.setOnClickListener(l -> {
             Log.d(TAG, "accept call (voice only)");
+            ApplicationWideCurrentRoomHolder.getInstance().setIncoming(false);
             originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), true);
             proceedToCall();
         });
 
         binding.callAnswerCameraView.setOnClickListener(l -> {
             Log.d(TAG, "accept call (with video)");
+            ApplicationWideCurrentRoomHolder.getInstance().setIncoming(false);
             originalBundle.putBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
             proceedToCall();
         });
@@ -198,6 +201,7 @@ public class CallNotificationActivity extends CallBaseActivity {
 
     @OnClick(R.id.hangupButton)
     void hangup() {
+        ApplicationWideCurrentRoomHolder.getInstance().setIncoming(false);
         leavingScreen = true;
         finish();
     }

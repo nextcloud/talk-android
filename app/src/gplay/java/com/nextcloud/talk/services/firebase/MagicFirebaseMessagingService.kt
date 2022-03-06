@@ -59,6 +59,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -121,6 +122,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         Log.d(TAG, "onDestroy")
         isServiceInForeground = false
         eventBus?.unregister(this)
+        ApplicationWideCurrentRoomHolder.getInstance().isIncoming = false
         stopForeground(true)
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
@@ -225,6 +227,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                             notification.flags = notification.flags or Notification.FLAG_INSISTENT
                             isServiceInForeground = true
                             checkIfCallIsActive(signatureVerification!!, decryptedPushMessage!!)
+                            ApplicationWideCurrentRoomHolder.getInstance().isIncoming = true
                             startForeground(decryptedPushMessage!!.timestamp.toInt(), notification)
                         } else {
                             val messageData = Data.Builder()
@@ -300,6 +303,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     }
                     if (!hasParticipantsInCall || inCallOnDifferentDevice) {
                         Log.d(TAG, "no participants in call OR inCallOnDifferentDevice")
+                        ApplicationWideCurrentRoomHolder.getInstance().isIncoming = false
                         stopForeground(true)
                         handler.removeCallbacksAndMessages(null)
                     }
