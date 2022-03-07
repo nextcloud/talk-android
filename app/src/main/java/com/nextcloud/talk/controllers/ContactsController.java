@@ -71,6 +71,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.jetbrains.annotations.NotNull;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -255,7 +256,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             adapter = new FlexibleAdapter<>(contactItems, getActivity(), false);
 
             if (currentUser != null) {
-                fetchData(true);
+                fetchData();
             }
         }
 
@@ -459,7 +460,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         }
     }
 
-    private void fetchData(boolean startFromScratch) {
+    private void fetchData() {
         dispose(null);
 
         alreadyFetching = true;
@@ -506,12 +507,12 @@ public class ContactsController extends BaseController implements SearchView.OnQ
             .retry(3)
             .subscribe(new Observer<ResponseBody>() {
                 @Override
-                public void onSubscribe(Disposable d) {
+                public void onSubscribe(@NotNull Disposable d) {
                     contactsQueryDisposable = d;
                 }
 
                 @Override
-                public void onNext(ResponseBody responseBody) {
+                public void onNext(@NotNull ResponseBody responseBody) {
                     if (responseBody != null) {
                         Participant participant;
 
@@ -636,7 +637,8 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                             }
 
                             if (o1 instanceof ContactItem && o2 instanceof ContactItem) {
-                                if ("groups".equals(((ContactItem) o1).getModel().getSource()) && "groups".equals(((ContactItem) o2).getModel().getSource())) {
+                                if ("groups".equals(((ContactItem) o1).getModel().getSource()) &&
+                                    "groups".equals(((ContactItem) o2).getModel().getSource())) {
                                     return firstName.compareToIgnoreCase(secondName);
                                 } else if ("groups".equals(((ContactItem) o1).getModel().getSource())) {
                                     return -1;
@@ -661,7 +663,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                 }
 
                 @Override
-                public void onError(Throwable e) {
+                public void onError(@NotNull Throwable e) {
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -679,7 +681,6 @@ public class ContactsController extends BaseController implements SearchView.OnQ
                     disengageProgressBar();
                 }
             });
-
     }
 
     private void prepareViews() {
@@ -688,7 +689,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(adapter);
 
-        swipeRefreshLayout.setOnRefreshListener(() -> fetchData(true));
+        swipeRefreshLayout.setOnRefreshListener(this::fetchData);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary);
         swipeRefreshLayout.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background);
 
@@ -759,7 +760,7 @@ public class ContactsController extends BaseController implements SearchView.OnQ
     public boolean onQueryTextChange(String newText) {
         if (!newText.equals("") && adapter.hasNewFilter(newText)) {
             adapter.setFilter(newText);
-            fetchData(true);
+            fetchData();
         } else if (newText.equals("")) {
             adapter.setFilter("");
             adapter.updateDataSet(contactItems);

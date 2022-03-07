@@ -41,6 +41,9 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
+
+import org.jetbrains.annotations.NotNull;
+
 import io.reactivex.CompletableObserver;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
@@ -100,16 +103,17 @@ public class AccountRemovalWorker extends Worker {
                             .getBaseUrl()))
                             .blockingSubscribe(new Observer<GenericOverall>() {
                                 @Override
-                                public void onSubscribe(Disposable d) {
+                                public void onSubscribe(@NotNull Disposable d) {
 
                                 }
 
                                 @Override
-                                public void onNext(GenericOverall genericOverall) {
+                                public void onNext(@NotNull GenericOverall genericOverall) {
                                     if (genericOverall.getOcs().getMeta().getStatusCode() == 200
                                             || genericOverall.getOcs().getMeta().getStatusCode() == 202) {
                                         HashMap<String, String> queryMap = new HashMap<>();
-                                        queryMap.put("deviceIdentifier", finalPushConfigurationState.deviceIdentifier);
+                                        queryMap.put("deviceIdentifier",
+                                                     finalPushConfigurationState.getDeviceIdentifier());
                                         queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
                                         queryMap.put("deviceIdentifierSignature",
                                                 finalPushConfigurationState.getDeviceIdentifierSignature());
@@ -118,7 +122,7 @@ public class AccountRemovalWorker extends Worker {
                                 }
 
                                 @Override
-                                public void onError(Throwable e) {
+                                public void onError(@NotNull Throwable e) {
                                     Log.e(TAG, "error while trying to unregister Device For Notifications", e);
                                 }
 

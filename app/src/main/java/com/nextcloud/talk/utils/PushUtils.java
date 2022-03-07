@@ -331,7 +331,7 @@ public class PushUtils {
         pushConfigurationState.setDeviceIdentifier(proxyMap.get("deviceIdentifier"));
         pushConfigurationState.setDeviceIdentifierSignature(proxyMap.get("deviceIdentifierSignature"));
         pushConfigurationState.setUserPublicKey(proxyMap.get("userPublicKey"));
-        pushConfigurationState.setUsesRegularPass(false);
+        pushConfigurationState.setUsesRegularPass(Boolean.FALSE);
 
         userUtils.createOrUpdateUser(null,
                                      null,

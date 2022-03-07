@@ -374,7 +374,7 @@ public class OperationsMenuController extends BaseController {
                                                         @io.reactivex.annotations.NonNull RoomOverall roomOverall
                                                                   ) {
                                                     conversation = roomOverall.getOcs().getData();
-                                                    initiateConversation(false);
+                                                    initiateConversation();
                                                 }
 
                                                 @Override
@@ -388,7 +388,7 @@ public class OperationsMenuController extends BaseController {
                                                 }
                                             });
                                 } else {
-                                    initiateConversation(false);
+                                    initiateConversation();
                                 }
                             }
 
@@ -594,7 +594,6 @@ public class OperationsMenuController extends BaseController {
     }
 
     private void inviteUsersToAConversation() {
-        RetrofitBucket retrofitBucket;
         final ArrayList<String> localInvitedUsers = invitedUsers;
         final ArrayList<String> localInvitedGroups = invitedGroups;
         if (localInvitedGroups.size() > 0) {
@@ -608,7 +607,7 @@ public class OperationsMenuController extends BaseController {
             addGroupsToConversation(localInvitedUsers, localInvitedGroups, apiVersion);
             addUsersToConversation(localInvitedUsers, localInvitedGroups, apiVersion);
         } else {
-            initiateConversation(true);
+            initiateConversation();
         }
     }
 
@@ -653,7 +652,7 @@ public class OperationsMenuController extends BaseController {
                             }
 
                             if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
-                                initiateConversation(true);
+                                initiateConversation();
                             }
                             dispose();
                         }
@@ -707,7 +706,7 @@ public class OperationsMenuController extends BaseController {
                                 }
 
                                 if (localInvitedGroups.size() == 0 && localInvitedUsers.size() == 0) {
-                                    initiateConversation(true);
+                                    initiateConversation();
                                 }
                                 dispose();
                             }
@@ -717,7 +716,7 @@ public class OperationsMenuController extends BaseController {
         }
     }
 
-    private void initiateConversation(boolean dismissView) {
+    private void initiateConversation() {
         eventBus.post(new ConversationsListFetchDataEvent());
 
         Bundle bundle = new Bundle();
@@ -787,7 +786,7 @@ public class OperationsMenuController extends BaseController {
                 showResultImage(true, false);
             } else {
                 conversation = roomOverall.getOcs().getData();
-                initiateConversation(true);
+                initiateConversation();
             }
         }
 

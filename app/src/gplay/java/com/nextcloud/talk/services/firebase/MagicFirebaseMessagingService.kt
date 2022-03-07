@@ -178,7 +178,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                         } else if (deleteAll) {
                             cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
                         } else if (deleteMultiple) {
-                            notificationIds.forEach {
+                            notificationIds!!.forEach {
                                 cancelExistingNotificationWithId(
                                     applicationContext,
                                     signatureVerification!!.userEntity,

@@ -193,7 +193,7 @@ object NotificationUtils {
         }
     }
 
-    fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long) {
+    fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long?) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
             context != null
         ) {
