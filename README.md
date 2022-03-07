@@ -1,6 +1,6 @@
 # [Nextcloud](https://nextcloud.com) Talk for Android :speech_balloon:
 
-[![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/talk-android/status.svg)](https://drone.nextcloud.com/nextcloud/talk-android) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/21a6fb22279e401baba31fb296b6f20e)](https://www.codacy.com/app/Nextcloud/talk-android?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=nextcloud/talk-android&amp;utm_campaign=Badge_Grade) [![Releases](https://img.shields.io/github/release/nextcloud/talk-android.svg)](https://github.com/nextcloud/talk-android/releases/latest)
+[![Build Status](https://drone.nextcloud.com/api/badges/nextcloud/talk-android/status.svg)](https://drone.nextcloud.com/nextcloud/talk-android) [![Codacy Badge](https://app.codacy.com/project/badge/Grade/b89a720efbd24754984a776804913bca)](https://www.codacy.com/gh/nextcloud/talk-android/dashboard) [![Releases](https://img.shields.io/github/release/nextcloud/talk-android.svg)](https://github.com/nextcloud/talk-android/releases/latest)
 
 [<img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" 
       alt="Download from Google Play" 
