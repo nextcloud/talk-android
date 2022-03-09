@@ -33,6 +33,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_LE
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_MISSED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_STARTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CALL_TRIED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CIRCLE_ADDED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CIRCLE_REMOVED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CLEARED_CHAT
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_CREATED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.CONVERSATION_RENAMED
@@ -40,6 +42,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DESCRIP
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DESCRIPTION_SET
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.DUMMY
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.FILE_SHARED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GROUP_ADDED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GROUP_REMOVED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUESTS_ALLOWED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUESTS_DISALLOWED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.GUEST_MODERATOR_DEMOTED
@@ -67,6 +71,8 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_AD
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_REMOVED
 
 /*
+* see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
+*
 * `conversation_created` - {actor} created the conversation
 * `conversation_renamed` - {actor} renamed the conversation from "foo" to "bar"
 * `description_set` - {actor} set the description to "Hello world"
@@ -92,6 +98,10 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_RE
 * `password_removed` - {actor} removed the password for the conversation
 * `user_added` - {actor} added {user} to the conversation
 * `user_removed` - {actor} removed {user} from the conversation
+* `group_added` - {actor} added group {group} to the conversation
+* `group_removed` - {actor} removed group {group} from the conversation
+* `circle_added` - {actor} added circle {circle} to the conversation
+* `circle_removed` - {actor} removed circle {circle} from the conversation
 * `moderator_promoted` - {actor} promoted {user} to moderator
 * `moderator_demoted` - {actor} demoted {user} from moderator
 * `guest_moderator_promoted` - {actor} promoted {user} to moderator
@@ -134,6 +144,10 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "password_removed" -> return PASSWORD_REMOVED
             "user_added" -> return USER_ADDED
             "user_removed" -> return USER_REMOVED
+            "group_added" -> return GROUP_ADDED
+            "group_removed" -> return GROUP_REMOVED
+            "circle_added" -> return CIRCLE_ADDED
+            "circle_removed" -> return CIRCLE_REMOVED
             "moderator_promoted" -> return MODERATOR_PROMOTED
             "moderator_demoted" -> return MODERATOR_DEMOTED
             "guest_moderator_promoted" -> return GUEST_MODERATOR_PROMOTED
@@ -183,6 +197,10 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             PASSWORD_REMOVED -> return "password_removed"
             USER_ADDED -> return "user_added"
             USER_REMOVED -> return "user_removed"
+            GROUP_ADDED -> return "group_added"
+            GROUP_REMOVED -> return "group_removed"
+            CIRCLE_ADDED -> return "circle_added"
+            CIRCLE_REMOVED -> return "circle_removed"
             MODERATOR_PROMOTED -> return "moderator_promoted"
             MODERATOR_DEMOTED -> return "moderator_demoted"
             GUEST_MODERATOR_PROMOTED -> return "guest_moderator_promoted"

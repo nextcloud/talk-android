@@ -56,7 +56,7 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         super(itemView);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
-    
+
     @Override
     public void onBind(ChatMessage message) {
         super.onBind(message);
@@ -70,8 +70,8 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         mentionColor = resources.getColor(R.color.textColorMaxContrast);
 
         Drawable bubbleDrawable = DisplayUtils.getMessageSelector(normalColor,
-                                resources.getColor(R.color.transparent), pressedColor,
-                                R.drawable.shape_grouped_incoming_message);
+                                                                  resources.getColor(R.color.transparent), pressedColor,
+                                                                  R.drawable.shape_grouped_incoming_message);
         ViewCompat.setBackground(bubble, bubbleDrawable);
 
         Spannable messageString = new SpannableString(message.getText());
@@ -79,13 +79,18 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
         if (message.messageParameters != null && message.messageParameters.size() > 0) {
             for (String key : message.messageParameters.keySet()) {
                 Map<String, String> individualMap = message.messageParameters.get(key);
-                if (individualMap != null &&
-                        ("user".equals(individualMap.get("type")) ||
-                                "guest".equals(individualMap.get("type")) ||
-                                "call".equals(individualMap.get("type"))
-                        )) {
-                    messageString = DisplayUtils.searchAndColor(
-                            messageString, "@" + individualMap.get("name"), mentionColor);
+
+                if (individualMap != null && individualMap.containsKey("name")) {
+                    String searchText;
+                    if ("user".equals(individualMap.get("type")) ||
+                        "guest".equals(individualMap.get("type")) ||
+                        "call".equals(individualMap.get("type"))
+                    ) {
+                        searchText = "@" + individualMap.get("name");
+                    } else {
+                        searchText = individualMap.get("name");
+                    }
+                    messageString = DisplayUtils.searchAndColor(messageString, searchText, mentionColor);
                 }
             }
         }
