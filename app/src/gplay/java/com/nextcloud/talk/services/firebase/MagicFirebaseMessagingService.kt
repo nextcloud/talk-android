@@ -81,7 +81,9 @@ import javax.inject.Inject
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicFirebaseMessagingService : FirebaseMessagingService() {
-    private val TAG = "MagicFirebaseMessagingService"
+    companion object {
+        const val TAG = "MagicFirebaseMessagingService"
+    }
 
     @JvmField
     @Inject
