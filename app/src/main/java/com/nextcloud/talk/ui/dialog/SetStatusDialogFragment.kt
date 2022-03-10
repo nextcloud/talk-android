@@ -35,6 +35,7 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
@@ -59,6 +60,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.dialog_set_status.*
 import okhttp3.ResponseBody
 import java.util.Calendar
 import java.util.Locale
@@ -157,7 +159,8 @@ class SetStatusDialogFragment :
         currentStatus?.let {
             binding.emoji.setText(it.icon)
             binding.customStatusInput.text?.clear()
-            binding.customStatusInput.setText(it.message)
+            binding.customStatusInput.setText(it.message?.trim())
+            binding.setStatus.isEnabled = it.message?.isEmpty() == false
             visualizeStatus(it.status)
 
             if (it.clearAt > 0) {
@@ -231,6 +234,10 @@ class SetStatusDialogFragment :
         binding.setStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
 
         binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary)
+
+        binding.customStatusInput.doAfterTextChanged { text ->
+            binding.setStatus.isEnabled = !text.isNullOrEmpty()
+        }
     }
 
     @Suppress("ComplexMethod")
@@ -394,7 +401,7 @@ class SetStatusDialogFragment :
 
     private fun setStatusMessage() {
 
-        val inputText = binding.customStatusInput.text.toString().ifEmpty { " " }
+        val inputText = binding.customStatusInput.text.toString().ifEmpty { "" }
         // The endpoint '/message/custom' expects a valid emoji as string or null
         val statusIcon = binding.emoji.text.toString().ifEmpty { null }
 
