@@ -87,6 +87,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private var router: Router? = null
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: Activity: " + System.identityHashCode(this).toString())
 

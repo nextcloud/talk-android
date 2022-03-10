@@ -43,6 +43,7 @@ class ImageEmojiEditText : EmojiEditText {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreateInputConnection(editorInfo: EditorInfo): InputConnection {
 
         val ic: InputConnection = super.onCreateInputConnection(editorInfo)

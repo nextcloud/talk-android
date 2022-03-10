@@ -139,6 +139,7 @@ object AccountUtils {
         return false
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getInformationFromAccount(account: Account): ImportAccount {
         val lastAtPos = account.name.lastIndexOf("@")
         var urlString = account.name.substring(lastAtPos + 1)

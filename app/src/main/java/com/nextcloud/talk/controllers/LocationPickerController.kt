@@ -213,6 +213,7 @@ class LocationPickerController(args: Bundle) :
         return true
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun initMap() {
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
         binding.map.onResume()

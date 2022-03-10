@@ -114,6 +114,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return Result.success()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createRequestBody(sourcefileUri: Uri): RequestBody? {
         var requestBody: RequestBody? = null
         try {

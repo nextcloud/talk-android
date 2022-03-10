@@ -149,6 +149,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun decryptMessage(subject: String, signature: String) {
         try {
             val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
