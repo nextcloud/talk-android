@@ -176,7 +176,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     }
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -231,7 +233,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     abortVerification()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -275,7 +279,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     abortVerification()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -328,7 +334,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     abortVerification()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -457,12 +465,16 @@ class AccountVerificationController(args: Bundle? = null) :
         if (!isAccountImport) {
             if (internalAccountId != -1L) {
                 userUtils.deleteUserWithId(internalAccountId).subscribe(object : CompletableObserver {
-                    override fun onSubscribe(d: Disposable) {}
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
                     override fun onComplete() {
                         activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, 7500) }
                     }
 
-                    override fun onError(e: Throwable) {}
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
                 })
             } else {
                 activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, 7500) }

@@ -433,7 +433,9 @@ class ChatController(args: Bundle) :
                         }
                     }
 
-                    override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {}
+                    override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage>>) {
+                        // unused atm
+                    }
                 },
                 UiThreadImmediateExecutorService.getInstance()
             )
@@ -630,6 +632,7 @@ class ChatController(args: Bundle) :
 
         binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // unused atm
             }
 
             @Suppress("Detekt.TooGenericExceptionCaught")

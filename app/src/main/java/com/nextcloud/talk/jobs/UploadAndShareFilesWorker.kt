@@ -145,9 +145,11 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Response<GenericOverall>> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(t: Response<GenericOverall>) {
+                    // unused atm
                 }
 
                 override fun onError(e: Throwable) {

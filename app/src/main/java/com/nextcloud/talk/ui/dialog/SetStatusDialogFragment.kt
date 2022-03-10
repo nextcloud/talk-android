@@ -122,6 +122,7 @@ class SetStatusDialogFragment :
                 .subscribe(object : Observer<ResponseBody> {
 
                     override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
 
                     override fun onNext(responseBody: ResponseBody) {
@@ -136,9 +137,12 @@ class SetStatusDialogFragment :
                     }
 
                     override fun onError(e: Throwable) {
+                        // unused atm
                     }
 
-                    override fun onComplete() {}
+                    override fun onComplete() {
+                        // unused atm
+                    }
                 })
         }
     }
@@ -322,8 +326,12 @@ class SetStatusDialogFragment :
         ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {}
-                override fun onNext(statusOverall: GenericOverall) {}
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+                override fun onNext(statusOverall: GenericOverall) {
+                    // unused atm
+                }
                 override fun onError(e: Throwable) {
                     Log.e(logTag, "Failed to clear status", e)
                 }
@@ -343,7 +351,9 @@ class SetStatusDialogFragment :
                     .io()
             )
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {}
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
                 override fun onNext(statusOverall: GenericOverall) {
                     Log.d(logTag, "statusType successfully set")
                 }
@@ -353,7 +363,9 @@ class SetStatusDialogFragment :
                     clearTopStatus()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -417,6 +429,7 @@ class SetStatusDialogFragment :
             ?.subscribe(object : Observer<GenericOverall> {
 
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(t: GenericOverall) {
@@ -428,7 +441,9 @@ class SetStatusDialogFragment :
                     Log.e(logTag, "failed to set CustomStatusMessage", e)
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 

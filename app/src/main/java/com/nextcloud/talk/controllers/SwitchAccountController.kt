@@ -94,7 +94,9 @@ class SwitchAccountController(args: Bundle? = null) :
                 null, java.lang.Boolean.TRUE, null, userEntity.id, null, null, null
             )
                 .subscribe(object : Observer<UserEntity> {
-                    override fun onSubscribe(d: Disposable) {}
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
                     override fun onNext(userEntity: UserEntity) {
                         cookieManager.cookieStore.removeAll()
                         userUtils.disableAllUsersWithoutId(userEntity.id)
@@ -103,8 +105,12 @@ class SwitchAccountController(args: Bundle? = null) :
                         }
                     }
 
-                    override fun onError(e: Throwable) {}
-                    override fun onComplete() {}
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
+                    override fun onComplete() {
+                        // unused atm
+                    }
                 })
         }
         true

@@ -114,8 +114,12 @@ class EntryMenuController(args: Bundle) :
         }
 
         binding.textEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // unused atm
+            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // unused atm
+            }
             override fun afterTextChanged(s: Editable) {
                 if (!TextUtils.isEmpty(s)) {
                     if (operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {

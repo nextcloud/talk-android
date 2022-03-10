@@ -283,6 +283,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<ParticipantsOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(participantsOverall: ParticipantsOverall) {
