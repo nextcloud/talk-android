@@ -2,9 +2,11 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
  * @author Marcel Hibbe
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -97,9 +99,9 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
 
         val periodicTokenRegistration = PeriodicWorkRequest.Builder(
             PushRegistrationWorker::class.java,
-            24,
+            DAILY,
             TimeUnit.HOURS,
-            10,
+            FLEX_INTERVAL,
             TimeUnit.HOURS
         )
             .setInputData(data)
@@ -115,9 +117,9 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     private fun setUpPeriodicTokenRefreshFromFCM() {
         val periodicTokenRefreshFromFCM = PeriodicWorkRequest.Builder(
             GetFirebasePushTokenWorker::class.java,
-            30,
+            MONTHLY,
             TimeUnit.DAYS,
-            10,
+            FLEX_INTERVAL,
             TimeUnit.DAYS,
         )
             .build()
@@ -127,5 +129,11 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
                 "periodicTokenRefreshFromFCM", ExistingPeriodicWorkPolicy.REPLACE,
                 periodicTokenRefreshFromFCM
             )
+    }
+
+    companion object {
+        const val DAILY: Long = 24
+        const val MONTHLY: Long = 30
+        const val FLEX_INTERVAL: Long = 10
     }
 }

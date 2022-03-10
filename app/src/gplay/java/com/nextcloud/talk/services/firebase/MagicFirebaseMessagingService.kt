@@ -279,8 +279,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             null
         )
             .repeatWhen { completed ->
-                completed.zipWith(Observable.range(1, 12), { _, i -> i })
-                    .flatMap { Observable.timer(5, TimeUnit.SECONDS) }
+                completed.zipWith(Observable.range(1, OBSERVABLE_COUNT), { _, i -> i })
+                    .flatMap { Observable.timer(OBSERVABLE_DELAY, TimeUnit.SECONDS) }
                     .takeWhile { isServiceInForeground && hasParticipantsInCall && !inCallOnDifferentDevice }
             }
             .subscribeOn(Schedulers.io())
@@ -317,5 +317,10 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     handler.removeCallbacksAndMessages(null)
                 }
             })
+    }
+
+    companion object {
+        private const val OBSERVABLE_COUNT = 12
+        private const val OBSERVABLE_DELAY: Long = 5
     }
 }

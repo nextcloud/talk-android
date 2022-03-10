@@ -191,7 +191,10 @@ class RingtoneSelectionController(args: Bundle) :
             endMediaPlayer()
             mediaPlayer = MediaPlayer.create(activity, ringtoneUri)
             cancelMediaPlayerHandler = Handler()
-            cancelMediaPlayerHandler!!.postDelayed({ endMediaPlayer() }, (mediaPlayer!!.getDuration() + 25).toLong())
+            cancelMediaPlayerHandler!!.postDelayed(
+                { endMediaPlayer() },
+                (mediaPlayer!!.duration + DURATION_EXTENSION).toLong()
+            )
             mediaPlayer!!.start()
         }
         if (adapter!!.selectedPositions.size == 0 || adapter!!.selectedPositions[0] != position) {
@@ -239,6 +242,7 @@ class RingtoneSelectionController(args: Bundle) :
 
     companion object {
         private const val TAG = "RingtoneSelection"
+        private const val DURATION_EXTENSION = 25
     }
 
     init {

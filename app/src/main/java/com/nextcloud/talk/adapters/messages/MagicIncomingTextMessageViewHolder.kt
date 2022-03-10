@@ -188,7 +188,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                 }
             }
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-            textSize = (textSize * 2.5).toFloat()
+            textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             itemView.isSelected = true
             binding.messageAuthor.visibility = View.GONE
         }
@@ -230,5 +230,9 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         }
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+    }
+
+    companion object {
+        const val TEXT_SIZE_MULTIPLIER = 2.5
     }
 }

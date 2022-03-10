@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -475,7 +477,7 @@ class AccountVerificationController(args: Bundle? = null) :
                         // unused atm
                     }
                     override fun onComplete() {
-                        activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, 7500) }
+                        activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
                     }
 
                     override fun onError(e: Throwable) {
@@ -483,7 +485,7 @@ class AccountVerificationController(args: Bundle? = null) :
                     }
                 })
             } else {
-                activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, 7500) }
+                activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, DELAY_IN_MILLIS) }
             }
         } else {
             ApplicationWideMessageHolder.getInstance().setMessageType(
@@ -510,13 +512,14 @@ class AccountVerificationController(args: Bundle? = null) :
                             )
                         }
                     }
-                }, 7500)
+                }, DELAY_IN_MILLIS)
             }
         }
     }
 
     companion object {
         const val TAG = "AccountVerificationController"
+        const val DELAY_IN_MILLIS: Long = 7500
     }
 
     init {

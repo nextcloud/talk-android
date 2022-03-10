@@ -35,7 +35,7 @@ class SSLSocketFactoryCompat(
         var cipherSuites: Array<String>? = null
 
         init {
-            if (Build.VERSION.SDK_INT >= 23) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // Since Android 6.0 (API level 23),
                 // - TLSv1.1 and TLSv1.2 is enabled by default
                 // - SSLv3 is disabled by default

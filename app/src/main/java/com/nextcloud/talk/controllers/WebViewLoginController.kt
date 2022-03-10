@@ -404,7 +404,7 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
         // format is xxx://login/server:xxx&user:xxx&password:xxx
         val data: String = dataString.substring(prefix.length)
         val values: Array<String> = data.split("&").toTypedArray()
-        if (values.size != 3) {
+        if (values.size != PARAMETER_COUNT) {
             return null
         }
         for (value in values) {
@@ -468,5 +468,6 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
         const val TAG = "WebViewLoginController"
         private const val PROTOCOL_SUFFIX = "://"
         private const val LOGIN_URL_DATA_KEY_VALUE_SEPARATOR = ":"
+        private const val PARAMETER_COUNT = 3
     }
 }

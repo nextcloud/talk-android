@@ -97,7 +97,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
                 }
             }
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-            textSize = (textSize * 2.5).toFloat()
+            textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             layoutParams.isWrapBefore = true
             binding.messageTime.setTextColor(
                 ResourcesCompat.getColor(context!!.resources, R.color.warm_grey_four, null)
@@ -184,5 +184,9 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+    }
+
+    companion object {
+        const val TEXT_SIZE_MULTIPLIER = 2.5
     }
 }

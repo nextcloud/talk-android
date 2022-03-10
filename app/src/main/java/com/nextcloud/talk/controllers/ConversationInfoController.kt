@@ -72,6 +72,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -206,7 +207,7 @@ class ConversationInfoController(args: Bundle) :
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
-                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * 1000
+                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * DateConstants.SECOND_DIVIDER
                     }
 
                     dateTimePicker(
@@ -238,13 +239,15 @@ class ConversationInfoController(args: Bundle) :
             conversation.type == Conversation.ConversationType.ROOM_PUBLIC_CALL
     }
 
-    fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
+    private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
         val isChecked =
             (binding.webinarInfoView.conversationInfoLobby.findViewById<View>(R.id.mp_checkable) as SwitchCompat)
                 .isChecked
 
         if (dateTime != null && isChecked) {
-            conversation!!.lobbyTimer = (dateTime.timeInMillis - (dateTime.time.seconds * 1000)) / 1000
+            conversation!!.lobbyTimer = (
+                dateTime.timeInMillis - (dateTime.time.seconds * DateConstants.SECOND_DIVIDER)
+                ) / DateConstants.SECOND_DIVIDER
         } else if (!isChecked) {
             conversation!!.lobbyTimer = 0
         }
@@ -683,9 +686,9 @@ class ConversationInfoController(args: Bundle) :
                 if (conversation!!.notificationLevel != Conversation.NotificationLevel.DEFAULT) {
                     val stringValue: String =
                         when (EnumNotificationLevelConverter().convertToInt(conversation!!.notificationLevel)) {
-                            1 -> "always"
-                            2 -> "mention"
-                            3 -> "never"
+                            NOTIFICATION_LEVEL_ALWAYS -> "always"
+                            NOTIFICATION_LEVEL_MENTION -> "mention"
+                            NOTIFICATION_LEVEL_NEVER -> "never"
                             else -> "mention"
                         }
 
@@ -1100,7 +1103,10 @@ class ConversationInfoController(args: Bundle) :
     }
 
     companion object {
-        private const val TAG = "ConversationInfControll"
+        private const val TAG = "ConversationInfo"
+        private const val NOTIFICATION_LEVEL_ALWAYS: Int = 1
+        private const val NOTIFICATION_LEVEL_MENTION: Int = 2
+        private const val NOTIFICATION_LEVEL_NEVER: Int = 3
         private const val ID_DELETE_CONVERSATION_DIALOG = 0
         private const val ID_CLEAR_CHAT_DIALOG = 1
         private val LOW_EMPHASIS_OPACITY: Float = 0.38f

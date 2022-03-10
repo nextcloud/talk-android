@@ -103,8 +103,8 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         }
 
         var count: Int
-        val data = ByteArray(1024 * 4)
-        val bis: InputStream = BufferedInputStream(body.byteStream(), 1024 * 8)
+        val data = ByteArray(BYTE_UNIT_DIVIDER * DATA_BYTES)
+        val bis: InputStream = BufferedInputStream(body.byteStream(), BYTE_UNIT_DIVIDER * DOWNLOAD_STREAM_SIZE)
         val outputFile = File(context.cacheDir, fileName + "_")
         val output: OutputStream = FileOutputStream(outputFile)
         var total: Long = 0
@@ -116,9 +116,9 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         while (count != -1) {
             if (totalFileSize > -1) {
                 total += count.toLong()
-                val progress = (total * 100 / totalFileSize).toInt()
+                val progress = (total * COMPLETE_PERCENTAGE / totalFileSize).toInt()
                 val currentTime = System.currentTimeMillis() - startTime
-                if (currentTime > 50 * timeCount) {
+                if (currentTime > PROGRESS_THRESHOLD * timeCount) {
                     setProgressAsync(Data.Builder().putInt(PROGRESS, progress).build())
                     timeCount++
                 }
@@ -156,5 +156,10 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         const val KEY_FILE_SIZE = "KEY_FILE_SIZE"
         const val PROGRESS = "PROGRESS"
         const val SUCCESS = "SUCCESS"
+        const val BYTE_UNIT_DIVIDER = 1024
+        const val DATA_BYTES = 4
+        const val DOWNLOAD_STREAM_SIZE = 8
+        const val COMPLETE_PERCENTAGE = 100
+        const val PROGRESS_THRESHOLD = 50
     }
 }
