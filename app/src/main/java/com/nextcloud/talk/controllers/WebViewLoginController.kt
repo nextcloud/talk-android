@@ -56,9 +56,7 @@ import com.nextcloud.talk.databinding.ControllerWebViewLoginBinding
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.jobs.PushRegistrationWorker
 import com.nextcloud.talk.models.LoginData
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
@@ -129,12 +127,13 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
 
     private val webLoginUserAgent: String
         get() = (
-            Build.MANUFACTURER.substring(0, 1).toUpperCase(Locale.getDefault())
-                + Build.MANUFACTURER.substring(1).toLowerCase(Locale.getDefault())
-                + " "
-                + Build.MODEL
-                + " ("
-                + resources!!.getString(R.string.nc_app_product_name) + ")"
+            Build.MANUFACTURER.substring(0, 1).toUpperCase(Locale.getDefault()) +
+                Build.MANUFACTURER.substring(1).toLowerCase(Locale.getDefault()) +
+                " " +
+                Build.MODEL +
+                " (" +
+                resources!!.getString(R.string.nc_app_product_name) +
+                ")"
             )
 
     @SuppressLint("SetJavaScriptEnabled")

@@ -56,7 +56,8 @@ class RingtoneSelectionController(args: Bundle) :
     NewBaseController(
         R.layout.controller_generic_rv,
         args
-    ), FlexibleAdapter.OnItemClickListener {
+    ),
+    FlexibleAdapter.OnItemClickListener {
     private val binding: ControllerGenericRvBinding by viewBinding(ControllerGenericRvBinding::bind)
 
     private var adapter: FlexibleAdapter<*>? = null
@@ -108,9 +109,8 @@ class RingtoneSelectionController(args: Bundle) :
         var preferencesString: String? = null
         if (callNotificationSounds &&
             TextUtils.isEmpty(appPreferences!!.callRingtoneUri.also { preferencesString = it }) ||
-            !callNotificationSounds && TextUtils.isEmpty(
-                appPreferences!!.messageRingtoneUri.also { preferencesString = it }
-            )
+            !callNotificationSounds &&
+            TextUtils.isEmpty(appPreferences!!.messageRingtoneUri.also { preferencesString = it })
         ) {
             adapter!!.toggleSelection(1)
             foundDefault = true
@@ -127,8 +127,8 @@ class RingtoneSelectionController(args: Bundle) :
                     var notificationSoundItem: NotificationSoundItem?
                     for (i in 2 until adapter!!.itemCount) {
                         notificationSoundItem = adapter!!.getItem(i) as NotificationSoundItem?
-                        if (notificationSoundItem!!.notificationSoundUri == ringtoneSettings.getRingtoneUri()
-                                .toString()
+                        if (
+                            notificationSoundItem!!.notificationSoundUri == ringtoneSettings.getRingtoneUri().toString()
                         ) {
                             adapter!!.toggleSelection(i)
                             break

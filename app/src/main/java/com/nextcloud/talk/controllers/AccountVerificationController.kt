@@ -161,7 +161,9 @@ class AccountVerificationController(args: Bundle? = null) :
                             RouterTransaction.with(
                                 WebViewLoginController(
                                     baseUrl,
-                                    false, username, ""
+                                    false,
+                                    username,
+                                    ""
                                 )
                             )
                                 .pushChangeHandler(HorizontalChangeHandler())
