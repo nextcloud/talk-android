@@ -1605,12 +1605,7 @@ class ChatController(args: Bundle) :
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener(null)
         }
 
-        if (conversationUser != null &&
-            activity != null &&
-            !activity?.isChangingConfigurations!! &&
-            !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
-            !ApplicationWideCurrentRoomHolder.getInstance().isDialing
-        ) {
+        if (conversationUser != null && isActivityNotChangingConfigurations() && isNotInCall()) {
             ApplicationWideCurrentRoomHolder.getInstance().clear()
             if (inConversation && validSessionId()) {
                 leaveRoom()
@@ -1620,6 +1615,15 @@ class ChatController(args: Bundle) :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+    }
+
+    private fun isActivityNotChangingConfigurations(): Boolean {
+        return activity != null && !activity?.isChangingConfigurations!!
+    }
+
+    private fun isNotInCall(): Boolean {
+        return !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
+            !ApplicationWideCurrentRoomHolder.getInstance().isDialing
     }
 
     override val title: String
@@ -2118,11 +2122,9 @@ class ChatController(args: Bundle) :
 
                 for (i in chatMessageList.indices) {
                     if (chatMessageList.size > i + 1) {
-                        if (TextUtils.isEmpty(chatMessageList[i].systemMessage) &&
-                            TextUtils.isEmpty(chatMessageList[i + 1].systemMessage) &&
+                        if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
                             chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                            countGroupedMessages < 4 &&
-                            DateFormatter.isSameDay(chatMessageList[i].createdAt, chatMessageList[i + 1].createdAt)
+                            countGroupedMessages < 4
                         ) {
                             chatMessageList[i].isGrouped = true
                             countGroupedMessages++
@@ -2252,6 +2254,12 @@ class ChatController(args: Bundle) :
                 pullChatMessages(1)
             }
         }
+    }
+
+    private fun isSameDayNonSystemMessages(messageLeft: ChatMessage, messageRight: ChatMessage): Boolean {
+        return TextUtils.isEmpty(messageLeft.systemMessage) &&
+            TextUtils.isEmpty(messageRight.systemMessage) &&
+            DateFormatter.isSameDay(messageLeft.createdAt,messageRight.createdAt)
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {

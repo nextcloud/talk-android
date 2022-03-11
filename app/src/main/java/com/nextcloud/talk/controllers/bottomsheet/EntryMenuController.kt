@@ -51,6 +51,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.vanniktech.emoji.EmojiPopup
+import okhttp3.internal.immutableListOf
 import org.greenrobot.eventbus.EventBus
 import org.parceler.Parcels
 import org.parceler.Parcels.unwrap
@@ -215,15 +216,12 @@ class EntryMenuController(args: Bundle) :
             else -> {
             }
         }
-        if (operation === ConversationOperationEnum.OPS_CODE_JOIN_ROOM ||
-            operation === ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD ||
-            operation === ConversationOperationEnum.OPS_CODE_SET_PASSWORD ||
-            operation === ConversationOperationEnum.OPS_CODE_SHARE_LINK
-        ) {
+        if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
             binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
         } else {
             binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_NONE
         }
+
         binding.textInputLayout.hint = labelText
         binding.textInputLayout.requestFocus()
 
@@ -326,5 +324,15 @@ class EntryMenuController(args: Bundle) :
         name = args.getString(BundleKeys.KEY_APP_ITEM_NAME, "")
         packageName = args.getString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, "")
         callUrl = args.getString(BundleKeys.KEY_CALL_URL, "")
+    }
+
+    companion object {
+        private val PASSWORD_ENTRY_OPERATIONS: List<ConversationOperationEnum> =
+            immutableListOf(
+                ConversationOperationEnum.OPS_CODE_JOIN_ROOM,
+                ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD,
+                ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
+                ConversationOperationEnum.OPS_CODE_SHARE_LINK
+            )
     }
 }

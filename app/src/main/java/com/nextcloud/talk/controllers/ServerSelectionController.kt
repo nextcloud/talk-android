@@ -213,9 +213,7 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
                 val productName = resources!!.getString(R.string.nc_server_product_name)
                 val versionString: String = status.getVersion().substring(0, status.getVersion().indexOf("."))
                 val version: Int = versionString.toInt()
-                if (status.isInstalled && !status.isMaintenance &&
-                    !status.isNeedsUpgrade && version >= 13
-                ) {
+                if (isServerStatusQueryable(status) && version >= 13) {
                     router.pushController(
                         RouterTransaction.with(
                             WebViewLoginController(
@@ -283,6 +281,10 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
                 }
                 dispose()
             }
+    }
+
+    private fun isServerStatusQueryable(status: Status): Boolean {
+        return status.isInstalled && !status.isMaintenance && !status.isNeedsUpgrade
     }
 
     private fun setErrorText(text: String) {

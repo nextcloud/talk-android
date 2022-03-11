@@ -113,15 +113,19 @@ class AccountVerificationController(args: Bundle? = null) :
 
         actionBar?.hide()
 
-        if (isAccountImport &&
+        if (
+            isAccountImport &&
             !UriUtils.hasHttpProtocollPrefixed(baseUrl!!) ||
-            !TextUtils.isEmpty(originalProtocol!!) &&
-            !baseUrl!!.startsWith(originalProtocol!!)
+            isSameProtocol(baseUrl!!, originalProtocol!!)
         ) {
             determineBaseUrlProtocol(true)
         } else {
             checkEverything()
         }
+    }
+
+    private fun isSameProtocol(baseUrl: String, originalProtocol: String ) : Boolean {
+        return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
     }
 
     private fun checkEverything() {
