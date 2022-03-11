@@ -106,7 +106,8 @@ object NotificationUtils {
             Channel(
                 NOTIFICATION_CHANNEL_CALLS_V4,
                 context.resources.getString(R.string.nc_notification_channel_calls),
-                context.resources.getString(R.string.nc_notification_channel_calls_description)),
+                context.resources.getString(R.string.nc_notification_channel_calls_description)
+            ),
             soundUri,
             audioAttributes
         )
@@ -128,7 +129,8 @@ object NotificationUtils {
             Channel(
                 NOTIFICATION_CHANNEL_MESSAGES_V4,
                 context.resources.getString(R.string.nc_notification_channel_messages),
-                context.resources.getString(R.string.nc_notification_channel_messages_description)),
+                context.resources.getString(R.string.nc_notification_channel_messages_description)
+            ),
             soundUri,
             audioAttributes
         )
