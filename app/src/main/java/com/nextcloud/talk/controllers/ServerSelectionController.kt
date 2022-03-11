@@ -48,6 +48,7 @@ import com.nextcloud.talk.utils.AccountUtils.findAccounts
 import com.nextcloud.talk.utils.AccountUtils.getAppNameBasedOnPackage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -197,7 +198,7 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
             url = url.substring(0, url.length - 1)
         }
         val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
-        if (url.startsWith("http://") || url.startsWith("https://")) {
+        if (UriUtils.hasHttpProtocollPrefixed(url)) {
             checkServer(queryUrl, false)
         } else {
             checkServer("https://$queryUrl", true)

@@ -48,6 +48,7 @@ import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
@@ -113,8 +114,7 @@ class AccountVerificationController(args: Bundle? = null) :
         actionBar?.hide()
 
         if (isAccountImport &&
-            !baseUrl!!.startsWith("http://") &&
-            !baseUrl!!.startsWith("https://") ||
+            !UriUtils.hasHttpProtocollPrefixed(baseUrl!!) ||
             !TextUtils.isEmpty(originalProtocol!!) &&
             !baseUrl!!.startsWith(originalProtocol!!)
         ) {

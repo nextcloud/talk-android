@@ -55,10 +55,7 @@ object AccountUtils {
                 internalUserEntity = userEntitiesList[i]
                 importAccount = getInformationFromAccount(account)
                 if (importAccount.token != null) {
-                    if (
-                        importAccount.baseUrl.startsWith("http://") ||
-                        importAccount.baseUrl.startsWith("https://")
-                    ) {
+                    if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
                         if (
                             internalUserEntity.username == importAccount.username &&
                             internalUserEntity.baseUrl == importAccount.baseUrl

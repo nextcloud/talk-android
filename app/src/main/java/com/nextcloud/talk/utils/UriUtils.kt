@@ -24,6 +24,7 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
+import android.text.TextUtils
 import android.util.Log
 
 class UriUtils {
@@ -49,6 +50,10 @@ class UriUtils {
                 }
             }
             return filename
+        }
+
+        fun hasHttpProtocollPrefixed(uri: String): Boolean {
+            return uri.startsWith("http://") || uri.startsWith("https://")
         }
     }
 }
