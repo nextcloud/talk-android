@@ -424,12 +424,17 @@ class ChatController(args: Bundle) :
                         if (actionBar != null && bitmap != null && resources != null) {
 
                             val avatarSize = (actionBar?.height!! / 1.5).roundToInt()
-                            val bitmapResized = Bitmap.createScaledBitmap(bitmap, avatarSize, avatarSize, false)
+                            if (avatarSize > 0) {
+                                val bitmapResized = Bitmap.createScaledBitmap(bitmap, avatarSize, avatarSize, false)
 
-                            val roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(resources!!, bitmapResized)
-                            roundedBitmapDrawable.isCircular = true
-                            roundedBitmapDrawable.setAntiAlias(true)
-                            actionBar?.setIcon(roundedBitmapDrawable)
+                                val roundedBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(resources!!, bitmapResized)
+                                roundedBitmapDrawable.isCircular = true
+                                roundedBitmapDrawable.setAntiAlias(true)
+                                actionBar?.setIcon(roundedBitmapDrawable)
+                            } else {
+                                Log.d(TAG, "loadAvatarForStatusBar avatarSize <= 0")
+                            }
                         }
                     }
 
