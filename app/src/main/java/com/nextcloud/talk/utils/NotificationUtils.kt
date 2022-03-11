@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -62,9 +64,7 @@ object NotificationUtils {
     @TargetApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(
         context: Context,
-        channelId: String,
-        channelName: String,
-        channelDescription: String,
+        notificationChannel: Channel,
         sound: Uri?,
         audioAttributes: AudioAttributes
     ) {
@@ -73,14 +73,14 @@ object NotificationUtils {
 
         if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-            notificationManager.getNotificationChannel(channelId) == null
+            notificationManager.getNotificationChannel(notificationChannel.id) == null
         ) {
             val channel = NotificationChannel(
-                channelId, channelName,
+                notificationChannel.id, notificationChannel.name,
                 NotificationManager.IMPORTANCE_HIGH
             )
 
-            channel.description = channelDescription
+            channel.description = notificationChannel.description
             channel.enableLights(true)
             channel.lightColor = R.color.colorPrimary
             channel.setSound(sound, audioAttributes)
@@ -103,9 +103,10 @@ object NotificationUtils {
 
         createNotificationChannel(
             context,
-            NOTIFICATION_CHANNEL_CALLS_V4,
-            context.resources.getString(R.string.nc_notification_channel_calls),
-            context.resources.getString(R.string.nc_notification_channel_calls_description),
+            Channel(
+                NOTIFICATION_CHANNEL_CALLS_V4,
+                context.resources.getString(R.string.nc_notification_channel_calls),
+                context.resources.getString(R.string.nc_notification_channel_calls_description)),
             soundUri,
             audioAttributes
         )
@@ -124,9 +125,10 @@ object NotificationUtils {
 
         createNotificationChannel(
             context,
-            NOTIFICATION_CHANNEL_MESSAGES_V4,
-            context.resources.getString(R.string.nc_notification_channel_messages),
-            context.resources.getString(R.string.nc_notification_channel_messages_description),
+            Channel(
+                NOTIFICATION_CHANNEL_MESSAGES_V4,
+                context.resources.getString(R.string.nc_notification_channel_messages),
+                context.resources.getString(R.string.nc_notification_channel_messages_description)),
             soundUri,
             audioAttributes
         )
@@ -322,4 +324,10 @@ object NotificationUtils {
             appPreferences.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V4
         )
     }
+
+    private data class Channel(
+        val id: String,
+        val name: String,
+        val description: String
+    )
 }
