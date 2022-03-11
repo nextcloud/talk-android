@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Marcel Hibbe
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +26,6 @@ import android.content.Context
 import android.database.Cursor
 import android.net.Uri
 import android.provider.OpenableColumns
-import android.text.TextUtils
 import android.util.Log
 
 class UriUtils {

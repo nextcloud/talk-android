@@ -2259,7 +2259,7 @@ class ChatController(args: Bundle) :
     private fun isSameDayNonSystemMessages(messageLeft: ChatMessage, messageRight: ChatMessage): Boolean {
         return TextUtils.isEmpty(messageLeft.systemMessage) &&
             TextUtils.isEmpty(messageRight.systemMessage) &&
-            DateFormatter.isSameDay(messageLeft.createdAt,messageRight.createdAt)
+            DateFormatter.isSameDay(messageLeft.createdAt, messageRight.createdAt)
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {

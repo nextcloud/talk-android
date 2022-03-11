@@ -124,7 +124,7 @@ class AccountVerificationController(args: Bundle? = null) :
         }
     }
 
-    private fun isSameProtocol(baseUrl: String, originalProtocol: String ) : Boolean {
+    private fun isSameProtocol(baseUrl: String, originalProtocol: String): Boolean {
         return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
     }
 
