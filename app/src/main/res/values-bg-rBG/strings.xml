@@ -2,15 +2,24 @@
   <resources>
     <string name="account_icon">Икона на профил</string>
     <string name="appbar_search_in">Търсене в %s</string>
+    <string name="audio_output_phone">Телефон</string>
     <string name="avatar">Аватар</string>
+    <string name="away">Винаги</string>
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
+    <string name="clear_status_message">Изчистване на съобщението за състоянието</string>
+    <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
+    <string name="conversations">Разговори</string>
     <string name="delete_avatar">Изтриване на аватар</string>
+    <string name="dnd">Не безпокойте</string>
+    <string name="dontClear">Да не се изчиства</string>
     <string name="edit">Променяне</string>
     <string name="encrypted">Криптиран</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
     <string name="file_list_folder">папка</string>
     <string name="file_list_loading">Зареждане…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 часа</string>
+    <string name="invisible">Невидим</string>
     <string name="lock_symbol">Символ за заключване</string>
     <string name="menu_item_sort_by_date_newest_first">Първо най-новият</string>
     <string name="menu_item_sort_by_date_oldest_first">Първо най-старият</string>
@@ -143,6 +152,8 @@
     <string name="nc_make_call_private">Направете разговора частен</string>
     <string name="nc_make_call_public">Направете разговора публичен</string>
     <string name="nc_manual">Не е зададено</string>
+    <string name="nc_mark_as_read">Маркирай като прочетено</string>
+    <string name="nc_mark_as_unread">Маркирай като непрочетена</string>
     <string name="nc_message_quote_cancel_reply">Отказ на отговор</string>
     <string name="nc_message_read">Съобщението е прочетено</string>
     <string name="nc_message_sent">Съобщението е изпратено</string>
@@ -163,6 +174,8 @@
     <string name="nc_none">Без</string>
     <string name="nc_not_defined_error">Неизвестна грешка</string>
     <string name="nc_notification_channel">%1$s на %2$s канал за известие</string>
+    <string name="nc_notification_channel_calls">Обаждания</string>
+    <string name="nc_notification_channel_messages">Съобщения</string>
     <string name="nc_notification_settings">Настройки на известие</string>
     <string name="nc_notify_me_always">Винаги уведомявайте</string>
     <string name="nc_notify_me_mention">Уведомяване при споменаване</string>
@@ -247,6 +260,8 @@
     <string name="nc_settings_incognito_keyboard_title">Инкогнито клавиатура</string>
     <string name="nc_settings_no_ringtone">Без звук</string>
     <string name="nc_settings_no_talk_installed">Приложението Talk /разговор/ не е инсталирано на сървъра, в който сте се опитали да се удостоверите</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Известия</string>
+    <string name="nc_settings_other_notifications_ringtone">Съобщения</string>
     <string name="nc_settings_phone_book_integration_desc">Съпоставяне на контакти въз основа на телефонен номер, за интегриране на пряк път Talk в приложението за системни контакти</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Можете да зададете телефонния си номер, така че други потребители да могат да ви намерят</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Невалиден телефонен номер</string>
@@ -318,6 +333,10 @@
     <string name="nc_wrong_password">Грешна парола</string>
     <string name="nc_yes">Да</string>
     <string name="no_phone_book_integration_due_to_permissions">Няма интеграция на телефонен номер поради липсващи права</string>
+    <string name="oneHour">1 час</string>
+    <string name="online">На линия</string>
+    <string name="online_status">Състояние на линия</string>
+    <string name="openConversations">Отворени разговори</string>
     <string name="open_in_files_app">Отворяне в приложението Файлове</string>
     <string name="password_protected">Защитено с парола</string>
     <string name="play_pause_voice_message">Възпроизвеждане/пауза на гласово съобщение</string>
@@ -333,11 +352,15 @@
     <string name="scope_published_title">Публикувано</string>
     <string name="scope_toggle">Превключване на обхват</string>
     <string name="scope_toggle_description">Промяна на нивото на поверителност на %1$s</string>
+    <string name="secondsAgo">преди секунди</string>
     <string name="selected_list_item">Избранo</string>
     <string name="send_to">Изпращане до</string>
     <string name="send_to_three_dots">Изпращане до ...</string>
+    <string name="set_status">Задаване на състояние</string>
+    <string name="set_status_message">Задаване на съобщение за състояние</string>
     <string name="share">Споделяне</string>
     <string name="starred">Любими</string>
+    <string name="status_message">Съобщение за състояние</string>
     <string name="take_photo">Направете снимка</string>
     <string name="take_photo_error_deleting_picture">Грешка при снимане</string>
     <string name="take_photo_permission">Правенето на снимка не е възможно без права</string>
@@ -347,6 +370,9 @@
     <string name="take_photo_toggle_crop">Изрязване на снимка</string>
     <string name="take_photo_toggle_lowres">Намаляване на размера на изображение</string>
     <string name="take_photo_toggle_torch">Превключване на фенерче</string>
+    <string name="thirtyMinutes">30 минути</string>
+    <string name="thisWeek">Тази седмица</string>
+    <string name="today">Днес</string>
     <string name="upload_new_avatar_from_device">Качеване на нов аватар от устройството</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Пълно име</string>
@@ -354,7 +380,9 @@
     <string name="user_info_phone">Телефонен номер</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Интернет страница</string>
+    <string name="user_status">Състояние</string>
     <string name="userinfo_error_text">Извличането на лична информация на потребител не беше успешно.</string>
     <string name="userinfo_no_info_headline">Няма зададена лична информация</string>
     <string name="userinfo_no_info_text">Добавяне на име, снимка и подробности за контакт към страницата на вашия профил.</string>
+    <string name="whats_your_status">Какъв е вашият статус?</string>
     </resources>
