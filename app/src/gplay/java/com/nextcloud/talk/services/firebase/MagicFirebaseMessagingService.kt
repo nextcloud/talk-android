@@ -81,10 +81,6 @@ import javax.inject.Inject
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicFirebaseMessagingService : FirebaseMessagingService() {
-    companion object {
-        const val TAG = "MagicFirebaseMessagingService"
-    }
-
     @JvmField
     @Inject
     var appPreferences: AppPreferences? = null
@@ -320,6 +316,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
+        const val TAG = "MagicFirebaseMessagingService"
         private const val OBSERVABLE_COUNT = 12
         private const val OBSERVABLE_DELAY: Long = 5
     }
