@@ -62,7 +62,7 @@ object ConductorRemapping {
             backstack.add(routerTransaction)
             router.setBackstack(backstack, HorizontalChangeHandler())
         } else {
-            var pushChangeHandler = if (pushImmediately) {
+            val pushChangeHandler = if (pushImmediately) {
                 SimpleSwapChangeHandler()
             } else {
                 HorizontalChangeHandler()
