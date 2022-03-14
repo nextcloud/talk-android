@@ -53,6 +53,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
@@ -218,7 +219,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
 
         binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
+                return if (url != null && UriUtils.hasHttpProtocollPrefixed(url)
                 ) {
                     view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     true

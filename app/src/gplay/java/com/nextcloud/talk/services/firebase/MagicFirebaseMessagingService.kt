@@ -81,7 +81,9 @@ import javax.inject.Inject
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicFirebaseMessagingService : FirebaseMessagingService() {
-    private val TAG = "MagicFirebaseMessagingService"
+    companion object {
+        const val TAG = "MagicFirebaseMessagingService"
+    }
 
     @JvmField
     @Inject
@@ -147,6 +149,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun decryptMessage(subject: String, signature: String) {
         try {
             val base64DecodedSubject = Base64.decode(subject, Base64.DEFAULT)
@@ -283,6 +286,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<ParticipantsOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(participantsOverall: ParticipantsOverall) {

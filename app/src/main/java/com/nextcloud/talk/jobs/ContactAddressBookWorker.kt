@@ -129,9 +129,11 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<ContactsByNumberOverall> {
                     override fun onComplete() {
+                        // unused atm
                     }
 
                     override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
 
                     override fun onNext(foundContacts: ContactsByNumberOverall) {

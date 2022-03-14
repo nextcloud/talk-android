@@ -47,6 +47,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.UriUtils
 import com.stfalcon.chatkit.messages.MessageHolders
 import java.net.URLEncoder
 import javax.inject.Inject
@@ -131,7 +132,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return if (url != null && (url.startsWith("http://") || url.startsWith("https://"))
+                return if (url != null && UriUtils.hasHttpProtocollPrefixed(url)
                 ) {
                     view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
                     true

@@ -48,6 +48,7 @@ import com.nextcloud.talk.utils.AccountUtils.findAccounts
 import com.nextcloud.talk.utils.AccountUtils.getAppNameBasedOnPackage
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -197,7 +198,7 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
             url = url.substring(0, url.length - 1)
         }
         val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
-        if (url.startsWith("http://") || url.startsWith("https://")) {
+        if (UriUtils.hasHttpProtocollPrefixed(url)) {
             checkServer(queryUrl, false)
         } else {
             checkServer("https://$queryUrl", true)
@@ -212,9 +213,7 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
                 val productName = resources!!.getString(R.string.nc_server_product_name)
                 val versionString: String = status.getVersion().substring(0, status.getVersion().indexOf("."))
                 val version: Int = versionString.toInt()
-                if (status.isInstalled && !status.isMaintenance &&
-                    !status.isNeedsUpgrade && version >= 13
-                ) {
+                if (isServerStatusQueryable(status) && version >= 13) {
                     router.pushController(
                         RouterTransaction.with(
                             WebViewLoginController(
@@ -282,6 +281,10 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
                 }
                 dispose()
             }
+    }
+
+    private fun isServerStatusQueryable(status: Status): Boolean {
+        return status.isInstalled && !status.isMaintenance && !status.isNeedsUpgrade
     }
 
     private fun setErrorText(text: String) {

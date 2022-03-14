@@ -52,9 +52,11 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
     }
 
     override fun onProviderInstalled() {
+        // unused atm
     }
 
     override fun onProviderInstallFailed(p0: Int, p1: Intent?) {
+        // unused atm
     }
 
     private fun isGPlayServicesAvailable(): Boolean {

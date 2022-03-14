@@ -46,10 +46,12 @@ import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerEntryMenuBinding
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import com.vanniktech.emoji.EmojiPopup
+import okhttp3.internal.immutableListOf
 import org.greenrobot.eventbus.EventBus
 import org.parceler.Parcels
 import org.parceler.Parcels.unwrap
@@ -114,8 +116,14 @@ class EntryMenuController(args: Bundle) :
         }
 
         binding.textEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                // unused atm
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // unused atm
+            }
+
             override fun afterTextChanged(s: Editable) {
                 if (!TextUtils.isEmpty(s)) {
                     if (operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
@@ -139,10 +147,7 @@ class EntryMenuController(args: Bundle) :
                         }
                         binding.textInputLayout.isErrorEnabled = false
                     } else if (
-                        (
-                            binding.textEdit.text.toString().startsWith("http://") ||
-                                binding.textEdit.text.toString().startsWith("https://")
-                            ) &&
+                        UriUtils.hasHttpProtocollPrefixed(binding.textEdit.text.toString()) &&
                         binding.textEdit.text.toString().contains("/call/")
                     ) {
                         if (!binding.okButton.isEnabled) {
@@ -211,15 +216,12 @@ class EntryMenuController(args: Bundle) :
             else -> {
             }
         }
-        if (operation === ConversationOperationEnum.OPS_CODE_JOIN_ROOM ||
-            operation === ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD ||
-            operation === ConversationOperationEnum.OPS_CODE_SET_PASSWORD ||
-            operation === ConversationOperationEnum.OPS_CODE_SHARE_LINK
-        ) {
+        if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
             binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
         } else {
             binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_NONE
         }
+
         binding.textInputLayout.hint = labelText
         binding.textInputLayout.requestFocus()
 
@@ -322,5 +324,15 @@ class EntryMenuController(args: Bundle) :
         name = args.getString(BundleKeys.KEY_APP_ITEM_NAME, "")
         packageName = args.getString(BundleKeys.KEY_APP_ITEM_PACKAGE_NAME, "")
         callUrl = args.getString(BundleKeys.KEY_CALL_URL, "")
+    }
+
+    companion object {
+        private val PASSWORD_ENTRY_OPERATIONS: List<ConversationOperationEnum> =
+            immutableListOf(
+                ConversationOperationEnum.OPS_CODE_JOIN_ROOM,
+                ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD,
+                ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
+                ConversationOperationEnum.OPS_CODE_SHARE_LINK
+            )
     }
 }

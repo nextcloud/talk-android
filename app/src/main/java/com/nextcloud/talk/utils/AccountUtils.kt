@@ -55,10 +55,7 @@ object AccountUtils {
                 internalUserEntity = userEntitiesList[i]
                 importAccount = getInformationFromAccount(account)
                 if (importAccount.token != null) {
-                    if (
-                        importAccount.baseUrl.startsWith("http://") ||
-                        importAccount.baseUrl.startsWith("https://")
-                    ) {
+                    if (UriUtils.hasHttpProtocollPrefixed(importAccount.baseUrl)) {
                         if (
                             internalUserEntity.username == importAccount.username &&
                             internalUserEntity.baseUrl == importAccount.baseUrl
@@ -139,6 +136,7 @@ object AccountUtils {
         return false
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getInformationFromAccount(account: Account): ImportAccount {
         val lastAtPos = account.name.lastIndexOf("@")
         var urlString = account.name.substring(lastAtPos + 1)

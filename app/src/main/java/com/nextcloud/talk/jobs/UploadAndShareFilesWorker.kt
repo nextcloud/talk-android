@@ -99,10 +99,18 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             checkNotNull(roomToken)
 
             for (index in sourcefiles.indices) {
-                val sourcefileUri = Uri.parse(sourcefiles[index])
-                val filename = UriUtils.getFileName(sourcefileUri, context)
-                val requestBody = createRequestBody(sourcefileUri)
-                uploadFile(currentUser, ncTargetpath, filename, roomToken, requestBody, sourcefileUri, metaData)
+                val sourceFileUri = Uri.parse(sourcefiles[index])
+                uploadFile(
+                    currentUser!!,
+                    UploadItem(
+                        sourceFileUri,
+                        UriUtils.getFileName(sourceFileUri, context),
+                        createRequestBody(sourceFileUri)
+                    ),
+                    ncTargetpath,
+                    roomToken,
+                    metaData
+                )
             }
         } catch (e: IllegalStateException) {
             Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
@@ -114,6 +122,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         return Result.success()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createRequestBody(sourcefileUri: Uri): RequestBody? {
         var requestBody: RequestBody? = null
         try {
@@ -129,34 +138,34 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     private fun uploadFile(
         currentUser: UserEntity,
-        ncTargetpath: String?,
-        filename: String,
+        uploadItem: UploadItem,
+        ncTargetPath: String?,
         roomToken: String?,
-        requestBody: RequestBody?,
-        sourcefileUri: Uri,
         metaData: String?
     ) {
         ncApi.uploadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
-            ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetpath, filename),
-            requestBody
+            ApiUtils.getUrlForFileUpload(currentUser.baseUrl, currentUser.userId, ncTargetPath, uploadItem.fileName),
+            uploadItem.requestBody
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Response<GenericOverall>> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(t: Response<GenericOverall>) {
+                    // unused atm
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to upload file $filename")
+                    Log.e(TAG, "failed to upload file ${uploadItem.fileName}")
                 }
 
                 override fun onComplete() {
-                    shareFile(roomToken, currentUser, ncTargetpath, filename, metaData)
-                    copyFileToCache(sourcefileUri, filename)
+                    shareFile(roomToken, currentUser, ncTargetPath, uploadItem.fileName, metaData)
+                    copyFileToCache(uploadItem.uri, uploadItem.fileName)
                 }
             })
     }
@@ -271,4 +280,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
         }
     }
+
+    private data class UploadItem(
+        val uri: Uri,
+        val fileName: String,
+        val requestBody: RequestBody?,
+    )
 }

@@ -48,6 +48,7 @@ import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
@@ -112,16 +113,19 @@ class AccountVerificationController(args: Bundle? = null) :
 
         actionBar?.hide()
 
-        if (isAccountImport &&
-            !baseUrl!!.startsWith("http://") &&
-            !baseUrl!!.startsWith("https://") ||
-            !TextUtils.isEmpty(originalProtocol!!) &&
-            !baseUrl!!.startsWith(originalProtocol!!)
+        if (
+            isAccountImport &&
+            !UriUtils.hasHttpProtocollPrefixed(baseUrl!!) ||
+            isSameProtocol(baseUrl!!, originalProtocol!!)
         ) {
             determineBaseUrlProtocol(true)
         } else {
             checkEverything()
         }
+    }
+
+    private fun isSameProtocol(baseUrl: String, originalProtocol: String): Boolean {
+        return !TextUtils.isEmpty(originalProtocol) && !baseUrl.startsWith(originalProtocol)
     }
 
     private fun checkEverything() {
@@ -176,7 +180,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     }
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -231,7 +237,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     abortVerification()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -275,7 +283,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     abortVerification()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -328,7 +338,9 @@ class AccountVerificationController(args: Bundle? = null) :
                     abortVerification()
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -457,12 +469,16 @@ class AccountVerificationController(args: Bundle? = null) :
         if (!isAccountImport) {
             if (internalAccountId != -1L) {
                 userUtils.deleteUserWithId(internalAccountId).subscribe(object : CompletableObserver {
-                    override fun onSubscribe(d: Disposable) {}
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
                     override fun onComplete() {
                         activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, 7500) }
                     }
 
-                    override fun onError(e: Throwable) {}
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
                 })
             } else {
                 activity?.runOnUiThread { Handler().postDelayed({ router.popToRoot() }, 7500) }
