@@ -349,7 +349,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             } else {
                 remapChatController(
                     router!!, intent.getParcelableExtra<UserEntity>(KEY_USER_ENTITY)!!.id,
-                    intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false
+                    intent.getStringExtra(KEY_ROOM_TOKEN)!!, intent.extras!!, false, true
                 )
             }
         }

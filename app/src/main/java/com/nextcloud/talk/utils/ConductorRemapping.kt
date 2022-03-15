@@ -24,15 +24,28 @@ import android.os.Bundle
 import com.bluelinelabs.conductor.Router
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
+import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.nextcloud.talk.controllers.ChatController
 
 object ConductorRemapping {
+
     fun remapChatController(
         router: Router,
         internalUserId: Long,
         roomTokenOrId: String,
         bundle: Bundle,
         replaceTop: Boolean
+    ) {
+        remapChatController(router, internalUserId, roomTokenOrId, bundle, replaceTop, false)
+    }
+
+    fun remapChatController(
+        router: Router,
+        internalUserId: Long,
+        roomTokenOrId: String,
+        bundle: Bundle,
+        replaceTop: Boolean,
+        pushImmediately: Boolean
     ) {
         val tag = "$internalUserId@$roomTokenOrId"
         if (router.getControllerWithTag(tag) != null) {
@@ -49,16 +62,21 @@ object ConductorRemapping {
             backstack.add(routerTransaction)
             router.setBackstack(backstack, HorizontalChangeHandler())
         } else {
+            val pushChangeHandler = if (pushImmediately) {
+                SimpleSwapChangeHandler()
+            } else {
+                HorizontalChangeHandler()
+            }
             if (!replaceTop) {
                 router.pushController(
                     RouterTransaction.with(ChatController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
+                        .pushChangeHandler(pushChangeHandler)
                         .popChangeHandler(HorizontalChangeHandler()).tag(tag)
                 )
             } else {
                 router.replaceTopController(
                     RouterTransaction.with(ChatController(bundle))
-                        .pushChangeHandler(HorizontalChangeHandler())
+                        .pushChangeHandler(pushChangeHandler)
                         .popChangeHandler(HorizontalChangeHandler()).tag(tag)
                 )
             }
