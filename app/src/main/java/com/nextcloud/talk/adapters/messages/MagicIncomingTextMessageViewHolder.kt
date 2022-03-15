@@ -26,6 +26,7 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -53,6 +54,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import java.util.HashMap
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -72,44 +74,10 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
-        val author: String = message.actorDisplayName
-        if (!TextUtils.isEmpty(author)) {
-            binding.messageAuthor.text = author
-            binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId, itemView.context)
-            }
-        } else {
-            binding.messageAuthor.setText(R.string.nc_nick_guest)
-        }
+        processAuthor(message)
 
         if (!message.isGrouped && !message.isOneToOneConversation) {
-            binding.messageUserAvatar.visibility = View.VISIBLE
-            if (message.actorType == "guests") {
-                // do nothing, avatar is set
-            } else if (message.actorType == "bots" && message.actorId == "changelog") {
-                if (context != null) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        val layers = arrayOfNulls<Drawable>(2)
-                        layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                        layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
-                        val layerDrawable = LayerDrawable(layers)
-                        binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
-                    } else {
-                        binding.messageUserAvatar.setImageResource(R.mipmap.ic_launcher)
-                    }
-                }
-            } else if (message.actorType == "bots") {
-                val drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .bold()
-                    .endConfig()
-                    .buildRound(
-                        ">",
-                        ResourcesCompat.getColor(context!!.resources, R.color.black, null)
-                    )
-                binding.messageUserAvatar.visibility = View.VISIBLE
-                binding.messageUserAvatar.setImageDrawable(drawable)
-            }
+            showAvatarOnChatMessage(message)
         } else {
             if (message.isOneToOneConversation) {
                 binding.messageUserAvatar.visibility = View.GONE
@@ -121,6 +89,53 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
         val resources = itemView.resources
 
+        setBubbleOnChatMessage(message, resources)
+
+        itemView.isSelected = false
+        binding.messageTime.setTextColor(ResourcesCompat.getColor(resources, R.color.warm_grey_four, null))
+
+        var messageString: Spannable = SpannableString(message.text)
+
+        var textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
+
+        val messageParameters = message.messageParameters
+        if (messageParameters != null && messageParameters.size > 0) {
+            messageString = processMessageParameters(messageParameters, message, messageString)
+        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
+            textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
+            itemView.isSelected = true
+            binding.messageAuthor.visibility = View.GONE
+        }
+
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+        binding.messageText.text = messageString
+
+        // parent message handling
+        if (!message.isDeleted && message.parentMessage != null) {
+            processParentMessage(message)
+            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+        } else {
+            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+        }
+
+        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+    }
+
+    private fun processAuthor(message: ChatMessage) {
+        if (!TextUtils.isEmpty(message.actorDisplayName)) {
+            binding.messageAuthor.text = message.actorDisplayName
+            binding.messageUserAvatar.setOnClickListener {
+                (payload as? ProfileBottomSheet)?.showFor(message.actorId, itemView.context)
+            }
+        } else {
+            binding.messageAuthor.setText(R.string.nc_nick_guest)
+        }
+    }
+
+    private fun setBubbleOnChatMessage(
+        message: ChatMessage,
+        resources: Resources
+    ) {
         val bgBubbleColor = if (message.isDeleted) {
             ResourcesCompat.getColor(resources, R.color.bg_message_list_incoming_bubble_deleted, null)
         } else {
@@ -139,97 +154,110 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
+    }
 
-        val messageParameters = message.messageParameters
+    private fun processParentMessage(message: ChatMessage) {
+        val parentChatMessage = message.parentMessage
+        parentChatMessage.activeUser = message.activeUser
+        parentChatMessage.imageUrl?.let {
+            binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+            binding.messageQuote.quotedMessageImage.load(it) {
+                addHeader(
+                    "Authorization",
+                    ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                )
+            }
+        } ?: run {
+            binding.messageQuote.quotedMessageImage.visibility = View.GONE
+        }
+        binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty())
+            context!!.getText(R.string.nc_nick_guest) else parentChatMessage.actorDisplayName
+        binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
-        itemView.isSelected = false
-        binding.messageTime.setTextColor(ResourcesCompat.getColor(resources, R.color.warm_grey_four, null))
+        binding.messageQuote.quotedMessageAuthor
+            .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
-        var messageString: Spannable = SpannableString(message.text)
+        if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
+            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
+        } else {
+            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
+        }
+    }
 
-        var textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
+    private fun showAvatarOnChatMessage(message: ChatMessage) {
+        binding.messageUserAvatar.visibility = View.VISIBLE
+        if (message.actorType == "guests") {
+            // do nothing, avatar is set
+        } else if (message.actorType == "bots" && message.actorId == "changelog") {
+            if (context != null) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val layers = arrayOfNulls<Drawable>(2)
+                    layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
+                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                    val layerDrawable = LayerDrawable(layers)
+                    binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+                } else {
+                    binding.messageUserAvatar.setImageResource(R.mipmap.ic_launcher)
+                }
+            }
+        } else if (message.actorType == "bots") {
+            val drawable = TextDrawable.builder()
+                .beginConfig()
+                .bold()
+                .endConfig()
+                .buildRound(
+                    ">",
+                    ResourcesCompat.getColor(context!!.resources, R.color.black, null)
+                )
+            binding.messageUserAvatar.visibility = View.VISIBLE
+            binding.messageUserAvatar.setImageDrawable(drawable)
+        }
+    }
 
-        if (messageParameters != null && messageParameters.size > 0) {
-            for (key in messageParameters.keys) {
-                val individualHashMap = message.messageParameters[key]
-                if (individualHashMap != null) {
-                    if (
-                        individualHashMap["type"] == "user" ||
-                        individualHashMap["type"] == "guest" ||
-                        individualHashMap["type"] == "call"
-                    ) {
-                        if (individualHashMap["id"] == message.activeUser!!.userId) {
-                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                binding.messageText.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser!!,
-                                R.xml.chip_you
-                            )
-                        } else {
-                            messageString = DisplayUtils.searchAndReplaceWithMentionSpan(
-                                binding.messageText.context,
-                                messageString,
-                                individualHashMap["id"]!!,
-                                individualHashMap["name"]!!,
-                                individualHashMap["type"]!!,
-                                message.activeUser!!,
-                                R.xml.chip_others
-                            )
-                        }
-                    } else if (individualHashMap["type"] == "file") {
-                        itemView.setOnClickListener { v ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context!!.startActivity(browserIntent)
-                        }
+    private fun processMessageParameters(
+        messageParameters: HashMap<String, HashMap<String, String>>,
+        message: ChatMessage,
+        messageString: Spannable
+    ): Spannable {
+        var messageStringInternal = messageString
+        for (key in messageParameters.keys) {
+            val individualHashMap = message.messageParameters[key]
+            if (individualHashMap != null) {
+                if (
+                    individualHashMap["type"] == "user" ||
+                    individualHashMap["type"] == "guest" ||
+                    individualHashMap["type"] == "call"
+                ) {
+                    if (individualHashMap["id"] == message.activeUser!!.userId) {
+                        messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
+                            binding.messageText.context,
+                            messageStringInternal,
+                            individualHashMap["id"]!!,
+                            individualHashMap["name"]!!,
+                            individualHashMap["type"]!!,
+                            message.activeUser!!,
+                            R.xml.chip_you
+                        )
+                    } else {
+                        messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
+                            binding.messageText.context,
+                            messageStringInternal,
+                            individualHashMap["id"]!!,
+                            individualHashMap["name"]!!,
+                            individualHashMap["type"]!!,
+                            message.activeUser!!,
+                            R.xml.chip_others
+                        )
+                    }
+                } else if (individualHashMap["type"] == "file") {
+                    itemView.setOnClickListener { v ->
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                        context!!.startActivity(browserIntent)
                     }
                 }
             }
-        } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
-            textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
-            itemView.isSelected = true
-            binding.messageAuthor.visibility = View.GONE
         }
-
-        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageText.text = messageString
-
-        // parent message handling
-        if (!message.isDeleted && message.parentMessage != null) {
-            val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
-            parentChatMessage.imageUrl?.let {
-                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-                binding.messageQuote.quotedMessageImage.load(it) {
-                    addHeader(
-                        "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
-                    )
-                }
-            } ?: run {
-                binding.messageQuote.quotedMessageImage.visibility = View.GONE
-            }
-            binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty())
-                context!!.getText(R.string.nc_nick_guest) else parentChatMessage.actorDisplayName
-            binding.messageQuote.quotedMessage.text = parentChatMessage.text
-
-            binding.messageQuote.quotedMessageAuthor
-                .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
-
-            if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
-                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
-            } else {
-                binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
-            }
-
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-        }
-
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+        return messageStringInternal
     }
 
     companion object {

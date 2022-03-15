@@ -72,30 +72,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         layoutParams.isWrapBefore = false
         var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)
         if (messageParameters != null && messageParameters.size > 0) {
-            for (key in messageParameters.keys) {
-                val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
-                if (individualHashMap != null) {
-                    if (individualHashMap["type"] == "user" ||
-                        individualHashMap["type"] == "guest" ||
-                        individualHashMap["type"] == "call"
-                    ) {
-                        messageString = searchAndReplaceWithMentionSpan(
-                            binding.messageText.context,
-                            messageString,
-                            individualHashMap["id"]!!,
-                            individualHashMap["name"]!!,
-                            individualHashMap["type"]!!,
-                            message.activeUser,
-                            R.xml.chip_others
-                        )
-                    } else if (individualHashMap["type"] == "file") {
-                        realView.setOnClickListener { v: View? ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
-                            context!!.startActivity(browserIntent)
-                        }
-                    }
-                }
-            }
+            messageString = processMessageParameters(messageParameters, message, messageString)
         } else if (TextMatchers.isMessageWithSingleEmoticonOnly(message.text)) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             layoutParams.isWrapBefore = true
@@ -104,59 +81,16 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             )
             realView.isSelected = true
         }
-        val resources = sharedApplication!!.resources
-        val bgBubbleColor = if (message.isDeleted) {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_outcoming_bubble_deleted, null)
-        } else {
-            ResourcesCompat.getColor(resources, R.color.bg_message_list_outcoming_bubble, null)
-        }
-        if (message.isGrouped) {
-            val bubbleDrawable = getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_grouped_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        } else {
-            val bubbleDrawable = getMessageSelector(
-                bgBubbleColor,
-                ResourcesCompat.getColor(resources, R.color.transparent, null),
-                bgBubbleColor,
-                R.drawable.shape_outcoming_message
-            )
-            ViewCompat.setBackground(bubble, bubbleDrawable)
-        }
+
+        setBubbleOnChatMessage(message)
+
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.text = messageString
 
         // parent message handling
-
         if (!message.isDeleted && message.parentMessage != null) {
-            val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
-            parentChatMessage.imageUrl?.let {
-                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-                binding.messageQuote.quotedMessageImage.load(it) {
-                    addHeader(
-                        "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
-                    )
-                }
-            } ?: run {
-                binding.messageQuote.quotedMessageImage.visibility = View.GONE
-            }
-            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context!!.getText(R.string.nc_nick_guest)
-            binding.messageQuote.quotedMessage.text = parentChatMessage.text
-            binding.messageQuote.quotedMessage.setTextColor(
-                ContextCompat.getColor(context!!, R.color.nc_outcoming_text_default)
-            )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(ContextCompat.getColor(context!!, R.color.nc_grey))
-
-            binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
-
+            processParentMessage(message)
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
@@ -184,6 +118,90 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+    }
+
+    private fun processParentMessage(message: ChatMessage) {
+        val parentChatMessage = message.parentMessage
+        parentChatMessage.activeUser = message.activeUser
+        parentChatMessage.imageUrl?.let {
+            binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+            binding.messageQuote.quotedMessageImage.load(it) {
+                addHeader(
+                    "Authorization",
+                    ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                )
+            }
+        } ?: run {
+            binding.messageQuote.quotedMessageImage.visibility = View.GONE
+        }
+        binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
+            ?: context!!.getText(R.string.nc_nick_guest)
+        binding.messageQuote.quotedMessage.text = parentChatMessage.text
+        binding.messageQuote.quotedMessage.setTextColor(
+            ContextCompat.getColor(context!!, R.color.nc_outcoming_text_default)
+        )
+        binding.messageQuote.quotedMessageAuthor.setTextColor(ContextCompat.getColor(context!!, R.color.nc_grey))
+
+        binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
+    }
+
+    private fun setBubbleOnChatMessage(message: ChatMessage) {
+        val resources = sharedApplication!!.resources
+        val bgBubbleColor = if (message.isDeleted) {
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_outcoming_bubble_deleted, null)
+        } else {
+            ResourcesCompat.getColor(resources, R.color.bg_message_list_outcoming_bubble, null)
+        }
+        if (message.isGrouped) {
+            val bubbleDrawable = getMessageSelector(
+                bgBubbleColor,
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
+                bgBubbleColor,
+                R.drawable.shape_grouped_outcoming_message
+            )
+            ViewCompat.setBackground(bubble, bubbleDrawable)
+        } else {
+            val bubbleDrawable = getMessageSelector(
+                bgBubbleColor,
+                ResourcesCompat.getColor(resources, R.color.transparent, null),
+                bgBubbleColor,
+                R.drawable.shape_outcoming_message
+            )
+            ViewCompat.setBackground(bubble, bubbleDrawable)
+        }
+    }
+
+    private fun processMessageParameters(
+        messageParameters: HashMap<String, HashMap<String, String>>,
+        message: ChatMessage,
+        messageString: Spannable
+    ): Spannable {
+        var messageString1 = messageString
+        for (key in messageParameters.keys) {
+            val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
+            if (individualHashMap != null) {
+                if (individualHashMap["type"] == "user" ||
+                    individualHashMap["type"] == "guest" ||
+                    individualHashMap["type"] == "call"
+                ) {
+                    messageString1 = searchAndReplaceWithMentionSpan(
+                        binding.messageText.context,
+                        messageString1,
+                        individualHashMap["id"]!!,
+                        individualHashMap["name"]!!,
+                        individualHashMap["type"]!!,
+                        message.activeUser,
+                        R.xml.chip_others
+                    )
+                } else if (individualHashMap["type"] == "file") {
+                    realView.setOnClickListener { v: View? ->
+                        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                        context!!.startActivity(browserIntent)
+                    }
+                }
+            }
+        }
+        return messageString1
     }
 
     companion object {
