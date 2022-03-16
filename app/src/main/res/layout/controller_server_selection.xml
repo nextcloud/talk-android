@@ -100,7 +100,7 @@
                 android:paddingBottom="2dp"
                 android:text="@string/nc_server_helper_text"
                 android:textAlignment="viewStart"
-                android:textColor="@color/nc_login_text_color" />
+                android:textColor="#000000" />
 
             <LinearLayout
                 android:id="@+id/serverEntryProgressBar"
@@ -162,7 +162,7 @@
                 android:padding="@dimen/standard_padding"
                 android:text="@string/nc_get_from_provider"
                 android:textAlignment="center"
-                android:textColor="@color/nc_login_text_color" />
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/cert_text_view"
@@ -175,7 +175,7 @@
                 android:padding="@dimen/standard_padding"
                 android:text="@string/nc_configure_cert_auth"
                 android:textAlignment="center"
-                android:textColor="@color/nc_login_text_color" />
+                android:textColor="#000000" />
 
         </LinearLayout>
 
