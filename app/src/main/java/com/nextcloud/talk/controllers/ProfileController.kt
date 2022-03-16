@@ -203,9 +203,8 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         binding.avatarChoose.setOnClickListener { showBrowserScreen(BrowserType.DAV_BROWSER) }
         binding.avatarDelete.setOnClickListener {
             ncApi.deleteAvatar(
-                credentials, ApiUtils.getUrlForTempAvatar(
-                    currentUser!!.baseUrl
-                )
+                credentials,
+                ApiUtils.getUrlForTempAvatar(currentUser!!.baseUrl)
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -285,13 +284,13 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         adapter!!.setData(createUserInfoDetails(userInfo))
         if (isAllEmpty(
                 arrayOf(
-                    userInfo!!.displayName,
-                    userInfo!!.phone,
-                    userInfo!!.email,
-                    userInfo!!.address,
-                    userInfo!!.twitter,
-                    userInfo!!.website
-                )
+                        userInfo!!.displayName,
+                        userInfo!!.phone,
+                        userInfo!!.email,
+                        userInfo!!.address,
+                        userInfo!!.twitter,
+                        userInfo!!.website
+                    )
             )
         ) {
             binding.userinfoList.visibility = View.GONE
@@ -439,7 +438,8 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                         override fun onError(e: Throwable) {
                             item.text = userInfo!!.getValueByField(item.field)
                             Toast.makeText(
-                                applicationContext, String.format(
+                                applicationContext,
+                                String.format(
                                     resources!!.getString(R.string.failed_to_save),
                                     item.field
                                 ),
