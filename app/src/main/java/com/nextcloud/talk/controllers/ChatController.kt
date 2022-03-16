@@ -423,7 +423,7 @@ class ChatController(args: Bundle) :
                     override fun onNewResultImpl(bitmap: Bitmap?) {
                         if (actionBar != null && bitmap != null && resources != null) {
 
-                            val avatarSize = (actionBar?.height!! / 1.5).roundToInt()
+                            val avatarSize = (actionBar?.height!! / TOOLBAR_AVATAR_RATIO).roundToInt()
                             if (avatarSize > 0) {
                                 val bitmapResized = Bitmap.createScaledBitmap(bitmap, avatarSize, avatarSize, false)
 
@@ -1043,7 +1043,7 @@ class ChatController(args: Bundle) :
         binding.messageInputView.audioRecordDuration.start()
 
         val animation: Animation = AlphaAnimation(1.0f, 0.0f)
-        animation.duration = 750
+        animation.duration = ANIMATION_DURATION
         animation.interpolator = LinearInterpolator()
         animation.repeatCount = Animation.INFINITE
         animation.repeatMode = Animation.REVERSE
@@ -1494,7 +1494,7 @@ class ChatController(args: Bundle) :
 
     private fun setupMentionAutocomplete() {
         if (isAlive()) {
-            val elevation = 6f
+            val elevation = MENTION_AUTO_COMPLETE_ELEVATION
             resources?.let {
                 val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
                 val presenter = MentionAutocompletePresenter(activity, roomToken)
@@ -1691,7 +1691,7 @@ class ChatController(args: Bundle) :
             )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.retry(3)
+                ?.retry(RETRIES)
                 ?.subscribe(object : Observer<RoomOverall> {
                     override fun onSubscribe(d: Disposable) {
                         disposableList.add(d)
@@ -1951,7 +1951,7 @@ class ChatController(args: Bundle) :
         }
 
         val timeout = if (lookingIntoFuture) {
-            30
+            LOOKING_INTO_FUTURE_TIMEOUT
         } else {
             0
         }
@@ -1959,7 +1959,7 @@ class ChatController(args: Bundle) :
         fieldMap["timeout"] = timeout
 
         fieldMap["lookIntoFuture"] = lookIntoFuture
-        fieldMap["limit"] = 100
+        fieldMap["limit"] = MESSAGE_PULL_LIMIT
         fieldMap["setReadMarker"] = setReadMarker
 
         val lastKnown: Int
@@ -1999,10 +1999,10 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture > 0] - got response")
                         pullChatMessagesPending = false
                         try {
-                            if (response.code() == 304) {
+                            if (response.code() == HTTP_CODE_NOT_MODIFIED) {
                                 Log.d(TAG, "pullChatMessages - quasi recursive call to pullChatMessages")
                                 pullChatMessages(1, setReadMarker, xChatLastCommonRead)
-                            } else if (response.code() == 412) {
+                            } else if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 futurePreconditionFailed = true
                             } else {
                                 processMessages(response, true, finalTimeout)
@@ -2041,7 +2041,7 @@ class ChatController(args: Bundle) :
                         Log.d(TAG, "pullChatMessages - pullChatMessages[lookIntoFuture <= 0] - got response")
                         pullChatMessagesPending = false
                         try {
-                            if (response.code() == 412) {
+                            if (response.code() == HTTP_CODE_PRECONDITION_FAILED) {
                                 pastPreconditionFailed = true
                             } else {
                                 processMessages(response, false, 0)
@@ -2129,7 +2129,7 @@ class ChatController(args: Bundle) :
                     if (chatMessageList.size > i + 1) {
                         if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
                             chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                            countGroupedMessages < 4
+                            countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
                         ) {
                             chatMessageList[i].isGrouped = true
                             countGroupedMessages++
@@ -2210,7 +2210,8 @@ class ChatController(args: Bundle) :
                             adapter!!.isPreviousSameAuthor(
                                 chatMessage.actorId,
                                 -1
-                            ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) % 5 > 0
+                            ) && adapter!!.getSameAuthorLastMessagesCount(chatMessage.actorId) %
+                                GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
                             )
                         chatMessage.isOneToOneConversation =
                             (currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
@@ -2245,7 +2246,7 @@ class ChatController(args: Bundle) :
             if (inConversation) {
                 pullChatMessages(1, 1, xChatLastCommonRead)
             }
-        } else if (response.code() == 304 && !isFromTheFuture) {
+        } else if (response.code() == HTTP_CODE_NOT_MODIFIED && !isFromTheFuture) {
             if (isFirstMessagesProcessing) {
                 cancelNotificationsForCurrentConversation()
 
@@ -2478,7 +2479,7 @@ class ChatController(args: Bundle) :
                             conversationUser?.baseUrl,
                             "1",
                             null,
-                            message?.user?.id?.substring(6),
+                            message?.user?.id?.substring(INVITE_LENGTH),
                             null
                         )
                         ncApi!!.createRoom(
@@ -2600,7 +2601,7 @@ class ChatController(args: Bundle) :
             menu.findItem(R.id.action_reply_privately).isVisible = message.replyable &&
                 conversationUser?.userId?.isNotEmpty() == true && conversationUser.userId != "?" &&
                 message.user.id.startsWith("users/") &&
-                message.user.id.substring(6) != currentConversation?.actorId &&
+                message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             menu.findItem(R.id.action_delete_message).isVisible = isShowMessageDeletionButton(message)
             menu.findItem(R.id.action_forward_message).isVisible =
@@ -2642,7 +2643,7 @@ class ChatController(args: Bundle) :
 
                     val px = TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP,
-                        96f,
+                        QUOTED_MESSAGE_IMAGE_MAX_HEIGHT,
                         resources?.displayMetrics
                     )
 
@@ -2860,5 +2861,18 @@ class ChatController(args: Bundle) :
         private const val VOICE_MESSAGE_SEEKBAR_BASE: Int = 1000
         private const val SECOND: Long = 1000
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
+        private const val GROUPED_MESSAGES_THRESHOLD = 4
+        private const val GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD = 5
+        private const val TOOLBAR_AVATAR_RATIO = 1.5
+        private const val HTTP_CODE_NOT_MODIFIED = 304
+        private const val HTTP_CODE_PRECONDITION_FAILED = 412
+        private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
+        private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
+        private const val MESSAGE_PULL_LIMIT = 100
+        private const val INVITE_LENGTH = 6
+        private const val ACTOR_LENGTH = 6
+        private const val ANIMATION_DURATION: Long = 750
+        private const val RETRIES: Long = 3
+        private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
     }
 }

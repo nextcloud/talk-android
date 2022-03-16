@@ -213,7 +213,7 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
                 val productName = resources!!.getString(R.string.nc_server_product_name)
                 val versionString: String = status.getVersion().substring(0, status.getVersion().indexOf("."))
                 val version: Int = versionString.toInt()
-                if (isServerStatusQueryable(status) && version >= 13) {
+                if (isServerStatusQueryable(status) && version >= MIN_SERVER_MAJOR_VERSION) {
                     router.pushController(
                         RouterTransaction.with(
                             WebViewLoginController(
@@ -369,5 +369,6 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
 
     companion object {
         const val TAG = "ServerSelectionController"
+        const val MIN_SERVER_MAJOR_VERSION = 13
     }
 }

@@ -49,6 +49,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
+import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
@@ -97,7 +98,12 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         // Check if run already at the date
         val force = inputData.getBoolean(KEY_FORCE, false)
         if (!force) {
-            if (System.currentTimeMillis() - appPreferences.getPhoneBookIntegrationLastRun(0L) < 24 * 60 * 60 * 1000) {
+            if (System.currentTimeMillis() - appPreferences.getPhoneBookIntegrationLastRun(0L) <
+                DateConstants.DAYS_DIVIDER *
+                DateConstants.HOURS_DIVIDER *
+                DateConstants.MINUTES_DIVIDER *
+                DateConstants.SECOND_DIVIDER
+            ) {
                 Log.d(TAG, "Already run within last 24h")
                 return Result.success()
             }

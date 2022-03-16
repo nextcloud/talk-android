@@ -94,7 +94,7 @@ class EntryMenuController(args: Bundle) :
             ApplicationWideMessageHolder.getInstance().setMessageType(null)
             if (binding.okButton.isEnabled) {
                 binding.okButton.isEnabled = false
-                binding.okButton.alpha = 0.7f
+                binding.okButton.alpha = OPACITY_BUTTON_DISABLED
             }
         }
     }
@@ -130,20 +130,20 @@ class EntryMenuController(args: Bundle) :
                         if (conversation!!.getName() == null || !conversation!!.getName().equals(s.toString())) {
                             if (!binding.okButton.isEnabled) {
                                 binding.okButton.isEnabled = true
-                                binding.okButton.alpha = 1.0f
+                                binding.okButton.alpha = OPACITY_ENABLED
                             }
                             binding.textInputLayout.isErrorEnabled = false
                         } else {
                             if (binding.okButton.isEnabled) {
                                 binding.okButton.isEnabled = false
-                                binding.okButton.alpha = 0.38f
+                                binding.okButton.alpha = OPACITY_DISABLED
                             }
                             binding.textInputLayout.error = resources?.getString(R.string.nc_call_name_is_same)
                         }
                     } else if (operation !== ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM) {
                         if (!binding.okButton.isEnabled) {
                             binding.okButton.isEnabled = true
-                            binding.okButton.alpha = 1.0f
+                            binding.okButton.alpha = OPACITY_ENABLED
                         }
                         binding.textInputLayout.isErrorEnabled = false
                     } else if (
@@ -152,20 +152,20 @@ class EntryMenuController(args: Bundle) :
                     ) {
                         if (!binding.okButton.isEnabled) {
                             binding.okButton.isEnabled = true
-                            binding.okButton.alpha = 1.0f
+                            binding.okButton.alpha = OPACITY_ENABLED
                         }
                         binding.textInputLayout.isErrorEnabled = false
                     } else {
                         if (binding.okButton.isEnabled) {
                             binding.okButton.isEnabled = false
-                            binding.okButton.alpha = 0.38f
+                            binding.okButton.alpha = OPACITY_DISABLED
                         }
                         binding.textInputLayout.error = resources?.getString(R.string.nc_wrong_link)
                     }
                 } else {
                     if (binding.okButton.isEnabled) {
                         binding.okButton.isEnabled = false
-                        binding.okButton.alpha = 0.38f
+                        binding.okButton.alpha = OPACITY_DISABLED
                     }
                     binding.textInputLayout.isErrorEnabled = false
                 }
@@ -334,5 +334,8 @@ class EntryMenuController(args: Bundle) :
                 ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
                 ConversationOperationEnum.OPS_CODE_SHARE_LINK
             )
+        const val OPACITY_DISABLED = 0.38f
+        const val OPACITY_BUTTON_DISABLED = 0.7f
+        const val OPACITY_ENABLED = 1.0f
     }
 }

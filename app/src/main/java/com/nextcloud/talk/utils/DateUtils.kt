@@ -35,10 +35,6 @@ import kotlin.math.roundToInt
 object DateUtils {
 
     private const val TIMESTAMP_CORRECTION_MULTIPLIER = 1000
-    private const val SECOND_DIVIDER = 1000
-    private const val MINUTES_DIVIDER = 60
-    private const val HOURS_DIVIDER = 60
-    private const val DAYS_DIVIDER = 24
 
     fun getLocalDateTimeStringFromTimestamp(timestamp: Long): String {
         val cal = Calendar.getInstance()
@@ -63,9 +59,9 @@ object DateUtils {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             val fmt = RelativeDateTimeFormatter.getInstance()
             val timeLeftMillis = timestamp * TIMESTAMP_CORRECTION_MULTIPLIER - System.currentTimeMillis()
-            val minutes = timeLeftMillis.toDouble() / SECOND_DIVIDER / MINUTES_DIVIDER
-            val hours = minutes / HOURS_DIVIDER
-            val days = hours / DAYS_DIVIDER
+            val minutes = timeLeftMillis.toDouble() / DateConstants.SECOND_DIVIDER / DateConstants.MINUTES_DIVIDER
+            val hours = minutes / DateConstants.HOURS_DIVIDER
+            val days = hours / DateConstants.DAYS_DIVIDER
 
             val minutesInt = minutes.roundToInt()
             val hoursInt = hours.roundToInt()

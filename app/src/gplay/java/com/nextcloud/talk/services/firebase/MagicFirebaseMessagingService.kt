@@ -81,10 +81,6 @@ import javax.inject.Inject
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
 class MagicFirebaseMessagingService : FirebaseMessagingService() {
-    companion object {
-        const val TAG = "MagicFirebaseMessagingService"
-    }
-
     @JvmField
     @Inject
     var appPreferences: AppPreferences? = null
@@ -162,84 +158,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     base64DecodedSubject
                 )
                 if (signatureVerification!!.signatureValid) {
-                    val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
-                    cipher.init(Cipher.DECRYPT_MODE, privateKey)
-                    val decryptedSubject = cipher.doFinal(base64DecodedSubject)
-                    decryptedPushMessage = LoganSquare.parse(
-                        String(decryptedSubject),
-                        DecryptedPushMessage::class.java
-                    )
-                    decryptedPushMessage?.apply {
-                        Log.d(TAG, this.toString())
-                        timestamp = System.currentTimeMillis()
-                        if (delete) {
-                            cancelExistingNotificationWithId(
-                                applicationContext,
-                                signatureVerification!!.userEntity,
-                                notificationId
-                            )
-                        } else if (deleteAll) {
-                            cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
-                        } else if (deleteMultiple) {
-                            notificationIds!!.forEach {
-                                cancelExistingNotificationWithId(
-                                    applicationContext,
-                                    signatureVerification!!.userEntity,
-                                    it
-                                )
-                            }
-                        } else if (type == "call") {
-                            val fullScreenIntent = Intent(applicationContext, CallNotificationActivity::class.java)
-                            val bundle = Bundle()
-                            bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage!!.id)
-                            bundle.putParcelable(KEY_USER_ENTITY, signatureVerification!!.userEntity)
-                            bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
-                            fullScreenIntent.putExtras(bundle)
-
-                            fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                            val fullScreenPendingIntent = PendingIntent.getActivity(
-                                this@MagicFirebaseMessagingService,
-                                0,
-                                fullScreenIntent,
-                                PendingIntent.FLAG_UPDATE_CURRENT
-                            )
-
-                            val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
-                            val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
-                            val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
-                            val baseUrl = uri.host
-
-                            val notification =
-                                NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
-                                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                                    .setCategory(NotificationCompat.CATEGORY_CALL)
-                                    .setSmallIcon(R.drawable.ic_call_black_24dp)
-                                    .setSubText(baseUrl)
-                                    .setShowWhen(true)
-                                    .setWhen(decryptedPushMessage!!.timestamp)
-                                    .setContentTitle(EmojiCompat.get().process(decryptedPushMessage!!.subject))
-                                    .setAutoCancel(true)
-                                    .setOngoing(true)
-                                    // .setTimeoutAfter(45000L)
-                                    .setContentIntent(fullScreenPendingIntent)
-                                    .setFullScreenIntent(fullScreenPendingIntent, true)
-                                    .setSound(soundUri)
-                                    .build()
-                            notification.flags = notification.flags or Notification.FLAG_INSISTENT
-                            isServiceInForeground = true
-                            checkIfCallIsActive(signatureVerification!!, decryptedPushMessage!!)
-                            startForeground(decryptedPushMessage!!.timestamp.toInt(), notification)
-                        } else {
-                            val messageData = Data.Builder()
-                                .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
-                                .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, signature)
-                                .build()
-                            val pushNotificationWork =
-                                OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
-                                    .build()
-                            WorkManager.getInstance().enqueue(pushNotificationWork)
-                        }
-                    }
+                    decryptMessage(privateKey, base64DecodedSubject, subject, signature)
                 }
             } catch (e1: NoSuchAlgorithmException) {
                 Log.d(NotificationWorker.TAG, "No proper algorithm to decrypt the message " + e1.localizedMessage)
@@ -250,6 +169,92 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             }
         } catch (exception: Exception) {
             Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage)
+        }
+    }
+
+    private fun decryptMessage(
+        privateKey: PrivateKey,
+        base64DecodedSubject: ByteArray?,
+        subject: String,
+        signature: String
+    ) {
+        val cipher = Cipher.getInstance("RSA/None/PKCS1Padding")
+        cipher.init(Cipher.DECRYPT_MODE, privateKey)
+        val decryptedSubject = cipher.doFinal(base64DecodedSubject)
+        decryptedPushMessage = LoganSquare.parse(
+            String(decryptedSubject),
+            DecryptedPushMessage::class.java
+        )
+        decryptedPushMessage?.apply {
+            Log.d(TAG, this.toString())
+            timestamp = System.currentTimeMillis()
+            if (delete) {
+                cancelExistingNotificationWithId(
+                    applicationContext,
+                    signatureVerification!!.userEntity,
+                    notificationId
+                )
+            } else if (deleteAll) {
+                cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
+            } else if (deleteMultiple) {
+                notificationIds!!.forEach {
+                    cancelExistingNotificationWithId(
+                        applicationContext,
+                        signatureVerification!!.userEntity,
+                        it
+                    )
+                }
+            } else if (type == "call") {
+                val fullScreenIntent = Intent(applicationContext, CallNotificationActivity::class.java)
+                val bundle = Bundle()
+                bundle.putString(BundleKeys.KEY_ROOM_ID, decryptedPushMessage!!.id)
+                bundle.putParcelable(KEY_USER_ENTITY, signatureVerification!!.userEntity)
+                bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
+                fullScreenIntent.putExtras(bundle)
+
+                fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                val fullScreenPendingIntent = PendingIntent.getActivity(
+                    this@MagicFirebaseMessagingService,
+                    0,
+                    fullScreenIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
+                val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
+                val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
+                val baseUrl = uri.host
+
+                val notification =
+                    NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setCategory(NotificationCompat.CATEGORY_CALL)
+                        .setSmallIcon(R.drawable.ic_call_black_24dp)
+                        .setSubText(baseUrl)
+                        .setShowWhen(true)
+                        .setWhen(decryptedPushMessage!!.timestamp)
+                        .setContentTitle(EmojiCompat.get().process(decryptedPushMessage!!.subject))
+                        .setAutoCancel(true)
+                        .setOngoing(true)
+                        // .setTimeoutAfter(45000L)
+                        .setContentIntent(fullScreenPendingIntent)
+                        .setFullScreenIntent(fullScreenPendingIntent, true)
+                        .setSound(soundUri)
+                        .build()
+                notification.flags = notification.flags or Notification.FLAG_INSISTENT
+                isServiceInForeground = true
+                checkIfCallIsActive(signatureVerification!!, decryptedPushMessage!!)
+                startForeground(decryptedPushMessage!!.timestamp.toInt(), notification)
+            } else {
+                val messageData = Data.Builder()
+                    .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
+                    .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, signature)
+                    .build()
+                val pushNotificationWork =
+                    OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
+                        .build()
+                WorkManager.getInstance().enqueue(pushNotificationWork)
+            }
         }
     }
 
@@ -279,8 +284,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             null
         )
             .repeatWhen { completed ->
-                completed.zipWith(Observable.range(1, 12), { _, i -> i })
-                    .flatMap { Observable.timer(5, TimeUnit.SECONDS) }
+                completed.zipWith(Observable.range(1, OBSERVABLE_COUNT), { _, i -> i })
+                    .flatMap { Observable.timer(OBSERVABLE_DELAY, TimeUnit.SECONDS) }
                     .takeWhile { isServiceInForeground && hasParticipantsInCall && !inCallOnDifferentDevice }
             }
             .subscribeOn(Schedulers.io())
@@ -317,5 +322,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     handler.removeCallbacksAndMessages(null)
                 }
             })
+    }
+
+    companion object {
+        const val TAG = "MagicFirebaseMessagingService"
+        private const val OBSERVABLE_COUNT = 12
+        private const val OBSERVABLE_DELAY: Long = 5
     }
 }

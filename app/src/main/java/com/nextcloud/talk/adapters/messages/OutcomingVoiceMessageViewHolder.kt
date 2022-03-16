@@ -87,36 +87,11 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         updateDownloadState(message)
         binding.seekbar.max = message.voiceMessageDuration
 
-        if (message.isPlayingVoiceMessage) {
-            showPlayButton()
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_pause_voice_message_24
-            )
-            binding.seekbar.progress = message.voiceMessagePlayedSeconds
-        } else {
-            binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_play_arrow_voice_message_24
-            )
-        }
+        handleIsPlayingVoiceMessageState(message)
 
-        if (message.isDownloadingVoiceMessage) {
-            showVoiceMessageLoading()
-        } else {
-            binding.progressBar.visibility = View.GONE
-        }
+        handleIsDownloadingVoiceMessageState(message)
 
-        if (message.resetVoiceMessage) {
-            binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_play_arrow_voice_message_24
-            )
-            binding.seekbar.progress = SEEKBAR_START
-            message.resetVoiceMessage = false
-        }
+        handleResetVoiceMessageState(message)
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onStopTrackingTouch(seekBar: SeekBar) {
@@ -154,6 +129,43 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         }
 
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+    }
+
+    private fun handleResetVoiceMessageState(message: ChatMessage) {
+        if (message.resetVoiceMessage) {
+            binding.playPauseBtn.visibility = View.VISIBLE
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_play_arrow_voice_message_24
+            )
+            binding.seekbar.progress = SEEKBAR_START
+            message.resetVoiceMessage = false
+        }
+    }
+
+    private fun handleIsDownloadingVoiceMessageState(message: ChatMessage) {
+        if (message.isDownloadingVoiceMessage) {
+            showVoiceMessageLoading()
+        } else {
+            binding.progressBar.visibility = View.GONE
+        }
+    }
+
+    private fun handleIsPlayingVoiceMessageState(message: ChatMessage) {
+        if (message.isPlayingVoiceMessage) {
+            showPlayButton()
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_pause_voice_message_24
+            )
+            binding.seekbar.progress = message.voiceMessagePlayedSeconds
+        } else {
+            binding.playPauseBtn.visibility = View.VISIBLE
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_play_arrow_voice_message_24
+            )
+        }
     }
 
     private fun updateDownloadState(message: ChatMessage) {

@@ -2,10 +2,12 @@
  *
  *   Nextcloud Talk application
  *
- * @author Mario Danic
  * @author Marcel Hibbe
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ * @author Andy Scherzinger
+ * @author Mario Danic
  * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -170,7 +172,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         val periodicCapabilitiesUpdateWork = PeriodicWorkRequest.Builder(
             CapabilitiesWorker::class.java,
-            12, TimeUnit.HOURS
+            HALF_DAY, TimeUnit.HOURS
         ).build()
         val capabilitiesUpdateWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         val signalingSettingsWork = OneTimeWorkRequest.Builder(SignalingSettingsWorker::class.java).build()
@@ -218,7 +220,7 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     private fun buildDefaultImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
-            .availableMemoryPercentage(0.5) // Use 50% of the application's available memory.
+            .availableMemoryPercentage(FIFTY_PERCENT) // Use 50% of the application's available memory.
             .crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
             .componentRegistry {
                 if (SDK_INT >= P) {
@@ -234,6 +236,8 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     companion object {
         private val TAG = NextcloudTalkApplication::class.java.simpleName
+        const val FIFTY_PERCENT = 0.5
+        const val HALF_DAY: Long = 12
         //region Singleton
         //endregion
 

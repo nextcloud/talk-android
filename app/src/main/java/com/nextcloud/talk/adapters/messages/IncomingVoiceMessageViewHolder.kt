@@ -153,24 +153,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                     showVoiceMessageLoading()
                     WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(workInfo.id)
                         .observeForever { info: WorkInfo? ->
-                            if (info != null) {
-                                when (info.state) {
-                                    WorkInfo.State.RUNNING -> {
-                                        Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
-                                        showVoiceMessageLoading()
-                                    }
-                                    WorkInfo.State.SUCCEEDED -> {
-                                        Log.d(TAG, "WorkInfo.State.SUCCEEDED in ViewHolder")
-                                        showPlayButton()
-                                    }
-                                    WorkInfo.State.FAILED -> {
-                                        Log.d(TAG, "WorkInfo.State.FAILED in ViewHolder")
-                                        showPlayButton()
-                                    }
-                                    else -> {
-                                    }
-                                }
-                            }
+                            showStatus(info)
                         }
                 }
             }
@@ -178,6 +161,27 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
             Log.e(TAG, "Error when checking if worker already exists", e)
         } catch (e: InterruptedException) {
             Log.e(TAG, "Error when checking if worker already exists", e)
+        }
+    }
+
+    private fun showStatus(info: WorkInfo?) {
+        if (info != null) {
+            when (info.state) {
+                WorkInfo.State.RUNNING -> {
+                    Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
+                    showVoiceMessageLoading()
+                }
+                WorkInfo.State.SUCCEEDED -> {
+                    Log.d(TAG, "WorkInfo.State.SUCCEEDED in ViewHolder")
+                    showPlayButton()
+                }
+                WorkInfo.State.FAILED -> {
+                    Log.d(TAG, "WorkInfo.State.FAILED in ViewHolder")
+                    showPlayButton()
+                }
+                else -> {
+                }
+            }
         }
     }
 
@@ -203,31 +207,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         }
 
         if (!message.isGrouped && !message.isOneToOneConversation) {
-            binding.messageUserAvatar.visibility = View.VISIBLE
-            if (message.actorType == "guests") {
-                // do nothing, avatar is set
-            } else if (message.actorType == "bots" && message.actorId == "changelog") {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val layers = arrayOfNulls<Drawable>(2)
-                    layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
-                    layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
-                    val layerDrawable = LayerDrawable(layers)
-                    binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
-                } else {
-                    binding.messageUserAvatar.setImageResource(R.mipmap.ic_launcher)
-                }
-            } else if (message.actorType == "bots") {
-                val drawable = TextDrawable.builder()
-                    .beginConfig()
-                    .bold()
-                    .endConfig()
-                    .buildRound(
-                        ">",
-                        ResourcesCompat.getColor(context!!.resources, R.color.black, null)
-                    )
-                binding.messageUserAvatar.visibility = View.VISIBLE
-                binding.messageUserAvatar.setImageDrawable(drawable)
-            }
+            setAvatarOnMessage(message)
         } else {
             if (message.isOneToOneConversation) {
                 binding.messageUserAvatar.visibility = View.GONE
@@ -235,6 +215,34 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 binding.messageUserAvatar.visibility = View.INVISIBLE
             }
             binding.messageAuthor.visibility = View.GONE
+        }
+    }
+
+    private fun setAvatarOnMessage(message: ChatMessage) {
+        binding.messageUserAvatar.visibility = View.VISIBLE
+        if (message.actorType == "guests") {
+            // do nothing, avatar is set
+        } else if (message.actorType == "bots" && message.actorId == "changelog") {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val layers = arrayOfNulls<Drawable>(2)
+                layers[0] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_background)
+                layers[1] = ContextCompat.getDrawable(context!!, R.drawable.ic_launcher_foreground)
+                val layerDrawable = LayerDrawable(layers)
+                binding.messageUserAvatar.setImageDrawable(DisplayUtils.getRoundedDrawable(layerDrawable))
+            } else {
+                binding.messageUserAvatar.setImageResource(R.mipmap.ic_launcher)
+            }
+        } else if (message.actorType == "bots") {
+            val drawable = TextDrawable.builder()
+                .beginConfig()
+                .bold()
+                .endConfig()
+                .buildRound(
+                    ">",
+                    ResourcesCompat.getColor(context!!.resources, R.color.black, null)
+                )
+            binding.messageUserAvatar.visibility = View.VISIBLE
+            binding.messageUserAvatar.setImageDrawable(drawable)
         }
     }
 
