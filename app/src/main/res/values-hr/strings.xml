@@ -2,16 +2,31 @@
   <resources>
     <string name="account_icon">Ikona korisničkog računa</string>
     <string name="appbar_search_in">Traži u %s</string>
+    <string name="audio_output_phone">Telefon</string>
     <string name="avatar">Avatar</string>
+    <string name="away">Odsutan</string>
     <string name="choose_avatar_from_cloud">Odaberi avatar iz oblaka</string>
+    <string name="clear_status_message">Izbriši poruku statusa</string>
+    <string name="clear_status_message_after">Izbriši poruku statusa nakon</string>
+    <string name="conversations">Razgovori</string>
     <string name="delete_avatar">Izbriši avatar</string>
+    <string name="dnd">Ne ometaj</string>
+    <string name="dontClear">Ne briši</string>
     <string name="edit">Uredi</string>
     <string name="encrypted">Šifrirano</string>
     <string name="failed_to_save">Spremanje %1$s nije uspjelo</string>
     <string name="file_list_folder">mapa</string>
     <string name="file_list_loading">Učitavanje…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 sata</string>
+    <string name="invisible">Nevidljiva</string>
     <string name="lock_symbol">Simbol zaključavanja</string>
+    <string name="menu_item_sort_by_date_newest_first">Najnoviji prvi</string>
+    <string name="menu_item_sort_by_date_oldest_first">Najstariji prvi</string>
+    <string name="menu_item_sort_by_name_a_z">A – Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z – A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Najveći prvi</string>
+    <string name="menu_item_sort_by_size_smallest_first">Najmanji prvi</string>
     <string name="nc_Server_account_imported">Odabrani račun sad je uvezen i dostupan</string>
     <string name="nc_about">Informacije</string>
     <string name="nc_account_chooser_active_user">Aktivni korisnik</string>
@@ -125,6 +140,8 @@
     <string name="nc_license_title">Licenca</string>
     <string name="nc_limit_hit">Dostignuto je ograničenje od %s znakova</string>
     <string name="nc_lobby">Predvorje</string>
+    <string name="nc_lobby_start_date">Sastanak počinje u %1$s</string>
+    <string name="nc_lobby_start_soon">Sastanak počinje uskoro</string>
     <string name="nc_lobby_waiting">Trenutno čekate u predvorju.</string>
     <string name="nc_location_current_position_description">Vaša trenutačna lokacija</string>
     <string name="nc_location_permission_required">potrebna je dozvola za lokaciju</string>
@@ -134,6 +151,8 @@
     <string name="nc_make_call_private">Učini razgovor privatnim</string>
     <string name="nc_make_call_public">Učini razgovor javnim</string>
     <string name="nc_manual">Nije postavljeno</string>
+    <string name="nc_mark_as_read">Označi kao pročitano</string>
+    <string name="nc_mark_as_unread">Označi kao nepročitano</string>
     <string name="nc_message_quote_cancel_reply">Prekini odgovor</string>
     <string name="nc_message_read">Poruka pročitana</string>
     <string name="nc_message_sent">Poruka poslana</string>
@@ -141,6 +160,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nije se nikad pridružio</string>
     <string name="nc_new_conversation">Novi razgovor</string>
+    <string name="nc_new_mention">Nepročitana spominjanja</string>
     <string name="nc_new_messages">Nove poruke</string>
     <string name="nc_new_password">Nova zaporka</string>
     <string name="nc_nextcloud_talk_app_not_installed">Aplikacija %1$s nije instalirana na poslužitelju, prekid</string>
@@ -153,6 +173,8 @@
     <string name="nc_none">Nema</string>
     <string name="nc_not_defined_error">Nepoznata pogreška</string>
     <string name="nc_notification_channel">%1$s na kanalu za obavijesti %2$s</string>
+    <string name="nc_notification_channel_calls">Pozivi</string>
+    <string name="nc_notification_channel_messages">Poruke</string>
     <string name="nc_notification_settings">Postavke obavijesti</string>
     <string name="nc_notify_me_always">Uvijek šalji obavijesti</string>
     <string name="nc_notify_me_mention">Obavijesti kada se spomene</string>
@@ -166,6 +188,7 @@
     <string name="nc_permissions_settings">Otvori postavke</string>
     <string name="nc_phone_book_integration_account_not_found">Račun nije pronađen</string>
     <string name="nc_phone_book_integration_chat_via">Razmjenjujte poruke putem %s</string>
+    <string name="nc_pip_microphone_unmute">Omogućite mikrofon</string>
     <string name="nc_plain_old_messages">Poruke</string>
     <string name="nc_privacy">Privatnost</string>
     <string name="nc_proceed">Nastavi</string>
@@ -235,6 +258,9 @@
     <string name="nc_settings_incognito_keyboard_title">Anonimna tipkovnica</string>
     <string name="nc_settings_no_ringtone">Bez zvuka</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Talk nije instalirana na poslužitelju s kojim ste se pokušali autentificirati</string>
+    <string name="nc_settings_notification_sounds">Zvukovi obavijesti</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Obavijesti</string>
+    <string name="nc_settings_other_notifications_ringtone">Poruke</string>
     <string name="nc_settings_phone_book_integration_desc">Izvršite podudaranje kontakata na temelju telefonskog broja radi integracije prečaca aplikacije Talk u aplikaciju sustava za kontakte</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Možete postaviti svoj telefonski broj kako bi vas drugi korisnici mogli pronaći</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nevažeći broj telefona</string>
@@ -272,6 +298,7 @@
     <string name="nc_settings_vibrate_desc">Telefon će vibrirati ako nije utišan</string>
     <string name="nc_settings_warning">Upozorenje</string>
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
+    <string name="nc_share_contact">Dijeli kontakt</string>
     <string name="nc_share_current_location">Dijeli trenutačnu lokaciju</string>
     <string name="nc_share_link">Dijeli poveznicu</string>
     <string name="nc_share_link_via">Dijeljenje poveznice putem</string>
@@ -281,6 +308,7 @@
     <string name="nc_share_text_pass">\nZaporka: %1$s</string>
     <string name="nc_share_this_location">Dijeli ovu lokaciju</string>
     <string name="nc_shared_location">Dijeljena lokacija</string>
+    <string name="nc_sort_by">Razvrstaj prema</string>
     <string name="nc_start_conversation">Započni razgovor</string>
     <string name="nc_start_time">Vrijeme početka</string>
     <string name="nc_timeout_error">Istek vremena</string>
@@ -292,6 +320,7 @@
     <string name="nc_upload_from_cloud">Dijeli iz %1$s</string>
     <string name="nc_upload_in_progess">Otpremanje</string>
     <string name="nc_upload_local_file">Otpremi lokalnu datoteku</string>
+    <string name="nc_upload_picture_from_cam">Snimi fotografiju</string>
     <string name="nc_user">Korisnik</string>
     <string name="nc_voice_message_filename">Snimka iz aplikacije Talk od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Držite za snimanje, pustite za slanje.</string>
@@ -302,6 +331,10 @@
     <string name="nc_wrong_password">Pogrešna zaporka</string>
     <string name="nc_yes">Da</string>
     <string name="no_phone_book_integration_due_to_permissions">Integracija broja telefona nije moguća jer nedostaje dopuštenje</string>
+    <string name="oneHour">1 sat</string>
+    <string name="online">Na mreži</string>
+    <string name="online_status">Status na mreži</string>
+    <string name="openConversations">Otvori razgovore</string>
     <string name="open_in_files_app">Otvori u aplikaciji Files</string>
     <string name="password_protected">Zaštićeno zaporkom</string>
     <string name="play_pause_voice_message">Reproduciraj/pauziraj glasovnu poruku</string>
@@ -317,11 +350,20 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_toggle">Uključi/isključi opseg</string>
     <string name="scope_toggle_description">Promijeni razinu privatnosti za %1$s</string>
+    <string name="secondsAgo">prije par sekundi</string>
     <string name="selected_list_item">Odabrano</string>
     <string name="send_to">Pošalji na</string>
     <string name="send_to_three_dots">Pošalji na...</string>
+    <string name="set_status">Postavi status</string>
+    <string name="set_status_message">Postavi poruku statusa</string>
     <string name="share">Dijeli</string>
     <string name="starred">Favorit</string>
+    <string name="status_message">Poruka statusa</string>
+    <string name="take_photo">Snimi fotografiju</string>
+    <string name="take_photo_send">Pošalji</string>
+    <string name="thirtyMinutes">30 minuta</string>
+    <string name="thisWeek">Ovaj tjedan</string>
+    <string name="today">Danas</string>
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Puno ime</string>
@@ -329,7 +371,9 @@
     <string name="user_info_phone">Broj telefona</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Web-mjesto</string>
+    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Dohvaćanje osobnih korisničkih podataka nije uspjelo.</string>
     <string name="userinfo_no_info_headline">Nisu postavljeni osobni podaci</string>
     <string name="userinfo_no_info_text">Dodajte ime, sliku i kontaktne podatke na stranicu profila.</string>
+    <string name="whats_your_status">Koji je vaš status?</string>
     </resources>

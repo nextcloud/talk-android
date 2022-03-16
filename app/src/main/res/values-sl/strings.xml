@@ -2,15 +2,25 @@
   <resources>
     <string name="account_icon">Ikona računa</string>
     <string name="appbar_search_in">Poišči v %s</string>
+    <string name="audio_output_phone">Telefon</string>
+    <string name="audio_output_speaker">Zvočnik</string>
     <string name="avatar">Podoba</string>
+    <string name="away">Ne spremljam</string>
     <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
+    <string name="clear_status_message">Počisti sporočilo stanja</string>
+    <string name="clear_status_message_after">Počisti sporočilo stanja po</string>
+    <string name="conversations">Pogovori</string>
     <string name="delete_avatar">Izbriši podobo</string>
+    <string name="dnd">Ne moti</string>
+    <string name="dontClear">Ne počisti</string>
     <string name="edit">Uredi</string>
     <string name="encrypted">Šifrirano</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
     <string name="file_list_folder">mapa</string>
     <string name="file_list_loading">Poteka nalaganje …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 urah</string>
+    <string name="invisible">Nevidno</string>
     <string name="lock_symbol">Simbol zaklepa</string>
     <string name="menu_item_sort_by_date_newest_first">najprej najnovejše</string>
     <string name="menu_item_sort_by_date_oldest_first">najprej najstarejše</string>
@@ -143,6 +153,8 @@
     <string name="nc_make_call_private">Nastavi pogovor kot zaseben</string>
     <string name="nc_make_call_public">Nastavi pogovor kot javen</string>
     <string name="nc_manual">Ni nastavljeno</string>
+    <string name="nc_mark_as_read">Označi kot prebrano</string>
+    <string name="nc_mark_as_unread">Označi kot neprebrano</string>
     <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
     <string name="nc_message_read">Sporočilo je prebrano</string>
     <string name="nc_message_sent">Sporočilo je poslano</string>
@@ -163,6 +175,8 @@
     <string name="nc_none">Brez</string>
     <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
+    <string name="nc_notification_channel_calls">Klici</string>
+    <string name="nc_notification_channel_messages">Sporočila</string>
     <string name="nc_notification_settings">Nastavitve obveščanja</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
@@ -247,6 +261,9 @@
     <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
+    <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Obvestila</string>
+    <string name="nc_settings_other_notifications_ringtone">Sporočila</string>
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Nastavite telefonsko številko, da vas bodo drugi uporabniki lahko našli.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Neveljavna telefonska številka</string>
@@ -318,6 +335,10 @@
     <string name="nc_wrong_password">Napačno geslo</string>
     <string name="nc_yes">Da</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
+    <string name="oneHour">1 uri</string>
+    <string name="online">Trenutno na spletu</string>
+    <string name="online_status">Povezano stanje</string>
+    <string name="openConversations">Odprti pogovori</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
     <string name="password_protected">Zaščiteno z geslom</string>
     <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
@@ -333,11 +354,15 @@
     <string name="scope_published_title">Objavljeno</string>
     <string name="scope_toggle">Preklop obsega</string>
     <string name="scope_toggle_description">Spremeni pravila zasebnosti za %1$s</string>
+    <string name="secondsAgo">pred nekaj sekundami</string>
     <string name="selected_list_item">Izbrano</string>
     <string name="send_to">Pošlji</string>
     <string name="send_to_three_dots">Pošlji …</string>
+    <string name="set_status">Nastavi stanje</string>
+    <string name="set_status_message">Nastavi sporočilo stanja</string>
     <string name="share">Souporaba</string>
     <string name="starred">Priljubljeno</string>
+    <string name="status_message">Sporočilo stanja</string>
     <string name="take_photo">Zajemi sliko</string>
     <string name="take_photo_error_deleting_picture">Napaka zajemanja slike</string>
     <string name="take_photo_permission">Zajemanje slik brez ustreznih dovoljenj ni mogoče</string>
@@ -347,6 +372,9 @@
     <string name="take_photo_toggle_crop">Obreži sliko</string>
     <string name="take_photo_toggle_lowres">Zmanjšaj velikost slike</string>
     <string name="take_photo_toggle_torch">Preklopi bliskavico</string>
+    <string name="thirtyMinutes">30 minut</string>
+    <string name="thisWeek">Ta teden</string>
+    <string name="today">Danes</string>
     <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
     <string name="user_info_address">Naslov</string>
     <string name="user_info_displayname">Polno ime</string>
@@ -354,7 +382,9 @@
     <string name="user_info_phone">Telefonska številka</string>
     <string name="user_info_twitter">Račun Twitter</string>
     <string name="user_info_website">Spletna stran</string>
+    <string name="user_status">Stanje</string>
     <string name="userinfo_error_text">Pridobivanje uporabniških podrobnosti je spodletelo.</string>
     <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
     <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>
+    <string name="whats_your_status">Kako želite nastaviti stanje?</string>
     </resources>
