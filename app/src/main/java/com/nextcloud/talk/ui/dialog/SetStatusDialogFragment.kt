@@ -212,17 +212,8 @@ class SetStatusDialogFragment :
         binding.emoji.disableKeyboardInput(popup)
         binding.emoji.forceSingleEmoji()
 
-        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        adapter.add(getString(R.string.dontClear))
-        adapter.add(getString(R.string.thirtyMinutes))
-        adapter.add(getString(R.string.oneHour))
-        adapter.add(getString(R.string.fourHours))
-        adapter.add(getString(R.string.today))
-        adapter.add(getString(R.string.thisWeek))
-
         binding.clearStatusAfterSpinner.apply {
-            this.adapter = adapter
+            this.adapter = createClearTimesArrayAdapter()
             onItemSelectedListener = object : OnItemSelectedListener {
                 override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                     setClearStatusAfterValue(position)
@@ -242,6 +233,18 @@ class SetStatusDialogFragment :
         binding.customStatusInput.doAfterTextChanged { text ->
             binding.setStatus.isEnabled = !text.isNullOrEmpty()
         }
+    }
+
+    private fun createClearTimesArrayAdapter(): ArrayAdapter<String> {
+        val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapter.add(getString(R.string.dontClear))
+        adapter.add(getString(R.string.thirtyMinutes))
+        adapter.add(getString(R.string.oneHour))
+        adapter.add(getString(R.string.fourHours))
+        adapter.add(getString(R.string.today))
+        adapter.add(getString(R.string.thisWeek))
+        return adapter
     }
 
     @Suppress("ComplexMethod")

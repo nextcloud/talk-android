@@ -59,11 +59,10 @@ import java.security.cert.CertificateException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ServerSelectionController : NewBaseController(R.layout.controller_server_selection) {
-    private val binding: ControllerServerSelectionBinding by viewBinding(ControllerServerSelectionBinding::bind)
+class ServerSelectionController :
+    NewBaseController(R.layout.controller_server_selection) {
 
-    override val appBarLayoutType: AppBarLayoutType
-        get() = AppBarLayoutType.EMPTY
+    private val binding: ControllerServerSelectionBinding by viewBinding(ControllerServerSelectionBinding::bind)
 
     @Inject
     lateinit var ncApi: NcApi
@@ -75,14 +74,18 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
 
     fun onCertClick() {
         if (activity != null) {
-            KeyChain.choosePrivateKeyAlias(activity!!, { alias: String? ->
-                if (alias != null) {
-                    appPreferences!!.temporaryClientCertAlias = alias
-                } else {
-                    appPreferences!!.removeTemporaryClientCertAlias()
-                }
-                setCertTextView()
-            }, arrayOf("RSA", "EC"), null, null, -1, null)
+            KeyChain.choosePrivateKeyAlias(
+                activity!!,
+                { alias: String? ->
+                    if (alias != null) {
+                        appPreferences!!.temporaryClientCertAlias = alias
+                    } else {
+                        appPreferences!!.removeTemporaryClientCertAlias()
+                    }
+                    setCertTextView()
+                },
+                arrayOf("RSA", "EC"), null, null, -1, null
+            )
         }
     }
 
@@ -366,6 +369,9 @@ class ServerSelectionController : NewBaseController(R.layout.controller_server_s
         }
         statusQueryDisposable = null
     }
+
+    override val appBarLayoutType: AppBarLayoutType
+        get() = AppBarLayoutType.EMPTY
 
     companion object {
         const val TAG = "ServerSelectionController"
