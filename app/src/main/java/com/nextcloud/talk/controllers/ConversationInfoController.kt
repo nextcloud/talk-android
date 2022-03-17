@@ -438,7 +438,12 @@ class ConversationInfoController(args: Bundle) :
 
         ncApi?.getPeersForCall(
             credentials,
-            ApiUtils.getUrlForParticipants(apiVersion, conversationUser!!.baseUrl, conversationToken), fieldMap
+            ApiUtils.getUrlForParticipants(
+                apiVersion,
+                conversationUser!!.baseUrl,
+                conversationToken
+            ),
+            fieldMap
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
