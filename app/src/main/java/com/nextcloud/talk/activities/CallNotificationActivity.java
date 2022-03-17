@@ -250,7 +250,7 @@ public class CallNotificationActivity extends CallBaseActivity {
 
                 @Override
                 public void onError(Throwable e) {
-
+                    Log.e(TAG, "error while getPeersForCall", e);
                 }
 
                 @Override
