@@ -152,7 +152,7 @@ class LocationPickerController(args: Bundle) :
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent)))
+        actionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
         actionBar?.title = context!!.getString(R.string.nc_share_location)
     }
 

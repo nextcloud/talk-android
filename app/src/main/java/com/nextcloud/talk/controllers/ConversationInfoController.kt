@@ -341,7 +341,7 @@ class ConversationInfoController(args: Bundle) :
                         R.drawable.ic_delete_black_24dp, R.color.bg_default
                     )
                 )
-                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed, null))
                 .setTitle(R.string.nc_delete_call)
                 .setMessage(R.string.nc_delete_conversation_more)
                 .setPositiveButton(R.string.nc_delete) { deleteConversation() }
@@ -524,7 +524,7 @@ class ConversationInfoController(args: Bundle) :
                         R.drawable.ic_delete_black_24dp, R.color.bg_default
                     )
                 )
-                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed))
+                .setPositiveButtonColor(context!!.resources.getColor(R.color.nc_darkRed, null))
                 .setTitle(R.string.nc_clear_history)
                 .setMessage(R.string.nc_clear_history_warning)
                 .setPositiveButton(R.string.nc_delete_all) { clearHistory() }

@@ -232,10 +232,10 @@ class SetStatusDialogFragment :
             }
         }
 
-        binding.clearStatus.setTextColor(resources.getColor(R.color.colorPrimary))
-        binding.setStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary))
+        binding.clearStatus.setTextColor(resources.getColor(R.color.colorPrimary, null))
+        binding.setStatus.setBackgroundColor(resources.getColor(R.color.colorPrimary, null))
 
-        binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary)
+        binding.customStatusInput.highlightColor = resources.getColor(R.color.colorPrimary, null)
 
         binding.customStatusInput.doAfterTextChanged { text ->
             binding.setStatus.isEnabled = !text.isNullOrEmpty()
@@ -397,20 +397,28 @@ class SetStatusDialogFragment :
         clearTopStatus()
         when (statusType) {
             StatusType.ONLINE -> {
-                binding.onlineStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
+                binding.onlineStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                binding.onlineHeadline.setTextColor(
+                    resources.getColor(R.color.high_emphasis_text_dark_background, null)
+                )
             }
             StatusType.AWAY -> {
-                binding.awayStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
+                binding.awayStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                binding.awayHeadline.setTextColor(
+                    resources.getColor(R.color.high_emphasis_text_dark_background, null)
+                )
             }
             StatusType.DND -> {
-                binding.dndStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
+                binding.dndStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                binding.dndHeadline.setTextColor(
+                    resources.getColor(R.color.high_emphasis_text_dark_background, null)
+                )
             }
             StatusType.INVISIBLE -> {
-                binding.invisibleStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary))
-                binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text_dark_background))
+                binding.invisibleStatus.setCardBackgroundColor(resources.getColor(R.color.colorPrimary, null))
+                binding.invisibleHeadline.setTextColor(
+                    resources.getColor(R.color.high_emphasis_text_dark_background, null)
+                )
             }
             else -> Log.d(logTag, "unknown status")
         }
@@ -418,16 +426,16 @@ class SetStatusDialogFragment :
 
     private fun clearTopStatus() {
         context?.let {
-            val grey = it.resources.getColor(R.color.grey_200)
+            val grey = it.resources.getColor(R.color.grey_200, null)
             binding.onlineStatus.setCardBackgroundColor(grey)
             binding.awayStatus.setCardBackgroundColor(grey)
             binding.dndStatus.setCardBackgroundColor(grey)
             binding.invisibleStatus.setCardBackgroundColor(grey)
 
-            binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
-            binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
-            binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
-            binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text))
+            binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
         }
     }
 

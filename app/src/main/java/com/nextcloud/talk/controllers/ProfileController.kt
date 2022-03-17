@@ -194,7 +194,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     override fun onAttach(view: View) {
         super.onAttach(view)
-        adapter = UserInfoAdapter(null, activity!!.resources.getColor(R.color.colorPrimary), this)
+        adapter = UserInfoAdapter(null, activity!!.resources.getColor(R.color.colorPrimary, null), this)
         binding.userinfoList.adapter = adapter
         binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
         currentUser = userUtils.currentUser

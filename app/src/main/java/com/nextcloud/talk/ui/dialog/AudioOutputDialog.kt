@@ -90,7 +90,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
                 dialogAudioOutputBinding.audioOutputBluetoothText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
+                    callActivity.resources.getColor(R.color.colorPrimary, null)
                 )
             }
 
@@ -103,7 +103,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
                 dialogAudioOutputBinding.audioOutputSpeakerText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
+                    callActivity.resources.getColor(R.color.colorPrimary, null)
                 )
             }
 
@@ -116,7 +116,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
                 dialogAudioOutputBinding.audioOutputEarspeakerText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
+                    callActivity.resources.getColor(R.color.colorPrimary, null)
                 )
             }
 
@@ -129,7 +129,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                     android.graphics.PorterDuff.Mode.SRC_IN
                 )
                 dialogAudioOutputBinding.audioOutputWiredHeadsetText.setTextColor(
-                    callActivity.resources.getColor(R.color.colorPrimary)
+                    callActivity.resources.getColor(R.color.colorPrimary, null)
                 )
             }
 

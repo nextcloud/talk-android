@@ -67,7 +67,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         val messageParameters: HashMap<String, HashMap<String, String>>? = message.messageParameters
         var messageString: Spannable = SpannableString(message.text)
         realView.isSelected = false
-        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
+        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60, null))
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
         var textSize = context!!.resources.getDimension(R.dimen.chat_text_size)

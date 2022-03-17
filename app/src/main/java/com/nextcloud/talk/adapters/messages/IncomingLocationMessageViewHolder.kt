@@ -88,7 +88,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         colorizeMessageBubble(message)
 
         itemView.isSelected = false
-        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four))
+        binding.messageTime.setTextColor(context?.resources!!.getColor(R.color.warm_grey_four, null))
 
         val textSize = context?.resources!!.getDimension(R.dimen.chat_text_size)
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
@@ -130,7 +130,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
                     .endConfig()
                     .buildRound(
                         ">",
-                        context!!.resources.getColor(R.color.black)
+                        context!!.resources.getColor(R.color.black, null)
                     )
                 binding.messageUserAvatar.visibility = View.VISIBLE
                 binding.messageUserAvatar.setImageDrawable(drawable)
@@ -155,13 +155,13 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         }
 
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted)
+            resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
         } else {
-            resources.getColor(R.color.bg_message_list_incoming_bubble)
+            resources.getColor(R.color.bg_message_list_incoming_bubble, null)
         }
         val bubbleDrawable = DisplayUtils.getMessageSelector(
             bgBubbleColor,
-            resources.getColor(R.color.transparent),
+            resources.getColor(R.color.transparent, null),
             bgBubbleColor, bubbleResource
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
@@ -187,7 +187,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
 
             binding.messageQuote.quotedMessageAuthor
-                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
+                .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast, null))
 
             if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)

@@ -74,7 +74,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         sharedApplication!!.componentApplication.inject(this)
 
         realView.isSelected = false
-        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
+        binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60, null))
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         layoutParams.isWrapBefore = false
 
@@ -103,7 +103,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         readStatusDrawableInt?.let { drawableInt ->
             AppCompatResources.getDrawable(context!!, drawableInt)?.let {
-                it.setColorFilter(context?.resources!!.getColor(R.color.white60), PorterDuff.Mode.SRC_ATOP)
+                it.setColorFilter(context?.resources!!.getColor(R.color.white60, null), PorterDuff.Mode.SRC_ATOP)
                 binding.checkMark.setImageDrawable(it)
             }
         }
@@ -191,9 +191,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
                 ?: context!!.getText(R.string.nc_nick_guest)
             binding.messageQuote.quotedMessage.text = parentChatMessage.text
             binding.messageQuote.quotedMessage.setTextColor(
-                context!!.resources.getColor(R.color.nc_outcoming_text_default)
+                context!!.resources.getColor(R.color.nc_outcoming_text_default, null)
             )
-            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey))
+            binding.messageQuote.quotedMessageAuthor.setTextColor(context!!.resources.getColor(R.color.nc_grey, null))
 
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.white)
 
@@ -206,14 +206,14 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     private fun colorizeMessageBubble(message: ChatMessage) {
         val resources = sharedApplication!!.resources
         val bgBubbleColor = if (message.isDeleted) {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted)
+            resources.getColor(R.color.bg_message_list_outcoming_bubble_deleted, null)
         } else {
-            resources.getColor(R.color.bg_message_list_outcoming_bubble)
+            resources.getColor(R.color.bg_message_list_outcoming_bubble, null)
         }
         if (message.isGrouped) {
             val bubbleDrawable = DisplayUtils.getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                resources.getColor(R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_grouped_outcoming_message
             )
@@ -221,7 +221,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         } else {
             val bubbleDrawable = DisplayUtils.getMessageSelector(
                 bgBubbleColor,
-                resources.getColor(R.color.transparent),
+                resources.getColor(R.color.transparent, null),
                 bgBubbleColor,
                 R.drawable.shape_outcoming_message
             )

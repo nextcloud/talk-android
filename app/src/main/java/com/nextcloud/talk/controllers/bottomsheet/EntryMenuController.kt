@@ -182,13 +182,13 @@ class EntryMenuController(args: Bundle) :
                     .setOnEmojiPopupShownListener {
                         if (resources != null) {
                             binding.smileyButton.setColorFilter(
-                                resources!!.getColor(R.color.colorPrimary),
+                                resources!!.getColor(R.color.colorPrimary, null),
                                 PorterDuff.Mode.SRC_IN
                             )
                         }
                     }.setOnEmojiPopupDismissListener {
                         binding.smileyButton.setColorFilter(
-                            resources!!.getColor(R.color.emoji_icons),
+                            resources!!.getColor(R.color.emoji_icons, null),
                             PorterDuff.Mode.SRC_IN
                         )
                     }.setOnEmojiClickListener { emoji, imageView -> binding.textEdit.editableText.append(" ") }

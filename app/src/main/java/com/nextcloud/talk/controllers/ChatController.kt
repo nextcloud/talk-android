@@ -1496,7 +1496,7 @@ class ChatController(args: Bundle) :
         if (isAlive()) {
             val elevation = MENTION_AUTO_COMPLETE_ELEVATION
             resources?.let {
-                val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default))
+                val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default, null))
                 val presenter = MentionAutocompletePresenter(activity, roomToken)
                 val callback = MentionAutocompleteCallback(
                     activity,
