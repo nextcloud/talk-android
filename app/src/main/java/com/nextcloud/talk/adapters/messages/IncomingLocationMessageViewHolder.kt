@@ -215,7 +215,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
             }
         }
 
-        binding.webview.settings?.javaScriptEnabled = true
+        binding.webview.settings.javaScriptEnabled = true
 
         binding.webview.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {

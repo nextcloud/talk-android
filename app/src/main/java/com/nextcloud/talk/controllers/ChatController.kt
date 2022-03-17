@@ -526,8 +526,8 @@ class ChatController(args: Bundle) :
             )
 
             var senderId = ""
-            if (!conversationUser?.userId.equals("?")) {
-                senderId = "users/" + conversationUser?.userId
+            if (!conversationUser.userId.equals("?")) {
+                senderId = "users/" + conversationUser.userId
             } else {
                 senderId = currentConversation?.getActorType() + "/" + currentConversation?.getActorId()
             }
