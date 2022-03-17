@@ -280,8 +280,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 apiVersion,
                 signatureVerification.userEntity.baseUrl,
                 decryptedPushMessage.id
-            ),
-            null
+            )
         )
             .repeatWhen { completed ->
                 completed.zipWith(Observable.range(1, OBSERVABLE_COUNT), { _, i -> i })

@@ -214,8 +214,12 @@ public class CallNotificationActivity extends CallBaseActivity {
     private void checkIfAnyParticipantsRemainInRoom() {
         int apiVersion = ApiUtils.getCallApiVersion(userBeingCalled, new int[]{ApiUtils.APIv4, 1});
 
-        ncApi.getPeersForCall(credentials, ApiUtils.getUrlForCall(apiVersion, userBeingCalled.getBaseUrl(),
-                                                                  currentConversation.getToken()), null)
+        ncApi.getPeersForCall(
+            credentials,
+            ApiUtils.getUrlForCall(
+                apiVersion,
+                userBeingCalled.getBaseUrl(),
+                currentConversation.getToken()))
             .subscribeOn(Schedulers.io())
             .repeatWhen(completed -> completed.zipWith(Observable.range(1, 12), (n, i) -> i)
                 .flatMap(retryCount -> Observable.timer(5, TimeUnit.SECONDS))
@@ -250,7 +254,7 @@ public class CallNotificationActivity extends CallBaseActivity {
 
                 @Override
                 public void onError(Throwable e) {
-
+                    Log.e(TAG, "error while getPeersForCall", e);
                 }
 
                 @Override
