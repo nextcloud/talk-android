@@ -241,31 +241,39 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
                         }
                     }.start()
                 } else {
-                    KeyChain.choosePrivateKeyAlias(activity!!, { chosenAlias: String? ->
-                        if (chosenAlias != null) {
-                            appPreferences!!.temporaryClientCertAlias = chosenAlias
-                            Thread {
-                                var privateKey: PrivateKey? = null
-                                try {
-                                    privateKey = KeyChain.getPrivateKey(activity!!, chosenAlias)
-                                    val certificates = KeyChain.getCertificateChain(
-                                        activity!!, chosenAlias
-                                    )
-                                    if (privateKey != null && certificates != null) {
-                                        request.proceed(privateKey, certificates)
-                                    } else {
+                    KeyChain.choosePrivateKeyAlias(
+                        activity!!,
+                        { chosenAlias: String? ->
+                            if (chosenAlias != null) {
+                                appPreferences!!.temporaryClientCertAlias = chosenAlias
+                                Thread {
+                                    var privateKey: PrivateKey? = null
+                                    try {
+                                        privateKey = KeyChain.getPrivateKey(activity!!, chosenAlias)
+                                        val certificates = KeyChain.getCertificateChain(
+                                            activity!!, chosenAlias
+                                        )
+                                        if (privateKey != null && certificates != null) {
+                                            request.proceed(privateKey, certificates)
+                                        } else {
+                                            request.cancel()
+                                        }
+                                    } catch (e: KeyChainException) {
+                                        request.cancel()
+                                    } catch (e: InterruptedException) {
                                         request.cancel()
                                     }
-                                } catch (e: KeyChainException) {
-                                    request.cancel()
-                                } catch (e: InterruptedException) {
-                                    request.cancel()
-                                }
-                            }.start()
-                        } else {
-                            request.cancel()
-                        }
-                    }, arrayOf("RSA", "EC"), null, request.host, request.port, null)
+                                }.start()
+                            } else {
+                                request.cancel()
+                            }
+                        },
+                        arrayOf("RSA", "EC"),
+                        null,
+                        request.host,
+                        request.port,
+                        null
+                    )
                 }
             }
 
