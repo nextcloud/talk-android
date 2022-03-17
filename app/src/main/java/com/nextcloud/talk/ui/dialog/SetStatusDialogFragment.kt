@@ -60,7 +60,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.dialog_set_status.*
 import okhttp3.ResponseBody
 import java.util.Calendar
 import java.util.Locale
@@ -88,6 +87,7 @@ private const val LAST_SECOND_OF_MINUTE = 59
 class SetStatusDialogFragment :
     DialogFragment(), PredefinedStatusClickListener {
 
+    private var selectedPredefinedStatus: PredefinedStatus? = null
     private val logTag = SetStatusDialogFragment::class.java.simpleName
 
     private lateinit var binding: DialogSetStatusBinding
@@ -132,6 +132,13 @@ class SetStatusDialogFragment :
                             PredefinedStatusOverall::class.java
                         )
                         predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
+
+                        if (currentStatus?.messageIsPredefined == true &&
+                            currentStatus?.messageId?.isNotEmpty() == true
+                        ) {
+                            val messageId = currentStatus!!.messageId
+                            selectedPredefinedStatus = predefinedStatusesList.first { ps -> messageId == ps.id }
+                        }
 
                         adapter.notifyDataSetChanged()
                     }
@@ -300,24 +307,34 @@ class SetStatusDialogFragment :
         }
     }
 
-    @Suppress("ReturnCount")
     private fun clearAtToUnixTime(clearAt: ClearAt?): Long {
+
+        var returnValue = -1L
+
         if (clearAt != null) {
             if (clearAt.type == "period") {
-                return System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + clearAt.time.toLong()
+                returnValue = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS + clearAt.time.toLong()
             } else if (clearAt.type == "end-of") {
-                if (clearAt.time == "day") {
-                    val date = Calendar.getInstance().apply {
-                        set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_DAY)
-                        set(Calendar.MINUTE, LAST_MINUTE_OF_HOUR)
-                        set(Calendar.SECOND, LAST_SECOND_OF_MINUTE)
-                    }
-                    return date.timeInMillis / ONE_SECOND_IN_MILLIS
-                }
+                returnValue = clearAtToUnixTimeTypeEndOf(clearAt)
             }
         }
 
-        return -1
+        return returnValue
+    }
+
+    private fun clearAtToUnixTimeTypeEndOf(
+        clearAt: ClearAt
+    ): Long {
+        var returnValue = -1L
+        if (clearAt.time == "day") {
+            val date = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_DAY)
+                set(Calendar.MINUTE, LAST_MINUTE_OF_HOUR)
+                set(Calendar.SECOND, LAST_SECOND_OF_MINUTE)
+            }
+            returnValue = date.timeInMillis / ONE_SECOND_IN_MILLIS
+        }
+        return returnValue
     }
 
     private fun openEmojiPopup() {
@@ -420,34 +437,63 @@ class SetStatusDialogFragment :
         // The endpoint '/message/custom' expects a valid emoji as string or null
         val statusIcon = binding.emoji.text.toString().ifEmpty { null }
 
-        ncApi.setCustomStatusMessage(
-            credentials,
-            ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
-            statusIcon,
-            inputText,
-            clearAt
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
+        if (selectedPredefinedStatus == null ||
+            selectedPredefinedStatus!!.message != inputText ||
+            selectedPredefinedStatus!!.icon != binding.emoji.text.toString()
+        ) {
 
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+            ncApi.setCustomStatusMessage(
+                credentials,
+                ApiUtils.getUrlForSetCustomStatus(currentUser?.baseUrl),
+                statusIcon,
+                inputText,
+                clearAt
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<GenericOverall> {
 
-                override fun onNext(t: GenericOverall) {
-                    Log.d(logTag, "CustomStatusMessage successfully set")
-                    dismiss()
-                }
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
 
-                override fun onError(e: Throwable) {
-                    Log.e(logTag, "failed to set CustomStatusMessage", e)
-                }
+                    override fun onNext(t: GenericOverall) {
+                        Log.d(logTag, "CustomStatusMessage successfully set")
+                        dismiss()
+                    }
 
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+                    override fun onError(e: Throwable) {
+                        Log.e(logTag, "failed to set CustomStatusMessage", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        } else {
+
+            val clearAt = clearAtToUnixTime(selectedPredefinedStatus!!.clearAt)
+
+            ncApi.setPredefinedStatusMessage(
+                credentials, ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl),
+                selectedPredefinedStatus!!.id, if (clearAt == -1L) null else clearAt
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) = Unit
+
+                    override fun onNext(t: GenericOverall) {
+                        Log.d(logTag, "PredefinedStatusMessage successfully set")
+                        dismiss()
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(logTag, "failed to set PredefinedStatusMessage", e)
+                    }
+
+                    override fun onComplete() = Unit
+                })
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -455,6 +501,9 @@ class SetStatusDialogFragment :
     }
 
     override fun onClick(predefinedStatus: PredefinedStatus) {
+
+        selectedPredefinedStatus = predefinedStatus
+
         clearAt = clearAtToUnixTime(predefinedStatus.clearAt)
         binding.emoji.setText(predefinedStatus.icon)
         binding.customStatusInput.text?.clear()
@@ -467,23 +516,26 @@ class SetStatusDialogFragment :
         if (predefinedStatus.clearAt == null) {
             binding.clearStatusAfterSpinner.setSelection(0)
         } else {
-            val clearAt = predefinedStatus.clearAt!!
-            if (clearAt.type == "period") {
-                when (clearAt.time) {
-                    "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
-                    "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
-                    "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
-                    else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
-                }
-            } else if (clearAt.type == "end-of") {
-                when (clearAt.time) {
-                    "day" -> binding.clearStatusAfterSpinner.setSelection(POS_TODAY)
-                    "week" -> binding.clearStatusAfterSpinner.setSelection(POS_END_OF_WEEK)
-                    else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
-                }
-            }
+            setClearAt(predefinedStatus.clearAt!!)
         }
         setClearStatusAfterValue(binding.clearStatusAfterSpinner.selectedItemPosition)
+    }
+
+    private fun setClearAt(clearAt: ClearAt) {
+        if (clearAt.type == "period") {
+            when (clearAt.time) {
+                "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
+                "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
+                "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
+                else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
+            }
+        } else if (clearAt.type == "end-of") {
+            when (clearAt.time) {
+                "day" -> binding.clearStatusAfterSpinner.setSelection(POS_TODAY)
+                "week" -> binding.clearStatusAfterSpinner.setSelection(POS_END_OF_WEEK)
+                else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
+            }
+        }
     }
 
     /**
