@@ -2,12 +2,15 @@
   <resources>
     <string name="account_icon">آیکون حساب</string>
     <string name="appbar_search_in">جستجو در %s</string>
+    <string name="audio_output_bluetooth">بلوتوث</string>
+    <string name="audio_output_dialog_headline">خروجی صدا</string>
     <string name="audio_output_phone">شماره تلفن</string>
     <string name="avatar">آواتار</string>
     <string name="away">دور</string>
     <string name="clear_status_message">پیام وضعیت را پاک کن</string>
     <string name="clear_status_message_after">بعد از آن پیام وضعیت را پاک کن </string>
     <string name="conversations">گفتگو</string>
+    <string name="delete_avatar">آواتار را پاک کن</string>
     <string name="dnd">مزاحم نشوید</string>
     <string name="dontClear">پاک نکن</string>
     <string name="edit">ویرایش</string>
@@ -15,6 +18,7 @@
     <string name="file_list_loading">درحال بارگیری...</string>
     <string name="fourHours">۴ ساعت</string>
     <string name="invisible">نامرئی</string>
+    <string name="lock_symbol">نماد قفل</string>
     <string name="menu_item_sort_by_date_newest_first">تازه‌ترین‌ها اول </string>
     <string name="menu_item_sort_by_date_oldest_first">قدیمی‌ترین‌ها اول </string>
     <string name="menu_item_sort_by_name_a_z">الف تا ی</string>
@@ -26,8 +30,11 @@
     <string name="nc_account_chooser_active_user">کاربر فعال</string>
     <string name="nc_account_chooser_add_account">افزودن حساب کاربری</string>
     <string name="nc_account_scheduled_for_deletion">حساب برای حذف برنامه ریزی شده است و قابل تغییر نیست</string>
+    <string name="nc_action_open_main_menu">باز کردن منوی اصلی</string>
     <string name="nc_add">افزودن</string>
     <string name="nc_add_attachment">افزودن پیوست</string>
+    <string name="nc_add_emojis">افزودن صورتک</string>
+    <string name="nc_add_file">افزودن به مکالمه</string>
     <string name="nc_add_participants">افزودن عضو</string>
     <string name="nc_add_to_favorites">افزودن‌ به مورد علاقه‌ها</string>
     <string name="nc_all_ok_operation">خوب ، همه انجام شد!</string>
@@ -49,9 +56,13 @@
     <string name="nc_change_password">تغییر گذر واژه</string>
     <string name="nc_circle">حلقه</string>
     <string name="nc_circles">حلقه ها</string>
+    <string name="nc_clear_history">حذف تمام پیام‌ها</string>
+    <string name="nc_clear_history_success">تمام پیام‌ها حذف شدند</string>
+    <string name="nc_clear_history_warning">آیا واقعا می‌خواهید تمام پیام‌ها را در این مکالمه حذف کنید؟</string>
     <string name="nc_clear_password">رمز عبور را پاک کنید</string>
     <string name="nc_client_cert_change">تغییر گواهی مشتری</string>
     <string name="nc_client_cert_setup">گواهی مشتری تنظیم کنید</string>
+    <string name="nc_common_error_sorry">متاسفیم؛ خطایی پیش آمد</string>
     <string name="nc_common_set">تنظیم</string>
     <string name="nc_common_skip">پرش</string>
     <string name="nc_configure_cert_auth">گواهی تأیید اعتبار را انتخاب کنید</string>
@@ -76,6 +87,7 @@
     <string name="nc_description_more_menu_group">منوی مکالمه عمومی %1$s</string>
     <string name="nc_description_more_menu_one_to_one">منو برای مکالمه با %1$s</string>
     <string name="nc_description_more_menu_public">منو برای مکالمه گروهی %1$s</string>
+    <string name="nc_description_record_voice">ضبط پیام صوتی</string>
     <string name="nc_description_send_message_button">فرستادن پیام</string>
     <string name="nc_dialog_invalid_password">گذرواژه نادرست</string>
     <string name="nc_display_name_not_fetched">امکان دریافت نام وجود ندارد. درحال لغو</string>
@@ -88,9 +100,11 @@
     <string name="nc_external_server_failed">" دریافت  تنظیمات سیگنال نا‌موفق بود"</string>
     <string name="nc_failed_to_perform_operation">با عرض پوزش، مشکلی پیش آمده</string>
     <string name="nc_file_browser_back">بازگشت</string>
+    <string name="nc_file_browser_reshare_forbidden">شما اجازه‌ی به‌اشتراک‌گذاری مجدد این فایل را ندارید</string>
     <string name="nc_following_link"> کاربر  پس از  یک  پیوند  عمومی</string>
     <string name="nc_formatted_message_you">شما: %1$s</string>
     <string name="nc_forward_message">ارسال کردن</string>
+    <string name="nc_forward_to_three_dots">ارسال کردن به ...</string>
     <string name="nc_get_from_provider">"آیا هیچ سروری در دسترس ندارید؟ برای گرفتن سرور از یک ارائه دهنده کلیک کنید "</string>
     <string name="nc_get_source_code">دریافت کد منبع</string>
     <string name="nc_group">گروه</string>
