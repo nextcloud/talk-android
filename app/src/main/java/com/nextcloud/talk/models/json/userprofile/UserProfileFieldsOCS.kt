@@ -30,7 +30,7 @@ import java.util.ArrayList
 
 @Parcelize
 @JsonObject
-data class UserProfileFieldsOCS (
+data class UserProfileFieldsOCS(
     @JsonField(name = ["data"])
     var data: ArrayList<String>? = null
 ) : GenericOCS(), Parcelable {

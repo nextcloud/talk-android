@@ -29,7 +29,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class UserProfileOCS (
+data class UserProfileOCS(
     @JsonField(name = ["data"])
     var data: UserProfileData?
 ) : GenericOCS(), Parcelable {

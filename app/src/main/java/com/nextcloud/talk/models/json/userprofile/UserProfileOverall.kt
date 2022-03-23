@@ -28,7 +28,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class UserProfileOverall (
+data class UserProfileOverall(
     @JsonField(name = ["ocs"])
     var ocs: UserProfileOCS? = null
 ) : Parcelable {
