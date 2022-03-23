@@ -42,6 +42,6 @@ public class ScopeConverter extends StringBasedTypeConverter<Scope> {
 
     @Override
     public String convertToString(Scope scope) {
-        return scope.getName();
+        return scope.getId();
     }
 }

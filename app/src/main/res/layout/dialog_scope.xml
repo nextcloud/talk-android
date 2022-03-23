@@ -40,11 +40,11 @@
         android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
-            android:layout_width="24dp"
+            android:layout_width="wrap_content"
             android:layout_height="24dp"
             android:layout_gravity="top"
             android:contentDescription="@string/lock_symbol"
-            app:srcCompat="@drawable/ic_call" />
+            app:srcCompat="@drawable/ic_cellphone" />
 
         <LinearLayout
             android:layout_width="match_parent"

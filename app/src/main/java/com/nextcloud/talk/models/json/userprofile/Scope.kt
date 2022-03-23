@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Tobias Kaminsky
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,22 +19,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.nextcloud.talk.models.json.userprofile
 
-package com.nextcloud.talk.models.json.userprofile;
-
-public enum Scope {
+enum class Scope(val id: String) {
     PRIVATE("v2-private"),
     LOCAL("v2-local"),
     FEDERATED("v2-federated"),
-    PUBLISHED("v2-published");
-
-    private final String name;
-
-    Scope(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
+    PUBLISHED("v2-published")
 }
