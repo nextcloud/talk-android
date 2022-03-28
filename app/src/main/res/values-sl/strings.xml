@@ -2,8 +2,11 @@
   <resources>
     <string name="account_icon">Ikona računa</string>
     <string name="appbar_search_in">Poišči v %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Odvod zvoka</string>
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Zvočnik</string>
+    <string name="audio_output_wired_headset">Ožičene slušalke</string>
     <string name="avatar">Podoba</string>
     <string name="away">Ne spremljam</string>
     <string name="choose_avatar_from_cloud">Izbor pogodbe iz oblaka</string>
@@ -20,7 +23,7 @@
     <string name="file_list_loading">Poteka nalaganje …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 urah</string>
-    <string name="invisible">Nevidno</string>
+    <string name="invisible">Drugim nevidno</string>
     <string name="lock_symbol">Simbol zaklepa</string>
     <string name="menu_item_sort_by_date_newest_first">najprej najnovejše</string>
     <string name="menu_item_sort_by_date_oldest_first">najprej najstarejše</string>
@@ -176,7 +179,9 @@
     <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Klici</string>
+    <string name="nc_notification_channel_calls_description">Obvesti o prejetih klicih</string>
     <string name="nc_notification_channel_messages">Sporočila</string>
+    <string name="nc_notification_channel_messages_description">Obvesti o prejetih sporočilih</string>
     <string name="nc_notification_settings">Nastavitve obveščanja</string>
     <string name="nc_notify_me_always">Vedno obvesti</string>
     <string name="nc_notify_me_mention">Obvesti ob omembi</string>
@@ -362,6 +367,7 @@
     <string name="set_status_message">Nastavi sporočilo stanja</string>
     <string name="share">Souporaba</string>
     <string name="starred">Priljubljeno</string>
+    <string name="startCallForbidden">Ni ustreznih dovoljenj za klicanje</string>
     <string name="status_message">Sporočilo stanja</string>
     <string name="take_photo">Zajemi sliko</string>
     <string name="take_photo_error_deleting_picture">Napaka zajemanja slike</string>
