@@ -19,6 +19,7 @@ import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.utils.DisplayUtils;
 
 import org.webrtc.MediaStream;
+import org.webrtc.MediaStreamTrack;
 import org.webrtc.RendererCommon;
 import org.webrtc.SurfaceViewRenderer;
 import org.webrtc.VideoTrack;
@@ -140,7 +141,21 @@ public class ParticipantsAdapter extends BaseAdapter {
     }
 
     private boolean hasVideoStream(ParticipantDisplayItem participantDisplayItem, MediaStream mediaStream) {
-        return mediaStream != null && mediaStream.videoTracks != null && mediaStream.videoTracks.size() > 0 && participantDisplayItem.isStreamEnabled();
+        if (!participantDisplayItem.isStreamEnabled()) {
+            return false;
+        }
+
+        if (mediaStream == null || mediaStream.videoTracks == null) {
+            return false;
+        }
+
+        for (VideoTrack t : mediaStream.videoTracks) {
+            if (MediaStreamTrack.State.LIVE == t.state()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private int scaleGridViewItemHeight() {
