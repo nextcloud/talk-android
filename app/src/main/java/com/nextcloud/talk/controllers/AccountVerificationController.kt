@@ -307,13 +307,13 @@ class AccountVerificationController(args: Bundle? = null) :
                 @SuppressLint("SetTextI18n")
                 override fun onNext(userProfileOverall: UserProfileOverall) {
                     var displayName: String? = null
-                    if (!TextUtils.isEmpty(userProfileOverall.ocs.data.displayName)) {
-                        displayName = userProfileOverall.ocs.data.displayName
-                    } else if (!TextUtils.isEmpty(userProfileOverall.ocs.data.displayNameAlt)) {
-                        displayName = userProfileOverall.ocs.data.displayNameAlt
+                    if (!TextUtils.isEmpty(userProfileOverall.ocs!!.data!!.displayName)) {
+                        displayName = userProfileOverall.ocs!!.data!!.displayName
+                    } else if (!TextUtils.isEmpty(userProfileOverall.ocs!!.data!!.displayNameAlt)) {
+                        displayName = userProfileOverall.ocs!!.data!!.displayNameAlt
                     }
                     if (!TextUtils.isEmpty(displayName)) {
-                        storeProfile(displayName, userProfileOverall.ocs.data.userId)
+                        storeProfile(displayName, userProfileOverall.ocs!!.data!!.userId!!)
                     } else {
                         if (activity != null) {
                             activity!!.runOnUiThread {

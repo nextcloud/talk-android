@@ -165,7 +165,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                         }
 
                         override fun onNext(userProfileFieldsOverall: UserProfileFieldsOverall) {
-                            editableFields = userProfileFieldsOverall.ocs.data
+                            editableFields = userProfileFieldsOverall.ocs!!.data!!
                             adapter!!.notifyDataSetChanged()
                         }
 
@@ -241,7 +241,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                 }
 
                 override fun onNext(userProfileOverall: UserProfileOverall) {
-                    userInfo = userProfileOverall.ocs.data
+                    userInfo = userProfileOverall.ocs!!.data
                     showUserProfile()
                 }
 
@@ -284,12 +284,12 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         adapter!!.setData(createUserInfoDetails(userInfo))
         if (isAllEmpty(
                 arrayOf(
-                        userInfo!!.displayName,
-                        userInfo!!.phone,
-                        userInfo!!.email,
-                        userInfo!!.address,
-                        userInfo!!.twitter,
-                        userInfo!!.website
+                        userInfo!!.displayName!!,
+                        userInfo!!.phone!!,
+                        userInfo!!.email!!,
+                        userInfo!!.address!!,
+                        userInfo!!.twitter!!,
+                        userInfo!!.website!!
                     )
             )
         ) {
@@ -320,7 +320,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                     }
 
                     override fun onNext(userProfileFieldsOverall: UserProfileFieldsOverall) {
-                        editableFields = userProfileFieldsOverall.ocs.data
+                        editableFields = userProfileFieldsOverall.ocs!!.data!!
                         activity!!.invalidateOptionsMenu()
                         adapter!!.notifyDataSetChanged()
                     }
@@ -355,7 +355,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         result.add(
             UserInfoDetailsItem(
                 R.drawable.ic_user,
-                userInfo!!.displayName,
+                userInfo!!.displayName!!,
                 resources!!.getString(R.string.user_info_displayname),
                 Field.DISPLAYNAME,
                 userInfo.displayNameScope
@@ -364,7 +364,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         result.add(
             UserInfoDetailsItem(
                 R.drawable.ic_phone,
-                userInfo.phone,
+                userInfo.phone!!,
                 resources!!.getString(R.string.user_info_phone),
                 Field.PHONE,
                 userInfo.phoneScope
@@ -373,7 +373,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         result.add(
             UserInfoDetailsItem(
                 R.drawable.ic_email,
-                userInfo.email,
+                userInfo.email!!,
                 resources!!.getString(R.string.user_info_email),
                 Field.EMAIL,
                 userInfo.emailScope
@@ -382,7 +382,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         result.add(
             UserInfoDetailsItem(
                 R.drawable.ic_map_marker,
-                userInfo.address,
+                userInfo.address!!,
                 resources!!.getString(R.string.user_info_address),
                 Field.ADDRESS,
                 userInfo.addressScope
@@ -436,7 +436,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                         }
 
                         override fun onError(e: Throwable) {
-                            item.text = userInfo!!.getValueByField(item.field)
+                            item.text = userInfo!!.getValueByField(item.field)!!
                             Toast.makeText(
                                 applicationContext,
                                 String.format(
@@ -595,7 +595,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             credentials,
             ApiUtils.getUrlForUserData(currentUser!!.baseUrl, currentUser!!.userId),
             item.field.scopeName,
-            item.scope!!.getName()
+            item.scope!!.name
         )
             .retry(DEFAULT_RETRIES)
             .subscribeOn(Schedulers.io())
@@ -755,7 +755,8 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             } else {
                 holder.binding.scope.visibility = View.VISIBLE
                 when (item.scope) {
-                    Scope.PRIVATE, Scope.LOCAL -> holder.binding.scope.setImageResource(R.drawable.ic_password)
+                    Scope.PRIVATE -> holder.binding.scope.setImageResource(R.drawable.ic_cellphone)
+                    Scope.LOCAL -> holder.binding.scope.setImageResource(R.drawable.ic_password)
                     Scope.FEDERATED -> holder.binding.scope.setImageResource(R.drawable.ic_contacts)
                     Scope.PUBLISHED -> holder.binding.scope.setImageResource(R.drawable.ic_link)
                 }

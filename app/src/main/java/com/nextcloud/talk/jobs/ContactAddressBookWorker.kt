@@ -143,7 +143,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                     }
 
                     override fun onNext(foundContacts: ContactsByNumberOverall) {
-                        val contactsWithAssociatedPhoneNumbers = foundContacts.ocs.map
+                        val contactsWithAssociatedPhoneNumbers = foundContacts.ocs!!.map
                         deleteLinkedAccounts(contactsWithAssociatedPhoneNumbers)
                         createLinkedAccounts(contactsWithAssociatedPhoneNumbers)
                     }

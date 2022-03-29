@@ -1,10 +1,10 @@
 /*
  *   Nextcloud Talk application
  *
- *   @author Tim Krüger
+ *   @author Tobias Kaminsky
  *   @author Andy Scherzinger
  *   Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
- *   Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ *   Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.statuses
+package com.nextcloud.talk.models.json.userprofile
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
@@ -28,9 +28,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class StatusesOverall(
+data class UserProfileFieldsOverall(
     @JsonField(name = ["ocs"])
-    var ocs: StatusesOCS?
+    var ocs: UserProfileFieldsOCS?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)
