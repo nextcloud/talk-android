@@ -90,6 +90,8 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     public Enum<ReadStatus> readStatus = ReadStatus.NONE;
     @JsonField(name = "messageType")
     public String messageType;
+    @JsonField(name = "reactions")
+    public HashMap<String, Integer> reactions;
 
     public boolean isDownloadingVoiceMessage;
     public boolean resetVoiceMessage;
@@ -657,6 +659,9 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         MATTERBRIDGE_CONFIG_REMOVED,
         MATTERBRIDGE_CONFIG_ENABLED,
         MATTERBRIDGE_CONFIG_DISABLED,
-        CLEARED_CHAT
+        CLEARED_CHAT,
+        REACTION,
+        REACTION_DELETED,
+        REACTION_REVOKED
     }
 }
