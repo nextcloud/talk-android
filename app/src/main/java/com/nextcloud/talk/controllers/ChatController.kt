@@ -2087,7 +2087,7 @@ class ChatController(args: Bundle) :
         if (response.code() == HTTP_CODE_OK) {
 
             val chatOverall = response.body() as ChatOverall?
-            val chatMessageList = setDeletionFlagsAndRemoveInfomessages(chatOverall?.ocs!!.data)
+            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data)
 
             if (chatMessageList.isNotEmpty() &&
                 ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
@@ -2336,11 +2336,13 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun setDeletionFlagsAndRemoveInfomessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+    private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
+
+            // setDeletionFlagsAndRemoveInfomessages
             if (isInfoMessageAboutDeletion(currentMessage)) {
                 if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
                     // if chatMessageMap doesnt't contain message to delete (this happens when lookingIntoFuture),
@@ -2351,6 +2353,11 @@ class ChatController(args: Bundle) :
                 }
                 chatMessageIterator.remove()
             }
+
+            // delete reactions system messages
+            else if (isReactionsMessage(currentMessage)) {
+                chatMessageIterator.remove()
+            }
         }
         return chatMessageMap.values.toList()
     }
@@ -2358,6 +2365,12 @@ class ChatController(args: Bundle) :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
         return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
             .SystemMessageType.MESSAGE_DELETED
+    }
+
+    private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
+        return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
