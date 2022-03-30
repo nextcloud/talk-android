@@ -44,9 +44,11 @@ import org.webrtc.DataChannel;
 import org.webrtc.IceCandidate;
 import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
+import org.webrtc.MediaStreamTrack;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RtpReceiver;
+import org.webrtc.RtpTransceiver;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 import org.webrtc.VideoTrack;
@@ -256,6 +258,15 @@ public class PeerConnectionWrapper {
         return isMCUPublisher;
     }
 
+    private boolean shouldReceiveVideo() {
+        for (MediaConstraints.KeyValuePair keyValuePair : mediaConstraints.mandatory) {
+            if ("OfferToReceiveVideo".equals(keyValuePair.getKey())) {
+                return !Boolean.parseBoolean(keyValuePair.getValue());
+            }
+        }
+        return false;
+    }
+
     private class MagicDataChannelObserver implements DataChannel.Observer {
 
         @Override
@@ -444,7 +455,22 @@ public class PeerConnectionWrapper {
         public void onSetSuccess() {
             if (peerConnection != null) {
                 if (peerConnection.getLocalDescription() == null) {
-                    peerConnection.createAnswer(magicSdpObserver, mediaConstraints);
+
+                    if (shouldReceiveVideo()) {
+                        for (RtpTransceiver t : peerConnection.getTransceivers()) {
+                            if (t.getMediaType().equals(MediaStreamTrack.MediaType.MEDIA_TYPE_VIDEO)) {
+                                t.stop();
+                            }
+                        }
+                        Log.d(TAG, "Stop all Transceivers for MEDIA_TYPE_VIDEO.");
+                    }
+
+                    /*
+                        Passed 'MediaConstraints' will be ignored by WebRTC when using UNIFIED PLAN.
+                        See for details: https://docs.google.com/document/d/1PPHWV6108znP1tk_rkCnyagH9FK205hHeE9k5mhUzOg/edit#heading=h.9dcmkavg608r
+                     */
+                    peerConnection.createAnswer(magicSdpObserver, new MediaConstraints());
+
                 }
 
                 if (peerConnection.getRemoteDescription() != null) {
