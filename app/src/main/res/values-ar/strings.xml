@@ -6,6 +6,7 @@
     <string name="audio_output_dialog_headline">مخرج الصوت</string>
     <string name="audio_output_phone">الهاتف</string>
     <string name="audio_output_speaker">مكبر الصوت</string>
+    <string name="audio_output_wired_headset">سماعة رأس سلكية</string>
     <string name="avatar">الصورة الرمزية</string>
     <string name="away">في الخارج</string>
     <string name="choose_avatar_from_cloud">اختر صورة رمزية من السحابة</string>
@@ -54,6 +55,8 @@
     <string name="nc_call_reconnecting">إعادة الاتصال...</string>
     <string name="nc_call_ringing">يرن </string>
     <string name="nc_call_state_in_call">%1$s في مكالمة</string>
+    <string name="nc_call_state_with_phone">%1$s بالهاتف</string>
+    <string name="nc_call_state_with_video">%1$s بالفيديو</string>
     <string name="nc_call_timeout">لا يوجد استجابة خلال 45 ثانية ، انقر للمحاولة مرة أخرى</string>
     <string name="nc_call_unknown">%s اتصال</string>
     <string name="nc_call_video">%s اتصال فيديو</string>
@@ -116,6 +119,7 @@
     <string name="nc_failed_signaling_settings">لا يدعم الخادم الانضمام إلى المحادثات العامة عبر الهواتف المحمولة. يمكنك محاولة الانضمام إلى المحادثة عبر متصفح الويب.</string>
     <string name="nc_failed_to_perform_operation">حدث خطأ ما!</string>
     <string name="nc_file_browser_back">العودة</string>
+    <string name="nc_file_browser_reshare_forbidden">لا يسمح لك بإعادة مشاركة هذا الملف</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
     <string name="nc_forward_message">إعادة توجيه</string>
@@ -145,6 +149,7 @@
     <string name="nc_lobby_start_soon">هذا الاجتماع سيبدأ قريباً</string>
     <string name="nc_lobby_waiting">أنت حاليا في انتظار الاستقبال</string>
     <string name="nc_location_current_position_description">موقعك الحالي</string>
+    <string name="nc_location_unknown">الموضع مجهول</string>
     <string name="nc_locked">مقفل</string>
     <string name="nc_locked_tap_to_unlock">انقر لفك القفل</string>
     <string name="nc_make_call_private">اجعل المحادثة خاصة </string>
@@ -159,6 +164,7 @@
     <string name="nc_moderator">مشرِف</string>
     <string name="nc_never">عدم الانضمام</string>
     <string name="nc_new_conversation">محادثة جديدة</string>
+    <string name="nc_new_mention">إشارات غير مقروءة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
     <string name="nc_new_password">كلمة سرية جديدة</string>
     <string name="nc_nextcloud_talk_app_not_installed">تطبيق %1$s غير مثبت على الخادم، جارِ الإلغاء</string>
@@ -348,13 +354,16 @@
     <string name="set_status_message">تعيين رسالة الحالة</string>
     <string name="share">شاركه</string>
     <string name="starred">المفضلة</string>
+    <string name="startCallForbidden">لا يسمح لك بإجراء مكالمة</string>
     <string name="status_message">رسالة الحالة</string>
     <string name="take_photo">التقط صورة</string>
     <string name="take_photo_error_deleting_picture">خطأ في التقاط الصورة</string>
+    <string name="take_photo_permission">لا يمكن أخذ صورة من دون تصريح</string>
     <string name="take_photo_retake_photo">أعد التقاط الصورة</string>
     <string name="take_photo_send">إرسال</string>
     <string name="take_photo_switch_camera">تغيير الكاميرا</string>
     <string name="take_photo_toggle_crop">قص الصورة</string>
+    <string name="take_photo_toggle_lowres">صغّر حجم الصورة</string>
     <string name="take_photo_toggle_torch">تفعيل المصباح</string>
     <string name="thirtyMinutes">30 دقيقة</string>
     <string name="thisWeek">هذا الأسبوع</string>
