@@ -342,9 +342,10 @@ public class PeerConnectionWrapper {
         @Override
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
 
-            Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
+            Log.d(TAG,"iceConnectionChangeTo: " + iceConnectionState.name() + " over " + peerConnection.hashCode() +
+                " " + sessionId);
             if (iceConnectionState.equals(PeerConnection.IceConnectionState.CONNECTED)) {
-
+                Log.d(TAG, "isMCUPublisher= " + isMCUPublisher);
                 if (!isMCUPublisher) {
                     EventBus.getDefault().post(new MediaStreamEvent(remoteStream, sessionId, videoStreamType));
                 }

@@ -627,23 +627,23 @@ public class CallActivity extends CallBaseActivity {
         binding.conversationRelativeLayout
             .getViewTreeObserver()
             .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int height = binding.conversationRelativeLayout.getMeasuredHeight();
-                binding.gridview.setMinimumHeight(height);
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    int height = binding.conversationRelativeLayout.getMeasuredHeight();
+                    binding.gridview.setMinimumHeight(height);
+                }
+            });
 
         binding
             .callInfosLinearLayout
             .getViewTreeObserver()
             .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
 
         participantsAdapter = new ParticipantsAdapter(
             this,
@@ -1493,7 +1493,8 @@ public class CallActivity extends CallBaseActivity {
                     Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
                 break;
             case "peerReadyForRequestingOffer":
-                Log.d(TAG, "onMessageEvent 'peerReadyForRequestingOffer'");
+                Log.d(TAG,
+                      "onMessageEvent 'peerReadyForRequestingOffer' sessionId=" + webSocketCommunicationEvent.getHashMap().get("sessionId"));
                 webSocketClient.requestOfferForSessionIdWithType(
                     webSocketCommunicationEvent.getHashMap().get("sessionId"), "video");
                 break;
@@ -1542,10 +1543,13 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
+        Log.d(TAG, "processMessage NCSignalingMessage");
         if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
             PeerConnectionWrapper peerConnectionWrapper =
-                getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                            ncSignalingMessage.getRoomType(), false);
+                getPeerConnectionWrapperForSessionIdAndType(
+                    ncSignalingMessage.getFrom(),
+                    ncSignalingMessage.getRoomType(),
+                    false);
 
             String type = null;
             if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
@@ -1553,6 +1557,7 @@ public class CallActivity extends CallBaseActivity {
             } else if (ncSignalingMessage.getType() != null) {
                 type = ncSignalingMessage.getType();
             }
+            Log.d(TAG, "   ncSignalingMessage.getType()=" + type);
 
             if (type != null) {
                 switch (type) {
@@ -1650,7 +1655,7 @@ public class CallActivity extends CallBaseActivity {
             endPeerConnection(peerConnectionWrapperList.get(i).getSessionId(), false);
         }
 
-        if(localStream != null) {
+        if (localStream != null) {
             localStream.dispose();
             localStream = null;
             Log.d(TAG, "Disposed localStream");
@@ -1843,6 +1848,9 @@ public class CallActivity extends CallBaseActivity {
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId, type)) != null) {
             return peerConnectionWrapper;
         } else {
+            Log.d(TAG,
+                  "getPeerConnectionWrapperForSessionIdAndType. session = " + sessionId + " hasMCU=" + hasMCU + " " +
+                      "publisher=" + publisher);
             if (hasMCU && publisher) {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
                                                                   iceServers,
@@ -2072,6 +2080,7 @@ public class CallActivity extends CallBaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MediaStreamEvent mediaStreamEvent) {
+        Log.d(TAG, "onMessageEvent MediaStreamEvent");
         if (mediaStreamEvent.getMediaStream() != null) {
             boolean hasAtLeastOneVideoStream = mediaStreamEvent.getMediaStream().videoTracks != null
                 && mediaStreamEvent.getMediaStream().videoTracks.size() > 0;
@@ -2177,6 +2186,7 @@ public class CallActivity extends CallBaseActivity {
                                            String session,
                                            boolean videoStreamEnabled,
                                            String videoStreamType) {
+        Log.d(TAG, "setupVideoStreamForLayout");
         String nick;
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
