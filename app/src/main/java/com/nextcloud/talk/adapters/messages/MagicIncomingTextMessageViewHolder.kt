@@ -36,9 +36,12 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.children
+import androidx.core.view.get
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -54,6 +57,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import com.vanniktech.emoji.EmojiTextView
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -119,6 +123,21 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         }
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+
+        if (message.reactions != null && message.reactions.isNotEmpty()) {
+            binding.reactionsEmojiWrapper.removeAllViews()
+
+            for ((emoji, amount) in message.reactions) {
+                val reactionEmoji = EmojiTextView(context)
+                reactionEmoji.text = emoji
+
+                val reactionAmount = TextView(context)
+                reactionAmount.text = amount.toString()
+
+                binding.reactionsEmojiWrapper.addView(reactionEmoji)
+                binding.reactionsEmojiWrapper.addView(reactionAmount)
+            }
+        }
     }
 
     private fun processAuthor(message: ChatMessage) {
