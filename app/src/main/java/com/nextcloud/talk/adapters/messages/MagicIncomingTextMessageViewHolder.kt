@@ -42,10 +42,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
-import androidx.core.view.children
-import androidx.core.view.get
-import androidx.core.view.marginEnd
-import androidx.core.view.updateLayoutParams
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -78,6 +74,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
     @JvmField
     @Inject
     var appPreferences: AppPreferences? = null
+
+    lateinit var reactionsInterface: ReactionsInterface
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -157,6 +155,9 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                     binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
                     break
                 }
+            }
+            binding.reactionsEmojiWrapper.setOnClickListener {
+                reactionsInterface.onClickReactions(message)
             }
         }
     }
@@ -298,6 +299,10 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             }
         }
         return messageStringInternal
+    }
+
+    fun assignAdapter(reactionsInterface: ReactionsInterface) {
+        this.reactionsInterface = reactionsInterface
     }
 
     companion object {
