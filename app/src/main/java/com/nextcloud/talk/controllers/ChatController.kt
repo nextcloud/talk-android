@@ -2345,7 +2345,7 @@ class ChatController(args: Bundle) :
             // setDeletionFlagsAndRemoveInfomessages
             if (isInfoMessageAboutDeletion(currentMessage)) {
                 if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
-                    // if chatMessageMap doesnt't contain message to delete (this happens when lookingIntoFuture),
+                    // if chatMessageMap doesn't contain message to delete (this happens when lookingIntoFuture),
                     // the message to delete has to be modified directly inside the adapter
                     setMessageAsDeleted(currentMessage.value.parentMessage)
                 } else {
@@ -2356,6 +2356,10 @@ class ChatController(args: Bundle) :
 
             // delete reactions system messages
             else if (isReactionsMessage(currentMessage)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
+                    adapter?.update(currentMessage.value.parentMessage)
+                }
+
                 chatMessageIterator.remove()
             }
         }
