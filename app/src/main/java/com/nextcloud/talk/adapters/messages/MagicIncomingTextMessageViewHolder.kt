@@ -124,8 +124,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
 
+        binding.reactionsEmojiWrapper.removeAllViews()
         if (message.reactions != null && message.reactions.isNotEmpty()) {
-            binding.reactionsEmojiWrapper.removeAllViews()
 
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
             val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
