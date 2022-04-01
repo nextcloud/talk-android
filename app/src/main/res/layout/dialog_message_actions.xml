@@ -30,6 +30,87 @@
     android:paddingBottom="@dimen/standard_half_padding">
 
     <LinearLayout
+        android:id="@+id/emojiBar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/emojiThumbsUp"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/emoji_thumbsUp"
+            android:textSize="24sp" />
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/emojiThumbsDown"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/emoji_thumbsDown"
+            android:textSize="24sp" />
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/emojiHeart"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/default_emoji"
+            android:textSize="24sp" />
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/emojiLaugh"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/emoji_heart"
+            android:textSize="24sp" />
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/emojiConfused"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/emoji_confused"
+            android:textSize="24sp" />
+
+        <com.vanniktech.emoji.EmojiEditText
+            android:id="@+id/emojiSad"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:text="@string/emoji_sad"
+            android:textSize="24sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/emojiMore"
+            style="@style/Widget.AppTheme.Button.IconButton"
+            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_weight="1"
+            android:contentDescription="@string/emoji_more"
+            app:elevation="0dp"
+            app:icon="@drawable/ic_dots_horizontal"
+            app:iconGravity="textStart"
+            app:iconSize="24dp"
+            app:iconTint="@color/high_emphasis_text" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/menu_copy_message"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_sheet_item_height"
