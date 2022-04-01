@@ -127,6 +127,8 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         if (message.reactions != null && message.reactions.isNotEmpty()) {
             binding.reactionsEmojiWrapper.removeAllViews()
 
+            var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
+            val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
             for ((emoji, amount) in message.reactions) {
                 val reactionEmoji = EmojiTextView(context)
                 reactionEmoji.text = emoji
@@ -136,6 +138,14 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
                 binding.reactionsEmojiWrapper.addView(reactionEmoji)
                 binding.reactionsEmojiWrapper.addView(reactionAmount)
+
+                remainingEmojisToDisplay--
+                if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
+                    val infoAboutMoreEmojis = TextView(context)
+                    infoAboutMoreEmojis.text = "..."
+                    binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
+                    break;
+                }
             }
         }
     }
@@ -281,5 +291,6 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
+        const val MAX_EMOJIS_TO_DISPLAY = 4
     }
 }
