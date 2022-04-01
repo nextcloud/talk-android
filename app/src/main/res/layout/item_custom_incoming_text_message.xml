@@ -86,15 +86,24 @@
             android:layout_marginStart="8dp"
             android:textIsSelectable="false"
             app:layout_alignSelf="center" />
+
+
+        <LinearLayout
+            android:id="@+id/reactions_emoji_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_wrapBefore="true"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="emojis will be in the wrapper">
+            </TextView>
+        </LinearLayout>
+
     </com.google.android.flexbox.FlexboxLayout>
 
-    <LinearLayout
-        android:id="@+id/reactions_emoji_wrapper"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bubble"
-        android:layout_alignStart="@id/bubble"
-        android:orientation="horizontal">
-    </LinearLayout>
+
 
 </RelativeLayout>
