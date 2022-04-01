@@ -110,6 +110,7 @@ import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
+import com.nextcloud.talk.adapters.messages.ReactionsInterface
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -139,6 +140,7 @@ import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
+import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
@@ -203,7 +205,8 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
     ContentChecker<ChatMessage>,
-    VoiceMessageInterface {
+    VoiceMessageInterface,
+    ReactionsInterface {
 
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
@@ -916,6 +919,16 @@ class ChatController(args: Bundle) :
             if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
                 mediaPlayer!!.seekTo(progress * VOICE_MESSAGE_SEEKBAR_BASE)
             }
+        }
+    }
+
+    override fun onClickReactions(chatMessage: ChatMessage) {
+        Log.d(TAG, "onClickReactions" + chatMessage)
+
+        activity?.let {
+            ShowReactionsDialog(
+                activity!!
+            ).show()
         }
     }
 
