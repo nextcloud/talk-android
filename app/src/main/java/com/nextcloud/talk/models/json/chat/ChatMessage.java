@@ -291,7 +291,9 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
 
             @Override
             public String getAvatar() {
-                if (getActorType().equals("users")) {
+                if (getActiveUser() == null) {
+                    return null;
+                } else if (getActorType().equals("users")) {
                     return ApiUtils.getUrlForAvatar(getActiveUser().getBaseUrl(), actorId, true);
                 } else if (getActorType().equals("bridged")) {
                     return ApiUtils.getUrlForAvatar(getActiveUser().getBaseUrl(), "bridge-bot",
