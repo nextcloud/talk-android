@@ -36,12 +36,16 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.children
 import androidx.core.view.get
+import androidx.core.view.marginEnd
+import androidx.core.view.updateLayoutParams
 import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
@@ -136,6 +140,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                 val reactionAmount = TextView(context)
                 reactionAmount.text = amount.toString()
 
+                val params = RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                params.setMargins(0, 0, 10, 0)
+                reactionAmount.layoutParams = params
+
                 binding.reactionsEmojiWrapper.addView(reactionEmoji)
                 binding.reactionsEmojiWrapper.addView(reactionAmount)
 
@@ -144,7 +155,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                     val infoAboutMoreEmojis = TextView(context)
                     infoAboutMoreEmojis.text = "..."
                     binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
-                    break;
+                    break
                 }
             }
         }
