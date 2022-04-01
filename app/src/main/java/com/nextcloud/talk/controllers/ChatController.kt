@@ -2357,7 +2357,7 @@ class ChatController(args: Bundle) :
             // delete reactions system messages
             else if (isReactionsMessage(currentMessage)) {
                 if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
-                    adapter?.update(currentMessage.value.parentMessage)
+                    updateAdapterForReaction(currentMessage.value.parentMessage)
                 }
 
                 chatMessageIterator.remove()
@@ -2693,6 +2693,15 @@ class ChatController(args: Bundle) :
         messageTemp.isOneToOneConversation =
             currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
+
+        adapter?.update(messageTemp)
+    }
+
+    private fun updateAdapterForReaction(message: IMessage?) {
+        val messageTemp = message as ChatMessage
+
+        messageTemp.isOneToOneConversation =
+            currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
         adapter?.update(messageTemp)
     }
