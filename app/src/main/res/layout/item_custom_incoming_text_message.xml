@@ -47,8 +47,7 @@
         android:orientation="vertical"
         app:alignContent="stretch"
         app:alignItems="stretch"
-        app:flexWrap="wrap"
-        app:justifyContent="flex_end">
+        app:flexWrap="wrap">
 
         <include
             android:id="@+id/message_quote"
@@ -98,7 +97,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="emojis will be in the wrapper">
+                tools:text="emojis">
             </TextView>
         </LinearLayout>
 
