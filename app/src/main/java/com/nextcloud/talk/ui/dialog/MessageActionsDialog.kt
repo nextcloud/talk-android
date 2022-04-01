@@ -50,6 +50,7 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        initEmojiBar()
         initMenuItemCopy(!message.isDeleted)
         initMenuReplyToMessage(message.replyable)
         initMenuReplyPrivately(
@@ -67,6 +68,30 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
                 BuildConfig.DEBUG
         )
+    }
+
+    private fun initEmojiBar() {
+        dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener{
+            dismiss()
+        }
+        dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener{
+            dismiss()
+        }
+        dialogMessageActionsBinding.emojiLaugh.setOnClickListener{
+            dismiss()
+        }
+        dialogMessageActionsBinding.emojiHeart.setOnClickListener{
+            dismiss()
+        }
+        dialogMessageActionsBinding.emojiConfused.setOnClickListener{
+            dismiss()
+        }
+        dialogMessageActionsBinding.emojiSad.setOnClickListener{
+            dismiss()
+        }
+        dialogMessageActionsBinding.emojiMore.setOnClickListener{
+            dismiss()
+        }
     }
 
     private fun initMenuMarkAsUnread(visible: Boolean) {
