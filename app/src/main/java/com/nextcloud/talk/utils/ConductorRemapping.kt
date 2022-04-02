@@ -26,6 +26,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.bluelinelabs.conductor.changehandler.SimpleSwapChangeHandler
 import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.controllers.ConversationsListController
 
 object ConductorRemapping {
 
@@ -68,11 +69,23 @@ object ConductorRemapping {
                 HorizontalChangeHandler()
             }
             if (!replaceTop) {
-                router.pushController(
-                    RouterTransaction.with(ChatController(bundle))
-                        .pushChangeHandler(pushChangeHandler)
-                        .popChangeHandler(HorizontalChangeHandler()).tag(tag)
-                )
+                if (!router.hasRootController()) {
+                    val newBackstack = listOf(
+                        RouterTransaction.with(ConversationsListController(Bundle()))
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler()),
+                        RouterTransaction.with(ChatController(bundle))
+                            .pushChangeHandler(HorizontalChangeHandler())
+                            .popChangeHandler(HorizontalChangeHandler()).tag(tag)
+                    )
+                    router.setBackstack(newBackstack, SimpleSwapChangeHandler())
+                } else {
+                    router.pushController(
+                        RouterTransaction.with(ChatController(bundle))
+                            .pushChangeHandler(pushChangeHandler)
+                            .popChangeHandler(HorizontalChangeHandler()).tag(tag)
+                    )
+                }
             } else {
                 router.replaceTopController(
                     RouterTransaction.with(ChatController(bundle))
