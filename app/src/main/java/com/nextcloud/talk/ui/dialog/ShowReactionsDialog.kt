@@ -4,7 +4,6 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 
 class ShowReactionsDialog(
