@@ -20,7 +20,6 @@
 
 package com.nextcloud.talk.ui.dialog
 
-import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -70,25 +69,25 @@ class MessageActionsDialog(
     }
 
     private fun initEmojiBar() {
-        dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener{
+        dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
             dismiss()
         }
-        dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener{
+        dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
             dismiss()
         }
-        dialogMessageActionsBinding.emojiLaugh.setOnClickListener{
+        dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
             dismiss()
         }
-        dialogMessageActionsBinding.emojiHeart.setOnClickListener{
+        dialogMessageActionsBinding.emojiHeart.setOnClickListener {
             dismiss()
         }
-        dialogMessageActionsBinding.emojiConfused.setOnClickListener{
+        dialogMessageActionsBinding.emojiConfused.setOnClickListener {
             dismiss()
         }
-        dialogMessageActionsBinding.emojiSad.setOnClickListener{
+        dialogMessageActionsBinding.emojiSad.setOnClickListener {
             dismiss()
         }
-        dialogMessageActionsBinding.emojiMore.setOnClickListener{
+        dialogMessageActionsBinding.emojiMore.setOnClickListener {
             dismiss()
         }
     }
