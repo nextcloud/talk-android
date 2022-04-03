@@ -19,5 +19,4 @@ class ShowReactionsDialog(
         setContentView(dialogMessageReactionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
     }
-
 }
