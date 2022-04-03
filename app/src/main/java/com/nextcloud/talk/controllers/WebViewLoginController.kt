@@ -277,6 +277,7 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
                 }
             }
 
+            @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 try {
                     val sslCertificate = error.certificate

@@ -142,7 +142,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
-                params.setMargins(0, 0, 10, 0)
+                params.setMargins(0, 0, EMOJI_RIGHT_MARGIN, 0)
                 reactionAmount.layoutParams = params
 
                 binding.reactionsEmojiWrapper.addView(reactionEmoji)
@@ -308,5 +308,6 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
         const val MAX_EMOJIS_TO_DISPLAY = 4
+        const val EMOJI_RIGHT_MARGIN: Int = 10
     }
 }

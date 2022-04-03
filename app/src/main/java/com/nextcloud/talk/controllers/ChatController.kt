@@ -2432,7 +2432,6 @@ class ChatController(args: Bundle) :
         if (hasVisibleItems(message as ChatMessage)) {
             activity?.let {
                 MessageActionsDialog(
-                    activity!!,
                     this,
                     message,
                     conversationUser?.userId,

@@ -34,13 +34,12 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 class MessageActionsDialog(
-    val activity: Activity,
     private val chatController: ChatController,
     private val message: ChatMessage,
     private val userId: String?,
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean
-) : BottomSheetDialog(activity) {
+) : BottomSheetDialog(chatController.activity!!) {
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
