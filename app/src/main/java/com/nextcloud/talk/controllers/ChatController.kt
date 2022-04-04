@@ -2436,7 +2436,7 @@ class ChatController(args: Bundle) :
                 MessageActionsDialog(
                     this,
                     message,
-                    conversationUser?.userId,
+                    conversationUser,
                     currentConversation,
                     isShowMessageDeletionButton(message)
                 ).show()

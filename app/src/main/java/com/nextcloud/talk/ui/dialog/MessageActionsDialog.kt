@@ -29,13 +29,15 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
+import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 class MessageActionsDialog(
     private val chatController: ChatController,
     private val message: ChatMessage,
-    private val userId: String?,
+    private val user: UserEntity?,
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean
 ) : BottomSheetDialog(chatController.activity!!) {
@@ -53,8 +55,8 @@ class MessageActionsDialog(
         initMenuReplyToMessage(message.replyable)
         initMenuReplyPrivately(
             message.replyable &&
-                userId?.isNotEmpty() == true &&
-                userId != "?" &&
+                user?.userId?.isNotEmpty() == true &&
+                user?.userId != "?" &&
                 message.user.id.startsWith("users/") &&
                 message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -69,26 +71,31 @@ class MessageActionsDialog(
     }
 
     private fun initEmojiBar() {
-        dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
-            dismiss()
-        }
-        dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
-            dismiss()
-        }
-        dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
-            dismiss()
-        }
-        dialogMessageActionsBinding.emojiHeart.setOnClickListener {
-            dismiss()
-        }
-        dialogMessageActionsBinding.emojiConfused.setOnClickListener {
-            dismiss()
-        }
-        dialogMessageActionsBinding.emojiSad.setOnClickListener {
-            dismiss()
-        }
-        dialogMessageActionsBinding.emojiMore.setOnClickListener {
-            dismiss()
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions")) {
+            dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiHeart.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiConfused.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiSad.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiMore.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiBar.visibility = View.VISIBLE
+        } else {
+            dialogMessageActionsBinding.emojiBar.visibility = View.GONE
         }
     }
 
