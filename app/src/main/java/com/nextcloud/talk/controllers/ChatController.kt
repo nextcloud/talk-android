@@ -923,11 +923,13 @@ class ChatController(args: Bundle) :
     }
 
     override fun onClickReactions(chatMessage: ChatMessage) {
-        Log.d(TAG, "onClickReactions" + chatMessage)
-
         activity?.let {
             ShowReactionsDialog(
-                activity!!
+                activity!!,
+                currentConversation,
+                chatMessage,
+                conversationUser,
+                ncApi!!
             ).show()
         }
     }
