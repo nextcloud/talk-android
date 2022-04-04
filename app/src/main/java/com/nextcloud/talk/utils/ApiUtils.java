@@ -441,4 +441,11 @@ public class ApiUtils {
     public static String getUrlForUserStatuses(String baseUrl) {
         return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/statuses";
     }
+
+    public static String getUrlForParticipantsForEmojiReaction(String baseUrl,
+                                                               String roomToken,
+                                                               String messageId) {
+        return baseUrl + ocsApiVersion + spreedApiVersion + "/reaction/" + roomToken + "/" + messageId;
+    }
+
 }
