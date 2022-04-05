@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_person_24"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/shareContactText"
@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_location_on_24"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_share_location"
@@ -117,7 +117,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_photo_camera_24"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_attach_picture_from_cam"
@@ -148,7 +148,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/upload"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_attach_file_from_local"
@@ -179,7 +179,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_share_variant"
-            app:tint="@color/colorPrimary" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txt_attach_file_from_cloud"
