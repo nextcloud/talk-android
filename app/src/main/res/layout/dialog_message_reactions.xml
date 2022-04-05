@@ -33,36 +33,18 @@
         android:layout_height="wrap_content"
         tools:listitem="@layout/reaction_item" />
 
-    <LinearLayout
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        tools:ignore="UseCompoundDrawables"
-        android:visibility="gone">
+        android:layout_gravity="center">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/emoji_reactions_contact_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/rv_item_emoji_details_contact"
-            tools:itemCount="4"/>
+        <LinearLayout
+            android:id="@+id/emoji_reactions_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal"></LinearLayout>
 
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <LinearLayout
-                android:id="@+id/emoji_reactions_wrapper"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
-            </LinearLayout>
-
-        </HorizontalScrollView>
-
-    </LinearLayout>
+    </HorizontalScrollView>
 
 </LinearLayout>
