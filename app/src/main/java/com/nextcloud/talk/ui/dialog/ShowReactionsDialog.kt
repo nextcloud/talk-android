@@ -68,9 +68,6 @@ class ShowReactionsDialog(
 
     private var adapter: ReactionsAdapter? = null
 
-    // @Inject
-    // lateinit var ncApi: NcApi
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
@@ -92,7 +89,7 @@ class ShowReactionsDialog(
                     firstEmoji = emoji
                 }
 
-                var emojiView = EmojiTextView(activity)
+                val emojiView = EmojiTextView(activity)
                 emojiView.setEmojiSize(DisplayUtils.convertDpToPixel(EMOJI_SIZE, context).toInt())
                 emojiView.text = emoji
 
@@ -108,21 +105,8 @@ class ShowReactionsDialog(
 
                 emojiView.setOnClickListener {
                     updateParticipantsForEmoji(chatMessage, emoji)
-                    emojiView.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
+                    // emojiView.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
                 }
-
-                // TODO: Add proper implementation
-                adapter?.list?.add(
-                    ReactionItem(
-                        ReactionVoter(
-                            ReactionVoter.ReactionActorType.USERS,
-                            "marcel",
-                            "Marcel",
-                            0
-                        ),
-                        emoji
-                    )
-                )
             }
             updateParticipantsForEmoji(chatMessage, firstEmoji)
         }
