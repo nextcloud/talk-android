@@ -27,9 +27,11 @@
 package com.nextcloud.talk.controllers
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
 import android.view.MenuItem
@@ -49,6 +51,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.SharedItemsActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -88,11 +91,8 @@ import io.reactivex.schedulers.Schedulers
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import java.util.ArrayList
 import java.util.Calendar
 import java.util.Collections
-import java.util.Comparator
-import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
@@ -175,8 +175,16 @@ class ConversationInfoController(args: Bundle) :
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog(null) }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
+        binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
 
         fetchRoomInfo()
+    }
+
+    private fun showSharedItems() {
+        val intent = Intent(activity, SharedItemsActivity::class.java)
+        intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+        intent.putExtra(BundleKeys.KEY_USER_ENTITY, conversationUser as Parcelable)
+        activity!!.startActivity(intent)
     }
 
     override fun onViewBound(view: View) {

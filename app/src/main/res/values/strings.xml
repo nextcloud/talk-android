@@ -512,6 +512,7 @@
     <string name="audio_output_phone">Phone</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_wired_headset">Wired headset</string>
+    <string name="title_attachments">Attachements</string>
 
     <string name="reactions_tab_all">All</string>
 
