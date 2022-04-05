@@ -38,8 +38,9 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:ellipsize="middle"
-        android:gravity="center_vertical"
-        android:textAppearance="?android:attr/textAppearanceListItem"
+        android:gravity="center_vertical|start"
+        android:textColor="@color/high_emphasis_text"
+        android:textSize="@dimen/bottom_sheet_text_size"
         tools:text="Participant Name" />
 
     <androidx.emoji.widget.EmojiTextView
