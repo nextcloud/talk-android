@@ -151,7 +151,7 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public void restartWebSocket() {
         reconnecting = true;
 
-        // TODO: when improving logging, keep in mind this issue: https://github.com/nextcloud/talk-android/issues/1013
+        // TODO when improving logging, keep in mind this issue: https://github.com/nextcloud/talk-android/issues/1013
         Log.d(TAG, "restartWebSocket: " + connectionUrl);
         Request request = new Request.Builder().url(connectionUrl).build();
         okHttpClient.newWebSocket(request, this);

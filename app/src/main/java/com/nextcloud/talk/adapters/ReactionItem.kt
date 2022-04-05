@@ -22,7 +22,6 @@ package com.nextcloud.talk.adapters
 
 import com.nextcloud.talk.models.json.reactions.ReactionVoter
 
-// TODO: replace with proper class with correct data objects
 data class ReactionItem(
     val reactionVoter: ReactionVoter,
     val reaction: String?
