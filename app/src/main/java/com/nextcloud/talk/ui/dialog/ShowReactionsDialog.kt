@@ -173,8 +173,6 @@ class ShowReactionsDialog(
                     Log.d(TAG, "onComplete")
                 }
             })
-
-        // binding.emojiReactionsContactList
     }
 
     override fun onClick(reactionItem: ReactionItem) {
