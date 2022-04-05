@@ -36,6 +36,7 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.ReactionItem
 import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
@@ -45,7 +46,6 @@ import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.reactions.ReactionVoter
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -86,7 +86,12 @@ class ShowReactionsDialog(
         adapter?.list?.clear()
         if (chatMessage.reactions != null && chatMessage.reactions.isNotEmpty()) {
 
+            var firstEmoji = ""
             for ((emoji, amount) in chatMessage.reactions) {
+                if(firstEmoji.isEmpty()){
+                    firstEmoji = emoji
+                }
+
                 var emojiView = EmojiTextView(activity)
                 emojiView.setEmojiSize(DisplayUtils.convertDpToPixel(EMOJI_SIZE, context).toInt())
                 emojiView.text = emoji
@@ -103,6 +108,7 @@ class ShowReactionsDialog(
 
                 emojiView.setOnClickListener {
                     updateParticipantsForEmoji(chatMessage, emoji)
+                    emojiView.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
                 }
 
                 // TODO: Add proper implementation
@@ -118,20 +124,15 @@ class ShowReactionsDialog(
                     )
                 )
             }
+            updateParticipantsForEmoji(chatMessage, firstEmoji)
         }
         adapter?.notifyDataSetChanged()
     }
 
     private fun updateParticipantsForEmoji(chatMessage: ChatMessage, emoji: String?) {
+        adapter?.list?.clear()
 
         val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
-
-        Log.d(TAG, "emoji= " + emoji)
-
-        // TODO: fix encoding for emoji. set this in NcApi or here...
-
-        // var emojiForServer = StringEscapeUtils.escapeJava(emoji)
-        // Log.d(TAG, "emojiForServer= " + emojiForServer)            //     ?reaction=%5Cu2764%5CuFE0F
 
         ncApi.getParticipantsForEmojiReaction(
             credentials,
@@ -146,20 +147,17 @@ class ShowReactionsDialog(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ReactionsOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    Log.d(TAG, "onSubscribe")
                 }
 
                 override fun onNext(@NonNull reactionsOverall: ReactionsOverall) {
-                    Log.d(TAG, "onNext")
-
                     val reactionVoters: ArrayList<ReactionItem> = ArrayList()
                     if (reactionsOverall.ocs?.data != null) {
-                        for (reactionVoter in reactionsOverall.ocs?.data!!) {
+                        for (reactionVoter in reactionsOverall.ocs?.data!![emoji]!!) {
                             reactionVoters.add(ReactionItem(reactionVoter, emoji))
+
                         }
-                        // TODO: Test and check for data notification call need
                         adapter?.list?.addAll(reactionVoters)
-                        Log.e(TAG, "voters:" + reactionVoters.size)
+                        adapter?.notifyDataSetChanged()
                     } else {
                         Log.e(TAG, "no voters for this reaction")
                     }
@@ -170,7 +168,6 @@ class ShowReactionsDialog(
                 }
 
                 override fun onComplete() {
-                    Log.d(TAG, "onComplete")
                 }
             })
     }

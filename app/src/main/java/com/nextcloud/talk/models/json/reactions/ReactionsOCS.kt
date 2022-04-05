@@ -24,13 +24,14 @@ import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.generic.GenericOCS
 import kotlinx.android.parcel.Parcelize
+import java.util.HashMap
 
 @Parcelize
 @JsonObject
 data class ReactionsOCS(
     @JsonField(name = ["data"])
-    var data: List<ReactionVoter>?
+    var data: HashMap<String, List<ReactionVoter>>?
 ) : GenericOCS(), Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null)
+    constructor() : this(HashMap())
 }
