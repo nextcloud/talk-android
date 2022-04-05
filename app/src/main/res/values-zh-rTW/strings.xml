@@ -2,15 +2,25 @@
   <resources>
     <string name="account_icon">帳號圖示</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
+    <string name="audio_output_bluetooth">藍牙</string>
+    <string name="audio_output_speaker">揚聲器</string>
     <string name="avatar">頭像</string>
+    <string name="away">外出</string>
     <string name="choose_avatar_from_cloud">從雲端選擇頭像</string>
+    <string name="clear_status_message">清空狀態訊息</string>
+    <string name="clear_status_message_after">在……之後清空狀態訊息</string>
+    <string name="conversations">對話</string>
     <string name="delete_avatar">刪除頭像</string>
+    <string name="dnd">請勿打擾</string>
+    <string name="dontClear">不要清空</string>
     <string name="edit">編輯</string>
     <string name="encrypted">已加密</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4小時</string>
+    <string name="invisible">隱藏</string>
     <string name="lock_symbol">上鎖符號</string>
     <string name="menu_item_sort_by_date_newest_first">新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">舊的在前</string>
@@ -38,6 +48,7 @@
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_name">對話名稱</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
+    <string name="nc_call_notifications">通話通告</string>
     <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_call_ringing">鈴響聲</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
@@ -122,6 +133,7 @@
     <string name="nc_incoming_call">來電中....</string>
     <string name="nc_join_via_link">已一個連結加入</string>
     <string name="nc_join_via_web">經由網頁加入</string>
+    <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>
     <string name="nc_leave">結束對話</string>
     <string name="nc_license_summary">GNU產生公開授權，第3版</string>
     <string name="nc_license_title">授權</string>

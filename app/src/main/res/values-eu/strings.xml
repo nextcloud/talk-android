@@ -2,6 +2,8 @@
   <resources>
     <string name="account_icon">Kontuaren ikonoa</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Audio irteera</string>
     <string name="audio_output_phone">Telefonoa</string>
     <string name="audio_output_speaker">Bozgorailua</string>
     <string name="avatar">Avatarra</string>
