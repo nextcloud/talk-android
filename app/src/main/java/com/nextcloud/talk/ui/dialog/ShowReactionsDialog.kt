@@ -76,7 +76,7 @@ class ShowReactionsDialog(
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        adapter = ReactionsAdapter(this)
+        adapter = ReactionsAdapter(this, userEntity)
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)
         initEmojiReactions()
@@ -106,7 +106,17 @@ class ShowReactionsDialog(
                 }
 
                 // TODO: Add proper implementation
-                adapter?.list?.add(ReactionItem(ReactionVoter(null, null, "Marcel", 0), emoji))
+                adapter?.list?.add(
+                    ReactionItem(
+                        ReactionVoter(
+                            ReactionVoter.ReactionActorType.USERS,
+                            "marcel",
+                            "Marcel",
+                            0
+                        ),
+                        emoji
+                    )
+                )
             }
         }
         adapter?.notifyDataSetChanged()
