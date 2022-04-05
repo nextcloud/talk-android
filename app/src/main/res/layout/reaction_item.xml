@@ -22,14 +22,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="48dp">
+    android:layout_height="wrap_content">
 
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/avatar"
         android:layout_width="@dimen/avatar_size"
         android:layout_height="@dimen/avatar_size"
         android:layout_gravity="center_vertical"
-        android:layout_marginEnd="@dimen/standard_margin"
+        android:layout_margin="@dimen/standard_margin"
         app:roundAsCircle="true" />
 
     <TextView
@@ -47,8 +47,10 @@
         android:id="@+id/reaction"
         android:layout_width="48dp"
         android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:textSize="25sp"
+        android:textSize="24sp"
+        android:layout_marginEnd="@dimen/standard_half_margin"
         tools:text="@string/default_emoji" />
 
 </LinearLayout>

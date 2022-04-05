@@ -20,14 +20,69 @@
 
 package com.nextcloud.talk.adapters
 
+import android.text.TextUtils
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.interfaces.DraweeController
+import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ReactionItemBinding
+import com.nextcloud.talk.models.json.reactions.ReactionVoter
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.DisplayUtils
 
-class ReactionsViewHolder(private val binding: ReactionItemBinding) : RecyclerView.ViewHolder(binding.root) {
+class ReactionsViewHolder(
+    private val binding: ReactionItemBinding,
+    private val baseUrl: String?
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(reactionItem: ReactionItem, clickListener: ReactionItemClickListener) {
         binding.root.setOnClickListener { clickListener.onClick(reactionItem) }
         binding.reaction.text = reactionItem.reaction
         binding.name.text = reactionItem.reactionVoter.actorDisplayName
+
+        if (baseUrl != null && baseUrl.isNotEmpty()) {
+            loadAvatar(reactionItem)
+        }
+    }
+
+    private fun loadAvatar(reactionItem: ReactionItem) {
+        if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.GUESTS) {
+            var displayName = sharedApplication?.resources?.getString(R.string.nc_guest)
+            if (!TextUtils.isEmpty(reactionItem.reactionVoter.actorDisplayName)) {
+                displayName = reactionItem.reactionVoter.actorDisplayName!!
+            }
+            val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
+                .setOldController(binding.avatar.controller)
+                .setAutoPlayAnimations(true)
+                .setImageRequest(
+                    DisplayUtils.getImageRequestForUrl(
+                        ApiUtils.getUrlForGuestAvatar(
+                            baseUrl,
+                            displayName,
+                            false
+                        ),
+                        null
+                    )
+                )
+                .build()
+            binding.avatar.controller = draweeController
+        } else if (reactionItem.reactionVoter.actorType == ReactionVoter.ReactionActorType.USERS) {
+            val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
+                .setOldController(binding.avatar.controller)
+                .setAutoPlayAnimations(true)
+                .setImageRequest(
+                    DisplayUtils.getImageRequestForUrl(
+                        ApiUtils.getUrlForAvatar(
+                            baseUrl,
+                            reactionItem.reactionVoter.actorId,
+                            false
+                        ),
+                        null
+                    )
+                )
+                .build()
+            binding.avatar.controller = draweeController
+        }
     }
 }
