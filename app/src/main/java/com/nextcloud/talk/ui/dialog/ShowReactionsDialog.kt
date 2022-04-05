@@ -36,7 +36,6 @@ import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.ReactionItem
 import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
@@ -85,7 +84,7 @@ class ShowReactionsDialog(
 
             var firstEmoji = ""
             for ((emoji, amount) in chatMessage.reactions) {
-                if(firstEmoji.isEmpty()){
+                if (firstEmoji.isEmpty()) {
                     firstEmoji = emoji
                 }
 
@@ -97,7 +96,12 @@ class ShowReactionsDialog(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
-                params.setMargins(0, 0, EMOJI_RIGHT_MARGIN, 0)
+                params.setMargins(
+                    DisplayUtils.convertDpToPixel(EMOJI_MARGIN, context).toInt(),
+                    0,
+                    DisplayUtils.convertDpToPixel(EMOJI_MARGIN, context).toInt(),
+                    0
+                )
                 params.gravity = Gravity.CENTER
                 emojiView.layoutParams = params
 
@@ -138,7 +142,6 @@ class ShowReactionsDialog(
                     if (reactionsOverall.ocs?.data != null) {
                         for (reactionVoter in reactionsOverall.ocs?.data!![emoji]!!) {
                             reactionVoters.add(ReactionItem(reactionVoter, emoji))
-
                         }
                         adapter?.list?.addAll(reactionVoters)
                         adapter?.notifyDataSetChanged()
@@ -152,13 +155,14 @@ class ShowReactionsDialog(
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
 
     override fun onClick(reactionItem: ReactionItem) {
         Log.d(TAG, "onClick(reactionItem: ReactionItem): " + reactionItem.reaction)
-        // TODO: implement removal of users reaction,
+        // TODO implement removal of users reaction,
         //  ownership needs to be checked, so only owned
         //  reactions can be removed upon click
         dismiss()
@@ -166,7 +170,7 @@ class ShowReactionsDialog(
 
     companion object {
         const val TAG = "ShowReactionsDialog"
-        const val EMOJI_RIGHT_MARGIN: Int = 12
+        const val EMOJI_MARGIN: Float = 8F
         const val EMOJI_SIZE: Float = 30F
     }
 }

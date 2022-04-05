@@ -32,7 +32,7 @@ data class Status(
     var userId: String?,
     @JsonField(name = ["message"])
     var message: String?,
-    /* TODO: Change to enum */
+    /* TODO Change to enum */
     @JsonField(name = ["messageId"])
     var messageId: String?,
     @JsonField(name = ["messageIsPredefined"])
@@ -41,7 +41,7 @@ data class Status(
     var icon: String?,
     @JsonField(name = ["clearAt"])
     var clearAt: Long = 0,
-    /* TODO: Change to enum */
+    /* TODO Change to enum */
     @JsonField(name = ["status"])
     var status: String = "offline",
     @JsonField(name = ["statusIsUserDefined"])

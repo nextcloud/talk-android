@@ -243,7 +243,7 @@ public interface AppPreferences {
     @KeyByString("phone_book_integration") 
     void setPhoneBookIntegration(boolean value);
 
-    // TODO: Remove in 13.0.0
+    // TODO Remove in 13.0.0
     @KeyByString("link_previews")
     @RemoveMethod
     void removeLinkPreviews();
