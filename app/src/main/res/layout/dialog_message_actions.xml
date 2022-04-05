@@ -23,7 +23,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_bottom_sheet"
     android:orientation="vertical"
     android:paddingStart="@dimen/standard_padding"
     android:paddingEnd="@dimen/standard_padding"
@@ -125,7 +124,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_content_copy"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_text_copy_message"
@@ -156,7 +155,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_eye_off"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_text_mark_as_unread"
@@ -187,7 +186,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_share_action"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_text_forward_message"
@@ -218,7 +217,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_reply"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_text_reply_to_message"
@@ -249,7 +248,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_reply"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_text_reply_privately"
@@ -280,7 +279,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_delete"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/menu_text_delete_message"
