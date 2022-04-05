@@ -49,11 +49,11 @@
 
         <ImageView
             android:id="@+id/audio_output_bluetooth_icon"
-            android:layout_width="11dp"
-            android:layout_height="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_bluetooth_audio_24"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon_inverse" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_bluetooth_text"
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_volume_up_white_24dp"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon_inverse" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_speaker_text"
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_phone_in_talk_24"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon_inverse" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_earspeaker_text"
@@ -146,7 +146,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@null"
             android:src="@drawable/ic_baseline_headset_mic_24"
-            app:tint="@color/grey_600" />
+            app:tint="@color/high_emphasis_menu_icon_inverse" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/audio_output_wired_headset_text"
