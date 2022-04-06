@@ -85,7 +85,7 @@
     <color name="bg_message_list_outcoming_bubble">@color/colorPrimary</color>
     <color name="bg_message_list_outcoming_bubble_deleted">#800082C9</color>
 
-    <color name="bg_bottom_sheet">#46ffffff</color>
+    <color name="bg_bottom_sheet">#FFFFFF</color>
     <color name="bg_call_screen_dialog">#121212</color>
     <color name="call_screen_text">#ffffffff</color>
 
