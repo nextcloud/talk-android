@@ -361,6 +361,8 @@
     <string name="status_message">Poruka statusa</string>
     <string name="take_photo">Snimi fotografiju</string>
     <string name="take_photo_send">Pošalji</string>
+    <string name="take_photo_switch_camera">Promijeni kameru</string>
+    <string name="take_photo_toggle_torch">Uključi/isključi svjetlo</string>
     <string name="thirtyMinutes">30 minuta</string>
     <string name="thisWeek">Ovaj tjedan</string>
     <string name="today">Danas</string>
