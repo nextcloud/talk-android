@@ -45,6 +45,7 @@ import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -56,11 +57,11 @@ import io.reactivex.schedulers.Schedulers
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
-    val activity: Activity,
-    val currentConversation: Conversation?,
-    val chatMessage: ChatMessage,
-    val userEntity: UserEntity?,
-    val ncApi: NcApi
+    private val activity: Activity,
+    private val currentConversation: Conversation?,
+    private val chatMessage: ChatMessage,
+    private val userEntity: UserEntity?,
+    private val ncApi: NcApi
 ) : BottomSheetDialog(activity), ReactionItemClickListener {
 
     private lateinit var binding: DialogMessageReactionsBinding
@@ -162,10 +163,44 @@ class ShowReactionsDialog(
 
     override fun onClick(reactionItem: ReactionItem) {
         Log.d(TAG, "onClick(reactionItem: ReactionItem): " + reactionItem.reaction)
-        // TODO implement removal of users reaction,
-        //  ownership needs to be checked, so only owned
-        //  reactions can be removed upon click
+
+        if (reactionItem.reactionVoter.actorId.equals(userEntity!!.userId)){
+            deleteReaction(chatMessage, reactionItem.reaction!!)
+        }
+
         dismiss()
+    }
+
+    private fun deleteReaction(message: ChatMessage, emoji: String) {
+        val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
+
+        ncApi.deleteReaction(
+            credentials,
+            ApiUtils.getUrlForMessageReaction(
+                userEntity?.baseUrl,
+                currentConversation!!.token,
+                message.id
+            ),
+            emoji
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                    Log.d(TAG, "deleted reaction: $emoji")
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error while deleting reaction: $emoji")
+                }
+
+                override fun onComplete() {
+                    dismiss()
+                }
+            })
     }
 
     companion object {
