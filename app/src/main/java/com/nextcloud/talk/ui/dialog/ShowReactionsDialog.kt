@@ -29,27 +29,26 @@ package com.nextcloud.talk.ui.dialog
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.nextcloud.talk.adapters.ReactionItem
 import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
+import com.nextcloud.talk.databinding.ItemReactionsTabBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
-import com.vanniktech.emoji.EmojiTextView
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -57,7 +56,7 @@ import io.reactivex.schedulers.Schedulers
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
-    private val activity: Activity,
+    activity: Activity,
     private val currentConversation: Conversation?,
     private val chatMessage: ChatMessage,
     private val userEntity: UserEntity?,
@@ -89,31 +88,34 @@ class ShowReactionsDialog(
                     firstEmoji = emoji
                 }
 
-                val emojiView = EmojiTextView(activity)
-                emojiView.setEmojiSize(DisplayUtils.convertDpToPixel(EMOJI_SIZE, context).toInt())
-                emojiView.text = emoji
+                val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
 
-                val params = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(
-                    DisplayUtils.convertDpToPixel(EMOJI_MARGIN, context).toInt(),
-                    0,
-                    DisplayUtils.convertDpToPixel(EMOJI_MARGIN, context).toInt(),
-                    0
-                )
-                params.gravity = Gravity.CENTER
-                emojiView.layoutParams = params
+                val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
+                itemBinding.reactionTab.tag = emoji
+                itemBinding.reactionIcon.text = emoji
+                itemBinding.reactionCount.text = amount.toString()
+                tab.customView = itemBinding.root
 
-                binding.emojiReactionsWrapper.addView(emojiView)
-
-                emojiView.setOnClickListener {
-                    updateParticipantsForEmoji(chatMessage, emoji)
-                    // emojiView.setBackgroundColor(context.resources.getColor(R.color.colorPrimary))
-                }
+                binding.emojiReactionsTabs.addTab(tab)
             }
             updateParticipantsForEmoji(chatMessage, firstEmoji)
+
+            binding.emojiReactionsTabs.getTabAt(0)?.select()
+
+            binding.emojiReactionsTabs.addOnTabSelectedListener(object : OnTabSelectedListener {
+                override fun onTabSelected(tab: TabLayout.Tab) {
+                    // called when a tab is reselected
+                    updateParticipantsForEmoji(chatMessage, tab.customView?.tag as String?)
+                }
+
+                override fun onTabUnselected(tab: TabLayout.Tab) {
+                    // called when a tab is reselected
+                }
+
+                override fun onTabReselected(tab: TabLayout.Tab) {
+                    // called when a tab is reselected
+                }
+            })
         }
         adapter?.notifyDataSetChanged()
     }
@@ -162,9 +164,7 @@ class ShowReactionsDialog(
     }
 
     override fun onClick(reactionItem: ReactionItem) {
-        Log.d(TAG, "onClick(reactionItem: ReactionItem): " + reactionItem.reaction)
-
-        if (reactionItem.reactionVoter.actorId.equals(userEntity!!.userId)){
+        if (reactionItem.reactionVoter.actorId?.equals(userEntity?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
         }
 
@@ -205,7 +205,5 @@ class ShowReactionsDialog(
 
     companion object {
         const val TAG = "ShowReactionsDialog"
-        const val EMOJI_MARGIN: Float = 8F
-        const val EMOJI_SIZE: Float = 30F
     }
 }
