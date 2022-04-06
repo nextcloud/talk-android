@@ -2722,6 +2722,10 @@ class ChatController(args: Bundle) :
     }
 
     fun updateAdapterAfterSendReaction(message: ChatMessage, emoji: String) {
+        if (message.reactions == null){
+            message.reactions = HashMap()
+        }
+
         var amount = message.reactions[emoji]
         if (amount == null){
             amount = 0
