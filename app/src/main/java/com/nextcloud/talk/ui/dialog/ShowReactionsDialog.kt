@@ -122,9 +122,9 @@ class ShowReactionsDialog(
 
         val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
 
-        ncApi.getParticipantsForEmojiReaction(
+        ncApi.getReactions(
             credentials,
-            ApiUtils.getUrlForParticipantsForEmojiReaction(
+            ApiUtils.getUrlForMessageReaction(
                 userEntity?.baseUrl,
                 currentConversation!!.token,
                 chatMessage.id
