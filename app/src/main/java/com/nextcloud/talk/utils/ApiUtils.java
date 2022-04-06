@@ -442,9 +442,9 @@ public class ApiUtils {
         return baseUrl + ocsApiVersion + "/apps/user_status/api/v1/statuses";
     }
 
-    public static String getUrlForParticipantsForEmojiReaction(String baseUrl,
-                                                               String roomToken,
-                                                               String messageId) {
+    public static String getUrlForMessageReaction(String baseUrl,
+                                                  String roomToken,
+                                                  String messageId) {
         return baseUrl + ocsApiVersion + spreedApiVersion + "/reaction/" + roomToken + "/" + messageId;
     }
 

@@ -21,25 +21,35 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.NonNull
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.ApiUtils
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 class MessageActionsDialog(
     private val chatController: ChatController,
     private val message: ChatMessage,
     private val user: UserEntity?,
     private val currentConversation: Conversation?,
-    private val showMessageDeletionButton: Boolean
+    private val showMessageDeletionButton: Boolean,
+    private val ncApi: NcApi
 ) : BottomSheetDialog(chatController.activity!!) {
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
@@ -73,22 +83,22 @@ class MessageActionsDialog(
     private fun initEmojiBar() {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions")) {
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
-                dismiss()
+                sendReaction(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
             }
             dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
-                dismiss()
+                sendReaction(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
             }
             dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
-                dismiss()
+                sendReaction(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
             }
             dialogMessageActionsBinding.emojiHeart.setOnClickListener {
-                dismiss()
+                sendReaction(message, dialogMessageActionsBinding.emojiHeart.text.toString())
             }
             dialogMessageActionsBinding.emojiConfused.setOnClickListener {
-                dismiss()
+                sendReaction(message, dialogMessageActionsBinding.emojiConfused.text.toString())
             }
             dialogMessageActionsBinding.emojiSad.setOnClickListener {
-                dismiss()
+                sendReaction(message, dialogMessageActionsBinding.emojiSad.text.toString())
             }
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
                 dismiss()
@@ -180,7 +190,43 @@ class MessageActionsDialog(
         }
     }
 
+    private fun sendReaction(message: ChatMessage, emoji: String) {
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+
+        ncApi.sendReaction(
+            credentials,
+            ApiUtils.getUrlForMessageReaction(
+                user?.baseUrl,
+                currentConversation!!.token,
+                message.id
+            ),
+            emoji
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                    val statusCode = genericOverall.ocs.meta.statusCode
+                    if (statusCode == 200 || statusCode == 201) {
+                        chatController.updateAdapterAfterSendReaction(message, emoji)
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error while sending emoji")
+                }
+
+                override fun onComplete() {
+                    dismiss()
+                }
+            })
+    }
+
     companion object {
+        private const val TAG = "MessageActionsDialog"
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
     }

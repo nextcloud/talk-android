@@ -35,7 +35,7 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.vanniktech.emoji.EmojiEditText
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiThumbsUp"
             android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"
@@ -45,7 +45,7 @@
             android:text="@string/emoji_thumbsUp"
             android:textSize="24sp" />
 
-        <com.vanniktech.emoji.EmojiEditText
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiThumbsDown"
             android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"
@@ -55,7 +55,7 @@
             android:text="@string/emoji_thumbsDown"
             android:textSize="24sp" />
 
-        <com.vanniktech.emoji.EmojiEditText
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiHeart"
             android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"
@@ -65,7 +65,7 @@
             android:text="@string/default_emoji"
             android:textSize="24sp" />
 
-        <com.vanniktech.emoji.EmojiEditText
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiLaugh"
             android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"
@@ -75,7 +75,7 @@
             android:text="@string/emoji_heart"
             android:textSize="24sp" />
 
-        <com.vanniktech.emoji.EmojiEditText
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiConfused"
             android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"
@@ -85,7 +85,7 @@
             android:text="@string/emoji_confused"
             android:textSize="24sp" />
 
-        <com.vanniktech.emoji.EmojiEditText
+        <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiSad"
             android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"

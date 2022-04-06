@@ -2438,7 +2438,8 @@ class ChatController(args: Bundle) :
                     message,
                     conversationUser,
                     currentConversation,
-                    isShowMessageDeletionButton(message)
+                    isShowMessageDeletionButton(message),
+                    ncApi!!
                 ).show()
             }
         }
@@ -2718,6 +2719,15 @@ class ChatController(args: Bundle) :
             currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
         adapter?.update(messageTemp)
+    }
+
+    fun updateAdapterAfterSendReaction(message: ChatMessage, emoji: String) {
+        var amount = message.reactions[emoji]
+        if (amount == null){
+            amount = 0
+        }
+        message.reactions[emoji] = amount + 1
+        adapter?.update(message)
     }
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {

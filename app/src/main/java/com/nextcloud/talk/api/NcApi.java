@@ -490,8 +490,17 @@ public interface NcApi {
     @GET
     Observable<StatusesOverall> getUserStatuses(@Header("Authorization") String authorization, @Url String url);
 
+
+    @POST
+    Observable<GenericOverall> sendReaction(@Header("Authorization") String authorization, @Url String url,
+                                 @Query("reaction") String reaction);
+
+    @DELETE
+    Observable<GenericOverall> deleteReaction(@Header("Authorization") String authorization, @Url String url,
+                                              @Query("reaction") String reaction);
+
     @GET
-    Observable<ReactionsOverall> getParticipantsForEmojiReaction(@Header("Authorization") String authorization,
-                                                                 @Url String url,
-                                                                 @Query("reaction") String reaction);
+    Observable<ReactionsOverall> getReactions(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Query("reaction") String reaction);
 }
