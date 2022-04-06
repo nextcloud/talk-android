@@ -61,7 +61,6 @@ class MessageActionsDialog(
 
     private lateinit var popup: EmojiPopup
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dialogMessageActionsBinding = DialogMessageActionsBinding.inflate(layoutInflater)
@@ -87,6 +86,11 @@ class MessageActionsDialog(
                 BuildConfig.DEBUG
         )
 
+        initEmojiMore()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initEmojiMore() {
         dialogMessageActionsBinding.emojiMore.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
                 if (popup.isShowing) {
@@ -247,11 +251,12 @@ class MessageActionsDialog(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(@NonNull genericOverall: GenericOverall) {
                     val statusCode = genericOverall.ocs.meta.statusCode
-                    if (statusCode == 200 || statusCode == 201) {
+                    if (statusCode == HTTP_OK || statusCode == HTTP_CREATED) {
                         chatController.updateAdapterAfterSendReaction(message, emoji)
                     }
                 }
@@ -270,5 +275,7 @@ class MessageActionsDialog(
         private const val TAG = "MessageActionsDialog"
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
+        private const val HTTP_OK: Int = 200
+        private const val HTTP_CREATED: Int = 201
     }
 }

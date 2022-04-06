@@ -138,6 +138,7 @@ class ShowReactionsDialog(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ReactionsOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(@NonNull reactionsOverall: ReactionsOverall) {
@@ -187,6 +188,7 @@ class ShowReactionsDialog(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
+                    // unused atm
                 }
 
                 override fun onNext(@NonNull genericOverall: GenericOverall) {
