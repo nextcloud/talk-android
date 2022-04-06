@@ -112,7 +112,7 @@ class MessageActionsDialog(
                 dialogMessageActionsBinding.emojiMore.clearFocus()
                 dialogMessageActionsBinding.messageActions.visibility = View.VISIBLE
 
-                val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as
+                val imm: InputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
                     InputMethodManager
                 imm.hideSoftInputFromWindow(dialogMessageActionsBinding.emojiMore.windowToken, 0)
             }
@@ -257,7 +257,7 @@ class MessageActionsDialog(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while sending emoji")
+                    Log.e(TAG, "error while sending reaction")
                 }
 
                 override fun onComplete() {
