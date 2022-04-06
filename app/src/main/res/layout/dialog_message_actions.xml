@@ -24,14 +24,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/standard_padding"
-    android:paddingEnd="@dimen/standard_padding"
     android:paddingBottom="@dimen/standard_half_padding">
 
     <LinearLayout
         android:id="@+id/emojiBar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_sheet_item_height"
+        android:layout_marginStart="@dimen/standard_eighth_margin"
+        android:layout_marginEnd="@dimen/zero"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -97,19 +97,23 @@
 
         <com.vanniktech.emoji.EmojiEditText
             android:id="@+id/emojiMore"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/activity_row_layout_height"
             android:layout_height="@dimen/activity_row_layout_height"
             android:layout_weight="1"
-            android:contentDescription="@string/emoji_more"
             android:background="@android:color/transparent"
-            android:drawableStart="@drawable/ic_dots_horizontal"
-            android:layout_marginStart="10dp" />
+            android:contentDescription="@string/emoji_more"
+            android:drawableEnd="@drawable/ic_dots_horizontal"
+            android:paddingStart="@dimen/zero"
+            android:paddingEnd="@dimen/standard_padding" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/message_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+
         android:orientation="vertical">
 
         <LinearLayout
