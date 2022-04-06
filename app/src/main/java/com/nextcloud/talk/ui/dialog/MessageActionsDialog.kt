@@ -20,10 +20,14 @@
 
 package com.nextcloud.talk.ui.dialog
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.NonNull
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -38,6 +42,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.vanniktech.emoji.EmojiPopup
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -50,10 +55,13 @@ class MessageActionsDialog(
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean,
     private val ncApi: NcApi
-) : BottomSheetDialog(chatController.activity!!) {
+) : BottomSheetDialog(chatController.activity!!, R.style.BottomSheetDialogThemeNoFloating) {
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
+    private lateinit var popup: EmojiPopup
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dialogMessageActionsBinding = DialogMessageActionsBinding.inflate(layoutInflater)
@@ -78,6 +86,39 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
                 BuildConfig.DEBUG
         )
+
+        dialogMessageActionsBinding.emojiMore.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (popup.isShowing) {
+                    popup.dismiss()
+                } else {
+                    popup.show()
+                }
+            }
+            true
+        }
+
+        popup = EmojiPopup.Builder
+            .fromRootView(dialogMessageActionsBinding.root)
+            .setOnEmojiPopupShownListener {
+                dialogMessageActionsBinding.emojiMore.clearFocus()
+                dialogMessageActionsBinding.messageActions.visibility = View.GONE
+            }
+            .setOnEmojiClickListener { _, imageView ->
+                popup.dismiss()
+                sendReaction(message, imageView.unicode)
+            }
+            .setOnEmojiPopupDismissListener {
+                dialogMessageActionsBinding.emojiMore.clearFocus()
+                dialogMessageActionsBinding.messageActions.visibility = View.VISIBLE
+
+                val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as
+                    InputMethodManager
+                imm.hideSoftInputFromWindow(dialogMessageActionsBinding.emojiMore.windowToken, 0)
+            }
+            .build(dialogMessageActionsBinding.emojiMore)
+        dialogMessageActionsBinding.emojiMore.disableKeyboardInput(popup)
+        dialogMessageActionsBinding.emojiMore.forceSingleEmoji()
     }
 
     private fun initEmojiBar() {
