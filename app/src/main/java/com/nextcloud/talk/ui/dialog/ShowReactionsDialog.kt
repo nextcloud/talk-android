@@ -54,6 +54,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.Collections
+import java.util.Comparator
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
@@ -161,6 +163,8 @@ class ShowReactionsDialog(
                             }
                         }
 
+                        Collections.sort(reactionVoters, ReactionComparator(userEntity?.userId))
+
                         adapter?.list?.addAll(reactionVoters)
                         adapter?.notifyDataSetChanged()
                     } else {
@@ -221,5 +225,123 @@ class ShowReactionsDialog(
 
     companion object {
         const val TAG = "ShowReactionsDialog"
+    }
+
+    class ReactionComparator(val activeUser: String?) : Comparator<ReactionItem> {
+        override fun compare(reactionItem1: ReactionItem?, reactionItem2: ReactionItem?): Int {
+            // sort by emoji, own account, display-name, timestamp, actor-id
+
+            if (reactionItem1 == null && reactionItem2 == null) {
+                return 0
+            }
+            if (reactionItem1 == null) {
+                return -1
+            }
+            if (reactionItem2 == null) {
+                return 1
+            }
+
+            // emoji
+            val reaction = StringComparator().compare(reactionItem1.reaction, reactionItem2.reaction)
+            if (reaction != 0) {
+                return reaction
+            }
+
+            // own account
+            val ownAccount = compareOwnAccount(
+                activeUser,
+                reactionItem1.reactionVoter.actorId,
+                reactionItem2.reactionVoter.actorId
+            )
+
+            if (ownAccount != 0) {
+                return ownAccount
+            }
+
+            // display-name
+            val displayName = StringComparator()
+                .compare(
+                    reactionItem1.reactionVoter.actorDisplayName,
+                    reactionItem2.reactionVoter.actorDisplayName
+                )
+
+            if (displayName != 0) {
+                return displayName
+            }
+
+            // timestamp
+            val timestamp = LongComparator()
+                .compare(
+                    reactionItem1.reactionVoter.timestamp,
+                    reactionItem2.reactionVoter.timestamp
+                )
+
+            if (timestamp != 0) {
+                return timestamp
+            }
+
+            // actor-id
+            val actorId = StringComparator()
+                .compare(
+                    reactionItem1.reactionVoter.actorId,
+                    reactionItem2.reactionVoter.actorId
+                )
+
+            if (actorId != 0) {
+                return actorId
+            }
+
+            return 0
+        }
+
+        fun compareOwnAccount(activeUser: String?, actorId1: String?, actorId2: String?): Int {
+            val reactionVote1Active = activeUser == actorId1
+            val reactionVote2Active = activeUser == actorId2
+
+            if (!reactionVote1Active && !reactionVote2Active || reactionVote1Active && reactionVote2Active) {
+                return 0
+            }
+
+            if (activeUser == null) {
+                return 0
+            }
+
+            if (reactionVote1Active) {
+                return 1
+            }
+            if (reactionVote2Active) {
+                return -1
+            }
+
+            return 0
+        }
+
+        internal class StringComparator : Comparator<String?> {
+            override fun compare(obj1: String?, obj2: String?): Int {
+                if (obj1 === obj2) {
+                    return 0
+                }
+                if (obj1 == null) {
+                    return -1
+                }
+                return if (obj2 == null) {
+                    1
+                } else obj1.lowercase().compareTo(obj2.lowercase())
+            }
+        }
+
+        internal class LongComparator : Comparator<Long?> {
+            override fun compare(obj1: Long?, obj2: Long?): Int {
+                if (obj1 === obj2) {
+                    return 0
+                }
+                if (obj1 == null) {
+                    return -1
+                }
+                return if (obj2 == null) {
+                    1
+                } else obj1.compareTo(obj2)
+            }
+        }
     }
 }
