@@ -1,6 +1,7 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -11,6 +12,10 @@ import com.vanniktech.emoji.EmojiTextView
 
 class Reaction {
     fun showReactions(message: ChatMessage, binding: ReactionsInsideMessageBinding, context: Context) {
+
+        // val inflater = LayoutInflater.from(context)
+        // val binding = ReactionsInsideMessageBinding.inflate(inflater)
+
         binding.reactionsEmojiWrapper.removeAllViews()
         if (message.reactions != null && message.reactions.isNotEmpty()) {
 
