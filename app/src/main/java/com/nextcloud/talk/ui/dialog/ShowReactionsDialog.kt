@@ -100,6 +100,16 @@ class ShowReactionsDialog(
                 binding.emojiReactionsTabs.addTab(tab)
             }
 
+            val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
+
+            val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
+            itemBinding.reactionTab.tag = TAG_ALL
+            itemBinding.reactionIcon.text = context.getString(R.string.reactions_tab_all)
+            itemBinding.reactionCount.text = reactionsTotal.toString()
+            tab.customView = itemBinding.root
+
+            binding.emojiReactionsTabs.addTab(tab, 0)
+
             binding.emojiReactionsTabs.getTabAt(0)?.select()
 
             binding.emojiReactionsTabs.addOnTabSelectedListener(object : OnTabSelectedListener {
@@ -116,16 +126,6 @@ class ShowReactionsDialog(
                     // called when a tab is reselected
                 }
             })
-
-            val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
-
-            val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
-            itemBinding.reactionTab.tag = TAG_ALL
-            itemBinding.reactionIcon.text = context.getString(R.string.reactions_tab_all)
-            itemBinding.reactionCount.text = reactionsTotal.toString()
-            tab.customView = itemBinding.root
-
-            binding.emojiReactionsTabs.addTab(tab, 0)
 
             updateParticipantsForEmoji(chatMessage, TAG_ALL)
         }
