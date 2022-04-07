@@ -1,3 +1,26 @@
+/*
+ * Nextcloud Talk application
+ *
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Parts related to account import were either copied from or inspired by the great work done by David Luhmer at:
+ * https://github.com/nextcloud/ownCloud-Account-Importer
+ */
+
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
@@ -53,6 +76,6 @@ class Reaction {
         const val MAX_EMOJIS_TO_DISPLAY = 4
         const val EMOJI_START_MARGIN: Float = 2F
         const val EMOJI_END_MARGIN: Float = 8F
-        const val EMOJI_MORE = "..."
+        const val EMOJI_MORE = "…"
     }
 }

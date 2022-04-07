@@ -70,7 +70,7 @@ class ShowReactionsDialog(
 
     private var adapter: ReactionsAdapter? = null
 
-    private val TAG_ALL: String? = null
+    private val tagAll: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,7 +103,7 @@ class ShowReactionsDialog(
             val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
 
             val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
-            itemBinding.reactionTab.tag = TAG_ALL
+            itemBinding.reactionTab.tag = tagAll
             itemBinding.reactionIcon.text = context.getString(R.string.reactions_tab_all)
             itemBinding.reactionCount.text = reactionsTotal.toString()
             tab.customView = itemBinding.root
@@ -127,7 +127,7 @@ class ShowReactionsDialog(
                 }
             })
 
-            updateParticipantsForEmoji(chatMessage, TAG_ALL)
+            updateParticipantsForEmoji(chatMessage, tagAll)
         }
         adapter?.notifyDataSetChanged()
     }
@@ -228,6 +228,7 @@ class ShowReactionsDialog(
     }
 
     class ReactionComparator(val activeUser: String?) : Comparator<ReactionItem> {
+        @Suppress("ReturnCount")
         override fun compare(reactionItem1: ReactionItem?, reactionItem2: ReactionItem?): Int {
             // sort by emoji, own account, display-name, timestamp, actor-id
 
@@ -294,6 +295,7 @@ class ShowReactionsDialog(
             return 0
         }
 
+        @Suppress("ReturnCount")
         fun compareOwnAccount(activeUser: String?, actorId1: String?, actorId2: String?): Int {
             val reactionVote1Active = activeUser == actorId1
             val reactionVote2Active = activeUser == actorId2
@@ -317,6 +319,7 @@ class ShowReactionsDialog(
         }
 
         internal class StringComparator : Comparator<String?> {
+            @Suppress("ReturnCount")
             override fun compare(obj1: String?, obj2: String?): Int {
                 if (obj1 === obj2) {
                     return 0
@@ -331,6 +334,7 @@ class ShowReactionsDialog(
         }
 
         internal class LongComparator : Comparator<Long?> {
+            @Suppress("ReturnCount")
             override fun compare(obj1: Long?, obj2: Long?): Int {
                 if (obj1 === obj2) {
                     return 0
