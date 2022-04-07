@@ -29,7 +29,6 @@ package com.nextcloud.talk.ui.dialog
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -49,14 +48,12 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.reactions.ReactionVoter
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import java.util.HashMap
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
