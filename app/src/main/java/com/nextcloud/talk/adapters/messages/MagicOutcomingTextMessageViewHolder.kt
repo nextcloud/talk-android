@@ -61,6 +61,8 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     @Inject
     var context: Context? = null
 
+    lateinit var reactionsInterface: ReactionsInterface
+
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -118,6 +120,12 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+
+        Reaction().showReactions(message, binding.reactions, context!!)
+
+        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+            reactionsInterface.onClickReactions(message)
+        }
     }
 
     private fun processParentMessage(message: ChatMessage) {
@@ -202,6 +210,10 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
             }
         }
         return messageString1
+    }
+
+    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
+        this.reactionsInterface = reactionsInterface
     }
 
     companion object {
