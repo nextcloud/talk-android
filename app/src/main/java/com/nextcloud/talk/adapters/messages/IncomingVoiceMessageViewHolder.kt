@@ -309,7 +309,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         }
     }
 
-    fun assignAdapter(voiceMessageInterface: VoiceMessageInterface) {
+    fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {
         this.voiceMessageInterface = voiceMessageInterface
     }
 
