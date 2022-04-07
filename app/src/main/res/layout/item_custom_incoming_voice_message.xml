@@ -108,5 +108,9 @@
                     app:layout_alignSelf="center"
                     tools:text="12:38"/>
 
+            <include
+                android:id="@+id/reactions"
+                layout="@layout/reactions_inside_message" />
+
         </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

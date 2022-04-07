@@ -76,5 +76,9 @@
             android:contentDescription="@null"
             app:layout_alignSelf="center" />
 
+        <include
+            android:id="@+id/reactions"
+            layout="@layout/reactions_inside_message" />
+
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>

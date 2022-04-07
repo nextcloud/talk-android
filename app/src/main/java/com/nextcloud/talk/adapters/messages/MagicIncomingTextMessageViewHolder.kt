@@ -36,9 +36,6 @@ import android.text.SpannableString
 import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
-import android.widget.RelativeLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
@@ -57,7 +54,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
-import com.vanniktech.emoji.EmojiTextView
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -126,44 +122,10 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
 
-        binding.reactionsEmojiWrapper.removeAllViews()
-        if (message.reactions != null && message.reactions.isNotEmpty()) {
+        Reaction().showReactions(message, binding.reactions, context!!)
 
-            var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
-            val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
-            for ((emoji, amount) in message.reactions) {
-                val reactionEmoji = EmojiTextView(context)
-                reactionEmoji.text = emoji
-
-                val reactionAmount = TextView(context)
-                reactionAmount.text = amount.toString()
-
-                val params = RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(
-                    DisplayUtils.convertDpToPixel(EMOJI_START_MARGIN, context).toInt(),
-                    0,
-                    DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt(),
-                    0
-                )
-                reactionAmount.layoutParams = params
-
-                binding.reactionsEmojiWrapper.addView(reactionEmoji)
-                binding.reactionsEmojiWrapper.addView(reactionAmount)
-
-                remainingEmojisToDisplay--
-                if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
-                    val infoAboutMoreEmojis = TextView(context)
-                    infoAboutMoreEmojis.text = "..."
-                    binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
-                    break
-                }
-            }
-            binding.reactionsEmojiWrapper.setOnClickListener {
-                reactionsInterface.onClickReactions(message)
-            }
+        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+            reactionsInterface.onClickReactions(message)
         }
     }
 
@@ -306,14 +268,11 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         return messageStringInternal
     }
 
-    fun assignAdapter(reactionsInterface: ReactionsInterface) {
+    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
         this.reactionsInterface = reactionsInterface
     }
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
-        const val MAX_EMOJIS_TO_DISPLAY = 4
-        const val EMOJI_START_MARGIN: Float = 2F
-        const val EMOJI_END_MARGIN: Float = 8F
     }
 }
