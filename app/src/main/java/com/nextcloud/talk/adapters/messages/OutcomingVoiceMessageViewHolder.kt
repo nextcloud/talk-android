@@ -282,7 +282,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         }
     }
 
-    fun assignAdapter(voiceMessageInterface: VoiceMessageInterface) {
+    fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {
         this.voiceMessageInterface = voiceMessageInterface
     }
 
