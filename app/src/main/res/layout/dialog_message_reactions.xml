@@ -27,11 +27,16 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reactions_list"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/reaction_item" />
+        android:layout_height="300dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reactions_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/reaction_item" />
+    </LinearLayout>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/emoji_reactions_tabs"
