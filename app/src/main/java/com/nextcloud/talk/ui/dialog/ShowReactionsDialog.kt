@@ -29,6 +29,7 @@ package com.nextcloud.talk.ui.dialog
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,7 @@ import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
+import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.ReactionItem
 import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
@@ -47,12 +49,14 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.reactions.ReactionVoter
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.util.HashMap
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
@@ -66,6 +70,8 @@ class ShowReactionsDialog(
     private lateinit var binding: DialogMessageReactionsBinding
 
     private var adapter: ReactionsAdapter? = null
+
+    private val TAG_ALL: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,13 +87,9 @@ class ShowReactionsDialog(
     private fun initEmojiReactions() {
         adapter?.list?.clear()
         if (chatMessage.reactions != null && chatMessage.reactions.isNotEmpty()) {
-
-            var firstEmoji = ""
+            var reactionsTotal = 0
             for ((emoji, amount) in chatMessage.reactions) {
-                if (firstEmoji.isEmpty()) {
-                    firstEmoji = emoji
-                }
-
+                reactionsTotal = reactionsTotal.plus(amount as Int)
                 val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
 
                 val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
@@ -98,7 +100,6 @@ class ShowReactionsDialog(
 
                 binding.emojiReactionsTabs.addTab(tab)
             }
-            updateParticipantsForEmoji(chatMessage, firstEmoji)
 
             binding.emojiReactionsTabs.getTabAt(0)?.select()
 
@@ -116,6 +117,18 @@ class ShowReactionsDialog(
                     // called when a tab is reselected
                 }
             })
+
+            val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
+
+            val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
+            itemBinding.reactionTab.tag = TAG_ALL
+            itemBinding.reactionIcon.text = context.getString(R.string.reactions_tab_all)
+            itemBinding.reactionCount.text = reactionsTotal.toString()
+            tab.customView = itemBinding.root
+
+            binding.emojiReactionsTabs.addTab(tab, 0)
+
+            updateParticipantsForEmoji(chatMessage, TAG_ALL)
         }
         adapter?.notifyDataSetChanged()
     }
@@ -144,9 +157,13 @@ class ShowReactionsDialog(
                 override fun onNext(@NonNull reactionsOverall: ReactionsOverall) {
                     val reactionVoters: ArrayList<ReactionItem> = ArrayList()
                     if (reactionsOverall.ocs?.data != null) {
-                        for (reactionVoter in reactionsOverall.ocs?.data!![emoji]!!) {
-                            reactionVoters.add(ReactionItem(reactionVoter, emoji))
+                        val map = reactionsOverall.ocs?.data
+                        for (key in map!!.keys) {
+                            for (reactionVoter in reactionsOverall.ocs?.data!![key]!!) {
+                                reactionVoters.add(ReactionItem(reactionVoter, key))
+                            }
                         }
+
                         adapter?.list?.addAll(reactionVoters)
                         adapter?.notifyDataSetChanged()
                     } else {
