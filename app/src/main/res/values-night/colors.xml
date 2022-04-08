@@ -60,7 +60,7 @@
 
     <!-- Chat window incoming message text & informational -->
     <color name="bg_bottom_sheet">#121212</color>
-    <color name="bg_message_list_incoming_bubble">#1CFFFFFF</color>
+    <color name="bg_message_list_incoming_bubble">#2A2A2A</color>
     <color name="bg_message_list_incoming_bubble_deleted">#14FFFFFF</color>
 
     <color name="textColorMaxContrast">#8c8c8c</color>
