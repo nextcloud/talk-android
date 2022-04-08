@@ -49,13 +49,16 @@ class Reaction {
             for ((emoji, amount) in message.reactions) {
                 val reactionEmoji = EmojiTextView(context)
                 reactionEmoji.text = emoji
+                binding.reactionsEmojiWrapper.addView(reactionEmoji)
 
                 val reactionAmount = TextView(context)
-                if (useLightColorForText){
-                    reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.nc_grey))
-                }
 
-                reactionAmount.text = amount.toString()
+                if (amount > 1) {
+                    if (useLightColorForText) {
+                        reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.nc_grey))
+                    }
+                    reactionAmount.text = amount.toString()
+                }
 
                 val params = RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -68,9 +71,8 @@ class Reaction {
                     0
                 )
                 reactionAmount.layoutParams = params
-
-                binding.reactionsEmojiWrapper.addView(reactionEmoji)
                 binding.reactionsEmojiWrapper.addView(reactionAmount)
+
 
                 remainingEmojisToDisplay--
                 if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
