@@ -110,6 +110,7 @@ import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
+import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
 import com.nextcloud.talk.adapters.messages.ReactionsInterface
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
@@ -206,7 +207,8 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
     ContentChecker<ChatMessage>,
     VoiceMessageInterface,
-    ReactionsInterface {
+    ReactionsInterface,
+    PreviewMessageInterface {
 
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
@@ -2431,6 +2433,14 @@ class ChatController(args: Bundle) :
     }
 
     override fun onMessageViewLongClick(view: View?, message: IMessage?) {
+        openMessageActionsDialog(message)
+    }
+
+    override fun onPreviewMessageLongClick(chatMessage: ChatMessage) {
+        openMessageActionsDialog(chatMessage)
+    }
+
+    private fun openMessageActionsDialog(message: IMessage?) {
         if (hasVisibleItems(message as ChatMessage)) {
             activity?.let {
                 MessageActionsDialog(
@@ -2717,6 +2727,7 @@ class ChatController(args: Bundle) :
 
         messageTemp.isOneToOneConversation =
             currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
     }

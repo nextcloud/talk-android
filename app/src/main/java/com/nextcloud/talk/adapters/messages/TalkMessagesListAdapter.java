@@ -59,6 +59,9 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         } else if (holder instanceof OutcomingVoiceMessageViewHolder) {
             ((OutcomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatController);
             ((OutcomingVoiceMessageViewHolder) holder).assignReactionInterface(chatController);
+        } else if (holder instanceof MagicPreviewMessageViewHolder) {
+            ((MagicPreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatController);
+            ((MagicPreviewMessageViewHolder) holder).assignReactionInterface(chatController);
         }
     }
 }

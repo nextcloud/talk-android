@@ -52,6 +52,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
+import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -111,7 +112,12 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     ProgressBar progressBar;
 
+    ReactionsInsideMessageBinding reactionsBinding;
+
     View clickView;
+
+    ReactionsInterface reactionsInterface;
+    PreviewMessageInterface previewMessageInterface;
 
     public MagicPreviewMessageViewHolder(View itemView, Object payload) {
         super(itemView, payload);
@@ -185,25 +191,30 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 fetchFileInformation("/" + message.getSelectedIndividualHashMap().get(KEY_PATH), message.activeUser);
             }
 
-            String accountString =
+            if(message.activeUser != null && message.activeUser.getUsername() != null && message.activeUser.getBaseUrl() != null){
+                String accountString =
                     message.activeUser.getUsername() + "@" +
-                            message.activeUser.getBaseUrl()
-                                    .replace("https://", "")
-                                    .replace("http://", "");
+                        message.activeUser.getBaseUrl()
+                            .replace("https://", "")
+                            .replace("http://", "");
 
-            clickView.setOnClickListener(v -> {
-                String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
-                if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileName)) {
-                    openOrDownloadFile(message);
-                } else {
-                    openFileInFilesApp(message, accountString);
-                }
-            });
+                clickView.setOnClickListener(v -> {
+                    String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
+                    if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileName)) {
+                        openOrDownloadFile(message);
+                    } else {
+                        openFileInFilesApp(message, accountString);
+                    }
+                });
 
-            clickView.setOnLongClickListener(l -> {
-                onMessageViewLongClick(message, accountString);
-                return true;
-            });
+                clickView.setOnLongClickListener(l -> {
+                    onMessageViewLongClick(message, accountString);
+                    return true;
+                });
+            } else {
+                Log.e(TAG, "failed to set click listener because activeUser, username or baseUrl were null");
+            }
+
 
             // check if download worker is already running
             String fileId = message.getSelectedIndividualHashMap().get(KEY_ID);
@@ -246,8 +257,14 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         }
 
         itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
-    }
 
+        reactionsBinding = getReactionsBinding();
+        new Reaction().showReactions(message, reactionsBinding, context);
+
+        reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
+            reactionsInterface.onClickReactions(message);
+        });
+    }
 
     private Drawable getDrawableFromContactDetails(Context context, String base64) {
         Drawable drawable = null;
@@ -282,6 +299,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
     public abstract EmojiTextView getPreviewContactName();
 
     public abstract ProgressBar getPreviewContactProgressBar();
+
+    public abstract ReactionsInsideMessageBinding getReactionsBinding();
 
     private void openOrDownloadFile(ChatMessage message) {
         String filename = message.getSelectedIndividualHashMap().get(KEY_NAME);
@@ -410,6 +429,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     private void onMessageViewLongClick(ChatMessage message, String accountString) {
         if (isSupportedForInternalViewer(message.getSelectedIndividualHashMap().get(KEY_MIMETYPE))) {
+            previewMessageInterface.onPreviewMessageLongClick(message);
             return;
         }
 
@@ -590,5 +610,13 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                         Log.e(TAG, "Error reading file information", e);
                     }
                 });
+    }
+
+    public void assignReactionInterface(ReactionsInterface reactionsInterface) {
+        this.reactionsInterface = reactionsInterface;
+    }
+
+    public void assignPreviewMessageInterface(PreviewMessageInterface previewMessageInterface) {
+        this.previewMessageInterface = previewMessageInterface;
     }
 }
