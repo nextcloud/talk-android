@@ -286,7 +286,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                 arrayOf(
                         userInfo!!.displayName!!,
                         userInfo!!.phone!!,
-                        userInfo!!.email!!,
+                        userInfo!!.email.orEmpty(),
                         userInfo!!.address!!,
                         userInfo!!.twitter!!,
                         userInfo!!.website!!
@@ -373,7 +373,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         result.add(
             UserInfoDetailsItem(
                 R.drawable.ic_email,
-                userInfo.email!!,
+                userInfo.email.orEmpty(),
                 resources!!.getString(R.string.user_info_email),
                 Field.EMAIL,
                 userInfo.emailScope
