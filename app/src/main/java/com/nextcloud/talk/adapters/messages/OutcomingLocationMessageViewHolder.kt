@@ -37,7 +37,6 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
-import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -68,6 +67,8 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     @Inject
     var context: Context? = null
 
+    lateinit var reactionsInterface: ReactionsInterface
+
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -84,7 +85,6 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
         binding.messageText.text = message.text
-        binding.messageText.isEnabled = false
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
@@ -112,6 +112,12 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
         // geo-location
         setLocationDataOnMessageItem(message)
+
+        Reaction().showReactions(message, binding.reactions, context!!)
+
+        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+            reactionsInterface.onClickReactions(message)
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
@@ -243,6 +249,10 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     private fun addMarkerToGeoLink(locationGeoLink: String): String {
         return locationGeoLink.replace("geo:", "geo:0,0?q=")
+    }
+
+    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
+        this.reactionsInterface = reactionsInterface
     }
 
     companion object {

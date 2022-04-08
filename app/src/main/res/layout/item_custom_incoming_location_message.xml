@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:lineSpacingMultiplier="1.2"
             android:textAlignment="viewStart"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
             app:layout_wrapBefore="true" />
@@ -89,5 +89,8 @@
             android:layout_marginStart="8dp"
             app:layout_alignSelf="center" />
 
+        <include
+            android:id="@+id/reactions"
+            layout="@layout/reactions_inside_message" />
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
