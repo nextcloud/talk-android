@@ -37,6 +37,7 @@ import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
+import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
