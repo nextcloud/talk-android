@@ -2440,8 +2440,9 @@ class ChatController(args: Bundle) :
         openMessageActionsDialog(chatMessage)
     }
 
-    private fun openMessageActionsDialog(message: IMessage?) {
-        if (hasVisibleItems(message as ChatMessage)) {
+    private fun openMessageActionsDialog(iMessage: IMessage?) {
+        val message = iMessage as ChatMessage
+        if (hasVisibleItems(message) && !isSystemMessage(message)) {
             activity?.let {
                 MessageActionsDialog(
                     this,
@@ -2453,6 +2454,10 @@ class ChatController(args: Bundle) :
                 ).show()
             }
         }
+    }
+
+    private fun isSystemMessage(message: ChatMessage): Boolean {
+        return ChatMessage.MessageType.SYSTEM_MESSAGE == message.getMessageType()
     }
 
     fun deleteMessage(message: IMessage?) {
