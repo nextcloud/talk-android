@@ -113,101 +113,7 @@
         android:layout_height="wrap_content"
         android:paddingStart="@dimen/standard_padding"
         android:paddingEnd="@dimen/standard_padding"
-
         android:orientation="vertical">
-
-        <LinearLayout
-            android:id="@+id/menu_copy_message"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/menu_icon_copy_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_content_copy"
-                app:tint="@color/high_emphasis_menu_icon" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/menu_text_copy_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_copy_message"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/menu_mark_as_unread"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/menu_icon_mark_as_unread"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_eye_off"
-                app:tint="@color/high_emphasis_menu_icon" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/menu_text_mark_as_unread"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_mark_as_unread"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/menu_forward_message"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_sheet_item_height"
-            android:background="?android:attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            tools:ignore="UseCompoundDrawables">
-
-            <ImageView
-                android:id="@+id/menu_icon_forward_message"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_share_action"
-                app:tint="@color/high_emphasis_menu_icon" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/menu_text_forward_message"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|center_vertical"
-                android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
-                android:text="@string/nc_forward_message"
-                android:textAlignment="viewStart"
-                android:textColor="@color/high_emphasis_text"
-                android:textSize="@dimen/bottom_sheet_text_size" />
-
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/menu_reply_to_message"
@@ -272,6 +178,99 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/menu_forward_message"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/menu_icon_forward_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_share_action"
+                app:tint="@color/high_emphasis_menu_icon" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/menu_text_forward_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/zero"
+                android:text="@string/nc_forward_message"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu_mark_as_unread"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/menu_icon_mark_as_unread"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_eye_off"
+                app:tint="@color/high_emphasis_menu_icon" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/menu_text_mark_as_unread"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/zero"
+                android:text="@string/nc_mark_as_unread"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/menu_copy_message"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/bottom_sheet_item_height"
+            android:background="?android:attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:id="@+id/menu_icon_copy_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_content_copy"
+                app:tint="@color/high_emphasis_menu_icon" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/menu_text_copy_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|center_vertical"
+                android:paddingStart="@dimen/standard_double_padding"
+                android:paddingEnd="@dimen/zero"
+                android:text="@string/nc_copy_message"
+                android:textAlignment="viewStart"
+                android:textColor="@color/high_emphasis_text"
+                android:textSize="@dimen/bottom_sheet_text_size" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/menu_delete_message"
             android:layout_width="match_parent"
             android:layout_height="@dimen/bottom_sheet_item_height"
@@ -301,7 +300,6 @@
                 android:textSize="@dimen/bottom_sheet_text_size" />
 
         </LinearLayout>
-
 
     </LinearLayout>
 
