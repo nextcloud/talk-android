@@ -41,6 +41,7 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -94,7 +95,7 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     @JsonField(name = "messageType")
     public String messageType;
     @JsonField(name = "reactions")
-    public HashMap<String, Integer> reactions;
+    public LinkedHashMap<String, Integer> reactions;
 
     public boolean isDownloadingVoiceMessage;
     public boolean resetVoiceMessage;
