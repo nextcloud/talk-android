@@ -93,11 +93,7 @@ class MessageActionsDialog(
     private fun initEmojiMore() {
         dialogMessageActionsBinding.emojiMore.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                if (popup.isShowing) {
-                    popup.dismiss()
-                } else {
-                    popup.show()
-                }
+                popup.toggle()
             }
             true
         }
