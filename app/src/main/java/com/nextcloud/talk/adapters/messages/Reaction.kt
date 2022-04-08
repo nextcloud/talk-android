@@ -27,13 +27,20 @@ import android.content.Context
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiTextView
 
 class Reaction {
-    fun showReactions(message: ChatMessage, binding: ReactionsInsideMessageBinding, context: Context) {
+    fun showReactions(
+        message: ChatMessage,
+        binding: ReactionsInsideMessageBinding,
+        context: Context,
+        useLightColorForText: Boolean
+    ) {
         binding.reactionsEmojiWrapper.removeAllViews()
         if (message.reactions != null && message.reactions.isNotEmpty()) {
 
@@ -44,6 +51,10 @@ class Reaction {
                 reactionEmoji.text = emoji
 
                 val reactionAmount = TextView(context)
+                if (useLightColorForText){
+                    reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.nc_grey))
+                }
+
                 reactionAmount.text = amount.toString()
 
                 val params = RelativeLayout.LayoutParams(
