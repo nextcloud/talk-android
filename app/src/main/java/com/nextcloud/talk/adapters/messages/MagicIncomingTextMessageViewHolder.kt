@@ -122,10 +122,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
 
-        Reaction().showReactions(message, binding.reactions, context!!, false)
-
+        Reaction().showReactions(message, binding.reactions, context!!, true)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
+        }
+        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+            reactionsInterface.onLongClickReactions(message)
+            true
         }
     }
 

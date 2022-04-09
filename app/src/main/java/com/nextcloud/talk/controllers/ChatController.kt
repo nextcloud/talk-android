@@ -924,18 +924,6 @@ class ChatController(args: Bundle) :
         }
     }
 
-    override fun onClickReactions(chatMessage: ChatMessage) {
-        activity?.let {
-            ShowReactionsDialog(
-                activity!!,
-                currentConversation,
-                chatMessage,
-                conversationUser,
-                ncApi!!
-            ).show()
-        }
-    }
-
     @SuppressLint("LongLogTag")
     private fun downloadFileToCache(message: ChatMessage) {
         message.isDownloadingVoiceMessage = true
@@ -2430,6 +2418,22 @@ class ChatController(args: Bundle) :
         } ?: run {
             return null
         }
+    }
+
+    override fun onClickReactions(chatMessage: ChatMessage) {
+        activity?.let {
+            ShowReactionsDialog(
+                activity!!,
+                currentConversation,
+                chatMessage,
+                conversationUser,
+                ncApi!!
+            ).show()
+        }
+    }
+
+    override fun onLongClickReactions(chatMessage: ChatMessage) {
+        openMessageActionsDialog(chatMessage)
     }
 
     override fun onMessageViewLongClick(view: View?, message: IMessage?) {

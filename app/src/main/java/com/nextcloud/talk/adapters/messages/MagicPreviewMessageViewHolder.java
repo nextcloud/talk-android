@@ -260,9 +260,12 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
         reactionsBinding = getReactionsBinding();
         new Reaction().showReactions(message, reactionsBinding, context, false);
-
         reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
             reactionsInterface.onClickReactions(message);
+        });
+        reactionsBinding.reactionsEmojiWrapper.setOnLongClickListener(l -> {
+            reactionsInterface.onLongClickReactions(message);
+            return true;
         });
     }
 

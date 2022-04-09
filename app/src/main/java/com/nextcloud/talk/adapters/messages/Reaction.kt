@@ -73,7 +73,6 @@ class Reaction {
                 reactionAmount.layoutParams = params
                 binding.reactionsEmojiWrapper.addView(reactionAmount)
 
-
                 remainingEmojisToDisplay--
                 if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
                     val infoAboutMoreEmojis = TextView(context)

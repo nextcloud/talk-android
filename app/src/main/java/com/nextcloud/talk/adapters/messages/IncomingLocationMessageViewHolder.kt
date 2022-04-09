@@ -102,10 +102,13 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
         // geo-location
         setLocationDataOnMessageItem(message)
 
-        Reaction().showReactions(message, binding.reactions, context!!, false)
-
+        Reaction().showReactions(message, binding.reactions, context!!, true)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
+        }
+        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+            reactionsInterface.onLongClickReactions(message)
+            true
         }
     }
 

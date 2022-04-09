@@ -115,9 +115,12 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         setLocationDataOnMessageItem(message)
 
         Reaction().showReactions(message, binding.reactions, context!!, true)
-
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
+        }
+        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+            reactionsInterface.onLongClickReactions(message)
+            true
         }
     }
 

@@ -4,4 +4,5 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 
 interface ReactionsInterface {
     fun onClickReactions(chatMessage: ChatMessage)
+    fun onLongClickReactions(chatMessage: ChatMessage)
 }
