@@ -27,6 +27,7 @@ import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
+import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 
 import androidx.emoji.widget.EmojiTextView;
 
@@ -77,4 +78,7 @@ public class IncomingPreviewMessageViewHolder extends MagicPreviewMessageViewHol
     public ProgressBar getPreviewContactProgressBar() {
         return binding.contactProgressBar;
     }
+
+    @Override
+    public ReactionsInsideMessageBinding getReactionsBinding(){ return binding.reactions; }
 }

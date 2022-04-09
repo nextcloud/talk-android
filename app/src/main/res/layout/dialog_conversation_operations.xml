@@ -25,7 +25,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg_bottom_sheet"
     android:orientation="vertical"
     android:paddingStart="@dimen/standard_padding"
     android:paddingEnd="@dimen/standard_padding"
@@ -60,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_star_border_black_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -87,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_star_black_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -114,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_eye"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -141,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_pencil_grey600_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -168,7 +167,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_link_grey600_24px"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -195,7 +194,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_lock_grey600_24px"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -222,7 +221,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_lock_open_grey600_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -249,7 +248,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_lock_plus_grey600_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -276,7 +275,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_delete_grey600_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -303,7 +302,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_link_grey600_24px"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -330,7 +329,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_group_grey600_24px"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"
@@ -357,7 +356,7 @@
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
                 android:src="@drawable/ic_exit_to_app_black_24dp"
-                app:tint="@color/grey_600" />
+                app:tint="@color/high_emphasis_menu_icon" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="match_parent"

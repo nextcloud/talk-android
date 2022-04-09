@@ -40,6 +40,7 @@
         <item name="android:navigationBarColor">@color/bg_default</item>
         <item name="android:seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
         <item name="seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
+        <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.MaterialComponents.Dark">
@@ -53,6 +54,14 @@
 
     <style name="BottomNavigationView" parent="@style/Widget.MaterialComponents.BottomNavigationView">
         <item name="elevation">1dp</item>
+    </style>
+
+    <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Talk.BottomSheetDialog</item>
+    </style>
+
+    <style name="Talk.BottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
+        <item name="backgroundTint">@color/bg_bottom_sheet</item>
     </style>
 
     <style name="TransparentTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
@@ -235,7 +244,7 @@
         <item name="android:colorControlNormal">#ffffff</item>
     </style>
 
-    <style name="BottomSheetDialogThemeNoFloating" parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="BottomSheetDialogThemeNoFloating" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>

@@ -65,6 +65,9 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERAT
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.OBJECT_SHARED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_REMOVED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_SET
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION_DELETED
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION_REVOKED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.READ_ONLY_OFF
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_ADDED
@@ -161,6 +164,9 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "matterbridge_config_enabled" -> return MATTERBRIDGE_CONFIG_ENABLED
             "matterbridge_config_disabled" -> return MATTERBRIDGE_CONFIG_DISABLED
             "history_cleared" -> return CLEARED_CHAT
+            "reaction" -> return REACTION
+            "reaction_deleted" -> return REACTION_DELETED
+            "reaction_revoked" -> return REACTION_REVOKED
             else -> return DUMMY
         }
     }
@@ -214,6 +220,9 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             MATTERBRIDGE_CONFIG_ENABLED -> return "matterbridge_config_enabled"
             MATTERBRIDGE_CONFIG_DISABLED -> return "matterbridge_config_disabled"
             CLEARED_CHAT -> return "clear_history"
+            REACTION -> return "reaction"
+            REACTION_DELETED -> return "reaction_deleted"
+            REACTION_REVOKED -> return "reaction_revoked"
             else -> return ""
         }
     }

@@ -74,6 +74,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     lateinit var message: ChatMessage
 
     lateinit var voiceMessageInterface: VoiceMessageInterface
+    lateinit var reactionsInterface: ReactionsInterface
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
@@ -140,6 +141,15 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
                 }
             }
         })
+
+        Reaction().showReactions(message, binding.reactions, context!!, true)
+        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+            reactionsInterface.onClickReactions(message)
+        }
+        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+            reactionsInterface.onLongClickReactions(message)
+            true
+        }
     }
 
     private fun updateDownloadState(message: ChatMessage) {
@@ -302,8 +312,12 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
         }
     }
 
-    fun assignAdapter(voiceMessageInterface: VoiceMessageInterface) {
+    fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {
         this.voiceMessageInterface = voiceMessageInterface
+    }
+
+    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
+        this.reactionsInterface = reactionsInterface
     }
 
     companion object {

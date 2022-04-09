@@ -20,29 +20,46 @@
 
 package com.nextcloud.talk.ui.dialog
 
-import android.app.Activity
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.annotation.NonNull
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
+import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.ApiUtils
+import com.vanniktech.emoji.EmojiPopup
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 
 class MessageActionsDialog(
-    val activity: Activity,
     private val chatController: ChatController,
     private val message: ChatMessage,
-    private val userId: String?,
+    private val user: UserEntity?,
     private val currentConversation: Conversation?,
-    private val showMessageDeletionButton: Boolean
-) : BottomSheetDialog(activity) {
+    private val showMessageDeletionButton: Boolean,
+    private val ncApi: NcApi
+) : BottomSheetDialog(chatController.activity!!, R.style.BottomSheetDialogThemeNoFloating) {
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
+
+    private lateinit var popup: EmojiPopup
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,12 +67,13 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
+        initEmojiBar()
         initMenuItemCopy(!message.isDeleted)
         initMenuReplyToMessage(message.replyable)
         initMenuReplyPrivately(
             message.replyable &&
-                userId?.isNotEmpty() == true &&
-                userId != "?" &&
+                user?.userId?.isNotEmpty() == true &&
+                user?.userId != "?" &&
                 message.user.id.startsWith("users/") &&
                 message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
@@ -67,6 +85,69 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
                 BuildConfig.DEBUG
         )
+
+        initEmojiMore()
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun initEmojiMore() {
+        dialogMessageActionsBinding.emojiMore.setOnTouchListener { v, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                popup.toggle()
+            }
+            true
+        }
+
+        popup = EmojiPopup.Builder
+            .fromRootView(dialogMessageActionsBinding.root)
+            .setOnEmojiPopupShownListener {
+                dialogMessageActionsBinding.emojiMore.clearFocus()
+                dialogMessageActionsBinding.messageActions.visibility = View.GONE
+            }
+            .setOnEmojiClickListener { _, imageView ->
+                popup.dismiss()
+                sendReaction(message, imageView.unicode)
+            }
+            .setOnEmojiPopupDismissListener {
+                dialogMessageActionsBinding.emojiMore.clearFocus()
+                dialogMessageActionsBinding.messageActions.visibility = View.VISIBLE
+
+                val imm: InputMethodManager = context.getSystemService(Context.INPUT_METHOD_SERVICE) as
+                    InputMethodManager
+                imm.hideSoftInputFromWindow(dialogMessageActionsBinding.emojiMore.windowToken, 0)
+            }
+            .build(dialogMessageActionsBinding.emojiMore)
+        dialogMessageActionsBinding.emojiMore.disableKeyboardInput(popup)
+        dialogMessageActionsBinding.emojiMore.forceSingleEmoji()
+    }
+
+    private fun initEmojiBar() {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions")) {
+            dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
+                sendReaction(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
+            }
+            dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
+                sendReaction(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
+            }
+            dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
+                sendReaction(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
+            }
+            dialogMessageActionsBinding.emojiHeart.setOnClickListener {
+                sendReaction(message, dialogMessageActionsBinding.emojiHeart.text.toString())
+            }
+            dialogMessageActionsBinding.emojiConfused.setOnClickListener {
+                sendReaction(message, dialogMessageActionsBinding.emojiConfused.text.toString())
+            }
+            dialogMessageActionsBinding.emojiSad.setOnClickListener {
+                sendReaction(message, dialogMessageActionsBinding.emojiSad.text.toString())
+            }
+            dialogMessageActionsBinding.emojiMore.setOnClickListener {
+                dismiss()
+            }
+            dialogMessageActionsBinding.emojiBar.visibility = View.VISIBLE
+        } else {
+            dialogMessageActionsBinding.emojiBar.visibility = View.GONE
+        }
     }
 
     private fun initMenuMarkAsUnread(visible: Boolean) {
@@ -150,8 +231,47 @@ class MessageActionsDialog(
         }
     }
 
+    private fun sendReaction(message: ChatMessage, emoji: String) {
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+
+        ncApi.sendReaction(
+            credentials,
+            ApiUtils.getUrlForMessageReaction(
+                user?.baseUrl,
+                currentConversation!!.token,
+                message.id
+            ),
+            emoji
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                    val statusCode = genericOverall.ocs.meta.statusCode
+                    if (statusCode == HTTP_CREATED) {
+                        chatController.updateAdapterAfterSendReaction(message, emoji)
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error while sending reaction")
+                }
+
+                override fun onComplete() {
+                    dismiss()
+                }
+            })
+    }
+
     companion object {
+        private const val TAG = "MessageActionsDialog"
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
+        private const val HTTP_OK: Int = 200
+        private const val HTTP_CREATED: Int = 201
     }
 }

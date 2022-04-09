@@ -334,6 +334,14 @@ dependencies {
     gplayImplementation "com.google.firebase:firebase-messaging:23.0.0"
 }
 
+task installGitHooks(type: Copy, group: "development") {
+    description = "Install git hooks"
+    from("../scripts/hooks") {
+        include '*'
+    }
+    into '../.git/hooks'
+}
+
 detekt {
     reports {
         xml {

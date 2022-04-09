@@ -110,6 +110,8 @@ import com.nextcloud.talk.adapters.messages.MagicUnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
+import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
+import com.nextcloud.talk.adapters.messages.ReactionsInterface
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -139,6 +141,7 @@ import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
+import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
@@ -203,7 +206,9 @@ class ChatController(args: Bundle) :
     MessagesListAdapter.Formatter<Date>,
     MessagesListAdapter.OnMessageViewLongClickListener<IMessage>,
     ContentChecker<ChatMessage>,
-    VoiceMessageInterface {
+    VoiceMessageInterface,
+    ReactionsInterface,
+    PreviewMessageInterface {
 
     private val binding: ControllerChatBinding by viewBinding(ControllerChatBinding::bind)
 
@@ -2087,7 +2092,7 @@ class ChatController(args: Bundle) :
         if (response.code() == HTTP_CODE_OK) {
 
             val chatOverall = response.body() as ChatOverall?
-            val chatMessageList = setDeletionFlagsAndRemoveInfomessages(chatOverall?.ocs!!.data)
+            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data)
 
             if (chatMessageList.isNotEmpty() &&
                 ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
@@ -2336,19 +2341,30 @@ class ChatController(args: Bundle) :
         }
     }
 
-    private fun setDeletionFlagsAndRemoveInfomessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+    private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
+
+            // setDeletionFlagsAndRemoveInfomessages
             if (isInfoMessageAboutDeletion(currentMessage)) {
                 if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
-                    // if chatMessageMap doesnt't contain message to delete (this happens when lookingIntoFuture),
+                    // if chatMessageMap doesn't contain message to delete (this happens when lookingIntoFuture),
                     // the message to delete has to be modified directly inside the adapter
                     setMessageAsDeleted(currentMessage.value.parentMessage)
                 } else {
                     chatMessageMap[currentMessage.value.parentMessage.id]!!.isDeleted = true
                 }
+                chatMessageIterator.remove()
+            }
+
+            // delete reactions system messages
+            else if (isReactionsMessage(currentMessage)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
+                    updateAdapterForReaction(currentMessage.value.parentMessage)
+                }
+
                 chatMessageIterator.remove()
             }
         }
@@ -2358,6 +2374,12 @@ class ChatController(args: Bundle) :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
         return currentMessage.value.parentMessage != null && currentMessage.value.systemMessageType == ChatMessage
             .SystemMessageType.MESSAGE_DELETED
+    }
+
+    private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
+        return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
     }
 
     private fun startACall(isVoiceOnlyCall: Boolean) {
@@ -2398,19 +2420,48 @@ class ChatController(args: Bundle) :
         }
     }
 
+    override fun onClickReactions(chatMessage: ChatMessage) {
+        activity?.let {
+            ShowReactionsDialog(
+                activity!!,
+                currentConversation,
+                chatMessage,
+                conversationUser,
+                ncApi!!
+            ).show()
+        }
+    }
+
+    override fun onLongClickReactions(chatMessage: ChatMessage) {
+        openMessageActionsDialog(chatMessage)
+    }
+
     override fun onMessageViewLongClick(view: View?, message: IMessage?) {
-        if (hasVisibleItems(message as ChatMessage)) {
+        openMessageActionsDialog(message)
+    }
+
+    override fun onPreviewMessageLongClick(chatMessage: ChatMessage) {
+        openMessageActionsDialog(chatMessage)
+    }
+
+    private fun openMessageActionsDialog(iMessage: IMessage?) {
+        val message = iMessage as ChatMessage
+        if (hasVisibleItems(message) && !isSystemMessage(message)) {
             activity?.let {
                 MessageActionsDialog(
-                    activity!!,
                     this,
                     message,
-                    conversationUser?.userId,
+                    conversationUser,
                     currentConversation,
-                    isShowMessageDeletionButton(message)
+                    isShowMessageDeletionButton(message),
+                    ncApi!!
                 ).show()
             }
         }
+    }
+
+    private fun isSystemMessage(message: ChatMessage): Boolean {
+        return ChatMessage.MessageType.SYSTEM_MESSAGE == message.getMessageType()
     }
 
     fun deleteMessage(message: IMessage?) {
@@ -2678,6 +2729,29 @@ class ChatController(args: Bundle) :
         messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
+    }
+
+    private fun updateAdapterForReaction(message: IMessage?) {
+        val messageTemp = message as ChatMessage
+
+        messageTemp.isOneToOneConversation =
+            currentConversation?.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        messageTemp.activeUser = conversationUser
+
+        adapter?.update(messageTemp)
+    }
+
+    fun updateAdapterAfterSendReaction(message: ChatMessage, emoji: String) {
+        if (message.reactions == null) {
+            message.reactions = LinkedHashMap()
+        }
+
+        var amount = message.reactions[emoji]
+        if (amount == null) {
+            amount = 0
+        }
+        message.reactions[emoji] = amount + 1
+        adapter?.update(message)
     }
 
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {

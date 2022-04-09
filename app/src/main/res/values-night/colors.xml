@@ -38,7 +38,9 @@
     <color name="high_emphasis_text">#deffffff</color>
     <color name="medium_emphasis_text">#99ffffff</color>
     <color name="low_emphasis_text">#61ffffff</color>
-    <color name="high_emphasis_text_inverse">#de000000</color>
+
+    <!-- bottom sheet specific icon default color -->
+    <color name="high_emphasis_menu_icon">#8Affffff</color>
 
     <color name="bg_default">#121212</color>
     <color name="bg_default_semitransparent">#99121212</color>
@@ -58,7 +60,7 @@
 
     <!-- Chat window incoming message text & informational -->
     <color name="bg_bottom_sheet">#121212</color>
-    <color name="bg_message_list_incoming_bubble">#1CFFFFFF</color>
+    <color name="bg_message_list_incoming_bubble">#2A2A2A</color>
     <color name="bg_message_list_incoming_bubble_deleted">#14FFFFFF</color>
 
     <color name="textColorMaxContrast">#8c8c8c</color>

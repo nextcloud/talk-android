@@ -22,7 +22,7 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 
-// TODO: improve log handling. https://github.com/nextcloud/talk-android/issues/1376
+// TODO improve log handling. https://github.com/nextcloud/talk-android/issues/1376
 // writing logs to a file is temporarily disabled to avoid huge logfiles.
 
 object LoggingUtils {

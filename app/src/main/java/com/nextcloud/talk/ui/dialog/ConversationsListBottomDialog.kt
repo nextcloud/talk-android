@@ -293,7 +293,7 @@ class ConversationsListBottomDialog(
 
         dialogRouter!!.pushController(
 
-            // TODO: refresh conversation list after EntryMenuController finished (throw event? / pass controller
+            // TODO refresh conversation list after EntryMenuController finished (throw event? / pass controller
             //  into EntryMenuController to execute fetch data... ?!)
             // for example if you set a password, the dialog items should be refreshed for the next time you open it
             // without to manually have to refresh the conversations list

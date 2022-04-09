@@ -2,8 +2,8 @@
  *
  *   Nextcloud Talk application
  *
- *   @author Tim Krüger
- *   Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
+ *   @author Marcel Hibbe
+ *   Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -18,35 +18,30 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.status
+package com.nextcloud.talk.models.json.reactions
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.converters.EnumReactionActorTypeConverter
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class Status(
-    @JsonField(name = ["userId"])
-    var userId: String?,
-    @JsonField(name = ["message"])
-    var message: String?,
-    /* TODO Change to enum */
-    @JsonField(name = ["messageId"])
-    var messageId: String?,
-    @JsonField(name = ["messageIsPredefined"])
-    var messageIsPredefined: Boolean,
-    @JsonField(name = ["icon"])
-    var icon: String?,
-    @JsonField(name = ["clearAt"])
-    var clearAt: Long = 0,
-    /* TODO Change to enum */
-    @JsonField(name = ["status"])
-    var status: String = "offline",
-    @JsonField(name = ["statusIsUserDefined"])
-    var statusIsUserDefined: Boolean
+data class ReactionVoter(
+    @JsonField(name = ["actorType"], typeConverter = EnumReactionActorTypeConverter::class)
+    var actorType: ReactionActorType?,
+    @JsonField(name = ["actorId"])
+    var actorId: String?,
+    @JsonField(name = ["actorDisplayName"])
+    var actorDisplayName: String?,
+    @JsonField(name = ["timestamp"])
+    var timestamp: Long = 0
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null, null, false, null, 0, "offline", false)
+    constructor() : this(null, null, null, 0)
+
+    enum class ReactionActorType {
+        DUMMY, GUESTS, USERS
+    }
 }

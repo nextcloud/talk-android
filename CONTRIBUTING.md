@@ -141,6 +141,15 @@ If you set your `user.name` and `user.email` git configs, you can sign your comm
 You can also use git [aliases](https://git-scm.com/book/tr/v2/Git-Basics-Git-Aliases) like `git config --global alias.ci 'commit -s'`.
 Now you can commit with `git ci` and the commit will be signed.
 
+### Git hooks
+
+We provide git hooks to make development process easier for both the developer and the reviewers.
+To install them, just run:
+
+```bash
+./gradlew installGitHooks
+```
+
 ## Contribution process
 
 Contribute your code targeting/based-on the branch ```master```.

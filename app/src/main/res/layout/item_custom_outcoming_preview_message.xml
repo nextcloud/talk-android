@@ -163,6 +163,10 @@
             android:textColor="@color/warm_grey_four"
             app:layout_alignSelf="center"
             tools:text="12:34" />
+
+        <include
+            android:id="@+id/reactions"
+            layout="@layout/reactions_inside_message" />
     </com.google.android.flexbox.FlexboxLayout>
 
 </RelativeLayout>

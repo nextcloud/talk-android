@@ -69,6 +69,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     lateinit var handler: Handler
 
     lateinit var voiceMessageInterface: VoiceMessageInterface
+    lateinit var reactionsInterface: ReactionsInterface
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
@@ -129,6 +130,15 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         }
 
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+
+        Reaction().showReactions(message, binding.reactions, context!!, true)
+        binding.reactions.reactionsEmojiWrapper.setOnClickListener {
+            reactionsInterface.onClickReactions(message)
+        }
+        binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
+            reactionsInterface.onLongClickReactions(message)
+            true
+        }
     }
 
     private fun handleResetVoiceMessageState(message: ChatMessage) {
@@ -275,8 +285,12 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
         }
     }
 
-    fun assignAdapter(voiceMessageInterface: VoiceMessageInterface) {
+    fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {
         this.voiceMessageInterface = voiceMessageInterface
+    }
+
+    fun assignReactionInterface(reactionsInterface: ReactionsInterface) {
+        this.reactionsInterface = reactionsInterface
     }
 
     companion object {

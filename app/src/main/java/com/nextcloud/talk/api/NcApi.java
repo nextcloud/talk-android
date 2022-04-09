@@ -37,6 +37,7 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
+import com.nextcloud.talk.models.json.reactions.ReactionsOverall;
 import com.nextcloud.talk.models.json.search.ContactsByNumberOverall;
 import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
@@ -62,6 +63,7 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -488,4 +490,17 @@ public interface NcApi {
     @GET
     Observable<StatusesOverall> getUserStatuses(@Header("Authorization") String authorization, @Url String url);
 
+
+    @POST
+    Observable<GenericOverall> sendReaction(@Header("Authorization") String authorization, @Url String url,
+                                 @Query("reaction") String reaction);
+
+    @DELETE
+    Observable<GenericOverall> deleteReaction(@Header("Authorization") String authorization, @Url String url,
+                                              @Query("reaction") String reaction);
+
+    @GET
+    Observable<ReactionsOverall> getReactions(@Header("Authorization") String authorization,
+                                              @Url String url,
+                                              @Query("reaction") String reaction);
 }

@@ -39,11 +39,14 @@
     <color name="high_emphasis_text">#de000000</color>
     <color name="medium_emphasis_text">#99000000</color>
     <color name="low_emphasis_text">#61000000</color>
-    <color name="high_emphasis_text_inverse">#deffffff</color>
 
     <!-- general text colors for dark background -->
     <color name="high_emphasis_text_dark_background">#deffffff</color>
     <color name="medium_emphasis_text_dark_background">#99ffffff</color>
+
+    <!-- bottom sheet specific icon default color -->
+    <color name="high_emphasis_menu_icon_inverse">#8Affffff</color>
+    <color name="high_emphasis_menu_icon">#8A000000</color>
 
     <!-- Text color of sent messages -->
     <color name="nc_outcoming_text_default">#FFFFFF</color>
@@ -82,7 +85,7 @@
     <color name="bg_message_list_outcoming_bubble">@color/colorPrimary</color>
     <color name="bg_message_list_outcoming_bubble_deleted">#800082C9</color>
 
-    <color name="bg_bottom_sheet">#46ffffff</color>
+    <color name="bg_bottom_sheet">#FFFFFF</color>
     <color name="bg_call_screen_dialog">#121212</color>
     <color name="call_screen_text">#ffffffff</color>
 
