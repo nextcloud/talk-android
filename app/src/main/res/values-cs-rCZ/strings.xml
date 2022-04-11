@@ -347,6 +347,7 @@
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="password_protected">Chráněno heslem</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
+    <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>

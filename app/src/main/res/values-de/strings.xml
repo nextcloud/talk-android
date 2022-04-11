@@ -347,6 +347,7 @@
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="password_protected">Passwortgeschützt</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
+    <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>

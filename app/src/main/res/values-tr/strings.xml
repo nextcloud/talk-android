@@ -347,6 +347,7 @@
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="password_protected">Parola korumalı</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
+    <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnız güvenilen sunucular ile eşitlensin</string>
