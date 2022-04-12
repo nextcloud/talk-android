@@ -347,6 +347,7 @@
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="password_protected">Zabezpieczone hasłem</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
+    <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>

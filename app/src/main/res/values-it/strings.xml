@@ -156,8 +156,8 @@
     <string name="nc_make_call_private">Rendi privata la conversazione</string>
     <string name="nc_make_call_public">Rendi pubblica la conversazione</string>
     <string name="nc_manual">Non impostato</string>
-    <string name="nc_mark_as_read">Marca come letto</string>
-    <string name="nc_mark_as_unread">Marca come non letto</string>
+    <string name="nc_mark_as_read">Segna come letto</string>
+    <string name="nc_mark_as_unread">Segna come non letto</string>
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
     <string name="nc_message_read">Messaggio letto</string>
     <string name="nc_message_sent">Messaggio inviato</string>
@@ -347,6 +347,7 @@
     <string name="open_in_files_app">Apri nell\'applicazione File</string>
     <string name="password_protected">Protetto da password</string>
     <string name="play_pause_voice_message">Riproduci/ferma messaggio vocale</string>
+    <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="save">Salva</string>
     <string name="scope_federated_description">Sincronizza solo con server fidati</string>
