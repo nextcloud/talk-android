@@ -2,7 +2,11 @@
   <resources>
     <string name="account_icon">Икона на профил</string>
     <string name="appbar_search_in">Търсене в %s</string>
+    <string name="audio_output_bluetooth">Bluetooth /Блутут/</string>
+    <string name="audio_output_dialog_headline">Аудио изход</string>
     <string name="audio_output_phone">Телефон</string>
+    <string name="audio_output_speaker">Високоговорител </string>
+    <string name="audio_output_wired_headset">Слушалки с кабел</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
@@ -175,7 +179,9 @@
     <string name="nc_not_defined_error">Неизвестна грешка</string>
     <string name="nc_notification_channel">%1$s на %2$s канал за известие</string>
     <string name="nc_notification_channel_calls">Обаждания</string>
+    <string name="nc_notification_channel_calls_description">Уведомяване за входящи повиквания</string>
     <string name="nc_notification_channel_messages">Съобщения</string>
+    <string name="nc_notification_channel_messages_description">Уведомяване за входящи съобщения</string>
     <string name="nc_notification_settings">Настройки на известие</string>
     <string name="nc_notify_me_always">Винаги уведомявайте</string>
     <string name="nc_notify_me_mention">Уведомяване при споменаване</string>
@@ -260,6 +266,7 @@
     <string name="nc_settings_incognito_keyboard_title">Инкогнито клавиатура</string>
     <string name="nc_settings_no_ringtone">Без звук</string>
     <string name="nc_settings_no_talk_installed">Приложението Talk /разговор/ не е инсталирано на сървъра, в който сте се опитали да се удостоверите</string>
+    <string name="nc_settings_notification_sounds">Звуци за известие</string>
     <string name="nc_settings_notification_sounds_post_oreo">Известия</string>
     <string name="nc_settings_other_notifications_ringtone">Съобщения</string>
     <string name="nc_settings_phone_book_integration_desc">Съпоставяне на контакти въз основа на телефонен номер, за интегриране на пряк път Talk в приложението за системни контакти</string>
@@ -340,6 +347,7 @@
     <string name="open_in_files_app">Отворяне в приложението Файлове</string>
     <string name="password_protected">Защитено с парола</string>
     <string name="play_pause_voice_message">Възпроизвеждане/пауза на гласово съобщение</string>
+    <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
@@ -360,6 +368,7 @@
     <string name="set_status_message">Задаване на съобщение за състояние</string>
     <string name="share">Споделяне</string>
     <string name="starred">Любими</string>
+    <string name="startCallForbidden">Нямате право да започнете разговор</string>
     <string name="status_message">Съобщение за състояние</string>
     <string name="take_photo">Направете снимка</string>
     <string name="take_photo_error_deleting_picture">Грешка при снимане</string>
