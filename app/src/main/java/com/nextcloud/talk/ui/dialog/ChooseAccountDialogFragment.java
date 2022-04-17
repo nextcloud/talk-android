@@ -213,6 +213,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
+                        // unused atm
                     }
 
                     @Override
@@ -221,8 +222,12 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                             status = statusOverall.getOcs().getData();
                         }
 
-                        binding.setStatus.setEnabled(true);
-                        drawStatus();
+                        try {
+                            binding.setStatus.setEnabled(true);
+                            drawStatus();
+                        } catch (NullPointerException npe) {
+                            Log.i(TAG, "UI already teared down", npe);
+                        }
                     }
 
                     @Override
@@ -232,6 +237,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
                     @Override
                     public void onComplete() {
+                        // unused atm
                     }
                 });
         }
@@ -279,12 +285,12 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                                                  null)
                         .subscribe(new Observer<UserEntity>() {
                             @Override
-                            public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
-                                // unused at the moment
+                            public void onSubscribe(@NonNull Disposable d) {
+                                // unused atm
                             }
 
                             @Override
-                            public void onNext(@io.reactivex.annotations.NonNull UserEntity userEntity) {
+                            public void onNext(@NonNull UserEntity userEntity) {
                                 cookieManager.getCookieStore().removeAll();
                                 userUtils.disableAllUsersWithoutId(userEntity.getId());
                                 if (getActivity() != null) {
@@ -295,13 +301,13 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                             }
 
                             @Override
-                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
+                            public void onError(@NonNull Throwable e) {
                                 Log.w(TAG, "Error updating user", e);
                             }
 
                             @Override
                             public void onComplete() {
-                                // DONE
+                                // unused atm
                             }
                         });
                 }
