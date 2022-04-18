@@ -128,18 +128,21 @@ class DirectReplyReceiver : BroadcastReceiver() {
         val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
         val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, currentUser)
         val dataSource = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, null)
-        dataSource.subscribe(object : BaseBitmapDataSubscriber() {
-            override fun onNewResultImpl(bitmap: Bitmap?) {
-                if (bitmap != null) {
-                    RoundAsCirclePostprocessor(true).process(bitmap)
-                    callback(IconCompat.createWithBitmap(bitmap))
+        dataSource.subscribe(
+            object : BaseBitmapDataSubscriber() {
+                override fun onNewResultImpl(bitmap: Bitmap?) {
+                    if (bitmap != null) {
+                        RoundAsCirclePostprocessor(true).process(bitmap)
+                        callback(IconCompat.createWithBitmap(bitmap))
+                    }
                 }
-            }
 
-            override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                // unused atm
-            }
-        }, UiThreadImmediateExecutorService.getInstance())
+                override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
+                    // unused atm
+                }
+            },
+            UiThreadImmediateExecutorService.getInstance()
+        )
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
@@ -182,5 +185,4 @@ class DirectReplyReceiver : BroadcastReceiver() {
         // Update the active notification.
         NotificationManagerCompat.from(context).notify(notificationId!!, previousBuilder.build())
     }
-
 }
