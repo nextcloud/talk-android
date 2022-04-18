@@ -60,6 +60,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
+import com.nextcloud.talk.receivers.DirectReplyReceiver;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
@@ -90,6 +91,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.Person;
+import androidx.core.app.RemoteInput;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.emoji.text.EmojiCompat;
 import androidx.work.Data;
@@ -386,6 +388,7 @@ public class NotificationWorker extends Worker {
                             "@" + decryptedPushMessage.getNotificationUser().getId()).setName(EmojiCompat.get().process(decryptedPushMessage.getNotificationUser().getName())).setBot(decryptedPushMessage.getNotificationUser().getType().equals("bot"));
 
             notificationBuilder.setOnlyAlertOnce(true);
+            addReplyAction(notificationBuilder, notificationId);
 
             if (decryptedPushMessage.getNotificationUser().getType().equals("user") || decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
                 String avatarUrl = ApiUtils.getUrlForAvatar(signatureVerification.getUserEntity().getBaseUrl(),
@@ -432,6 +435,38 @@ public class NotificationWorker extends Worker {
             sendNotificationWithId(notificationId, notificationBuilder.build());
         }
 
+    }
+
+    private void addReplyAction(NotificationCompat.Builder notificationBuilder, int notificationId) {
+        String replyLabel = context.getResources().getString(R.string.nc_reply);
+
+        RemoteInput remoteInput = new RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
+            .setLabel(replyLabel)
+            .build();
+
+        // Build a PendingIntent for the reply action
+        Intent actualIntent = new Intent(context, DirectReplyReceiver.class);
+
+        // NOTE - This notificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(), notificationId);
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+        PendingIntent replyPendingIntent =
+            PendingIntent.getBroadcast(getApplicationContext(),
+                                       notificationId, actualIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action replyAction =
+            new NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
+                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+                .setShowsUserInterface(false)
+                // Allows system to generate replies by context of conversation.
+                // https://developer.android.com/reference/androidx/core/app/NotificationCompat.Action.Builder#setAllowGeneratedReplies(boolean)
+                // Good question is - do we really want it?
+                .setAllowGeneratedReplies(true)
+                .addRemoteInput(remoteInput)
+                .build();
+
+        notificationBuilder.addAction(replyAction);
     }
 
     private NotificationCompat.MessagingStyle getStyle(Person person, @Nullable NotificationCompat.MessagingStyle style) {

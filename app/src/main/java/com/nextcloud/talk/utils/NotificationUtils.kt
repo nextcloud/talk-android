@@ -61,6 +61,9 @@ object NotificationUtils {
     const val DEFAULT_MESSAGE_RINGTONE_URI =
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_message"
 
+    // RemoteInput key - used for replies sent directly from notification
+    const val KEY_DIRECT_REPLY = "key_direct_reply"
+
     @TargetApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(
         context: Context,

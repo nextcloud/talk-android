@@ -177,6 +177,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".receivers.DirectReplyReceiver" />
+
         <service
             android:name=".utils.SyncService"
             android:exported="true">
