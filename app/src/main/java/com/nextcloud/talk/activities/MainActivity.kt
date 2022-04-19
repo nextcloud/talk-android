@@ -112,22 +112,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         }
 
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-            if (!router!!.hasRootController()) {
-                router!!.setRoot(
-                    RouterTransaction.with(ConversationsListController(Bundle()))
-                        .pushChangeHandler(HorizontalChangeHandler())
-                        .popChangeHandler(HorizontalChangeHandler())
-                )
-            }
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
                 if (userUtils.anyUserExists()) {
-                    router!!.setRoot(
-                        RouterTransaction.with(ConversationsListController(Bundle()))
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
+                    setDefaultRootController()
                 } else {
                     if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
                         router!!.pushController(
@@ -191,13 +180,17 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         super.onStop()
     }
 
+    private fun setDefaultRootController() {
+        router!!.setRoot(
+            RouterTransaction.with(ConversationsListController(Bundle()))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
+    }
+
     fun resetConversationsList() {
         if (userUtils.anyUserExists()) {
-            router!!.setRoot(
-                RouterTransaction.with(ConversationsListController(Bundle()))
-                    .pushChangeHandler(HorizontalChangeHandler())
-                    .popChangeHandler(HorizontalChangeHandler())
-            )
+            setDefaultRootController()
         }
     }
 
@@ -343,6 +336,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         handleActionFromContact(intent)
         if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
             if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
+                if (!router!!.hasRootController()) {
+                    setDefaultRootController()
+                }
                 val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
                 intent.extras?.let { callNotificationIntent.putExtras(it) }
                 startActivity(callNotificationIntent)
