@@ -259,7 +259,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             })
     }
 
-    private fun isAllEmpty(items: Array<String>): Boolean {
+    private fun isAllEmpty(items: Array<String?>): Boolean {
         for (item in items) {
             if (!TextUtils.isEmpty(item)) {
                 return false
@@ -277,19 +277,19 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             binding.userinfoBaseurl.text = Uri.parse(currentUser!!.baseUrl).host
         }
         DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
-        if (!TextUtils.isEmpty(userInfo!!.displayName)) {
-            binding.userinfoFullName.text = userInfo!!.displayName
+        if (!TextUtils.isEmpty(userInfo?.displayName)) {
+            binding.userinfoFullName.text = userInfo?.displayName
         }
         binding.loadingContent.visibility = View.VISIBLE
         adapter!!.setData(createUserInfoDetails(userInfo))
         if (isAllEmpty(
                 arrayOf(
-                        userInfo!!.displayName!!,
-                        userInfo!!.phone!!,
-                        userInfo!!.email!!,
-                        userInfo!!.address!!,
-                        userInfo!!.twitter!!,
-                        userInfo!!.website!!
+                        userInfo?.displayName,
+                        userInfo?.phone,
+                        userInfo?.email,
+                        userInfo?.address,
+                        userInfo?.twitter,
+                        userInfo?.website
                     )
             )
         ) {
@@ -352,60 +352,63 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     private fun createUserInfoDetails(userInfo: UserProfileData?): List<UserInfoDetailsItem> {
         val result: MutableList<UserInfoDetailsItem> = LinkedList()
-        result.add(
-            UserInfoDetailsItem(
-                R.drawable.ic_user,
-                userInfo!!.displayName!!,
-                resources!!.getString(R.string.user_info_displayname),
-                Field.DISPLAYNAME,
-                userInfo.displayNameScope
+
+        if (userInfo != null) {
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_user,
+                    userInfo.displayName,
+                    resources!!.getString(R.string.user_info_displayname),
+                    Field.DISPLAYNAME,
+                    userInfo.displayNameScope
+                )
             )
-        )
-        result.add(
-            UserInfoDetailsItem(
-                R.drawable.ic_phone,
-                userInfo.phone!!,
-                resources!!.getString(R.string.user_info_phone),
-                Field.PHONE,
-                userInfo.phoneScope
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_phone,
+                    userInfo.phone,
+                    resources!!.getString(R.string.user_info_phone),
+                    Field.PHONE,
+                    userInfo.phoneScope
+                )
             )
-        )
-        result.add(
-            UserInfoDetailsItem(
-                R.drawable.ic_email,
-                userInfo.email!!,
-                resources!!.getString(R.string.user_info_email),
-                Field.EMAIL,
-                userInfo.emailScope
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_email,
+                    userInfo.email,
+                    resources!!.getString(R.string.user_info_email),
+                    Field.EMAIL,
+                    userInfo.emailScope
+                )
             )
-        )
-        result.add(
-            UserInfoDetailsItem(
-                R.drawable.ic_map_marker,
-                userInfo.address!!,
-                resources!!.getString(R.string.user_info_address),
-                Field.ADDRESS,
-                userInfo.addressScope
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_map_marker,
+                    userInfo.address,
+                    resources!!.getString(R.string.user_info_address),
+                    Field.ADDRESS,
+                    userInfo.addressScope
+                )
             )
-        )
-        result.add(
-            UserInfoDetailsItem(
-                R.drawable.ic_web,
-                DisplayUtils.beautifyURL(userInfo.website),
-                resources!!.getString(R.string.user_info_website),
-                Field.WEBSITE,
-                userInfo.websiteScope
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_web,
+                    DisplayUtils.beautifyURL(userInfo.website),
+                    resources!!.getString(R.string.user_info_website),
+                    Field.WEBSITE,
+                    userInfo.websiteScope
+                )
             )
-        )
-        result.add(
-            UserInfoDetailsItem(
-                R.drawable.ic_twitter,
-                DisplayUtils.beautifyTwitterHandle(userInfo.twitter),
-                resources!!.getString(R.string.user_info_twitter),
-                Field.TWITTER,
-                userInfo.twitterScope
+            result.add(
+                UserInfoDetailsItem(
+                    R.drawable.ic_twitter,
+                    DisplayUtils.beautifyTwitterHandle(userInfo.twitter),
+                    resources!!.getString(R.string.user_info_twitter),
+                    Field.TWITTER,
+                    userInfo.twitterScope
+                )
             )
-        )
+        }
         return result
     }
 
@@ -622,7 +625,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     class UserInfoDetailsItem(
         @field:DrawableRes @param:DrawableRes var icon: Int,
-        var text: String,
+        var text: String?,
         var hint: String,
         val field: Field,
         var scope: Scope?
