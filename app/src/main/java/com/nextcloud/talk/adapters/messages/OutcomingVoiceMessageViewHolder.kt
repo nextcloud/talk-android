@@ -189,25 +189,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
                     showVoiceMessageLoading()
                     WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(workInfo.id)
                         .observeForever { info: WorkInfo? ->
-                            if (info != null) {
-
-                                when (info.state) {
-                                    WorkInfo.State.RUNNING -> {
-                                        Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
-                                        showVoiceMessageLoading()
-                                    }
-                                    WorkInfo.State.SUCCEEDED -> {
-                                        Log.d(TAG, "WorkInfo.State.SUCCEEDED in ViewHolder")
-                                        showPlayButton()
-                                    }
-                                    WorkInfo.State.FAILED -> {
-                                        Log.d(TAG, "WorkInfo.State.FAILED in ViewHolder")
-                                        showPlayButton()
-                                    }
-                                    else -> {
-                                    }
-                                }
-                            }
+                            updateDownloadState(info)
                         }
                 }
             }
@@ -215,6 +197,28 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
             Log.e(TAG, "Error when checking if worker already exists", e)
         } catch (e: InterruptedException) {
             Log.e(TAG, "Error when checking if worker already exists", e)
+        }
+    }
+
+    private fun updateDownloadState(info: WorkInfo?) {
+        if (info != null) {
+            when (info.state) {
+                WorkInfo.State.RUNNING -> {
+                    Log.d(TAG, "WorkInfo.State.RUNNING in ViewHolder")
+                    showVoiceMessageLoading()
+                }
+                WorkInfo.State.SUCCEEDED -> {
+                    Log.d(TAG, "WorkInfo.State.SUCCEEDED in ViewHolder")
+                    showPlayButton()
+                }
+                WorkInfo.State.FAILED -> {
+                    Log.d(TAG, "WorkInfo.State.FAILED in ViewHolder")
+                    showPlayButton()
+                }
+                else -> {
+                    Log.d(TAG, "WorkInfo.State unused in ViewHolder")
+                }
+            }
         }
     }
 
