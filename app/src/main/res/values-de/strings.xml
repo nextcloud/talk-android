@@ -343,7 +343,7 @@
     <string name="oneHour">1 Stunde</string>
     <string name="online">Online</string>
     <string name="online_status">Online-Status</string>
-    <string name="openConversations">Unterhaltungen öffnen</string>
+    <string name="openConversations">Offene Unterhaltungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="password_protected">Passwortgeschützt</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
