@@ -259,7 +259,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
 
         reactionsBinding = getReactionsBinding();
-        new Reaction().showReactions(message, reactionsBinding, context, false);
+        new Reaction().showReactions(message, reactionsBinding, context, true);
         reactionsBinding.reactionsEmojiWrapper.setOnClickListener(l -> {
             reactionsInterface.onClickReactions(message);
         });

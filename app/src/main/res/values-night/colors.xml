@@ -65,6 +65,8 @@
 
     <color name="textColorMaxContrast">#8c8c8c</color>
 
+    <color name="nc_message_incoming_reaction_text_color">#FFFFFF</color>
+
     <!-- shimmer element colors -->
     <color name="nc_shimmer_default_color">#4B4B4B</color>
     <color name="nc_shimmer_darker_color">#282828</color>
