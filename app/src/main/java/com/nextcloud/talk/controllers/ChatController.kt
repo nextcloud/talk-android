@@ -2050,10 +2050,10 @@ class ChatController(args: Bundle) :
                             } else {
                                 processMessages(response, false, 0)
                             }
-                        } catch (npe: NullPointerException) {
+                        } catch (e: NullPointerException) {
                             // view binding can be null
                             // since this is called asynchrously and UI might have been destroyed in the meantime
-                            Log.i(TAG, "UI destroyed - view binding already gone")
+                            Log.i(TAG, "UI destroyed - view binding already gone", e)
                         }
                     }
 
