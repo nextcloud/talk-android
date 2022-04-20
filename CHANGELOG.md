@@ -5,6 +5,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [13.0.0] - 2021-11-29
+### Added
+- set own user status / show user status of others
+- search for open conversations
+- mark conversation as read (@AndyScherzinger)
+- select audio output for calls
+- choose notification sounds by android settings (@starypatyk)
+- share contact from attachment dialog
+
+### Fixed
+- top bar remains fully visible when typing message
+- minor fixes
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/50?closed=1
+
 ## [12.2.1] - 2021-09-02
 - clear chat history (as moderator)
 - forward text messages
