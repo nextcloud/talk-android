@@ -29,7 +29,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.view.updatePadding
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -74,14 +73,6 @@ class Reaction {
                 val reactionEmoji = EmojiTextView(context)
                 reactionEmoji.text = emoji
 
-                if (message.reactionsSelf != null
-                    && message.reactionsSelf.isNotEmpty()
-                    && message.reactionsSelf.contains(emoji)
-                ) {
-                    emojiWithAmountWrapper.background =
-                        AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)
-                }
-
                 emojiWithAmountWrapper.addView(reactionEmoji)
 
                 if (amount > 1) {
@@ -95,7 +86,18 @@ class Reaction {
                 emojiWithAmountWrapper.layoutParams = wrapperParams
 
                 val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
-                emojiWithAmountWrapper.updatePadding(left = paddingSide, right = paddingSide)
+                val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
+                val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
+                if (message.reactionsSelf != null
+                    && message.reactionsSelf.isNotEmpty()
+                    && message.reactionsSelf.contains(emoji)
+                ) {
+                    emojiWithAmountWrapper.background =
+                        AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)
+                    emojiWithAmountWrapper.setPaddingRelative(paddingSide,paddingTop, paddingSide,paddingBottom)
+                } else {
+                    emojiWithAmountWrapper.setPaddingRelative(0,paddingTop, paddingSide,paddingBottom)
+                }
 
                 binding.reactionsEmojiWrapper.addView(emojiWithAmountWrapper)
 
@@ -115,7 +117,9 @@ class Reaction {
         const val MAX_EMOJIS_TO_DISPLAY = 4
         const val AMOUNT_START_MARGIN: Float = 2F
         const val EMOJI_END_MARGIN: Float = 6F
-        const val EMOJI_AND_AMOUNT_PADDING_SIDE: Float = 6F
+        const val EMOJI_AND_AMOUNT_PADDING_SIDE: Float = 4F
+        const val WRAPPER_PADDING_TOP: Float = 2F
+        const val WRAPPER_PADDING_BOTTOM: Float = 3F
         const val EMOJI_MORE = "…"
     }
 }
