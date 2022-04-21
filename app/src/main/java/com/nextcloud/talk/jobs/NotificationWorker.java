@@ -78,6 +78,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.zip.CRC32;
 
 import javax.crypto.Cipher;
@@ -224,10 +225,13 @@ public class NotificationWorker extends Worker {
                             HashMap<String, String> guestHashMap = subjectRichParameters.get("guest");
 
                             if (callHashMap != null && callHashMap.size() > 0 && callHashMap.containsKey("name")) {
-                                if (notification.getObjectType().equals("chat")) {
-                                    decryptedPushMessage.setSubject(callHashMap.get("name"));
+                                if (subjectRichParameters.containsKey("reaction")) {
+                                    decryptedPushMessage.setSubject("");
+                                    decryptedPushMessage.setText(notification.getSubject());
+                                } else if (Objects.equals(notification.getObjectType(), "chat")) {
+                                    decryptedPushMessage.setSubject(Objects.requireNonNull(callHashMap.get("name")));
                                 } else {
-                                    decryptedPushMessage.setSubject(notification.getSubject());
+                                    decryptedPushMessage.setSubject(Objects.requireNonNull(notification.getSubject()));
                                 }
 
                                 if (callHashMap.containsKey("call-type")) {
@@ -278,6 +282,8 @@ public class NotificationWorker extends Worker {
         }
 
         switch (conversationType) {
+            case "one2one":
+                decryptedPushMessage.setSubject("");
             case "group":
                 largeIcon = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_people_group_black_24px);
                 break;
@@ -309,9 +315,12 @@ public class NotificationWorker extends Worker {
                 .setSubText(baseUrl)
                 .setWhen(decryptedPushMessage.getTimestamp())
                 .setShowWhen(true)
-                .setContentTitle(EmojiCompat.get().process(decryptedPushMessage.getSubject()))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
+
+        if (!TextUtils.isEmpty(decryptedPushMessage.getSubject())) {
+            notificationBuilder.setContentTitle(EmojiCompat.get().process(decryptedPushMessage.getSubject()));
+        }
 
         if (!TextUtils.isEmpty(decryptedPushMessage.getText())) {
             notificationBuilder.setContentText(EmojiCompat.get().process(decryptedPushMessage.getText()));
