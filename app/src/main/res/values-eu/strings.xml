@@ -6,6 +6,7 @@
     <string name="audio_output_dialog_headline">Audio irteera</string>
     <string name="audio_output_phone">Telefonoa</string>
     <string name="audio_output_speaker">Bozgorailua</string>
+    <string name="audio_output_wired_headset">Kabledun entzungailua</string>
     <string name="avatar">Avatarra</string>
     <string name="away">Kanpoan</string>
     <string name="choose_avatar_from_cloud">Aukeratu avatarra cloudetik</string>
@@ -346,6 +347,7 @@
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
     <string name="password_protected">Pasahitz bidez babestuta</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
+    <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
@@ -366,6 +368,7 @@
     <string name="set_status_message">Ezarri egoera-mezua</string>
     <string name="share">Partekatu</string>
     <string name="starred">Gogokoa</string>
+    <string name="startCallForbidden">Ez duzu dei bat hasteko baimenik</string>
     <string name="status_message">Egoera-mezua</string>
     <string name="take_photo">Atera argazki bat</string>
     <string name="take_photo_error_deleting_picture">Errorea argazkia ateratzen</string>

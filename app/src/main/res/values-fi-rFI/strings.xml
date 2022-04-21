@@ -2,6 +2,11 @@
   <resources>
     <string name="account_icon">Tilikuvake</string>
     <string name="appbar_search_in">Etsi kohteesta %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">Äänen ulostulo</string>
+    <string name="audio_output_phone">Puhelin</string>
+    <string name="audio_output_speaker">Kaiutin</string>
+    <string name="audio_output_wired_headset">Langallinen kuulokemikrofoni</string>
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
@@ -36,6 +41,7 @@
     <string name="nc_add_to_favorites">Lisää suosikkeihin</string>
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
     <string name="nc_allow_guests">Salli vieraat</string>
+    <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_bad_response_error">Virheellinen vastaus</string>
     <string name="nc_biometric_unlock">Avaa lukitus %1$s</string>
     <string name="nc_call_incoming">SAAPUVA</string>
@@ -117,6 +123,7 @@
     <string name="nc_lobby_start_soon">Kokous alkaa pian</string>
     <string name="nc_lobby_waiting">Odotat parhaillaan aulassa.</string>
     <string name="nc_location_current_position_description">Nykyinen sijaintisi</string>
+    <string name="nc_location_permission_required">sijainnin käyttöoikeus vaaditaan</string>
     <string name="nc_location_unknown">Tuntematon sijainti</string>
     <string name="nc_locked">Lukittu</string>
     <string name="nc_locked_tap_to_unlock">Napauta avataksesi lukituksen</string>
@@ -125,11 +132,13 @@
     <string name="nc_manual">Ei asetettu</string>
     <string name="nc_mark_as_read">Merkitse luetuksi</string>
     <string name="nc_mark_as_unread">Merkitse lukemattomaksi</string>
+    <string name="nc_message_quote_cancel_reply">Peruuta vastaus</string>
     <string name="nc_message_read">Viesti luettu</string>
     <string name="nc_message_sent">Viesti lähetetty</string>
     <string name="nc_moderator">Moderaattori</string>
     <string name="nc_never">Ei koskaan liitytty</string>
     <string name="nc_new_conversation">Uusi keskustelu</string>
+    <string name="nc_new_mention">Lukemattomat maininnat</string>
     <string name="nc_new_messages">Lukemattomat viestit</string>
     <string name="nc_new_password">Uusi salasana</string>
     <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
@@ -142,7 +151,9 @@
     <string name="nc_none">Ei mitään</string>
     <string name="nc_not_defined_error">Tuntematon virhe</string>
     <string name="nc_notification_channel_calls">Puhelut</string>
+    <string name="nc_notification_channel_calls_description">Ilmoita saapuvista puheluista</string>
     <string name="nc_notification_channel_messages">Viestit</string>
+    <string name="nc_notification_channel_messages_description">Ilmoita saapuvista viesteistä</string>
     <string name="nc_notification_settings">Ilmoitusasetukset</string>
     <string name="nc_notify_me_always">Ilmoita aina</string>
     <string name="nc_notify_me_mention">Ilmoita kun mainittu</string>
@@ -248,6 +259,7 @@
     <string name="nc_settings_vibrate_desc">Puhelin värisee ellei se ole äänettömänä</string>
     <string name="nc_settings_warning">Varoitus</string>
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>
+    <string name="nc_share_contact_permission">Oikeus lukea yhteystiedot vaaditaan</string>
     <string name="nc_share_current_location">Jaa nykyinen sijainti</string>
     <string name="nc_share_link">Jaa linkki</string>
     <string name="nc_share_link_via">Jaa linkki</string>
@@ -266,6 +278,7 @@
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_in_progess">Lähetys</string>
     <string name="nc_upload_local_file">Lähetä paikallinen tiedosto</string>
+    <string name="nc_upload_picture_from_cam">Ota kuva</string>
     <string name="nc_user">Käyttäjä</string>
     <string name="nc_voice_message_slide_to_cancel">« Liu\'uta peruuttaaksesi</string>
     <string name="nc_webinar">Webinaari</string>
@@ -277,7 +290,10 @@
     <string name="online_status">Online-tila</string>
     <string name="openConversations">Avaa keskustelut</string>
     <string name="password_protected">Salasanasuojattu</string>
+    <string name="play_pause_voice_message">Toista/keskeytä ääniviesti</string>
+    <string name="reactions_tab_all">Kaikki</string>
     <string name="save">Tallenna</string>
+    <string name="scope_federated_description">Synkronoi vain luotetuille palveluille</string>
     <string name="scope_federated_title">Federoitu</string>
     <string name="scope_local_title">Paikallinen</string>
     <string name="scope_private_title">Yksityinen</string>
@@ -288,9 +304,15 @@
     <string name="set_status_message">Aseta tilaviesti</string>
     <string name="share">Jaa</string>
     <string name="starred">Suosikki</string>
+    <string name="startCallForbidden">Sinulla ei ole oikeutta aloittaa puhelua</string>
     <string name="status_message">Tilaviesti</string>
+    <string name="take_photo">Ota kuva</string>
+    <string name="take_photo_error_deleting_picture">Virhe kuvaa ottaessa</string>
+    <string name="take_photo_retake_photo">Ota kuva uudelleen</string>
     <string name="take_photo_send">Lähetä</string>
     <string name="take_photo_switch_camera">Vaihda kamera</string>
+    <string name="take_photo_toggle_crop">Rajaa kuvaa</string>
+    <string name="take_photo_toggle_lowres">Pienennä kuvan kokoa</string>
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
     <string name="today">Tänään</string>
