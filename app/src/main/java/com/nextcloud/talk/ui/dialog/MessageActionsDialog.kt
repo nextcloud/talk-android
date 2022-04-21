@@ -247,6 +247,14 @@ class MessageActionsDialog(
     }
 
     private fun sendReaction(message: ChatMessage, emoji: String) {
+        if (message.reactionsSelf.contains(emoji)) {
+            deleteReaction(message, emoji)
+        } else {
+            addReaction(message, emoji)
+        }
+    }
+
+    private fun addReaction(message: ChatMessage, emoji: String) {
         val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
         ncApi.sendReaction(
@@ -273,7 +281,40 @@ class MessageActionsDialog(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while sending reaction")
+                    Log.e(TAG, "error while sending reaction: $emoji")
+                }
+
+                override fun onComplete() {
+                    dismiss()
+                }
+            })
+    }
+
+    private fun deleteReaction(message: ChatMessage, emoji: String) {
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+
+        ncApi.deleteReaction(
+            credentials,
+            ApiUtils.getUrlForMessageReaction(
+                user?.baseUrl,
+                currentConversation!!.token,
+                message.id
+            ),
+            emoji
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                    Log.d(TAG, "deleted reaction: $emoji")
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error while deleting reaction: $emoji")
                 }
 
                 override fun onComplete() {
