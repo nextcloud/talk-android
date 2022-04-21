@@ -29,7 +29,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.updatePadding
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
@@ -38,6 +37,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiTextView
 
 class Reaction {
+
     fun showReactions(
         message: ChatMessage,
         binding: ReactionsInsideMessageBinding,
@@ -49,6 +49,19 @@ class Reaction {
 
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
             val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
+
+            val amountParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            amountParams.marginStart = DisplayUtils.convertDpToPixel(AMOUNT_START_MARGIN, context).toInt()
+
+            val wrapperParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            wrapperParams.marginEnd = DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt()
+
             for ((emoji, amount) in message.reactions) {
                 val emojiWithAmountWrapper = LinearLayout(context)
                 emojiWithAmountWrapper.orientation = LinearLayout.HORIZONTAL
@@ -71,34 +84,16 @@ class Reaction {
                     if (isOutgoingMessage) {
                         reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.white))
                     } else {
-                        // reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.nc_message_incoming_reaction_text_color))
-                        /*
                         reactionAmount.setTextColor(
-                            ResourcesCompat.getColor(
-                                context.resources,
-                                R.color.high_emphasis_text,
-                                null
-                            )
+                            ContextCompat.getColor(binding.root.context,  R.color.high_emphasis_text)
                         )
-                        */
-                        reactionAmount.setTextColor(ContextCompat.getColor(binding.root.context, R.color
-                            .high_emphasis_text))
                     }
                     reactionAmount.text = amount.toString()
+                    reactionAmount.layoutParams = amountParams
                     emojiWithAmountWrapper.addView(reactionAmount)
                 }
 
-                val params = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(
-                    DisplayUtils.convertDpToPixel(EMOJI_START_MARGIN, context).toInt(),
-                    0,
-                    DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt(),
-                    0
-                )
-                emojiWithAmountWrapper.layoutParams = params
+                emojiWithAmountWrapper.layoutParams = wrapperParams
 
                 val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
                 emojiWithAmountWrapper.updatePadding(left = paddingSide, right = paddingSide)
@@ -119,7 +114,7 @@ class Reaction {
 
     companion object {
         const val MAX_EMOJIS_TO_DISPLAY = 4
-        const val EMOJI_START_MARGIN: Float = 2F
+        const val AMOUNT_START_MARGIN: Float = 2F
         const val EMOJI_END_MARGIN: Float = 6F
         const val EMOJI_AND_AMOUNT_PADDING_SIDE: Float = 6F
         const val EMOJI_MORE = "…"
