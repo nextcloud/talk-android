@@ -50,6 +50,11 @@ class Reaction {
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
             val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
 
+            var textColor = ContextCompat.getColor(context, R.color.white)
+            if (!isOutgoingMessage) {
+                textColor = ContextCompat.getColor(binding.root.context,  R.color.high_emphasis_text)
+            }
+
             val amountParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -81,13 +86,7 @@ class Reaction {
 
                 if (amount > 1) {
                     val reactionAmount = TextView(context)
-                    if (isOutgoingMessage) {
-                        reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.white))
-                    } else {
-                        reactionAmount.setTextColor(
-                            ContextCompat.getColor(binding.root.context,  R.color.high_emphasis_text)
-                        )
-                    }
+                    reactionAmount.setTextColor(textColor)
                     reactionAmount.text = amount.toString()
                     reactionAmount.layoutParams = amountParams
                     emojiWithAmountWrapper.addView(reactionAmount)
@@ -103,7 +102,7 @@ class Reaction {
                 remainingEmojisToDisplay--
                 if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
                     val infoAboutMoreEmojis = TextView(context)
-                    infoAboutMoreEmojis.setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
+                    infoAboutMoreEmojis.setTextColor(textColor)
                     infoAboutMoreEmojis.text = EMOJI_MORE
                     binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
                     break
