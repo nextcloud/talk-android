@@ -185,9 +185,8 @@ class ShowReactionsDialog(
     override fun onClick(reactionItem: ReactionItem) {
         if (reactionItem.reactionVoter.actorId?.equals(userEntity?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
+            dismiss()
         }
-
-        dismiss()
     }
 
     private fun deleteReaction(message: ChatMessage, emoji: String) {
