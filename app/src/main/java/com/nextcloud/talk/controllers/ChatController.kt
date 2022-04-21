@@ -2751,6 +2751,7 @@ class ChatController(args: Bundle) :
             amount = 0
         }
         message.reactions[emoji] = amount + 1
+        message.reactionsSelf.add(emoji)
         adapter?.update(message)
     }
 
