@@ -51,7 +51,7 @@ class Reaction {
 
             var textColor = ContextCompat.getColor(context, R.color.white)
             if (!isOutgoingMessage) {
-                textColor = ContextCompat.getColor(binding.root.context,  R.color.high_emphasis_text)
+                textColor = ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)
             }
 
             val amountParams = LinearLayout.LayoutParams(
@@ -88,15 +88,15 @@ class Reaction {
                 val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
                 val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
                 val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
-                if (message.reactionsSelf != null
-                    && message.reactionsSelf.isNotEmpty()
-                    && message.reactionsSelf.contains(emoji)
+                if (message.reactionsSelf != null &&
+                    message.reactionsSelf.isNotEmpty() &&
+                    message.reactionsSelf.contains(emoji)
                 ) {
                     emojiWithAmountWrapper.background =
                         AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)
-                    emojiWithAmountWrapper.setPaddingRelative(paddingSide,paddingTop, paddingSide,paddingBottom)
+                    emojiWithAmountWrapper.setPaddingRelative(paddingSide, paddingTop, paddingSide, paddingBottom)
                 } else {
-                    emojiWithAmountWrapper.setPaddingRelative(0,paddingTop, paddingSide,paddingBottom)
+                    emojiWithAmountWrapper.setPaddingRelative(0, paddingTop, paddingSide, paddingBottom)
                 }
 
                 binding.reactionsEmojiWrapper.addView(emojiWithAmountWrapper)
