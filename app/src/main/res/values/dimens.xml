@@ -68,6 +68,6 @@
     <dimen name="standard_quarter_margin">4dp</dimen>
     <dimen name="activity_list_item_title_header_text_size">16sp</dimen>
     <dimen name="activity_row_layout_height">48dp</dimen>
-    <dimen name="reaction_bottom_sheet_layout_size">32dp</dimen>
+    <dimen name="reaction_bottom_sheet_layout_size">40dp</dimen>
     <dimen name="standard_eighth_margin">2dp</dimen>
 </resources>
