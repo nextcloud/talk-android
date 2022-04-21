@@ -72,13 +72,17 @@ class Reaction {
                         reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.white))
                     } else {
                         // reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.nc_message_incoming_reaction_text_color))
+                        /*
                         reactionAmount.setTextColor(
                             ResourcesCompat.getColor(
-                                context.applicationContext.resources,
-                                R.color.nc_message_incoming_reaction_text_color,
+                                context.resources,
+                                R.color.high_emphasis_text,
                                 null
                             )
                         )
+                        */
+                        reactionAmount.setTextColor(ContextCompat.getColor(binding.root.context, R.color
+                            .high_emphasis_text))
                     }
                     reactionAmount.text = amount.toString()
                     emojiWithAmountWrapper.addView(reactionAmount)
