@@ -64,8 +64,7 @@
     <color name="bg_message_list_incoming_bubble_deleted">#14FFFFFF</color>
 
     <color name="textColorMaxContrast">#8c8c8c</color>
-
-    <color name="nc_message_incoming_reaction_text_color">#FFFFFF</color>
+    
     <color name="bg_message_own_reaction">#29ffffff</color>
 
     <!-- shimmer element colors -->

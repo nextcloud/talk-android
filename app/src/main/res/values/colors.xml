@@ -99,7 +99,6 @@
     <!-- voicemessage -->
     <color name="nc_voice_message_outgoing_controls">#606060</color>
 
-    <color name="nc_message_incoming_reaction_text_color">#de000000</color>
     <color name="bg_message_own_reaction">#99ffffff</color>
 
     <color name="camera_bg_tint">#99121212</color>
