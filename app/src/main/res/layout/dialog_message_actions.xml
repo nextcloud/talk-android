@@ -105,7 +105,7 @@
 
         <com.vanniktech.emoji.EmojiEditText
             android:id="@+id/emojiMore"
-            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_width="0dp"
             android:layout_height="@dimen/activity_row_layout_height"
             android:layout_marginEnd="2dp"
             android:layout_weight="1"
