@@ -3,7 +3,7 @@
   ~
   ~ @author Marcel Hibbe
   ~ @author Andy Scherzinger
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
   ~ Copyright (C) 2021 Marcel Hibbe <marcel.hibbe@nextcloud.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -19,15 +19,12 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/standard_padding"
-    android:paddingEnd="@dimen/standard_padding"
     android:paddingBottom="@dimen/standard_half_padding">
 
     <TextView
@@ -35,6 +32,8 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/bottom_sheet_item_height"
         android:gravity="start|center_vertical"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
         android:text="@string/nc_add_file"
         android:textAlignment="viewStart"
         android:textColor="@color/medium_emphasis_text"
@@ -47,6 +46,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -78,6 +79,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -109,6 +112,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -140,6 +145,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
@@ -171,6 +178,8 @@
         android:background="?android:attr/selectableItemBackground"
         android:gravity="center_vertical"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
         tools:ignore="UseCompoundDrawables">
 
         <ImageView

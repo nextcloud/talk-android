@@ -4,7 +4,7 @@
   ~ @author Tobias Kaminsky
   ~ @author Andy Scherzinger
   ~ Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
-  ~ Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -19,23 +19,23 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingStart="@dimen/standard_padding"
     android:paddingTop="@dimen/standard_half_padding"
-    android:paddingEnd="@dimen/standard_padding"
     android:paddingBottom="@dimen/standard_half_padding">
 
     <LinearLayout
         android:id="@+id/scope_private"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
         android:paddingTop="@dimen/standard_half_padding"
+        android:paddingEnd="@dimen/standard_padding"
         android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
@@ -77,8 +77,11 @@
         android:id="@+id/scope_local"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
         android:paddingTop="@dimen/standard_half_padding"
+        android:paddingEnd="@dimen/standard_padding"
         android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
@@ -120,8 +123,11 @@
         android:id="@+id/scope_federated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
         android:paddingTop="@dimen/standard_half_padding"
+        android:paddingEnd="@dimen/standard_padding"
         android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
@@ -163,8 +169,11 @@
         android:id="@+id/scope_published"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
         android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
         android:paddingTop="@dimen/standard_half_padding"
+        android:paddingEnd="@dimen/standard_padding"
         android:paddingBottom="@dimen/standard_half_padding">
 
         <ImageView
