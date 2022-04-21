@@ -2746,6 +2746,10 @@ class ChatController(args: Bundle) :
             message.reactions = LinkedHashMap()
         }
 
+        if (message.reactionsSelf == null) {
+            message.reactionsSelf = ArrayList<String>()
+        }
+
         var amount = message.reactions[emoji]
         if (amount == null) {
             amount = 0
