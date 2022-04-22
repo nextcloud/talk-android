@@ -1543,10 +1543,6 @@ public class CallActivity extends CallBaseActivity {
 
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
-            PeerConnectionWrapper peerConnectionWrapper =
-                getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                                    ncSignalingMessage.getRoomType(), false);
-
             String type = null;
             if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
                 type = ncSignalingMessage.getPayload().getType();
@@ -1554,7 +1550,24 @@ public class CallActivity extends CallBaseActivity {
                 type = ncSignalingMessage.getType();
             }
 
-            if (type != null) {
+            PeerConnectionWrapper peerConnectionWrapper = null;
+
+            if ("offer".equals(type)) {
+                peerConnectionWrapper =
+                    getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
+                                                                        ncSignalingMessage.getRoomType(), false);
+            } else {
+                peerConnectionWrapper =
+                    getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
+                                                                ncSignalingMessage.getRoomType());
+            }
+
+            if ("unshareScreen".equals(type) ||
+                (("offer".equals(type) ||
+                  "answer".equals(type) ||
+                  "candidate".equals(type) ||
+                  "endOfCandidates".equals(type)) &&
+                    peerConnectionWrapper != null)) {
                 switch (type) {
                     case "unshareScreen":
                         endPeerConnection(ncSignalingMessage.getFrom(), true);
@@ -2181,7 +2194,9 @@ public class CallActivity extends CallBaseActivity {
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
         } else {
-            nick = getOrCreatePeerConnectionWrapperForSessionIdAndType(session, videoStreamType, false).getNick();
+            PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(session,
+                                                                                                      videoStreamType);
+            nick = peerConnectionWrapper != null ? peerConnectionWrapper.getNick() : "";
         }
 
         String userId = "";
