@@ -89,7 +89,8 @@
         app:layout_constraintBottom_toTopOf="@+id/add_account"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/separator_line" />
+        app:layout_constraintTop_toBottomOf="@+id/separator_line"
+        tools:listitem="@layout/account_item" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/add_account"

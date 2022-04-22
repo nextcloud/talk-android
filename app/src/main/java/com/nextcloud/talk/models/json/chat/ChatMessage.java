@@ -38,6 +38,7 @@ import com.stfalcon.chatkit.commons.models.MessageContentType;
 import org.parceler.Parcel;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -96,6 +97,8 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
     public String messageType;
     @JsonField(name = "reactions")
     public LinkedHashMap<String, Integer> reactions;
+    @JsonField(name = "reactionsSelf")
+    public ArrayList<String> reactionsSelf;
 
     public boolean isDownloadingVoiceMessage;
     public boolean resetVoiceMessage;

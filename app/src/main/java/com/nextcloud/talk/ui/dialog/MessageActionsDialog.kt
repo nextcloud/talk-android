@@ -29,6 +29,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.annotation.NonNull
+import androidx.appcompat.content.res.AppCompatResources
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.BuildConfig
@@ -43,6 +44,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.vanniktech.emoji.EmojiPopup
+import com.vanniktech.emoji.EmojiTextView
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -123,30 +125,43 @@ class MessageActionsDialog(
 
     private fun initEmojiBar() {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions")) {
+            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
             }
+            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsDown)
             dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
             }
+            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiLaugh)
             dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
             }
+            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiHeart)
             dialogMessageActionsBinding.emojiHeart.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiHeart.text.toString())
             }
+            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiConfused)
             dialogMessageActionsBinding.emojiConfused.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiConfused.text.toString())
             }
+            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiSad)
             dialogMessageActionsBinding.emojiSad.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiSad.text.toString())
             }
+
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
                 dismiss()
             }
             dialogMessageActionsBinding.emojiBar.visibility = View.VISIBLE
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
+        }
+    }
+
+    private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
+        if (emoji.text?.toString() != null && message.reactionsSelf?.contains(emoji.text?.toString()) == true) {
+            emoji.background = AppCompatResources.getDrawable(context, R.drawable.reaction_self_bottom_sheet_background)
         }
     }
 
@@ -232,6 +247,14 @@ class MessageActionsDialog(
     }
 
     private fun sendReaction(message: ChatMessage, emoji: String) {
+        if (message.reactionsSelf.contains(emoji)) {
+            deleteReaction(message, emoji)
+        } else {
+            addReaction(message, emoji)
+        }
+    }
+
+    private fun addReaction(message: ChatMessage, emoji: String) {
         val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
         ncApi.sendReaction(
@@ -258,7 +281,40 @@ class MessageActionsDialog(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while sending reaction")
+                    Log.e(TAG, "error while sending reaction: $emoji")
+                }
+
+                override fun onComplete() {
+                    dismiss()
+                }
+            })
+    }
+
+    private fun deleteReaction(message: ChatMessage, emoji: String) {
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+
+        ncApi.deleteReaction(
+            credentials,
+            ApiUtils.getUrlForMessageReaction(
+                user?.baseUrl,
+                currentConversation!!.token,
+                message.id
+            ),
+            emoji
+        )
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(@NonNull genericOverall: GenericOverall) {
+                    Log.d(TAG, "deleted reaction: $emoji")
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "error while deleting reaction: $emoji")
                 }
 
                 override fun onComplete() {
@@ -271,7 +327,6 @@ class MessageActionsDialog(
         private const val TAG = "MessageActionsDialog"
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
-        private const val HTTP_OK: Int = 200
         private const val HTTP_CREATED: Int = 201
     }
 }

@@ -25,8 +25,9 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.view.ViewGroup
-import android.widget.RelativeLayout
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
@@ -35,47 +36,75 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiTextView
 
 class Reaction {
+
     fun showReactions(
         message: ChatMessage,
         binding: ReactionsInsideMessageBinding,
         context: Context,
-        useLightColorForText: Boolean
+        isOutgoingMessage: Boolean
     ) {
         binding.reactionsEmojiWrapper.removeAllViews()
         if (message.reactions != null && message.reactions.isNotEmpty()) {
 
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
             val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
+
+            var textColor = ContextCompat.getColor(context, R.color.white)
+            if (!isOutgoingMessage) {
+                textColor = ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)
+            }
+
+            val amountParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            amountParams.marginStart = DisplayUtils.convertDpToPixel(AMOUNT_START_MARGIN, context).toInt()
+
+            val wrapperParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            wrapperParams.marginEnd = DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt()
+
             for ((emoji, amount) in message.reactions) {
+                val emojiWithAmountWrapper = LinearLayout(context)
+                emojiWithAmountWrapper.orientation = LinearLayout.HORIZONTAL
+
                 val reactionEmoji = EmojiTextView(context)
                 reactionEmoji.text = emoji
-                binding.reactionsEmojiWrapper.addView(reactionEmoji)
 
-                val reactionAmount = TextView(context)
+                emojiWithAmountWrapper.addView(reactionEmoji)
 
                 if (amount > 1) {
-                    if (useLightColorForText) {
-                        reactionAmount.setTextColor(ContextCompat.getColor(context, R.color.nc_grey))
-                    }
+                    val reactionAmount = TextView(context)
+                    reactionAmount.setTextColor(textColor)
                     reactionAmount.text = amount.toString()
+                    reactionAmount.layoutParams = amountParams
+                    emojiWithAmountWrapper.addView(reactionAmount)
                 }
 
-                val params = RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                params.setMargins(
-                    DisplayUtils.convertDpToPixel(EMOJI_START_MARGIN, context).toInt(),
-                    0,
-                    DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt(),
-                    0
-                )
-                reactionAmount.layoutParams = params
-                binding.reactionsEmojiWrapper.addView(reactionAmount)
+                emojiWithAmountWrapper.layoutParams = wrapperParams
+
+                val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
+                val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
+                val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
+                if (message.reactionsSelf != null &&
+                    message.reactionsSelf.isNotEmpty() &&
+                    message.reactionsSelf.contains(emoji)
+                ) {
+                    emojiWithAmountWrapper.background =
+                        AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)
+                    emojiWithAmountWrapper.setPaddingRelative(paddingSide, paddingTop, paddingSide, paddingBottom)
+                } else {
+                    emojiWithAmountWrapper.setPaddingRelative(0, paddingTop, paddingSide, paddingBottom)
+                }
+
+                binding.reactionsEmojiWrapper.addView(emojiWithAmountWrapper)
 
                 remainingEmojisToDisplay--
                 if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
                     val infoAboutMoreEmojis = TextView(context)
+                    infoAboutMoreEmojis.setTextColor(textColor)
                     infoAboutMoreEmojis.text = EMOJI_MORE
                     binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
                     break
@@ -86,8 +115,11 @@ class Reaction {
 
     companion object {
         const val MAX_EMOJIS_TO_DISPLAY = 4
-        const val EMOJI_START_MARGIN: Float = 2F
-        const val EMOJI_END_MARGIN: Float = 8F
+        const val AMOUNT_START_MARGIN: Float = 2F
+        const val EMOJI_END_MARGIN: Float = 6F
+        const val EMOJI_AND_AMOUNT_PADDING_SIDE: Float = 4F
+        const val WRAPPER_PADDING_TOP: Float = 2F
+        const val WRAPPER_PADDING_BOTTOM: Float = 3F
         const val EMOJI_MORE = "…"
     }
 }

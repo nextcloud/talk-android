@@ -29,76 +29,85 @@
     <LinearLayout
         android:id="@+id/emojiBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_sheet_item_height"
-        android:layout_marginStart="@dimen/standard_eighth_margin"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_quarter_margin"
+        android:layout_marginTop="@dimen/standard_half_margin"
         android:layout_marginEnd="@dimen/zero"
+        android:layout_marginBottom="@dimen/standard_half_margin"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiThumbsUp"
-            android:layout_width="@dimen/activity_row_layout_height"
-            android:layout_height="@dimen/activity_row_layout_height"
-            android:layout_weight="1"
+            android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_marginLeft="@dimen/standard_quarter_margin"
+            android:layout_marginRight="@dimen/standard_quarter_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/emoji_thumbsUp"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiThumbsDown"
-            android:layout_width="@dimen/activity_row_layout_height"
-            android:layout_height="@dimen/activity_row_layout_height"
-            android:layout_weight="1"
+            android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_marginLeft="@dimen/standard_quarter_margin"
+            android:layout_marginRight="@dimen/standard_quarter_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/emoji_thumbsDown"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiHeart"
-            android:layout_width="@dimen/activity_row_layout_height"
-            android:layout_height="@dimen/activity_row_layout_height"
-            android:layout_weight="1"
+            android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_marginLeft="@dimen/standard_quarter_margin"
+            android:layout_marginRight="@dimen/standard_quarter_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/default_emoji"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiLaugh"
-            android:layout_width="@dimen/activity_row_layout_height"
-            android:layout_height="@dimen/activity_row_layout_height"
-            android:layout_weight="1"
+            android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_marginLeft="@dimen/standard_quarter_margin"
+            android:layout_marginRight="@dimen/standard_quarter_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/emoji_heart"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiConfused"
-            android:layout_width="@dimen/activity_row_layout_height"
-            android:layout_height="@dimen/activity_row_layout_height"
-            android:layout_weight="1"
+            android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_marginLeft="@dimen/standard_quarter_margin"
+            android:layout_marginRight="@dimen/standard_quarter_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/emoji_confused"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <com.vanniktech.emoji.EmojiTextView
             android:id="@+id/emojiSad"
-            android:layout_width="@dimen/activity_row_layout_height"
-            android:layout_height="@dimen/activity_row_layout_height"
-            android:layout_weight="1"
+            android:layout_width="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_height="@dimen/reaction_bottom_sheet_layout_size"
+            android:layout_marginLeft="@dimen/standard_quarter_margin"
+            android:layout_marginRight="@dimen/standard_quarter_margin"
             android:cursorVisible="false"
             android:gravity="center"
             android:text="@string/emoji_sad"
-            android:textSize="24sp" />
+            android:textSize="20sp" />
 
         <com.vanniktech.emoji.EmojiEditText
             android:id="@+id/emojiMore"
-            android:layout_width="@dimen/activity_row_layout_height"
+            android:layout_width="0dp"
             android:layout_height="@dimen/activity_row_layout_height"
+            android:layout_marginEnd="2dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:contentDescription="@string/emoji_more"
@@ -111,8 +120,6 @@
         android:id="@+id/message_actions"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/standard_padding"
-        android:paddingEnd="@dimen/standard_padding"
         android:orientation="vertical">
 
         <LinearLayout
@@ -129,6 +136,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
                 android:src="@drawable/ic_reply"
                 app:tint="@color/high_emphasis_menu_icon" />
 
@@ -138,7 +147,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
+                android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_reply"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
@@ -160,6 +169,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
                 android:src="@drawable/ic_reply"
                 app:tint="@color/high_emphasis_menu_icon" />
 
@@ -169,7 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
+                android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_reply_privately"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
@@ -191,6 +202,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
                 android:src="@drawable/ic_share_action"
                 app:tint="@color/high_emphasis_menu_icon" />
 
@@ -200,7 +213,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
+                android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_forward_message"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
@@ -222,6 +235,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
                 android:src="@drawable/ic_eye_off"
                 app:tint="@color/high_emphasis_menu_icon" />
 
@@ -231,7 +246,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
+                android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_mark_as_unread"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
@@ -253,6 +268,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
                 android:src="@drawable/ic_content_copy"
                 app:tint="@color/high_emphasis_menu_icon" />
 
@@ -262,7 +279,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
+                android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_copy_message"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"
@@ -284,6 +301,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@null"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/zero"
                 android:src="@drawable/ic_delete"
                 app:tint="@color/high_emphasis_menu_icon" />
 
@@ -293,7 +312,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center_vertical"
                 android:paddingStart="@dimen/standard_double_padding"
-                android:paddingEnd="@dimen/zero"
+                android:paddingEnd="@dimen/standard_padding"
                 android:text="@string/nc_delete_message"
                 android:textAlignment="viewStart"
                 android:textColor="@color/high_emphasis_text"

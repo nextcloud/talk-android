@@ -114,7 +114,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
         // geo-location
         setLocationDataOnMessageItem(message)
 
-        Reaction().showReactions(message, binding.reactions, context!!, true)
+        Reaction().showReactions(message, binding.reactions, binding.messageText.context, true)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
         }
