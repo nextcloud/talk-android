@@ -1544,8 +1544,8 @@ public class CallActivity extends CallBaseActivity {
     private void processMessage(NCSignalingMessage ncSignalingMessage) {
         if (ncSignalingMessage.getRoomType().equals("video") || ncSignalingMessage.getRoomType().equals("screen")) {
             PeerConnectionWrapper peerConnectionWrapper =
-                getPeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
-                                                            ncSignalingMessage.getRoomType(), false);
+                getOrCreatePeerConnectionWrapperForSessionIdAndType(ncSignalingMessage.getFrom(),
+                                                                    ncSignalingMessage.getRoomType(), false);
 
             String type = null;
             if (ncSignalingMessage.getPayload() != null && ncSignalingMessage.getPayload().getType() != null) {
@@ -1765,12 +1765,12 @@ public class CallActivity extends CallBaseActivity {
 
         if (hasMCU) {
             // Ensure that own publishing peer is set up.
-            getPeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
+            getOrCreatePeerConnectionWrapperForSessionIdAndType(webSocketClient.getSessionId(), VIDEO_STREAM_TYPE_VIDEO, true);
         }
 
         for (String sessionId : newSessions) {
             Log.d(TAG, "   newSession joined: " + sessionId);
-            getPeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
+            getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false);
         }
 
         if (newSessions.size() > 0 && !currentCallStatus.equals(CallStatus.IN_CONVERSATION)) {
@@ -1836,9 +1836,9 @@ public class CallActivity extends CallBaseActivity {
         return null;
     }
 
-    private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId,
-                                                                              String type,
-                                                                              boolean publisher) {
+    private PeerConnectionWrapper getOrCreatePeerConnectionWrapperForSessionIdAndType(String sessionId,
+                                                                                      String type,
+                                                                                      boolean publisher) {
         PeerConnectionWrapper peerConnectionWrapper;
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId, type)) != null) {
             return peerConnectionWrapper;
@@ -2181,7 +2181,7 @@ public class CallActivity extends CallBaseActivity {
         if (hasExternalSignalingServer) {
             nick = webSocketClient.getDisplayNameForSession(session);
         } else {
-            nick = getPeerConnectionWrapperForSessionIdAndType(session, videoStreamType, false).getNick();
+            nick = getOrCreatePeerConnectionWrapperForSessionIdAndType(session, videoStreamType, false).getNick();
         }
 
         String userId = "";
