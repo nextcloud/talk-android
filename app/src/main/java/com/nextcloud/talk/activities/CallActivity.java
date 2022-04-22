@@ -1825,7 +1825,7 @@ public class CallActivity extends CallBaseActivity {
         peerConnectionWrapperList.remove(peerConnectionWrapper);
     }
 
-    private PeerConnectionWrapper getPeerConnectionWrapperForSessionId(String sessionId, String type) {
+    private PeerConnectionWrapper getPeerConnectionWrapperForSessionIdAndType(String sessionId, String type) {
         for (int i = 0; i < peerConnectionWrapperList.size(); i++) {
             if (peerConnectionWrapperList.get(i).getSessionId().equals(sessionId)
                 && peerConnectionWrapperList.get(i).getVideoStreamType().equals(type)) {
@@ -1840,7 +1840,7 @@ public class CallActivity extends CallBaseActivity {
                                                                                       String type,
                                                                                       boolean publisher) {
         PeerConnectionWrapper peerConnectionWrapper;
-        if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionId(sessionId, type)) != null) {
+        if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, type)) != null) {
             return peerConnectionWrapper;
         } else {
             if (hasMCU && publisher) {
