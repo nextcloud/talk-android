@@ -23,6 +23,8 @@ package com.nextcloud.talk.ui.dialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
@@ -91,11 +93,18 @@ class MessageActionsDialog(
         initEmojiMore()
     }
 
+    override fun onStart() {
+        super.onStart()
+        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet as View)
+        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     private fun initEmojiMore() {
         dialogMessageActionsBinding.emojiMore.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                popup.toggle()
+                toggleEmojiPopup()
             }
             true
         }
@@ -121,6 +130,26 @@ class MessageActionsDialog(
             .build(dialogMessageActionsBinding.emojiMore)
         dialogMessageActionsBinding.emojiMore.disableKeyboardInput(popup)
         dialogMessageActionsBinding.emojiMore.forceSingleEmoji()
+    }
+
+    /*
+        This method is a hacky workaround to avoid bug #1914
+        As the bug happens only for the very first time when the popup is opened,
+        it is closed after some milliseconds and opened again.
+     */
+    private fun toggleEmojiPopup() {
+        if (popup.isShowing) {
+            popup.dismiss()
+        } else {
+            popup.show()
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    popup.dismiss()
+                    popup.show()
+                },
+                200
+            )
+        }
     }
 
     private fun initEmojiBar() {
@@ -229,13 +258,6 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuCopyMessage.visibility = getVisibility(visible)
-    }
-
-    override fun onStart() {
-        super.onStart()
-        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
-        val behavior = BottomSheetBehavior.from(bottomSheet as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
     }
 
     private fun getVisibility(visible: Boolean): Int {
