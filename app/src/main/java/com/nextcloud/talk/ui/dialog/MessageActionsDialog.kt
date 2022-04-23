@@ -147,7 +147,7 @@ class MessageActionsDialog(
                     popup.dismiss()
                     popup.show()
                 },
-                200
+                DELAY
             )
         }
     }
@@ -350,5 +350,6 @@ class MessageActionsDialog(
         private const val ACTOR_LENGTH = 6
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val HTTP_CREATED: Int = 201
+        private const val DELAY: Long = 200
     }
 }
