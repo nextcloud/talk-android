@@ -269,7 +269,7 @@ class MessageActionsDialog(
     }
 
     private fun sendReaction(message: ChatMessage, emoji: String) {
-        if (message.reactionsSelf.contains(emoji)) {
+        if (message.reactionsSelf?.contains(emoji) == true) {
             deleteReaction(message, emoji)
         } else {
             addReaction(message, emoji)
