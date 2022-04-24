@@ -2,16 +2,24 @@
   <resources>
     <string name="account_icon">Значок учётной записи</string>
     <string name="appbar_search_in">Искать в %s</string>
+    <string name="audio_output_phone">Телефон</string>
+    <string name="audio_output_speaker">Динамик</string>
     <string name="avatar">Аватар</string>
+    <string name="away">Отошёл</string>
     <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>
+    <string name="clear_status_message">Очистить сообщение о статусе</string>
+    <string name="clear_status_message_after">Очищать статус после</string>
     <string name="conversations">Разговоры</string>
     <string name="delete_avatar">Удалить аватар</string>
+    <string name="dnd">Не беспокоить</string>
     <string name="edit">Редактировать</string>
     <string name="encrypted">Зашифровано</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>
     <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Загрузка…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 часа</string>
+    <string name="invisible">Невидимый</string>
     <string name="lock_symbol">Символ блокировки</string>
     <string name="menu_item_sort_by_date_newest_first">Самый новый первый</string>
     <string name="menu_item_sort_by_date_oldest_first">Самый старый первый</string>
@@ -328,10 +336,14 @@
     <string name="nc_wrong_password">Неправильный пароль</string>
     <string name="nc_yes">Да</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
+    <string name="oneHour">1 час</string>
+    <string name="online">В сети</string>
+    <string name="online_status">Онлайн статус</string>
     <string name="openConversations">Открыть разговоры</string>
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
     <string name="password_protected">Защищено паролем</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
+    <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
     <string name="save">Сохранить</string>
     <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>
@@ -344,12 +356,16 @@
     <string name="scope_published_title">Опубликовано</string>
     <string name="scope_toggle">Переключить область видимости</string>
     <string name="scope_toggle_description">Изменить уровень конфиденциальности %1$s</string>
+    <string name="secondsAgo">несколько секунд назад</string>
     <string name="selected_list_item">Выбрано</string>
     <string name="send_to">Отправить в</string>
     <string name="send_to_three_dots">Отправить ...</string>
+    <string name="set_status">Установить статус</string>
+    <string name="set_status_message">Установить статус</string>
     <string name="share">Поделиться</string>
     <string name="starred">Избранное</string>
     <string name="startCallForbidden">Вам не разрешено звонить</string>
+    <string name="status_message">Описание статуса</string>
     <string name="take_photo">Сфотографировать</string>
     <string name="take_photo_error_deleting_picture">Ошибка при фотосъёмке</string>
     <string name="take_photo_permission">Фотосъёмка невозможна без разрешения</string>
@@ -359,6 +375,9 @@
     <string name="take_photo_toggle_crop">Обрезать фотографию</string>
     <string name="take_photo_toggle_lowres">Уменьшить размер изображения</string>
     <string name="take_photo_toggle_torch">Переключатель фонарика</string>
+    <string name="thirtyMinutes">30 минут</string>
+    <string name="thisWeek">Эта неделя</string>
+    <string name="today">Сегодня</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Полное имя</string>
@@ -366,7 +385,9 @@
     <string name="user_info_phone">Номер телефона</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Сайт</string>
+    <string name="user_status">Состояние</string>
     <string name="userinfo_error_text">Не удалось получить личную информации о пользователе</string>
     <string name="userinfo_no_info_headline">Личная информация не указана</string>
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
+    <string name="whats_your_status">Какой у вас статус?</string>
     </resources>

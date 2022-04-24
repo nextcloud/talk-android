@@ -3,11 +3,13 @@
     <string name="account_icon">Icona da conta</string>
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="audio_output_phone">Teléfono</string>
+    <string name="audio_output_speaker">Altofalante</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
     <string name="clear_status_message">Limpar a mensaxe de estado</string>
     <string name="clear_status_message_after">Limpar a mensaxe de estado após</string>
     <string name="conversations">Conversas</string>
+    <string name="dnd">Non molestar</string>
     <string name="dontClear">Non limpar</string>
     <string name="edit">Editar</string>
     <string name="encrypted">Cifrado</string>
@@ -257,6 +259,7 @@
     <string name="nc_share_subject">%1$s convite</string>
     <string name="nc_share_text">Únase á conversa en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContrasinal: %1$s</string>
+    <string name="nc_share_this_location">Compartir esta localización</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_conversation">Iniciar unha conversa</string>
     <string name="nc_start_time">Hora de comezo</string>
@@ -278,11 +281,13 @@
     <string name="online_status">Estado en liña</string>
     <string name="openConversations">Conversas abertas</string>
     <string name="password_protected">Protexido con contrasinal</string>
+    <string name="reactions_tab_all">Todo</string>
     <string name="save">Gardar</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>
     <string name="scope_local_title">Local</string>
     <string name="scope_private_title">Privado</string>
+    <string name="scope_published_description">Sincronizar con servidores de confianza e co caderno de enderezos global e público</string>
     <string name="secondsAgo">segundos atrás</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="set_status">Estabelecer o estado</string>
@@ -290,8 +295,10 @@
     <string name="share">Compartir</string>
     <string name="starred">Favorito</string>
     <string name="status_message">Mensaxe de estado</string>
+    <string name="take_photo">Tirar unha foto</string>
     <string name="take_photo_send">Enviar</string>
     <string name="take_photo_switch_camera">Cambiar de cámara</string>
+    <string name="take_photo_toggle_torch">Alternar o facho</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
     <string name="today">Hoxe</string>

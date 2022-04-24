@@ -2,6 +2,8 @@
   <resources>
     <string name="account_icon">Táknmynd fyrir notandaaðgang</string>
     <string name="appbar_search_in">Leita í %s</string>
+    <string name="audio_output_phone">Sími</string>
+    <string name="audio_output_speaker">Speaker</string>
     <string name="avatar">Auðkennismynd</string>
     <string name="away">Fjarverandi</string>
     <string name="clear_status_message">Hreinsa stöðuskilaboð</string>
@@ -104,6 +106,8 @@
     <string name="nc_leave">Hætta í samtali</string>
     <string name="nc_license_summary">GNU General Public notkunarleyfið, útgáfa 3</string>
     <string name="nc_license_title">Notkunarleyfi</string>
+    <string name="nc_lobby">Lobby</string>
+    <string name="nc_locked_tap_to_unlock">Ýttu til að aflæsa</string>
     <string name="nc_make_call_private">Gera samtal að einka</string>
     <string name="nc_make_call_public">Gera samtal opinbert</string>
     <string name="nc_mark_as_read">Merkja sem lesið</string>
@@ -173,6 +177,7 @@
     <string name="nc_sent_an_audio_you">Þú sendir hljóðskrá.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sendi mynd.</string>
     <string name="nc_sent_an_image_you">Þú sendir mynd.</string>
+    <string name="nc_server_connect">Prófa tengingu þjóns</string>
     <string name="nc_server_db_upgrade_needed">Uppfærðu %1$s gagnagrunninn þinn</string>
     <string name="nc_server_failed_to_import_account">Mistókst að flytja inn valinn notandaaðgang</string>
     <string name="nc_server_import_account">Flytja inn aðgang úr %1$s forritinu</string>
@@ -211,6 +216,7 @@
     <string name="nc_settings_theme_key">þema</string>
     <string name="nc_settings_theme_light">Ljóst</string>
     <string name="nc_settings_theme_title">Þema</string>
+    <string name="nc_settings_vibrate">Titringur</string>
     <string name="nc_settings_vibrate_desc">Síminn þinn mun titra nema hann sé á hljóðlausi stillingu</string>
     <string name="nc_settings_warning">Aðvörun</string>
     <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
@@ -219,6 +225,7 @@
     <string name="nc_share_subject">%1$s boðskort</string>
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>
+    <string name="nc_share_this_location">Deila þessari staðsetningu</string>
     <string name="nc_sort_by">Raða sem</string>
     <string name="nc_start_conversation">Hefja samtal</string>
     <string name="nc_start_time">Upphafstími</string>
@@ -226,6 +233,7 @@
     <string name="nc_unauthorized_error">Ekki heimilað</string>
     <string name="nc_upload_in_progess">Sendi inn</string>
     <string name="nc_user">Notandi</string>
+    <string name="nc_webinar">Webinar</string>
     <string name="nc_wrong_link">Samskiptatengill er ekki gildur</string>
     <string name="nc_wrong_password">Rangt lykilorð</string>
     <string name="nc_yes">Já</string>
@@ -233,7 +241,9 @@
     <string name="online">Á netinu</string>
     <string name="online_status">Staða á netinu</string>
     <string name="password_protected">Verja með lykilorði</string>
+    <string name="reactions_tab_all">Allt</string>
     <string name="save">Vista</string>
+    <string name="scope_federated_title">Deilt milli þjóna (skýjasambandssameign)</string>
     <string name="scope_local_title">Staðvært</string>
     <string name="scope_private_title">Einka</string>
     <string name="secondsAgo">sekúndum síðan</string>

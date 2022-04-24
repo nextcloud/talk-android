@@ -3,6 +3,7 @@
     <string name="account_icon">Kontoikon</string>
     <string name="appbar_search_in">Søg i %s</string>
     <string name="audio_output_phone">Telefon</string>
+    <string name="avatar">Avatar</string>
     <string name="away">Ikke tilstede</string>
     <string name="clear_status_message">Ryd status notifikation</string>
     <string name="clear_status_message_after">Ryd status notifikationer efter</string>
@@ -25,6 +26,7 @@
     <string name="nc_Server_account_imported">Den valgte konto blev importeret og kan bruges nu</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv bruger</string>
+    <string name="nc_account_chooser_add_account">Tilføj konto</string>
     <string name="nc_account_scheduled_for_deletion">Kontoen er planlagt til sletning, og kan ikke ændres</string>
     <string name="nc_add">Tilføj</string>
     <string name="nc_add_attachment">Tilføj vedhæftelse</string>
@@ -69,6 +71,7 @@
     <string name="nc_date_header_yesterday">I går</string>
     <string name="nc_delete">Slet</string>
     <string name="nc_delete_call">Slet samtale</string>
+    <string name="nc_delete_conversation_more">Hvis du sletter konversationen, vil den også blive slettet for alle andre deltagere.</string>
     <string name="nc_delete_message">Slet</string>
     <string name="nc_demote">Degrader fra moderator</string>
     <string name="nc_description_more_menu_group">Menu for den offentlige samtale %1$s</string>
@@ -231,6 +234,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Lys</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_vibrate">Vibrer</string>
     <string name="nc_settings_vibrate_desc">Telefonen vil vibrere undtagen hvis sat til lydløs</string>
     <string name="nc_settings_warning">Advarsler</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
@@ -256,6 +260,7 @@
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
     <string name="password_protected">Beskyt med adgangskode</string>
+    <string name="reactions_tab_all">Alle</string>
     <string name="save">Gem</string>
     <string name="scope_federated_description">Synkroniser kun til betroede servere</string>
     <string name="scope_federated_title">Forbundet</string>

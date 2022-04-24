@@ -347,6 +347,7 @@
     <string name="open_in_files_app">Ouvrir dans l\'app Fichiers</string>
     <string name="password_protected">Protégé par mot de passe</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
+    <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Ne synchroniser qu\'avec les serveurs de confiance</string>

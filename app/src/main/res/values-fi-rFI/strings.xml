@@ -213,11 +213,13 @@
     <string name="nc_server_connect">Testaa palvelinyhteys</string>
     <string name="nc_server_db_upgrade_needed">Päivitä %1$s-tietokantasi</string>
     <string name="nc_server_failed_to_import_account">Valitun tilin tuominen epäonnistui</string>
+    <string name="nc_server_helper_text">Linkki %1$s selainkäyttöliittymääsi.</string>
     <string name="nc_server_import_account_plain">Tuo tili</string>
     <string name="nc_server_import_accounts_plain">Tuo tilejä</string>
     <string name="nc_server_maintenance">Poista %1$s huoltotilasta</string>
     <string name="nc_server_not_installed">Viimeistele %1$s-asennuksesi</string>
     <string name="nc_server_testing_connection">Testataan yhteyttä</string>
+    <string name="nc_server_unsupported">Tuettua Talk-sovellusta ei ole asennettu palvelimelle</string>
     <string name="nc_server_url">Palvelimen osoite https://…</string>
     <string name="nc_set_password">Aseta salasana</string>
     <string name="nc_settings">Asetukset</string>
@@ -295,6 +297,7 @@
     <string name="save">Tallenna</string>
     <string name="scope_federated_description">Synkronoi vain luotetuille palveluille</string>
     <string name="scope_federated_title">Federoitu</string>
+    <string name="scope_local_description">Vain näkyvissä tämän instanssin ihmisille ja vieraille</string>
     <string name="scope_local_title">Paikallinen</string>
     <string name="scope_private_title">Yksityinen</string>
     <string name="scope_published_title">Julkaistu</string>

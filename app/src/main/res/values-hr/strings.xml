@@ -3,6 +3,7 @@
     <string name="account_icon">Ikona korisničkog računa</string>
     <string name="appbar_search_in">Traži u %s</string>
     <string name="audio_output_phone">Telefon</string>
+    <string name="audio_output_speaker">Zvučnik</string>
     <string name="avatar">Avatar</string>
     <string name="away">Odsutan</string>
     <string name="choose_avatar_from_cloud">Odaberi avatar iz oblaka</string>
@@ -338,6 +339,7 @@
     <string name="open_in_files_app">Otvori u aplikaciji Files</string>
     <string name="password_protected">Zaštićeno zaporkom</string>
     <string name="play_pause_voice_message">Reproduciraj/pauziraj glasovnu poruku</string>
+    <string name="reactions_tab_all">Sve</string>
     <string name="read_storage_no_permission">Dijeljenje datoteka iz pohrane nije moguće bez dopuštenja</string>
     <string name="save">Spremi</string>
     <string name="scope_federated_description">Sinkroniziraj samo s pouzdanim poslužiteljima</string>

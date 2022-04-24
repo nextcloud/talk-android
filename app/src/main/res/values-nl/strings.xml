@@ -2,15 +2,24 @@
   <resources>
     <string name="account_icon">Accountpictogram</string>
     <string name="appbar_search_in">Zoeken in %s</string>
+    <string name="audio_output_phone">Telefoon</string>
+    <string name="audio_output_speaker">Speaker</string>
     <string name="avatar">Avatar</string>
+    <string name="away">Afwezig</string>
     <string name="choose_avatar_from_cloud">Kies een avatar uit de cloud</string>
+    <string name="clear_status_message">Statusbericht wissen</string>
+    <string name="clear_status_message_after">Statusbericht wissen na</string>
+    <string name="conversations">Gesprekken</string>
     <string name="delete_avatar">Verwijder avatar</string>
+    <string name="dnd">Niet storen</string>
     <string name="edit">Bewerken</string>
     <string name="encrypted">Versleuteld</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
     <string name="file_list_folder">map</string>
     <string name="file_list_loading">Laden...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 uur</string>
+    <string name="invisible">Onzichtbaar</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="menu_item_sort_by_date_newest_first">Nieuwste eerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Oudste eerst</string>
@@ -329,9 +338,14 @@ Kies er eentje van een provider.</string>
     <string name="nc_wrong_password">Onjuist wachtwoord</string>
     <string name="nc_yes">Ja</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende machtigingen</string>
+    <string name="oneHour">1 uur</string>
+    <string name="online">Online</string>
+    <string name="online_status">Online status</string>
+    <string name="openConversations">Open gesprekken</string>
     <string name="open_in_files_app">Openen in de Bestanden-app</string>
     <string name="password_protected">Wachtwoord-beveiligd</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
+    <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Bestanden delen vanuit opslag is niet mogelijk zonder machtiging</string>
     <string name="save">Bewaren</string>
     <string name="scope_federated_description">Alleen synchroniseren met vertrouwde servers</string>
@@ -344,11 +358,15 @@ Kies er eentje van een provider.</string>
     <string name="scope_published_title">Gepubliceerd</string>
     <string name="scope_toggle">Scope omschakelen</string>
     <string name="scope_toggle_description">Wijzigen privacyniveau van %1$s</string>
+    <string name="secondsAgo">seconden geleden</string>
     <string name="selected_list_item">Geselecteerd</string>
     <string name="send_to">Versturen naar</string>
     <string name="send_to_three_dots">Versturen naar ...</string>
+    <string name="set_status">Instellen status</string>
+    <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>
     <string name="starred">Favoriet</string>
+    <string name="status_message">Statusbericht</string>
     <string name="take_photo">Neem een foto</string>
     <string name="take_photo_error_deleting_picture">Fout bij het nemen van een foto</string>
     <string name="take_photo_permission">Een foto nemen is niet mogelijk zonder machtiging</string>
@@ -358,6 +376,9 @@ Kies er eentje van een provider.</string>
     <string name="take_photo_toggle_crop">Crop foto</string>
     <string name="take_photo_toggle_lowres">Reduceer foto resolutie</string>
     <string name="take_photo_toggle_torch">Schakel zaklamp</string>
+    <string name="thirtyMinutes">30 minuten</string>
+    <string name="thisWeek">Deze week</string>
+    <string name="today">Vandaag</string>
     <string name="upload_new_avatar_from_device">Upload een nieuwe avatar van toestel</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Volledige naam</string>
@@ -365,7 +386,9 @@ Kies er eentje van een provider.</string>
     <string name="user_info_phone">Telefoonnummer</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
+    <string name="user_status">Status</string>
     <string name="userinfo_error_text">Kon persoonlijke informatie niet ophalen.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
+    <string name="whats_your_status">Wat is jouw status?</string>
     </resources>

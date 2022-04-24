@@ -2,15 +2,24 @@
   <resources>
     <string name="account_icon">账户图标</string>
     <string name="appbar_search_in">搜索位置 %s</string>
+    <string name="audio_output_phone">电话</string>
+    <string name="audio_output_speaker">扬声器</string>
     <string name="avatar">头像</string>
+    <string name="away">离开</string>
     <string name="choose_avatar_from_cloud">从云端选择头像</string>
+    <string name="clear_status_message">清除状态消息</string>
+    <string name="clear_status_message_after">过多长时间清除状态消息</string>
+    <string name="conversations">会话</string>
     <string name="delete_avatar">删除头像</string>
+    <string name="dnd">不要打扰</string>
     <string name="edit">编辑</string>
     <string name="encrypted">已加密</string>
     <string name="failed_to_save">未能保存 %1$s</string>
     <string name="file_list_folder">文件夹</string>
     <string name="file_list_loading">加载中…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 小时</string>
+    <string name="invisible">不可见</string>
     <string name="lock_symbol">锁定头像</string>
     <string name="menu_item_sort_by_date_newest_first">最新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">最旧的在前</string>
@@ -143,6 +152,8 @@
     <string name="nc_make_call_private">设置会话为私有</string>
     <string name="nc_make_call_public">设置会话为公开</string>
     <string name="nc_manual">未设置</string>
+    <string name="nc_mark_as_read">标为已读</string>
+    <string name="nc_mark_as_unread">标为未读</string>
     <string name="nc_message_quote_cancel_reply">取消回复</string>
     <string name="nc_message_read">消息已读</string>
     <string name="nc_message_sent">消息已发送</string>
@@ -251,6 +262,7 @@
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装Talk应用</string>
     <string name="nc_settings_notification_sounds">通知声音</string>
+    <string name="nc_settings_notification_sounds_post_oreo">通知</string>
     <string name="nc_settings_other_notifications_ringtone">消息</string>
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成 Talk 快捷方式到系统联系人应用</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">你可以设置你的电话号码，这样其他用户能够找到你 </string>
@@ -323,9 +335,14 @@
     <string name="nc_wrong_password">错误的密码</string>
     <string name="nc_yes">是的</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
+    <string name="oneHour">1 小时</string>
+    <string name="online">在线</string>
+    <string name="online_status">在线状态</string>
+    <string name="openConversations">开启会话</string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
     <string name="password_protected">受密码保护</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
+    <string name="reactions_tab_all">所有</string>
     <string name="read_storage_no_permission">如果没有权限，不能共享来自存储的文件</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>
@@ -338,11 +355,15 @@
     <string name="scope_published_title">已发布</string>
     <string name="scope_toggle">范围切换</string>
     <string name="scope_toggle_description">更改 %1$s 的隐私级别</string>
+    <string name="secondsAgo">数秒前</string>
     <string name="selected_list_item">已选中</string>
     <string name="send_to">发送到</string>
     <string name="send_to_three_dots">发送到 …</string>
+    <string name="set_status">设定状态</string>
+    <string name="set_status_message">设置状态消息</string>
     <string name="share">分享</string>
     <string name="starred">收藏</string>
+    <string name="status_message">状态消息</string>
     <string name="take_photo">拍张照片</string>
     <string name="take_photo_error_deleting_picture">拍照时出错</string>
     <string name="take_photo_permission">无权限应用无法拍照</string>
@@ -352,6 +373,9 @@
     <string name="take_photo_toggle_crop">裁剪相片</string>
     <string name="take_photo_toggle_lowres">削减图片尺寸</string>
     <string name="take_photo_toggle_torch">切换闪光灯</string>
+    <string name="thirtyMinutes">30 分钟</string>
+    <string name="thisWeek">本周</string>
+    <string name="today">今天</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>
@@ -359,7 +383,9 @@
     <string name="user_info_phone">电话号码  </string>
     <string name="user_info_twitter">推特账户</string>
     <string name="user_info_website">网站</string>
+    <string name="user_status">状态</string>
     <string name="userinfo_error_text">未能检索个人用户信息</string>
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
+    <string name="whats_your_status">你什么状态？</string>
     </resources>

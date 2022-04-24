@@ -331,6 +331,7 @@
     <string name="open_in_files_app">Άνοιγμα την εφαρμογή Αρχεία</string>
     <string name="password_protected">Προστασία με συνθηματικό</string>
     <string name="play_pause_voice_message">Αναπαραγωγή/παύση ηχητικού μηνύματος</string>
+    <string name="reactions_tab_all">\'Ολα</string>
     <string name="read_storage_no_permission">Η κοινή χρήση αρχείων από τον χώρο αποθήκευσης δεν είναι δυνατή χωρίς δικαιώματα</string>
     <string name="save">Αποθήκευση</string>
     <string name="scope_federated_description">Συγχρονισμός μόνο με έμπιστους διακομιστές.</string>

@@ -3,6 +3,7 @@
     <string name="account_icon">계정 아이콘</string>
     <string name="appbar_search_in">%s 검색</string>
     <string name="audio_output_phone">전화 번호</string>
+    <string name="audio_output_speaker">스피커</string>
     <string name="avatar">아바타</string>
     <string name="away">자리비움</string>
     <string name="choose_avatar_from_cloud">클라우드에서 아바타 선택</string>
@@ -201,6 +202,7 @@
     <string name="nc_sent_an_audio_you">오디오 파일을 보냈습니다.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s이(가) 이미지를 보냈습니다.</string>
     <string name="nc_sent_an_image_you">이미지를 보냈습니다.</string>
+    <string name="nc_server_connect">서버 연결 테스트</string>
     <string name="nc_server_db_upgrade_needed">%1$s 데이터베이스를 업그레이드하십시오</string>
     <string name="nc_server_failed_to_import_account">선택한 계정을 가져올 수 없음</string>
     <string name="nc_server_helper_text">%1$s 웹 인터페이스를 브라우저에서 열면 링크됩니다.</string>
@@ -227,12 +229,15 @@
     <string name="nc_settings_notification_sounds">알림 소리</string>
     <string name="nc_settings_notification_sounds_post_oreo">알림</string>
     <string name="nc_settings_other_notifications_ringtone">메시지</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">전화번호를 설정하여 다른 사용자가 당신을 찾도록 할 수 있습니다.</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">전화번호가 설정됨</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">휴대폰 번호</string>
     <string name="nc_settings_phone_book_integration_title">전화번호 통합</string>
     <string name="nc_settings_privacy">프라이버시</string>
     <string name="nc_settings_proxy_host_title">프록시 호스트</string>
     <string name="nc_settings_proxy_port_title">프록시 포트</string>
     <string name="nc_settings_proxy_type_title">프록시 종류</string>
+    <string name="nc_settings_read_privacy_desc">내 읽기 상태 공유 및 다른 사용자의 읽기 상태 표시</string>
     <string name="nc_settings_read_privacy_title">읽기 상태</string>
     <string name="nc_settings_remove">제거</string>
     <string name="nc_settings_remove_account">계정 삭제</string>
@@ -248,14 +253,18 @@
     <string name="nc_settings_theme_key">테마</string>
     <string name="nc_settings_theme_light">밝음</string>
     <string name="nc_settings_theme_title">테마</string>
+    <string name="nc_settings_vibrate">진동</string>
     <string name="nc_settings_vibrate_desc">유음 모드라면 진동이 울릴 것입니다.</string>
     <string name="nc_settings_warning">경고</string>
     <string name="nc_settings_wrong_account">현재 계정만 다시 인증할 수 있음</string>
+    <string name="nc_share_current_location">현재 위치 공유</string>
     <string name="nc_share_link">링크 공유</string>
     <string name="nc_share_link_via">다음으로 링크 공유</string>
+    <string name="nc_share_location">위치 공유</string>
     <string name="nc_share_subject">%1$s 초대</string>
     <string name="nc_share_text">%1$s/index.php/call/%2$s 대화에 참여</string>
     <string name="nc_share_text_pass">\n패스워드: %1$s</string>
+    <string name="nc_shared_location">공유된 위치</string>
     <string name="nc_sort_by">정렬</string>
     <string name="nc_start_conversation">대화 시작</string>
     <string name="nc_start_time">시작 시간</string>
@@ -272,6 +281,7 @@
     <string name="online">접속 중</string>
     <string name="online_status">접속 상태</string>
     <string name="password_protected">암호로 보호됨</string>
+    <string name="reactions_tab_all">모두</string>
     <string name="save">저장</string>
     <string name="scope_federated_description">신뢰할 수 있는 서버만 동기화할 수 있습니다.</string>
     <string name="scope_federated_title">연합</string>

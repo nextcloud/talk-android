@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Kontoikon</string>
     <string name="appbar_search_in">Søk i %s</string>
+    <string name="audio_output_phone">Telefon</string>
     <string name="avatar">Avatar</string>
     <string name="away">Borte</string>
     <string name="clear_status_message">Fjern statusmelding</string>
@@ -55,6 +56,7 @@
     <string name="nc_clear_password">Tøm passord</string>
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
+    <string name="nc_common_error_sorry">Noe gikk galt.</string>
     <string name="nc_common_set">Sett</string>
     <string name="nc_common_skip">Hopp over</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
@@ -115,6 +117,7 @@
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_waiting">Du venter for øyeblikket i lobbyen.</string>
     <string name="nc_location_current_position_description">Dine nåværende posisjon</string>
+    <string name="nc_locked_tap_to_unlock">Trykk for å låse opp</string>
     <string name="nc_make_call_private">Gjør samtale privat</string>
     <string name="nc_make_call_public">Gjør samtale offentlig</string>
     <string name="nc_manual">Ikke satt</string>
@@ -259,6 +262,7 @@
     <string name="online">Pålogget</string>
     <string name="online_status">Online-status</string>
     <string name="password_protected">Passordbeskyttet</string>
+    <string name="reactions_tab_all">Alle</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
     <string name="scope_federated_title">Sammenknyttet</string>

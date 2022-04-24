@@ -23,6 +23,7 @@
     <string name="menu_item_sort_by_name_z_a">Ž - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Didžiausi pirma</string>
     <string name="menu_item_sort_by_size_smallest_first">Mažiausi pirma</string>
+    <string name="nc_Server_account_imported">Dabar, pasirinkta paskyra yra importuota ir prieinama</string>
     <string name="nc_about">Apie</string>
     <string name="nc_account_chooser_active_user">Aktyvus naudotojas</string>
     <string name="nc_account_chooser_add_account">Pridėti paskyrą</string>
@@ -64,6 +65,7 @@
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
+    <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
     <string name="nc_date_header_today">Šiandien</string>
@@ -215,6 +217,7 @@
     <string name="nc_settings_theme_key">apipavidalinimas</string>
     <string name="nc_settings_theme_light">Šviesus</string>
     <string name="nc_settings_theme_title">Apipavidalinimas</string>
+    <string name="nc_settings_vibrate">Vibruoti</string>
     <string name="nc_settings_vibrate_desc">Telefonas vibruos, nebent bus nutildytas</string>
     <string name="nc_settings_warning">Įspėjimas</string>
     <string name="nc_settings_wrong_account">Iš naujo įgaliota gali būti tik esama paskyra</string>
@@ -223,6 +226,7 @@
     <string name="nc_share_subject">%1$s pakvietimas</string>
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
+    <string name="nc_share_this_location">Bendrinti šią vietą</string>
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_conversation">Pradėti pokalbį</string>
     <string name="nc_start_time">Pradžios laikas</string>
@@ -238,7 +242,9 @@
     <string name="oneHour">1 valanda</string>
     <string name="online">Prisijungęs</string>
     <string name="online_status">Prisijungimo būsena</string>
+    <string name="openConversations">Atverti pokalbius</string>
     <string name="password_protected">Apsaugota slaptažodžiu</string>
+    <string name="reactions_tab_all">Visos</string>
     <string name="save">Įrašyti</string>
     <string name="scope_federated_description">Sinchronizuoti tik į patikimus serverius</string>
     <string name="scope_federated_title">Federacinis</string>

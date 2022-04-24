@@ -339,11 +339,14 @@
     <string name="open_in_files_app">فتح في تطبيق الملفات</string>
     <string name="password_protected">محمي بكلمة السر</string>
     <string name="play_pause_voice_message">تشغيل/ايقاف مؤقت للرسالة الصوتية</string>
+    <string name="reactions_tab_all">الكل</string>
     <string name="save">Save</string>
     <string name="scope_federated_description">قم فقط بالمزامنة مع الخوادم الموثوقة</string>
     <string name="scope_federated_title">المتحدة</string>
+    <string name="scope_local_description">ظاهر فقط للمستخدمين والضيوف</string>
     <string name="scope_local_title">المحلي</string>
     <string name="scope_private_title">خاص بك</string>
+    <string name="scope_published_description">قم بالمزامنة مع الخوادم الموثوقة ودفتر العناوين العالمية والعامة</string>
     <string name="scope_published_title">نشرت</string>
     <string name="scope_toggle_description">تغيير مستوى الخصوصية لـ%1$s</string>
     <string name="secondsAgo">منذ ثوانٍ</string>
@@ -379,4 +382,5 @@
     <string name="userinfo_error_text">فشل في الحصول على المعلومات الشخصية للمستخدم</string>
     <string name="userinfo_no_info_headline">لم يتم تعيين معلومات شخصية</string>
     <string name="userinfo_no_info_text">أضف الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
+    <string name="whats_your_status">ماهي حالتك؟</string>
     </resources>

@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Biểu tượng tài khoản</string>
     <string name="appbar_search_in">Tìm kiếm trong %s</string>
+    <string name="audio_output_phone">Điện thoại</string>
     <string name="avatar">Hình đại diện</string>
     <string name="away">Tạm vắng</string>
     <string name="choose_avatar_from_cloud">Chọn hình đại diện từ đám mây</string>
@@ -76,6 +77,8 @@
     <string name="nc_conversation_link">Liên kết đàm thoại</string>
     <string name="nc_conversation_menu_video_call">Gọi Video</string>
     <string name="nc_conversation_menu_voice_call">Cuộc gọi</string>
+    <string name="nc_conversations_empty">Tham gia cuộc trò chuyện hoặc bắt đầu một cuộc trò chuyện mới</string>
+    <string name="nc_conversations_empty_details">Gửi lòi chào đến bạn bè và đồng nghiệp</string>
     <string name="nc_copy_message">Sao chép</string>
     <string name="nc_date_header_today">Hôm nay</string>
     <string name="nc_date_header_yesterday">Ngày hôm qua</string>
@@ -87,6 +90,7 @@
     <string name="nc_description_more_menu_one_to_one">Danh mục Đàm thoại với %1$s</string>
     <string name="nc_description_more_menu_public">Danh mục nhóm Đàm thoại %1$s</string>
     <string name="nc_description_send_message_button">Gửi thông điệp</string>
+    <string name="nc_dialog_invalid_password">Invalid Password</string>
     <string name="nc_display_name_not_fetched">Không thể lấy dữ liệu Tên hiển thị, hủy bỏ</string>
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
     <string name="nc_email">Thư điện tử</string>
@@ -110,6 +114,7 @@
     <string name="nc_leaving_call">Đang rời khỏi cuộc gọi...</string>
     <string name="nc_license_summary">Giấy phép bản quyền GNU, Phiên bản 3</string>
     <string name="nc_license_title">Giấy phép</string>
+    <string name="nc_locked_tap_to_unlock">Nhấn để mở khoá</string>
     <string name="nc_make_call_private">Tạo một cuộc đàm thoại riêng tư</string>
     <string name="nc_make_call_public">Tạo một cuộc đàm thoại công khai</string>
     <string name="nc_mark_as_read">Đánh dấu đã đọc</string>
@@ -119,6 +124,7 @@
     <string name="nc_moderator">Kiểm duyệt</string>
     <string name="nc_never">Chưa bao giờ tham gia</string>
     <string name="nc_new_conversation">Tạo đàm thoại mới</string>
+    <string name="nc_new_messages">Tin nhắn chưa đọc</string>
     <string name="nc_new_password">Mật khẩu mới</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ứng dụng chưa cài đặt trên hệ thống, hủy bỏ</string>
     <string name="nc_nick_guest">Khách</string>
@@ -162,6 +168,7 @@
     <string name="nc_server_connect">Kiểm tra kết nối máy chủ</string>
     <string name="nc_server_db_upgrade_needed">Xin hãy nâng cấp %1$s dữ liệu của bạn</string>
     <string name="nc_server_failed_to_import_account">Nhập tài khoản đã chọn thất bại</string>
+    <string name="nc_server_helper_text">Liên kết đến %1$s giao diện web của bạn khi bạn mở nó bằng trình duyệt.</string>
     <string name="nc_server_import_account">Thêm tài khoản từ ứng dụng %1$s</string>
     <string name="nc_server_import_account_plain">Thêm tài khoản</string>
     <string name="nc_server_import_accounts">Thêm tài khoản từ ứng dụng %1$s</string>
@@ -178,6 +185,7 @@
     <string name="nc_settings_appearance">Ngoại hình</string>
     <string name="nc_settings_call_ringtone">Cuộc gọi</string>
     <string name="nc_settings_no_ringtone">Tắt âm thanh</string>
+    <string name="nc_settings_notification_sounds">Âm báo</string>
     <string name="nc_settings_notification_sounds_post_oreo">Thông báo</string>
     <string name="nc_settings_other_notifications_ringtone">Thông điệp</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Số điện thoại</string>
@@ -185,6 +193,7 @@
     <string name="nc_settings_proxy_host_title">Máy chủ Proxy</string>
     <string name="nc_settings_proxy_port_title">Cổng Proxy</string>
     <string name="nc_settings_proxy_type_title">Loại Proxy</string>
+    <string name="nc_settings_read_privacy_desc">Chia sẻ trạng thái đã đọc của tôi và hiển thị trạng thái đã đọc của những người khác</string>
     <string name="nc_settings_read_privacy_title">Đọc trạng thái</string>
     <string name="nc_settings_remove">Xóa</string>
     <string name="nc_settings_remove_account">Xóa tài khoản</string>
@@ -218,8 +227,12 @@
     <string name="online_status">Trạng thái trực tuyến</string>
     <string name="openConversations">Mở cuộc trò chuyện</string>
     <string name="password_protected">Mật khẩu bảo vệ</string>
+    <string name="reactions_tab_all">Tất cả</string>
     <string name="save">Lưu</string>
+    <string name="scope_federated_title">Federated</string>
+    <string name="scope_private_title">Riêng tư</string>
     <string name="secondsAgo">vài giây trước</string>
+    <string name="selected_list_item">Selected</string>
     <string name="set_status">Đặt trạng thái</string>
     <string name="set_status_message">Đặt thông báo trạng thái</string>
     <string name="share">Chia sẻ</string>
@@ -237,6 +250,7 @@
     <string name="user_info_email">Thư điện tử</string>
     <string name="user_info_phone">Số điện thoại</string>
     <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_website">Website</string>
     <string name="user_status">Trạng thái</string>
     <string name="userinfo_no_info_headline">Không có thông tin cá nhân nào được đặt</string>
     <string name="userinfo_no_info_text">Thêm tên, hình ảnh và chi tiết liên hệ trên trang hồ sơ của bạn.</string>

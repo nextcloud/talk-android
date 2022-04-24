@@ -347,6 +347,7 @@
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
     <string name="password_protected">Zaščiteno z geslom</string>
     <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
+    <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
     <string name="save">Shrani</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>

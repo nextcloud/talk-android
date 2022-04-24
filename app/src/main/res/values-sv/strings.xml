@@ -157,6 +157,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_owner">Ägare</string>
     <string name="nc_participants">Deltagare</string>
+    <string name="nc_participants_add">Lägg till deltagare</string>
     <string name="nc_password">Lösenord</string>
     <string name="nc_permissions_settings">Öppna inställningar</string>
     <string name="nc_phone_book_integration_account_not_found">Kontot hittades inte</string>
@@ -254,6 +255,7 @@
     <string name="nc_share_subject">%1$s inbjudan</string>
     <string name="nc_share_text">Gå med i konversationen på %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLösenord: %1$s</string>
+    <string name="nc_share_this_location">Dela den här platsen</string>
     <string name="nc_sort_by">Sortera efter</string>
     <string name="nc_start_conversation">Starta en konversation</string>
     <string name="nc_start_time">Starttid</string>
@@ -270,6 +272,7 @@
     <string name="online">Online</string>
     <string name="online_status">Online-status</string>
     <string name="password_protected">Lösenordsskyddad</string>
+    <string name="reactions_tab_all">Alla</string>
     <string name="save">Spara</string>
     <string name="scope_federated_description">Synkronisera endast med betrodda servrar</string>
     <string name="scope_federated_title">Federerad</string>
@@ -290,6 +293,7 @@
     <string name="take_photo">Ta en bild</string>
     <string name="take_photo_send">Skicka</string>
     <string name="take_photo_switch_camera">Växla kamera</string>
+    <string name="take_photo_toggle_torch">Starta lampa</string>
     <string name="thirtyMinutes">30 minuter</string>
     <string name="thisWeek">Denna vecka</string>
     <string name="today">Idag</string>

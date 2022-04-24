@@ -2,11 +2,27 @@
   <resources>
     <string name="account_icon">Icona del compte</string>
     <string name="appbar_search_in">Cerca a %s</string>
+    <string name="audio_output_phone">Telèfon</string>
     <string name="avatar">Avatar</string>
+    <string name="away">Absent</string>
+    <string name="clear_status_message">Esborrar el missatge d\'estat</string>
+    <string name="clear_status_message_after">Esborra el missatge d\'estat després</string>
+    <string name="conversations">Converses</string>
+    <string name="dnd">No molesteu</string>
     <string name="edit">Edita</string>
     <string name="encrypted">Xifrat</string>
+    <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">S\'està carregant…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="fourHours">4 hores</string>
+    <string name="invisible">Invisible</string>
+    <string name="menu_item_sort_by_date_newest_first">Més nou primer</string>
+    <string name="menu_item_sort_by_date_oldest_first">Més antic primer</string>
+    <string name="menu_item_sort_by_name_a_z">A - Z</string>
+    <string name="menu_item_sort_by_name_z_a">Z - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Més gran primer</string>
+    <string name="menu_item_sort_by_size_smallest_first">Més petit primer</string>
+    <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_about">Quant a</string>
     <string name="nc_account_chooser_active_user">Usuari actiu</string>
     <string name="nc_account_chooser_add_account">Afegeix un compte</string>
@@ -33,10 +49,12 @@
     <string name="nc_certificate_error">La vostra configuració SSL ha impedit la connexió</string>
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
+    <string name="nc_circle">Cercle</string>
     <string name="nc_circles">Cercles</string>
     <string name="nc_clear_password">Suprimeix la contrasenya</string>
     <string name="nc_client_cert_change">Canvia el certificat del client</string>
     <string name="nc_client_cert_setup">Configureu el certificat del client</string>
+    <string name="nc_common_error_sorry">Disculpeu, alguna cosa ha anat malament!</string>
     <string name="nc_common_set">Estableix</string>
     <string name="nc_common_skip">Omet</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
@@ -53,6 +71,7 @@
     <string name="nc_date_header_today">Avui</string>
     <string name="nc_date_header_yesterday">Ahir</string>
     <string name="nc_delete">Suprimeix</string>
+    <string name="nc_delete_all">Suprimeix-ho tot</string>
     <string name="nc_delete_call">Suprimeix la conversa</string>
     <string name="nc_delete_conversation_more">Si suprimiu la conversa, també se suprimirà per a la resta de participants.</string>
     <string name="nc_delete_message">Esborra</string>
@@ -75,6 +94,7 @@
     <string name="nc_file_browser_back">Enrere</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
+    <string name="nc_forward_message">Reenvia</string>
     <string name="nc_get_from_provider">Encara no teniu cap servidor?\nFeu clic aquí per obtenir-ne un d\'un proveïdor</string>
     <string name="nc_get_source_code">Obté el codi font</string>
     <string name="nc_group">Grup</string>
@@ -101,6 +121,8 @@
     <string name="nc_make_call_private">Fes que la conversa sigui privada</string>
     <string name="nc_make_call_public">Fes que la conversa sigui pública</string>
     <string name="nc_manual">No establert</string>
+    <string name="nc_mark_as_read">Marca com a llegit</string>
+    <string name="nc_message_quote_cancel_reply">Cancel·la la resposta</string>
     <string name="nc_microphone_permission_permanently_denied">Per activar la comunicació de veu, doneu permís al \"Micròfon\" dins de la configuració del sistema.</string>
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Mai no us hi heu unit</string>
@@ -117,6 +139,8 @@
     <string name="nc_none">Cap</string>
     <string name="nc_not_defined_error">Error desconegut</string>
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
+    <string name="nc_notification_channel_calls">Trucades</string>
+    <string name="nc_notification_channel_messages">Missatges</string>
     <string name="nc_notification_settings">Paràmetres de les notificacions</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
     <string name="nc_notify_me_mention">Notifica només quan s\'esmenti</string>
@@ -152,6 +176,7 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Cerca</string>
     <string name="nc_select_an_account">Selecciona un compte</string>
+    <string name="nc_select_participants">Seleccioneu els participants</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviat un GIF.</string>
     <string name="nc_sent_a_gif_you">Heu enviat un GIF.</string>
     <string name="nc_sent_a_link" formatted="true">%1$s ha enviat un enllaç.</string>
@@ -188,6 +213,9 @@
     <string name="nc_settings_incognito_keyboard_title">Teclat d\'incògnit</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
+    <string name="nc_settings_notification_sounds">So de les notificacions</string>
+    <string name="nc_settings_notification_sounds_post_oreo">Notificacions</string>
+    <string name="nc_settings_other_notifications_ringtone">Missatges</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Número de telèfon</string>
     <string name="nc_settings_privacy">Privadesa</string>
     <string name="nc_settings_proxy_host_title">Servidor Proxy</string>
@@ -216,6 +244,8 @@
     <string name="nc_share_subject">%1$s invitació</string>
     <string name="nc_share_text">Afegiu-vos a la conversa a %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContrasenya: %1$s</string>
+    <string name="nc_share_this_location">Comparteix aquesta localització</string>
+    <string name="nc_sort_by">Ordena per</string>
     <string name="nc_start_conversation">Enceta una conversa</string>
     <string name="nc_start_time">Hora d\'inici</string>
     <string name="nc_timeout_error">Temps d\'espera excedit</string>
@@ -226,18 +256,39 @@
     <string name="nc_wrong_link">L\'enllaç de la conversa no és vàlid</string>
     <string name="nc_wrong_password">Contrasenya incorrecta</string>
     <string name="nc_yes">Sí</string>
+    <string name="oneHour">1 hora</string>
+    <string name="online">En línia</string>
+    <string name="online_status">Estat en línia</string>
+    <string name="password_protected">Protegit amb contrasenya</string>
+    <string name="reactions_tab_all">Totes</string>
     <string name="save">Desa</string>
+    <string name="scope_federated_description">Sincronitza només amb servidors de confiança</string>
     <string name="scope_federated_title">Federat</string>
     <string name="scope_local_title">Local</string>
+    <string name="scope_private_title">Privat</string>
+    <string name="scope_published_description">Sincronitza amb servidors de confiança i amb la llibreta d\'adreces global i pública</string>
+    <string name="secondsAgo">fa uns segons</string>
     <string name="selected_list_item">Seleccionat</string>
+    <string name="set_status">Estableix l\'estat</string>
+    <string name="set_status_message">Estableix un missatge d\'estat</string>
     <string name="share">Compartir</string>
     <string name="starred">Preferits</string>
+    <string name="status_message">Missatge d\'estat</string>
+    <string name="take_photo">Prendre una fotografia</string>
+    <string name="take_photo_send">Envia</string>
+    <string name="take_photo_switch_camera">Canviar la càmera</string>
+    <string name="take_photo_toggle_torch">Commuta la llanterna</string>
+    <string name="thirtyMinutes">30 minuts</string>
+    <string name="thisWeek">Aquesta setmana</string>
+    <string name="today">Avui</string>
     <string name="user_info_address">Adreça</string>
     <string name="user_info_displayname">Nom complet</string>
     <string name="user_info_email">Correu electrònic</string>
     <string name="user_info_phone">Número de telèfon</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Lloc web</string>
+    <string name="user_status">Estat</string>
     <string name="userinfo_no_info_headline">No hi ha arranjament d\'informació personal</string>
     <string name="userinfo_no_info_text">Afegiu el nom, foto i detalls de contacte a la vostra pàgina de perfil.</string>
+    <string name="whats_your_status">Quin és el vostre estat?</string>
     </resources>

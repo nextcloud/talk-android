@@ -348,6 +348,7 @@
     <string name="open_in_files_app">Abrir en app Archivos</string>
     <string name="password_protected">Protegido por contraseña</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
+    <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Compartir archivos desde el almacenamiento no es posible sin permisos</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Sincronizar solo con servidores de confianza</string>

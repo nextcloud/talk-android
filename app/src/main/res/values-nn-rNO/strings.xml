@@ -2,8 +2,12 @@
   <resources>
     <string name="account_icon">Konto ikon</string>
     <string name="appbar_search_in">Søk i %s</string>
+    <string name="audio_output_phone">Telefonnummer</string>
     <string name="avatar">Avatar</string>
+    <string name="away">Borte</string>
     <string name="choose_avatar_from_cloud">Vel avatar frå sky</string>
+    <string name="clear_status_message">Fjern status melding</string>
+    <string name="clear_status_message_after">Fjern status melding etterpå</string>
     <string name="delete_avatar">Slett avatar</string>
     <string name="edit">Rediger</string>
     <string name="encrypted">Kryptert</string>
@@ -12,6 +16,12 @@
     <string name="file_list_loading">Laster...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Låse symbol</string>
+    <string name="menu_item_sort_by_date_newest_first">Nyaste fyrst</string>
+    <string name="menu_item_sort_by_date_oldest_first">Eldste fyrst</string>
+    <string name="menu_item_sort_by_name_a_z">A - Å</string>
+    <string name="menu_item_sort_by_name_z_a">Å - A</string>
+    <string name="menu_item_sort_by_size_biggest_first">Størst fyrst</string>
+    <string name="menu_item_sort_by_size_smallest_first">Minst fyrst</string>
     <string name="nc_Server_account_imported">Vald konto er no importert og tilgjengeleg</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiver brukar</string>
@@ -147,6 +157,8 @@
     <string name="nc_none">Ingen</string>
     <string name="nc_not_defined_error">Ukjend feil</string>
     <string name="nc_notification_channel">%1$s på %2$s varsel kanal</string>
+    <string name="nc_notification_channel_calls">Samtalar</string>
+    <string name="nc_notification_channel_messages">Meldingar</string>
     <string name="nc_notification_settings">Varsel innstillingar</string>
     <string name="nc_notify_me_always">Alltid varsel</string>
     <string name="nc_notify_me_mention">Gi beskjed når nemnd</string>
@@ -229,9 +241,29 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
     <string name="nc_settings_no_talk_installed">Samtale applikasjonen er ikkje installert på serveren der du prøvde å få godkjenning </string>
+    <string name="nc_settings_notification_sounds_post_oreo">Varsel</string>
+    <string name="nc_settings_other_notifications_ringtone">Meldingar</string>
+    <string name="nc_settings_privacy">Personvern</string>
     <string name="nc_settings_remove">Fjern</string>
+    <string name="nc_settings_warning">Åtvaring</string>
     <string name="nc_share_link">Del lenkje</string>
+    <string name="nc_sort_by">Sorter på</string>
+    <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_user">Bruker</string>
     <string name="nc_wrong_password">Wrong password</string>
     <string name="nc_yes">Ja</string>
+    <string name="password_protected">Passordverna</string>
+    <string name="reactions_tab_all">Alle</string>
+    <string name="save">Lagre</string>
+    <string name="scope_federated_title">Federated</string>
+    <string name="secondsAgo">sekund sidan</string>
+    <string name="selected_list_item">Selected</string>
+    <string name="share">Del</string>
+    <string name="starred">Favoritt</string>
+    <string name="take_photo_send">Send</string>
+    <string name="today">I dag</string>
+    <string name="user_info_address">Adresse</string>
+    <string name="user_info_displayname">Fult namn</string>
+    <string name="user_info_email">Epost</string>
+    <string name="user_status">Status</string>
     </resources>
