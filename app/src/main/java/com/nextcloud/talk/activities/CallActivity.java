@@ -1349,7 +1349,8 @@ public class CallActivity extends CallBaseActivity {
         if (isVoiceOnlyCall) {
             inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO;
         } else {
-            inCallFlag = Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_VIDEO;
+            inCallFlag =
+                Participant.InCallFlags.IN_CALL + Participant.InCallFlags.WITH_AUDIO + Participant.InCallFlags.WITH_VIDEO;
         }
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
