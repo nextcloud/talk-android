@@ -51,10 +51,15 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
                         val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
 
                         items[it.value.id] = SharedItem(
-                            fileParameters["id"]!!, fileParameters["name"]!!,
-                            fileParameters["mimetype"]!!, fileParameters["link"]!!,
+                            fileParameters["id"]!!,
+                            fileParameters["name"]!!,
+                            fileParameters["size"]!!.toInt(),
+                            fileParameters["path"]!!,
+                            fileParameters["link"]!!,
+                            fileParameters["mimetype"]!!,
                             previewAvailable,
-                            repository.previewLink(fileParameters["id"])
+                            repository.previewLink(fileParameters["id"]),
+                            repository.parameters!!.userEntity
                         )
                     }
                 }
@@ -84,6 +89,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
                     userEntity.userId,
                     userEntity.token,
                     userEntity.baseUrl,
+                    userEntity,
                     roomToken
                 )
 

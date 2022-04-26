@@ -156,6 +156,9 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
                 if (MessageDigest.isEqual(
                     Objects.requireNonNull(individualHashMap.get("type")).getBytes(Charsets.UTF_8),
                     ("file").getBytes(Charsets.UTF_8))) {
+
+                    // TODO: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
+                    //  it just feels wrong to fill this here inside getImageUrl()
                     selectedIndividualHashMap = individualHashMap;
                     if (!isVoiceMessage()) {
                         if (getActiveUser() != null && getActiveUser().getBaseUrl() != null) {

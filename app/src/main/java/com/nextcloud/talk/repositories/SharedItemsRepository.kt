@@ -4,6 +4,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
@@ -48,6 +49,7 @@ class SharedItemsRepository {
         val userName: String,
         val userToken: String,
         val baseUrl: String,
+        val userEntity: UserEntity,
         val roomToken: String
     )
 }

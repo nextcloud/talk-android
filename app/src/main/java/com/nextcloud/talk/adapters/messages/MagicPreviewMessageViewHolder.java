@@ -41,7 +41,6 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
@@ -59,16 +58,14 @@ import com.stfalcon.chatkit.messages.MessageHolders;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
 
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.ContextCompat;
 import androidx.emoji.widget.EmojiTextView;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
 import autodagger.AutoInjector;
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -112,7 +109,6 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
     public MagicPreviewMessageViewHolder(View itemView, Object payload) {
         super(itemView, payload);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        fileViewerUtils = new FileViewerUtils(context);
     }
 
     @SuppressLint("SetTextI18n")
@@ -154,6 +150,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
         if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
 
+            fileViewerUtils = new FileViewerUtils(context, message.activeUser);
+
             String fileName = message.getSelectedIndividualHashMap().get(KEY_NAME);
             getMessageText().setText(fileName);
             if (message.getSelectedIndividualHashMap().containsKey(KEY_CONTACT_NAME)) {
@@ -183,52 +181,26 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             }
 
             if (message.activeUser != null && message.activeUser.getUsername() != null && message.activeUser.getBaseUrl() != null) {
-                String accountString =
-                    message.activeUser.getUsername() + "@" +
-                        message.activeUser.getBaseUrl()
-                            .replace("https://", "")
-                            .replace("http://", "");
-
                 clickView.setOnClickListener(v -> {
                     fileViewerUtils.openFile(message, progressBar, getMessageText(), image);
                 });
 
                 clickView.setOnLongClickListener(l -> {
-                    onMessageViewLongClick(message, accountString);
+                    onMessageViewLongClick(message);
                     return true;
                 });
             } else {
                 Log.e(TAG, "failed to set click listener because activeUser, username or baseUrl were null");
             }
 
+            fileViewerUtils.resumeToUpdateViewsByProgress(
+                Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_NAME)),
+                Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_ID)),
+                Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_MIMETYPE)),
+                progressBar,
+                getMessageText(),
+                image);
 
-            // check if download worker is already running
-            String fileId = message.getSelectedIndividualHashMap().get(KEY_ID);
-            ListenableFuture<List<WorkInfo>> workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId);
-
-            try {
-                for (WorkInfo workInfo : workers.get()) {
-                    if (workInfo.getState() == WorkInfo.State.RUNNING ||
-                        workInfo.getState() == WorkInfo.State.ENQUEUED) {
-                        progressBar.setVisibility(View.VISIBLE);
-
-                        String mimetype = message.getSelectedIndividualHashMap().get(KEY_MIMETYPE);
-
-                        WorkManager
-                            .getInstance(context)
-                            .getWorkInfoByIdLiveData(workInfo.getId())
-                            .observeForever(info -> fileViewerUtils.updateViewsByProgress(
-                                fileName,
-                                mimetype,
-                                info,
-                                progressBar,
-                                getMessageText(),
-                                image));
-                    }
-                }
-            } catch (ExecutionException | InterruptedException e) {
-                Log.e(TAG, "Error when checking if worker already exists", e);
-            }
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             getMessageText().setText("GIPHY");
             DisplayUtils.setClickableString("GIPHY", "https://giphy.com", getMessageText());
@@ -279,7 +251,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         return drawable;
     }
 
-    private void onMessageViewLongClick(ChatMessage message, String accountString) {
+    private void onMessageViewLongClick(ChatMessage message) {
         if (fileViewerUtils.isSupportedForInternalViewer(message.getSelectedIndividualHashMap().get(KEY_MIMETYPE))) {
             previewMessageInterface.onPreviewMessageLongClick(message);
             return;
@@ -301,7 +273,11 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         popupMenu.inflate(R.menu.chat_preview_message_menu);
 
         popupMenu.setOnMenuItemClickListener(item -> {
-            fileViewerUtils.openFileInFilesApp(message, accountString);
+            if (item.getItemId()== R.id.openInFiles){
+                String keyID = message.getSelectedIndividualHashMap().get(KEY_ID);
+                String link = message.getSelectedIndividualHashMap().get("link");
+                fileViewerUtils.openFileInFilesApp(link, keyID);
+            }
             return true;
         });
 

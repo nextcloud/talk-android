@@ -1,18 +1,18 @@
 package com.nextcloud.talk.adapters
 
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
+import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.nextcloud.talk.activities.SharedItemsActivity
 import com.nextcloud.talk.databinding.AttachmentItemBinding
 import com.nextcloud.talk.repositories.SharedItem
+import com.nextcloud.talk.utils.FileViewerUtils
 
 class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>() {
 
@@ -50,7 +50,19 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
             holder.binding.image.controller = draweeController
 
             holder.binding.image.setOnClickListener {
-                Log.d(TAG, "clicked " + currentItem.name)
+                val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
+
+                fileViewerUtils.openFile(
+                    currentItem.id,
+                    currentItem.name,
+                    currentItem.fileSize,
+                    currentItem.path,
+                    currentItem.link,
+                    currentItem.mimeType,
+                    null,
+                    null,
+                    it as SimpleDraweeView
+                )
             }
         }
     }
