@@ -34,7 +34,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
             ?.subscribe(object : Observer<Response<ChatShareOverall>> {
 
                 var chatLastGiven: String = ""
-                val items = mutableListOf<SharedItem>()
+                val items = mutableMapOf<String, SharedItem>()
 
                 override fun onSubscribe(d: Disposable) = Unit
 
@@ -47,13 +47,11 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
 
                         val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
 
-                        items.add(
-                            SharedItem(
-                                fileParameters["id"]!!, fileParameters["name"]!!,
-                                fileParameters["mimetype"]!!, fileParameters["link"]!!,
-                                previewAvailable,
-                                repository.previewLink(fileParameters["id"])
-                            )
+                        items[it.value.id] = SharedItem(
+                            fileParameters["id"]!!, fileParameters["name"]!!,
+                            fileParameters["mimetype"]!!, fileParameters["link"]!!,
+                            previewAvailable,
+                            repository.previewLink(fileParameters["id"])
                         )
                     }
                 }
@@ -64,7 +62,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
 
                 override fun onComplete() {
                     this@SharedItemsViewModel._media.value =
-                        SharedMediaItems(items.asReversed(), chatLastGiven, repository.authHeader())
+                        SharedMediaItems(items.toSortedMap().values.toList().reversed(), chatLastGiven, repository.authHeader())
                 }
             })
     }
