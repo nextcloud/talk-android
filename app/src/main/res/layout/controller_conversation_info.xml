@@ -229,7 +229,7 @@
                     android:id="@+id/show_shared_items_action"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    apc:mp_icon="@drawable/ic_timer_black_24dp"
+                    apc:mp_icon="@drawable/ic_folder_multiple_image"
                     apc:mp_icon_tint="@color/grey_600"
                     apc:mp_summary="See all shared photos, voice messages, files, etc."
                     apc:mp_title="Shared Items" />
