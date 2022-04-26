@@ -1,4 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
 <com.facebook.drawee.view.SimpleDraweeView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
@@ -6,9 +24,10 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:padding="4dp"
-    android:src="@drawable/account_circle_96dp"
+    android:src="@drawable/ic_mimetype_file"
     app:layout_constraintTop_toTopOf="parent"
+    app:placeholderImageScaleType="fitCenter"
     fresco:actualImageScaleType="centerCrop"
-    fresco:failureImage="@drawable/account_circle_96dp"
-    fresco:placeholderImage="@drawable/account_circle_96dp"
+    fresco:failureImage="@drawable/ic_mimetype_file"
+    fresco:placeholderImage="@drawable/ic_mimetype_file"
     fresco:roundedCornerRadius="4dp" />
