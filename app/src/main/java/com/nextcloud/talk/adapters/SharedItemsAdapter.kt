@@ -1,6 +1,7 @@
 package com.nextcloud.talk.adapters
 
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,15 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.nextcloud.talk.activities.SharedItemsActivity
 import com.nextcloud.talk.databinding.AttachmentItemBinding
 import com.nextcloud.talk.repositories.SharedItem
 
 class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>() {
+
+    companion object {
+        private val TAG = SharedItemsAdapter::class.simpleName
+    }
 
     class ViewHolder(val binding: AttachmentItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
 
@@ -42,6 +48,10 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
                 .setImageRequest(imageRequest)
                 .build()
             holder.binding.image.controller = draweeController
+
+            holder.binding.image.setOnClickListener {
+                Log.d(TAG, "clicked " + currentItem.name)
+            }
         }
     }
 
