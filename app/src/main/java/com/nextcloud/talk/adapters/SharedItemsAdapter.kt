@@ -10,6 +10,7 @@ import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.AttachmentItemBinding
 import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -48,22 +49,41 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
                 .setImageRequest(imageRequest)
                 .build()
             holder.binding.image.controller = draweeController
-
-            holder.binding.image.setOnClickListener {
-                val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
-
-                fileViewerUtils.openFile(
-                    currentItem.id,
-                    currentItem.name,
-                    currentItem.fileSize,
-                    currentItem.path,
-                    currentItem.link,
-                    currentItem.mimeType,
-                    null,
-                    null,
-                    it as SimpleDraweeView
-                )
+        } else {
+            when (currentItem.mimeType) {
+                "video/mp4",
+                "video/quicktime",
+                "video/ogg"
+                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_video)
+                "audio/mpeg",
+                "audio/wav",
+                "audio/ogg",
+                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_audio)
+                "image/png",
+                "image/jpeg",
+                "image/gif"
+                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_image)
+                "text/markdown",
+                "text/plain"
+                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_text)
+                else
+                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_file)
             }
+        }
+        holder.binding.image.setOnClickListener {
+            val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
+
+            fileViewerUtils.openFile(
+                currentItem.id,
+                currentItem.name,
+                currentItem.fileSize,
+                currentItem.path,
+                currentItem.link,
+                currentItem.mimeType,
+                null,
+                null,
+                it as SimpleDraweeView
+            )
         }
     }
 
