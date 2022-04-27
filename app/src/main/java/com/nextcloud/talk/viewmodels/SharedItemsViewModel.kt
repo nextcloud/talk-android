@@ -39,7 +39,10 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
                 override fun onSubscribe(d: Disposable) = Unit
 
                 override fun onNext(response: Response<ChatShareOverall>) {
-                    chatLastGiven = response.headers()["x-chat-last-given"]!!
+
+                    if(response.headers()["x-chat-last-given"] != null) {
+                        chatLastGiven = response.headers()["x-chat-last-given"]!!
+                    }
 
                     val mediaItems = response.body()!!.ocs!!.data
                     mediaItems?.forEach {
