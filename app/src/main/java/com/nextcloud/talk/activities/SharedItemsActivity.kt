@@ -3,13 +3,17 @@ package com.nextcloud.talk.activities
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
+import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.SharedItemsAdapter
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.databinding.ItemReactionsTabBinding
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -30,6 +34,17 @@ class SharedItemsActivity : AppCompatActivity() {
         binding = ActivitySharedItemsBinding.inflate(layoutInflater)
         setSupportActionBar(binding.sharedItemsToolbar)
         setContentView(binding.root)
+
+        DisplayUtils.applyColorToStatusBar(
+            this,
+            ResourcesCompat.getColor(
+                resources, R.color.appbar, null
+            )
+        )
+        DisplayUtils.applyColorToNavigationBar(
+            this.window,
+            ResourcesCompat.getColor(resources, R.color.bg_default, null)
+        )
 
         supportActionBar?.title = conversationName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

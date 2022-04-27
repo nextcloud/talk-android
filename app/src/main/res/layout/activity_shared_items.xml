@@ -29,6 +29,13 @@
         android:id="@+id/shared_items_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="@color/appbar"
+        android:theme="?attr/actionBarPopupTheme"
+        app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
+        app:navigationIconTint="@color/fontAppbar"
+        app:popupTheme="@style/appActionBarPopupMenu"
+        app:titleTextColor="@color/fontAppbar"
+        tools:title="@string/nc_app_product_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.tabs.TabLayout
