@@ -20,16 +20,16 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
 
     private val _media: MutableLiveData<SharedMediaItems> by lazy {
         MutableLiveData<SharedMediaItems>().also {
-            loadMediaItems()
+            loadMediaItems("media")
         }
     }
 
     val media: LiveData<SharedMediaItems>
         get() = _media
 
-    private fun loadMediaItems() {
+    fun loadMediaItems(type: String) {
 
-        repository.media()?.subscribeOn(Schedulers.io())
+        repository.media(type)?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<Response<ChatShareOverall>> {
 

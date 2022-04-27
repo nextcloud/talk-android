@@ -31,10 +31,22 @@
         android:layout_height="?attr/actionBarSize"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/shared_items_tabs"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/min_size_clickable_area"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintTop_toBottomOf="@id/shared_items_toolbar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:tabGravity="fill"
+        app:tabMode="scrollable" />
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/shared_items_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/shared_items_tabs">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/image_recycler"
