@@ -430,6 +430,9 @@
     <string name="nc_share_contact">Share contact</string>
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
 
+    <!-- shared items -->
+    <string name="nc_shared_items">Shared items</string>
+
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>

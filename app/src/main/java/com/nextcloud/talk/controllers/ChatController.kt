@@ -158,6 +158,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -2349,6 +2350,7 @@ class ChatController(args: Bundle) :
 
     private fun showSharedItems() {
         val intent = Intent(activity, SharedItemsActivity::class.java)
+        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
         activity!!.startActivity(intent)
@@ -2415,7 +2417,7 @@ class ChatController(args: Bundle) :
             bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
-            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, it.displayName)
+            bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
