@@ -40,7 +40,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
 
                 override fun onNext(response: Response<ChatShareOverall>) {
 
-                    if(response.headers()["x-chat-last-given"] != null) {
+                    if (response.headers()["x-chat-last-given"] != null) {
                         chatLastGiven = response.headers()["x-chat-last-given"]!!
                     }
 
@@ -65,7 +65,11 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
 
                 override fun onComplete() {
                     this@SharedItemsViewModel._media.value =
-                        SharedMediaItems(items.toSortedMap().values.toList().reversed(), chatLastGiven, repository.authHeader())
+                        SharedMediaItems(
+                            items.toSortedMap().values.toList().reversed(),
+                            chatLastGiven,
+                            repository.authHeader()
+                        )
                 }
             })
     }
