@@ -488,6 +488,7 @@
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
 
+    <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_switch_camera">Switch camera</string>
     <string name="take_photo_retake_photo">Re-take photo</string>
@@ -497,12 +498,22 @@
     <string name="take_photo_send">Send</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
+
+    <!-- Audio selection -->
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_speaker">Speaker</string>
     <string name="audio_output_phone">Phone</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_wired_headset">Wired headset</string>
-    <string name="title_attachments">Attachements</string>
+
+    <!-- Shared items -->
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_file">File</string>
+    <string name="shared_items_audio">Audio</string>
+    <string name="shared_items_voice">Voice</string>
+    <string name="shared_items_other">Other</string>
+
+    <string name="title_attachments">Attachments</string>
 
     <string name="reactions_tab_all">All</string>
 

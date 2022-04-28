@@ -87,22 +87,22 @@ class SharedItemsActivity : AppCompatActivity() {
     private fun initTabs() {
         val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabMedia.tag = TAB_MEDIA
-        tabMedia.text = "media"
+        tabMedia.setText(R.string.shared_items_media)
         binding.sharedItemsTabs.addTab(tabMedia)
 
         val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabFile.tag = TAB_FILE
-        tabFile.text = "file"
+        tabFile.setText(R.string.shared_items_file)
         binding.sharedItemsTabs.addTab(tabFile)
 
         val tabAudio: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabAudio.tag = TAB_AUDIO
-        tabAudio.text = "audio"
+        tabAudio.setText(R.string.shared_items_audio)
         binding.sharedItemsTabs.addTab(tabAudio)
 
         val tabVoice: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabVoice.tag = TAB_VOICE
-        tabVoice.text = "voice"
+        tabVoice.setText(R.string.shared_items_voice)
         binding.sharedItemsTabs.addTab(tabVoice)
 
         // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
@@ -117,7 +117,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
         val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabOther.tag = TAB_OTHER
-        tabOther.text = "other"
+        tabOther.setText(R.string.shared_items_other)
         binding.sharedItemsTabs.addTab(tabOther)
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
@@ -126,9 +126,11 @@ class SharedItemsActivity : AppCompatActivity() {
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
+                // unused atm
             }
 
             override fun onTabReselected(tab: TabLayout.Tab) {
+                // unused atm
             }
         })
     }
