@@ -16,7 +16,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class SharedItemsViewModel(private val repository: SharedItemsRepository, val initialType: String) : ViewModel() {
+class SharedItemsViewModel(private val repository: SharedItemsRepository, private val initialType: String) : ViewModel() {
 
     private val _media: MutableLiveData<SharedMediaItems> by lazy {
         MutableLiveData<SharedMediaItems>().also {

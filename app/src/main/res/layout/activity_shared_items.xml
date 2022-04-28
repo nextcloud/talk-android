@@ -63,8 +63,7 @@
             android:id="@+id/image_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:spanCount="4"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/attachment_item" />
     </androidx.core.widget.NestedScrollView>
 
