@@ -71,9 +71,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         val fileSize = Integer.valueOf(size)
 
         openFile(
-            fileId,
-            fileName,
-            fileSize,
+            FileInfo(fileId, fileName, fileSize),
             path,
             link,
             mimetype,
@@ -82,25 +80,21 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     }
 
     fun openFile(
-        fileId: String,
-        fileName: String,
-        fileSize: Int,
+        fileInfo: FileInfo,
         path: String,
         link: String,
         mimetype: String,
         progressUi: ProgressUi
     ) {
-        if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileName)) {
+        if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileInfo.fileName)) {
             openOrDownloadFile(
-                fileName,
-                fileId,
+                fileInfo,
                 path,
-                fileSize,
                 mimetype,
                 progressUi
             )
         } else {
-            openFileInFilesApp(link, fileId)
+            openFileInFilesApp(link, fileInfo.fileId)
         }
     }
 
@@ -113,22 +107,18 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     }
 
     private fun openOrDownloadFile(
-        fileName: String,
-        fileId: String,
+        fileInfo: FileInfo,
         path: String,
-        fileSize: Int,
         mimetype: String,
         progressUi: ProgressUi
     ) {
-        val file = File(context.cacheDir, fileName)
+        val file = File(context.cacheDir, fileInfo.fileName)
         if (file.exists()) {
-            openFileByMimetype(fileName!!, mimetype!!)
+            openFileByMimetype(fileInfo.fileName!!, mimetype!!)
         } else {
             downloadFileToCache(
-                fileName,
-                fileId,
+                fileInfo,
                 path,
-                fileSize,
                 mimetype,
                 progressUi
             )
@@ -263,26 +253,24 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
 
     @SuppressLint("LongLogTag")
     private fun downloadFileToCache(
-        fileName: String,
-        fileId: String,
+        fileInfo: FileInfo,
         path: String,
-        fileSize: Int,
         mimetype: String,
         progressUi: ProgressUi
     ) {
         // check if download worker is already running
-        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId!!)
+        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileInfo.fileId!!)
         try {
             for (workInfo in workers.get()) {
                 if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
-                    Log.d(TAG, "Download worker for $fileId is already running or scheduled")
+                    Log.d(TAG, "Download worker for $fileInfo.fileId is already running or scheduled")
                     return
                 }
             }
         } catch (e: ExecutionException) {
-            Log.e(TAG, "Error when checking if worker already exsists", e)
+            Log.e(TAG, "Error when checking if worker already exists", e)
         } catch (e: InterruptedException) {
-            Log.e(TAG, "Error when checking if worker already exsists", e)
+            Log.e(TAG, "Error when checking if worker already exists", e)
         }
         val downloadWorker: OneTimeWorkRequest
         val data: Data = Data.Builder()
@@ -292,20 +280,20 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
                 CapabilitiesUtil.getAttachmentFolder(userEntity)
             )
-            .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
-            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
+            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileInfo.fileSize)
             .build()
         downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
-            .addTag(fileId)
+            .addTag(fileInfo.fileId)
             .build()
         WorkManager.getInstance().enqueue(downloadWorker)
         progressUi.progressBar?.visibility = View.VISIBLE
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
             .observeForever { workInfo: WorkInfo? ->
                 updateViewsByProgress(
-                    fileName,
+                    fileInfo.fileName,
                     mimetype,
                     workInfo!!,
                     progressUi
@@ -390,6 +378,12 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         val progressBar: ProgressBar?,
         val messageText: EmojiTextView?,
         val previewImage: SimpleDraweeView
+    )
+
+    data class FileInfo(
+        val fileId: String,
+        val fileName: String,
+        val fileSize: Int
     )
 
     companion object {

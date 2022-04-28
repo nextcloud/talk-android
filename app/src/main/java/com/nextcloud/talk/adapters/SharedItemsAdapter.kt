@@ -74,9 +74,7 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
             val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
 
             fileViewerUtils.openFile(
-                currentItem.id,
-                currentItem.name,
-                currentItem.fileSize,
+                FileViewerUtils.FileInfo(currentItem.id, currentItem.name, currentItem.fileSize),
                 currentItem.path,
                 currentItem.link,
                 currentItem.mimeType,

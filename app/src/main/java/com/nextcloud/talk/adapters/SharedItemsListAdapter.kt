@@ -75,17 +75,11 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
             val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
 
             fileViewerUtils.openFile(
-                currentItem.id,
-                currentItem.name,
-                currentItem.fileSize,
+                FileViewerUtils.FileInfo(currentItem.id, currentItem.name, currentItem.fileSize),
                 currentItem.path,
                 currentItem.link,
                 currentItem.mimeType,
-                FileViewerUtils.ProgressUi(
-                    holder.binding.progressBar,
-                    null,
-                    holder.binding.fileImage
-                )
+                FileViewerUtils.ProgressUi(holder.binding.progressBar, null, holder.binding.fileImage)
             )
         }
     }
