@@ -92,7 +92,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
             override fun onComplete() {
 
                 val sortedMutableItems = items.toSortedMap().values.toList().reversed().toMutableList()
-                val moreItemsExisting = items.count() == 28
+                val moreItemsExisting = items.count() == BATCH_SIZE
 
                 if (initModel) {
                     this@SharedItemsViewModel._sharedItems.value =
@@ -143,5 +143,6 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
 
     companion object {
         private val TAG = SharedItemsViewModel::class.simpleName
+        const val BATCH_SIZE: Int = 28
     }
 }

@@ -81,9 +81,11 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
                 currentItem.path,
                 currentItem.link,
                 currentItem.mimeType,
-                holder.binding.progressBar,
-                null,
-                holder.binding.fileImage
+                FileViewerUtils.ProgressUi(
+                    holder.binding.progressBar,
+                    null,
+                    holder.binding.fileImage
+                )
             )
         }
     }

@@ -181,9 +181,12 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             }
 
             if (message.activeUser != null && message.activeUser.getUsername() != null && message.activeUser.getBaseUrl() != null) {
-                clickView.setOnClickListener(v -> {
-                    fileViewerUtils.openFile(message, progressBar, getMessageText(), image);
-                });
+                clickView.setOnClickListener(v ->
+                    fileViewerUtils.openFile(
+                        message,
+                        new FileViewerUtils.ProgressUi(progressBar, getMessageText(), image)
+                    )
+                );
 
                 clickView.setOnLongClickListener(l -> {
                     onMessageViewLongClick(message);
@@ -197,9 +200,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_NAME)),
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_ID)),
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_MIMETYPE)),
-                progressBar,
-                getMessageText(),
-                image);
+                new FileViewerUtils.ProgressUi(progressBar, getMessageText(), image));
 
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             getMessageText().setText("GIPHY");

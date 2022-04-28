@@ -15,10 +15,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsRepository {
 
-    companion object {
-        private val TAG = SharedItemsRepository::class.simpleName
-    }
-
     var parameters: Parameters? = null
 
     @Inject
@@ -38,7 +34,9 @@ class SharedItemsRepository {
         return ncApi.getSharedItems(
             credentials,
             ApiUtils.getUrlForChatSharedItems(1, parameters!!.baseUrl, parameters!!.roomToken),
-            type, lastKnownMessageId, 28
+            type,
+            lastKnownMessageId,
+            BATCH_SIZE
         )
     }
 
@@ -61,4 +59,8 @@ class SharedItemsRepository {
         val userEntity: UserEntity,
         val roomToken: String
     )
+
+    companion object {
+        const val BATCH_SIZE: Int = 28
+    }
 }

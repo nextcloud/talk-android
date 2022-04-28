@@ -70,7 +70,7 @@ class SharedItemsActivity : AppCompatActivity() {
                 adapter.authHeader = it.authHeader
                 binding.imageRecycler.adapter = adapter
 
-                val layoutManager = GridLayoutManager(this, 4)
+                val layoutManager = GridLayoutManager(this, SPAN_COUNT)
                 binding.imageRecycler.layoutManager = layoutManager
             } else {
                 val adapter = SharedItemsListAdapter()
@@ -164,5 +164,6 @@ class SharedItemsActivity : AppCompatActivity() {
         const val TAB_LOCATION = "location"
         const val TAB_DECKCARD = "deckcard"
         const val TAB_OTHER = "other"
+        const val SPAN_COUNT: Int = 4
     }
 }
