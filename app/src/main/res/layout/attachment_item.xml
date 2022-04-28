@@ -2,7 +2,9 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Tim Krüger
+  ~ @author Marcel Hibbe
   ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+  ~ Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -17,17 +19,41 @@
   ~ You should have received a copy of the GNU General Public License
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<com.facebook.drawee.view.SimpleDraweeView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fresco="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/image"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/preview_container"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:padding="4dp"
-    android:src="@drawable/ic_mimetype_file"
-    app:layout_constraintTop_toTopOf="parent"
-    app:placeholderImageScaleType="fitCenter"
-    fresco:actualImageScaleType="centerCrop"
-    fresco:failureImage="@drawable/ic_mimetype_file"
-    fresco:placeholderImage="@drawable/ic_mimetype_file"
-    fresco:roundedCornerRadius="4dp" />
+    android:layout_height="wrap_content"
+    android:layout_marginStart="2dp"
+    android:layout_marginEnd="2dp"
+    android:adjustViewBounds="true"
+    app:layout_alignSelf="flex_start"
+    app:layout_flexGrow="1"
+    app:layout_wrapBefore="true">
+
+    <com.facebook.drawee.view.SimpleDraweeView
+        xmlns:fresco="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:padding="4dp"
+        android:src="@drawable/ic_mimetype_file"
+        app:layout_constraintTop_toTopOf="parent"
+        app:placeholderImageScaleType="fitCenter"
+        fresco:actualImageScaleType="centerCrop"
+        fresco:failureImage="@drawable/ic_mimetype_file"
+        fresco:placeholderImage="@drawable/ic_mimetype_file"
+        fresco:roundedCornerRadius="4dp"
+        tools:src="@drawable/ic_call_black_24dp"/>
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+</FrameLayout>
+
+

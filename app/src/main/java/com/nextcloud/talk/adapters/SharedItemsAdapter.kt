@@ -81,7 +81,7 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
                 currentItem.path,
                 currentItem.link,
                 currentItem.mimeType,
-                null,
+                holder.binding.progressBar,
                 null,
                 it as SimpleDraweeView
             )
