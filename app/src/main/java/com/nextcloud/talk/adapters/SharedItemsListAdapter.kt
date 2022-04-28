@@ -81,7 +81,7 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
                 currentItem.path,
                 currentItem.link,
                 currentItem.mimeType,
-                null,
+                holder.binding.progressBar,
                 null,
                 holder.binding.fileImage
             )

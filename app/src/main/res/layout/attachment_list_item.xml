@@ -29,28 +29,46 @@
     android:layout_marginBottom="@dimen/standard_half_margin"
     android:orientation="vertical">
 
-    <com.facebook.drawee.view.SimpleDraweeView
-        xmlns:fresco="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/file_image"
-        android:layout_width="@dimen/file_icon_size"
-        android:layout_height="@dimen/file_icon_size"
-        android:padding="4dp"
-        android:src="@drawable/ic_mimetype_file"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="@dimen/standard_margin"
-        app:layout_constraintTop_toTopOf="parent"
-        app:placeholderImageScaleType="fitCenter"
-        fresco:actualImageScaleType="centerCrop"
-        fresco:failureImage="@drawable/ic_mimetype_file"
-        fresco:placeholderImage="@drawable/ic_mimetype_file"
-        fresco:roundedCornerRadius="4dp" />
+    <FrameLayout
+        android:id="@+id/preview_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="2dp"
+        android:adjustViewBounds="true"
+        app:layout_alignSelf="flex_start"
+        app:layout_flexGrow="1"
+        app:layout_wrapBefore="true">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/file_image"
+            android:layout_width="@dimen/file_icon_size"
+            android:layout_height="@dimen/file_icon_size"
+            android:padding="4dp"
+            android:src="@drawable/ic_mimetype_file"
+            app:layout_constraintTop_toTopOf="parent"
+            app:placeholderImageScaleType="fitCenter"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:failureImage="@drawable/ic_mimetype_file"
+            fresco:placeholderImage="@drawable/ic_mimetype_file"
+            fresco:roundedCornerRadius="4dp"
+            tools:src="@drawable/ic_call_black_24dp"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/file_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/file_image"
+        android:layout_toEndOf="@id/preview_container"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="viewStart"
