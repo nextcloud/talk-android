@@ -28,7 +28,7 @@ class SharedItemsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        currentTab = TAB_AUDIO
+        currentTab = TAB_MEDIA
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
@@ -85,35 +85,35 @@ class SharedItemsActivity : AppCompatActivity() {
     }
 
     private fun initTabs() {
-        val tabAudio: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabAudio.tag = TAB_AUDIO
-        tabAudio.text = "audio"
-        binding.sharedItemsTabs.addTab(tabAudio)
-
-        // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabDeckCard.tag = TAB_DECKCARD
-        // tabDeckCard.text = "deckcard"
-        // binding.sharedItemsTabs.addTab(tabDeckCard)
+        val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        tabMedia.tag = TAB_MEDIA
+        tabMedia.text = "media"
+        binding.sharedItemsTabs.addTab(tabMedia)
 
         val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabFile.tag = TAB_FILE
         tabFile.text = "file"
         binding.sharedItemsTabs.addTab(tabFile)
 
-        // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabLocation.tag = TAB_LOCATION
-        // tabLocation.text = "location"
-        // binding.sharedItemsTabs.addTab(tabLocation)
-
-        val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabMedia.tag = TAB_MEDIA
-        tabMedia.text = "media"
-        binding.sharedItemsTabs.addTab(tabMedia)
+        val tabAudio: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        tabAudio.tag = TAB_AUDIO
+        tabAudio.text = "audio"
+        binding.sharedItemsTabs.addTab(tabAudio)
 
         val tabVoice: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabVoice.tag = TAB_VOICE
         tabVoice.text = "voice"
         binding.sharedItemsTabs.addTab(tabVoice)
+
+        // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabLocation.tag = TAB_LOCATION
+        // tabLocation.text = "location"
+        // binding.sharedItemsTabs.addTab(tabLocation)
+
+        // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabDeckCard.tag = TAB_DECKCARD
+        // tabDeckCard.text = "deckcard"
+        // binding.sharedItemsTabs.addTab(tabDeckCard)
 
         val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabOther.tag = TAB_OTHER
