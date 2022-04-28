@@ -10,10 +10,12 @@ import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import androidx.core.content.FileProvider
+import androidx.emoji.widget.EmojiTextView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
+import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.FullScreenImageActivity
 import com.nextcloud.talk.activities.FullScreenMediaActivity
@@ -21,13 +23,11 @@ import com.nextcloud.talk.activities.FullScreenTextViewerActivity
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
-import androidx.emoji.widget.EmojiTextView
-import com.facebook.drawee.view.SimpleDraweeView
-import com.nextcloud.talk.models.database.UserEntity
 import java.io.File
 import java.util.concurrent.ExecutionException
 
@@ -230,7 +230,12 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
 
     fun isSupportedForInternalViewer(mimetype: String?): Boolean {
         return when (mimetype) {
-            "image/png", "image/jpeg", "image/gif", "audio/mpeg", "audio/wav", "audio/ogg", "video/mp4", "video/quicktime", "video/ogg", "text/markdown", "text/plain" -> true
+            "image/png", "image/jpeg",
+            "image/gif", "audio/mpeg",
+            "audio/wav", "audio/ogg",
+            "video/mp4", "video/quicktime",
+            "video/ogg", "text/markdown",
+            "text/plain" -> true
             else -> false
         }
     }
@@ -329,7 +334,8 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
                     openFileByMimetype(fileName, mimetype)
                 } else {
                     Log.d(
-                        TAG, "file " + fileName +
+                        TAG,
+                        "file " + fileName +
                             " was downloaded but it's not opened because view is not shown on screen"
                     )
                 }

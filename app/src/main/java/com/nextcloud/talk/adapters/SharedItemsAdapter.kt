@@ -49,7 +49,6 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
                 .setImageRequest(imageRequest)
                 .build()
             holder.binding.image.controller = draweeController
-
         } else {
             when (currentItem.mimeType) {
                 "video/mp4",

@@ -50,7 +50,8 @@ class SharedItemsRepository {
         return ApiUtils.getUrlForFilePreviewWithFileId(
             parameters!!.baseUrl,
             fileId,
-            sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size))
+            sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+        )
     }
 
     data class Parameters(
