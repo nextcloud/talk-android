@@ -59,7 +59,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                 }
 
                 val mediaItems = response.body()!!.ocs!!.data
-                mediaItems?.forEach {
+                for (it in mediaItems) {
                     if (it.value.messageParameters.containsKey("file")) {
                         val fileParameters = it.value.messageParameters["file"]!!
 
@@ -79,7 +79,6 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                     } else {
                         Log.w(TAG, "location and deckcard are not yet supported")
                     }
-
                 }
             }
 
