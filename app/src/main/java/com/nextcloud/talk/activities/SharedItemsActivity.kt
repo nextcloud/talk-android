@@ -75,17 +75,17 @@ class SharedItemsActivity : AppCompatActivity() {
         tabAudio.text = "audio"
         binding.sharedItemsTabs.addTab(tabAudio)
 
-        val tabDeckcard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabDeckcard.text = "deckcard"
-        binding.sharedItemsTabs.addTab(tabDeckcard)
+        // val tabDeckcard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabDeckcard.text = "deckcard"
+        // binding.sharedItemsTabs.addTab(tabDeckcard)
 
         val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabFile.text = "file"
         binding.sharedItemsTabs.addTab(tabFile)
 
-        val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabLocation.text = "location"
-        binding.sharedItemsTabs.addTab(tabLocation)
+        // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabLocation.text = "location"
+        // binding.sharedItemsTabs.addTab(tabLocation)
 
         val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
         tabMedia.text = "media"

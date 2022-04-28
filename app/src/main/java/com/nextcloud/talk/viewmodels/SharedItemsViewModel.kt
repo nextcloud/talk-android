@@ -46,21 +46,26 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, val in
 
                     val mediaItems = response.body()!!.ocs!!.data
                     mediaItems?.forEach {
-                        val fileParameters = it.value.messageParameters["file"]!!
+                        if (it.value.messageParameters.containsKey("file")) {
+                            val fileParameters = it.value.messageParameters["file"]!!
 
-                        val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
+                            val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
 
-                        items[it.value.id] = SharedItem(
-                            fileParameters["id"]!!,
-                            fileParameters["name"]!!,
-                            fileParameters["size"]!!.toInt(),
-                            fileParameters["path"]!!,
-                            fileParameters["link"]!!,
-                            fileParameters["mimetype"]!!,
-                            previewAvailable,
-                            repository.previewLink(fileParameters["id"]),
-                            repository.parameters!!.userEntity
-                        )
+                            items[it.value.id] = SharedItem(
+                                fileParameters["id"]!!,
+                                fileParameters["name"]!!,
+                                fileParameters["size"]!!.toInt(),
+                                fileParameters["path"]!!,
+                                fileParameters["link"]!!,
+                                fileParameters["mimetype"]!!,
+                                previewAvailable,
+                                repository.previewLink(fileParameters["id"]),
+                                repository.parameters!!.userEntity
+                            )
+                        } else {
+                            Log.w(TAG, "location and deckcard are not yet supported")
+                        }
+
                     }
                 }
 
