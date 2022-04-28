@@ -97,6 +97,11 @@
             android:value="10" />
 
         <activity
+            android:name=".activities.SharedItemsActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme"/>
+
+        <activity
             android:name=".activities.MainActivity"
             android:label="@string/nc_app_name"
             android:windowSoftInputMode="adjustResize">

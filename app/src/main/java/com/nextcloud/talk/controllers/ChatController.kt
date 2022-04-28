@@ -46,6 +46,7 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.O
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -99,6 +100,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.activities.SharedItemsActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
@@ -156,6 +158,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -188,9 +191,7 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
-import java.util.ArrayList
 import java.util.Date
-import java.util.HashMap
 import java.util.Objects
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
@@ -253,6 +254,7 @@ class ChatController(args: Bundle) :
     var conversationInfoMenuItem: MenuItem? = null
     var conversationVoiceCallMenuItem: MenuItem? = null
     var conversationVideoMenuItem: MenuItem? = null
+    var conversationSharedItemsItem: MenuItem? = null
 
     var magicWebSocketInstance: MagicWebSocketInstance? = null
 
@@ -1464,7 +1466,7 @@ class ChatController(args: Bundle) :
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType))
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserEntity>(conversationUser))
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
         router.pushController(
             RouterTransaction.with(BrowserForSharingController(bundle))
                 .pushChangeHandler(VerticalChangeHandler())
@@ -1476,7 +1478,7 @@ class ChatController(args: Bundle) :
         Log.d(TAG, "showShareLocationScreen")
 
         val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
         router.pushController(
             RouterTransaction.with(LocationPickerController(bundle))
                 .pushChangeHandler(HorizontalChangeHandler())
@@ -1487,7 +1489,7 @@ class ChatController(args: Bundle) :
     private fun showConversationInfoScreen() {
         val bundle = Bundle()
         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, conversationUser)
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE, inOneToOneCall())
         router.pushController(
             RouterTransaction.with(ConversationInfoController(bundle))
@@ -2299,6 +2301,7 @@ class ChatController(args: Bundle) :
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
+            conversationSharedItemsItem = menu.findItem(R.id.shared_items)
 
             loadAvatarForStatusBar()
         }
@@ -2337,8 +2340,20 @@ class ChatController(args: Bundle) :
                 showConversationInfoScreen()
                 return true
             }
+            R.id.shared_items -> {
+                showSharedItems()
+                return true
+            }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun showSharedItems() {
+        val intent = Intent(activity, SharedItemsActivity::class.java)
+        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
+        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+        intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
+        activity!!.startActivity(intent)
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
@@ -2402,7 +2417,7 @@ class ChatController(args: Bundle) :
             bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl)
-            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, it.displayName)
+            bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
