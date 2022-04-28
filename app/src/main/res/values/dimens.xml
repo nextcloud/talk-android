@@ -35,6 +35,7 @@
     <dimen name="avatar_size">40dp</dimen>
     <dimen name="avatar_size_app_bar">30dp</dimen>
     <dimen name="avatar_size_big">96dp</dimen>
+    <dimen name="file_icon_size">40dp</dimen>
 
     <dimen name="chat_text_size">14sp</dimen>
     <dimen name="message_bubble_corners_radius">6dp</dimen>

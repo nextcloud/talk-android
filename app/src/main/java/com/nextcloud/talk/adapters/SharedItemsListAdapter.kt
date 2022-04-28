@@ -7,33 +7,34 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
-import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.R
-import com.nextcloud.talk.databinding.AttachmentItemBinding
+import com.nextcloud.talk.databinding.AttachmentListItemBinding
 import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.FileViewerUtils
 
-class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>() {
+class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewHolder>() {
 
     companion object {
-        private val TAG = SharedItemsAdapter::class.simpleName
+        private val TAG = SharedItemsListAdapter::class.simpleName
     }
 
-    class ViewHolder(val binding: AttachmentItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(val binding: AttachmentListItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
 
     var authHeader: Map<String, String> = emptyMap()
     var items: List<SharedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = AttachmentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = AttachmentListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding, binding.root)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val currentItem = items[position]
+
+        holder.binding.fileName.text = currentItem.name
 
         if (currentItem.previewAvailable) {
             val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(currentItem.previewLink))
@@ -44,34 +45,33 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
                 .build()
 
             val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                .setOldController(holder.binding.image.controller)
+                .setOldController(holder.binding.fileImage.controller)
                 .setAutoPlayAnimations(true)
                 .setImageRequest(imageRequest)
                 .build()
-            holder.binding.image.controller = draweeController
-
+            holder.binding.fileImage.controller = draweeController
         } else {
             when (currentItem.mimeType) {
                 "video/mp4",
                 "video/quicktime",
                 "video/ogg"
-                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_video)
+                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_video)
                 "audio/mpeg",
                 "audio/wav",
                 "audio/ogg",
-                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_audio)
+                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_audio)
                 "image/png",
                 "image/jpeg",
                 "image/gif"
-                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_image)
+                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_image)
                 "text/markdown",
                 "text/plain"
-                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_text)
+                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_text)
                 else
-                -> holder.binding.image.setImageResource(R.drawable.ic_mimetype_file)
+                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_file)
             }
         }
-        holder.binding.image.setOnClickListener {
+        holder.binding.fileItem.setOnClickListener {
             val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
 
             fileViewerUtils.openFile(
@@ -83,7 +83,7 @@ class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>()
                 currentItem.mimeType,
                 null,
                 null,
-                it as SimpleDraweeView
+                holder.binding.fileImage
             )
         }
     }
