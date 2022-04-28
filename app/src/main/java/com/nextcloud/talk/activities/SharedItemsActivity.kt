@@ -82,11 +82,11 @@ class SharedItemsActivity : AppCompatActivity() {
         binding.sharedItemsTabs.addTab(tabDeckcard)
 
         val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabFile.text = "files"
+        tabFile.text = "file"
         binding.sharedItemsTabs.addTab(tabFile)
 
         val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabLocation.text = "locations"
+        tabLocation.text = "location"
         binding.sharedItemsTabs.addTab(tabLocation)
 
         val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
