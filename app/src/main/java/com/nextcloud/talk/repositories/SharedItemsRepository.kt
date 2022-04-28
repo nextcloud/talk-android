@@ -1,6 +1,7 @@
 package com.nextcloud.talk.repositories
 
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -42,7 +43,10 @@ class SharedItemsRepository {
     }
 
     fun previewLink(fileId: String?): String {
-        return ApiUtils.getUrlForFilePreviewWithFileId(parameters!!.baseUrl, fileId, 100)
+        return ApiUtils.getUrlForFilePreviewWithFileId(
+            parameters!!.baseUrl,
+            fileId,
+            sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size))
     }
 
     data class Parameters(
