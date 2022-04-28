@@ -16,76 +16,109 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class SharedItemsViewModel(private val repository: SharedItemsRepository, private val initialType: String) : ViewModel() {
+class SharedItemsViewModel(private val repository: SharedItemsRepository, private val initialType: String) :
+    ViewModel() {
 
-    private val _media: MutableLiveData<SharedMediaItems> by lazy {
+    private val _sharedItems: MutableLiveData<SharedMediaItems> by lazy {
         MutableLiveData<SharedMediaItems>().also {
-            loadMediaItems(initialType)
+            loadItems(initialType)
         }
     }
 
-    val media: LiveData<SharedMediaItems>
-        get() = _media
+    val sharedItems: LiveData<SharedMediaItems>
+        get() = _sharedItems
 
-    fun loadMediaItems(type: String) {
+    fun loadNextItems() {
+        val currentSharedItems = sharedItems.value!!
 
+        if (currentSharedItems.moreItemsExisting) {
+            repository.media(currentSharedItems.type, currentSharedItems.lastSeenId)?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(observer(currentSharedItems.type, false))
+        }
+    }
+
+    fun loadItems(type: String) {
         repository.media(type)?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<Response<ChatShareOverall>> {
+            ?.subscribe(observer(type, true))
+    }
 
-                var chatLastGiven: String = ""
-                val items = mutableMapOf<String, SharedItem>()
+    private fun observer(type: String, initModel: Boolean): Observer<Response<ChatShareOverall>> {
+        return object : Observer<Response<ChatShareOverall>> {
 
-                override fun onSubscribe(d: Disposable) = Unit
+            var chatLastGiven: Int? = null
+            val items = mutableMapOf<String, SharedItem>()
 
-                override fun onNext(response: Response<ChatShareOverall>) {
+            override fun onSubscribe(d: Disposable) = Unit
 
-                    if (response.headers()["x-chat-last-given"] != null) {
-                        chatLastGiven = response.headers()["x-chat-last-given"]!!
-                    }
+            override fun onNext(response: Response<ChatShareOverall>) {
 
-                    val mediaItems = response.body()!!.ocs!!.data
-                    mediaItems?.forEach {
-                        if (it.value.messageParameters.containsKey("file")) {
-                            val fileParameters = it.value.messageParameters["file"]!!
-
-                            val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
-
-                            items[it.value.id] = SharedItem(
-                                fileParameters["id"]!!,
-                                fileParameters["name"]!!,
-                                fileParameters["size"]!!.toInt(),
-                                fileParameters["path"]!!,
-                                fileParameters["link"]!!,
-                                fileParameters["mimetype"]!!,
-                                previewAvailable,
-                                repository.previewLink(fileParameters["id"]),
-                                repository.parameters!!.userEntity
-                            )
-                        } else {
-                            Log.w(TAG, "location and deckcard are not yet supported")
-                        }
-
-                    }
+                if (response.headers()["x-chat-last-given"] != null) {
+                    chatLastGiven = response.headers()["x-chat-last-given"]!!.toInt()
                 }
 
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "An error occurred: $e")
-                }
+                val mediaItems = response.body()!!.ocs!!.data
+                mediaItems?.forEach {
+                    if (it.value.messageParameters.containsKey("file")) {
+                        val fileParameters = it.value.messageParameters["file"]!!
 
-                override fun onComplete() {
-                    this@SharedItemsViewModel._media.value =
+                        val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
+
+                        items[it.value.id] = SharedItem(
+                            fileParameters["id"]!!,
+                            fileParameters["name"]!!,
+                            fileParameters["size"]!!.toInt(),
+                            fileParameters["path"]!!,
+                            fileParameters["link"]!!,
+                            fileParameters["mimetype"]!!,
+                            previewAvailable,
+                            repository.previewLink(fileParameters["id"]),
+                            repository.parameters!!.userEntity
+                        )
+                    } else {
+                        Log.w(TAG, "location and deckcard are not yet supported")
+                    }
+
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                Log.d(TAG, "An error occurred: $e")
+            }
+
+            override fun onComplete() {
+
+                val sortedMutableItems = items.toSortedMap().values.toList().reversed().toMutableList()
+                val moreItemsExisting = items.count() == 28
+
+                if (initModel) {
+                    this@SharedItemsViewModel._sharedItems.value =
                         SharedMediaItems(
-                            items.toSortedMap().values.toList().reversed(),
+                            type,
+                            sortedMutableItems,
                             chatLastGiven,
+                            moreItemsExisting,
+                            repository.authHeader()
+                        )
+                } else {
+                    val oldItems = this@SharedItemsViewModel._sharedItems.value!!.items
+                    this@SharedItemsViewModel._sharedItems.value =
+                        SharedMediaItems(
+                            type,
+                            (oldItems.toMutableList() + sortedMutableItems) as MutableList<SharedItem>,
+                            chatLastGiven,
+                            moreItemsExisting,
                             repository.authHeader()
                         )
                 }
-            })
+            }
+        }
     }
 
-    class Factory(val userEntity: UserEntity, val roomToken: String, private val initialType: String) : ViewModelProvider
-    .Factory {
+    class Factory(val userEntity: UserEntity, val roomToken: String, private val initialType: String) :
+        ViewModelProvider
+        .Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(SharedItemsViewModel::class.java)) {

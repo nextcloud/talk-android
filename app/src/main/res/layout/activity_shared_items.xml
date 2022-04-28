@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Nextcloud Talk application
   ~
   ~ @author Tim Krüger
@@ -34,12 +33,12 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/appbar"
         android:theme="?attr/actionBarPopupTheme"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_scrollFlags="enterAlwaysCollapsed|noScroll"
         app:navigationIconTint="@color/fontAppbar"
         app:popupTheme="@style/appActionBarPopupMenu"
         app:titleTextColor="@color/fontAppbar"
-        tools:title="@string/nc_app_product_name"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:title="@string/nc_app_product_name" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/shared_items_tabs"
@@ -54,18 +53,15 @@
         app:tabMode="scrollable"
         app:tabTextAppearance="@style/TextAppearanceTab" />
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/shared_items_tabs">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/image_recycler"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/attachment_item" />
-    </androidx.core.widget.NestedScrollView>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/image_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/shared_items_tabs"
+        tools:listitem="@layout/attachment_item" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

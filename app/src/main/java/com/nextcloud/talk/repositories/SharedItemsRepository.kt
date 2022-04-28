@@ -29,12 +29,16 @@ class SharedItemsRepository {
     }
 
     fun media(type: String): Observable<Response<ChatShareOverall>>? {
+        return media(type, null)
+    }
+
+    fun media(type: String, lastKnownMessageId: Int?): Observable<Response<ChatShareOverall>>? {
         val credentials = ApiUtils.getCredentials(parameters!!.userName, parameters!!.userToken)
 
         return ncApi.getSharedItems(
             credentials,
             ApiUtils.getUrlForChatSharedItems(1, parameters!!.baseUrl, parameters!!.roomToken),
-            type, null, null
+            type, lastKnownMessageId, 28
         )
     }
 

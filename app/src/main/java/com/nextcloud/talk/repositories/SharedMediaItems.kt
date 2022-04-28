@@ -1,7 +1,9 @@
 package com.nextcloud.talk.repositories
 
 class SharedMediaItems(
-    val items: List<SharedItem>,
-    val lastSeenId: String,
+    val type: String,
+    val items: MutableList<SharedItem>,
+    var lastSeenId: Int?,
+    var moreItemsExisting: Boolean,
     val authHeader: Map<String, String>
 )

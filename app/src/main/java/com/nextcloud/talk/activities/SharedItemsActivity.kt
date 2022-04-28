@@ -8,6 +8,7 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.SharedItemsAdapter
@@ -60,7 +61,7 @@ class SharedItemsActivity : AppCompatActivity() {
             SharedItemsViewModel.Factory(userEntity, roomToken, currentTab)
         ).get(SharedItemsViewModel::class.java)
 
-        viewModel.media.observe(this) {
+        viewModel.sharedItems.observe(this) {
             Log.d(TAG, "Items received: $it")
 
             if (currentTab == TAB_MEDIA) {
@@ -71,8 +72,6 @@ class SharedItemsActivity : AppCompatActivity() {
 
                 val layoutManager = GridLayoutManager(this, 4)
                 binding.imageRecycler.layoutManager = layoutManager
-
-                adapter.notifyDataSetChanged()
             } else {
                 val adapter = SharedItemsListAdapter()
                 adapter.items = it.items
@@ -82,15 +81,22 @@ class SharedItemsActivity : AppCompatActivity() {
                 val layoutManager = LinearLayoutManager(this)
                 layoutManager.orientation = LinearLayoutManager.VERTICAL
                 binding.imageRecycler.layoutManager = layoutManager
-
-                adapter.notifyDataSetChanged()
             }
         }
+
+        binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollVertically(1) && newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    viewModel.loadNextItems()
+                }
+            }
+        })
     }
 
     fun updateItems(type: String) {
         currentTab = type
-        viewModel.loadMediaItems(type)
+        viewModel.loadItems(type)
     }
 
     private fun initTabs() {
@@ -134,13 +140,9 @@ class SharedItemsActivity : AppCompatActivity() {
                 updateItems(tab.tag as String)
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab) {
-                // unused atm
-            }
+            override fun onTabUnselected(tab: TabLayout.Tab) = Unit
 
-            override fun onTabReselected(tab: TabLayout.Tab) {
-                // unused atm
-            }
+            override fun onTabReselected(tab: TabLayout.Tab) = Unit
         })
     }
 
