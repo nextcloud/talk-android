@@ -30,7 +30,7 @@ import java.util.Objects;
 
 @Parcel
 @JsonObject
-public class ChatShareOCS extends GenericOCS {
+public class ChatShareOCS {
     @JsonField(name = "data")
     public HashMap<String, ChatMessage> data;
 
@@ -67,8 +67,7 @@ public class ChatShareOCS extends GenericOCS {
         final int PRIME = 59;
         int result = 1;
         final Object $data = this.getData();
-        result = result * PRIME + ($data == null ? 43 : $data.hashCode());
-        return result;
+        return result * PRIME + ($data == null ? 43 : $data.hashCode());
     }
 
     public String toString() {

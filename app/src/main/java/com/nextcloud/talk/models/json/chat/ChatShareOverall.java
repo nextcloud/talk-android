@@ -66,8 +66,7 @@ public class ChatShareOverall {
         final int PRIME = 59;
         int result = 1;
         final Object $ocs = this.getOcs();
-        result = result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
-        return result;
+        return result * PRIME + ($ocs == null ? 43 : $ocs.hashCode());
     }
 
     public String toString() {
