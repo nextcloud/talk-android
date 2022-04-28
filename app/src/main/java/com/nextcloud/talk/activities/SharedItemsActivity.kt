@@ -53,10 +53,8 @@ class SharedItemsActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this,
-            SharedItemsViewModel.Factory(userEntity, roomToken)
+            SharedItemsViewModel.Factory(userEntity, roomToken, "audio")
         ).get(SharedItemsViewModel::class.java)
-
-        updateItems("media")
 
         viewModel.media.observe(this) {
             Log.d(TAG, "Items received: $it")

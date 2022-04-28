@@ -16,11 +16,11 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class SharedItemsViewModel(private val repository: SharedItemsRepository) : ViewModel() {
+class SharedItemsViewModel(private val repository: SharedItemsRepository, val initialType: String) : ViewModel() {
 
     private val _media: MutableLiveData<SharedMediaItems> by lazy {
         MutableLiveData<SharedMediaItems>().also {
-            loadMediaItems("media")
+            loadMediaItems(initialType)
         }
     }
 
@@ -79,7 +79,8 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
             })
     }
 
-    class Factory(val userEntity: UserEntity, val roomToken: String) : ViewModelProvider.Factory {
+    class Factory(val userEntity: UserEntity, val roomToken: String, private val initialType: String) : ViewModelProvider
+    .Factory {
 
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(SharedItemsViewModel::class.java)) {
@@ -93,7 +94,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository) : View
                     roomToken
                 )
 
-                return SharedItemsViewModel(repository) as T
+                return SharedItemsViewModel(repository, initialType) as T
             }
 
             throw IllegalArgumentException("Unknown ViewModel class")
