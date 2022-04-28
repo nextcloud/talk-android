@@ -59,25 +59,28 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                 }
 
                 val mediaItems = response.body()!!.ocs!!.data
-                for (it in mediaItems) {
-                    if (it.value.messageParameters.containsKey("file")) {
-                        val fileParameters = it.value.messageParameters["file"]!!
+                if (mediaItems != null) {
+                    for (it in mediaItems) {
+                        if (it.value.messageParameters.containsKey("file")) {
+                            val fileParameters = it.value.messageParameters["file"]!!
 
-                        val previewAvailable = "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
+                            val previewAvailable =
+                                "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
 
-                        items[it.value.id] = SharedItem(
-                            fileParameters["id"]!!,
-                            fileParameters["name"]!!,
-                            fileParameters["size"]!!.toInt(),
-                            fileParameters["path"]!!,
-                            fileParameters["link"]!!,
-                            fileParameters["mimetype"]!!,
-                            previewAvailable,
-                            repository.previewLink(fileParameters["id"]),
-                            repository.parameters!!.userEntity
-                        )
-                    } else {
-                        Log.w(TAG, "location and deckcard are not yet supported")
+                            items[it.value.id] = SharedItem(
+                                fileParameters["id"]!!,
+                                fileParameters["name"]!!,
+                                fileParameters["size"]!!.toInt(),
+                                fileParameters["path"]!!,
+                                fileParameters["link"]!!,
+                                fileParameters["mimetype"]!!,
+                                previewAvailable,
+                                repository.previewLink(fileParameters["id"]),
+                                repository.parameters!!.userEntity
+                            )
+                        } else {
+                            Log.w(TAG, "location and deckcard are not yet supported")
+                        }
                     }
                 }
             }
