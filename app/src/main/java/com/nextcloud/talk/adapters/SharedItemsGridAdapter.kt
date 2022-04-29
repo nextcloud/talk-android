@@ -77,7 +77,8 @@ class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewH
                 FileViewerUtils.ProgressUi(
                     holder.binding.progressBar,
                     null,
-                    it as SimpleDraweeView)
+                    it as SimpleDraweeView
+                )
             )
         }
 

@@ -89,7 +89,8 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
                 ProgressUi(
                     holder.binding.progressBar,
                     null,
-                    holder.binding.fileImage)
+                    holder.binding.fileImage
+                )
             )
         }
 
