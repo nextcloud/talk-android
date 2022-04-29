@@ -167,6 +167,10 @@
             android:theme="@style/TakePhotoTheme"
             android:windowSoftInputMode="stateHidden" />
 
+        <activity
+            android:name=".activities.SharedItemsActivity"
+            android:theme="@style/AppTheme"/>
+
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

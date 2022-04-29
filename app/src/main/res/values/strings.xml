@@ -89,7 +89,6 @@
     <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the Android app</string>
     <string name="nc_settings_server_almost_eol">The server version is very old and will not be supported in the next release!</string>
     <string name="nc_settings_warning">Warning</string>
-    <string name="nc_add">Add</string>
     <string name="nc_settings_wrong_account">Only current account can be reauthorized</string>
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
@@ -118,7 +117,6 @@
     <string name="nc_settings_screen_lock_desc">Lock %1$s with Android screen lock or supported biometric method</string>
     <string name="nc_settings_screen_lock_key" translatable="false">screen_lock</string>
     <string name="nc_settings_screen_lock_timeout_title">Screen lock inactivity timeout</string>
-    <string name="nc_none">None</string>
     <string name="nc_settings_screen_lock_timeout_key" translatable="false">screen_lock_timeout</string>
     <string name="nc_settings_screen_security_title">Screen security</string>
     <string name="nc_settings_screen_security_desc">Prevents screenshots in the recent list and inside the app</string>
@@ -205,8 +203,6 @@
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_ringing">RINGING</string>
     <string name="nc_connecting_call">Connecting…</string>
-    <string name="nc_calling">Calling…</string>
-    <string name="nc_incoming_call">Incoming call from</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call">New public conversation</string>
     <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
@@ -338,7 +334,6 @@
     <!-- Empty states -->
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
-    <string name="nc_hello">Hello</string>
 
     <!-- Other -->
     <string name="nc_limit_hit">%s characters limit has been hit</string>
@@ -378,14 +373,6 @@
     <string name="nc_lobby_start_date">This meeting is scheduled for %1$s</string>
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
     <string name="nc_manual">Not set</string>
-
-    <!-- Errors -->
-    <string name="nc_no_connection_error">No connection</string>
-    <string name="nc_bad_response_error">Bad response</string>
-    <string name="nc_timeout_error">Timeout</string>
-    <string name="nc_empty_response_error">Empty response</string>
-    <string name="nc_not_defined_error">Unknown error</string>
-    <string name="nc_unauthorized_error">Unauthorized</string>
 
     <string name="nc_allow_guests">Allow guests</string>
     <string name="nc_last_moderator_title">Could not leave conversation</string>
@@ -429,6 +416,10 @@
     <!-- share contact -->
     <string name="nc_share_contact">Share contact</string>
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
+
+    <!-- shared items -->
+    <string name="nc_shared_items">Shared items</string>
+    <string name="nc_shared_items_description">Images, files, voice messages…</string>
 
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
@@ -498,6 +489,7 @@
     <string name="nc_dialog_invalid_password">Invalid password</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
 
+    <!-- Take photo -->
     <string name="take_photo">Take a photo</string>
     <string name="take_photo_switch_camera">Switch camera</string>
     <string name="take_photo_retake_photo">Re-take photo</string>
@@ -507,11 +499,22 @@
     <string name="take_photo_send">Send</string>
     <string name="take_photo_error_deleting_picture">Error taking picture</string>
     <string name="take_photo_permission">Taking a photo is not possible without permissions</string>
+
+    <!-- Audio selection -->
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_speaker">Speaker</string>
     <string name="audio_output_phone">Phone</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_wired_headset">Wired headset</string>
+
+    <!-- Shared items -->
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_file">File</string>
+    <string name="shared_items_audio">Audio</string>
+    <string name="shared_items_voice">Voice</string>
+    <string name="shared_items_other">Other</string>
+
+    <string name="title_attachments">Attachments</string>
 
     <string name="reactions_tab_all">All</string>
 

@@ -37,8 +37,13 @@
 
     <item
         android:id="@+id/conversation_info"
-        android:icon="@drawable/ic_info_white_24dp"
         android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_conversation_info"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/shared_items"
+        android:orderInCategory="1"
+        android:title="Shared Items"
         app:showAsAction="never" />
 </menu>

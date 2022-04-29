@@ -260,6 +260,14 @@ public class ApiUtils {
     public static String getUrlForChatMessage(int version, String baseUrl, String token, String messageId) {
         return getUrlForChat(version, baseUrl, token) + "/" + messageId;
     }
+    
+    public static String getUrlForChatSharedItems(int version, String baseUrl, String token) {
+        return getUrlForChat(version, baseUrl, token) + "/share";
+    }
+
+    public static String getUrlForChatSharedItemsOverview(int version, String baseUrl, String token) {
+        return getUrlForChatSharedItems(version, baseUrl, token) + "/overview";
+    }
 
     public static String getUrlForSignaling(int version, String baseUrl) {
         return getUrlForApi(version, baseUrl) + "/signaling";

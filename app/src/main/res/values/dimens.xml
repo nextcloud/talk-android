@@ -70,4 +70,6 @@
     <dimen name="activity_row_layout_height">48dp</dimen>
     <dimen name="reaction_bottom_sheet_layout_size">40dp</dimen>
     <dimen name="standard_eighth_margin">2dp</dimen>
+
+    <dimen name="mediatab_file_icon_size">50dp</dimen>
 </resources>

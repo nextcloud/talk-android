@@ -332,6 +332,10 @@ dependencies {
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.0.1'
     gplayImplementation "com.google.firebase:firebase-messaging:23.0.0"
+
+    // TODO: Define variable for version
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    // implementation 'androidx.activity:activity-ktx:1.4.0'
 }
 
 task installGitHooks(type: Copy, group: "development") {

@@ -1,0 +1,393 @@
+/*
+ * Nextcloud Talk application
+ *
+ * @author Marcel Hibbe
+ * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.nextcloud.talk.utils
+
+import android.annotation.SuppressLint
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
+import androidx.core.content.FileProvider
+import androidx.emoji.widget.EmojiTextView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
+import com.facebook.drawee.view.SimpleDraweeView
+import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.FullScreenImageActivity
+import com.nextcloud.talk.activities.FullScreenMediaActivity
+import com.nextcloud.talk.activities.FullScreenTextViewerActivity
+import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
+import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
+import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
+import java.io.File
+import java.util.concurrent.ExecutionException
+
+class FileViewerUtils(private val context: Context, private val userEntity: UserEntity) {
+
+    fun openFile(
+        message: ChatMessage,
+        progressUi: ProgressUi
+    ) {
+        val fileName = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_NAME]!!
+        val mimetype = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_MIMETYPE]!!
+        val link = message.getSelectedIndividualHashMap()["link"]!!
+
+        val fileId = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_ID]!!
+        val path = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_PATH]!!
+
+        var size = message.getSelectedIndividualHashMap()["size"]
+        if (size == null) {
+            size = "-1"
+        }
+        val fileSize = Integer.valueOf(size)
+
+        openFile(
+            FileInfo(fileId, fileName, fileSize),
+            path,
+            link,
+            mimetype,
+            progressUi
+        )
+    }
+
+    fun openFile(
+        fileInfo: FileInfo,
+        path: String,
+        link: String,
+        mimetype: String,
+        progressUi: ProgressUi
+    ) {
+        if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileInfo.fileName)) {
+            openOrDownloadFile(
+                fileInfo,
+                path,
+                mimetype,
+                progressUi
+            )
+        } else {
+            openFileInFilesApp(link, fileInfo.fileId)
+        }
+    }
+
+    private fun canBeHandledByExternalApp(mimetype: String, fileName: String): Boolean {
+        val path: String = context.cacheDir.absolutePath + "/" + fileName
+        val file = File(path)
+        val intent = Intent(Intent.ACTION_VIEW)
+        intent.setDataAndType(Uri.fromFile(file), mimetype)
+        return intent.resolveActivity(context.packageManager) != null
+    }
+
+    private fun openOrDownloadFile(
+        fileInfo: FileInfo,
+        path: String,
+        mimetype: String,
+        progressUi: ProgressUi
+    ) {
+        val file = File(context.cacheDir, fileInfo.fileName)
+        if (file.exists()) {
+            openFileByMimetype(fileInfo.fileName!!, mimetype!!)
+        } else {
+            downloadFileToCache(
+                fileInfo,
+                path,
+                mimetype,
+                progressUi
+            )
+        }
+    }
+
+    private fun openFileByMimetype(filename: String, mimetype: String) {
+        when (mimetype) {
+            "audio/mpeg",
+            "audio/wav",
+            "audio/ogg",
+            "video/mp4",
+            "video/quicktime",
+            "video/ogg"
+            -> openMediaView(filename, mimetype)
+            "image/png",
+            "image/jpeg",
+            "image/gif"
+            -> openImageView(filename, mimetype)
+            "text/markdown",
+            "text/plain"
+            -> openTextView(filename, mimetype)
+            else
+            -> openFileByExternalApp(filename, mimetype)
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun openFileByExternalApp(fileName: String, mimetype: String) {
+        val path = context.cacheDir.absolutePath + "/" + fileName
+        val file = File(path)
+        val intent: Intent
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            intent = Intent(Intent.ACTION_VIEW)
+            intent.setDataAndType(Uri.fromFile(file), mimetype)
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+        } else {
+            intent = Intent()
+            intent.action = Intent.ACTION_VIEW
+            val pdfURI = FileProvider.getUriForFile(context, context.packageName, file)
+            intent.setDataAndType(pdfURI, mimetype)
+            intent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        }
+        try {
+            if (intent.resolveActivity(context.packageManager) != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context.startActivity(intent)
+            } else {
+                Log.e(TAG, "No Application found to open the file. This should have been handled beforehand!")
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error while opening file", e)
+        }
+    }
+
+    fun openFileInFilesApp(link: String, keyID: String) {
+        val accountString = userEntity.username + "@" +
+            userEntity.baseUrl
+                .replace("https://", "")
+                .replace("http://", "")
+
+        if (canWeOpenFilesApp(context, accountString)) {
+            val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
+            val componentName = ComponentName(
+                context.getString(R.string.nc_import_accounts_from),
+                "com.owncloud.android.ui.activity.FileDisplayActivity"
+            )
+            filesAppIntent.component = componentName
+            filesAppIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            filesAppIntent.setPackage(context.getString(R.string.nc_import_accounts_from))
+            filesAppIntent.putExtra(KEY_ACCOUNT, accountString)
+            filesAppIntent.putExtra(KEY_FILE_ID, keyID)
+            context.startActivity(filesAppIntent)
+        } else {
+            val browserIntent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(link)
+            )
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(browserIntent)
+        }
+    }
+
+    private fun openImageView(filename: String, mimetype: String) {
+        val fullScreenImageIntent = Intent(context, FullScreenImageActivity::class.java)
+        fullScreenImageIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        fullScreenImageIntent.putExtra("FILE_NAME", filename)
+        fullScreenImageIntent.putExtra("IS_GIF", isGif(mimetype))
+        context.startActivity(fullScreenImageIntent)
+    }
+
+    private fun openMediaView(filename: String, mimetype: String) {
+        val fullScreenMediaIntent = Intent(context, FullScreenMediaActivity::class.java)
+        fullScreenMediaIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        fullScreenMediaIntent.putExtra("FILE_NAME", filename)
+        fullScreenMediaIntent.putExtra("AUDIO_ONLY", isAudioOnly(mimetype))
+        context.startActivity(fullScreenMediaIntent)
+    }
+
+    private fun openTextView(filename: String, mimetype: String) {
+        val fullScreenTextViewerIntent = Intent(context, FullScreenTextViewerActivity::class.java)
+        fullScreenTextViewerIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        fullScreenTextViewerIntent.putExtra("FILE_NAME", filename)
+        fullScreenTextViewerIntent.putExtra("IS_MARKDOWN", isMarkdown(mimetype))
+        context.startActivity(fullScreenTextViewerIntent)
+    }
+
+    fun isSupportedForInternalViewer(mimetype: String?): Boolean {
+        return when (mimetype) {
+            "image/png", "image/jpeg",
+            "image/gif", "audio/mpeg",
+            "audio/wav", "audio/ogg",
+            "video/mp4", "video/quicktime",
+            "video/ogg", "text/markdown",
+            "text/plain" -> true
+            else -> false
+        }
+    }
+
+    private fun isGif(mimetype: String): Boolean {
+        return "image/gif" == mimetype
+    }
+
+    private fun isMarkdown(mimetype: String): Boolean {
+        return "text/markdown" == mimetype
+    }
+
+    private fun isAudioOnly(mimetype: String): Boolean {
+        return mimetype.startsWith("audio")
+    }
+
+    @SuppressLint("LongLogTag")
+    private fun downloadFileToCache(
+        fileInfo: FileInfo,
+        path: String,
+        mimetype: String,
+        progressUi: ProgressUi
+    ) {
+        // check if download worker is already running
+        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileInfo.fileId!!)
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
+                    Log.d(TAG, "Download worker for $fileInfo.fileId is already running or scheduled")
+                    return
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        } catch (e: InterruptedException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        }
+        val downloadWorker: OneTimeWorkRequest
+        val data: Data = Data.Builder()
+            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, userEntity.baseUrl)
+            .putString(DownloadFileToCacheWorker.KEY_USER_ID, userEntity.userId)
+            .putString(
+                DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
+                CapabilitiesUtil.getAttachmentFolder(userEntity)
+            )
+            .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
+            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileInfo.fileSize)
+            .build()
+        downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
+            .setInputData(data)
+            .addTag(fileInfo.fileId)
+            .build()
+        WorkManager.getInstance().enqueue(downloadWorker)
+        progressUi.progressBar?.visibility = View.VISIBLE
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                updateViewsByProgress(
+                    fileInfo.fileName,
+                    mimetype,
+                    workInfo!!,
+                    progressUi
+                )
+            }
+    }
+
+    private fun updateViewsByProgress(
+        fileName: String,
+        mimetype: String,
+        workInfo: WorkInfo,
+        progressUi: ProgressUi
+    ) {
+        when (workInfo.state) {
+            WorkInfo.State.RUNNING -> {
+                val progress = workInfo.progress.getInt(DownloadFileToCacheWorker.PROGRESS, -1)
+                if (progress > -1) {
+                    progressUi.messageText?.text = String.format(
+                        context.resources.getString(R.string.filename_progress),
+                        fileName,
+                        progress
+                    )
+                }
+            }
+            WorkInfo.State.SUCCEEDED -> {
+                if (progressUi.previewImage.isShown) {
+                    openFileByMimetype(fileName, mimetype)
+                } else {
+                    Log.d(
+                        TAG,
+                        "file " + fileName +
+                            " was downloaded but it's not opened because view is not shown on screen"
+                    )
+                }
+                progressUi.messageText?.text = fileName
+                progressUi.progressBar?.visibility = View.GONE
+            }
+            WorkInfo.State.FAILED -> {
+                progressUi.messageText?.text = fileName
+                progressUi.progressBar?.visibility = View.GONE
+            }
+            else -> {
+            }
+        }
+    }
+
+    fun resumeToUpdateViewsByProgress(
+        fileName: String,
+        fileId: String,
+        mimeType: String,
+        progressUi: ProgressUi
+    ) {
+        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId)
+
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING ||
+                    workInfo.state == WorkInfo.State.ENQUEUED
+                ) {
+                    progressUi.progressBar?.visibility = View.VISIBLE
+                    WorkManager
+                        .getInstance(context)
+                        .getWorkInfoByIdLiveData(workInfo.id)
+                        .observeForever { info: WorkInfo? ->
+                            updateViewsByProgress(
+                                fileName,
+                                mimeType,
+                                info!!,
+                                progressUi
+                            )
+                        }
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        } catch (e: InterruptedException) {
+            Log.e(TAG, "Error when checking if worker already exists", e)
+        }
+    }
+
+    data class ProgressUi(
+        val progressBar: ProgressBar?,
+        val messageText: EmojiTextView?,
+        val previewImage: SimpleDraweeView
+    )
+
+    data class FileInfo(
+        val fileId: String,
+        val fileName: String,
+        val fileSize: Int
+    )
+
+    companion object {
+        private val TAG = FileViewerUtils::class.simpleName
+        const val KEY_ID = "id"
+    }
+}

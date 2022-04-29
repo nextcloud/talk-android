@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/file_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/standard_margin"
+    android:layout_marginEnd="@dimen/standard_margin"
+    android:layout_marginBottom="@dimen/standard_half_margin"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/preview_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:adjustViewBounds="true"
+        app:layout_alignSelf="flex_start"
+        app:layout_flexGrow="1"
+        app:layout_wrapBefore="true">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            xmlns:fresco="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/file_image"
+            android:layout_width="@dimen/mediatab_file_icon_size"
+            android:layout_height="@dimen/mediatab_file_icon_size"
+            android:padding="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:placeholderImageScaleType="fitCenter"
+            fresco:actualImageScaleType="centerCrop"
+            fresco:roundedCornerRadius="4dp"
+            tools:src="@drawable/ic_call_black_24dp"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@id/preview_container">
+
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@+id/file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/ListItem"
+            android:textSize="@dimen/two_line_primary_text_size"
+            tools:text="Filename.md" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/file_size"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp"
+                tools:text="11 KB" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp"
+                android:text="|"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/file_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="14sp"
+                tools:text="04-05-2022 21:16"/>
+
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
+
+
+
+
+
+
+
+
+
+
+
+

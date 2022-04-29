@@ -118,39 +118,29 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 if (userUtils.anyUserExists()) {
                     setDefaultRootController()
                 } else {
-                    if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
-                        router!!.pushController(
-                            RouterTransaction.with(
-                                WebViewLoginController(resources.getString(R.string.weblogin_url), false)
-                            )
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                        )
-                    } else {
-                        router!!.setRoot(
-                            RouterTransaction.with(ServerSelectionController())
-                                .pushChangeHandler(HorizontalChangeHandler())
-                                .popChangeHandler(HorizontalChangeHandler())
-                        )
-                    }
+                    launchLoginScreen()
                 }
             } else {
-                if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
-                    router!!.pushController(
-                        RouterTransaction.with(
-                            WebViewLoginController(resources.getString(R.string.weblogin_url), false)
-                        )
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
-                } else {
-                    router!!.setRoot(
-                        RouterTransaction.with(ServerSelectionController())
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
-                    )
-                }
+                launchLoginScreen()
             }
+        }
+    }
+
+    private fun launchLoginScreen() {
+        if (!TextUtils.isEmpty(resources.getString(R.string.weblogin_url))) {
+            router!!.pushController(
+                RouterTransaction.with(
+                    WebViewLoginController(resources.getString(R.string.weblogin_url), false)
+                )
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
+        } else {
+            router!!.setRoot(
+                RouterTransaction.with(ServerSelectionController())
+                    .pushChangeHandler(HorizontalChangeHandler())
+                    .popChangeHandler(HorizontalChangeHandler())
+            )
         }
     }
 

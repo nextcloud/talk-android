@@ -129,7 +129,7 @@
                 android:id="@+id/participants_list_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/settings"
+                android:layout_below="@+id/category_shared_items"
                 android:visibility="gone"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
@@ -213,6 +213,28 @@
                     tools:visibility="visible" />
 
             </LinearLayout>
+
+
+            <com.yarolegovich.mp.MaterialPreferenceCategory
+                android:id="@+id/category_shared_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/settings"
+                android:animateLayoutChanges="true"
+                apc:cardBackgroundColor="@color/bg_default"
+                apc:cardElevation="0dp"
+                apc:mpc_title="@string/nc_shared_items">
+
+                <com.yarolegovich.mp.MaterialStandardPreference
+                    android:id="@+id/show_shared_items_action"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    apc:mp_icon="@drawable/ic_folder_multiple_image"
+                    apc:mp_icon_tint="@color/grey_600"
+                    apc:mp_title="@string/nc_shared_items_description" />
+
+            </com.yarolegovich.mp.MaterialPreferenceCategory>
+
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>
