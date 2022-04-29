@@ -187,6 +187,8 @@ class ConversationInfoController(args: Bundle) :
 
     private fun showSharedItems() {
         val intent = Intent(activity, SharedItemsActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BundleKeys.KEY_CONVERSATION_NAME, conversation?.displayName)
         intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
         intent.putExtra(BundleKeys.KEY_USER_ENTITY, conversationUser as Parcelable)

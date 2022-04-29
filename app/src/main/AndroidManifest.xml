@@ -97,11 +97,6 @@
             android:value="10" />
 
         <activity
-            android:name=".activities.SharedItemsActivity"
-            android:exported="false"
-            android:theme="@style/AppTheme"/>
-
-        <activity
             android:name=".activities.MainActivity"
             android:label="@string/nc_app_name"
             android:windowSoftInputMode="adjustResize">
@@ -171,6 +166,10 @@
             android:name=".activities.TakePhotoActivity"
             android:theme="@style/TakePhotoTheme"
             android:windowSoftInputMode="stateHidden" />
+
+        <activity
+            android:name=".activities.SharedItemsActivity"
+            android:theme="@style/AppTheme"/>
 
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>
