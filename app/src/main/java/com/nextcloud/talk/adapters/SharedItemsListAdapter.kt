@@ -5,15 +5,16 @@ import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.AttachmentListItemBinding
 import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 
 class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewHolder>() {
@@ -61,25 +62,9 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
                 .build()
             holder.binding.fileImage.controller = draweeController
         } else {
-            when (currentItem.mimeType) {
-                "video/mp4",
-                "video/quicktime",
-                "video/ogg"
-                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_video)
-                "audio/mpeg",
-                "audio/wav",
-                "audio/ogg",
-                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_audio)
-                "image/png",
-                "image/jpeg",
-                "image/gif"
-                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_image)
-                "text/markdown",
-                "text/plain"
-                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_text)
-                else
-                -> holder.binding.fileImage.setImageResource(R.drawable.ic_mimetype_file)
-            }
+            val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(currentItem.mimeType)
+            val drawable = ContextCompat.getDrawable(holder.binding.fileImage.context, drawableResourceId)
+            holder.binding.fileImage.hierarchy.setPlaceholderImage(drawable)
         }
         holder.binding.fileItem.setOnClickListener {
             val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
