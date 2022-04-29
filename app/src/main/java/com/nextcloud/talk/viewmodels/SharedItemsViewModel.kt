@@ -7,7 +7,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.models.json.chat.ChatShareOverviewOverall
 import com.nextcloud.talk.repositories.SharedItem
+import com.nextcloud.talk.repositories.SharedItemType
 import com.nextcloud.talk.repositories.SharedItemsRepository
 import com.nextcloud.talk.repositories.SharedMediaItems
 import io.reactivex.Observer
@@ -16,14 +18,23 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Response
 
-class SharedItemsViewModel(private val repository: SharedItemsRepository, private val initialType: String) :
+class SharedItemsViewModel(private val repository: SharedItemsRepository, private val initialType: SharedItemType) :
     ViewModel() {
+
+    private val _sharedItemType: MutableLiveData<Set<SharedItemType>> by lazy {
+        MutableLiveData<Set<SharedItemType>>().also {
+            availableTypes()
+        }
+    }
 
     private val _sharedItems: MutableLiveData<SharedMediaItems> by lazy {
         MutableLiveData<SharedMediaItems>().also {
             loadItems(initialType)
         }
     }
+
+    val sharedItemType: LiveData<Set<SharedItemType>>
+        get() = _sharedItemType
 
     val sharedItems: LiveData<SharedMediaItems>
         get() = _sharedItems
@@ -38,13 +49,13 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
         }
     }
 
-    fun loadItems(type: String) {
+    fun loadItems(type: SharedItemType) {
         repository.media(type)?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(observer(type, true))
     }
 
-    private fun observer(type: String, initModel: Boolean): Observer<Response<ChatShareOverall>> {
+    private fun observer(type: SharedItemType, initModel: Boolean): Observer<Response<ChatShareOverall>> {
         return object : Observer<Response<ChatShareOverall>> {
 
             var chatLastGiven: Int? = null
@@ -119,7 +130,39 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
         }
     }
 
-    class Factory(val userEntity: UserEntity, val roomToken: String, private val initialType: String) :
+    private fun availableTypes() {
+        repository.availableTypes()?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<Response<ChatShareOverviewOverall>> {
+
+                val types = mutableSetOf<SharedItemType>()
+
+                override fun onSubscribe(d: Disposable) = Unit
+
+                override fun onNext(response: Response<ChatShareOverviewOverall>) {
+                    val typeMap = response.body()!!.ocs!!.data
+                    for (it in typeMap) {
+                        if (it.value.size > 0) {
+                            try {
+                                types += SharedItemType.typeFor(it.key)
+                            } catch (e: IllegalArgumentException) {
+                                Log.w(TAG, "Server responds an unknown shared item type: ${it.key}")
+                            }
+                        }
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.d(TAG, "An error occurred: $e")
+                }
+
+                override fun onComplete() {
+                    this@SharedItemsViewModel._sharedItemType.value = types
+                }
+            })
+    }
+
+    class Factory(val userEntity: UserEntity, val roomToken: String, private val initialType: SharedItemType) :
         ViewModelProvider
         .Factory {
 

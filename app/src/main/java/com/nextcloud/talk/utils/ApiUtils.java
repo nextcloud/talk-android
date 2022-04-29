@@ -265,6 +265,10 @@ public class ApiUtils {
         return getUrlForChat(version, baseUrl, token) + "/share";
     }
 
+    public static String getUrlForChatSharedItemsOverview(int version, String baseUrl, String token) {
+        return getUrlForChatSharedItems(version, baseUrl, token) + "/overview";
+    }
+
     public static String getUrlForSignaling(int version, String baseUrl) {
         return getUrlForApi(version, baseUrl) + "/signaling";
     }

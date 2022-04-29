@@ -7,9 +7,11 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.models.json.chat.ChatShareOverviewOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import retrofit2.Response
+import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -24,19 +26,29 @@ class SharedItemsRepository {
         sharedApplication!!.componentApplication.inject(this)
     }
 
-    fun media(type: String): Observable<Response<ChatShareOverall>>? {
+    fun media(type: SharedItemType): Observable<Response<ChatShareOverall>>? {
         return media(type, null)
     }
 
-    fun media(type: String, lastKnownMessageId: Int?): Observable<Response<ChatShareOverall>>? {
+    fun media(type: SharedItemType, lastKnownMessageId: Int?): Observable<Response<ChatShareOverall>>? {
         val credentials = ApiUtils.getCredentials(parameters!!.userName, parameters!!.userToken)
 
         return ncApi.getSharedItems(
             credentials,
             ApiUtils.getUrlForChatSharedItems(1, parameters!!.baseUrl, parameters!!.roomToken),
-            type,
+            type.toString().lowercase(Locale.ROOT),
             lastKnownMessageId,
             BATCH_SIZE
+        )
+    }
+
+    fun availableTypes(): Observable<Response<ChatShareOverviewOverall>>? {
+        val credentials = ApiUtils.getCredentials(parameters!!.userName, parameters!!.userToken)
+
+        return ncApi.getSharedItemsOverview(
+            credentials,
+            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters!!.baseUrl, parameters!!.roomToken),
+            1
         )
     }
 

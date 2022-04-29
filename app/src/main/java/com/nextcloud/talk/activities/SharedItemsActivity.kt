@@ -15,6 +15,7 @@ import com.nextcloud.talk.adapters.SharedItemsAdapter
 import com.nextcloud.talk.adapters.SharedItemsListAdapter
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.repositories.SharedItemType
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -25,12 +26,12 @@ class SharedItemsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
-    private lateinit var currentTab: String
+    private lateinit var currentTab: SharedItemType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        currentTab = TAB_MEDIA
+        currentTab = SharedItemType.MEDIA
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
@@ -54,17 +55,19 @@ class SharedItemsActivity : AppCompatActivity() {
         supportActionBar?.title = conversationName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initTabs()
-
         viewModel = ViewModelProvider(
             this,
             SharedItemsViewModel.Factory(userEntity, roomToken, currentTab)
         ).get(SharedItemsViewModel::class.java)
 
+        viewModel.sharedItemType.observe(this) {
+            initTabs(it)
+        }
+
         viewModel.sharedItems.observe(this) {
             Log.d(TAG, "Items received: $it")
 
-            if (currentTab == TAB_MEDIA) {
+            if (currentTab == SharedItemType.MEDIA) {
                 val adapter = SharedItemsAdapter()
                 adapter.items = it.items
                 adapter.authHeader = it.authHeader
@@ -94,50 +97,65 @@ class SharedItemsActivity : AppCompatActivity() {
         })
     }
 
-    fun updateItems(type: String) {
+    fun updateItems(type: SharedItemType) {
         currentTab = type
         viewModel.loadItems(type)
     }
 
-    private fun initTabs() {
-        val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabMedia.tag = TAB_MEDIA
-        tabMedia.setText(R.string.shared_items_media)
-        binding.sharedItemsTabs.addTab(tabMedia)
+    private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
 
-        val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabFile.tag = TAB_FILE
-        tabFile.setText(R.string.shared_items_file)
-        binding.sharedItemsTabs.addTab(tabFile)
+        if(sharedItemTypes.contains(SharedItemType.MEDIA)) {
+            val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabMedia.tag = SharedItemType.MEDIA
+            tabMedia.setText(R.string.shared_items_media)
+            binding.sharedItemsTabs.addTab(tabMedia)
+        }
 
-        val tabAudio: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabAudio.tag = TAB_AUDIO
-        tabAudio.setText(R.string.shared_items_audio)
-        binding.sharedItemsTabs.addTab(tabAudio)
+        if(sharedItemTypes.contains(SharedItemType.FILE)) {
+            val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabFile.tag = SharedItemType.FILE
+            tabFile.setText(R.string.shared_items_file)
+            binding.sharedItemsTabs.addTab(tabFile)
+        }
 
-        val tabVoice: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabVoice.tag = TAB_VOICE
-        tabVoice.setText(R.string.shared_items_voice)
-        binding.sharedItemsTabs.addTab(tabVoice)
+        if(sharedItemTypes.contains(SharedItemType.AUDIO)) {
+            val tabAudio: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabAudio.tag = SharedItemType.AUDIO
+            tabAudio.setText(R.string.shared_items_audio)
+            binding.sharedItemsTabs.addTab(tabAudio)
+        }
 
-        // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabLocation.tag = TAB_LOCATION
-        // tabLocation.text = "location"
-        // binding.sharedItemsTabs.addTab(tabLocation)
+        if(sharedItemTypes.contains(SharedItemType.VOICE)) {
+            val tabVoice: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            tabVoice.tag = SharedItemType.VOICE
+            tabVoice.setText(R.string.shared_items_voice)
+            binding.sharedItemsTabs.addTab(tabVoice)
+        }
 
-        // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabDeckCard.tag = TAB_DECKCARD
-        // tabDeckCard.text = "deckcard"
-        // binding.sharedItemsTabs.addTab(tabDeckCard)
+        // if(sharedItemTypes.contains(SharedItemType.LOCATION)) {
+            // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            // tabLocation.tag = SharedItemType.LOCATION
+            // tabLocation.text = "location"
+            // binding.sharedItemsTabs.addTab(tabLocation)
+        // }
 
-        // val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        // tabOther.tag = TAB_OTHER
-        // tabOther.setText(R.string.shared_items_other)
-        // binding.sharedItemsTabs.addTab(tabOther)
+        // if(sharedItemTypes.contains(SharedItemType.DECKCARD)) {
+            // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            // tabDeckCard.tag = SharedItemType.DECKCARD
+            // tabDeckCard.text = "deckcard"
+            // binding.sharedItemsTabs.addTab(tabDeckCard)
+        // }
+
+        // if(sharedItemTypes.contains(SharedItemType.OTHER)) {
+            // val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+            // tabOther.tag = SharedItemType.OTHER
+            // tabOther.setText(R.string.shared_items_other)
+            // binding.sharedItemsTabs.addTab(tabOther)
+        // }
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                updateItems(tab.tag as String)
+                updateItems(tab.tag as SharedItemType)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) = Unit
@@ -157,13 +175,6 @@ class SharedItemsActivity : AppCompatActivity() {
 
     companion object {
         private val TAG = SharedItemsActivity::class.simpleName
-        const val TAB_AUDIO = "audio"
-        const val TAB_FILE = "file"
-        const val TAB_MEDIA = "media"
-        const val TAB_VOICE = "voice"
-        const val TAB_LOCATION = "location"
-        const val TAB_DECKCARD = "deckcard"
-        const val TAB_OTHER = "other"
         const val SPAN_COUNT: Int = 4
     }
 }
