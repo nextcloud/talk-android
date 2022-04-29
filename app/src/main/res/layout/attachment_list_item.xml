@@ -43,10 +43,11 @@
         <com.facebook.drawee.view.SimpleDraweeView
             xmlns:fresco="http://schemas.android.com/apk/res-auto"
             android:id="@+id/file_image"
-            android:layout_width="@dimen/file_icon_size"
-            android:layout_height="@dimen/file_icon_size"
+            android:layout_width="@dimen/mediatab_file_icon_size"
+            android:layout_height="@dimen/mediatab_file_icon_size"
             android:padding="4dp"
             android:src="@drawable/ic_mimetype_file"
+            android:layout_marginEnd="@dimen/standard_margin"
             app:layout_constraintTop_toTopOf="parent"
             app:placeholderImageScaleType="fitCenter"
             fresco:actualImageScaleType="centerCrop"
@@ -67,6 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/preview_container">
 
         <androidx.emoji.widget.EmojiTextView
@@ -77,6 +79,7 @@
             android:lines="1"
             android:textAlignment="viewStart"
             android:textAppearance="@style/ListItem"
+            android:textSize="@dimen/two_line_primary_text_size"
             tools:text="Filename" />
 
         <LinearLayout
@@ -88,12 +91,16 @@
                 android:id="@+id/file_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="12sp"
                 tools:text="filesize"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_between_elements"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="12sp"
                 android:text="|"
                 tools:ignore="HardcodedText" />
 
@@ -101,7 +108,9 @@
                 android:id="@+id/file_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/margin_between_elements"
+                android:layout_marginStart="@dimen/standard_quarter_margin"
+                android:textColor="@color/textColorMaxContrast"
+                android:textSize="12sp"
                 tools:text="date"/>
 
         </LinearLayout>
