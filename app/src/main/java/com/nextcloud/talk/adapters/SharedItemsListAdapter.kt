@@ -20,6 +20,7 @@ import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.FileViewerUtils
+import com.nextcloud.talk.utils.FileViewerUtils.ProgressUi
 
 class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewHolder>() {
 
@@ -76,17 +77,28 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
         } else {
             setStaticMimetypeImage(currentItem, holder)
         }
-        holder.binding.fileItem.setOnClickListener {
-            val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
 
+        val fileViewerUtils = FileViewerUtils(holder.binding.fileImage.context, currentItem.userEntity)
+
+        holder.binding.fileItem.setOnClickListener {
             fileViewerUtils.openFile(
                 FileViewerUtils.FileInfo(currentItem.id, currentItem.name, currentItem.fileSize),
                 currentItem.path,
                 currentItem.link,
                 currentItem.mimeType,
-                FileViewerUtils.ProgressUi(holder.binding.progressBar, null, holder.binding.fileImage)
+                ProgressUi(
+                    holder.binding.progressBar,
+                    null,
+                    holder.binding.fileImage)
             )
         }
+
+        fileViewerUtils.resumeToUpdateViewsByProgress(
+            currentItem.name,
+            currentItem.id,
+            currentItem.mimeType,
+            ProgressUi(holder.binding.progressBar, null, holder.binding.fileImage)
+        )
     }
 
     private fun setStaticMimetypeImage(

@@ -18,7 +18,6 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.DrawableUtils
-import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
 
 class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewHolder>() {
@@ -66,9 +65,10 @@ class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewH
         } else {
             setStaticMimetypeImage(currentItem, holder)
         }
-        holder.binding.image.setOnClickListener {
-            val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
 
+        val fileViewerUtils = FileViewerUtils(holder.binding.image.context, currentItem.userEntity)
+
+        holder.binding.image.setOnClickListener {
             fileViewerUtils.openFile(
                 FileViewerUtils.FileInfo(currentItem.id, currentItem.name, currentItem.fileSize),
                 currentItem.path,
@@ -77,15 +77,21 @@ class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewH
                 FileViewerUtils.ProgressUi(
                     holder.binding.progressBar,
                     null,
-                    it as SimpleDraweeView
-                )
+                    it as SimpleDraweeView)
             )
         }
+
+        fileViewerUtils.resumeToUpdateViewsByProgress(
+            currentItem.name,
+            currentItem.id,
+            currentItem.mimeType,
+            FileViewerUtils.ProgressUi(holder.binding.progressBar, null, holder.binding.image)
+        )
     }
 
     private fun setStaticMimetypeImage(
         currentItem: SharedItem,
-        holder: SharedItemsGridAdapter.ViewHolder
+        holder: ViewHolder
     ) {
         val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(currentItem.mimeType)
         val drawable = ContextCompat.getDrawable(holder.binding.image.context, drawableResourceId)
