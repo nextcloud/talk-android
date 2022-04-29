@@ -1681,7 +1681,7 @@ class ChatController(args: Bundle) :
                 "  sessionId: " + currentConversation?.sessionId
         )
 
-        if (! validSessionId()) {
+        if (!validSessionId()) {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
@@ -2302,7 +2302,7 @@ class ChatController(args: Bundle) :
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
-            if(CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")){
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
                 conversationSharedItemsItem = menu.findItem(R.id.shared_items)
             } else {
                 menu.removeItem(R.id.shared_items)
