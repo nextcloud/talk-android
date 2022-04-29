@@ -11,7 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.nextcloud.talk.databinding.AttachmentListItemBinding
+import com.nextcloud.talk.databinding.SharedItemListBinding
 import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -24,13 +24,13 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
         private const val ONE_SECOND_IN_MILLIS = 1000
     }
 
-    class ViewHolder(val binding: AttachmentListItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(val binding: SharedItemListBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
 
     var authHeader: Map<String, String> = emptyMap()
     var items: List<SharedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = AttachmentListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = SharedItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding, binding.root)
     }
 

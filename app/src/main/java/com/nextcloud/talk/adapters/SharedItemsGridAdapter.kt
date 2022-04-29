@@ -11,7 +11,7 @@ import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.nextcloud.talk.databinding.AttachmentItemBinding
+import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -22,13 +22,13 @@ class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewH
         private val TAG = SharedItemsGridAdapter::class.simpleName
     }
 
-    class ViewHolder(val binding: AttachmentItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
+    class ViewHolder(val binding: SharedItemGridBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
 
     var authHeader: Map<String, String> = emptyMap()
     var items: List<SharedItem> = emptyList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = AttachmentItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = SharedItemGridBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding, binding.root)
     }
 
