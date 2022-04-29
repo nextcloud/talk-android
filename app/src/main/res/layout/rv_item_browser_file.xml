@@ -73,7 +73,7 @@
         android:singleLine="true"
         android:textAlignment="viewStart"
         android:textColor="@color/textColorMaxContrast"
-        android:textSize="12sp"
+        android:textSize="14sp"
         tools:text="3 minutes ago" />
 
     <TextView

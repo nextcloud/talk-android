@@ -80,7 +80,7 @@
             android:textAlignment="viewStart"
             android:textAppearance="@style/ListItem"
             android:textSize="@dimen/two_line_primary_text_size"
-            tools:text="Filename" />
+            tools:text="Filename.md" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -90,17 +90,17 @@
             <TextView
                 android:id="@+id/file_size"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:textColor="@color/textColorMaxContrast"
-                android:textSize="12sp"
-                tools:text="filesize"/>
+                android:textSize="14sp"
+                tools:text="11 KB" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_quarter_margin"
                 android:textColor="@color/textColorMaxContrast"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:text="|"
                 tools:ignore="HardcodedText" />
 
@@ -110,8 +110,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/standard_quarter_margin"
                 android:textColor="@color/textColorMaxContrast"
-                android:textSize="12sp"
-                tools:text="date"/>
+                android:textSize="14sp"
+                tools:text="04-05-2022 21:16"/>
 
         </LinearLayout>
     </LinearLayout>
