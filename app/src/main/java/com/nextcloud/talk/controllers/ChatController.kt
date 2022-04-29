@@ -2301,7 +2301,12 @@ class ChatController(args: Bundle) :
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
-            conversationSharedItemsItem = menu.findItem(R.id.shared_items)
+
+            if(CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")){
+                conversationSharedItemsItem = menu.findItem(R.id.shared_items)
+            } else {
+                menu.removeItem(R.id.shared_items)
+            }
 
             loadAvatarForStatusBar()
         }

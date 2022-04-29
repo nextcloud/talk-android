@@ -175,7 +175,12 @@ class ConversationInfoController(args: Bundle) :
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog(null) }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
-        binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
+
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
+            binding.showSharedItemsAction.setOnClickListener { showSharedItems() }
+        } else {
+            binding.categorySharedItems.visibility = View.GONE
+        }
 
         fetchRoomInfo()
     }
