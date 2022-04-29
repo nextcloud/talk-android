@@ -130,10 +130,10 @@ class SharedItemsActivity : AppCompatActivity() {
         // tabDeckCard.text = "deckcard"
         // binding.sharedItemsTabs.addTab(tabDeckCard)
 
-        val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-        tabOther.tag = TAB_OTHER
-        tabOther.setText(R.string.shared_items_other)
-        binding.sharedItemsTabs.addTab(tabOther)
+        // val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabOther.tag = TAB_OTHER
+        // tabOther.setText(R.string.shared_items_other)
+        // binding.sharedItemsTabs.addTab(tabOther)
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
