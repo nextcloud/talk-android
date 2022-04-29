@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.SharedItemsAdapter
+import com.nextcloud.talk.adapters.SharedItemsGridAdapter
 import com.nextcloud.talk.adapters.SharedItemsListAdapter
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.models.database.UserEntity
@@ -68,7 +68,7 @@ class SharedItemsActivity : AppCompatActivity() {
             Log.d(TAG, "Items received: $it")
 
             if (currentTab == SharedItemType.MEDIA) {
-                val adapter = SharedItemsAdapter()
+                val adapter = SharedItemsGridAdapter()
                 adapter.items = it.items
                 adapter.authHeader = it.authHeader
                 binding.imageRecycler.adapter = adapter

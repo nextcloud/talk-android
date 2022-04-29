@@ -16,10 +16,10 @@ import com.nextcloud.talk.repositories.SharedItem
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
 
-class SharedItemsAdapter : RecyclerView.Adapter<SharedItemsAdapter.ViewHolder>() {
+class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewHolder>() {
 
     companion object {
-        private val TAG = SharedItemsAdapter::class.simpleName
+        private val TAG = SharedItemsGridAdapter::class.simpleName
     }
 
     class ViewHolder(val binding: AttachmentItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
