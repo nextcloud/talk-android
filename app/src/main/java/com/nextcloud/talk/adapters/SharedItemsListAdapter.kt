@@ -2,14 +2,18 @@ package com.nextcloud.talk.adapters
 
 import android.net.Uri
 import android.text.format.Formatter
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.drawee.controller.BaseControllerListener
+import com.facebook.drawee.controller.ControllerListener
 import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.imagepipeline.common.RotationOptions
+import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.databinding.SharedItemListBinding
 import com.nextcloud.talk.repositories.SharedItem
@@ -55,16 +59,22 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
                 .setHeaders(authHeader)
                 .build()
 
+            val listener: ControllerListener<ImageInfo?> = object : BaseControllerListener<ImageInfo?>() {
+                override fun onFailure(id: String, e: Throwable) {
+                    Log.w(TAG, "Failed to load image. A static mimetype image will be used", e)
+                    setStaticMimetypeImage(currentItem, holder)
+                }
+            }
+
             val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.binding.fileImage.controller)
                 .setAutoPlayAnimations(true)
                 .setImageRequest(imageRequest)
+                .setControllerListener(listener)
                 .build()
             holder.binding.fileImage.controller = draweeController
         } else {
-            val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(currentItem.mimeType)
-            val drawable = ContextCompat.getDrawable(holder.binding.fileImage.context, drawableResourceId)
-            holder.binding.fileImage.hierarchy.setPlaceholderImage(drawable)
+            setStaticMimetypeImage(currentItem, holder)
         }
         holder.binding.fileItem.setOnClickListener {
             val fileViewerUtils = FileViewerUtils(it.context, currentItem.userEntity)
@@ -77,6 +87,15 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
                 FileViewerUtils.ProgressUi(holder.binding.progressBar, null, holder.binding.fileImage)
             )
         }
+    }
+
+    private fun setStaticMimetypeImage(
+        currentItem: SharedItem,
+        holder: ViewHolder
+    ) {
+        val drawableResourceId = DrawableUtils.getDrawableResourceIdForMimeType(currentItem.mimeType)
+        val drawable = ContextCompat.getDrawable(holder.binding.fileImage.context, drawableResourceId)
+        holder.binding.fileImage.hierarchy.setPlaceholderImage(drawable)
     }
 
     override fun getItemCount(): Int {

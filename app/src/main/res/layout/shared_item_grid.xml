@@ -45,11 +45,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="4dp"
-            android:src="@drawable/ic_mimetype_file"
             app:placeholderImageScaleType="fitCenter"
             fresco:actualImageScaleType="centerCrop"
-            fresco:failureImage="@drawable/ic_mimetype_file"
-            fresco:placeholderImage="@drawable/ic_mimetype_file"
             fresco:roundedCornerRadius="4dp" />
 
         <ProgressBar
