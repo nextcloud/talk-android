@@ -1,6 +1,7 @@
 package com.nextcloud.talk.adapters
 
 import android.net.Uri
+import android.text.format.Formatter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +13,14 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.AttachmentListItemBinding
 import com.nextcloud.talk.repositories.SharedItem
+import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 
 class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewHolder>() {
 
     companion object {
         private val TAG = SharedItemsListAdapter::class.simpleName
+        private const val ONE_SECOND_IN_MILLIS = 1000
     }
 
     class ViewHolder(val binding: AttachmentListItemBinding, itemView: View) : RecyclerView.ViewHolder(itemView)
@@ -35,6 +38,13 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
         val currentItem = items[position]
 
         holder.binding.fileName.text = currentItem.name
+        holder.binding.fileSize.text = Formatter.formatShortFileSize(
+            holder.binding.fileSize.context,
+            currentItem.fileSize.toLong()
+        )
+        holder.binding.fileDate.text = DateUtils.getLocalDateTimeStringFromTimestamp(
+            currentItem.date * ONE_SECOND_IN_MILLIS
+        )
 
         if (currentItem.previewAvailable) {
             val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(currentItem.previewLink))

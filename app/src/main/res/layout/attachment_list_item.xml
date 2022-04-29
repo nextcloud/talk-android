@@ -63,18 +63,49 @@
             android:visibility="gone" />
     </FrameLayout>
 
-    <androidx.emoji.widget.EmojiTextView
-        android:id="@+id/file_name"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toEndOf="@id/preview_container"
-        android:ellipsize="end"
-        android:lines="1"
-        android:textAlignment="viewStart"
-        android:textAppearance="@style/ListItem"
-        tools:text="Filename" />
+        android:orientation="vertical"
+        android:layout_toEndOf="@id/preview_container">
 
+        <androidx.emoji.widget.EmojiTextView
+            android:id="@+id/file_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/ListItem"
+            tools:text="Filename" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/file_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="filesize"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_between_elements"
+                android:text="|"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/file_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_between_elements"
+                tools:text="date"/>
+
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>
 
 

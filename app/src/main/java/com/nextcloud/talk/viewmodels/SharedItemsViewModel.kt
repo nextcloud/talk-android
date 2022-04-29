@@ -71,6 +71,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                                 fileParameters["id"]!!,
                                 fileParameters["name"]!!,
                                 fileParameters["size"]!!.toInt(),
+                                it.value.timestamp,
                                 fileParameters["path"]!!,
                                 fileParameters["link"]!!,
                                 fileParameters["mimetype"]!!,
