@@ -223,7 +223,7 @@
                 android:animateLayoutChanges="true"
                 apc:cardBackgroundColor="@color/bg_default"
                 apc:cardElevation="0dp"
-                apc:mpc_title="Shared Items">
+                apc:mpc_title="@string/nc_shared_items">
 
                 <com.yarolegovich.mp.MaterialStandardPreference
                     android:id="@+id/show_shared_items_action"
@@ -231,8 +231,7 @@
                     android:layout_height="wrap_content"
                     apc:mp_icon="@drawable/ic_folder_multiple_image"
                     apc:mp_icon_tint="@color/grey_600"
-                    apc:mp_summary="See all shared photos, voice messages, files, etc."
-                    apc:mp_title="Shared Items" />
+                    apc:mp_title="@string/nc_shared_items_description" />
 
             </com.yarolegovich.mp.MaterialPreferenceCategory>
 
