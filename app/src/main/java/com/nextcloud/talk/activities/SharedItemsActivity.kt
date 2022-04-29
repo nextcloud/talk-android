@@ -104,28 +104,28 @@ class SharedItemsActivity : AppCompatActivity() {
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
 
-        if(sharedItemTypes.contains(SharedItemType.MEDIA)) {
+        if (sharedItemTypes.contains(SharedItemType.MEDIA)) {
             val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
             tabMedia.tag = SharedItemType.MEDIA
             tabMedia.setText(R.string.shared_items_media)
             binding.sharedItemsTabs.addTab(tabMedia)
         }
 
-        if(sharedItemTypes.contains(SharedItemType.FILE)) {
+        if (sharedItemTypes.contains(SharedItemType.FILE)) {
             val tabFile: TabLayout.Tab = binding.sharedItemsTabs.newTab()
             tabFile.tag = SharedItemType.FILE
             tabFile.setText(R.string.shared_items_file)
             binding.sharedItemsTabs.addTab(tabFile)
         }
 
-        if(sharedItemTypes.contains(SharedItemType.AUDIO)) {
+        if (sharedItemTypes.contains(SharedItemType.AUDIO)) {
             val tabAudio: TabLayout.Tab = binding.sharedItemsTabs.newTab()
             tabAudio.tag = SharedItemType.AUDIO
             tabAudio.setText(R.string.shared_items_audio)
             binding.sharedItemsTabs.addTab(tabAudio)
         }
 
-        if(sharedItemTypes.contains(SharedItemType.VOICE)) {
+        if (sharedItemTypes.contains(SharedItemType.VOICE)) {
             val tabVoice: TabLayout.Tab = binding.sharedItemsTabs.newTab()
             tabVoice.tag = SharedItemType.VOICE
             tabVoice.setText(R.string.shared_items_voice)
@@ -133,24 +133,24 @@ class SharedItemsActivity : AppCompatActivity() {
         }
 
         // if(sharedItemTypes.contains(SharedItemType.LOCATION)) {
-            // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-            // tabLocation.tag = SharedItemType.LOCATION
-            // tabLocation.text = "location"
-            // binding.sharedItemsTabs.addTab(tabLocation)
+        // val tabLocation: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabLocation.tag = SharedItemType.LOCATION
+        // tabLocation.text = "location"
+        // binding.sharedItemsTabs.addTab(tabLocation)
         // }
 
         // if(sharedItemTypes.contains(SharedItemType.DECKCARD)) {
-            // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-            // tabDeckCard.tag = SharedItemType.DECKCARD
-            // tabDeckCard.text = "deckcard"
-            // binding.sharedItemsTabs.addTab(tabDeckCard)
+        // val tabDeckCard: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabDeckCard.tag = SharedItemType.DECKCARD
+        // tabDeckCard.text = "deckcard"
+        // binding.sharedItemsTabs.addTab(tabDeckCard)
         // }
 
         // if(sharedItemTypes.contains(SharedItemType.OTHER)) {
-            // val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
-            // tabOther.tag = SharedItemType.OTHER
-            // tabOther.setText(R.string.shared_items_other)
-            // binding.sharedItemsTabs.addTab(tabOther)
+        // val tabOther: TabLayout.Tab = binding.sharedItemsTabs.newTab()
+        // tabOther.tag = SharedItemType.OTHER
+        // tabOther.setText(R.string.shared_items_other)
+        // binding.sharedItemsTabs.addTab(tabOther)
         // }
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
