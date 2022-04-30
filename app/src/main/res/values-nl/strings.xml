@@ -365,6 +365,10 @@ Kies er eentje van een provider.</string>
     <string name="set_status">Instellen status</string>
     <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>
+    <string name="shared_items_file">Bestand</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Andere</string>
+    <string name="shared_items_voice">Stem</string>
     <string name="starred">Favoriet</string>
     <string name="status_message">Statusbericht</string>
     <string name="take_photo">Neem een foto</string>
@@ -378,6 +382,7 @@ Kies er eentje van een provider.</string>
     <string name="take_photo_toggle_torch">Schakel zaklamp</string>
     <string name="thirtyMinutes">30 minuten</string>
     <string name="thisWeek">Deze week</string>
+    <string name="title_attachments">Bijlagen</string>
     <string name="today">Vandaag</string>
     <string name="upload_new_avatar_from_device">Upload een nieuwe avatar van toestel</string>
     <string name="user_info_address">Adres</string>

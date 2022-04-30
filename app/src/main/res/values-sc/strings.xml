@@ -352,6 +352,11 @@
     <string name="set_status">Imposta istadu</string>
     <string name="set_status_message">Imposta messàgiu de istadu</string>
     <string name="share">Cumpartzi</string>
+    <string name="shared_items_audio">Àudio</string>
+    <string name="shared_items_file">Archìviu</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Àteru</string>
+    <string name="shared_items_voice">Boghe</string>
     <string name="starred">Preferidu</string>
     <string name="status_message">Messàgiu de istadu</string>
     <string name="take_photo">Tira una foto</string>
@@ -360,6 +365,7 @@
     <string name="take_photo_toggle_torch">Ativa sa tortza</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Custa chida</string>
+    <string name="title_attachments">Alligongiados</string>
     <string name="today">Oe</string>
     <string name="upload_new_avatar_from_device">Càrriga un\'avatar nou dae dispositivu</string>
     <string name="user_info_address">Indiritzu</string>

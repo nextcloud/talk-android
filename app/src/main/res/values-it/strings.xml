@@ -367,6 +367,11 @@
     <string name="set_status">Imposta stato</string>
     <string name="set_status_message">Imposta messaggio di stato</string>
     <string name="share">Condividi</string>
+    <string name="shared_items_audio">Audio</string>
+    <string name="shared_items_file">File</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Altro</string>
+    <string name="shared_items_voice">Voce</string>
     <string name="starred">Preferito</string>
     <string name="startCallForbidden">Non ti è consentito avviare una chiamata</string>
     <string name="status_message">Messaggio di stato</string>
@@ -381,6 +386,7 @@
     <string name="take_photo_toggle_torch">Accendi/spegni la torcia</string>
     <string name="thirtyMinutes">30 minuti</string>
     <string name="thisWeek">Questa settimana</string>
+    <string name="title_attachments">Allegati</string>
     <string name="today">Oggi</string>
     <string name="upload_new_avatar_from_device">Carica nuovo avatar dal dispositivo</string>
     <string name="user_info_address">Indirizzo</string>

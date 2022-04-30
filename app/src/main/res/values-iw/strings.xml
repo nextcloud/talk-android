@@ -277,11 +277,16 @@
     <string name="set_status">הגדרת מצב</string>
     <string name="set_status_message">הגדרת הודעת מצב</string>
     <string name="share">שתף</string>
+    <string name="shared_items_audio">שמע</string>
+    <string name="shared_items_file">קובץ</string>
+    <string name="shared_items_other">אחר</string>
+    <string name="shared_items_voice">קולי</string>
     <string name="starred">סימון כמועדף</string>
     <string name="status_message">הודעת מצב</string>
     <string name="take_photo_send">שליחה</string>
     <string name="thirtyMinutes">30 דקות</string>
     <string name="thisWeek">השבוע</string>
+    <string name="title_attachments">קבצים מצורפים</string>
     <string name="today">היום</string>
     <string name="user_info_address">כתובת</string>
     <string name="user_info_displayname">שם מלא</string>

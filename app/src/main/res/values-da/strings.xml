@@ -276,6 +276,10 @@
     <string name="set_status">Sæt status</string>
     <string name="set_status_message">Sæt statusbesked</string>
     <string name="share">Del</string>
+    <string name="shared_items_file">Fil</string>
+    <string name="shared_items_media">Medier</string>
+    <string name="shared_items_other">Andet</string>
+    <string name="shared_items_voice">Telefonsvarer</string>
     <string name="starred">Favorit</string>
     <string name="status_message">Statusbesked</string>
     <string name="take_photo">Tag et billede</string>
@@ -283,6 +287,7 @@
     <string name="take_photo_switch_camera">Skift kamera</string>
     <string name="thirtyMinutes">30 minutter</string>
     <string name="thisWeek">Denne uge</string>
+    <string name="title_attachments">Vedhæftede filer</string>
     <string name="today">I dag</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Fulde navn</string>

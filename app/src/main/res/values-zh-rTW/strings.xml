@@ -264,6 +264,11 @@
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
+    <string name="shared_items_audio">音樂</string>
+    <string name="shared_items_file">檔案</string>
+    <string name="shared_items_media">多媒體</string>
+    <string name="shared_items_other">其他</string>
+    <string name="shared_items_voice">語音</string>
     <string name="starred">收藏</string>
     <string name="status_message">狀態訊息</string>
     <string name="take_photo">拍照</string>
@@ -272,6 +277,7 @@
     <string name="take_photo_toggle_torch">切換閃光燈</string>
     <string name="thirtyMinutes">30分鐘</string>
     <string name="thisWeek">這個禮拜</string>
+    <string name="title_attachments">附件</string>
     <string name="today">今天</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>

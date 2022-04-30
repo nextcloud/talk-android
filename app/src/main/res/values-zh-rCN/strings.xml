@@ -362,6 +362,11 @@
     <string name="set_status">设定状态</string>
     <string name="set_status_message">设置状态消息</string>
     <string name="share">分享</string>
+    <string name="shared_items_audio">音频</string>
+    <string name="shared_items_file">文件</string>
+    <string name="shared_items_media">媒体文件</string>
+    <string name="shared_items_other">其他</string>
+    <string name="shared_items_voice">语音</string>
     <string name="starred">收藏</string>
     <string name="status_message">状态消息</string>
     <string name="take_photo">拍张照片</string>
@@ -375,6 +380,7 @@
     <string name="take_photo_toggle_torch">切换闪光灯</string>
     <string name="thirtyMinutes">30 分钟</string>
     <string name="thisWeek">本周</string>
+    <string name="title_attachments">附件</string>
     <string name="today">今天</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
     <string name="user_info_address">地址</string>

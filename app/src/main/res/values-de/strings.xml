@@ -316,6 +316,8 @@
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
     <string name="nc_share_text_pass">\nPasswort: %1$s</string>
     <string name="nc_share_this_location">Diesen Ort teilen</string>
+    <string name="nc_shared_items">Geteilte Elemente</string>
+    <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten…</string>
     <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_sort_by">Sortiere nach</string>
     <string name="nc_start_conversation">Starte eine Unterhaltung</string>
@@ -367,6 +369,11 @@
     <string name="set_status">Status setzen</string>
     <string name="set_status_message">Statusnachricht setzen</string>
     <string name="share">Freigabe</string>
+    <string name="shared_items_audio">Audio</string>
+    <string name="shared_items_file">Datei</string>
+    <string name="shared_items_media">Medien</string>
+    <string name="shared_items_other">Sonstiges</string>
+    <string name="shared_items_voice">Anruf</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="status_message">Statusnachricht</string>
@@ -381,6 +388,7 @@
     <string name="take_photo_toggle_torch">Taschenlampe umschalten</string>
     <string name="thirtyMinutes">30 Minuten</string>
     <string name="thisWeek">Diese Woche</string>
+    <string name="title_attachments">Anhänge</string>
     <string name="today">Heute</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
     <string name="user_info_address">Adresse</string>

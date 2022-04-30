@@ -367,6 +367,11 @@
     <string name="set_status">Ezarri egoera</string>
     <string name="set_status_message">Ezarri egoera-mezua</string>
     <string name="share">Partekatu</string>
+    <string name="shared_items_audio">Audioa</string>
+    <string name="shared_items_file">Fitxategia</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Bestelakoa</string>
+    <string name="shared_items_voice">Ahotsa</string>
     <string name="starred">Gogokoa</string>
     <string name="startCallForbidden">Ez duzu dei bat hasteko baimenik</string>
     <string name="status_message">Egoera-mezua</string>
@@ -381,6 +386,7 @@
     <string name="take_photo_toggle_torch">Txandakatu linterna</string>
     <string name="thirtyMinutes">30 minutu</string>
     <string name="thisWeek">Aste honetan</string>
+    <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
     <string name="upload_new_avatar_from_device">Kargatu avatar berria gailutik</string>
     <string name="user_info_address">Helbidea</string>

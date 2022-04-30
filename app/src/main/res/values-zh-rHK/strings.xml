@@ -316,6 +316,8 @@
     <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享此位置</string>
+    <string name="nc_shared_items">分享項目</string>
+    <string name="nc_shared_items_description">圖片、文件、語音訊息 …</string>
     <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_sort_by">排序方式</string>
     <string name="nc_start_conversation">新對話</string>
@@ -367,6 +369,11 @@
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
+    <string name="shared_items_audio">音頻</string>
+    <string name="shared_items_file">檔案</string>
+    <string name="shared_items_media">多媒體</string>
+    <string name="shared_items_other">其它</string>
+    <string name="shared_items_voice">語音</string>
     <string name="starred">我的最愛</string>
     <string name="startCallForbidden">你無權開始通話</string>
     <string name="status_message">狀態訊息</string>
@@ -381,6 +388,7 @@
     <string name="take_photo_toggle_torch">切換 torch</string>
     <string name="thirtyMinutes">30 分鐘</string>
     <string name="thisWeek">本星期</string>
+    <string name="title_attachments">附件</string>
     <string name="today">今日</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新頭像</string>
     <string name="user_info_address">地址</string>

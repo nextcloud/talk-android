@@ -316,6 +316,8 @@
     <string name="nc_share_text">Görüşmeye şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
+    <string name="nc_shared_items">Paylaşılmış ögeler</string>
+    <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_conversation">Yeni bir görüşme başlat</string>
@@ -367,6 +369,11 @@
     <string name="set_status">Durumu ayarla</string>
     <string name="set_status_message">Durum iletisini ayarla</string>
     <string name="share">Paylaş</string>
+    <string name="shared_items_audio">Ses</string>
+    <string name="shared_items_file">Dosya</string>
+    <string name="shared_items_media">Ortam</string>
+    <string name="shared_items_other">Diğer</string>
+    <string name="shared_items_voice">Ses</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
     <string name="status_message">Durum iletisi</string>
@@ -381,6 +388,7 @@
     <string name="take_photo_toggle_torch">El fenerini aç/kapat</string>
     <string name="thirtyMinutes">30 dakika</string>
     <string name="thisWeek">Bu hafta</string>
+    <string name="title_attachments">Ek dosyalar</string>
     <string name="today">Bugün</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_info_address">Adres</string>

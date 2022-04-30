@@ -293,6 +293,11 @@
     <string name="set_status">Estabelecer o estado</string>
     <string name="set_status_message">Establecer a mensaxe de estado</string>
     <string name="share">Compartir</string>
+    <string name="shared_items_audio">Son</string>
+    <string name="shared_items_file">Ficheiro</string>
+    <string name="shared_items_media">Multimedia</string>
+    <string name="shared_items_other">Outro</string>
+    <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="status_message">Mensaxe de estado</string>
     <string name="take_photo">Tirar unha foto</string>
@@ -301,6 +306,7 @@
     <string name="take_photo_toggle_torch">Alternar o facho</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
+    <string name="title_attachments">Anexos</string>
     <string name="today">Hoxe</string>
     <string name="user_info_address">Enderezo</string>
     <string name="user_info_displayname">Nome completo</string>

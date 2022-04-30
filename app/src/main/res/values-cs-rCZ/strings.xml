@@ -316,6 +316,8 @@
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Sdílet toto umístění</string>
+    <string name="nc_shared_items">Sdílené položky</string>
+    <string name="nc_shared_items_description">Obrázky, soubory, hlasové zprávy</string>
     <string name="nc_shared_location">Sdílené umístění</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_conversation">Začněte konverzaci</string>
@@ -367,6 +369,7 @@
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
     <string name="share">Sdílet</string>
+    <string name="shared_items_file">Soubor</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
     <string name="status_message">Stavová zpráva</string>
@@ -381,6 +384,7 @@
     <string name="take_photo_toggle_torch">Vyp/zap. přisvícení</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">Tento týden</string>
+    <string name="title_attachments">Přílohy</string>
     <string name="today">Dnes</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
     <string name="user_info_address">Adresa</string>

@@ -214,11 +214,16 @@
     <string name="set_status">Set status</string>
     <string name="set_status_message">Set status message</string>
     <string name="share">Share</string>
+    <string name="shared_items_file">File</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Other</string>
+    <string name="shared_items_voice">Voice</string>
     <string name="starred">Favourite</string>
     <string name="status_message">Status message</string>
     <string name="take_photo_send">Send</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">This week</string>
+    <string name="title_attachments">Attachments</string>
     <string name="today">Today</string>
     <string name="user_info_address">Address</string>
     <string name="user_info_displayname">Full name</string>

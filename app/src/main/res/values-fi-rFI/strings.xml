@@ -270,6 +270,7 @@
     <string name="nc_share_text">Liity keskusteluun osoitteessa %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSalasana: %1$s</string>
     <string name="nc_share_this_location">Jaa tämä sijainti</string>
+    <string name="nc_shared_items">Jaetut tietueet</string>
     <string name="nc_shared_location">Jaettu sijainti</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
     <string name="nc_start_conversation">Aloita keskustelu</string>
@@ -306,6 +307,10 @@
     <string name="set_status">Aseta tilatieto</string>
     <string name="set_status_message">Aseta tilaviesti</string>
     <string name="share">Jaa</string>
+    <string name="shared_items_file">Tiedosto</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Muu</string>
+    <string name="shared_items_voice">Ääni</string>
     <string name="starred">Suosikki</string>
     <string name="startCallForbidden">Sinulla ei ole oikeutta aloittaa puhelua</string>
     <string name="status_message">Tilaviesti</string>
@@ -318,6 +323,7 @@
     <string name="take_photo_toggle_lowres">Pienennä kuvan kokoa</string>
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
+    <string name="title_attachments">Liitteet</string>
     <string name="today">Tänään</string>
     <string name="user_info_address">Osoite</string>
     <string name="user_info_displayname">Koko nimi</string>

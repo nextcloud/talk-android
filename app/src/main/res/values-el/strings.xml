@@ -349,6 +349,8 @@
     <string name="set_status">Ορισμός κατάστασης</string>
     <string name="set_status_message">Ορισμός μηνύματος κατάστασης</string>
     <string name="share">Διαμοιρασμός</string>
+    <string name="shared_items_file">Αρχείο</string>
+    <string name="shared_items_voice">Ομιλία</string>
     <string name="starred">Αγαπημένο</string>
     <string name="status_message">Μήνυμα κατάστασης</string>
     <string name="take_photo">Βγάλε μια φωτογραφία</string>
@@ -357,6 +359,7 @@
     <string name="take_photo_toggle_torch">Εναλλαγή φακού</string>
     <string name="thirtyMinutes">30 λεπτά</string>
     <string name="thisWeek">Αυτή την εβδομάδα</string>
+    <string name="title_attachments">Συνημμένα</string>
     <string name="today">Σήμερα</string>
     <string name="upload_new_avatar_from_device">Μεταφόρτωση νέας εικόνας προφίλ από την συσκευή</string>
     <string name="user_info_address">Διεύθυνση</string>

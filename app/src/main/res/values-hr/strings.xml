@@ -359,6 +359,11 @@
     <string name="set_status">Postavi status</string>
     <string name="set_status_message">Postavi poruku statusa</string>
     <string name="share">Dijeli</string>
+    <string name="shared_items_audio">Audio</string>
+    <string name="shared_items_file">Datoteka</string>
+    <string name="shared_items_media">Medij</string>
+    <string name="shared_items_other">Drugo</string>
+    <string name="shared_items_voice">Glas</string>
     <string name="starred">Favorit</string>
     <string name="status_message">Poruka statusa</string>
     <string name="take_photo">Snimi fotografiju</string>
@@ -367,6 +372,7 @@
     <string name="take_photo_toggle_torch">Uključi/isključi svjetlo</string>
     <string name="thirtyMinutes">30 minuta</string>
     <string name="thisWeek">Ovaj tjedan</string>
+    <string name="title_attachments">Privici</string>
     <string name="today">Danas</string>
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>
     <string name="user_info_address">Adresa</string>

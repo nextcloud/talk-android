@@ -280,6 +280,11 @@
     <string name="set_status">تنظیم وضعیت</string>
     <string name="set_status_message">تنظیم پیام وضعیت</string>
     <string name="share">هم‌رسانی</string>
+    <string name="shared_items_audio">صدا</string>
+    <string name="shared_items_file">فایل</string>
+    <string name="shared_items_media">رسانه‌ها</string>
+    <string name="shared_items_other">اعلان‌ها</string>
+    <string name="shared_items_voice">صدا</string>
     <string name="starred">مورد‌ ‌علاقه‌</string>
     <string name="status_message">پیغام وضعیت</string>
     <string name="take_photo">عکس گرفتن</string>
@@ -288,6 +293,7 @@
     <string name="take_photo_toggle_torch">تغییر مشعل</string>
     <string name="thirtyMinutes">۳۰ دقیقه</string>
     <string name="thisWeek">این هفته</string>
+    <string name="title_attachments">پیوست ها</string>
     <string name="today">امروز</string>
     <string name="user_info_address">نشانی</string>
     <string name="user_info_displayname">نام کامل</string>

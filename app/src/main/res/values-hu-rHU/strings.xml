@@ -316,6 +316,8 @@
     <string name="nc_share_text">Csatlakozzon a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nJelszó: %1$s</string>
     <string name="nc_share_this_location">Ezen hely megosztása</string>
+    <string name="nc_shared_items">Megosztott elemek</string>
+    <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>
     <string name="nc_shared_location">Hely megosztva</string>
     <string name="nc_sort_by">Rendezés elve</string>
     <string name="nc_start_conversation">Beszélgetés indítása</string>
@@ -367,6 +369,11 @@
     <string name="set_status">Állapot beállítása</string>
     <string name="set_status_message">Állapotüzenet beállítása</string>
     <string name="share">Megosztás</string>
+    <string name="shared_items_audio">Hangok</string>
+    <string name="shared_items_file">Fájl</string>
+    <string name="shared_items_media">Média</string>
+    <string name="shared_items_other">Egyebek</string>
+    <string name="shared_items_voice">Hang</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>
     <string name="status_message">Állapotüzenet</string>
@@ -381,6 +388,7 @@
     <string name="take_photo_toggle_torch">Lámpa be/ki</string>
     <string name="thirtyMinutes">30 perc</string>
     <string name="thisWeek">Ez a hét</string>
+    <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
     <string name="upload_new_avatar_from_device">Új profilkép feltöltése az eszközről</string>
     <string name="user_info_address">Cím</string>

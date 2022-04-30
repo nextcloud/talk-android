@@ -251,11 +251,14 @@
     <string name="set_status">Setja stöðu</string>
     <string name="set_status_message">Setja stöðuskilaboð</string>
     <string name="share">Deila</string>
+    <string name="shared_items_file">Skrá</string>
+    <string name="shared_items_voice">Raddskilaboð</string>
     <string name="starred">Eftirlæti</string>
     <string name="status_message">Stöðuskilaboð</string>
     <string name="take_photo_send">Senda</string>
     <string name="thirtyMinutes">30 mínútur</string>
     <string name="thisWeek">Í þessari viku</string>
+    <string name="title_attachments">Viðhengi</string>
     <string name="today">Í dag</string>
     <string name="user_info_address">Vistfang</string>
     <string name="user_info_displayname">Fullt nafn</string>

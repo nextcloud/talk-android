@@ -288,6 +288,11 @@
     <string name="set_status">Sätt status</string>
     <string name="set_status_message">Sätt statusmeddelande</string>
     <string name="share">Dela</string>
+    <string name="shared_items_audio">Ljud</string>
+    <string name="shared_items_file">Fil</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Annat</string>
+    <string name="shared_items_voice">Röst</string>
     <string name="starred">Favorit</string>
     <string name="status_message">Statusmeddelande</string>
     <string name="take_photo">Ta en bild</string>
@@ -296,6 +301,7 @@
     <string name="take_photo_toggle_torch">Starta lampa</string>
     <string name="thirtyMinutes">30 minuter</string>
     <string name="thisWeek">Denna vecka</string>
+    <string name="title_attachments">Bilagor</string>
     <string name="today">Idag</string>
     <string name="user_info_address">Adress</string>
     <string name="user_info_displayname">Fullständigt namn</string>

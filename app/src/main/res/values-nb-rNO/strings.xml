@@ -274,6 +274,11 @@
     <string name="set_status">Velg status</string>
     <string name="set_status_message">Velg statusmelding</string>
     <string name="share">Del</string>
+    <string name="shared_items_audio">Lyd</string>
+    <string name="shared_items_file">Fil</string>
+    <string name="shared_items_media">Media</string>
+    <string name="shared_items_other">Annet</string>
+    <string name="shared_items_voice">Svarer</string>
     <string name="starred">Favoritt</string>
     <string name="status_message">Statusmelding</string>
     <string name="take_photo">Ta et bilde</string>
@@ -281,6 +286,7 @@
     <string name="take_photo_switch_camera">Bytt kamera</string>
     <string name="thirtyMinutes">30 minutter</string>
     <string name="thisWeek">Denne uken</string>
+    <string name="title_attachments">Vedlegg</string>
     <string name="today">I dag</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Fullt nav</string>

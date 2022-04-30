@@ -367,6 +367,8 @@
     <string name="set_status">Nastaviť stav</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
     <string name="share">Sprístupniť</string>
+    <string name="shared_items_file">Súbor</string>
+    <string name="shared_items_voice">Odkazová schránka</string>
     <string name="starred">Obľúbené</string>
     <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>
     <string name="status_message">Správa o stave</string>
@@ -381,6 +383,7 @@
     <string name="take_photo_toggle_torch">Prepnúť baterku</string>
     <string name="thirtyMinutes">30 minút</string>
     <string name="thisWeek">Tento týždeň</string>
+    <string name="title_attachments">Prílohy</string>
     <string name="today">Dnes</string>
     <string name="upload_new_avatar_from_device">Nahrať nového avatara zo zariadenia</string>
     <string name="user_info_address">Adresa</string>

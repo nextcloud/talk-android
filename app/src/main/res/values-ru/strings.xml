@@ -363,6 +363,11 @@
     <string name="set_status">Установить статус</string>
     <string name="set_status_message">Установить статус</string>
     <string name="share">Поделиться</string>
+    <string name="shared_items_audio">Звук</string>
+    <string name="shared_items_file">Файл</string>
+    <string name="shared_items_media">Медиа</string>
+    <string name="shared_items_other">Другое</string>
+    <string name="shared_items_voice">Голосовая почта</string>
     <string name="starred">Избранное</string>
     <string name="startCallForbidden">Вам не разрешено звонить</string>
     <string name="status_message">Описание статуса</string>
@@ -377,6 +382,7 @@
     <string name="take_photo_toggle_torch">Переключатель фонарика</string>
     <string name="thirtyMinutes">30 минут</string>
     <string name="thisWeek">Эта неделя</string>
+    <string name="title_attachments">Вложения</string>
     <string name="today">Сегодня</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
     <string name="user_info_address">Адрес</string>

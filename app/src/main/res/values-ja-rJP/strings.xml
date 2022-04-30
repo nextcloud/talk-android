@@ -340,6 +340,11 @@
     <string name="set_status">ステータスを設定</string>
     <string name="set_status_message">メッセージを設定</string>
     <string name="share">共有</string>
+    <string name="shared_items_audio">オーディオ</string>
+    <string name="shared_items_file">ファイル</string>
+    <string name="shared_items_media">メディア</string>
+    <string name="shared_items_other">その他</string>
+    <string name="shared_items_voice">音声番号</string>
     <string name="starred">お気に入り</string>
     <string name="status_message">ステータスメッセージ</string>
     <string name="take_photo">写真を撮る</string>
@@ -348,6 +353,7 @@
     <string name="take_photo_toggle_torch">フラッシュを切替</string>
     <string name="thirtyMinutes">30分</string>
     <string name="thisWeek">今週</string>
+    <string name="title_attachments">添付ファイル</string>
     <string name="today">今日</string>
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
     <string name="user_info_address">住所</string>

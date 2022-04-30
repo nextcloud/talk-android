@@ -236,6 +236,11 @@
     <string name="set_status">Đặt trạng thái</string>
     <string name="set_status_message">Đặt thông báo trạng thái</string>
     <string name="share">Chia sẻ</string>
+    <string name="shared_items_audio">Âm thanh</string>
+    <string name="shared_items_file">Tệp</string>
+    <string name="shared_items_media">Phương tiện</string>
+    <string name="shared_items_other">Khác</string>
+    <string name="shared_items_voice">Giọng nói</string>
     <string name="starred">Ưa thích</string>
     <string name="status_message">Thông báo trạng thái</string>
     <string name="take_photo">Chụp ảnh</string>
@@ -244,6 +249,7 @@
     <string name="take_photo_toggle_torch">Bật/tắt đèn pin</string>
     <string name="thirtyMinutes">30 phút</string>
     <string name="thisWeek">Tuần này</string>
+    <string name="title_attachments">Đính kèm</string>
     <string name="today">Hôm nay</string>
     <string name="user_info_address">Địa chỉ</string>
     <string name="user_info_displayname">Tên đầy đủ</string>

@@ -316,6 +316,8 @@
     <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nHasło: %1$s</string>
     <string name="nc_share_this_location">Udostępnij tę lokalizację</string>
+    <string name="nc_shared_items">Udostępnione elementy</string>
+    <string name="nc_shared_items_description">Obrazy, pliki, wiadomości głosowe…</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
     <string name="nc_sort_by">Sortuj według</string>
     <string name="nc_start_conversation">Rozpocznij rozmowę</string>
@@ -367,6 +369,8 @@
     <string name="set_status">Ustaw status</string>
     <string name="set_status_message">Ustaw komunikat statusu</string>
     <string name="share">Udostępnij</string>
+    <string name="shared_items_file">Plik</string>
+    <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>
     <string name="status_message">Komunikat statusu</string>
@@ -381,6 +385,7 @@
     <string name="take_photo_toggle_torch">Przełącz latarkę</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">W tym tygodniu</string>
+    <string name="title_attachments">Załączniki</string>
     <string name="today">Dzisiaj</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
     <string name="user_info_address">Adres</string>

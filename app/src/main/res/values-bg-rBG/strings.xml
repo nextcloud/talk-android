@@ -316,6 +316,7 @@
     <string name="nc_share_text">Присъединяване  към разговора на %1$s/index.php/разговор/%2$s</string>
     <string name="nc_share_text_pass">\nПарола: %1$s</string>
     <string name="nc_share_this_location">Споделяне на това местоположение</string>
+    <string name="nc_shared_items">Споделени елементи</string>
     <string name="nc_shared_location">Споделено местоположение</string>
     <string name="nc_sort_by">Сортиране по</string>
     <string name="nc_start_conversation">Започване на разговор</string>

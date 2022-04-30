@@ -228,10 +228,13 @@
     <string name="secondsAgo">pre nekoliko sekundi</string>
     <string name="selected_list_item">Selected</string>
     <string name="share">Podeli</string>
+    <string name="shared_items_file">Fajl</string>
+    <string name="shared_items_other">Ostali</string>
     <string name="starred">Omiljene</string>
     <string name="take_photo_send">Pošalji</string>
     <string name="thirtyMinutes">30 minuta</string>
     <string name="thisWeek">Ove sedmice</string>
+    <string name="title_attachments">Prilozi</string>
     <string name="today">Danas</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_email">email</string>
