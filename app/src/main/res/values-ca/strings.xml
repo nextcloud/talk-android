@@ -272,6 +272,11 @@
     <string name="set_status">Estableix l\'estat</string>
     <string name="set_status_message">Estableix un missatge d\'estat</string>
     <string name="share">Compartir</string>
+    <string name="shared_items_audio">Àudio</string>
+    <string name="shared_items_file">Fitxer</string>
+    <string name="shared_items_media">Multimèdia</string>
+    <string name="shared_items_other">Altres</string>
+    <string name="shared_items_voice">Veu</string>
     <string name="starred">Preferits</string>
     <string name="status_message">Missatge d\'estat</string>
     <string name="take_photo">Prendre una fotografia</string>
@@ -280,6 +285,7 @@
     <string name="take_photo_toggle_torch">Commuta la llanterna</string>
     <string name="thirtyMinutes">30 minuts</string>
     <string name="thisWeek">Aquesta setmana</string>
+    <string name="title_attachments">Adjunts</string>
     <string name="today">Avui</string>
     <string name="user_info_address">Adreça</string>
     <string name="user_info_displayname">Nom complet</string>

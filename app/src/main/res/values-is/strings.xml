@@ -251,7 +251,10 @@
     <string name="set_status">Setja stöðu</string>
     <string name="set_status_message">Setja stöðuskilaboð</string>
     <string name="share">Deila</string>
+    <string name="shared_items_audio">Hljóð</string>
     <string name="shared_items_file">Skrá</string>
+    <string name="shared_items_media">Margmiðlunargögn</string>
+    <string name="shared_items_other">Annað</string>
     <string name="shared_items_voice">Raddskilaboð</string>
     <string name="starred">Eftirlæti</string>
     <string name="status_message">Stöðuskilaboð</string>

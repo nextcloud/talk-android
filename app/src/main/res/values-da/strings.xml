@@ -276,6 +276,7 @@
     <string name="set_status">Sæt status</string>
     <string name="set_status_message">Sæt statusbesked</string>
     <string name="share">Del</string>
+    <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">Fil</string>
     <string name="shared_items_media">Medier</string>
     <string name="shared_items_other">Andet</string>

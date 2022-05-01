@@ -356,6 +356,11 @@
     <string name="set_status">تعيين الحالة</string>
     <string name="set_status_message">تعيين رسالة الحالة</string>
     <string name="share">شاركه</string>
+    <string name="shared_items_audio">الصوت</string>
+    <string name="shared_items_file">ملف</string>
+    <string name="shared_items_media">وسائط</string>
+    <string name="shared_items_other">آخر</string>
+    <string name="shared_items_voice">صوت</string>
     <string name="starred">المفضلة</string>
     <string name="startCallForbidden">لا يسمح لك بإجراء مكالمة</string>
     <string name="status_message">رسالة الحالة</string>

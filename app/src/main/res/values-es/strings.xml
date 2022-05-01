@@ -368,6 +368,11 @@
     <string name="set_status">Establecer estado</string>
     <string name="set_status_message">Establecer mensaje de estado</string>
     <string name="share">Compartir</string>
+    <string name="shared_items_audio">Audio</string>
+    <string name="shared_items_file">Archivo</string>
+    <string name="shared_items_media">Multimedia</string>
+    <string name="shared_items_other">Otro</string>
+    <string name="shared_items_voice">Voz</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No estas autorizado a iniciar una llamada</string>
     <string name="status_message">Mensaje de estado</string>

@@ -307,6 +307,7 @@
     <string name="set_status">Aseta tilatieto</string>
     <string name="set_status_message">Aseta tilaviesti</string>
     <string name="share">Jaa</string>
+    <string name="shared_items_audio">Ääni</string>
     <string name="shared_items_file">Tiedosto</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Muu</string>

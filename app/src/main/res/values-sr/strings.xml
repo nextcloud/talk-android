@@ -263,6 +263,11 @@
     <string name="secondsAgo">пре неколико секунди</string>
     <string name="selected_list_item">Одабрано</string>
     <string name="share">Подели</string>
+    <string name="shared_items_audio">Звук</string>
+    <string name="shared_items_file">Фајл</string>
+    <string name="shared_items_media">Мултимедија</string>
+    <string name="shared_items_other">Остало</string>
+    <string name="shared_items_voice">Гласовна пошта</string>
     <string name="starred">Омиљени</string>
     <string name="status_message">Порука стања</string>
     <string name="take_photo">Сликај</string>
@@ -270,6 +275,7 @@
     <string name="take_photo_switch_camera">Пребаци камеру</string>
     <string name="thirtyMinutes">30 минута</string>
     <string name="thisWeek">Ове недеље</string>
+    <string name="title_attachments">Прилози</string>
     <string name="today">Данас</string>
     <string name="user_info_address">Адреса</string>
     <string name="user_info_displayname">Пуно име</string>

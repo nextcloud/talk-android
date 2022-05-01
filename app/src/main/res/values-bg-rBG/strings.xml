@@ -368,6 +368,11 @@
     <string name="set_status">Задаване на състояние</string>
     <string name="set_status_message">Задаване на съобщение за състояние</string>
     <string name="share">Споделяне</string>
+    <string name="shared_items_audio">Аудио</string>
+    <string name="shared_items_file">Файл</string>
+    <string name="shared_items_media">Медия</string>
+    <string name="shared_items_other">Други</string>
+    <string name="shared_items_voice">Гласов</string>
     <string name="starred">Любими</string>
     <string name="startCallForbidden">Нямате право да започнете разговор</string>
     <string name="status_message">Съобщение за състояние</string>
@@ -382,6 +387,7 @@
     <string name="take_photo_toggle_torch">Превключване на фенерче</string>
     <string name="thirtyMinutes">30 минути</string>
     <string name="thisWeek">Тази седмица</string>
+    <string name="title_attachments">Прикачени файлове</string>
     <string name="today">Днес</string>
     <string name="upload_new_avatar_from_device">Качеване на нов аватар от устройството</string>
     <string name="user_info_address">Адрес</string>

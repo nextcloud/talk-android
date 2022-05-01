@@ -369,7 +369,10 @@
     <string name="set_status">Ustaw status</string>
     <string name="set_status_message">Ustaw komunikat statusu</string>
     <string name="share">Udostępnij</string>
+    <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">Plik</string>
+    <string name="shared_items_media">Multimedia</string>
+    <string name="shared_items_other">Inne</string>
     <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>

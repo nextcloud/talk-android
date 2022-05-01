@@ -349,7 +349,10 @@
     <string name="set_status">Ορισμός κατάστασης</string>
     <string name="set_status_message">Ορισμός μηνύματος κατάστασης</string>
     <string name="share">Διαμοιρασμός</string>
+    <string name="shared_items_audio">Ήχος</string>
     <string name="shared_items_file">Αρχείο</string>
+    <string name="shared_items_media">Μέσα ενημέρωσης</string>
+    <string name="shared_items_other">Άλλο</string>
     <string name="shared_items_voice">Ομιλία</string>
     <string name="starred">Αγαπημένο</string>
     <string name="status_message">Μήνυμα κατάστασης</string>

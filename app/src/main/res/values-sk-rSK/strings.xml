@@ -367,7 +367,10 @@
     <string name="set_status">Nastaviť stav</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
     <string name="share">Sprístupniť</string>
+    <string name="shared_items_audio">Zvuk</string>
     <string name="shared_items_file">Súbor</string>
+    <string name="shared_items_media">Média</string>
+    <string name="shared_items_other">Iné</string>
     <string name="shared_items_voice">Odkazová schránka</string>
     <string name="starred">Obľúbené</string>
     <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>

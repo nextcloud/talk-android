@@ -369,7 +369,11 @@
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
     <string name="share">Sdílet</string>
+    <string name="shared_items_audio">Zvuk</string>
     <string name="shared_items_file">Soubor</string>
+    <string name="shared_items_media">Média</string>
+    <string name="shared_items_other">Ostatní</string>
+    <string name="shared_items_voice">Hlas</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
     <string name="status_message">Stavová zpráva</string>

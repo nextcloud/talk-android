@@ -367,6 +367,11 @@
     <string name="set_status">Nastavi stanje</string>
     <string name="set_status_message">Nastavi sporočilo stanja</string>
     <string name="share">Souporaba</string>
+    <string name="shared_items_audio">Zvok</string>
+    <string name="shared_items_file">Datoteka</string>
+    <string name="shared_items_media">Predstavna vsebina</string>
+    <string name="shared_items_other">Drugo</string>
+    <string name="shared_items_voice">Glasovna pošta</string>
     <string name="starred">Priljubljeno</string>
     <string name="startCallForbidden">Ni ustreznih dovoljenj za klicanje</string>
     <string name="status_message">Sporočilo stanja</string>
@@ -381,6 +386,7 @@
     <string name="take_photo_toggle_torch">Preklopi bliskavico</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">Ta teden</string>
+    <string name="title_attachments">Priloge</string>
     <string name="today">Danes</string>
     <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
     <string name="user_info_address">Naslov</string>

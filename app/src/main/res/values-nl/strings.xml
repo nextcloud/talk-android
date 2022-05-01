@@ -12,6 +12,7 @@
     <string name="conversations">Gesprekken</string>
     <string name="delete_avatar">Verwijder avatar</string>
     <string name="dnd">Niet storen</string>
+    <string name="dontClear">Niet opruimen</string>
     <string name="edit">Bewerken</string>
     <string name="encrypted">Versleuteld</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
@@ -365,6 +366,7 @@ Kies er eentje van een provider.</string>
     <string name="set_status">Instellen status</string>
     <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>
+    <string name="shared_items_audio">Geluid</string>
     <string name="shared_items_file">Bestand</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Andere</string>

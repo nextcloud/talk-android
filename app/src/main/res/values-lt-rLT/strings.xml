@@ -256,6 +256,10 @@
     <string name="set_status">Nustatyti būseną</string>
     <string name="set_status_message">Nustatyti būsenos žinutę</string>
     <string name="share">Bendrinti</string>
+    <string name="shared_items_file">Failas</string>
+    <string name="shared_items_media">Medija</string>
+    <string name="shared_items_other">Kita</string>
+    <string name="shared_items_voice">Balso pašto</string>
     <string name="starred">Mėgstamas</string>
     <string name="status_message">Būsenos žinutė</string>
     <string name="take_photo">Fotografuoti</string>
@@ -263,6 +267,7 @@
     <string name="take_photo_switch_camera">Perjungti kamerą</string>
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
+    <string name="title_attachments">Priedai</string>
     <string name="today">Šiandiena</string>
     <string name="user_info_address">Adresas</string>
     <string name="user_info_displayname">Vardas, pavardė</string>
