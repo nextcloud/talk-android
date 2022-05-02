@@ -258,7 +258,7 @@ public class PeerConnectionWrapper {
         return isMCUPublisher;
     }
 
-    private boolean shouldReceiveVideo() {
+    private boolean shouldNotReceiveVideo() {
         for (MediaConstraints.KeyValuePair keyValuePair : mediaConstraints.mandatory) {
             if ("OfferToReceiveVideo".equals(keyValuePair.getKey())) {
                 return !Boolean.parseBoolean(keyValuePair.getValue());
@@ -456,7 +456,7 @@ public class PeerConnectionWrapper {
             if (peerConnection != null) {
                 if (peerConnection.getLocalDescription() == null) {
 
-                    if (shouldReceiveVideo()) {
+                    if (shouldNotReceiveVideo()) {
                         for (RtpTransceiver t : peerConnection.getTransceivers()) {
                             if (t.getMediaType().equals(MediaStreamTrack.MediaType.MEDIA_TYPE_VIDEO)) {
                                 t.stop();
