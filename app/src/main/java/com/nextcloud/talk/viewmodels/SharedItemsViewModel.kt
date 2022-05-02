@@ -81,7 +81,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                             items[it.value.id] = SharedItem(
                                 fileParameters["id"]!!,
                                 fileParameters["name"]!!,
-                                fileParameters["size"]!!.toInt(),
+                                fileParameters["size"]!!.toLong(),
                                 it.value.timestamp,
                                 fileParameters["path"]!!,
                                 fileParameters["link"]!!,

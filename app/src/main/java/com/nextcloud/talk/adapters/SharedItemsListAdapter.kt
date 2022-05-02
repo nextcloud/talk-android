@@ -46,7 +46,7 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
         holder.binding.fileName.text = currentItem.name
         holder.binding.fileSize.text = Formatter.formatShortFileSize(
             holder.binding.fileSize.context,
-            currentItem.fileSize.toLong()
+            currentItem.fileSize
         )
         holder.binding.fileDate.text = DateUtils.getLocalDateTimeStringFromTimestamp(
             currentItem.date * ONE_SECOND_IN_MILLIS

@@ -939,7 +939,7 @@ class ChatController(args: Bundle) :
         if (size == null) {
             size = "-1"
         }
-        val fileSize = Integer.valueOf(size)
+        val fileSize = size.toLong()
         val fileId = message.getSelectedIndividualHashMap()["id"]
         val path = message.getSelectedIndividualHashMap()["path"]
 
@@ -966,7 +966,7 @@ class ChatController(args: Bundle) :
             .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
-            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
+            .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
             .build()
 
         val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)

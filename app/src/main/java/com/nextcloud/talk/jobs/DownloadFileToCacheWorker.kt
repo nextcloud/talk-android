@@ -44,7 +44,7 @@ import javax.inject.Inject
 class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerParameters) :
     Worker(context, workerParameters) {
 
-    private var totalFileSize: Int = -1
+    private var totalFileSize: Long = -1
 
     @Inject
     lateinit var ncApi: NcApi
@@ -69,7 +69,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
             val attachmentFolder = inputData.getString(KEY_ATTACHMENT_FOLDER)
             val fileName = inputData.getString(KEY_FILE_NAME)
             val remotePath = inputData.getString(KEY_FILE_PATH)
-            totalFileSize = (inputData.getInt(KEY_FILE_SIZE, -1))
+            totalFileSize = (inputData.getLong(KEY_FILE_SIZE, -1))
 
             checkNotNull(currentUser)
             checkNotNull(baseUrl)
