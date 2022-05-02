@@ -68,7 +68,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         if (size == null) {
             size = "-1"
         }
-        val fileSize = Integer.valueOf(size)
+        val fileSize = size.toLong()
 
         openFile(
             FileInfo(fileId, fileName, fileSize),
@@ -282,7 +282,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
             )
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
-            .putInt(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileInfo.fileSize)
+            .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileInfo.fileSize)
             .build()
         downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
@@ -383,7 +383,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     data class FileInfo(
         val fileId: String,
         val fileName: String,
-        val fileSize: Int
+        var fileSize: Long
     )
 
     companion object {

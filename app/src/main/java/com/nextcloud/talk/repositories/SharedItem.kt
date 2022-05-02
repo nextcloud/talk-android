@@ -5,7 +5,7 @@ import com.nextcloud.talk.models.database.UserEntity
 data class SharedItem(
     val id: String,
     val name: String,
-    val fileSize: Int,
+    val fileSize: Long,
     val date: Long,
     val path: String,
     val link: String,
