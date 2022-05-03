@@ -37,7 +37,6 @@
     <string name="nc_account_chooser_add_account">Dodaj račun</string>
     <string name="nc_account_scheduled_for_deletion">Račun je pripravljen za brisanje in ga ni mogoče spreminjati</string>
     <string name="nc_action_open_main_menu">Odpri glavni meni</string>
-    <string name="nc_add">Dodaj</string>
     <string name="nc_add_attachment">Dodaj prilogo</string>
     <string name="nc_add_emojis">Vstavi izrazno ikono</string>
     <string name="nc_add_file">Dodaj v pogovor</string>
@@ -46,7 +45,6 @@
     <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
     <string name="nc_allow_guests">Dovoli povezave z gosti</string>
     <string name="nc_attendee_pin">Koda PIN: %1$s</string>
-    <string name="nc_bad_response_error">Slab odziv</string>
     <string name="nc_biometric_unlock">Odkleni %1$s</string>
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
@@ -61,7 +59,6 @@
     <string name="nc_call_unknown">Klic %s</string>
     <string name="nc_call_video">Glasovni klic %s</string>
     <string name="nc_call_voice">Glasovni klic %s</string>
-    <string name="nc_calling">Poteka klicanje ...</string>
     <string name="nc_camera_permission_permanently_denied">Za omogočanje pogovora po videu je treba dodeliti ustrezna dovoljenja za dostop do »Kamere« med nastavitvami sistema.</string>
     <string name="nc_cancel">Prekliči</string>
     <string name="nc_capabilities_failed">Pridobivanje podatkov je spodletelo. Opravilo bo preklicano.</string>
@@ -82,7 +79,6 @@
     <string name="nc_common_set">Nastavi</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
-    <string name="nc_configure_room">Nastavitev pogovora</string>
     <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
     <string name="nc_contacts_done">Začni pogovor</string>
     <string name="nc_conversation_link">Povezava pogovora</string>
@@ -101,9 +97,6 @@
     <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
     <string name="nc_demote">Ponižaj iz moderatorja</string>
-    <string name="nc_description_more_menu_group">Meni za javen pogovor %1$s</string>
-    <string name="nc_description_more_menu_one_to_one">Meni pogovora z %1$s</string>
-    <string name="nc_description_more_menu_public">Meni za skupinski pogovor %1$s</string>
     <string name="nc_description_record_voice">Posnemi glasovno sporočilo</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
     <string name="nc_dialog_invalid_password">Neveljavno geslo</string>
@@ -111,10 +104,6 @@
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
     <string name="nc_email">Elektronski naslov</string>
-    <string name="nc_empty_response_error">Neznan odziv</string>
-    <string name="nc_endless_cancel">Preklicano s strani uporabnika.</string>
-    <string name="nc_endless_disabled">Ni mogoče naložiti novih predmetov (dosežena je dovoljena omejitev).</string>
-    <string name="nc_endless_error">Med nalaganjem predmetov je prišlo do napake.</string>
     <string name="nc_external_server_failed">Pridobivanje signalnih nastavitev je spodletelo</string>
     <string name="nc_failed_signaling_settings">Ciljni strežnik ne podpira pridruževanja javnim pogovorom po mobilnih telefonih. Poskusite se povezati v spletnem brskalniku.</string>
     <string name="nc_failed_to_perform_operation">Prišlo je do napake ...</string>
@@ -129,11 +118,9 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_guest">Gost</string>
-    <string name="nc_hello">Pozdravljeni</string>
     <string name="nc_hint_enter_a_message">Vpis sporočila ...</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
-    <string name="nc_incoming_call">Dohodni klic:</string>
     <string name="nc_join_via_link">Pridruži se po povezavi</string>
     <string name="nc_join_via_web">Pridruži se po spletu</string>
     <string name="nc_last_moderator">Pred odhodom iz %1$s morate nekoga določiti za moderatorja.</string>
@@ -171,12 +158,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">Program %1$s na strežniku ni nameščen, zahteva bo preklicana.</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
-    <string name="nc_no_connection_error">Ni vzpostavljene povezave</string>
     <string name="nc_no_messages_yet">Ni še sporočil</string>
-    <string name="nc_no_more_load_retry">Ni več predmetov za nalaganje. Osvežite seznam in poskusite znova.</string>
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
-    <string name="nc_none">Brez</string>
-    <string name="nc_not_defined_error">Neznana napaka</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Klici</string>
     <string name="nc_notification_channel_calls_description">Obvesti o prejetih klicih</string>
@@ -302,15 +285,12 @@
     <string name="nc_settings_theme_light">Svetla</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_use_credentials_title">Posredniški strežnik zahteva ustrezna poverila</string>
-    <string name="nc_settings_vibrate">Tresenje</string>
-    <string name="nc_settings_vibrate_desc">Telefon se bo zatresel, če ni utišan</string>
     <string name="nc_settings_warning">Opozorilo</string>
     <string name="nc_settings_wrong_account">Ponovno overiti je mogoče le trenutno dejaven račun</string>
     <string name="nc_share_contact">Posreduj podatke stika</string>
     <string name="nc_share_contact_permission">Zahtevano je dovoljenje za branje seznama stikov</string>
     <string name="nc_share_current_location">Objavi trenutno mesto</string>
     <string name="nc_share_link">Objavi povezavo</string>
-    <string name="nc_share_link_via">Objavi povezavo prek</string>
     <string name="nc_share_location">Objavi trenutno mesto</string>
     <string name="nc_share_subject"> povabilo %1$s</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
@@ -318,10 +298,7 @@
     <string name="nc_share_this_location">Objavi trenutno mesto</string>
     <string name="nc_shared_location">Objavljeno trenutno mesto</string>
     <string name="nc_sort_by">Razvrsti po</string>
-    <string name="nc_start_conversation">Začni pogovor</string>
     <string name="nc_start_time">Čas začetka</string>
-    <string name="nc_timeout_error">Časovni zamik</string>
-    <string name="nc_unauthorized_error">Neoverjeno</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke za %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko za %1$s?</string>
@@ -345,7 +322,6 @@
     <string name="online_status">Povezano stanje</string>
     <string name="openConversations">Odprti pogovori</string>
     <string name="open_in_files_app">Odpri v programu Datoteke</string>
-    <string name="password_protected">Zaščiteno z geslom</string>
     <string name="play_pause_voice_message">Predvajaj/Ustavi zvočni posnetek</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>

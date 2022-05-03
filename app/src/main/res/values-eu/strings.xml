@@ -37,7 +37,6 @@
     <string name="nc_account_chooser_add_account">Gehitu kontua</string>
     <string name="nc_account_scheduled_for_deletion">Kontua ezabatzeko programatuta dago eta ezin da harekin operatu</string>
     <string name="nc_action_open_main_menu">Ireki menu nagusia</string>
-    <string name="nc_add">Gehitu</string>
     <string name="nc_add_attachment">Gehitu eranskina</string>
     <string name="nc_add_emojis">Gehitu emojiak</string>
     <string name="nc_add_file">Gehitu elkarrizketara</string>
@@ -46,7 +45,6 @@
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
     <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
-    <string name="nc_bad_response_error">Emaitza okerra</string>
     <string name="nc_biometric_unlock">Desblokeatu %1$s</string>
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
@@ -61,7 +59,6 @@
     <string name="nc_call_unknown">%s deia</string>
     <string name="nc_call_video">%s bideo-deia</string>
     <string name="nc_call_voice">%s ahots-deia</string>
-    <string name="nc_calling">Deitzen…</string>
     <string name="nc_camera_permission_permanently_denied">Bideo komunikazioa gaitu nahi baduzu eman \"Kamera\" baimena sistemaren ezarpenetan.</string>
     <string name="nc_cancel">Utzi</string>
     <string name="nc_capabilities_failed">Akatsak gaitasunak berreskuratzean. Bertan behera uzten.</string>
@@ -82,7 +79,6 @@
     <string name="nc_common_set">Ezarri</string>
     <string name="nc_common_skip">Jauzi</string>
     <string name="nc_configure_cert_auth">Aukeratu autentifikazio ziurtagiria</string>
-    <string name="nc_configure_room">Konfiguratu elkarrizketa</string>
     <string name="nc_connecting_call">Konektatzen…</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_link">Elkarrizketa esteka</string>
@@ -101,9 +97,6 @@
     <string name="nc_delete_message">Ezabatu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
     <string name="nc_demote">Moderatzailetik degradatua</string>
-    <string name="nc_description_more_menu_group">%1$s elkarrizketa publikoaren menua</string>
-    <string name="nc_description_more_menu_one_to_one">%1$s(r)ekin duzun elkarrizketaren menua</string>
-    <string name="nc_description_more_menu_public">%1$s taldeko elkarrizketaren menua</string>
     <string name="nc_description_record_voice">Grabatu ahots mezua</string>
     <string name="nc_description_send_message_button">Bidali mezua</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
@@ -111,10 +104,6 @@
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
     <string name="nc_email">E-posta</string>
-    <string name="nc_empty_response_error">Erantzun hutsea</string>
-    <string name="nc_endless_cancel">Erabiltzaileak ezeztatuta.</string>
-    <string name="nc_endless_disabled">Ez dago elementu gehiago kargatzeko (maximora iritsi da).</string>
-    <string name="nc_endless_error">Errore bat gertatu da elementu gehiago kargatzerakoan.</string>
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
     <string name="nc_failed_signaling_settings">Helburuko zerbitzariak ez du telefono mugikorraren bidez elkarrizketa publikoetara sartzerik onartzen. Elkarrizketara web nabigatzaile baten bidez sartzen saiatu.</string>
     <string name="nc_failed_to_perform_operation">Barkatu, zerbait txarto joan da!</string>
@@ -129,11 +118,9 @@
     <string name="nc_group">Taldea</string>
     <string name="nc_groups">Taldeak</string>
     <string name="nc_guest">Gonbidatua</string>
-    <string name="nc_hello">Kaixo</string>
     <string name="nc_hint_enter_a_message">Idatzi mezu bat…</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
-    <string name="nc_incoming_call">Honen sarrerako deia</string>
     <string name="nc_join_via_link">Sartu esteka baten bidez</string>
     <string name="nc_join_via_web">Sartu web bidez</string>
     <string name="nc_last_moderator">Moderatzaile berri bat hautatu behar duzu %1$s utzi baino lehen.</string>
@@ -171,12 +158,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s app-a ez dago instalatuta zerbitzarian, bertan behera uzten</string>
     <string name="nc_nick_guest">Gonbidatua</string>
     <string name="nc_no">Ez</string>
-    <string name="nc_no_connection_error">Konexiorik ez</string>
     <string name="nc_no_messages_yet">Ez dago mezurik oraindik</string>
-    <string name="nc_no_more_load_retry">Ez dago kargatzeko elementu gehiagorik. Freskatu berriro saiatzeko.</string>
     <string name="nc_no_proxy">Proxyrik ez</string>
-    <string name="nc_none">Bat ere ez</string>
-    <string name="nc_not_defined_error">Errore ezezaguna</string>
     <string name="nc_notification_channel">%1$s %2$s jakinarazpen kanalean</string>
     <string name="nc_notification_channel_calls">Deiak</string>
     <string name="nc_notification_channel_calls_description">Jakinarazi sarrera-deiei buruz</string>
@@ -302,15 +285,12 @@
     <string name="nc_settings_theme_light">Argia</string>
     <string name="nc_settings_theme_title">Gaia</string>
     <string name="nc_settings_use_credentials_title">Proxyak egiaztagiriak behar ditu</string>
-    <string name="nc_settings_vibrate">Bibratu</string>
-    <string name="nc_settings_vibrate_desc">Zure telefonoak dardara egingo du isilik ez badago.</string>
     <string name="nc_settings_warning">Oharra</string>
     <string name="nc_settings_wrong_account">Oraingo kontua baino ezin da berrbaimendu</string>
     <string name="nc_share_contact">Partekatu kontaktua</string>
     <string name="nc_share_contact_permission">Kontaktuak irakurtzeko baimena behar da</string>
     <string name="nc_share_current_location">Partekatu uneko kokapena</string>
     <string name="nc_share_link">Partekatu esteka</string>
-    <string name="nc_share_link_via">Partekatu esteka...</string>
     <string name="nc_share_location">Partekatu kokapena</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>
@@ -318,10 +298,7 @@
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
-    <string name="nc_start_conversation">Hasi elkarrizketa bat</string>
     <string name="nc_start_time">Hasiera-ordua</string>
-    <string name="nc_timeout_error">Denbora-muga</string>
-    <string name="nc_unauthorized_error">Baimenik gabe</string>
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
@@ -345,7 +322,6 @@
     <string name="online_status">Lineako egoera</string>
     <string name="openConversations">Ireki elkarrizketak</string>
     <string name="open_in_files_app">Ireki Fitxategiak aplikazioan</string>
-    <string name="password_protected">Pasahitz bidez babestuta</string>
     <string name="play_pause_voice_message">Erreproduzitu/pausatu ahots mezua</string>
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>

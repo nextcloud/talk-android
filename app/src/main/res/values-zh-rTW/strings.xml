@@ -35,7 +35,6 @@
     <string name="nc_account_chooser_add_account">新增帳號</string>
     <string name="nc_account_scheduled_for_deletion">此帳號已經被排定要刪除，也不能被修改。</string>
     <string name="nc_action_open_main_menu">開啟主功能表</string>
-    <string name="nc_add">新增</string>
     <string name="nc_add_attachment">加入附件</string>
     <string name="nc_add_emojis">加入 emoji</string>
     <string name="nc_add_file">加入到對話</string>
@@ -44,7 +43,6 @@
     <string name="nc_all_ok_operation">完成</string>
     <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
-    <string name="nc_bad_response_error">不良回應</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_call_incoming">來電</string>
     <string name="nc_call_name">對話名稱</string>
@@ -59,7 +57,6 @@
     <string name="nc_call_unknown">%s 通話</string>
     <string name="nc_call_video">%s 視訊通話</string>
     <string name="nc_call_voice">%s 語音通話</string>
-    <string name="nc_calling">呼叫中...</string>
     <string name="nc_camera_permission_permanently_denied">為了開啟影像的通訊請在系統設定內同意\"相機\"的需求。</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">無法獲取功能，正在中止</string>
@@ -80,7 +77,6 @@
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">跳過</string>
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
-    <string name="nc_configure_room">設定對話</string>
     <string name="nc_connecting_call">連線中</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_link">對話的連結</string>
@@ -99,9 +95,6 @@
     <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">訊息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_demote">取消主持人資格</string>
-    <string name="nc_description_more_menu_group">與 %1$s 公開對話的功能表</string>
-    <string name="nc_description_more_menu_one_to_one">與 %1$s 對話的功能表</string>
-    <string name="nc_description_more_menu_public">與 %1$s 群組對話的功能表</string>
     <string name="nc_description_record_voice">錄製語音訊息</string>
     <string name="nc_description_send_message_button">傳送訊息</string>
     <string name="nc_dialog_invalid_password">無效的密碼</string>
@@ -109,10 +102,6 @@
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止動作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
     <string name="nc_email">電子郵件</string>
-    <string name="nc_empty_response_error">空白回應</string>
-    <string name="nc_endless_cancel">使用者取消了</string>
-    <string name="nc_endless_disabled">沒有更多項目可載入（達到極限）</string>
-    <string name="nc_endless_error">載入更多項目時，發生了錯誤</string>
     <string name="nc_external_server_failed">汲取訊號設定失敗</string>
     <string name="nc_failed_signaling_settings">目的伺服器不支援經由行動電話加入公開交談</string>
     <string name="nc_failed_to_perform_operation">發生錯誤了 :(</string>
@@ -127,11 +116,9 @@
     <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
-    <string name="nc_hello">嗨，</string>
     <string name="nc_hint_enter_a_message">輸入訊息</string>
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
-    <string name="nc_incoming_call">來電中....</string>
     <string name="nc_join_via_link">已一個連結加入</string>
     <string name="nc_join_via_web">經由網頁加入</string>
     <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>
@@ -155,8 +142,6 @@
     <string name="nc_no">否</string>
     <string name="nc_no_messages_yet">目前無任何訊息</string>
     <string name="nc_no_proxy">無proxy代理</string>
-    <string name="nc_none">無</string>
-    <string name="nc_not_defined_error">未知的錯誤</string>
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">通話</string>
     <string name="nc_notification_settings">通知設定</string>
@@ -230,16 +215,12 @@
     <string name="nc_settings_theme_dark">暗色</string>
     <string name="nc_settings_theme_light">亮色</string>
     <string name="nc_settings_theme_title">佈景主題</string>
-    <string name="nc_settings_vibrate">振動</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">只有特定帳號可以被重新授權</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_share_this_location">分享地點</string>
     <string name="nc_shared_location">共享的位置</string>
     <string name="nc_sort_by">排序</string>
-    <string name="nc_start_conversation">新對話</string>
-    <string name="nc_timeout_error">逾時</string>
-    <string name="nc_unauthorized_error">未授權</string>
     <string name="nc_upload_in_progess">上傳中...</string>
     <string name="nc_user">使用者</string>
     <string name="nc_wrong_link">對話連結無效</string>
@@ -248,7 +229,6 @@
     <string name="oneHour">1小時</string>
     <string name="online">線上</string>
     <string name="online_status">線上狀態</string>
-    <string name="password_protected">受密碼保護</string>
     <string name="reactions_tab_all">全部</string>
     <string name="save">儲存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>

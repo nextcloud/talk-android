@@ -33,7 +33,6 @@
     <string name="nc_account_chooser_add_account">添加账户</string>
     <string name="nc_account_scheduled_for_deletion">此账号已计划删除，且无法更改</string>
     <string name="nc_action_open_main_menu">打开主菜单</string>
-    <string name="nc_add">新增</string>
     <string name="nc_add_attachment">添加附件</string>
     <string name="nc_add_emojis">添加 emoji</string>
     <string name="nc_add_file">添加到会话</string>
@@ -42,7 +41,6 @@
     <string name="nc_all_ok_operation">OK，已完成！</string>
     <string name="nc_allow_guests">允许访客</string>
     <string name="nc_attendee_pin">固定：%1$s</string>
-    <string name="nc_bad_response_error">错误的响应</string>
     <string name="nc_biometric_unlock">解锁 %1$s</string>
     <string name="nc_call_incoming">来电</string>
     <string name="nc_call_name">会话名称</string>
@@ -57,7 +55,6 @@
     <string name="nc_call_unknown">%s 通话</string>
     <string name="nc_call_video">%s 语音通话</string>
     <string name="nc_call_voice">%s 语音通话</string>
-    <string name="nc_calling">呼叫中 ...</string>
     <string name="nc_camera_permission_permanently_denied">在系统设置中赋予“相机”权限来启用视频通话。</string>
     <string name="nc_cancel">取消</string>
     <string name="nc_capabilities_failed">获取容量已失败，正在中止</string>
@@ -78,7 +75,6 @@
     <string name="nc_common_set">设置</string>
     <string name="nc_common_skip">跳过</string>
     <string name="nc_configure_cert_auth">选择验证证书</string>
-    <string name="nc_configure_room">配置会话</string>
     <string name="nc_connecting_call">正在连接...</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_link">对话连接</string>
@@ -97,9 +93,6 @@
     <string name="nc_delete_message">删除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功删除，但可能已泄漏给其他服务</string>
     <string name="nc_demote">取消主持人资格</string>
-    <string name="nc_description_more_menu_group">公共讨论菜单%1$s</string>
-    <string name="nc_description_more_menu_one_to_one">联系人菜单%1$s</string>
-    <string name="nc_description_more_menu_public">分组菜单%1$s</string>
     <string name="nc_description_record_voice">录制语音消息 </string>
     <string name="nc_description_send_message_button">发送消息</string>
     <string name="nc_dialog_invalid_password">无效的密码</string>
@@ -107,10 +100,6 @@
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
     <string name="nc_email">电子邮件</string>
-    <string name="nc_empty_response_error">空的响应</string>
-    <string name="nc_endless_cancel">已被用户取消。</string>
-    <string name="nc_endless_disabled">无更多条目可以加载（已达到最大数目）。</string>
-    <string name="nc_endless_error">在加载更多项目时发生错误。</string>
     <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_failed_signaling_settings">目标服务器不支持通过移动电话加入公共对话。你可以尝试通过浏览器加入对话。</string>
     <string name="nc_failed_to_perform_operation">抱歉，有地方出错了！</string>
@@ -125,11 +114,9 @@
     <string name="nc_group">群组</string>
     <string name="nc_groups">群组</string>
     <string name="nc_guest">访客</string>
-    <string name="nc_hello">你好</string>
     <string name="nc_hint_enter_a_message">输入消息...</string>
     <string name="nc_important_conversation">重要会话</string>
     <string name="nc_important_conversation_desc">此会话中的通知将覆盖免打扰设置</string>
-    <string name="nc_incoming_call">来电</string>
     <string name="nc_join_via_link">使用链接加入</string>
     <string name="nc_join_via_web">通过网页加入</string>
     <string name="nc_last_moderator">在您离开%1$s之前您需要选出一位新的主持人。</string>
@@ -167,12 +154,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">服务器未安装 %1$s 应用，中止</string>
     <string name="nc_nick_guest">来宾</string>
     <string name="nc_no">不</string>
-    <string name="nc_no_connection_error">无连接</string>
     <string name="nc_no_messages_yet">暂无消息</string>
-    <string name="nc_no_more_load_retry">无更多条目可以加载，请刷新重试。</string>
     <string name="nc_no_proxy">无代理</string>
-    <string name="nc_none">无</string>
-    <string name="nc_not_defined_error">未知错误</string>
     <string name="nc_notification_channel">%1$s在%2$s通知频道中</string>
     <string name="nc_notification_channel_calls">通话</string>
     <string name="nc_notification_channel_calls_description">来电通知</string>
@@ -297,15 +280,12 @@
     <string name="nc_settings_theme_light">浅色主题</string>
     <string name="nc_settings_theme_title">主题</string>
     <string name="nc_settings_use_credentials_title">代理需要凭据</string>
-    <string name="nc_settings_vibrate">振动</string>
-    <string name="nc_settings_vibrate_desc">您的手机将会震动，除非您的手机已静音</string>
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">仅当前账号可以重新授权</string>
     <string name="nc_share_contact">共享联系人</string>
     <string name="nc_share_contact_permission">读取联系人权限是必需的</string>
     <string name="nc_share_current_location">分享当前位置</string>
     <string name="nc_share_link">共享链接</string>
-    <string name="nc_share_link_via">共享链接通过</string>
     <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s邀请</string>
     <string name="nc_share_text">加入在 %1$s/index.php/call/%2$s 中的会话</string>
@@ -313,10 +293,7 @@
     <string name="nc_share_this_location">分享这个位置</string>
     <string name="nc_shared_location">共享的位置</string>
     <string name="nc_sort_by">排序依据</string>
-    <string name="nc_start_conversation">发起会话</string>
     <string name="nc_start_time">开始时间</string>
-    <string name="nc_timeout_error">超时</string>
-    <string name="nc_unauthorized_error">未经授权</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">将此文件发送到 %1$s？</string>
@@ -340,7 +317,6 @@
     <string name="online_status">在线状态</string>
     <string name="openConversations">开启会话</string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
-    <string name="password_protected">受密码保护</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
     <string name="reactions_tab_all">所有</string>
     <string name="read_storage_no_permission">如果没有权限，不能共享来自存储的文件</string>

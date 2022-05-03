@@ -34,7 +34,6 @@
     <string name="nc_account_chooser_add_account">Dodaj račun</string>
     <string name="nc_account_scheduled_for_deletion">Račun je zakazan za brisanje i ne može se promijeniti</string>
     <string name="nc_action_open_main_menu">Otvori glavni izbornik</string>
-    <string name="nc_add">Dodaj</string>
     <string name="nc_add_attachment">Dodaj privitak</string>
     <string name="nc_add_emojis">Dodaj emojije</string>
     <string name="nc_add_file">Dodaj u razgovor</string>
@@ -43,7 +42,6 @@
     <string name="nc_all_ok_operation">U redu, završeno!</string>
     <string name="nc_allow_guests">Dopusti pristup gostima</string>
     <string name="nc_attendee_pin">Prikvači: %1$s</string>
-    <string name="nc_bad_response_error">Neispravan odgovor</string>
     <string name="nc_biometric_unlock">Otključaj %1$s</string>
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
@@ -57,7 +55,6 @@
     <string name="nc_call_unknown">%s poziv</string>
     <string name="nc_call_video">%s videopoziv</string>
     <string name="nc_call_voice">%s glasovni poziv</string>
-    <string name="nc_calling">Pozivanje...</string>
     <string name="nc_camera_permission_permanently_denied">Kako biste omogućili videokomunikaciju, aktivirajte dopuštenje \“Kamera\“ u postavkama sustava.</string>
     <string name="nc_cancel">Odustani</string>
     <string name="nc_capabilities_failed">Neuspješno dohvaćanje mogućnosti, prekid</string>
@@ -78,7 +75,6 @@
     <string name="nc_common_set">Postavi</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Odaberi vjerodajnicu za autentifikaciju</string>
-    <string name="nc_configure_room">Konfiguriraj razgovor</string>
     <string name="nc_connecting_call">Povezivanje…</string>
     <string name="nc_contacts_done">Gotovo</string>
     <string name="nc_conversation_link">Poveznica za razgovor</string>
@@ -97,9 +93,6 @@
     <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Poruka je uspješno izbrisana, ali je možda prenesena u druge usluge</string>
     <string name="nc_demote">Ukloni moderatora</string>
-    <string name="nc_description_more_menu_group">Izbornik za javni razgovor %1$s</string>
-    <string name="nc_description_more_menu_one_to_one">Izbornik za razgovor s %1$s</string>
-    <string name="nc_description_more_menu_public">Izbornik za grupni razgovor %1$s</string>
     <string name="nc_description_record_voice">Snimi glasovnu poruku</string>
     <string name="nc_description_send_message_button">Pošalji poruku</string>
     <string name="nc_dialog_invalid_password">Netočna zaporka</string>
@@ -107,10 +100,6 @@
     <string name="nc_display_name_not_fetched">Neuspješno dohvaćanje imena za prikaz, prekid</string>
     <string name="nc_display_name_not_stored">Nije moguće pohraniti ime za prikaz, prekid</string>
     <string name="nc_email">E-pošta</string>
-    <string name="nc_empty_response_error">Prazan odgovor</string>
-    <string name="nc_endless_cancel">Korisnik je otkazao.</string>
-    <string name="nc_endless_disabled">Nema više stavki za učitavanje (dosegnut je maksimalan broj stavki).</string>
-    <string name="nc_endless_error">Došlo je do pogreške prilikom učitavanja više stavki.</string>
     <string name="nc_external_server_failed">Neuspješno dohvaćanje postavki signaliziranja</string>
     <string name="nc_failed_signaling_settings">Ciljni poslužitelj ne podržava pridruživanje javnim razgovorima putem mobilnih telefona. Možete se pokušati pridružiti razgovoru putem web-preglednika.</string>
     <string name="nc_failed_to_perform_operation">Oprostite, nešto je pošlo po krivu!</string>
@@ -125,11 +114,9 @@
     <string name="nc_group">Grupa</string>
     <string name="nc_groups">Grupe</string>
     <string name="nc_guest">Gost</string>
-    <string name="nc_hello">Pozdrav</string>
     <string name="nc_hint_enter_a_message">Unesi poruku…</string>
     <string name="nc_important_conversation">Važan razgovor</string>
     <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>
-    <string name="nc_incoming_call">Dolazni poziv od</string>
     <string name="nc_join_via_link">Pridružite se putem poveznice</string>
     <string name="nc_join_via_web">Pridružite se putem weba</string>
     <string name="nc_last_moderator">Morate odabrati novog moderatora prije nego što napustite %1$s.</string>
@@ -167,12 +154,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">Aplikacija %1$s nije instalirana na poslužitelju, prekid</string>
     <string name="nc_nick_guest">Gost</string>
     <string name="nc_no">Ne</string>
-    <string name="nc_no_connection_error">Nema veze</string>
     <string name="nc_no_messages_yet">Još nema poruka</string>
-    <string name="nc_no_more_load_retry">Nema više stavki za učitavanje. Osvježite kako biste ponovno pokušali.</string>
     <string name="nc_no_proxy">Nema proxyja</string>
-    <string name="nc_none">Nema</string>
-    <string name="nc_not_defined_error">Nepoznata pogreška</string>
     <string name="nc_notification_channel">%1$s na kanalu za obavijesti %2$s</string>
     <string name="nc_notification_channel_calls">Pozivi</string>
     <string name="nc_notification_channel_messages">Poruke</string>
@@ -295,14 +278,11 @@
     <string name="nc_settings_theme_light">Svijetlo</string>
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_use_credentials_title">Proxy zahtijeva vjerodajnice</string>
-    <string name="nc_settings_vibrate">Vibracija</string>
-    <string name="nc_settings_vibrate_desc">Telefon će vibrirati ako nije utišan</string>
     <string name="nc_settings_warning">Upozorenje</string>
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
     <string name="nc_share_contact">Dijeli kontakt</string>
     <string name="nc_share_current_location">Dijeli trenutačnu lokaciju</string>
     <string name="nc_share_link">Dijeli poveznicu</string>
-    <string name="nc_share_link_via">Dijeljenje poveznice putem</string>
     <string name="nc_share_location">Dijeli lokaciju</string>
     <string name="nc_share_subject">%1$s pozivnica</string>
     <string name="nc_share_text">Pridruži se razgovoru na adresi %1$s/index.php/call/%2$s</string>
@@ -310,10 +290,7 @@
     <string name="nc_share_this_location">Dijeli ovu lokaciju</string>
     <string name="nc_shared_location">Dijeljena lokacija</string>
     <string name="nc_sort_by">Razvrstaj prema</string>
-    <string name="nc_start_conversation">Započni razgovor</string>
     <string name="nc_start_time">Vrijeme početka</string>
-    <string name="nc_timeout_error">Istek vremena</string>
-    <string name="nc_unauthorized_error">Neovlašteno</string>
     <string name="nc_upload_choose_local_files">Odaberi datoteke</string>
     <string name="nc_upload_confirm_send_multiple">Poslati ove datoteke na %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslati ovu datoteku na %1$s?</string>
@@ -337,7 +314,6 @@
     <string name="online_status">Status na mreži</string>
     <string name="openConversations">Otvori razgovore</string>
     <string name="open_in_files_app">Otvori u aplikaciji Files</string>
-    <string name="password_protected">Zaštićeno zaporkom</string>
     <string name="play_pause_voice_message">Reproduciraj/pauziraj glasovnu poruku</string>
     <string name="reactions_tab_all">Sve</string>
     <string name="read_storage_no_permission">Dijeljenje datoteka iz pohrane nije moguće bez dopuštenja</string>

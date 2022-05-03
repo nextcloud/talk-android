@@ -33,7 +33,6 @@
     <string name="nc_account_chooser_add_account">Lisää tili</string>
     <string name="nc_account_scheduled_for_deletion">Tili on aikataulutettu poistettavaksi, joten tiliä ei voi muuttaa</string>
     <string name="nc_action_open_main_menu">Avaa päävalikko</string>
-    <string name="nc_add">Lisää</string>
     <string name="nc_add_attachment">Lisää liite</string>
     <string name="nc_add_emojis">Lisää emoji</string>
     <string name="nc_add_file">Lisää keskusteluun</string>
@@ -42,7 +41,6 @@
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
     <string name="nc_allow_guests">Salli vieraat</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
-    <string name="nc_bad_response_error">Virheellinen vastaus</string>
     <string name="nc_biometric_unlock">Avaa lukitus %1$s</string>
     <string name="nc_call_incoming">SAAPUVA</string>
     <string name="nc_call_name">Keskustelun nimi</string>
@@ -51,7 +49,6 @@
     <string name="nc_call_reconnecting">Yhdistetään uudelleen…</string>
     <string name="nc_call_ringing">SOITETAAN</string>
     <string name="nc_call_timeout">Ei vastausta 45 sekunnissa, napauta yrittääksesi uudelleen</string>
-    <string name="nc_calling">Soitetaan…</string>
     <string name="nc_cancel">Peruuta</string>
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
@@ -69,7 +66,6 @@
     <string name="nc_common_set">Aseta</string>
     <string name="nc_common_skip">Ohita</string>
     <string name="nc_configure_cert_auth">Valitse tunnistautumisvarmenne</string>
-    <string name="nc_configure_room">Muokkaa keskustelun asetuksia</string>
     <string name="nc_connecting_call">Yhdistetään…</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_link">Keskustelulinkki</string>
@@ -92,9 +88,6 @@
     <string name="nc_dialog_invalid_password">Virheellinen salasana</string>
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_email">Sähköposti</string>
-    <string name="nc_empty_response_error">Tyhjä vastaus</string>
-    <string name="nc_endless_cancel">Peruttu käyttäjän toimesta.</string>
-    <string name="nc_endless_error">Lisää tietueita ladattaessa tapahtui virhe.</string>
     <string name="nc_failed_to_perform_operation">Pahoittelut, jokin meni vikaan!</string>
     <string name="nc_file_browser_back">Takaisin</string>
     <string name="nc_file_browser_reshare_forbidden">Sinulla ei ole oikeutta jakaa tätä tiedostoa uudelleen</string>
@@ -106,10 +99,8 @@
     <string name="nc_group">Ryhmä</string>
     <string name="nc_groups">Ryhmät</string>
     <string name="nc_guest">Vieras</string>
-    <string name="nc_hello">Hei</string>
     <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
-    <string name="nc_incoming_call">Saapuva puhelu käyttäjältä</string>
     <string name="nc_join_via_link">Liity linkillä</string>
     <string name="nc_join_via_web">Liity verkon kautta</string>
     <string name="nc_last_moderator_title">Ei voitu poistua keskustelusta</string>
@@ -144,12 +135,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">Sovellusta %1$s ei ole asennettu, keskeytetään</string>
     <string name="nc_nick_guest">Vieras</string>
     <string name="nc_no">Ei</string>
-    <string name="nc_no_connection_error">Ei yhteyttä</string>
     <string name="nc_no_messages_yet">Ei viestejä vielä</string>
-    <string name="nc_no_more_load_retry">Ei enempää tietueita ladattavaksi. Päivitä yrittääksesi uudelleen.</string>
     <string name="nc_no_proxy">Ei välityspalvelinta</string>
-    <string name="nc_none">Ei mitään</string>
-    <string name="nc_not_defined_error">Tuntematon virhe</string>
     <string name="nc_notification_channel_calls">Puhelut</string>
     <string name="nc_notification_channel_calls_description">Ilmoita saapuvista puheluista</string>
     <string name="nc_notification_channel_messages">Viestit</string>
@@ -239,8 +226,10 @@
     <string name="nc_settings_phone_book_integration_title">Puhelinnumeron integraatio</string>
     <string name="nc_settings_privacy">Yksityisyys</string>
     <string name="nc_settings_proxy_host_title">Välityspalvelimen osoite</string>
+    <string name="nc_settings_proxy_password_title">Välityspalvelimen salasana</string>
     <string name="nc_settings_proxy_port_title">Välityspalvelimen portti</string>
     <string name="nc_settings_proxy_type_title">Välityspalvelimen tyyppi</string>
+    <string name="nc_settings_proxy_username_title">Välityspalvelimen käyttäjä</string>
     <string name="nc_settings_read_privacy_title">Lue tila</string>
     <string name="nc_settings_reauthorize">Valtuuta tili uudelleen</string>
     <string name="nc_settings_remove">Poista</string>
@@ -257,14 +246,11 @@
     <string name="nc_settings_theme_key">teema</string>
     <string name="nc_settings_theme_light">Vaalea</string>
     <string name="nc_settings_theme_title">Teema</string>
-    <string name="nc_settings_vibrate">Värinä</string>
-    <string name="nc_settings_vibrate_desc">Puhelin värisee ellei se ole äänettömänä</string>
     <string name="nc_settings_warning">Varoitus</string>
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>
     <string name="nc_share_contact_permission">Oikeus lukea yhteystiedot vaaditaan</string>
     <string name="nc_share_current_location">Jaa nykyinen sijainti</string>
     <string name="nc_share_link">Jaa linkki</string>
-    <string name="nc_share_link_via">Jaa linkki</string>
     <string name="nc_share_location">Jaa sijainti</string>
     <string name="nc_share_subject">%1$s kutsu</string>
     <string name="nc_share_text">Liity keskusteluun osoitteessa %1$s/index.php/call/%2$s</string>
@@ -273,10 +259,7 @@
     <string name="nc_shared_items">Jaetut tietueet</string>
     <string name="nc_shared_location">Jaettu sijainti</string>
     <string name="nc_sort_by">Lajittelujärjestys</string>
-    <string name="nc_start_conversation">Aloita keskustelu</string>
     <string name="nc_start_time">Aloitusaika</string>
-    <string name="nc_timeout_error">Aikakatkaisu</string>
-    <string name="nc_unauthorized_error">Ei valtuuksia</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_in_progess">Lähetys</string>
@@ -292,7 +275,6 @@
     <string name="online">Paikalla</string>
     <string name="online_status">Online-tila</string>
     <string name="openConversations">Avaa keskustelut</string>
-    <string name="password_protected">Salasanasuojattu</string>
     <string name="play_pause_voice_message">Toista/keskeytä ääniviesti</string>
     <string name="reactions_tab_all">Kaikki</string>
     <string name="save">Tallenna</string>

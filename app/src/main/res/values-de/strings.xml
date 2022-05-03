@@ -37,7 +37,6 @@
     <string name="nc_account_chooser_add_account">Konto hinzufügen</string>
     <string name="nc_account_scheduled_for_deletion">Das Konto ist zur Löschung vorgesehen und kann daher nicht verändert werden</string>
     <string name="nc_action_open_main_menu">Hauptmenü öffnen</string>
-    <string name="nc_add">Hinzufügen</string>
     <string name="nc_add_attachment">Anhang hinzufügen</string>
     <string name="nc_add_emojis">Emojis hinzufügen</string>
     <string name="nc_add_file">Zur Unterhaltung hinzufügen</string>
@@ -46,7 +45,6 @@
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_allow_guests">Gäste zulassen</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
-    <string name="nc_bad_response_error">Fehlerhafte Antwort</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
@@ -61,7 +59,6 @@
     <string name="nc_call_unknown">%s Anruf</string>
     <string name="nc_call_video">%s Videoanruf</string>
     <string name="nc_call_voice">%s Sprachanruf</string>
-    <string name="nc_calling">Rufe an…</string>
     <string name="nc_camera_permission_permanently_denied">Um Videoanrufe zu ermöglichen, gewähren Sie die Berechtigung für die \"Kamera\" in den Systemeinstellungen</string>
     <string name="nc_cancel">Abbrechen</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
@@ -82,7 +79,6 @@
     <string name="nc_common_set">Setzen</string>
     <string name="nc_common_skip">Überspringen</string>
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
-    <string name="nc_configure_room">Unterhaltung einrichten</string>
     <string name="nc_connecting_call">Verbinde…</string>
     <string name="nc_contacts_done">Fertig</string>
     <string name="nc_conversation_link">Unterhaltungs-Link</string>
@@ -101,9 +97,6 @@
     <string name="nc_delete_message">Löschen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_demote">Moderator absetzen</string>
-    <string name="nc_description_more_menu_group">Menü für die öffentliche Unterhaltung %1$s</string>
-    <string name="nc_description_more_menu_one_to_one">Menü für die Unterhaltung mit %1$s</string>
-    <string name="nc_description_more_menu_public">Menü für die Gruppenunterhaltung %1$s</string>
     <string name="nc_description_record_voice">Sprachnachricht aufnehmen</string>
     <string name="nc_description_send_message_button">Nachricht senden</string>
     <string name="nc_dialog_invalid_password">Ungültiges Passwort</string>
@@ -111,10 +104,6 @@
     <string name="nc_display_name_not_fetched">Anzeigename konnte nicht abgerufen werden. Breche ab.</string>
     <string name="nc_display_name_not_stored">Der Anzeigename konnte nicht gespeichert werden. Breche ab.</string>
     <string name="nc_email">E-Mail</string>
-    <string name="nc_empty_response_error">Leere Antwort</string>
-    <string name="nc_endless_cancel">Abbruch durch den Benutzer.</string>
-    <string name="nc_endless_disabled">Keine weiteren Kontakte zum Laden (Grenze erreicht).</string>
-    <string name="nc_endless_error">Es ist ein Fehler beim Laden weiterer Kontakte aufgetreten.</string>
     <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
     <string name="nc_failed_signaling_settings">Der Zielserver erlaubt es nicht, öffentlichen Unterhaltungen via Mobiltelefon beizutreten. Sie können versuchen, der Unterhaltung mit einem Internetbrowser beizutreten.</string>
     <string name="nc_failed_to_perform_operation">Leider ist etwas schiefgelaufen!</string>
@@ -129,11 +118,9 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Gruppen</string>
     <string name="nc_guest">Gast</string>
-    <string name="nc_hello">Hallo</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben…</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
-    <string name="nc_incoming_call">Eingehender Anruf von</string>
     <string name="nc_join_via_link">Über einen Link beitreten</string>
     <string name="nc_join_via_web">Über das Internet beitreten</string>
     <string name="nc_last_moderator">Sie müssen einen neuen Moderator bestimmen, bevor Sie %1$s verlassen können.</string>
@@ -171,12 +158,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">%1$s App nicht auf dem Server installiert, Abbruch</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nein</string>
-    <string name="nc_no_connection_error">Keine Verbindung</string>
     <string name="nc_no_messages_yet">Noch keine Nachrichten</string>
-    <string name="nc_no_more_load_retry">Keine weiteren Kontakte zum Laden. Neuanstoßen zum Laden.</string>
     <string name="nc_no_proxy">Kein Proxy</string>
-    <string name="nc_none">Keine</string>
-    <string name="nc_not_defined_error">Unbekannter Fehler</string>
     <string name="nc_notification_channel">%1$s auf %2$s Benachrichtigungskanal</string>
     <string name="nc_notification_channel_calls">Anrufe</string>
     <string name="nc_notification_channel_calls_description">Bei eingehenden Anrufen benachrichtigen</string>
@@ -302,15 +285,12 @@
     <string name="nc_settings_theme_light">Hell</string>
     <string name="nc_settings_theme_title">Design</string>
     <string name="nc_settings_use_credentials_title">Proxy erfordert eine Authentifizierung</string>
-    <string name="nc_settings_vibrate">Vibrieren</string>
-    <string name="nc_settings_vibrate_desc">Telefon wird vibrieren, sofern es nicht lautlos gestellt ist</string>
     <string name="nc_settings_warning">Warnung</string>
     <string name="nc_settings_wrong_account">Nur das aktuelle Konto kann reautorisiert werden</string>
     <string name="nc_share_contact">Kontakt teilen</string>
     <string name="nc_share_contact_permission">Leseberechtigung für Kontakte erforderlich</string>
     <string name="nc_share_current_location">Aktuelle Position teilen</string>
     <string name="nc_share_link">Link teilen</string>
-    <string name="nc_share_link_via">Link teilen über</string>
     <string name="nc_share_location">Ort teilen</string>
     <string name="nc_share_subject">%1$s Einladung </string>
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
@@ -320,10 +300,7 @@
     <string name="nc_shared_items_description">Bilder, Dateien, Sprachnachrichten…</string>
     <string name="nc_shared_location">Geteilter Ort</string>
     <string name="nc_sort_by">Sortiere nach</string>
-    <string name="nc_start_conversation">Starte eine Unterhaltung</string>
     <string name="nc_start_time">Startzeit</string>
-    <string name="nc_timeout_error">Zeitüberschreitung</string>
-    <string name="nc_unauthorized_error">Nicht autorisiert</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
@@ -347,7 +324,6 @@
     <string name="online_status">Online-Status</string>
     <string name="openConversations">Offene Unterhaltungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
-    <string name="password_protected">Passwortgeschützt</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>

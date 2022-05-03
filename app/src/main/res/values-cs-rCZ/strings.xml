@@ -37,7 +37,6 @@
     <string name="nc_account_chooser_add_account">Přidat účet</string>
     <string name="nc_account_scheduled_for_deletion">Účet je naplánován ke smazání a není možné ho změnit</string>
     <string name="nc_action_open_main_menu">Otevřít hlavní nabídku</string>
-    <string name="nc_add">Přidat</string>
     <string name="nc_add_attachment">Přidat přílohu</string>
     <string name="nc_add_emojis">Přidat emotikony</string>
     <string name="nc_add_file">Přidat do konverzace</string>
@@ -46,7 +45,6 @@
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
     <string name="nc_allow_guests">Povolit hosty</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
-    <string name="nc_bad_response_error">Nesprávná odpověď</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
@@ -61,7 +59,6 @@
     <string name="nc_call_unknown">%s hovor</string>
     <string name="nc_call_video">%s video hovor</string>
     <string name="nc_call_voice">%s hlasový hovor</string>
-    <string name="nc_calling">Volání…</string>
     <string name="nc_camera_permission_permanently_denied">Pro zapnutí videokomunikace udělte v nastavení systému oprávnění „Kamera“ .</string>
     <string name="nc_cancel">Storno</string>
     <string name="nc_capabilities_failed">Nepodařilo se získat schopnosti, přerušuje se</string>
@@ -82,7 +79,6 @@
     <string name="nc_common_set">Nastavit</string>
     <string name="nc_common_skip">Přeskočit</string>
     <string name="nc_configure_cert_auth">Vyberte certifikát pro ověřování se</string>
-    <string name="nc_configure_room">Nastavit konverzaci</string>
     <string name="nc_connecting_call">Připojování…</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_link">Odkaz na konverzaci</string>
@@ -101,9 +97,6 @@
     <string name="nc_delete_message">Smazat</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Zpráva úspěšně smazána, ale možná unikla do jiných služeb</string>
     <string name="nc_demote">Odebrat oprávnění moderátora</string>
-    <string name="nc_description_more_menu_group">Nabídka pro veřejnou konverzaci %1$s</string>
-    <string name="nc_description_more_menu_one_to_one">Nabídka pro konverzaci s %1$s</string>
-    <string name="nc_description_more_menu_public">Nabídka pro skupinovou konverzaci %1$s</string>
     <string name="nc_description_record_voice">Nahrát hlasovou zprávu</string>
     <string name="nc_description_send_message_button">Poslat zprávu</string>
     <string name="nc_dialog_invalid_password">Neplatné heslo</string>
@@ -111,10 +104,6 @@
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
     <string name="nc_email">E-mail</string>
-    <string name="nc_empty_response_error">Prázdná odpověď</string>
-    <string name="nc_endless_cancel">Zrušeno uživatelem.</string>
-    <string name="nc_endless_disabled">Žádné další položky k načtení (dosaženo nejvyššího umožněného počtu).</string>
-    <string name="nc_endless_error">Při načítání dalších položek došlo k chybě.</string>
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_failed_signaling_settings">Cílový server nepodporuje připojování se k veřejným konverzacím prostřednictvím mobilních telefonů. Můžete se pokusit připojit ke konverzaci prostřednictvím webového prohlížeče.</string>
     <string name="nc_failed_to_perform_operation">Omlouváme se, něco se pokazilo!</string>
@@ -129,11 +118,9 @@
     <string name="nc_group">Group</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_guest">Host</string>
-    <string name="nc_hello">Zdravím</string>
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
-    <string name="nc_incoming_call">Příchozí hovor od</string>
     <string name="nc_join_via_link">Připojit se přes odkaz</string>
     <string name="nc_join_via_web">Připojit se přes web</string>
     <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
@@ -171,12 +158,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">Aplikace %1$s není na serveru nainstalována, přerušuje se</string>
     <string name="nc_nick_guest">Host</string>
     <string name="nc_no">Ne</string>
-    <string name="nc_no_connection_error">Žádné spojení</string>
     <string name="nc_no_messages_yet">Zatím žádné zprávy</string>
-    <string name="nc_no_more_load_retry">Žádné další položky k načtení. Pro opětovný pokus načtěte znovu.</string>
     <string name="nc_no_proxy">Bez proxy</string>
-    <string name="nc_none">Žádné</string>
-    <string name="nc_not_defined_error">Neznámá chyba</string>
     <string name="nc_notification_channel">%1$s v %2$s kanálu upozornění</string>
     <string name="nc_notification_channel_calls">Volání</string>
     <string name="nc_notification_channel_calls_description">Oznámit příchozí volání</string>
@@ -302,15 +285,12 @@
     <string name="nc_settings_theme_light">Světlý</string>
     <string name="nc_settings_theme_title">Motiv vzhledu</string>
     <string name="nc_settings_use_credentials_title">Proxy vyžaduje přihlašovací údaje</string>
-    <string name="nc_settings_vibrate">Vibrovat</string>
-    <string name="nc_settings_vibrate_desc">Pokud není ztišený, telefon bude vibrovat</string>
     <string name="nc_settings_warning">Varování</string>
     <string name="nc_settings_wrong_account">Pověření může být znovuzískáno pouze pro stávající účet</string>
     <string name="nc_share_contact">Sdílet kontakt</string>
     <string name="nc_share_contact_permission">Je třeba oprávnění ke čtení kontaktů</string>
     <string name="nc_share_current_location">Sdílet stávající umístění</string>
     <string name="nc_share_link">Sdílet odkaz</string>
-    <string name="nc_share_link_via">Sdílet odkaz prostřednictvím</string>
     <string name="nc_share_location">Sdílet umístění</string>
     <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
@@ -320,10 +300,7 @@
     <string name="nc_shared_items_description">Obrázky, soubory, hlasové zprávy</string>
     <string name="nc_shared_location">Sdílené umístění</string>
     <string name="nc_sort_by">Řadit podle</string>
-    <string name="nc_start_conversation">Začněte konverzaci</string>
     <string name="nc_start_time">Čas zahájení</string>
-    <string name="nc_timeout_error">Časový limit</string>
-    <string name="nc_unauthorized_error">Není pověření</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
@@ -347,7 +324,6 @@
     <string name="online_status">Stav online</string>
     <string name="openConversations">Otevřít konverzace</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
-    <string name="password_protected">Chráněno heslem</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>

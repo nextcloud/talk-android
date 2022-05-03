@@ -37,7 +37,6 @@
     <string name="nc_account_chooser_add_account">Fiók hozzáadása</string>
     <string name="nc_account_scheduled_for_deletion">A fiók törlésre van jelölve, ezért nem lehet módosítani</string>
     <string name="nc_action_open_main_menu">Főmenü megnyitása</string>
-    <string name="nc_add">Hozzáadás</string>
     <string name="nc_add_attachment">Melléklet hozzáadása</string>
     <string name="nc_add_emojis">Emodzsi hozzáadása</string>
     <string name="nc_add_file">Hozzáadás a beszélgetéshez</string>
@@ -46,7 +45,6 @@
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_allow_guests">Vendégek engedélyezése</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
-    <string name="nc_bad_response_error">Hibás válasz</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
     <string name="nc_call_incoming">BEJÖVŐ</string>
     <string name="nc_call_name">Beszélgetésnév</string>
@@ -61,7 +59,6 @@
     <string name="nc_call_unknown">%s hívás</string>
     <string name="nc_call_video">%s videohívás</string>
     <string name="nc_call_voice">%s hanghívás</string>
-    <string name="nc_calling">Hívás…</string>
     <string name="nc_camera_permission_permanently_denied">A videohívás engedélyezéséhez a rendszerbeállításokban meg kell adnia a „Kamera” engedélyt.</string>
     <string name="nc_cancel">Mégse</string>
     <string name="nc_capabilities_failed">A lehetőségek lekérdezése sikertelen, megszakítás</string>
@@ -82,7 +79,6 @@
     <string name="nc_common_set">Beállítás</string>
     <string name="nc_common_skip">Kihagyás</string>
     <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
-    <string name="nc_configure_room">Beszélgetés beállításai</string>
     <string name="nc_connecting_call">Kapcsolódás…</string>
     <string name="nc_contacts_done">Kész</string>
     <string name="nc_conversation_link">Beszélgetési hivatkozás</string>
@@ -101,9 +97,6 @@
     <string name="nc_delete_message">Törlés</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Az üzenet törlése sikeresen megtörtént, de lehet, hogy az már megjelent más szolgáltatásokon</string>
     <string name="nc_demote">Lefokozás moderátorról</string>
-    <string name="nc_description_more_menu_group">Menü a nyilvános beszélgetéshez: %1$s</string>
-    <string name="nc_description_more_menu_one_to_one">Menü a beszélgetéshez vele: %1$s</string>
-    <string name="nc_description_more_menu_public">Menü a csoportbeszélgetéshez: %1$s</string>
     <string name="nc_description_record_voice">Hangüzenet rögzítése</string>
     <string name="nc_description_send_message_button">Üzenet küldése</string>
     <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
@@ -111,10 +104,6 @@
     <string name="nc_display_name_not_fetched">A megjelenítendő név nem kérhető le, megszakítás</string>
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
     <string name="nc_email">E-mail</string>
-    <string name="nc_empty_response_error">Üres válasz</string>
-    <string name="nc_endless_cancel">Felhasználó által megszakítva.</string>
-    <string name="nc_endless_disabled">Nincs több betöltésre váró elem (maximum elérve).</string>
-    <string name="nc_endless_error">Hiba történt a további elemek betöltésekor.</string>
     <string name="nc_external_server_failed">A jelzésbeállítások lekérése sikertelen</string>
     <string name="nc_failed_signaling_settings">A célkiszolgáló nem támogatja a mobiltelefonon történő nyilvános beszélgetéseket. Próbáljon meg webböngészőn keresztül csatlakozni a beszélgetéshez.</string>
     <string name="nc_failed_to_perform_operation">Bocsánat, valami hiba történt!</string>
@@ -129,11 +118,9 @@
     <string name="nc_group">Csoport</string>
     <string name="nc_groups">Csoportok</string>
     <string name="nc_guest">Vendég</string>
-    <string name="nc_hello">Üdv</string>
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
-    <string name="nc_incoming_call">Bejövő hívás tőle:</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
     <string name="nc_join_via_web">Csatlakozás weben keresztül</string>
     <string name="nc_last_moderator">Új moderátort kell kineveznie, mielőtt elhagyhatja ezt: %1$s.</string>
@@ -171,12 +158,8 @@
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s alkalmazás nincs telepítve a kiszolgálón, megszakítás</string>
     <string name="nc_nick_guest">Vendég</string>
     <string name="nc_no">Nem</string>
-    <string name="nc_no_connection_error">Nincs kapcsolat</string>
     <string name="nc_no_messages_yet">Nincs még üzenet</string>
-    <string name="nc_no_more_load_retry">Nincs több betöltésre váró elem. Frissítsen az újrapróbálkozáshoz.</string>
     <string name="nc_no_proxy">Nincs proxy</string>
-    <string name="nc_none">Nincs</string>
-    <string name="nc_not_defined_error">Ismeretlen hiba</string>
     <string name="nc_notification_channel">%1$s a(z) %2$s értesítési csatornán</string>
     <string name="nc_notification_channel_calls">Hívások</string>
     <string name="nc_notification_channel_calls_description">Értesítés a bejövő hívásokról</string>
@@ -302,15 +285,12 @@
     <string name="nc_settings_theme_light">Világos</string>
     <string name="nc_settings_theme_title">Téma</string>
     <string name="nc_settings_use_credentials_title">A proxyhoz hitelesítő adatok szükségesek</string>
-    <string name="nc_settings_vibrate">Rezgés</string>
-    <string name="nc_settings_vibrate_desc">A telefon rezegni fog, hacsak nincs némítva</string>
     <string name="nc_settings_warning">Figyelmeztetés</string>
     <string name="nc_settings_wrong_account">Csak az aktuális fiókot lehet újraengedélyezni</string>
     <string name="nc_share_contact">Névjegy megosztása</string>
     <string name="nc_share_contact_permission">A névjegyek olvasási engedélye szükséges</string>
     <string name="nc_share_current_location">Jelenlegi hely megosztása</string>
     <string name="nc_share_link">Hivatkozás megosztása</string>
-    <string name="nc_share_link_via">Hivatkozás megosztása ezzel</string>
     <string name="nc_share_location">Hely megosztása</string>
     <string name="nc_share_subject">%1$s meghívás</string>
     <string name="nc_share_text">Csatlakozzon a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
@@ -320,10 +300,7 @@
     <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>
     <string name="nc_shared_location">Hely megosztva</string>
     <string name="nc_sort_by">Rendezés elve</string>
-    <string name="nc_start_conversation">Beszélgetés indítása</string>
     <string name="nc_start_time">Kezdési idő</string>
-    <string name="nc_timeout_error">Időtúllépés</string>
-    <string name="nc_unauthorized_error">Jogosulatlan</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
     <string name="nc_upload_confirm_send_single">Ezen fájl küldése ide: %1$s</string>
@@ -347,7 +324,6 @@
     <string name="online_status">Elérhető állapot</string>
     <string name="openConversations">Beszélgetések megnyitása</string>
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
-    <string name="password_protected">Jelszóval védett</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>

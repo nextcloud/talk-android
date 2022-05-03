@@ -24,7 +24,6 @@
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Utilizador ativo</string>
     <string name="nc_account_chooser_add_account">Adicionar conta</string>
-    <string name="nc_add">Adicionar</string>
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_all_ok_operation">Ok, tudo concluído!</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
@@ -45,7 +44,6 @@
     <string name="nc_common_set">Definir</string>
     <string name="nc_common_skip">Saltar</string>
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
-    <string name="nc_configure_room">Configurar conversação</string>
     <string name="nc_connecting_call">A ligar...</string>
     <string name="nc_contacts_done">Concluir </string>
     <string name="nc_conversation_link">Hiperligação de conversação</string>
@@ -64,7 +62,6 @@
     <string name="nc_display_name_not_fetched">Não foi possível obter o nome a exibir, a abortar</string>
     <string name="nc_display_name_not_stored">Não foi possível guardar o nome a exibir, a abortar</string>
     <string name="nc_email">E-mail</string>
-    <string name="nc_endless_cancel">Cancelado pelo utilizador.</string>
     <string name="nc_failed_to_perform_operation">Desculpe, ocorreu algo de errado!</string>
     <string name="nc_file_browser_back">Anterior</string>
     <string name="nc_following_link">Utilizador a seguir uma hiperligação pública</string>
@@ -75,9 +72,7 @@
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
-    <string name="nc_hello">Olá</string>
     <string name="nc_hint_enter_a_message">Insira uma mensagem...</string>
-    <string name="nc_incoming_call">Chamada a receber de</string>
     <string name="nc_join_via_web">Aderir via Web</string>
     <string name="nc_last_modified">%1$s | Última modificação: %2$s</string>
     <string name="nc_leave">Sair da conversação</string>
@@ -93,8 +88,6 @@
     <string name="nc_no">Não</string>
     <string name="nc_no_messages_yet">Ainda sem mensagens</string>
     <string name="nc_no_proxy">Sem proxy</string>
-    <string name="nc_none">Nenhum</string>
-    <string name="nc_not_defined_error">Erro desconhecido</string>
     <string name="nc_notification_channel_messages">Mensagens</string>
     <string name="nc_notification_settings">Definições de notificação</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
@@ -154,15 +147,12 @@
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_light">Claro</string>
     <string name="nc_settings_theme_title">Tema</string>
-    <string name="nc_settings_vibrate">Vibrar</string>
     <string name="nc_settings_warning">Aviso</string>
     <string name="nc_share_link">Partilhar hiperligação</string>
-    <string name="nc_share_link_via">Partilhar hiperligação via</string>
     <string name="nc_share_subject">%1$s convite</string>
     <string name="nc_share_text">Junte-se à conversação em %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nPalavra-passe: %1$s</string>
     <string name="nc_sort_by">Ordenar por</string>
-    <string name="nc_start_conversation">Iniciar uma conversação</string>
     <string name="nc_upload_in_progess">A carregar</string>
     <string name="nc_user">Utilizador</string>
     <string name="nc_wrong_link">A hiperligação de conversação não é válida</string>
@@ -171,7 +161,6 @@
     <string name="oneHour">1 hora</string>
     <string name="online">Online</string>
     <string name="online_status">Estado online</string>
-    <string name="password_protected">Protegido com Palavra-passe</string>
     <string name="reactions_tab_all">Todos</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_title">Federada</string>

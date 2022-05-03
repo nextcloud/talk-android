@@ -33,7 +33,6 @@
     <string name="nc_account_chooser_add_account">Thêm tài khoản</string>
     <string name="nc_account_scheduled_for_deletion">Tài khoản được lên lịch xóa và không thể thay đổi</string>
     <string name="nc_action_open_main_menu">Mở menu chính</string>
-    <string name="nc_add">Thêm</string>
     <string name="nc_add_attachment">Thêm tệp đính kèm</string>
     <string name="nc_add_emojis">Thêm emoji</string>
     <string name="nc_add_file">Thêm vào cuộc trò chuyện</string>
@@ -42,7 +41,6 @@
     <string name="nc_all_ok_operation">OK, tất cả hoàn tất</string>
     <string name="nc_allow_guests">Cho phép khách</string>
     <string name="nc_attendee_pin">Ghim: %1$s</string>
-    <string name="nc_bad_response_error">Phản hồi lỗi</string>
     <string name="nc_biometric_unlock">Mở khoá %1$s</string>
     <string name="nc_call_incoming">ĐANG ĐẾN</string>
     <string name="nc_call_name">Tên cuộc Đàm thoại</string>
@@ -53,7 +51,6 @@
     <string name="nc_call_state_with_phone">%1$s với điện thoại</string>
     <string name="nc_call_state_with_video">%1$s với video</string>
     <string name="nc_call_timeout">Không có phản hồi trong 45 giây, nhấn để thử lại</string>
-    <string name="nc_calling">Đang gọi...</string>
     <string name="nc_camera_permission_permanently_denied">Để sử dụng cuộc gọi Video, vui lòng cấp quyền \"Camera\" trong cài đặt hệ thống.</string>
     <string name="nc_cancel">Hủy</string>
     <string name="nc_capabilities_failed">Lỗi không thể tải dữ liệu, hủy bỏ</string>
@@ -71,7 +68,6 @@
     <string name="nc_common_set">Đặt</string>
     <string name="nc_common_skip">Bỏ qua</string>
     <string name="nc_configure_cert_auth">Chọn chứng thực báo mật</string>
-    <string name="nc_configure_room">Cấu hình đàm thoại</string>
     <string name="nc_connecting_call">Đang kết nối...</string>
     <string name="nc_contacts_done">Hoàn tất</string>
     <string name="nc_conversation_link">Liên kết đàm thoại</string>
@@ -86,17 +82,11 @@
     <string name="nc_delete_call">Xóa đàm thoại</string>
     <string name="nc_delete_message">Xóa</string>
     <string name="nc_demote">Hạ uy tín từ người kiểm duyệt</string>
-    <string name="nc_description_more_menu_group">Danh mục Đàm thoại công khai %1$s</string>
-    <string name="nc_description_more_menu_one_to_one">Danh mục Đàm thoại với %1$s</string>
-    <string name="nc_description_more_menu_public">Danh mục nhóm Đàm thoại %1$s</string>
     <string name="nc_description_send_message_button">Gửi thông điệp</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
     <string name="nc_display_name_not_fetched">Không thể lấy dữ liệu Tên hiển thị, hủy bỏ</string>
     <string name="nc_display_name_not_stored">Không thể lưu Tên hiển thị, hủy bỏ</string>
     <string name="nc_email">Thư điện tử</string>
-    <string name="nc_endless_cancel">Đã hủy bởi người dùng.</string>
-    <string name="nc_endless_disabled">Không có mục nào để tải (đã đạt giới hạn)</string>
-    <string name="nc_endless_error">Đã xảy ra lỗi khi tải thêm mục.</string>
     <string name="nc_failed_to_perform_operation">Thật xin lỗi, một số thứ đang bị sai sót!</string>
     <string name="nc_file_browser_back">Quay lại</string>
     <string name="nc_forward_message">Chuyển tiếp</string>
@@ -105,9 +95,7 @@
     <string name="nc_group">Nhóm</string>
     <string name="nc_groups">Nhóm</string>
     <string name="nc_guest">Khách</string>
-    <string name="nc_hello">Xin chào</string>
     <string name="nc_hint_enter_a_message">Nhập một thông điệp...</string>
-    <string name="nc_incoming_call">Cuộc gọi từ</string>
     <string name="nc_join_via_link">Tham gia bằng một liên kết</string>
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>
@@ -130,10 +118,7 @@
     <string name="nc_nick_guest">Khách</string>
     <string name="nc_no">Không</string>
     <string name="nc_no_messages_yet">Chưa có thông điệp nào</string>
-    <string name="nc_no_more_load_retry">Không có mục nào được tải. Thử bấm làm mới lại.</string>
     <string name="nc_no_proxy">Không có proxy</string>
-    <string name="nc_none">Không có</string>
-    <string name="nc_not_defined_error">Lỗi chưa biết</string>
     <string name="nc_notification_channel">%1$s từ %2$s thông báo kênh</string>
     <string name="nc_notification_channel_calls">Cuộc gọi</string>
     <string name="nc_notification_channel_messages">Thông điệp</string>
@@ -204,18 +189,13 @@
     <string name="nc_settings_theme_key">chủ đề</string>
     <string name="nc_settings_theme_light">Sáng</string>
     <string name="nc_settings_theme_title">Chủ đề</string>
-    <string name="nc_settings_vibrate">Rung</string>
-    <string name="nc_settings_vibrate_desc">Điện thoại sẽ rung trừ khi im lặng</string>
     <string name="nc_settings_warning">Cảnh báo</string>
     <string name="nc_settings_wrong_account">Chỉ tài khoản hiện tại có thể chứng thực lại</string>
     <string name="nc_share_link">Chia sẽ liên kết</string>
-    <string name="nc_share_link_via">Chia sẽ liên kết với</string>
     <string name="nc_share_subject">%1$s lời mời</string>
     <string name="nc_share_text">Tham gia cuộc Đàm thoại tại %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nMật khẩu: %1$s</string>
     <string name="nc_sort_by">Sắp xếp theo</string>
-    <string name="nc_start_conversation">Bắt đầu một cuộc Đàm thoại</string>
-    <string name="nc_timeout_error">hết giờ</string>
     <string name="nc_upload_in_progess">Đang tải lên</string>
     <string name="nc_upload_picture_from_cam">Chụp ảnh</string>
     <string name="nc_user">Người dùng</string>
@@ -226,7 +206,6 @@
     <string name="online">Trực tuyến</string>
     <string name="online_status">Trạng thái trực tuyến</string>
     <string name="openConversations">Mở cuộc trò chuyện</string>
-    <string name="password_protected">Mật khẩu bảo vệ</string>
     <string name="reactions_tab_all">Tất cả</string>
     <string name="save">Lưu</string>
     <string name="scope_federated_title">Federated</string>
