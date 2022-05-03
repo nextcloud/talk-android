@@ -93,7 +93,6 @@ import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.ArrayList
 import java.util.LinkedList
 import java.util.Locale
 import javax.inject.Inject
@@ -341,13 +340,20 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         if (activity == null) {
             return
         }
-        binding.emptyList.emptyListViewHeadline.text = headline
-        binding.emptyList.emptyListViewText.text = message
-        binding.emptyList.emptyListIcon.setImageResource(errorResource)
-        binding.emptyList.emptyListIcon.visibility = View.VISIBLE
-        binding.emptyList.emptyListViewText.visibility = View.VISIBLE
-        binding.userinfoList.visibility = View.GONE
-        binding.loadingContent.visibility = View.GONE
+
+        try {
+            binding.emptyList.emptyListViewHeadline.text = headline
+            binding.emptyList.emptyListViewText.text = message
+            binding.emptyList.emptyListIcon.setImageResource(errorResource)
+            binding.emptyList.emptyListIcon.visibility = View.VISIBLE
+            binding.emptyList.emptyListViewText.visibility = View.VISIBLE
+            binding.userinfoList.visibility = View.GONE
+            binding.loadingContent.visibility = View.GONE
+        } catch (npe: NullPointerException) {
+            // view binding can be null
+            // since this is called asynchronously and UI might have been destroyed in the meantime
+            Log.i(TAG, "UI destroyed - view binding already gone")
+        }
     }
 
     private fun createUserInfoDetails(userInfo: UserProfileData?): List<UserInfoDetailsItem> {
