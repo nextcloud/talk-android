@@ -21,12 +21,14 @@
  */
 package com.nextcloud.talk.controllers
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Bundle
 import android.security.KeyChain
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -188,23 +190,30 @@ class ServerSelectionController :
         binding.certTextView.setOnClickListener { onCertClick() }
     }
 
+    @SuppressLint("LongLogTag")
     private fun checkServerAndProceed() {
         dispose()
-        var url: String = binding.serverEntryTextInputEditText.text.toString().trim { it <= ' ' }
-        binding.serverEntryTextInputEditText.isEnabled = false
-        showserverEntryProgressBar()
-        if (binding.helperTextView.visibility != View.INVISIBLE) {
-            binding.helperTextView.visibility = View.INVISIBLE
-            binding.certTextView.visibility = View.INVISIBLE
-        }
-        if (url.endsWith("/")) {
-            url = url.substring(0, url.length - 1)
-        }
-        val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
-        if (UriUtils.hasHttpProtocollPrefixed(url)) {
-            checkServer(queryUrl, false)
-        } else {
-            checkServer("https://$queryUrl", true)
+        try {
+            var url: String = binding.serverEntryTextInputEditText.text.toString().trim { it <= ' ' }
+            binding.serverEntryTextInputEditText.isEnabled = false
+            showserverEntryProgressBar()
+            if (binding.helperTextView.visibility != View.INVISIBLE) {
+                binding.helperTextView.visibility = View.INVISIBLE
+                binding.certTextView.visibility = View.INVISIBLE
+            }
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length - 1)
+            }
+            val queryUrl = url + ApiUtils.getUrlPostfixForStatus()
+            if (UriUtils.hasHttpProtocollPrefixed(url)) {
+                checkServer(queryUrl, false)
+            } else {
+                checkServer("https://$queryUrl", true)
+            }
+        } catch (npe: NullPointerException) {
+            // view binding can be null
+            // since this is called asynchronously and UI might have been destroyed in the meantime
+            Log.i(TAG, "UI destroyed - view binding already gone")
         }
     }
 
