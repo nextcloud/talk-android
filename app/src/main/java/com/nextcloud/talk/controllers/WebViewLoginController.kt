@@ -30,6 +30,7 @@ import android.os.Bundle
 import android.security.KeyChain
 import android.security.KeyChainException
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.webkit.ClientCertRequest
 import android.webkit.CookieSyncManager
@@ -77,7 +78,6 @@ import java.net.URLDecoder
 import java.security.PrivateKey
 import java.security.cert.CertificateException
 import java.security.cert.X509Certificate
-import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
@@ -183,32 +183,41 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
             }
 
             override fun onPageFinished(view: WebView, url: String) {
-                loginStep++
-                if (!basePageLoaded) {
-                    binding.progressBar.visibility = View.GONE
-                    binding.webview.visibility = View.VISIBLE
+                try {
+                    loginStep++
+                    if (!basePageLoaded) {
+                        binding.progressBar.visibility = View.GONE
+                        binding.webview.visibility = View.VISIBLE
 
-                    basePageLoaded = true
-                }
-                if (!TextUtils.isEmpty(username)) {
-                    if (loginStep == 1) {
-                        binding.webview.loadUrl("javascript: {document.getElementsByClassName('login')[0].click(); };")
-                    } else if (!automatedLoginAttempted) {
-                        automatedLoginAttempted = true
-                        if (TextUtils.isEmpty(password)) {
+                        basePageLoaded = true
+                    }
+                    if (!TextUtils.isEmpty(username)) {
+                        if (loginStep == 1) {
                             binding.webview.loadUrl(
-                                "javascript:var justStore = document.getElementById('user').value = '$username';"
+                                "javascript: {document.getElementsByClassName('login')[0].click(); };"
                             )
-                        } else {
-                            binding.webview.loadUrl(
-                                "javascript: {" +
-                                    "document.getElementById('user').value = '" + username + "';" +
-                                    "document.getElementById('password').value = '" + password + "';" +
-                                    "document.getElementById('submit').click(); };"
-                            )
+                        } else if (!automatedLoginAttempted) {
+                            automatedLoginAttempted = true
+                            if (TextUtils.isEmpty(password)) {
+                                binding.webview.loadUrl(
+                                    "javascript:var justStore = document.getElementById('user').value = '$username';"
+                                )
+                            } else {
+                                binding.webview.loadUrl(
+                                    "javascript: {" +
+                                        "document.getElementById('user').value = '" + username + "';" +
+                                        "document.getElementById('password').value = '" + password + "';" +
+                                        "document.getElementById('submit').click(); };"
+                                )
+                            }
                         }
                     }
+                } catch (npe: NullPointerException) {
+                    // view binding can be null
+                    // since this is called asynchronously and UI might have been destroyed in the meantime
+                    Log.i(TAG, "UI destroyed - view binding already gone")
                 }
+
                 super.onPageFinished(view, url)
             }
 
