@@ -472,10 +472,14 @@ public class ConversationsListController extends BaseController implements Searc
 
     @SuppressLint("LongLogTag")
     public void fetchData() {
-        fetchUserStatuses();
+        if (CapabilitiesUtil.isUserStatusAvailable(userUtils.getCurrentUser())) {
+            fetchUserStatusesAndRooms();
+        } else {
+            fetchRooms();
+        }
     }
 
-    private void fetchUserStatuses() {
+    private void fetchUserStatusesAndRooms() {
         ncApi.getUserStatuses(credentials, ApiUtils.getUrlForUserStatuses(currentUser.getBaseUrl()))
             .subscribe(new Observer<StatusesOverall>() {
                 @Override
