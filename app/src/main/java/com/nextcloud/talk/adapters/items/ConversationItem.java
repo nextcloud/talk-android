@@ -202,11 +202,11 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.binding.favoriteConversationImageView.setVisibility(View.GONE);
         }
 
-        if (Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
+        if (status != null && Conversation.ConversationType.ROOM_SYSTEM != conversation.getType()) {
             float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext);
             holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
-                status != null ? status.getStatus() : "",
-                status != null ? status.getIcon() : "",
+                status.getStatus(),
+                status.getIcon(),
                 size,
                 context.getResources().getColor(R.color.bg_default),
                 appContext));
