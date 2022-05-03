@@ -193,7 +193,9 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
                     }
                     if (!TextUtils.isEmpty(username)) {
                         if (loginStep == 1) {
-                            binding.webview.loadUrl("javascript: {document.getElementsByClassName('login')[0].click(); };")
+                            binding.webview.loadUrl(
+                                "javascript: {document.getElementsByClassName('login')[0].click(); };"
+                            )
                         } else if (!automatedLoginAttempted) {
                             automatedLoginAttempted = true
                             if (TextUtils.isEmpty(password)) {
