@@ -701,10 +701,16 @@ class ChatController(args: Bundle) :
         showMicrophoneButton(true)
 
         binding.messageInputView.messageInput.doAfterTextChanged {
-            if (binding.messageInputView.messageInput.text.isEmpty()) {
-                showMicrophoneButton(true)
-            } else {
-                showMicrophoneButton(false)
+            try {
+                if (binding.messageInputView.messageInput.text.isEmpty()) {
+                    showMicrophoneButton(true)
+                } else {
+                    showMicrophoneButton(false)
+                }
+            } catch (npe: NullPointerException) {
+                // view binding can be null
+                // since this is called asynchronously and UI might have been destroyed in the meantime
+                Log.i(TAG, "UI destroyed - view binding already gone")
             }
         }
 
