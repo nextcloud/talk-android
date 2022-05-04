@@ -213,7 +213,7 @@ class LocationPickerController(args: Bundle) :
         return true
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.ComplexMethod")
     private fun initMap() {
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
         binding.map.onResume()
@@ -223,43 +223,7 @@ class LocationPickerController(args: Bundle) :
         if (!isLocationPermissionsGranted()) {
             requestLocationPermissions()
         } else {
-            try {
-                when {
-                    locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> {
-                        locationManager!!.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_LOCATION_UPDATE_TIME,
-                            MIN_LOCATION_UPDATE_DISTANCE,
-                            this
-                        )
-                    }
-                    locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) -> {
-                        locationManager!!.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            MIN_LOCATION_UPDATE_TIME,
-                            MIN_LOCATION_UPDATE_DISTANCE,
-                            this
-                        )
-                        Log.d(TAG, "LocationManager.NETWORK_PROVIDER falling back to LocationManager.GPS_PROVIDER")
-                    }
-                    else -> {
-                        Log.e(
-                            TAG,
-                            "Error requesting location updates. Probably this is a phone without google services" +
-                                " and there is no alternative like UnifiedNlp installed. Furthermore no GPS is " +
-                                "supported."
-                        )
-                        Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG)
-                            .show()
-                    }
-                }
-            } catch (e: SecurityException) {
-                Log.e(TAG, "Error when requesting location updates. Permissions may be missing.", e)
-                Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
-            } catch (e: Exception) {
-                Log.e(TAG, "Error when requesting location updates.", e)
-                Toast.makeText(context, context?.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show()
-            }
+            requestLocationUpdates()
         }
 
         val copyrightOverlay = CopyrightOverlay(context)
@@ -317,39 +281,82 @@ class LocationPickerController(args: Bundle) :
         }
 
         binding.map.addMapListener(
-            DelayedMapListener(
-                object : MapListener {
-                    @Suppress("Detekt.TooGenericExceptionCaught")
-                    override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
-                        try {
-                            when {
-                                moveToCurrentLocationWasClicked -> {
-                                    setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
-                                    moveToCurrentLocationWasClicked = false
-                                }
-                                receivedChosenGeocodingResult -> {
-                                    binding.shareLocation.isClickable = true
-                                    setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
-                                    receivedChosenGeocodingResult = false
-                                }
-                                else -> {
-                                    binding.shareLocation.isClickable = true
-                                    setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
-                                }
-                            }
-                        } catch (e: NullPointerException) {
-                            Log.d(TAG, "UI already closed")
-                        }
-
-                        readyToShareLocation = true
-                        return true
-                    }
-
-                    override fun onZoom(event: ZoomEvent): Boolean {
-                        return false
-                    }
-                })
+            delayedMapListener()
         )
+    }
+
+    private fun delayedMapListener() = DelayedMapListener(
+        object : MapListener {
+            @Suppress("Detekt.TooGenericExceptionCaught")
+            override fun onScroll(paramScrollEvent: ScrollEvent): Boolean {
+                try {
+                    when {
+                        moveToCurrentLocationWasClicked -> {
+                            setLocationDescription(isGpsLocation = true, isGeocodedResult = false)
+                            moveToCurrentLocationWasClicked = false
+                        }
+                        receivedChosenGeocodingResult -> {
+                            binding.shareLocation.isClickable = true
+                            setLocationDescription(isGpsLocation = false, isGeocodedResult = true)
+                            receivedChosenGeocodingResult = false
+                        }
+                        else -> {
+                            binding.shareLocation.isClickable = true
+                            setLocationDescription(isGpsLocation = false, isGeocodedResult = false)
+                        }
+                    }
+                } catch (e: NullPointerException) {
+                    Log.d(TAG, "UI already closed")
+                }
+
+                readyToShareLocation = true
+                return true
+            }
+
+            override fun onZoom(event: ZoomEvent): Boolean {
+                return false
+            }
+        })
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun requestLocationUpdates() {
+        try {
+            when {
+                locationManager!!.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> {
+                    locationManager!!.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER,
+                        MIN_LOCATION_UPDATE_TIME,
+                        MIN_LOCATION_UPDATE_DISTANCE,
+                        this
+                    )
+                }
+                locationManager!!.isProviderEnabled(LocationManager.GPS_PROVIDER) -> {
+                    locationManager!!.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_LOCATION_UPDATE_TIME,
+                        MIN_LOCATION_UPDATE_DISTANCE,
+                        this
+                    )
+                    Log.d(TAG, "LocationManager.NETWORK_PROVIDER falling back to LocationManager.GPS_PROVIDER")
+                }
+                else -> {
+                    Log.e(
+                        TAG,
+                        "Error requesting location updates. Probably this is a phone without google services" +
+                            " and there is no alternative like UnifiedNlp installed. Furthermore no GPS is " +
+                            "supported."
+                    )
+                    Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        } catch (e: SecurityException) {
+            Log.e(TAG, "Error when requesting location updates. Permissions may be missing.", e)
+            Toast.makeText(context, context?.getString(R.string.nc_location_unknown), Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            Log.e(TAG, "Error when requesting location updates.", e)
+            Toast.makeText(context, context?.getString(R.string.nc_common_error_sorry), Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun setLocationDescription(isGpsLocation: Boolean, isGeocodedResult: Boolean) {
@@ -467,11 +474,10 @@ class LocationPickerController(args: Bundle) :
         grantResults: IntArray
     ) {
         fun areAllGranted(grantResults: IntArray): Boolean {
-            if (grantResults.isEmpty()) return false
             grantResults.forEach {
                 if (it == PackageManager.PERMISSION_DENIED) return false
             }
-            return true
+            return grantResults.isNotEmpty()
         }
 
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE && areAllGranted(grantResults)) {
