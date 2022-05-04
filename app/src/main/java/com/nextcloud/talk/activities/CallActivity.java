@@ -93,9 +93,9 @@ import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
-import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
 
@@ -1481,11 +1481,24 @@ public class CallActivity extends CallBaseActivity {
                 break;
             case "participantsUpdate":
                 Log.d(TAG, "onMessageEvent 'participantsUpdate'");
-                if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
-                    processUsersInRoom(
-                        (List<HashMap<String, Object>>) webSocketClient
-                            .getJobWithId(
-                                Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+
+                // See MagicWebSocketInstance#onMessage in case "participants" how the 'updateParameters' are created
+                Map<String, String> updateParameters = webSocketCommunicationEvent.getHashMap();
+
+                if (roomToken.equals(updateParameters.get("roomToken"))) {
+                    if (updateParameters.containsKey("all") && Boolean.parseBoolean(updateParameters.get("all"))) {
+                        if (updateParameters.containsKey("incall") && "0".equals(updateParameters.get("incall"))) {
+                            Log.d(TAG, "Most probably a moderator ended the call for all.");
+                            hangup(true);
+                        }
+                    } else if (updateParameters.containsKey("jobId")) {
+                        // In that case a list of users for the room is passed.
+                        processUsersInRoom(
+                            (List<HashMap<String, Object>>) webSocketClient
+                                .getJobWithId(
+                                    Integer.valueOf(updateParameters.get("jobId"))));
+                    }
+
                 }
                 break;
             case "signalingMessage":
