@@ -269,7 +269,20 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                         HashMap<String, String> refreshChatHashMap = new HashMap<>();
                                         HashMap<String, Object> updateEventMap = (HashMap<String, Object>) eventOverallWebSocketMessage.getEventMap().get("update");
                                         refreshChatHashMap.put("roomToken", (String) updateEventMap.get("roomid"));
-                                        refreshChatHashMap.put("jobId", Integer.toString(magicMap.add(updateEventMap.get("users"))));
+
+                                        if (updateEventMap.containsKey("users")) {
+                                            refreshChatHashMap.put("jobId", Integer.toString(magicMap.add(updateEventMap.get("users"))));
+                                        }
+
+                                        if (updateEventMap.containsKey("incall")) {
+                                            refreshChatHashMap.put("incall",
+                                                                   Long.toString((Long)updateEventMap.get("incall")));
+                                        }
+
+                                        if (updateEventMap.containsKey("all")) {
+                                            refreshChatHashMap.put("all", Boolean.toString((Boolean) updateEventMap.get("all")));
+                                        }
+
                                         eventBus.post(new WebSocketCommunicationEvent("participantsUpdate", refreshChatHashMap));
                                     }
                                     break;
