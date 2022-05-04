@@ -5,6 +5,8 @@
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  * @author Marcel Hibbe
  * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,24 +28,32 @@ class ChatUtils {
     companion object {
         fun getParsedMessage(message: String?, messageParameters: HashMap<String?, HashMap<String?, String?>>?):
             String? {
-            var resultMessage = message
             if (messageParameters != null && messageParameters.size > 0) {
-                for (key in messageParameters.keys) {
-                    val individualHashMap = messageParameters[key]
-                    val type = individualHashMap?.get("type")
-                    if (type == "user" || type == "guest" || type == "call") {
-                        resultMessage = resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
-                    } else if (type == "geo-location") {
-                        resultMessage = individualHashMap.get("name")
-                    } else if (individualHashMap?.containsKey("link") == true) {
-                        resultMessage = if (type == "file") {
-                            resultMessage?.replace("{$key}", individualHashMap["name"].toString())
-                        } else {
-                            individualHashMap["link"].toString()
-                        }
+                return parse(messageParameters, message)
+            }
+            return message
+        }
+
+        private fun parse(
+            messageParameters: HashMap<String?, HashMap<String?, String?>>,
+            message: String?
+        ): String? {
+            var resultMessage = message
+            for (key in messageParameters.keys) {
+                val individualHashMap = messageParameters[key]
+                val type = individualHashMap?.get("type")
+                if (type == "user" || type == "guest" || type == "call") {
+                    resultMessage = resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
+                } else if (type == "geo-location") {
+                    resultMessage = individualHashMap.get("name")
+                } else if (individualHashMap?.containsKey("link") == true) {
+                    resultMessage = if (type == "file") {
+                        resultMessage?.replace("{$key}", individualHashMap["name"].toString())
                     } else {
-                        resultMessage = individualHashMap?.get("name")?.let { resultMessage?.replace("{$key}", it) }
+                        individualHashMap["link"].toString()
                     }
+                } else {
+                    resultMessage = individualHashMap?.get("name")?.let { resultMessage?.replace("{$key}", it) }
                 }
             }
             return resultMessage
