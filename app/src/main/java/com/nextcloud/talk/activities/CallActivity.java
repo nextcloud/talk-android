@@ -157,6 +157,12 @@ import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
+import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
+import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
+import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
+import static com.nextcloud.talk.webrtc.Globals.UPDATE_ALL;
+import static com.nextcloud.talk.webrtc.Globals.UPDATE_IN_CALL;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
 
@@ -1479,24 +1485,33 @@ public class CallActivity extends CallBaseActivity {
                     performCall();
                 }
                 break;
-            case "participantsUpdate":
+            case PARTICIPANTS_UPDATE:
                 Log.d(TAG, "onMessageEvent 'participantsUpdate'");
 
                 // See MagicWebSocketInstance#onMessage in case "participants" how the 'updateParameters' are created
                 Map<String, String> updateParameters = webSocketCommunicationEvent.getHashMap();
 
-                if (roomToken.equals(updateParameters.get("roomToken"))) {
-                    if (updateParameters.containsKey("all") && Boolean.parseBoolean(updateParameters.get("all"))) {
-                        if (updateParameters.containsKey("incall") && "0".equals(updateParameters.get("incall"))) {
+                if (updateParameters == null) {
+                    break;
+                }
+
+                String updateRoomToken = updateParameters.get(ROOM_TOKEN);
+                String updateAll = updateParameters.get(UPDATE_ALL);
+                String updateInCall = updateParameters.get(UPDATE_IN_CALL);
+                String jobId = updateParameters.get(JOB_ID);
+
+                if (roomToken.equals(updateRoomToken)) {
+                    if (updateAll != null && Boolean.parseBoolean(updateAll)) {
+                        if ("0".equals(updateInCall)) {
                             Log.d(TAG, "Most probably a moderator ended the call for all.");
                             hangup(true);
                         }
-                    } else if (updateParameters.containsKey("jobId")) {
+                    } else if (jobId != null) {
                         // In that case a list of users for the room is passed.
                         processUsersInRoom(
                             (List<HashMap<String, Object>>) webSocketClient
                                 .getJobWithId(
-                                    Integer.valueOf(updateParameters.get("jobId"))));
+                                    Integer.valueOf(jobId)));
                     }
 
                 }
