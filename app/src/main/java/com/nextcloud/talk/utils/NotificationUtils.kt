@@ -181,82 +181,14 @@ object NotificationUtils {
         return null
     }
 
-    fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
-            return
-        }
-
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val statusBarNotifications = notificationManager.activeNotifications
-        var notification: Notification?
-        for (statusBarNotification in statusBarNotifications) {
-            notification = statusBarNotification.notification
-
-            if (notification != null && !notification.extras.isEmpty) {
-                if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)) {
-                    notificationManager.cancel(statusBarNotification.id)
-                }
-            }
-        }
-    }
-
-    fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long?) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
-            return
-        }
-
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val statusBarNotifications = notificationManager.activeNotifications
-        var notification: Notification?
-        for (statusBarNotification in statusBarNotifications) {
-            notification = statusBarNotification.notification
-
-            if (notification != null && !notification.extras.isEmpty) {
-                if (
-                    conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                    notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
-                ) {
-                    notificationManager.cancel(statusBarNotification.id)
-                }
-            }
-        }
-    }
-
-    fun findNotificationForRoom(
+    private inline fun scanNotifications(
         context: Context?,
         conversationUser: UserEntity,
-        roomTokenOrId: String
-    ): StatusBarNotification? {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
-            return null
-        }
-
-        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        val statusBarNotifications = notificationManager.activeNotifications
-        var notification: Notification?
-        for (statusBarNotification in statusBarNotifications) {
-            notification = statusBarNotification.notification
-
-            if (notification != null && !notification.extras.isEmpty) {
-                if (
-                    conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                    roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
-                ) {
-                    return statusBarNotification
-                }
-            }
-        }
-
-        return null
-    }
-
-    fun cancelExistingNotificationsForRoom(
-        context: Context?,
-        conversationUser: UserEntity,
-        roomTokenOrId: String
+        callback: (
+            notificationManager: NotificationManager,
+            statusBarNotification: StatusBarNotification,
+            notification: Notification
+        ) -> Unit
     ) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
             return
@@ -269,12 +201,51 @@ object NotificationUtils {
         for (statusBarNotification in statusBarNotifications) {
             notification = statusBarNotification.notification
 
-            if (notification != null && !notification.extras.isEmpty) {
-                if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                    roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
-                ) {
-                    notificationManager.cancel(statusBarNotification.id)
-                }
+            if (
+                notification != null &&
+                !notification.extras.isEmpty &&
+                conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+            ) {
+                callback(notificationManager, statusBarNotification, notification)
+            }
+        }
+    }
+
+    fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, _ ->
+            notificationManager.cancel(statusBarNotification.id)
+        }
+    }
+
+    fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long?) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+            if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
+                notificationManager.cancel(statusBarNotification.id)
+            }
+        }
+    }
+
+    fun findNotificationForRoom(
+        context: Context?,
+        conversationUser: UserEntity,
+        roomTokenOrId: String
+    ): StatusBarNotification? {
+        scanNotifications(context, conversationUser) { _, statusBarNotification, notification ->
+            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
+                return statusBarNotification
+            }
+        }
+        return null
+    }
+
+    fun cancelExistingNotificationsForRoom(
+        context: Context?,
+        conversationUser: UserEntity,
+        roomTokenOrId: String
+    ) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
+                notificationManager.cancel(statusBarNotification.id)
             }
         }
     }
