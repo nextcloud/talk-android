@@ -75,13 +75,11 @@ class Reaction {
 
                 emojiWithAmountWrapper.addView(reactionEmoji)
 
-                if (amount > 1) {
-                    val reactionAmount = TextView(context)
-                    reactionAmount.setTextColor(textColor)
-                    reactionAmount.text = amount.toString()
-                    reactionAmount.layoutParams = amountParams
-                    emojiWithAmountWrapper.addView(reactionAmount)
-                }
+                val reactionAmount = TextView(context)
+                reactionAmount.setTextColor(textColor)
+                reactionAmount.text = amount.toString()
+                reactionAmount.layoutParams = amountParams
+                emojiWithAmountWrapper.addView(reactionAmount)
 
                 emojiWithAmountWrapper.layoutParams = wrapperParams
 
