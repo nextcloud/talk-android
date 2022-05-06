@@ -76,16 +76,16 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                             val fileParameters = it.value.messageParameters["file"]!!
 
                             val previewAvailable =
-                                "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
+                                "yes".equals(fileParameters["preview-available"], ignoreCase = true)
 
                             items[it.value.id] = SharedItem(
                                 fileParameters["id"]!!,
                                 fileParameters["name"]!!,
-                                fileParameters["size"]!!.toLong(),
+                                fileParameters["size"]?.toLong(),
                                 it.value.timestamp,
                                 fileParameters["path"]!!,
-                                fileParameters["link"]!!,
-                                fileParameters["mimetype"]!!,
+                                fileParameters["link"],
+                                fileParameters["mimetype"],
                                 previewAvailable,
                                 repository.previewLink(fileParameters["id"]),
                                 repository.parameters!!.userEntity

@@ -29,6 +29,7 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.emoji.widget.EmojiTextView
 import androidx.work.Data
@@ -82,8 +83,8 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     fun openFile(
         fileInfo: FileInfo,
         path: String,
-        link: String,
-        mimetype: String,
+        link: String?,
+        mimetype: String?,
         progressUi: ProgressUi
     ) {
         if (isSupportedForInternalViewer(mimetype) || canBeHandledByExternalApp(mimetype, fileInfo.fileName)) {
@@ -93,12 +94,20 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
                 mimetype,
                 progressUi
             )
-        } else {
+        } else if (!link.isNullOrEmpty()) {
             openFileInFilesApp(link, fileInfo.fileId)
+        } else {
+            Log.e(
+                TAG,
+                "File with id " + fileInfo.fileId + " can't be opened because internal viewer doesn't " +
+                    "support it, it can't be handled by an external app and there is no link " +
+                    "to open it in the nextcloud files app"
+            )
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun canBeHandledByExternalApp(mimetype: String, fileName: String): Boolean {
+    private fun canBeHandledByExternalApp(mimetype: String?, fileName: String): Boolean {
         val path: String = context.cacheDir.absolutePath + "/" + fileName
         val file = File(path)
         val intent = Intent(Intent.ACTION_VIEW)
@@ -109,12 +118,12 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     private fun openOrDownloadFile(
         fileInfo: FileInfo,
         path: String,
-        mimetype: String,
+        mimetype: String?,
         progressUi: ProgressUi
     ) {
         val file = File(context.cacheDir, fileInfo.fileName)
         if (file.exists()) {
-            openFileByMimetype(fileInfo.fileName!!, mimetype!!)
+            openFileByMimetype(fileInfo.fileName!!, mimetype)
         } else {
             downloadFileToCache(
                 fileInfo,
@@ -125,24 +134,29 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         }
     }
 
-    private fun openFileByMimetype(filename: String, mimetype: String) {
-        when (mimetype) {
-            "audio/mpeg",
-            "audio/wav",
-            "audio/ogg",
-            "video/mp4",
-            "video/quicktime",
-            "video/ogg"
-            -> openMediaView(filename, mimetype)
-            "image/png",
-            "image/jpeg",
-            "image/gif"
-            -> openImageView(filename, mimetype)
-            "text/markdown",
-            "text/plain"
-            -> openTextView(filename, mimetype)
-            else
-            -> openFileByExternalApp(filename, mimetype)
+    private fun openFileByMimetype(filename: String, mimetype: String?) {
+        if (mimetype != null) {
+            when (mimetype) {
+                "audio/mpeg",
+                "audio/wav",
+                "audio/ogg",
+                "video/mp4",
+                "video/quicktime",
+                "video/ogg"
+                -> openMediaView(filename, mimetype)
+                "image/png",
+                "image/jpeg",
+                "image/gif"
+                -> openImageView(filename, mimetype)
+                "text/markdown",
+                "text/plain"
+                -> openTextView(filename, mimetype)
+                else
+                -> openFileByExternalApp(filename, mimetype)
+            }
+        } else {
+            Log.e(TAG, "can't open file with unknown mimetype")
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -255,7 +269,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     private fun downloadFileToCache(
         fileInfo: FileInfo,
         path: String,
-        mimetype: String,
+        mimetype: String?,
         progressUi: ProgressUi
     ) {
         // check if download worker is already running
@@ -273,6 +287,13 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
             Log.e(TAG, "Error when checking if worker already exists", e)
         }
         val downloadWorker: OneTimeWorkRequest
+
+        val size: Long = if (fileInfo.fileSize == null) {
+            -1
+        } else {
+            fileInfo.fileSize!!
+        }
+
         val data: Data = Data.Builder()
             .putString(DownloadFileToCacheWorker.KEY_BASE_URL, userEntity.baseUrl)
             .putString(DownloadFileToCacheWorker.KEY_USER_ID, userEntity.userId)
@@ -282,8 +303,9 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
             )
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
-            .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileInfo.fileSize)
+            .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, size)
             .build()
+
         downloadWorker = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
             .setInputData(data)
             .addTag(fileInfo.fileId)
@@ -303,7 +325,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
 
     private fun updateViewsByProgress(
         fileName: String,
-        mimetype: String,
+        mimetype: String?,
         workInfo: WorkInfo,
         progressUi: ProgressUi
     ) {
@@ -343,7 +365,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     fun resumeToUpdateViewsByProgress(
         fileName: String,
         fileId: String,
-        mimeType: String,
+        mimeType: String?,
         progressUi: ProgressUi
     ) {
         val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileId)
@@ -383,7 +405,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     data class FileInfo(
         val fileId: String,
         val fileName: String,
-        var fileSize: Long
+        var fileSize: Long?
     )
 
     companion object {
