@@ -715,9 +715,13 @@ public class ConversationsListController extends BaseController implements Searc
         });
 
         recyclerView.setOnTouchListener((v, event) -> {
-            InputMethodManager imm =
-                (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            if (isAttached() && (!isBeingDestroyed() || !isDestroyed())) {
+                InputMethodManager imm =
+                    (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
+            }
             return false;
         });
 
