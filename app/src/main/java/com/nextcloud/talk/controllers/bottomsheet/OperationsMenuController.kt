@@ -76,7 +76,6 @@ import org.greenrobot.eventbus.EventBus
 import org.parceler.Parcels
 import retrofit2.HttpException
 import java.io.IOException
-import java.util.ArrayList
 import java.util.Collections
 import javax.inject.Inject
 
@@ -121,6 +120,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         super.onViewBound(view)
         sharedApplication!!.componentApplication.inject(this)
         currentUser = userUtils!!.currentUser
+
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)
             if (callUrl.contains("/index.php")) {
@@ -204,294 +204,336 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             })
     }
 
+    @Suppress("Detekt.ComplexMethod")
     private fun processOperation() {
-        val roomOperationsObserver = RoomOperationsObserver()
-        val genericOperationsObserver = GenericOperationsObserver()
         if (currentUser == null) {
             showResultImage(everythingOK = false, isGuestSupportError = true)
             Log.e(TAG, "Ended up in processOperation without a valid currentUser")
             return
         }
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
-        val chatApiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(ApiUtils.APIv1))
         when (operation) {
-            ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> ncApi!!.renameRoom(
-                credentials,
-                ApiUtils.getUrlForRoom(
-                    apiVersion,
-                    currentUser!!.baseUrl,
-                    conversation!!.getToken()
-                ),
-                conversation!!.getName()
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(genericOperationsObserver)
-            ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC -> ncApi!!.makeRoomPublic(
-                credentials,
-                ApiUtils.getUrlForRoomPublic(
-                    apiVersion,
-                    currentUser!!.baseUrl,
-                    conversation!!.getToken()
-                )
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(genericOperationsObserver)
+            ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> operationRenameRoom()
+            ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC -> operationMakePublic()
             ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD,
             ConversationOperationEnum.OPS_CODE_CLEAR_PASSWORD,
-            ConversationOperationEnum.OPS_CODE_SET_PASSWORD -> {
-                var pass: String? = ""
-                if (conversation!!.getPassword() != null) {
-                    pass = conversation!!.getPassword()
-                }
-                ncApi!!.setPassword(
-                    credentials,
-                    ApiUtils.getUrlForRoomPassword(
-                        apiVersion,
-                        currentUser!!.baseUrl,
-                        conversation!!.getToken()
-                    ),
-                    pass
-                )
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(1)
-                    .subscribe(genericOperationsObserver)
-            }
-            ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE -> ncApi!!.makeRoomPrivate(
-                credentials,
-                ApiUtils.getUrlForRoomPublic(
-                    apiVersion,
-                    currentUser!!.baseUrl,
-                    conversation!!.getToken()
-                )
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(genericOperationsObserver)
-            ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> ncApi!!.getRoom(
-                credentials,
-                ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken)
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(object : Observer<RoomOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        disposable = d
-                    }
-
-                    override fun onNext(roomOverall: RoomOverall) {
-                        conversation = roomOverall.getOcs().getData()
-                        if (conversation!!.isHasPassword && conversation!!.isGuest) {
-                            eventBus!!.post(ConversationsListFetchDataEvent())
-                            val bundle = Bundle()
-                            bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
-                            bundle.putString(KEY_CALL_URL, callUrl)
-                            try {
-                                bundle.putParcelable(
-                                    KEY_SERVER_CAPABILITIES,
-                                    Parcels.wrap<Capabilities>(
-                                        LoganSquare.parse<Capabilities>(
-                                            currentUser!!.capabilities,
-                                            Capabilities::class.java
-                                        )
-                                    )
-                                )
-                            } catch (e: IOException) {
-                                Log.e(TAG, "Failed to parse capabilities for guest")
-                                showResultImage(everythingOK = false, isGuestSupportError = false)
-                            }
-                            bundle.putSerializable(KEY_OPERATION_CODE, ConversationOperationEnum.OPS_CODE_JOIN_ROOM)
-                            router.pushController(
-                                RouterTransaction.with(EntryMenuController(bundle))
-                                    .pushChangeHandler(HorizontalChangeHandler())
-                                    .popChangeHandler(HorizontalChangeHandler())
-                            )
-                        } else if (conversation!!.isGuest) {
-                            ncApi!!.joinRoom(
-                                credentials,
-                                ApiUtils.getUrlForParticipantsActive(
-                                    apiVersion,
-                                    baseUrl,
-                                    conversationToken
-                                ),
-                                null
-                            )
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(object : Observer<RoomOverall> {
-                                    override fun onSubscribe(d: Disposable) {
-                                        // unused atm
-                                    }
-
-                                    override fun onNext(roomOverall: RoomOverall) {
-                                        conversation = roomOverall.getOcs().getData()
-                                        initiateConversation()
-                                    }
-
-                                    override fun onError(e: Throwable) {
-                                        showResultImage(everythingOK = false, isGuestSupportError = false)
-                                        dispose()
-                                    }
-
-                                    override fun onComplete() {
-                                        // unused atm
-                                    }
-                                })
-                        } else {
-                            initiateConversation()
-                        }
-                    }
-
-                    override fun onError(e: Throwable) {
-                        showResultImage(everythingOK = false, isGuestSupportError = false)
-                        dispose()
-                    }
-
-                    override fun onComplete() {
-                        dispose()
-                    }
-                })
-            ConversationOperationEnum.OPS_CODE_INVITE_USERS -> {
-                val retrofitBucket: RetrofitBucket
-                var invite: String? = null
-                if (invitedGroups!!.size > 0) {
-                    invite = invitedGroups!![0]
-                }
-                retrofitBucket = if (conversationType == ConversationType.ROOM_PUBLIC_CALL) {
-                    ApiUtils.getRetrofitBucketForCreateRoom(
-                        apiVersion,
-                        currentUser!!.baseUrl,
-                        "3",
-                        null,
-                        invite,
-                        conversationName
-                    )
-                } else {
-                    ApiUtils.getRetrofitBucketForCreateRoom(
-                        apiVersion,
-                        currentUser!!.baseUrl,
-                        "2",
-                        null,
-                        invite,
-                        conversationName
-                    )
-                }
-                ncApi!!.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .retry(1)
-                    .subscribe(object : Observer<RoomOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                            // unused atm
-                        }
-                        override fun onNext(roomOverall: RoomOverall) {
-                            conversation = roomOverall.getOcs().getData()
-                            ncApi!!.getRoom(
-                                credentials,
-                                ApiUtils.getUrlForRoom(
-                                    apiVersion, currentUser!!.baseUrl,
-                                    conversation!!.getToken()
-                                )
-                            )
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(object : Observer<RoomOverall> {
-                                    override fun onSubscribe(d: Disposable) {
-                                        // unused atm
-                                    }
-                                    override fun onNext(
-                                        roomOverall: RoomOverall
-                                    ) {
-                                        conversation = roomOverall.getOcs().getData()
-                                        inviteUsersToAConversation()
-                                    }
-
-                                    override fun onError(e: Throwable) {
-                                        showResultImage(everythingOK = false, isGuestSupportError = false)
-                                        dispose()
-                                    }
-
-                                    override fun onComplete() {
-                                        // unused atm
-                                    }
-                                })
-                        }
-
-                        override fun onError(e: Throwable) {
-                            showResultImage(everythingOK = false, isGuestSupportError = false)
-                            dispose()
-                        }
-
-                        override fun onComplete() {
-                            dispose()
-                        }
-                    })
-            }
-            ConversationOperationEnum.OPS_CODE_MARK_AS_READ -> ncApi!!.setChatReadMarker(
-                credentials,
-                ApiUtils.getUrlForSetChatReadMarker(
-                    chatApiVersion,
-                    currentUser!!.baseUrl,
-                    conversation!!.getToken()
-                ),
-                conversation!!.lastMessage.jsonMessageId
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(genericOperationsObserver)
+            ConversationOperationEnum.OPS_CODE_SET_PASSWORD -> operationChangePassword()
+            ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE -> operationMakePrivate()
+            ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> operationGetAndJoinRoom()
+            ConversationOperationEnum.OPS_CODE_INVITE_USERS -> operationInviteUsers()
+            ConversationOperationEnum.OPS_CODE_MARK_AS_READ -> operationMarkAsRead()
             ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE,
-            ConversationOperationEnum.OPS_CODE_ADD_FAVORITE ->
-                if (operation === ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE) {
-                    ncApi!!.removeConversationFromFavorites(
-                        credentials,
-                        ApiUtils.getUrlForRoomFavorite(
-                            apiVersion,
-                            currentUser!!.baseUrl,
-                            conversation!!.getToken()
-                        )
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .retry(1)
-                        .subscribe(genericOperationsObserver)
-                } else {
-                    ncApi!!.addConversationToFavorites(
-                        credentials,
-                        ApiUtils.getUrlForRoomFavorite(
-                            apiVersion,
-                            currentUser!!.baseUrl,
-                            conversation!!.getToken()
-                        )
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .retry(1)
-                        .subscribe(genericOperationsObserver)
-                }
-            ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> ncApi!!.joinRoom(
-                credentials,
-                ApiUtils.getUrlForParticipantsActive(
-                    apiVersion,
-                    baseUrl,
-                    conversationToken
-                ),
-                callPassword
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .retry(1)
-                .subscribe(roomOperationsObserver)
+            ConversationOperationEnum.OPS_CODE_ADD_FAVORITE -> operationToggleFavorite()
+            ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> operationJoinRoom()
             else -> {
             }
         }
+    }
+
+    private fun apiVersion(): Int {
+        return ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, ApiUtils.APIv1))
+    }
+
+    private fun chatApiVersion(): Int {
+        return ApiUtils.getChatApiVersion(currentUser, intArrayOf(ApiUtils.APIv1))
+    }
+
+    private fun operationJoinRoom() {
+        ncApi!!.joinRoom(
+            credentials,
+            ApiUtils.getUrlForParticipantsActive(
+                apiVersion(),
+                baseUrl,
+                conversationToken
+            ),
+            callPassword
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(RoomOperationsObserver())
+    }
+
+    private fun operationMarkAsRead() {
+        ncApi!!.setChatReadMarker(
+            credentials,
+            ApiUtils.getUrlForSetChatReadMarker(
+                chatApiVersion(),
+                currentUser!!.baseUrl,
+                conversation!!.getToken()
+            ),
+            conversation!!.lastMessage.jsonMessageId
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(GenericOperationsObserver())
+    }
+
+    private fun operationMakePrivate() {
+        ncApi!!.makeRoomPrivate(
+            credentials,
+            ApiUtils.getUrlForRoomPublic(
+                apiVersion(),
+                currentUser!!.baseUrl,
+                conversation!!.getToken()
+            )
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(GenericOperationsObserver())
+    }
+
+    private fun operationChangePassword() {
+        var pass: String? = ""
+        if (conversation!!.getPassword() != null) {
+            pass = conversation!!.getPassword()
+        }
+        ncApi!!.setPassword(
+            credentials,
+            ApiUtils.getUrlForRoomPassword(
+                apiVersion(),
+                currentUser!!.baseUrl,
+                conversation!!.getToken()
+            ),
+            pass
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(GenericOperationsObserver())
+    }
+
+    private fun operationMakePublic() {
+        ncApi!!.makeRoomPublic(
+            credentials,
+            ApiUtils.getUrlForRoomPublic(
+                apiVersion(),
+                currentUser!!.baseUrl,
+                conversation!!.getToken()
+            )
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(GenericOperationsObserver())
+    }
+
+    private fun operationRenameRoom() {
+        ncApi!!.renameRoom(
+            credentials,
+            ApiUtils.getUrlForRoom(
+                apiVersion(),
+                currentUser!!.baseUrl,
+                conversation!!.getToken()
+            ),
+            conversation!!.getName()
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(GenericOperationsObserver())
+    }
+
+    private fun operationToggleFavorite() {
+        val genericOperationsObserver = GenericOperationsObserver()
+        val apiVersion = apiVersion()
+        if (operation === ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE) {
+            ncApi!!.removeConversationFromFavorites(
+                credentials,
+                ApiUtils.getUrlForRoomFavorite(
+                    apiVersion,
+                    currentUser!!.baseUrl,
+                    conversation!!.getToken()
+                )
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(1)
+                .subscribe(genericOperationsObserver)
+        } else {
+            ncApi!!.addConversationToFavorites(
+                credentials,
+                ApiUtils.getUrlForRoomFavorite(
+                    apiVersion,
+                    currentUser!!.baseUrl,
+                    conversation!!.getToken()
+                )
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .retry(1)
+                .subscribe(genericOperationsObserver)
+        }
+    }
+
+    private fun operationInviteUsers() {
+        val retrofitBucket: RetrofitBucket
+        val apiVersion = apiVersion()
+        var invite: String? = null
+        if (invitedGroups!!.size > 0) {
+            invite = invitedGroups!![0]
+        }
+        retrofitBucket = if (conversationType == ConversationType.ROOM_PUBLIC_CALL) {
+            ApiUtils.getRetrofitBucketForCreateRoom(
+                apiVersion,
+                currentUser!!.baseUrl,
+                "3",
+                null,
+                invite,
+                conversationName
+            )
+        } else {
+            ApiUtils.getRetrofitBucketForCreateRoom(
+                apiVersion,
+                currentUser!!.baseUrl,
+                "2",
+                null,
+                invite,
+                conversationName
+            )
+        }
+        ncApi!!.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<RoomOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(roomOverall: RoomOverall) {
+                    conversation = roomOverall.getOcs().getData()
+                    ncApi!!.getRoom(
+                        credentials,
+                        ApiUtils.getUrlForRoom(
+                            apiVersion, currentUser!!.baseUrl,
+                            conversation!!.getToken()
+                        )
+                    )
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(object : Observer<RoomOverall> {
+                            override fun onSubscribe(d: Disposable) {
+                                // unused atm
+                            }
+
+                            override fun onNext(
+                                roomOverall: RoomOverall
+                            ) {
+                                conversation = roomOverall.getOcs().getData()
+                                inviteUsersToAConversation()
+                            }
+
+                            override fun onError(e: Throwable) {
+                                showResultImage(everythingOK = false, isGuestSupportError = false)
+                                dispose()
+                            }
+
+                            override fun onComplete() {
+                                // unused atm
+                            }
+                        })
+                }
+
+                override fun onError(e: Throwable) {
+                    showResultImage(everythingOK = false, isGuestSupportError = false)
+                    dispose()
+                }
+
+                override fun onComplete() {
+                    dispose()
+                }
+            })
+    }
+
+    private fun operationGetAndJoinRoom() {
+        val apiVersion = apiVersion()
+        ncApi!!.getRoom(
+            credentials,
+            ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken)
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .retry(1)
+            .subscribe(object : Observer<RoomOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    disposable = d
+                }
+
+                override fun onNext(roomOverall: RoomOverall) {
+                    conversation = roomOverall.getOcs().getData()
+                    if (conversation!!.isHasPassword && conversation!!.isGuest) {
+                        eventBus!!.post(ConversationsListFetchDataEvent())
+                        val bundle = Bundle()
+                        bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
+                        bundle.putString(KEY_CALL_URL, callUrl)
+                        try {
+                            bundle.putParcelable(
+                                KEY_SERVER_CAPABILITIES,
+                                Parcels.wrap<Capabilities>(
+                                    LoganSquare.parse<Capabilities>(
+                                        currentUser!!.capabilities,
+                                        Capabilities::class.java
+                                    )
+                                )
+                            )
+                        } catch (e: IOException) {
+                            Log.e(TAG, "Failed to parse capabilities for guest")
+                            showResultImage(everythingOK = false, isGuestSupportError = false)
+                        }
+                        bundle.putSerializable(KEY_OPERATION_CODE, ConversationOperationEnum.OPS_CODE_JOIN_ROOM)
+                        router.pushController(
+                            RouterTransaction.with(EntryMenuController(bundle))
+                                .pushChangeHandler(HorizontalChangeHandler())
+                                .popChangeHandler(HorizontalChangeHandler())
+                        )
+                    } else if (conversation!!.isGuest) {
+                        ncApi!!.joinRoom(
+                            credentials,
+                            ApiUtils.getUrlForParticipantsActive(
+                                apiVersion,
+                                baseUrl,
+                                conversationToken
+                            ),
+                            null
+                        )
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(object : Observer<RoomOverall> {
+                                override fun onSubscribe(d: Disposable) {
+                                    // unused atm
+                                }
+
+                                override fun onNext(roomOverall: RoomOverall) {
+                                    conversation = roomOverall.getOcs().getData()
+                                    initiateConversation()
+                                }
+
+                                override fun onError(e: Throwable) {
+                                    showResultImage(everythingOK = false, isGuestSupportError = false)
+                                    dispose()
+                                }
+
+                                override fun onComplete() {
+                                    // unused atm
+                                }
+                            })
+                    } else {
+                        initiateConversation()
+                    }
+                }
+
+                override fun onError(e: Throwable) {
+                    showResultImage(everythingOK = false, isGuestSupportError = false)
+                    dispose()
+                }
+
+                override fun onComplete() {
+                    dispose()
+                }
+            })
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -578,7 +620,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         if (localInvitedGroups!!.size > 0) {
             localInvitedGroups.removeAt(0)
         }
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(4, 1))
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, API_CONVERSATION_VERSIONS)
         if (localInvitedUsers!!.size > 0 || localInvitedGroups.size > 0 &&
             CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")
         ) {
@@ -693,7 +735,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             showResultImage(everythingOK = false, isGuestSupportError = false)
         } else {
             val response = e.response()
-            if (response != null && response.code() == 403) {
+            if (response != null && response.code() == FORBIDDEN) {
                 ApplicationWideMessageHolder.getInstance()
                     .setMessageType(ApplicationWideMessageHolder.MessageType.CALL_PASSWORD_WRONG)
                 router.popCurrentController()
@@ -752,6 +794,8 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 
     companion object {
         private const val TAG = "OperationsMenu"
+        private const val FORBIDDEN = 403
+        private val API_CONVERSATION_VERSIONS = intArrayOf(4, 1)
     }
 
     init {

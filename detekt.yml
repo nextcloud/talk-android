@@ -1,5 +1,5 @@
 build:
-  maxIssues: 100
+  maxIssues: 95
   weights:
     # complexity: 2
     # LongParameterList: 1
