@@ -5,6 +5,31 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [14.0.1] - 2022-05-03
+- fix app crashes when UI isn't available anymore
+- fix to load conversations when servers status app is disabled
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/54?closed=1
+
+## [14.0.0] - 2022-05-02
+### Added
+- emoji message reactions
+- set own user status / show user status of others
+- show shared items of a conversation
+- search for open conversations
+- mark conversation as read
+- select audio output for calls
+- choose notification sounds by android settings (starypatyk)
+- share contact from attachment dialog
+
+### Fixed
+- call connection from android to web sometimes fail on HPB 
+- top bar partially hidden when typing message
+- can't open chat view from notification (starypatyk)
+- minor fixes
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/50?closed=1
+
 ## [13.0.0] - 2021-11-29
 ### Added
 - set own user status / show user status of others
@@ -24,12 +49,14 @@ For a full list, please see https://github.com/nextcloud/talk-android/milestone/
 - clear chat history (as moderator)
 - forward text messages
 - RTL support
+
 For a full list, please see https://github.com/nextcloud/talk-android/milestone/45?closed=1
 
 ## [12.1.2] - 2021-07-16
-- Fix to share link from chrome
-- Make links clickable in conversation description
-- Minor fixes
+- fix to share link from chrome
+- make links clickable in conversation description
+- minor fixes
+
 For a full list, please see https://github.com/nextcloud/talk-android/milestone/47?closed=1
 
 ## [12.1.1] - 2021-07-09
