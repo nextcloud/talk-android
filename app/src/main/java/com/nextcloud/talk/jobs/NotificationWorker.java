@@ -41,7 +41,6 @@ import com.facebook.common.executors.UiThreadImmediateExecutorService;
 import com.facebook.common.references.CloseableReference;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipeline;
 import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
 import com.facebook.imagepipeline.image.CloseableImage;
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
@@ -88,7 +87,9 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationCompat.MessagingStyle;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.Person;
 import androidx.core.app.RemoteInput;
@@ -376,65 +377,67 @@ public class NotificationWorker extends Worker {
             notificationId = (int) crc32.getValue();
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && decryptedPushMessage.getNotificationUser() != null && decryptedPushMessage.getType().equals("chat")) {
-            NotificationCompat.MessagingStyle style = null;
-            if (activeStatusBarNotification != null) {
-                Notification activeNotification = activeStatusBarNotification.getNotification();
-                style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(activeNotification);
-            }
-
-            Person.Builder person =
-                    new Person.Builder().setKey(signatureVerification.getUserEntity().getId() +
-                            "@" + decryptedPushMessage.getNotificationUser().getId()).setName(EmojiCompat.get().process(decryptedPushMessage.getNotificationUser().getName())).setBot(decryptedPushMessage.getNotificationUser().getType().equals("bot"));
-
-            notificationBuilder.setOnlyAlertOnce(true);
-            addReplyAction(notificationBuilder, notificationId);
-
-            if (decryptedPushMessage.getNotificationUser().getType().equals("user") || decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
-                String avatarUrl = ApiUtils.getUrlForAvatar(signatureVerification.getUserEntity().getBaseUrl(),
-                                                            decryptedPushMessage.getNotificationUser().getId(), false);
-
-                if (decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
-                    avatarUrl = ApiUtils.getUrlForGuestAvatar(signatureVerification.getUserEntity().getBaseUrl(),
-                                                              decryptedPushMessage.getNotificationUser().getName(),
-                                                              false);
-                }
-
-                ImageRequest imageRequest =
-                        DisplayUtils.getImageRequestForUrl(avatarUrl, null);
-                ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
-
-                NotificationCompat.MessagingStyle finalStyle = style;
-                dataSource.subscribe(
-                        new BaseBitmapDataSubscriber() {
-                            @Override
-                            protected void onNewResultImpl(Bitmap bitmap) {
-                                if (bitmap != null) {
-                                    new RoundAsCirclePostprocessor(true).process(bitmap);
-                                    person.setIcon(IconCompat.createWithBitmap(bitmap));
-                                    notificationBuilder.setStyle(getStyle(person.build(),
-                                            finalStyle));
-                                    sendNotificationWithId(notificationId, notificationBuilder.build());
-
-                                }
-                            }
-
-                            @Override
-                            protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                                notificationBuilder.setStyle(getStyle(person.build(), finalStyle));
-                                sendNotificationWithId(notificationId, notificationBuilder.build());
-                            }
-                        },
-                        UiThreadImmediateExecutorService.getInstance());
-            } else {
-                notificationBuilder.setStyle(getStyle(person.build(), style));
-                sendNotificationWithId(notificationId, notificationBuilder.build());
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+            CHAT.equals(decryptedPushMessage.getType()) &&
+            decryptedPushMessage.getNotificationUser() != null) {
+            sendChatNotification(notificationBuilder, activeStatusBarNotification, notificationId);
         } else {
             sendNotificationWithId(notificationId, notificationBuilder.build());
         }
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void sendChatNotification(NotificationCompat.Builder notificationBuilder,
+                                      StatusBarNotification activeStatusBarNotification,
+                                      int notificationId) {
+
+        final NotificationUser notificationUser = decryptedPushMessage.getNotificationUser();
+        final String userType = notificationUser.getType();
+
+        MessagingStyle style = activeStatusBarNotification != null ?
+                MessagingStyle.extractMessagingStyleFromNotification(activeStatusBarNotification.getNotification()) :
+                null;
+
+        Person.Builder person =
+                new Person.Builder()
+                    .setKey(signatureVerification.getUserEntity().getId() + "@" + notificationUser.getId())
+                    .setName(EmojiCompat.get().process(notificationUser.getName()))
+                    .setBot("bot".equals(userType));
+
+        notificationBuilder.setOnlyAlertOnce(true);
+        addReplyAction(notificationBuilder, notificationId);
+
+        if ("user".equals(userType) || "guest".equals(userType)) {
+            String baseUrl = signatureVerification.getUserEntity().getBaseUrl();
+            String avatarUrl = "user".equals(userType) ?
+                ApiUtils.getUrlForAvatar(baseUrl, notificationUser.getId(), false) :
+                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.getName(), false);
+
+            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, null);
+            Fresco.getImagePipeline().fetchDecodedImage(imageRequest, context).subscribe(
+                    new BaseBitmapDataSubscriber() {
+                        @Override
+                        protected void onNewResultImpl(Bitmap bitmap) {
+                            if (bitmap != null) {
+                                new RoundAsCirclePostprocessor(true).process(bitmap);
+                                person.setIcon(IconCompat.createWithBitmap(bitmap));
+                                notificationBuilder.setStyle(getStyle(person.build(), style));
+                                sendNotificationWithId(notificationId, notificationBuilder.build());
+                            }
+                        }
+
+                        @Override
+                        protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
+                            notificationBuilder.setStyle(getStyle(person.build(), style));
+                            sendNotificationWithId(notificationId, notificationBuilder.build());
+                        }
+                    },
+                    UiThreadImmediateExecutorService.getInstance());
+        } else {
+            notificationBuilder.setStyle(getStyle(person.build(), style));
+            sendNotificationWithId(notificationId, notificationBuilder.build());
+        }
     }
 
     private void addReplyAction(NotificationCompat.Builder notificationBuilder, int notificationId) {
@@ -469,24 +472,19 @@ public class NotificationWorker extends Worker {
         notificationBuilder.addAction(replyAction);
     }
 
-    private NotificationCompat.MessagingStyle getStyle(Person person, @Nullable NotificationCompat.MessagingStyle style) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationCompat.MessagingStyle newStyle =
-                    new NotificationCompat.MessagingStyle(person);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private MessagingStyle getStyle(Person person, @Nullable MessagingStyle style) {
+        MessagingStyle newStyle = new MessagingStyle(person);
 
-            newStyle.setConversationTitle(decryptedPushMessage.getSubject());
-            newStyle.setGroupConversation(!conversationType.equals("one2one"));
+        newStyle.setConversationTitle(decryptedPushMessage.getSubject());
+        newStyle.setGroupConversation(!conversationType.equals("one2one"));
 
-            if (style != null) {
-                style.getMessages().forEach(message -> newStyle.addMessage(new NotificationCompat.MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
-            }
-
-            newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
-            return newStyle;
+        if (style != null) {
+            style.getMessages().forEach(message -> newStyle.addMessage(new MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
         }
 
-        // we'll never come here
-        return style;
+        newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
+        return newStyle;
     }
 
     private void sendNotificationWithId(int notificationId, Notification notification) {
