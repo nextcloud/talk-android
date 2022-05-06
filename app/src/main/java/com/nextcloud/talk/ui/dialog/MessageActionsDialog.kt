@@ -89,8 +89,6 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
                 BuildConfig.DEBUG
         )
-
-        initEmojiMore()
     }
 
     override fun onStart() {
@@ -153,7 +151,10 @@ class MessageActionsDialog(
     }
 
     private fun initEmojiBar() {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions")) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
+            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+            currentConversation?.conversationReadOnlyState
+        ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
                 sendReaction(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
@@ -182,6 +183,7 @@ class MessageActionsDialog(
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
                 dismiss()
             }
+            initEmojiMore()
             dialogMessageActionsBinding.emojiBar.visibility = View.VISIBLE
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
