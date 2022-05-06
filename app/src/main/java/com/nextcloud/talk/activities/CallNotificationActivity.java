@@ -74,10 +74,10 @@ import javax.inject.Inject;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import autodagger.AutoInjector;
-import butterknife.OnClick;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
@@ -196,8 +196,7 @@ public class CallNotificationActivity extends CallBaseActivity {
         binding.callAnswerVoiceOnlyView.setVisibility(View.VISIBLE);
     }
 
-    @OnClick(R.id.hangupButton)
-    void hangup() {
+    private void hangup() {
         leavingScreen = true;
         finish();
     }
@@ -226,12 +225,12 @@ public class CallNotificationActivity extends CallBaseActivity {
                 .takeWhile(observable -> !leavingScreen))
             .subscribe(new Observer<ParticipantsOverall>() {
                 @Override
-                public void onSubscribe(Disposable d) {
+                public void onSubscribe(@NonNull Disposable d) {
                     disposablesList.add(d);
                 }
 
                 @Override
-                public void onNext(ParticipantsOverall participantsOverall) {
+                public void onNext(@NonNull ParticipantsOverall participantsOverall) {
                     boolean hasParticipantsInCall = false;
                     boolean inCallOnDifferentDevice = false;
                     List<Participant> participantList = participantsOverall.getOcs().getData();
@@ -253,7 +252,7 @@ public class CallNotificationActivity extends CallBaseActivity {
                 }
 
                 @Override
-                public void onError(Throwable e) {
+                public void onError(@NonNull Throwable e) {
                     Log.e(TAG, "error while getPeersForCall", e);
                 }
 
