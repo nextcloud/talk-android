@@ -86,17 +86,14 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 ) {
     private val binding: ControllerOperationsMenuBinding by viewBinding(ControllerOperationsMenuBinding::bind)
 
-    @JvmField
     @Inject
-    var ncApi: NcApi? = null
+    lateinit var ncApi: NcApi
 
-    @JvmField
     @Inject
-    var userUtils: UserUtils? = null
+    lateinit var userUtils: UserUtils
 
-    @JvmField
     @Inject
-    var eventBus: EventBus? = null
+    lateinit var eventBus: EventBus
 
     private val operation: ConversationOperationEnum?
     private var conversation: Conversation? = null
@@ -119,7 +116,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     override fun onViewBound(view: View) {
         super.onViewBound(view)
         sharedApplication!!.componentApplication.inject(this)
-        currentUser = userUtils!!.currentUser
+        currentUser = userUtils.currentUser
 
         if (!TextUtils.isEmpty(callUrl) && callUrl.contains("/call")) {
             conversationToken = callUrl.substring(callUrl.lastIndexOf("/") + 1)
@@ -166,7 +163,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun fetchCapabilitiesForGuest() {
-        ncApi!!.getCapabilities(null, ApiUtils.getUrlForCapabilities(baseUrl))
+        ncApi.getCapabilities(null, ApiUtils.getUrlForCapabilities(baseUrl))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<CapabilitiesOverall> {
@@ -239,7 +236,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun operationJoinRoom() {
-        ncApi!!.joinRoom(
+        ncApi.joinRoom(
             credentials,
             ApiUtils.getUrlForParticipantsActive(
                 apiVersion(),
@@ -255,7 +252,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun operationMarkAsRead() {
-        ncApi!!.setChatReadMarker(
+        ncApi.setChatReadMarker(
             credentials,
             ApiUtils.getUrlForSetChatReadMarker(
                 chatApiVersion(),
@@ -271,7 +268,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun operationMakePrivate() {
-        ncApi!!.makeRoomPrivate(
+        ncApi.makeRoomPrivate(
             credentials,
             ApiUtils.getUrlForRoomPublic(
                 apiVersion(),
@@ -290,7 +287,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         if (conversation!!.getPassword() != null) {
             pass = conversation!!.getPassword()
         }
-        ncApi!!.setPassword(
+        ncApi.setPassword(
             credentials,
             ApiUtils.getUrlForRoomPassword(
                 apiVersion(),
@@ -306,7 +303,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun operationMakePublic() {
-        ncApi!!.makeRoomPublic(
+        ncApi.makeRoomPublic(
             credentials,
             ApiUtils.getUrlForRoomPublic(
                 apiVersion(),
@@ -321,7 +318,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun operationRenameRoom() {
-        ncApi!!.renameRoom(
+        ncApi.renameRoom(
             credentials,
             ApiUtils.getUrlForRoom(
                 apiVersion(),
@@ -340,7 +337,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         val genericOperationsObserver = GenericOperationsObserver()
         val apiVersion = apiVersion()
         if (operation === ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE) {
-            ncApi!!.removeConversationFromFavorites(
+            ncApi.removeConversationFromFavorites(
                 credentials,
                 ApiUtils.getUrlForRoomFavorite(
                     apiVersion,
@@ -353,7 +350,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 .retry(1)
                 .subscribe(genericOperationsObserver)
         } else {
-            ncApi!!.addConversationToFavorites(
+            ncApi.addConversationToFavorites(
                 credentials,
                 ApiUtils.getUrlForRoomFavorite(
                     apiVersion,
@@ -394,7 +391,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 conversationName
             )
         }
-        ncApi!!.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+        ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .retry(1)
@@ -405,7 +402,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 
                 override fun onNext(roomOverall: RoomOverall) {
                     conversation = roomOverall.getOcs().getData()
-                    ncApi!!.getRoom(
+                    ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, currentUser!!.baseUrl,
@@ -450,7 +447,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 
     private fun operationGetAndJoinRoom() {
         val apiVersion = apiVersion()
-        ncApi!!.getRoom(
+        ncApi.getRoom(
             credentials,
             ApiUtils.getUrlForRoom(apiVersion, baseUrl, conversationToken)
         )
@@ -465,7 +462,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 override fun onNext(roomOverall: RoomOverall) {
                     conversation = roomOverall.getOcs().getData()
                     if (conversation!!.isHasPassword && conversation!!.isGuest) {
-                        eventBus!!.post(ConversationsListFetchDataEvent())
+                        eventBus.post(ConversationsListFetchDataEvent())
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
                         bundle.putString(KEY_CALL_URL, callUrl)
@@ -490,7 +487,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                                 .popChangeHandler(HorizontalChangeHandler())
                         )
                     } else if (conversation!!.isGuest) {
-                        ncApi!!.joinRoom(
+                        ncApi.joinRoom(
                             credentials,
                             ApiUtils.getUrlForParticipantsActive(
                                 apiVersion,
@@ -645,7 +642,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 conversation!!.getToken(),
                 userId
             )
-            ncApi!!.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(1)
@@ -690,7 +687,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                     "groups",
                     groupId
                 )
-                ncApi!!.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(1)
@@ -719,7 +716,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     }
 
     private fun initiateConversation() {
-        eventBus!!.post(ConversationsListFetchDataEvent())
+        eventBus.post(ConversationsListFetchDataEvent())
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, conversation!!.getToken())
         bundle.putString(KEY_ROOM_ID, conversation!!.getRoomId())
@@ -727,7 +724,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         bundle.putParcelable(KEY_USER_ENTITY, currentUser)
         bundle.putParcelable(KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
         bundle.putString(KEY_CONVERSATION_PASSWORD, callPassword)
-        eventBus!!.post(OpenConversationEvent(conversation, bundle))
+        eventBus.post(OpenConversationEvent(conversation, bundle))
     }
 
     private fun handleObserverError(e: Throwable) {
