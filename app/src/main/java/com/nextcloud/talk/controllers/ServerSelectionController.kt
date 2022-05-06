@@ -347,15 +347,22 @@ class ServerSelectionController :
         setCertTextView()
     }
 
+    @SuppressLint("LongLogTag")
     private fun setCertTextView() {
         if (activity != null) {
             activity!!.runOnUiThread {
-                if (!TextUtils.isEmpty(appPreferences!!.temporaryClientCertAlias)) {
-                    binding.certTextView.setText(R.string.nc_change_cert_auth)
-                } else {
-                    binding.certTextView.setText(R.string.nc_configure_cert_auth)
+                try {
+                    if (!TextUtils.isEmpty(appPreferences!!.temporaryClientCertAlias)) {
+                        binding.certTextView.setText(R.string.nc_change_cert_auth)
+                    } else {
+                        binding.certTextView.setText(R.string.nc_configure_cert_auth)
+                    }
+                    hideserverEntryProgressBar()
+                } catch (npe: java.lang.NullPointerException) {
+                    // view binding can be null
+                    // since this is called asynchronously and UI might have been destroyed in the meantime
+                    Log.i(TAG, "UI destroyed - view binding already gone")
                 }
-                hideserverEntryProgressBar()
             }
         }
     }
