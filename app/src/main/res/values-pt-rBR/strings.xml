@@ -297,6 +297,7 @@
     <string name="nc_share_text_pass">\nSenha: %1$s</string>
     <string name="nc_share_this_location">Compartilhe este local</string>
     <string name="nc_shared_items">Itens compartilhados</string>
+    <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz…</string>
     <string name="nc_shared_location">Localização compartilhada</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de início</string>
