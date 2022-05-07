@@ -199,7 +199,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             fileViewerUtils.resumeToUpdateViewsByProgress(
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_NAME)),
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_ID)),
-                Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_MIMETYPE)),
+                message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_MIMETYPE),
                 new FileViewerUtils.ProgressUi(progressBar, getMessageText(), image));
 
         } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {

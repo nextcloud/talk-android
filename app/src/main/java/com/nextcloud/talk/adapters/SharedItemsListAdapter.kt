@@ -44,15 +44,17 @@ class SharedItemsListAdapter : RecyclerView.Adapter<SharedItemsListAdapter.ViewH
         val currentItem = items[position]
 
         holder.binding.fileName.text = currentItem.name
-        holder.binding.fileSize.text = Formatter.formatShortFileSize(
-            holder.binding.fileSize.context,
-            currentItem.fileSize
-        )
+        holder.binding.fileSize.text = currentItem.fileSize?.let {
+            Formatter.formatShortFileSize(
+                holder.binding.fileSize.context,
+                it
+            )
+        }
         holder.binding.fileDate.text = DateUtils.getLocalDateTimeStringFromTimestamp(
             currentItem.date * ONE_SECOND_IN_MILLIS
         )
 
-        if (currentItem.previewAvailable) {
+        if (currentItem.previewAvailable == true) {
             val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(currentItem.previewLink))
                 .setProgressiveRenderingEnabled(true)
                 .setRotationOptions(RotationOptions.autoRotate())

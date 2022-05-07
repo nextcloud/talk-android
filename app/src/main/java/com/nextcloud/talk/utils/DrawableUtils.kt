@@ -25,7 +25,7 @@ import java.util.HashMap
 
 object DrawableUtils {
 
-    fun getDrawableResourceIdForMimeType(mimetype: String): Int {
+    fun getDrawableResourceIdForMimeType(mimetype: String?): Int {
         var localMimetype = mimetype
         val drawableMap = HashMap<String, Int>()
 
@@ -142,6 +142,10 @@ object DrawableUtils {
         drawableMap["inode/directory"] = R.drawable.ic_mimetype_folder
         drawableMap["unknown"] = R.drawable.ic_mimetype_file
         drawableMap["application/pdf"] = R.drawable.ic_mimetype_application_pdf
+
+        if (localMimetype.isNullOrEmpty()) {
+            return drawableMap["unknown"]!!
+        }
 
         if ("DIR" == localMimetype) {
             localMimetype = "inode/directory"

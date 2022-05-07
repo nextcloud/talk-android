@@ -40,7 +40,7 @@ class SharedItemsGridAdapter : RecyclerView.Adapter<SharedItemsGridAdapter.ViewH
 
         val currentItem = items[position]
 
-        if (currentItem.previewAvailable) {
+        if (currentItem.previewAvailable == true) {
             val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(currentItem.previewLink))
                 .setProgressiveRenderingEnabled(true)
                 .setRotationOptions(RotationOptions.autoRotate())
