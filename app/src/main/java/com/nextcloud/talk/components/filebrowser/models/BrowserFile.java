@@ -73,7 +73,7 @@ public class BrowserFile {
 
             if (property instanceof ResourceType) {
                 browserFile.isFile =
-                        !(((ResourceType) property).getTypes().contains(ResourceType.Companion.getCOLLECTION()));
+                    !(((ResourceType) property).getTypes().contains(ResourceType.Companion.getCOLLECTION()));
             }
 
             if (property instanceof GetLastModified) {
@@ -109,7 +109,7 @@ public class BrowserFile {
             }
         }
 
-        if(browserFile.getPermissions().contains("R")){
+        if (browserFile.getPermissions().contains("R")) {
             browserFile.isAllowedToReShare = true;
         }
 
