@@ -627,23 +627,23 @@ public class CallActivity extends CallBaseActivity {
         binding.conversationRelativeLayout
             .getViewTreeObserver()
             .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int height = binding.conversationRelativeLayout.getMeasuredHeight();
-                binding.gridview.setMinimumHeight(height);
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    int height = binding.conversationRelativeLayout.getMeasuredHeight();
+                    binding.gridview.setMinimumHeight(height);
+                }
+            });
 
         binding
             .callInfosLinearLayout
             .getViewTreeObserver()
             .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
 
         participantsAdapter = new ParticipantsAdapter(
             this,
@@ -1565,9 +1565,9 @@ public class CallActivity extends CallBaseActivity {
 
             if ("unshareScreen".equals(type) ||
                 (("offer".equals(type) ||
-                  "answer".equals(type) ||
-                  "candidate".equals(type) ||
-                  "endOfCandidates".equals(type)) &&
+                    "answer".equals(type) ||
+                    "candidate".equals(type) ||
+                    "endOfCandidates".equals(type)) &&
                     peerConnectionWrapper != null)) {
                 switch (type) {
                     case "unshareScreen":
@@ -1664,7 +1664,7 @@ public class CallActivity extends CallBaseActivity {
             endPeerConnection(peerConnectionWrapperList.get(i).getSessionId(), false);
         }
 
-        if(localStream != null) {
+        if (localStream != null) {
             localStream.dispose();
             localStream = null;
             Log.d(TAG, "Disposed localStream");
