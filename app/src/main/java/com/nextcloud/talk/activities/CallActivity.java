@@ -49,6 +49,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
 import com.nextcloud.talk.R;
@@ -627,23 +628,23 @@ public class CallActivity extends CallBaseActivity {
         binding.conversationRelativeLayout
             .getViewTreeObserver()
             .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int height = binding.conversationRelativeLayout.getMeasuredHeight();
-                binding.gridview.setMinimumHeight(height);
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    binding.conversationRelativeLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    int height = binding.conversationRelativeLayout.getMeasuredHeight();
+                    binding.gridview.setMinimumHeight(height);
+                }
+            });
 
         binding
             .callInfosLinearLayout
             .getViewTreeObserver()
             .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-            }
-        });
+                @Override
+                public void onGlobalLayout() {
+                    binding.callInfosLinearLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }
+            });
 
         participantsAdapter = new ParticipantsAdapter(
             this,
@@ -1565,9 +1566,9 @@ public class CallActivity extends CallBaseActivity {
 
             if ("unshareScreen".equals(type) ||
                 (("offer".equals(type) ||
-                  "answer".equals(type) ||
-                  "candidate".equals(type) ||
-                  "endOfCandidates".equals(type)) &&
+                    "answer".equals(type) ||
+                    "candidate".equals(type) ||
+                    "endOfCandidates".equals(type)) &&
                     peerConnectionWrapper != null)) {
                 switch (type) {
                     case "unshareScreen":
@@ -1664,7 +1665,7 @@ public class CallActivity extends CallBaseActivity {
             endPeerConnection(peerConnectionWrapperList.get(i).getSessionId(), false);
         }
 
-        if(localStream != null) {
+        if (localStream != null) {
             localStream.dispose();
             localStream = null;
             Log.d(TAG, "Disposed localStream");
@@ -1857,6 +1858,14 @@ public class CallActivity extends CallBaseActivity {
         if ((peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, type)) != null) {
             return peerConnectionWrapper;
         } else {
+            if (peerConnectionFactory == null) {
+                Log.e(TAG, "peerConnectionFactory was null in getOrCreatePeerConnectionWrapperForSessionIdAndType.");
+                Toast.makeText(context, context.getResources().getString(R.string.nc_common_error_sorry),
+                               Toast.LENGTH_LONG).show();
+                hangup(true);
+                return null;
+            }
+
             if (hasMCU && publisher) {
                 peerConnectionWrapper = new PeerConnectionWrapper(peerConnectionFactory,
                                                                   iceServers,
