@@ -109,7 +109,7 @@ public class BrowserFile {
             }
         }
 
-        if (browserFile.getPermissions().contains("R")) {
+        if (browserFile.getPermissions() != null && browserFile.getPermissions().contains("R")) {
             browserFile.isAllowedToReShare = true;
         }
 
