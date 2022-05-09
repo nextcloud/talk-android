@@ -191,6 +191,7 @@ class ServerSelectionController :
     }
 
     @SuppressLint("LongLogTag")
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkServerAndProceed() {
         dispose()
         try {

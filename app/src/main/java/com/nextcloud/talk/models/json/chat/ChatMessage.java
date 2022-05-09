@@ -617,6 +617,14 @@ public class ChatMessage implements MessageContentType, MessageContentType.Image
         return "voice-message".equals(messageType);
     }
 
+    public boolean isCommandMessage() {
+        return "command".equals(messageType);
+    }
+
+    public boolean isDeletedCommentMessage() {
+        return "comment_deleted".equals(messageType);
+    }
+
     public enum MessageType {
         REGULAR_TEXT_MESSAGE,
         SYSTEM_MESSAGE,
