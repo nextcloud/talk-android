@@ -83,8 +83,10 @@ class MessageActionsDialog(
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         initMenuDeleteMessage(showMessageDeletionButton)
-        initMenuForwardMessage(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
-            !(message.isDeletedCommentMessage || message.isDeleted))
+        initMenuForwardMessage(
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
+                !(message.isDeletedCommentMessage || message.isDeleted)
+        )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
