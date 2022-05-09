@@ -111,6 +111,19 @@ public class Conversation {
     @JsonField(name = "notificationCalls")
     public Integer notificationCalls;
 
+    @JsonField(name = "permissions")
+    public int permissions;
+
+    @JsonField(name = "attendeePermissions")
+    public int attendeePermissions;
+
+    @JsonField(name = "callPermissions")
+    public int callPermissions;
+
+    @JsonField(name = "defaultPermissions")
+    public int defaultPermissions;
+
+
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
     }
