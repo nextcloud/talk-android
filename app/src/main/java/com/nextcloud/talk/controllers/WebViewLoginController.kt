@@ -182,6 +182,7 @@ class WebViewLoginController(args: Bundle? = null) : NewBaseController(
                 return false
             }
 
+            @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onPageFinished(view: WebView, url: String) {
                 try {
                     loginStep++
