@@ -49,67 +49,142 @@ class Reaction {
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
             val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
 
-            var textColor = ContextCompat.getColor(context, R.color.white)
-            if (!isOutgoingMessage) {
-                textColor = ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)
-            }
+            val textColor = getTextColor(context, isOutgoingMessage, binding)
+            val amountParams = getAmountLayoutParams(context)
+            val wrapperParams = getWrapperLayoutParams(context)
 
-            val amountParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            amountParams.marginStart = DisplayUtils.convertDpToPixel(AMOUNT_START_MARGIN, context).toInt()
-
-            val wrapperParams = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            wrapperParams.marginEnd = DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt()
+            val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
+            val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
+            val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
 
             for ((emoji, amount) in message.reactions) {
-                val emojiWithAmountWrapper = LinearLayout(context)
-                emojiWithAmountWrapper.orientation = LinearLayout.HORIZONTAL
-
-                val reactionEmoji = EmojiTextView(context)
-                reactionEmoji.text = emoji
-
-                emojiWithAmountWrapper.addView(reactionEmoji)
-
-                val reactionAmount = TextView(context)
-                reactionAmount.setTextColor(textColor)
-                reactionAmount.text = amount.toString()
-                reactionAmount.layoutParams = amountParams
-                emojiWithAmountWrapper.addView(reactionAmount)
-
-                emojiWithAmountWrapper.layoutParams = wrapperParams
-
-                val paddingSide = DisplayUtils.convertDpToPixel(EMOJI_AND_AMOUNT_PADDING_SIDE, context).toInt()
-                val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
-                val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
-                if (message.reactionsSelf != null &&
-                    message.reactionsSelf.isNotEmpty() &&
-                    message.reactionsSelf.contains(emoji)
-                ) {
-                    emojiWithAmountWrapper.background =
-                        AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)
-                    emojiWithAmountWrapper.setPaddingRelative(paddingSide, paddingTop, paddingSide, paddingBottom)
-                } else {
-                    emojiWithAmountWrapper.setPaddingRelative(0, paddingTop, paddingSide, paddingBottom)
-                }
+                val emojiWithAmountWrapper = getEmojiWithAmountWrapperLayout(
+                    context,
+                    message,
+                    emoji,
+                    amount,
+                    EmojiWithAmountWrapperLayoutInfo(
+                        textColor,
+                        amountParams,
+                        wrapperParams,
+                        paddingSide,
+                        paddingTop,
+                        paddingBottom
+                    ),
+                )
 
                 binding.reactionsEmojiWrapper.addView(emojiWithAmountWrapper)
 
                 remainingEmojisToDisplay--
                 if (remainingEmojisToDisplay == 0 && showInfoAboutMoreEmojis) {
-                    val infoAboutMoreEmojis = TextView(context)
-                    infoAboutMoreEmojis.setTextColor(textColor)
-                    infoAboutMoreEmojis.text = EMOJI_MORE
-                    binding.reactionsEmojiWrapper.addView(infoAboutMoreEmojis)
+                    binding.reactionsEmojiWrapper.addView(getMoreReactionsTextView(context, textColor))
                     break
                 }
             }
         }
     }
+
+    private fun getEmojiWithAmountWrapperLayout(
+        context: Context,
+        message: ChatMessage,
+        emoji: String,
+        amount: Int,
+        layoutInfo: EmojiWithAmountWrapperLayoutInfo
+    ): LinearLayout {
+        val emojiWithAmountWrapper = LinearLayout(context)
+        emojiWithAmountWrapper.orientation = LinearLayout.HORIZONTAL
+
+        emojiWithAmountWrapper.addView(getEmojiTextView(context, emoji))
+        emojiWithAmountWrapper.addView(getReactionCount(context, layoutInfo.textColor, amount, layoutInfo.amountParams))
+        emojiWithAmountWrapper.layoutParams = layoutInfo.wrapperParams
+
+        if (message.reactionsSelf != null &&
+            message.reactionsSelf.isNotEmpty() &&
+            message.reactionsSelf.contains(emoji)
+        ) {
+            emojiWithAmountWrapper.background =
+                AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)
+            emojiWithAmountWrapper.setPaddingRelative(
+                layoutInfo.paddingSide,
+                layoutInfo.paddingTop,
+                layoutInfo.paddingSide,
+                layoutInfo.paddingBottom
+            )
+        } else {
+            emojiWithAmountWrapper.setPaddingRelative(
+                0,
+                layoutInfo.paddingTop,
+                layoutInfo.paddingSide,
+                layoutInfo.paddingBottom
+            )
+        }
+        return emojiWithAmountWrapper
+    }
+
+    private fun getMoreReactionsTextView(context: Context, textColor: Int): TextView {
+        val infoAboutMoreEmojis = TextView(context)
+        infoAboutMoreEmojis.setTextColor(textColor)
+        infoAboutMoreEmojis.text = EMOJI_MORE
+        return infoAboutMoreEmojis
+    }
+
+    private fun getEmojiTextView(context: Context, emoji: String): EmojiTextView {
+        val reactionEmoji = EmojiTextView(context)
+        reactionEmoji.text = emoji
+        return reactionEmoji
+    }
+
+    private fun getReactionCount(
+        context: Context,
+        textColor: Int,
+        amount: Int,
+        amountParams: LinearLayout.LayoutParams
+    ): TextView {
+        val reactionAmount = TextView(context)
+        reactionAmount.setTextColor(textColor)
+        reactionAmount.text = amount.toString()
+        reactionAmount.layoutParams = amountParams
+        return reactionAmount
+    }
+
+    private fun getWrapperLayoutParams(context: Context): LinearLayout.LayoutParams {
+        val wrapperParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        wrapperParams.marginEnd = DisplayUtils.convertDpToPixel(EMOJI_END_MARGIN, context).toInt()
+        return wrapperParams
+    }
+
+    private fun getAmountLayoutParams(context: Context): LinearLayout.LayoutParams {
+        val amountParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        amountParams.marginStart = DisplayUtils.convertDpToPixel(AMOUNT_START_MARGIN, context).toInt()
+        return amountParams
+    }
+
+    private fun getTextColor(
+        context: Context,
+        isOutgoingMessage: Boolean,
+        binding: ReactionsInsideMessageBinding
+    ): Int {
+        var textColor = ContextCompat.getColor(context, R.color.white)
+        if (!isOutgoingMessage) {
+            textColor = ContextCompat.getColor(binding.root.context, R.color.high_emphasis_text)
+        }
+        return textColor
+    }
+
+    private data class EmojiWithAmountWrapperLayoutInfo(
+        val textColor: Int,
+        val amountParams: LinearLayout.LayoutParams,
+        val wrapperParams: LinearLayout.LayoutParams,
+        val paddingSide: Int,
+        val paddingTop: Int,
+        val paddingBottom: Int
+    )
 
     companion object {
         const val MAX_EMOJIS_TO_DISPLAY = 4
