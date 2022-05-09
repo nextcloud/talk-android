@@ -76,10 +76,8 @@ class MessageActionsDialog(
         initMenuReplyToMessage(message.replyable)
         initMenuReplyPrivately(
             message.replyable &&
-                user?.userId?.isNotEmpty() == true &&
-                user?.userId != "?" &&
-                message.user.id.startsWith("users/") &&
-                message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
+                hasUserId(user) &&
+                hasUserActorId(message) &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         initMenuDeleteMessage(showMessageDeletionButton)
@@ -99,6 +97,15 @@ class MessageActionsDialog(
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hasUserId(user: UserEntity?): Boolean {
+        return user?.userId?.isNotEmpty() == true && user?.userId != "?"
+    }
+
+    private fun hasUserActorId(message: ChatMessage): Boolean {
+        return message.user.id.startsWith("users/") &&
+            message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId
     }
 
     @SuppressLint("ClickableViewAccessibility")
