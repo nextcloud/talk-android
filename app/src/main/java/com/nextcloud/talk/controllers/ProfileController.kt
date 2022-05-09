@@ -336,6 +336,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun setErrorMessageForMultiList(headline: String, message: String, @DrawableRes errorResource: Int) {
         if (activity == null) {
             return

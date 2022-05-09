@@ -76,14 +76,15 @@ class MessageActionsDialog(
         initMenuReplyToMessage(message.replyable)
         initMenuReplyPrivately(
             message.replyable &&
-                user?.userId?.isNotEmpty() == true &&
-                user?.userId != "?" &&
-                message.user.id.startsWith("users/") &&
-                message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
+                hasUserId(user) &&
+                hasUserActorId(message) &&
                 currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         initMenuDeleteMessage(showMessageDeletionButton)
-        initMenuForwardMessage(ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType())
+        initMenuForwardMessage(
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
+                !(message.isDeletedCommentMessage || message.isDeleted)
+        )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                 ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
@@ -96,6 +97,15 @@ class MessageActionsDialog(
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    private fun hasUserId(user: UserEntity?): Boolean {
+        return user?.userId?.isNotEmpty() == true && user?.userId != "?"
+    }
+
+    private fun hasUserActorId(message: ChatMessage): Boolean {
+        return message.user.id.startsWith("users/") &&
+            message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -153,7 +163,8 @@ class MessageActionsDialog(
     private fun initEmojiBar() {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
             Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
-            currentConversation?.conversationReadOnlyState
+            currentConversation?.conversationReadOnlyState &&
+            isReactableMessageType(message)
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
@@ -188,6 +199,10 @@ class MessageActionsDialog(
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
         }
+    }
+
+    private fun isReactableMessageType(message: ChatMessage): Boolean {
+        return !(message.isCommandMessage || message.isDeletedCommentMessage || message.isDeleted)
     }
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
