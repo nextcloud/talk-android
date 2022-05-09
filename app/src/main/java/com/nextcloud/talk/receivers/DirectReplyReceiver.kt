@@ -25,28 +25,18 @@ import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
-import androidx.core.graphics.drawable.IconCompat
 import autodagger.AutoInjector
-import com.facebook.common.executors.UiThreadImmediateExecutorService
-import com.facebook.common.references.CloseableReference
-import com.facebook.datasource.DataSource
-import com.facebook.drawee.backends.pipeline.Fresco
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber
-import com.facebook.imagepipeline.image.CloseableImage
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -110,7 +100,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
                 @RequiresApi(Build.VERSION_CODES.N)
                 override fun onNext(genericOverall: GenericOverall) {
-                    loadAvatar(::confirmReplySent)
+                    confirmReplySent()
                 }
 
                 override fun onError(e: Throwable) {
@@ -124,27 +114,6 @@ class DirectReplyReceiver : BroadcastReceiver() {
             })
     }
 
-    private fun loadAvatar(callback: (avatarIcon: IconCompat) -> Unit) {
-        val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
-        val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, currentUser)
-        val dataSource = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, null)
-        dataSource.subscribe(
-            object : BaseBitmapDataSubscriber() {
-                override fun onNewResultImpl(bitmap: Bitmap?) {
-                    if (bitmap != null) {
-                        RoundAsCirclePostprocessor(true).process(bitmap)
-                        callback(IconCompat.createWithBitmap(bitmap))
-                    }
-                }
-
-                override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                    // unused atm
-                }
-            },
-            UiThreadImmediateExecutorService.getInstance()
-        )
-    }
-
     @RequiresApi(Build.VERSION_CODES.N)
     private fun findActiveNotification(notificationId: Int): Notification? {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -152,7 +121,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun confirmReplySent(avatarIcon: IconCompat) {
+    private fun confirmReplySent() {
         // Implementation inspired by the SO question and article below:
         // https://stackoverflow.com/questions/51549456/android-o-notification-for-direct-reply-message
         // https://medium.com/@sidorovroman3/android-how-to-use-messagingstyle-for-notifications-without-caching-messages-c414ef2b816c
@@ -171,10 +140,10 @@ class DirectReplyReceiver : BroadcastReceiver() {
             .extractMessagingStyleFromNotification(previousNotification)
 
         // Add reply
+        val avatarUrl = ApiUtils.getUrlForAvatar(currentUser.baseUrl, currentUser.userId, false)
         val me = Person.Builder()
             .setName(currentUser.displayName)
-            // .setIcon(IconCompat.createWithResource(context, R.drawable.ic_user))
-            .setIcon(avatarIcon)
+            .setIcon(NotificationUtils.loadAvatarSync(avatarUrl))
             .build()
         val message = NotificationCompat.MessagingStyle.Message(replyMessage, System.currentTimeMillis(), me)
         previousStyle?.addMessage(message)

@@ -32,7 +32,13 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
+import androidx.core.graphics.drawable.IconCompat
 import com.bluelinelabs.logansquare.LoganSquare
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSources
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.image.CloseableBitmap
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.RingtoneSettings
@@ -295,6 +301,31 @@ object NotificationUtils {
             context,
             appPreferences.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V4
         )
+    }
+
+    /*
+    * Load user avatar synchronously.
+    * Inspired by:
+    * https://frescolib.org/docs/using-image-pipeline.html
+    * https://github.com/facebook/fresco/issues/830
+    * https://localcoder.org/using-facebooks-fresco-to-load-a-bitmap
+    */
+    fun loadAvatarSync(avatarUrl: String): IconCompat? {
+        // TODO - how to handle errors here?
+        var avatarIcon: IconCompat? = null
+        val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, null)
+        val dataSource = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, null)
+        val closeableImageRef = DataSources.waitForFinalResult(dataSource) as CloseableReference<CloseableBitmap>?
+        val bitmap = closeableImageRef?.get()?.underlyingBitmap
+        if (bitmap != null) {
+            // According to Fresco documentation a copy of the bitmap should be made before closing the references.
+            // However, it seems to work without making a copy... ;-)
+            RoundAsCirclePostprocessor(true).process(bitmap)
+            avatarIcon = IconCompat.createWithBitmap(bitmap)
+        }
+        CloseableReference.closeSafely(closeableImageRef)
+        dataSource.close()
+        return avatarIcon
     }
 
     private data class Channel(

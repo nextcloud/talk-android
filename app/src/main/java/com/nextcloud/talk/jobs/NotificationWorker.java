@@ -37,14 +37,6 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.facebook.common.executors.UiThreadImmediateExecutorService;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
-import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
@@ -61,7 +53,6 @@ import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
 import com.nextcloud.talk.receivers.DirectReplyReceiver;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
@@ -93,7 +84,6 @@ import androidx.core.app.NotificationCompat.MessagingStyle;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.Person;
 import androidx.core.app.RemoteInput;
-import androidx.core.graphics.drawable.IconCompat;
 import androidx.emoji.text.EmojiCompat;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -395,9 +385,10 @@ public class NotificationWorker extends Worker {
         final NotificationUser notificationUser = decryptedPushMessage.getNotificationUser();
         final String userType = notificationUser.getType();
 
-        MessagingStyle style = activeStatusBarNotification != null ?
-                MessagingStyle.extractMessagingStyleFromNotification(activeStatusBarNotification.getNotification()) :
-                null;
+        MessagingStyle style = null;
+        if (activeStatusBarNotification != null) {
+            style = MessagingStyle.extractMessagingStyleFromNotification(activeStatusBarNotification.getNotification());
+        }
 
         Person.Builder person =
                 new Person.Builder()
@@ -413,31 +404,11 @@ public class NotificationWorker extends Worker {
             String avatarUrl = "user".equals(userType) ?
                 ApiUtils.getUrlForAvatar(baseUrl, notificationUser.getId(), false) :
                 ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.getName(), false);
-
-            ImageRequest imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, null);
-            Fresco.getImagePipeline().fetchDecodedImage(imageRequest, context).subscribe(
-                    new BaseBitmapDataSubscriber() {
-                        @Override
-                        protected void onNewResultImpl(Bitmap bitmap) {
-                            if (bitmap != null) {
-                                new RoundAsCirclePostprocessor(true).process(bitmap);
-                                person.setIcon(IconCompat.createWithBitmap(bitmap));
-                                notificationBuilder.setStyle(getStyle(person.build(), style));
-                                sendNotificationWithId(notificationId, notificationBuilder.build());
-                            }
-                        }
-
-                        @Override
-                        protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                            notificationBuilder.setStyle(getStyle(person.build(), style));
-                            sendNotificationWithId(notificationId, notificationBuilder.build());
-                        }
-                    },
-                    UiThreadImmediateExecutorService.getInstance());
-        } else {
-            notificationBuilder.setStyle(getStyle(person.build(), style));
-            sendNotificationWithId(notificationId, notificationBuilder.build());
+            person.setIcon(NotificationUtils.INSTANCE.loadAvatarSync(avatarUrl));
         }
+
+        notificationBuilder.setStyle(getStyle(person.build(), style));
+        sendNotificationWithId(notificationId, notificationBuilder.build());
     }
 
     private void addReplyAction(NotificationCompat.Builder notificationBuilder, int notificationId) {
