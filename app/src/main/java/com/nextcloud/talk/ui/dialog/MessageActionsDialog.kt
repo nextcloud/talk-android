@@ -153,7 +153,8 @@ class MessageActionsDialog(
     private fun initEmojiBar() {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
             Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
-            currentConversation?.conversationReadOnlyState
+            currentConversation?.conversationReadOnlyState &&
+            !(message.isCommandMessage || message.isDeletedCommentMessage || message.isDeleted)
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
