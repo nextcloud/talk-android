@@ -155,7 +155,7 @@ class MessageActionsDialog(
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
             Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState &&
-            !(message.isCommandMessage || message.isDeletedCommentMessage || message.isDeleted)
+            isReactableMessageType(message)
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
             dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
@@ -190,6 +190,10 @@ class MessageActionsDialog(
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
         }
+    }
+
+    private fun isReactableMessageType(message: ChatMessage): Boolean {
+        return !(message.isCommandMessage || message.isDeletedCommentMessage || message.isDeleted)
     }
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
