@@ -2492,6 +2492,7 @@ class ChatController(args: Bundle) :
                 currentConversation,
                 chatMessage,
                 conversationUser,
+                hasChatPermission,
                 ncApi!!
             ).show()
         }
@@ -2519,6 +2520,7 @@ class ChatController(args: Bundle) :
                     conversationUser,
                     currentConversation,
                     isShowMessageDeletionButton(message),
+                    hasChatPermission,
                     ncApi!!
                 ).show()
             }

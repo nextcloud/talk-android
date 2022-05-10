@@ -58,6 +58,7 @@ class MessageActionsDialog(
     private val user: UserEntity?,
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean,
+    private val hasChatPermission: Boolean,
     private val ncApi: NcApi
 ) : BottomSheetDialog(chatController.activity!!, R.style.BottomSheetDialogThemeNoFloating) {
 
@@ -71,7 +72,7 @@ class MessageActionsDialog(
         setContentView(dialogMessageActionsBinding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
 
-        initEmojiBar()
+        initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
         initMenuReplyToMessage(message.replyable)
         initMenuReplyPrivately(
@@ -160,8 +161,9 @@ class MessageActionsDialog(
         }
     }
 
-    private fun initEmojiBar() {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
+    private fun initEmojiBar(hasChatPermission: Boolean) {
+        if (hasChatPermission &&
+            CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
             Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState &&
             isReactableMessageType(message)
