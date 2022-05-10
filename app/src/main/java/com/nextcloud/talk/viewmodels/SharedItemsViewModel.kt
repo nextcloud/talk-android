@@ -21,7 +21,7 @@ class SharedItemsViewModel(
 ) :
     ViewModel() {
 
-    private val _sharedItemType: MutableLiveData<Set<SharedItemType>> by lazy {
+    private val _sharedItemTypes: MutableLiveData<Set<SharedItemType>> by lazy {
         MutableLiveData<Set<SharedItemType>>().also {
             availableTypes()
         }
@@ -33,24 +33,32 @@ class SharedItemsViewModel(
         }
     }
 
-    val sharedItemType: LiveData<Set<SharedItemType>>
-        get() = _sharedItemType
+    private var _currentItemType = initialType
+
+    val sharedItemTypes: LiveData<Set<SharedItemType>>
+        get() = _sharedItemTypes
 
     val sharedItems: LiveData<SharedMediaItems>
         get() = _sharedItems
+
+    val currentItemType: SharedItemType
+        get() = _currentItemType
 
     fun loadNextItems() {
         val currentSharedItems = sharedItems.value!!
 
         if (currentSharedItems.moreItemsExisting) {
-            repository.media(repositoryParameters, currentSharedItems.type, currentSharedItems.lastSeenId)
+            repository.media(repositoryParameters, _currentItemType, currentSharedItems.lastSeenId)
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(observer(currentSharedItems.type, false))
+                ?.subscribe(observer(_currentItemType, false))
         }
     }
 
     fun loadItems(type: SharedItemType) {
+
+        _currentItemType = type
+
         repository.media(repositoryParameters, type)?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(observer(type, true))
@@ -79,7 +87,6 @@ class SharedItemsViewModel(
                     val oldItems = this@SharedItemsViewModel._sharedItems.value!!.items
                     this@SharedItemsViewModel._sharedItems.value =
                         SharedMediaItems(
-                            type,
                             oldItems + newSharedItems!!.items,
                             newSharedItems!!.lastSeenId,
                             newSharedItems!!.moreItemsExisting,
@@ -108,7 +115,7 @@ class SharedItemsViewModel(
                 }
 
                 override fun onComplete() {
-                    this@SharedItemsViewModel._sharedItemType.value = this.types
+                    this@SharedItemsViewModel._sharedItemTypes.value = this.types
                 }
             })
     }

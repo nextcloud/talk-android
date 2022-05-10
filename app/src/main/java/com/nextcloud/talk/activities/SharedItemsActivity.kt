@@ -26,12 +26,9 @@ class SharedItemsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
-    private lateinit var currentTab: SharedItemType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        currentTab = SharedItemType.MEDIA
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
@@ -57,17 +54,17 @@ class SharedItemsActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this,
-            SharedItemsViewModel.Factory(userEntity, roomToken, currentTab)
+            SharedItemsViewModel.Factory(userEntity, roomToken, SharedItemType.MEDIA)
         ).get(SharedItemsViewModel::class.java)
 
-        viewModel.sharedItemType.observe(this) {
+        viewModel.sharedItemTypes.observe(this) {
             initTabs(it)
         }
 
         viewModel.sharedItems.observe(this) {
             Log.d(TAG, "Items received: $it")
 
-            if (currentTab == SharedItemType.MEDIA) {
+            if (viewModel.currentItemType == SharedItemType.MEDIA) {
                 val adapter = SharedItemsGridAdapter()
                 adapter.items = it.items
                 adapter.authHeader = it.authHeader
@@ -95,11 +92,6 @@ class SharedItemsActivity : AppCompatActivity() {
                 }
             }
         })
-    }
-
-    fun updateItems(type: SharedItemType) {
-        currentTab = type
-        viewModel.loadItems(type)
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
@@ -155,7 +147,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                updateItems(tab.tag as SharedItemType)
+                viewModel.loadItems(tab.tag as SharedItemType)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) = Unit
