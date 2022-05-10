@@ -32,7 +32,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 
 class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>() {
-    override fun getFromString(string: String): Participant.ActorType {
+    override fun getFromString(string: String?): Participant.ActorType {
         return when (string) {
             "emails" -> EMAILS
             "groups" -> GROUPS

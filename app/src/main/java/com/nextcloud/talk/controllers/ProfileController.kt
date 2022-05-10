@@ -357,6 +357,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         }
     }
 
+    @Suppress("Detekt.LongMethod")
     private fun createUserInfoDetails(userInfo: UserProfileData?): List<UserInfoDetailsItem> {
         val result: MutableList<UserInfoDetailsItem> = LinkedList()
 
