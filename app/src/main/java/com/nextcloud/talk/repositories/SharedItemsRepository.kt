@@ -18,8 +18,6 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsRepository {
 
-    var parameters: Parameters? = null
-
     @Inject
     lateinit var ncApi: NcApi
 
@@ -27,23 +25,27 @@ class SharedItemsRepository {
         sharedApplication!!.componentApplication.inject(this)
     }
 
-    fun media(type: SharedItemType): Observable<SharedMediaItems>? {
-        return media(type, null)
+    fun media(parameters: Parameters, type: SharedItemType): Observable<SharedMediaItems>? {
+        return media(parameters, type, null)
     }
 
-    fun media(type: SharedItemType, lastKnownMessageId: Int?): Observable<SharedMediaItems>? {
-        val credentials = ApiUtils.getCredentials(parameters!!.userName, parameters!!.userToken)
+    fun media(parameters: Parameters, type: SharedItemType, lastKnownMessageId: Int?): Observable<SharedMediaItems>? {
+        val credentials = ApiUtils.getCredentials(parameters.userName, parameters.userToken)
 
         return ncApi.getSharedItems(
             credentials,
-            ApiUtils.getUrlForChatSharedItems(1, parameters!!.baseUrl, parameters!!.roomToken),
+            ApiUtils.getUrlForChatSharedItems(1, parameters.baseUrl, parameters.roomToken),
             type.toString().lowercase(Locale.ROOT),
             lastKnownMessageId,
             BATCH_SIZE
-        ).map { map(it, type) }
+        ).map { map(it, type, parameters) }
     }
 
-    private fun map(response: Response<ChatShareOverall>, type: SharedItemType): SharedMediaItems {
+    private fun map(
+        response: Response<ChatShareOverall>,
+        type: SharedItemType,
+        parameters: Parameters
+    ): SharedMediaItems {
 
         var chatLastGiven: Int? = null
         val items = mutableMapOf<String, SharedItem>()
@@ -70,8 +72,8 @@ class SharedItemsRepository {
                         fileParameters["link"]!!,
                         fileParameters["mimetype"]!!,
                         previewAvailable,
-                        previewLink(fileParameters["id"]),
-                        parameters!!.userEntity
+                        previewLink(fileParameters["id"], parameters.baseUrl),
+                        parameters.userEntity
                     )
                 } else {
                     Log.w(TAG, "location and deckcard are not yet supported")
@@ -87,16 +89,16 @@ class SharedItemsRepository {
             sortedMutableItems,
             chatLastGiven,
             moreItemsExisting,
-            authHeader()
+            authHeader(parameters.userName, parameters.userToken)
         )
     }
 
-    fun availableTypes(): Observable<Set<SharedItemType>> {
-        val credentials = ApiUtils.getCredentials(parameters!!.userName, parameters!!.userToken)
+    fun availableTypes(parameters: Parameters): Observable<Set<SharedItemType>> {
+        val credentials = ApiUtils.getCredentials(parameters.userName, parameters.userToken)
 
         return ncApi.getSharedItemsOverview(
             credentials,
-            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters!!.baseUrl, parameters!!.roomToken),
+            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters.baseUrl, parameters.roomToken),
             1
         ).map {
             val types = mutableSetOf<SharedItemType>()
@@ -115,13 +117,13 @@ class SharedItemsRepository {
         }
     }
 
-    fun authHeader(): Map<String, String> {
-        return mapOf(Pair("Authorization", ApiUtils.getCredentials(parameters!!.userName, parameters!!.userToken)))
+    private fun authHeader(userName: String, userToken: String): Map<String, String> {
+        return mapOf(Pair("Authorization", ApiUtils.getCredentials(userName, userToken)))
     }
 
-    private fun previewLink(fileId: String?): String {
+    private fun previewLink(fileId: String?, baseUrl: String): String {
         return ApiUtils.getUrlForFilePreviewWithFileId(
-            parameters!!.baseUrl,
+            baseUrl,
             fileId,
             sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
         )

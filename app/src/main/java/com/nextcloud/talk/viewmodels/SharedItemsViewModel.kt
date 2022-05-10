@@ -14,7 +14,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-class SharedItemsViewModel(private val repository: SharedItemsRepository, private val initialType: SharedItemType) :
+class SharedItemsViewModel(
+    private val repository: SharedItemsRepository,
+    private val initialType: SharedItemType,
+    private val repositoryParameters: SharedItemsRepository.Parameters
+) :
     ViewModel() {
 
     private val _sharedItemType: MutableLiveData<Set<SharedItemType>> by lazy {
@@ -39,14 +43,15 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
         val currentSharedItems = sharedItems.value!!
 
         if (currentSharedItems.moreItemsExisting) {
-            repository.media(currentSharedItems.type, currentSharedItems.lastSeenId)?.subscribeOn(Schedulers.io())
+            repository.media(repositoryParameters, currentSharedItems.type, currentSharedItems.lastSeenId)
+                ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(observer(currentSharedItems.type, false))
         }
     }
 
     fun loadItems(type: SharedItemType) {
-        repository.media(type)?.subscribeOn(Schedulers.io())
+        repository.media(repositoryParameters, type)?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(observer(type, true))
     }
@@ -78,7 +83,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                             oldItems + newSharedItems!!.items,
                             newSharedItems!!.lastSeenId,
                             newSharedItems!!.moreItemsExisting,
-                            repository.authHeader()
+                            newSharedItems!!.authHeader
                         )
                 }
             }
@@ -86,7 +91,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
     }
 
     private fun availableTypes() {
-        repository.availableTypes().subscribeOn(Schedulers.io())
+        repository.availableTypes(repositoryParameters).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<Set<SharedItemType>> {
 
@@ -116,7 +121,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
             if (modelClass.isAssignableFrom(SharedItemsViewModel::class.java)) {
 
                 val repository = SharedItemsRepository()
-                repository.parameters = SharedItemsRepository.Parameters(
+                val repositoryParameters = SharedItemsRepository.Parameters(
                     userEntity.userId,
                     userEntity.token,
                     userEntity.baseUrl,
@@ -124,7 +129,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                     roomToken
                 )
 
-                return SharedItemsViewModel(repository, initialType) as T
+                return SharedItemsViewModel(repository, initialType, repositoryParameters) as T
             }
 
             throw IllegalArgumentException("Unknown ViewModel class")
