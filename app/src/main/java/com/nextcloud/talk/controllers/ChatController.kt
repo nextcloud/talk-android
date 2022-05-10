@@ -147,6 +147,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AttendeePermissionsUtil
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
@@ -2830,6 +2831,8 @@ class ChatController(args: Bundle) :
         if (!isUserAllowedByPrivileges) return false
 
         if (!CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages")) return false
+
+        if (AttendeePermissionsUtil(currentConversation!!.permissions).canPostChatShareItemsDoReaction(conversationUser)) return true
 
         return true
     }

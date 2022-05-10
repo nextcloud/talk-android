@@ -1,10 +1,12 @@
 package com.nextcloud.talk.utils
 
+import com.nextcloud.talk.models.database.CapabilitiesUtil
+import com.nextcloud.talk.models.database.UserEntity
+
 /**
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
  */
 class AttendeePermissionsUtil(flag: Int) {
-
     var isDefault: Boolean = false
     var isCustom: Boolean = false
     var canStartCall: Boolean = false
@@ -13,7 +15,7 @@ class AttendeePermissionsUtil(flag: Int) {
     var canPublishAudio: Boolean = false
     var canPublishVideo: Boolean = false
     var canPublishScreen: Boolean = false
-    var canPostChatShareItemsDoReaction: Boolean = false
+    private var canPostChatShareItemsDoReaction: Boolean = false
 
     init {
         isDefault = (flag and DEFAULT) == DEFAULT
@@ -28,7 +30,16 @@ class AttendeePermissionsUtil(flag: Int) {
             (flag and POST_CHAT_SHARE_ITEMS_DO_REACTIONS) == POST_CHAT_SHARE_ITEMS_DO_REACTIONS
     }
 
+    fun canPostChatShareItemsDoReaction(user: UserEntity): Boolean {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-permission")) {
+            return canPostChatShareItemsDoReaction
+        }
+        // if capability is not available the spreed version doesn't support to restrict this
+        return true
+    }
+
     companion object {
+        val TAG = AttendeePermissionsUtil::class.simpleName
         const val DEFAULT = 0
         const val CUSTOM = 1
         const val START_CALL = 2
