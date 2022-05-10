@@ -50,7 +50,7 @@
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>
     <string name="nc_call_notifications">Известия за обаждане</string>
-    <string name="nc_call_reconnecting">Повторно свързване...</string>
+    <string name="nc_call_reconnecting">Повторно свързване…</string>
     <string name="nc_call_ringing">ПОЗВЪНЯВАНЕ</string>
     <string name="nc_call_state_in_call">%1$sв разговор</string>
     <string name="nc_call_state_with_phone">%1$sс телефон</string>
@@ -112,7 +112,7 @@
     <string name="nc_following_link">Потребител, който следва публична връзка</string>
     <string name="nc_formatted_message_you">Вие: %1$s</string>
     <string name="nc_forward_message">Препращане</string>
-    <string name="nc_forward_to_three_dots">Препращане към ...</string>
+    <string name="nc_forward_to_three_dots">Препращане към …</string>
     <string name="nc_get_from_provider">Все още нямате сървър?\nНатиснете тук, за да вземете от доставчик</string>
     <string name="nc_get_source_code">Получаване на изходния код</string>
     <string name="nc_group">Група</string>
@@ -340,7 +340,7 @@
     <string name="secondsAgo">преди секунди</string>
     <string name="selected_list_item">Избранo</string>
     <string name="send_to">Изпращане до</string>
-    <string name="send_to_three_dots">Изпращане до ...</string>
+    <string name="send_to_three_dots">Изпращане до …</string>
     <string name="set_status">Задаване на състояние</string>
     <string name="set_status_message">Задаване на съобщение за състояние</string>
     <string name="share">Споделяне</string>

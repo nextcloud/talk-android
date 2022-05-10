@@ -45,7 +45,7 @@
     <string name="nc_call_incoming">ĐANG ĐẾN</string>
     <string name="nc_call_name">Tên cuộc Đàm thoại</string>
     <string name="nc_call_name_is_same">Tên bạn nhập trùng với tên đã tồn tại.</string>
-    <string name="nc_call_reconnecting">Đang kết nối lại...</string>
+    <string name="nc_call_reconnecting">Đang kết nối lại…</string>
     <string name="nc_call_ringing">ĐANG ĐỔ CHUÔNG</string>
     <string name="nc_call_state_in_call">%1$s đang trong cuộc gọi</string>
     <string name="nc_call_state_with_phone">%1$s với điện thoại</string>
@@ -68,7 +68,7 @@
     <string name="nc_common_set">Đặt</string>
     <string name="nc_common_skip">Bỏ qua</string>
     <string name="nc_configure_cert_auth">Chọn chứng thực báo mật</string>
-    <string name="nc_connecting_call">Đang kết nối...</string>
+    <string name="nc_connecting_call">Đang kết nối…</string>
     <string name="nc_contacts_done">Hoàn tất</string>
     <string name="nc_conversation_link">Liên kết đàm thoại</string>
     <string name="nc_conversation_menu_video_call">Gọi Video</string>
@@ -95,11 +95,11 @@
     <string name="nc_group">Nhóm</string>
     <string name="nc_groups">Nhóm</string>
     <string name="nc_guest">Khách</string>
-    <string name="nc_hint_enter_a_message">Nhập một thông điệp...</string>
+    <string name="nc_hint_enter_a_message">Nhập một thông điệp…</string>
     <string name="nc_join_via_link">Tham gia bằng một liên kết</string>
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>
-    <string name="nc_leaving_call">Đang rời khỏi cuộc gọi...</string>
+    <string name="nc_leaving_call">Đang rời khỏi cuộc gọi…</string>
     <string name="nc_license_summary">Giấy phép bản quyền GNU, Phiên bản 3</string>
     <string name="nc_license_title">Giấy phép</string>
     <string name="nc_locked_tap_to_unlock">Nhấn để mở khoá</string>

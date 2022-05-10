@@ -20,7 +20,7 @@
     <string name="encrypted">Criptografado</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
     <string name="file_list_folder">pasta</string>
-    <string name="file_list_loading">Carregando...</string>
+    <string name="file_list_loading">Carregando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisível</string>
@@ -50,7 +50,7 @@
     <string name="nc_call_name">Nome de conversação</string>
     <string name="nc_call_name_is_same">O nome que você inseriu é o mesmo que o existente</string>
     <string name="nc_call_notifications">Notificações de chamadas </string>
-    <string name="nc_call_reconnecting">Reconectando...</string>
+    <string name="nc_call_reconnecting">Reconectando…</string>
     <string name="nc_call_ringing">TOCANDO</string>
     <string name="nc_call_state_in_call">%1$s em chamada</string>
     <string name="nc_call_state_with_phone">%1$scom telefone</string>
@@ -79,7 +79,7 @@
     <string name="nc_common_set">Definir</string>
     <string name="nc_common_skip">Ignorar</string>
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
-    <string name="nc_connecting_call">Conectando...</string>
+    <string name="nc_connecting_call">Conectando…</string>
     <string name="nc_contacts_done">Concluído</string>
     <string name="nc_conversation_link">Link de conversação</string>
     <string name="nc_conversation_menu_conversation_info">Informação da conversa</string>
@@ -112,13 +112,13 @@
     <string name="nc_following_link">Usuário seguindo um link público</string>
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Enviar</string>
-    <string name="nc_forward_to_three_dots">Enviar para ...</string>
+    <string name="nc_forward_to_three_dots">Enviar para …</string>
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
     <string name="nc_get_source_code">Obtenha o código-fonte</string>
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
-    <string name="nc_hint_enter_a_message">Digite uma mensagem...</string>
+    <string name="nc_hint_enter_a_message">Digite uma mensagem…</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão as configurações de Não perturbe</string>
     <string name="nc_join_via_link">Juntar-se com um link</string>
@@ -127,7 +127,7 @@
     <string name="nc_last_moderator_title">Não foi possível sair da conversa</string>
     <string name="nc_last_modified">%1$s | Modificado recentemente: %2$s</string>
     <string name="nc_leave">Sair da conversa</string>
-    <string name="nc_leaving_call">Desligando...</string>
+    <string name="nc_leaving_call">Desligando…</string>
     <string name="nc_license_summary">GNU General Public License, Versão 3</string>
     <string name="nc_license_title">Licença</string>
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
@@ -237,7 +237,7 @@
     <string name="nc_server_not_installed">Termine sua instalação %1$s</string>
     <string name="nc_server_testing_connection">Testando conexão</string>
     <string name="nc_server_unsupported">O servidor não tem o aplicativo Talk suportado instalado</string>
-    <string name="nc_server_url">Endereço do servidor https://...</string>
+    <string name="nc_server_url">Endereço do servidor https://…</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e posterior</string>
     <string name="nc_set_password">Definir uma senha</string>
     <string name="nc_settings">Configurações</string>

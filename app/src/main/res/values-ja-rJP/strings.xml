@@ -45,7 +45,7 @@
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
-    <string name="nc_call_reconnecting">再接続中...</string>
+    <string name="nc_call_reconnecting">再接続中…</string>
     <string name="nc_call_ringing">呼び出し中</string>
     <string name="nc_call_state_in_call">%1$s着信</string>
     <string name="nc_call_state_with_phone">%1$sと電話</string>
@@ -216,7 +216,7 @@
     <string name="nc_server_not_installed">%1$sのインストールを完了してください</string>
     <string name="nc_server_testing_connection">接続テスト</string>
     <string name="nc_server_unsupported">サーバーにサポートされているトークアプリがインストールされていません</string>
-    <string name="nc_server_url">サーバーのアドレス https://...</string>
+    <string name="nc_server_url">サーバーのアドレス https://…</string>
     <string name="nc_server_version">%1$sは%2$s 13以降でのみ動作します</string>
     <string name="nc_set_password">パスワードを設定</string>
     <string name="nc_settings">設定</string>

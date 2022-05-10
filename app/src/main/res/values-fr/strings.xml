@@ -20,7 +20,7 @@
     <string name="encrypted">Chiffré</string>
     <string name="failed_to_save">Echec de la sauvegarde %1$s</string>
     <string name="file_list_folder">Dossier</string>
-    <string name="file_list_loading">Chargement...</string>
+    <string name="file_list_loading">Chargement…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
     <string name="invisible">Invisible</string>
@@ -112,7 +112,7 @@
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
     <string name="nc_formatted_message_you">Vous : %1$s</string>
     <string name="nc_forward_message">Faire suivre</string>
-    <string name="nc_forward_to_three_dots">Faire suivre à...</string>
+    <string name="nc_forward_to_three_dots">Faire suivre à…</string>
     <string name="nc_get_from_provider">Vous n\'avez pas encore de serveur?\nCliquez-ici pour en obtenir un chez un fournisseur d\'accès.</string>
     <string name="nc_get_source_code">Obtenir le code source</string>
     <string name="nc_group">Groupe</string>
@@ -297,7 +297,7 @@
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
     <string name="nc_share_this_location">Partager cette position</string>
     <string name="nc_shared_items">Éléments partagés</string>
-    <string name="nc_shared_items_description">Images, fichiers, messages vocaux ...</string>
+    <string name="nc_shared_items_description">Images, fichiers, messages vocaux…</string>
     <string name="nc_shared_location">Position partagée</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_time">Heure de début</string>
@@ -341,7 +341,7 @@
     <string name="secondsAgo">secondes</string>
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_to">Envoyer a</string>
-    <string name="send_to_three_dots">Envoyer a...</string>
+    <string name="send_to_three_dots">Envoyer a…</string>
     <string name="set_status">Définir le statut</string>
     <string name="set_status_message">Définir le message de statut</string>
     <string name="share">Partage</string>

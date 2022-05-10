@@ -20,7 +20,7 @@
     <string name="encrypted">已加密</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
-    <string name="file_list_loading">加載中...</string>
+    <string name="file_list_loading">加載中…</string>
     <string name="filename_progress">%1$s（%2$d）</string>
     <string name="fourHours">4 小時</string>
     <string name="invisible">隱藏</string>
@@ -112,7 +112,7 @@
     <string name="nc_following_link">用戶關注公共連結</string>
     <string name="nc_formatted_message_you">你： %1$s</string>
     <string name="nc_forward_message">轉寄</string>
-    <string name="nc_forward_to_three_dots">轉寄給 ...</string>
+    <string name="nc_forward_to_three_dots">轉寄給 …</string>
     <string name="nc_get_from_provider">您沒有自己的伺服器嗎？\n點這裡向服務供應商購買</string>
     <string name="nc_get_source_code">取得原始碼</string>
     <string name="nc_group">群組</string>
@@ -127,7 +127,7 @@
     <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>
-    <string name="nc_leaving_call">離開通話...</string>
+    <string name="nc_leaving_call">離開通話…</string>
     <string name="nc_license_summary">GNU General Public License， 第3版</string>
     <string name="nc_license_title">授權</string>
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
@@ -237,7 +237,7 @@
     <string name="nc_server_not_installed">請將%1$s完整安裝</string>
     <string name="nc_server_testing_connection">測試連線</string>
     <string name="nc_server_unsupported">伺服器未安裝受支持的 Talk 應用程式</string>
-    <string name="nc_server_url">伺服器網址 https://...</string>
+    <string name="nc_server_url">伺服器網址 https://…</string>
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
     <string name="nc_set_password">設定密碼</string>
     <string name="nc_settings">設定</string>
@@ -341,7 +341,7 @@
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">已選擇</string>
     <string name="send_to">傳送到</string>
-    <string name="send_to_three_dots">傳送到 ...</string>
+    <string name="send_to_three_dots">傳送到 …</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>

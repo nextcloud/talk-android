@@ -50,7 +50,7 @@
     <string name="nc_call_name">اسم المحادثة</string>
     <string name="nc_call_name_is_same">الاسم الذي أدخلته مطابق لاسم آخر </string>
     <string name="nc_call_notifications">تنبيهات المكالمة</string>
-    <string name="nc_call_reconnecting">إعادة الاتصال...</string>
+    <string name="nc_call_reconnecting">إعادة الاتصال…</string>
     <string name="nc_call_ringing">يرن </string>
     <string name="nc_call_state_in_call">%1$s في مكالمة</string>
     <string name="nc_call_state_with_phone">%1$s بالهاتف</string>
@@ -112,7 +112,7 @@
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
     <string name="nc_forward_message">إعادة توجيه</string>
-    <string name="nc_forward_to_three_dots">إعادة توجيه لـ...</string>
+    <string name="nc_forward_to_three_dots">إعادة توجيه لـ…</string>
     <string name="nc_get_from_provider">ليس لديك خادم حتى الآن ؟\nإضغط هنا للحصول على واحد من أحد المزودين</string>
     <string name="nc_get_source_code">الحصول على الشفرة المصدرية</string>
     <string name="nc_group">الفريق</string>
@@ -298,7 +298,7 @@
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_from_cloud">شارك من %1$s</string>
-    <string name="nc_upload_in_progess">جاري الرفع...</string>
+    <string name="nc_upload_in_progess">جاري الرفع…</string>
     <string name="nc_upload_local_file">رفع الملف المحلي</string>
     <string name="nc_upload_picture_from_cam">التقط صورة</string>
     <string name="nc_user">مستخدم</string>
@@ -328,7 +328,7 @@
     <string name="secondsAgo">منذ ثوانٍ</string>
     <string name="selected_list_item">تم تحديد</string>
     <string name="send_to">أرسل إلى</string>
-    <string name="send_to_three_dots">أرسل إلى...</string>
+    <string name="send_to_three_dots">أرسل إلى…</string>
     <string name="set_status">تعيين الحالة</string>
     <string name="set_status_message">تعيين رسالة الحالة</string>
     <string name="share">شاركه</string>

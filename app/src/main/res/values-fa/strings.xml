@@ -15,7 +15,7 @@
     <string name="dontClear">پاک نکن</string>
     <string name="edit">ویرایش</string>
     <string name="file_list_folder">پوشه</string>
-    <string name="file_list_loading">درحال بارگیری...</string>
+    <string name="file_list_loading">درحال بارگیری…</string>
     <string name="fourHours">۴ ساعت</string>
     <string name="invisible">نامرئی</string>
     <string name="lock_symbol">نماد قفل</string>
@@ -41,7 +41,7 @@
     <string name="nc_biometric_unlock">باز کردن %1$s</string>
     <string name="nc_call_name">نام مکالمه</string>
     <string name="nc_call_name_is_same">نامی که وارد کردید با نام موجود یکسان است</string>
-    <string name="nc_call_reconnecting">اتصال مجدد...</string>
+    <string name="nc_call_reconnecting">اتصال مجدد…</string>
     <string name="nc_call_timeout">در  ۴۵ ثانیه پاسخی وجود نداشت ، برای آزمایش دوباره ضربه بزنید</string>
     <string name="nc_camera_permission_permanently_denied">برای فعال کردن ارتباطات تصویری ، لطفاً اجازه استفاده از \"دوربین\" را در تنظیمات سیستم قرار دهید.</string>
     <string name="nc_cancel">لغو</string>
@@ -93,13 +93,13 @@
     <string name="nc_following_link"> کاربر  پس از  یک  پیوند  عمومی</string>
     <string name="nc_formatted_message_you">شما: %1$s</string>
     <string name="nc_forward_message">ارسال کردن</string>
-    <string name="nc_forward_to_three_dots">ارسال کردن به ...</string>
+    <string name="nc_forward_to_three_dots">ارسال کردن به …</string>
     <string name="nc_get_from_provider">"آیا هیچ سروری در دسترس ندارید؟ برای گرفتن سرور از یک ارائه دهنده کلیک کنید "</string>
     <string name="nc_get_source_code">دریافت کد منبع</string>
     <string name="nc_group">گروه</string>
     <string name="nc_groups">گروه ها</string>
     <string name="nc_guest">مهمان</string>
-    <string name="nc_hint_enter_a_message">پیامی را وارد کنید...</string>
+    <string name="nc_hint_enter_a_message">پیامی را وارد کنید…</string>
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_join_via_link">با یک پیوند ملحق شوید</string>
     <string name="nc_join_via_web">از طریق وب ملحق شوید</string>
@@ -107,7 +107,7 @@
     <string name="nc_last_moderator_title">نمی توان مکالمه را ترک کرد</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
     <string name="nc_leave">ترک صحبت</string>
-    <string name="nc_leaving_call">ترک تماس ...</string>
+    <string name="nc_leaving_call">ترک تماس…</string>
     <string name="nc_license_summary">مجوز عمومی عمومی گنو ، نسخه 3</string>
     <string name="nc_license_title">مجوز</string>
     <string name="nc_limit_hit">%sحد کاراکترها زده شده است</string>

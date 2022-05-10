@@ -11,7 +11,7 @@
     <string name="dnd">Não incomodar</string>
     <string name="edit">Editar</string>
     <string name="file_list_folder">pasta</string>
-    <string name="file_list_loading">A carregar...</string>
+    <string name="file_list_loading">A carregar…</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisível </string>
     <string name="menu_item_sort_by_date_newest_first">Recentes primeiro</string>
@@ -44,7 +44,7 @@
     <string name="nc_common_set">Definir</string>
     <string name="nc_common_skip">Saltar</string>
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
-    <string name="nc_connecting_call">A ligar...</string>
+    <string name="nc_connecting_call">A ligar…</string>
     <string name="nc_contacts_done">Concluir </string>
     <string name="nc_conversation_link">Hiperligação de conversação</string>
     <string name="nc_conversation_menu_conversation_info">Informação da conversação</string>
@@ -72,7 +72,7 @@
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
-    <string name="nc_hint_enter_a_message">Insira uma mensagem...</string>
+    <string name="nc_hint_enter_a_message">Insira uma mensagem…</string>
     <string name="nc_join_via_web">Aderir via Web</string>
     <string name="nc_last_modified">%1$s | Última modificação: %2$s</string>
     <string name="nc_leave">Sair da conversação</string>
@@ -126,7 +126,7 @@
     <string name="nc_server_import_accounts">Importar contas da aplicação %1$s</string>
     <string name="nc_server_import_accounts_plain">Importar contas</string>
     <string name="nc_server_testing_connection">A testar a ligação</string>
-    <string name="nc_server_url">Endereço do servidor https://...</string>
+    <string name="nc_server_url">Endereço do servidor https://…</string>
     <string name="nc_set_password">Definir uma palavra-passe</string>
     <string name="nc_settings">Definições</string>
     <string name="nc_settings_advanced_title">Avançado</string>

@@ -50,7 +50,7 @@
     <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
     <string name="nc_call_notifications">Upozornenia na hovory</string>
-    <string name="nc_call_reconnecting">Opätovné pripájanie...</string>
+    <string name="nc_call_reconnecting">Opätovné pripájanie…</string>
     <string name="nc_call_ringing">ZVONÍ</string>
     <string name="nc_call_state_in_call">%1$s v rozhovore</string>
     <string name="nc_call_state_with_phone">%1$s s telefónom</string>
@@ -79,7 +79,7 @@
     <string name="nc_common_set">Nastaviť</string>
     <string name="nc_common_skip">Preskočiť</string>
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
-    <string name="nc_connecting_call">Pripája sa...</string>
+    <string name="nc_connecting_call">Pripája sa…</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_link">Odkaz rozhovoru</string>
     <string name="nc_conversation_menu_conversation_info">Informácia o rozhovore</string>
@@ -112,7 +112,7 @@
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Preposlať</string>
-    <string name="nc_forward_to_three_dots">Preposlať na ...</string>
+    <string name="nc_forward_to_three_dots">Preposlať na …</string>
     <string name="nc_get_from_provider">Ešte nemáte server? \nKliknite sem a získajte jeden od poskytovateľa</string>
     <string name="nc_get_source_code">Získajte zdrojový kód</string>
     <string name="nc_group">Skupina</string>
@@ -127,7 +127,7 @@
     <string name="nc_last_moderator_title">Nie je možné opustiť rozhovor</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Odísť z rozhovoru</string>
-    <string name="nc_leaving_call">Opúšťam hovor...</string>
+    <string name="nc_leaving_call">Opúšťam hovor…</string>
     <string name="nc_license_summary">GNU Všeobecná Verejná Licencia, Verzia 3</string>
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Limit maximálneho počtu znakov %s dosiahnutý</string>
@@ -237,7 +237,7 @@
     <string name="nc_server_not_installed">Prosím dokončite vašu %1$s inštaláciu</string>
     <string name="nc_server_testing_connection">Testuje sa pripojenie</string>
     <string name="nc_server_unsupported">Na serveri nie je nainštalovaná podporovaná apka Talk</string>
-    <string name="nc_server_url">Adresa servera https://...</string>
+    <string name="nc_server_url">Adresa servera https://…</string>
     <string name="nc_server_version">%1$spracuje iba s %2$s13 a vyššie</string>
     <string name="nc_set_password">Nastavte si heslo</string>
     <string name="nc_settings">Nastavenia</string>
@@ -297,7 +297,7 @@
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
     <string name="nc_shared_items">Zdieľané položky</string>
-    <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy...</string>
+    <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy…</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>
@@ -341,7 +341,7 @@
     <string name="secondsAgo">sekúnd dozadu</string>
     <string name="selected_list_item">Vybrané</string>
     <string name="send_to">Odoslať do</string>
-    <string name="send_to_three_dots">Odoslať do ...</string>
+    <string name="send_to_three_dots">Odoslať do …</string>
     <string name="set_status">Nastaviť stav</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
     <string name="share">Sprístupniť</string>

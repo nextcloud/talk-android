@@ -14,7 +14,7 @@
     <string name="edit">Editar</string>
     <string name="encrypted">Cifrado</string>
     <string name="file_list_folder">cartafol</string>
-    <string name="file_list_loading">Cargando...</string>
+    <string name="file_list_loading">Cargando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisíbel</string>

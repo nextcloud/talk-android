@@ -40,7 +40,7 @@
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_name_is_same">Namnet du angav är detsamma som det befintliga</string>
-    <string name="nc_call_reconnecting">Återansluter...</string>
+    <string name="nc_call_reconnecting">Återansluter…</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_camera_permission_permanently_denied">För att aktivera videokommunikation vänligen bevilja \"Kamera\"-tillstånd i systeminställningar.</string>
     <string name="nc_cancel">Avbryt</string>
@@ -59,7 +59,7 @@
     <string name="nc_common_set">Sätt</string>
     <string name="nc_common_skip">Hoppa över</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
-    <string name="nc_connecting_call">Ansluter...</string>
+    <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
     <string name="nc_conversation_link">Konversationslänk</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
@@ -103,7 +103,7 @@
     <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
     <string name="nc_leave">Lämna konversationen</string>
-    <string name="nc_leaving_call">Lämnar samtal...</string>
+    <string name="nc_leaving_call">Lämnar samtal…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>

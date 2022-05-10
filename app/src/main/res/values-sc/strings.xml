@@ -16,7 +16,7 @@
     <string name="encrypted">Tzifradu</string>
     <string name="failed_to_save">No at fatu a sarvare %1$s</string>
     <string name="file_list_folder">cartella</string>
-    <string name="file_list_loading">Carrighende...</string>
+    <string name="file_list_loading">Carrighende…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 oras</string>
     <string name="invisible">Invisìbile</string>
@@ -45,7 +45,7 @@
     <string name="nc_call_incoming">IN INTRADA</string>
     <string name="nc_call_name">Nùmene resonada</string>
     <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
-    <string name="nc_call_reconnecting">Torrende a connètere...</string>
+    <string name="nc_call_reconnecting">Torrende a connètere…</string>
     <string name="nc_call_ringing">SONENDE</string>
     <string name="nc_call_state_in_call">%1$s in mutida</string>
     <string name="nc_call_state_with_phone">%1$s cun telèfonu</string>
@@ -74,7 +74,7 @@
     <string name="nc_common_set">Imposta</string>
     <string name="nc_common_skip">Brinca</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
-    <string name="nc_connecting_call">Connetende...</string>
+    <string name="nc_connecting_call">Connetende…</string>
     <string name="nc_contacts_done">Fatu</string>
     <string name="nc_conversation_link">Ligòngiu resonada</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
@@ -107,13 +107,13 @@
     <string name="nc_following_link">Utente chi sighit unu ligòngiu pùblicu</string>
     <string name="nc_formatted_message_you">Tue: %1$s</string>
     <string name="nc_forward_message">Torra a imbiare</string>
-    <string name="nc_forward_to_three_dots">Torra a imbiare a ...</string>
+    <string name="nc_forward_to_three_dots">Torra a imbiare a …</string>
     <string name="nc_get_from_provider">Non tenes ancora unu serbidore?\nIncarca inoghe pro dd\'otènnere dae unu frunidore.</string>
     <string name="nc_get_source_code">Otene su còdighe fonte</string>
     <string name="nc_group">Grupu</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Persone invitada</string>
-    <string name="nc_hint_enter_a_message">Inserta unu messàgiu...</string>
+    <string name="nc_hint_enter_a_message">Inserta unu messàgiu…</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
     <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare is impostatziones No istorbare</string>
     <string name="nc_join_via_link">Intra cun unu ligòngiu</string>
@@ -122,7 +122,7 @@
     <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
     <string name="nc_last_modified">%1$s | Ùrtima modìfica: %2$s</string>
     <string name="nc_leave">Lassa resonada</string>
-    <string name="nc_leaving_call">Lassende sa mutida...</string>
+    <string name="nc_leaving_call">Lassende sa mutida…</string>
     <string name="nc_license_summary">GNU General Public License, Versione 3</string>
     <string name="nc_license_title">Lissèntzia</string>
     <string name="nc_limit_hit">%s lìmite de caràteres lòmpidu</string>
@@ -324,7 +324,7 @@
     <string name="secondsAgo">segundos a immoe</string>
     <string name="selected_list_item">Seletzionadu</string>
     <string name="send_to">Imbia a</string>
-    <string name="send_to_three_dots">Imbia a ...</string>
+    <string name="send_to_three_dots">Imbia a …</string>
     <string name="set_status">Imposta istadu</string>
     <string name="set_status_message">Imposta messàgiu de istadu</string>
     <string name="share">Cumpartzi</string>

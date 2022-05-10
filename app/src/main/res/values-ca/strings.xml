@@ -36,7 +36,7 @@
     <string name="nc_biometric_unlock">Desbloca %1$s</string>
     <string name="nc_call_name">Nom de la conversa</string>
     <string name="nc_call_name_is_same">El nom que heu introduït és el mateix que l’actual</string>
-    <string name="nc_call_reconnecting">S\'està reconnectant...</string>
+    <string name="nc_call_reconnecting">S\'està reconnectant…</string>
     <string name="nc_call_timeout">Han passat 45 segons i no hi ha hagut cap resposta, feu un toc per tornar-ho a provar</string>
     <string name="nc_camera_permission_permanently_denied">Per activar la comunicació per vídeo, si us plau doneu permís a la \"Càmera\" dins de la configuració del sistema.</string>
     <string name="nc_cancel">Cancel·la</string>
@@ -55,7 +55,7 @@
     <string name="nc_common_set">Estableix</string>
     <string name="nc_common_skip">Omet</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
-    <string name="nc_connecting_call">S\'està connectant...</string>
+    <string name="nc_connecting_call">S\'està connectant…</string>
     <string name="nc_contacts_done">Fet</string>
     <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
@@ -89,7 +89,7 @@
     <string name="nc_group">Grup</string>
     <string name="nc_groups">Grups</string>
     <string name="nc_guest">Convidat</string>
-    <string name="nc_hint_enter_a_message">Introduïu un missatge...</string>
+    <string name="nc_hint_enter_a_message">Introduïu un missatge…</string>
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
@@ -98,7 +98,7 @@
     <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
     <string name="nc_leave">Surt de la conversa</string>
-    <string name="nc_leaving_call">S\'està abandonant la trucada...</string>
+    <string name="nc_leaving_call">S\'està abandonant la trucada…</string>
     <string name="nc_license_summary">Llicència Pública General de GNU, Versió 3</string>
     <string name="nc_license_title">Llicència</string>
     <string name="nc_limit_hit">S\'ha arribat al límit de %s caràcters </string>
@@ -184,7 +184,7 @@
     <string name="nc_server_not_installed">Si us plau, acabeu la vostra instal·lació %1$s</string>
     <string name="nc_server_testing_connection">S\'està comprovant la connexió</string>
     <string name="nc_server_unsupported">El servidor no té instal·lada l\'aplicació Talk</string>
-    <string name="nc_server_url">Adreça del servidor https://...</string>
+    <string name="nc_server_url">Adreça del servidor https://…</string>
     <string name="nc_server_version">%1$s només funciona amb %2$s 13 i endavant</string>
     <string name="nc_set_password">Configura una contrasenya</string>
     <string name="nc_settings">Paràmetres</string>

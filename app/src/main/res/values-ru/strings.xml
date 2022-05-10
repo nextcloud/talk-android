@@ -46,7 +46,7 @@
     <string name="nc_call_name">Наименование беседы</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_call_notifications">Уведомления о звонках</string>
-    <string name="nc_call_reconnecting">Переподключение...</string>
+    <string name="nc_call_reconnecting">Переподключение…</string>
     <string name="nc_call_ringing">Звонок</string>
     <string name="nc_call_state_in_call">%1$s на линии</string>
     <string name="nc_call_state_with_phone">%1$s с телефоном</string>
@@ -108,7 +108,7 @@
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Вперёд</string>
-    <string name="nc_forward_to_three_dots">Вперёд к ...</string>
+    <string name="nc_forward_to_three_dots">Вперёд к …</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
     <string name="nc_get_source_code">Исходный код</string>
     <string name="nc_group">Группа</string>
@@ -123,7 +123,7 @@
     <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
     <string name="nc_leave">Покинуть беседу</string>
-    <string name="nc_leaving_call">Завершение вызова...</string>
+    <string name="nc_leaving_call">Завершение вызова…</string>
     <string name="nc_license_summary">Открытое лицензионное соглашение GNU, версия 3</string>
     <string name="nc_license_title">Лицензия</string>
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
@@ -335,7 +335,7 @@
     <string name="secondsAgo">несколько секунд назад</string>
     <string name="selected_list_item">Выбрано</string>
     <string name="send_to">Отправить в</string>
-    <string name="send_to_three_dots">Отправить ...</string>
+    <string name="send_to_three_dots">Отправить …</string>
     <string name="set_status">Установить статус</string>
     <string name="set_status_message">Установить статус</string>
     <string name="share">Поделиться</string>

@@ -46,7 +46,7 @@
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
     <string name="nc_call_name_is_same">Uneseno ime jednako je postojećem</string>
-    <string name="nc_call_reconnecting">Ponovno povezivanje...</string>
+    <string name="nc_call_reconnecting">Ponovno povezivanje…</string>
     <string name="nc_call_ringing">ZVONI</string>
     <string name="nc_call_state_in_call">%1$s u pozivu</string>
     <string name="nc_call_state_with_phone">%1$s putem telefona</string>
@@ -108,7 +108,7 @@
     <string name="nc_following_link">Korisnik slijedi javnu poveznicu</string>
     <string name="nc_formatted_message_you">Vi: %1$s</string>
     <string name="nc_forward_message">Proslijedi</string>
-    <string name="nc_forward_to_three_dots">Proslijedi...</string>
+    <string name="nc_forward_to_three_dots">Proslijedi…</string>
     <string name="nc_get_from_provider">Nemate poslužitelj?\nKliknite ovdje kako biste ga dobili od davatelja usluge</string>
     <string name="nc_get_source_code">Preuzmi izvorni kod</string>
     <string name="nc_group">Grupa</string>
@@ -331,7 +331,7 @@
     <string name="secondsAgo">prije par sekundi</string>
     <string name="selected_list_item">Odabrano</string>
     <string name="send_to">Pošalji na</string>
-    <string name="send_to_three_dots">Pošalji na...</string>
+    <string name="send_to_three_dots">Pošalji na…</string>
     <string name="set_status">Postavi status</string>
     <string name="set_status_message">Postavi poruku statusa</string>
     <string name="share">Dijeli</string>
