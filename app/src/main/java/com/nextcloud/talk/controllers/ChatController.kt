@@ -2513,50 +2513,60 @@ class ChatController(args: Bundle) :
     }
 
     fun deleteMessage(message: IMessage?) {
-        var apiVersion = 1
-        // FIXME Fix API checking with guests?
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-        }
-
-        ncApi?.deleteChatMessage(
-            credentials,
-            ApiUtils.getUrlForChatMessage(
-                apiVersion,
-                conversationUser?.baseUrl,
-                roomToken,
-                message?.id
+        if (!AttendeePermissionsUtil(currentConversation!!.permissions)
+                .canPostChatShareItemsDoReaction(conversationUser!!)
+        ) {
+            Log.e(
+                TAG, "Deletion of message is skipped because of restrictions by permissions. " +
+                    "This method should not have been called!"
             )
-        )?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+        } else {
+            var apiVersion = 1
+            // FIXME Fix API checking with guests?
+            if (conversationUser != null) {
+                apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+            }
 
-                override fun onNext(t: ChatOverallSingleMessage) {
-                    if (t.ocs.meta.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
-                        Toast.makeText(
-                            context, R.string.nc_delete_message_leaked_to_matterbridge,
-                            Toast.LENGTH_LONG
-                        ).show()
+            ncApi?.deleteChatMessage(
+                credentials,
+                ApiUtils.getUrlForChatMessage(
+                    apiVersion,
+                    conversationUser?.baseUrl,
+                    roomToken,
+                    message?.id
+                )
+            )?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<ChatOverallSingleMessage> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
-                }
 
-                override fun onError(e: Throwable) {
-                    Log.e(
-                        TAG,
-                        "Something went wrong when trying to delete message with id " +
-                            message?.id,
-                        e
-                    )
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-                }
+                    override fun onNext(t: ChatOverallSingleMessage) {
+                        if (t.ocs.meta.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
+                            Toast.makeText(
+                                context, R.string.nc_delete_message_leaked_to_matterbridge,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
 
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+                    override fun onError(e: Throwable) {
+                        Log.e(
+                            TAG,
+                            "Something went wrong when trying to delete message with id " +
+                                message?.id,
+                            e
+                        )
+                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
     }
 
     fun replyPrivately(message: IMessage?) {

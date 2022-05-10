@@ -34,7 +34,7 @@ class AttendeePermissionsUtil(flag: Int) {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-permission")) {
             return canPostChatShareItemsDoReaction
         }
-        // if capability is not available the spreed version doesn't support to restrict this
+        // if capability is not available then the spreed version doesn't support to restrict this
         return true
     }
 
