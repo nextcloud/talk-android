@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.repositories.SharedItemType
 import com.nextcloud.talk.repositories.SharedItemsRepository
@@ -13,11 +12,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-class SharedItemsViewModel(
-    private val repository: SharedItemsRepository,
-    private val initialType: SharedItemType,
-    private val repositoryParameters: SharedItemsRepository.Parameters
+class SharedItemsViewModel @Inject constructor(
+    private val repository: SharedItemsRepository
 ) :
     ViewModel() {
 
@@ -29,11 +27,12 @@ class SharedItemsViewModel(
 
     private val _sharedItems: MutableLiveData<SharedMediaItems> by lazy {
         MutableLiveData<SharedMediaItems>().also {
-            loadItems(initialType)
+            loadItems(_currentItemType)
         }
     }
 
-    private var _currentItemType = initialType
+    private lateinit var repositoryParameters: SharedItemsRepository.Parameters
+    private lateinit var _currentItemType: SharedItemType
 
     val sharedItemTypes: LiveData<Set<SharedItemType>>
         get() = _sharedItemTypes
@@ -120,27 +119,16 @@ class SharedItemsViewModel(
             })
     }
 
-    class Factory(val userEntity: UserEntity, val roomToken: String, private val initialType: SharedItemType) :
-        ViewModelProvider
-        .Factory {
-
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(SharedItemsViewModel::class.java)) {
-
-                val repository = SharedItemsRepository()
-                val repositoryParameters = SharedItemsRepository.Parameters(
-                    userEntity.userId,
-                    userEntity.token,
-                    userEntity.baseUrl,
-                    userEntity,
-                    roomToken
-                )
-
-                return SharedItemsViewModel(repository, initialType, repositoryParameters) as T
-            }
-
-            throw IllegalArgumentException("Unknown ViewModel class")
-        }
+    // TODO cleanup
+    fun initialize(userEntity: UserEntity, roomToken: String, initialType: SharedItemType) {
+        repositoryParameters = SharedItemsRepository.Parameters(
+            userEntity.userId,
+            userEntity.token,
+            userEntity.baseUrl,
+            userEntity,
+            roomToken
+        )
+        _currentItemType = initialType
     }
 
     companion object {

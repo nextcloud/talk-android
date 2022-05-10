@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import autodagger.AutoInjector
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.SharedItemsGridAdapter
 import com.nextcloud.talk.adapters.SharedItemsListAdapter
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.repositories.SharedItemType
@@ -21,14 +23,20 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.viewmodels.SharedItemsViewModel
+import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
@@ -52,10 +60,8 @@ class SharedItemsActivity : AppCompatActivity() {
         supportActionBar?.title = conversationName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel = ViewModelProvider(
-            this,
-            SharedItemsViewModel.Factory(userEntity, roomToken, SharedItemType.MEDIA)
-        ).get(SharedItemsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
+        viewModel.initialize(userEntity, roomToken, SharedItemType.MEDIA)
 
         viewModel.sharedItemTypes.observe(this) {
             initTabs(it)
