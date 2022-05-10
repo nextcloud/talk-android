@@ -40,7 +40,7 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities.getNotificationsCapability() != null &&
-                        capabilities.getNotificationsCapability().getFeatures() != null) {
+                    capabilities.getNotificationsCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
                 }
             } catch (IOException e) {
@@ -55,7 +55,7 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities.getExternalCapability() != null &&
-                        capabilities.getExternalCapability().containsKey("v1")) {
+                    capabilities.getExternalCapability().containsKey("v1")) {
                     return capabilities.getExternalCapability().get("v1").contains(capabilityName);
                 }
             } catch (IOException e) {
@@ -84,7 +84,7 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null && capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getFeatures() != null) {
+                    capabilities.getSpreedCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
                 }
             } catch (IOException e) {
@@ -99,13 +99,13 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
-                        capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getConfig() != null &&
-                        capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getConfig() != null &&
+                    capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
                     HashMap<String, String> chatConfigHashMap = capabilities
-                            .getSpreedCapability()
-                            .getConfig()
-                            .get("chat");
+                        .getSpreedCapability()
+                        .getConfig()
+                        .get("chat");
                     if (chatConfigHashMap != null && chatConfigHashMap.containsKey("max-length")) {
                         int chatSize = Integer.parseInt(chatConfigHashMap.get("max-length"));
                         if (chatSize > 0) {
@@ -127,9 +127,9 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 return capabilities != null &&
-                        capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getFeatures() != null &&
-                        capabilities.getSpreedCapability().getFeatures().contains("phonebook-search");
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getFeatures() != null &&
+                    capabilities.getSpreedCapability().getFeatures().contains("phonebook-search");
             } catch (IOException e) {
                 Log.e(TAG, "Failed to get capabilities for the user");
             }
@@ -142,9 +142,9 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
-                        capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getConfig() != null &&
-                        capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getConfig() != null &&
+                    capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
                     Map<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
                     return map != null && map.containsKey("read-privacy");
                 }
@@ -160,9 +160,9 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
-                        capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getConfig() != null &&
-                        capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getConfig() != null &&
+                    capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
                     HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
                     if (map != null && map.containsKey("read-privacy")) {
                         return Integer.parseInt(map.get("read-privacy")) == 1;
@@ -196,9 +196,9 @@ public abstract class CapabilitiesUtil {
             try {
                 Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 if (capabilities != null &&
-                        capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getConfig() != null &&
-                        capabilities.getSpreedCapability().getConfig().containsKey("attachments")) {
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getConfig() != null &&
+                    capabilities.getSpreedCapability().getConfig().containsKey("attachments")) {
                     HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("attachments");
                     if (map != null && map.containsKey("folder")) {
                         return map.get("folder");
@@ -233,9 +233,9 @@ public abstract class CapabilitiesUtil {
             try {
                 capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 return (capabilities != null &&
-                        capabilities.getSpreedCapability() != null &&
-                        capabilities.getSpreedCapability().getFeatures() != null &&
-                        capabilities.getSpreedCapability().getFeatures().contains("temp-user-avatar-api"));
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getFeatures() != null &&
+                    capabilities.getSpreedCapability().getFeatures().contains("temp-user-avatar-api"));
             } catch (IOException e) {
                 Log.e("User.java", "Failed to get server name", e);
             }
@@ -249,11 +249,34 @@ public abstract class CapabilitiesUtil {
             try {
                 capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
                 return (capabilities != null &&
-                        capabilities.getProvisioningCapability() != null &&
-                        capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() != null &&
-                        capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() > 1);
+                    capabilities.getProvisioningCapability() != null &&
+                    capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() != null &&
+                    capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() > 1);
             } catch (IOException e) {
                 Log.e("User.java", "Failed to get server name", e);
+            }
+        }
+        return false;
+    }
+
+    public static boolean isAbleToCall(@Nullable UserEntity user) {
+        if (user != null && user.getCapabilities() != null) {
+            try {
+                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                if (capabilities != null &&
+                    capabilities.getSpreedCapability() != null &&
+                    capabilities.getSpreedCapability().getConfig() != null &&
+                    capabilities.getSpreedCapability().getConfig().containsKey("call") &&
+                    capabilities.getSpreedCapability().getConfig().get("call") != null &&
+                    capabilities.getSpreedCapability().getConfig().get("call").containsKey("enabled")) {
+                    return Boolean.parseBoolean(
+                        capabilities.getSpreedCapability().getConfig().get("call").get("enabled"));
+                } else {
+                    // older nextcloud versions without the capability can't disable the calls
+                    return true;
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Failed to get capabilities for the user", e);
             }
         }
         return false;

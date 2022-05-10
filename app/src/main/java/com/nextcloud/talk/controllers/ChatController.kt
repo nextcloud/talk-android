@@ -411,7 +411,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun loadAvatarForStatusBar() {
-        if (inOneToOneCall() && activity != null && conversationVoiceCallMenuItem != null) {
+        if (inOneToOneCall() && activity != null) {
 
             val imageRequest = DisplayUtils.getImageRequestForUrl(
                 ApiUtils.getUrlForAvatar(
@@ -1159,33 +1159,54 @@ class ChatController(args: Bundle) :
     }
 
     private fun checkReadOnlyState() {
-        if (currentConversation != null && isAlive()) {
-            if (currentConversation?.shouldShowLobby(conversationUser) ?: false ||
-                currentConversation?.conversationReadOnlyState != null &&
-                currentConversation?.conversationReadOnlyState ==
-                Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
-            ) {
-
-                conversationVoiceCallMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
-                conversationVideoMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
+        if (isAlive()) {
+            if (isReadOnlyConversation() || shouldShowLobby()) {
+                disableCallButtons()
                 binding.messageInputView.visibility = View.GONE
             } else {
-                if (conversationVoiceCallMenuItem != null) {
-                    conversationVoiceCallMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
-                }
-
-                if (conversationVideoMenuItem != null) {
-                    conversationVideoMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
-                }
-
-                if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)
-                ) {
-                    binding.messageInputView.visibility = View.GONE
-                } else {
-                    binding.messageInputView.visibility = View.VISIBLE
-                }
+                enableCallButtons()
+                binding.messageInputView.visibility = View.VISIBLE
             }
         }
+    }
+
+    private fun shouldShowLobby(): Boolean {
+        if (currentConversation != null) {
+            return currentConversation?.shouldShowLobby(conversationUser) == true
+        }
+        return false
+    }
+
+    private fun disableCallButtons() {
+        if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
+            if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
+                conversationVoiceCallMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
+                conversationVideoMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
+                conversationVoiceCallMenuItem?.isEnabled = false
+                conversationVideoMenuItem?.isEnabled = false
+            } else {
+                Log.e(TAG, "call buttons were null when trying to disable them")
+            }
+        }
+    }
+
+    private fun enableCallButtons() {
+        if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
+            if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
+                conversationVoiceCallMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
+                conversationVideoMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
+                conversationVoiceCallMenuItem?.isEnabled = true
+                conversationVideoMenuItem?.isEnabled = true
+            } else {
+                Log.e(TAG, "call buttons were null when trying to enable them")
+            }
+        }
+    }
+
+    private fun isReadOnlyConversation(): Boolean {
+        return currentConversation?.conversationReadOnlyState != null &&
+            currentConversation?.conversationReadOnlyState ==
+            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
     }
 
     private fun checkLobbyState() {
@@ -2300,14 +2321,11 @@ class ChatController(args: Bundle) :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_conversation, menu)
+
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
-            conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
-            conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
         } else {
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
-            conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
-            conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
             if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
                 conversationSharedItemsItem = menu.findItem(R.id.shared_items)
@@ -2316,6 +2334,14 @@ class ChatController(args: Bundle) :
             }
 
             loadAvatarForStatusBar()
+        }
+
+        if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
+            conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
+            conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
+        } else {
+            menu.removeItem(R.id.conversation_video_call)
+            menu.removeItem(R.id.conversation_voice_call)
         }
     }
 
@@ -2335,18 +2361,12 @@ class ChatController(args: Bundle) :
                 return true
             }
             R.id.conversation_video_call -> {
-                if (conversationVideoMenuItem?.icon?.alpha == FULLY_OPAQUE_INT) {
-                    startACall(false)
-                    return true
-                }
-                return false
+                startACall(false)
+                return true
             }
             R.id.conversation_voice_call -> {
-                if (conversationVoiceCallMenuItem?.icon?.alpha == FULLY_OPAQUE_INT) {
-                    startACall(true)
-                    return true
-                }
-                return false
+                startACall(true)
+                return true
             }
             R.id.conversation_info -> {
                 showConversationInfoScreen()
