@@ -1,10 +1,8 @@
 package com.nextcloud.talk.repositories
 
 import android.util.Log
-import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
@@ -14,15 +12,7 @@ import retrofit2.Response
 import java.util.Locale
 import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
-class SharedItemsRepository {
-
-    @Inject
-    lateinit var ncApi: NcApi
-
-    init {
-        sharedApplication!!.componentApplication.inject(this)
-    }
+class SharedItemsRepository @Inject constructor(private val ncApi: NcApi) {
 
     fun media(parameters: Parameters, type: SharedItemType): Observable<SharedMediaItems>? {
         return media(parameters, type, null)
