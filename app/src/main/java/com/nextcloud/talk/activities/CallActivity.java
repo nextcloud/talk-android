@@ -94,9 +94,9 @@ import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
 import com.nextcloud.talk.webrtc.MagicAudioManager;
-import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
+import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
 
@@ -157,6 +157,12 @@ import me.zhanghai.android.effortlesspermissions.EffortlessPermissions;
 import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
+
+import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
+import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
+import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
+import static com.nextcloud.talk.webrtc.Globals.UPDATE_ALL;
+import static com.nextcloud.talk.webrtc.Globals.UPDATE_IN_CALL;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class CallActivity extends CallBaseActivity {
@@ -1480,13 +1486,35 @@ public class CallActivity extends CallBaseActivity {
                     performCall();
                 }
                 break;
-            case "participantsUpdate":
+            case PARTICIPANTS_UPDATE:
                 Log.d(TAG, "onMessageEvent 'participantsUpdate'");
-                if (webSocketCommunicationEvent.getHashMap().get("roomToken").equals(roomToken)) {
-                    processUsersInRoom(
-                        (List<HashMap<String, Object>>) webSocketClient
-                            .getJobWithId(
-                                Integer.valueOf(webSocketCommunicationEvent.getHashMap().get("jobId"))));
+
+                // See MagicWebSocketInstance#onMessage in case "participants" how the 'updateParameters' are created
+                Map<String, String> updateParameters = webSocketCommunicationEvent.getHashMap();
+
+                if (updateParameters == null) {
+                    break;
+                }
+
+                String updateRoomToken = updateParameters.get(ROOM_TOKEN);
+                String updateAll = updateParameters.get(UPDATE_ALL);
+                String updateInCall = updateParameters.get(UPDATE_IN_CALL);
+                String jobId = updateParameters.get(JOB_ID);
+
+                if (roomToken.equals(updateRoomToken)) {
+                    if (updateAll != null && Boolean.parseBoolean(updateAll)) {
+                        if ("0".equals(updateInCall)) {
+                            Log.d(TAG, "Most probably a moderator ended the call for all.");
+                            hangup(true);
+                        }
+                    } else if (jobId != null) {
+                        // In that case a list of users for the room is passed.
+                        processUsersInRoom(
+                            (List<HashMap<String, Object>>) webSocketClient
+                                .getJobWithId(
+                                    Integer.valueOf(jobId)));
+                    }
+
                 }
                 break;
             case "signalingMessage":
