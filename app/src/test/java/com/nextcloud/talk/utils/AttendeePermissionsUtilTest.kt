@@ -23,6 +23,6 @@ class AttendeePermissionsUtilTest : TestCase() {
         assertFalse(attendeePermissionsUtil.canPublishAudio)
         assertFalse(attendeePermissionsUtil.canPublishVideo)
 
-        // canPostChatShareItemsDoReaction() is not possible to test because userEntity is necessary
+        // hasChatPermission() is not possible to test because userEntity is necessary
     }
 }

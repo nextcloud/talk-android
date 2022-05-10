@@ -274,6 +274,8 @@ class ChatController(args: Bundle) :
     lateinit var mediaPlayerHandler: Handler
     var currentlyPlayedVoiceMessage: ChatMessage? = null
 
+    var hasChatPermission: Boolean = false
+
     init {
         Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
 
@@ -307,6 +309,9 @@ class ChatController(args: Bundle) :
         }
 
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
+
+        hasChatPermission =
+            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(conversationUser)
     }
 
     private fun getRoomInfo() {
@@ -342,7 +347,8 @@ class ChatController(args: Bundle) :
                         setTitle()
                         try {
                             setupMentionAutocomplete()
-                            checkReadOnlyState()
+                            checkShowCallButtons()
+                            checkShowMessageInputView()
                             checkLobbyState()
 
                             if (!inConversation) {
@@ -1159,13 +1165,24 @@ class ChatController(args: Bundle) :
         )
     }
 
-    private fun checkReadOnlyState() {
+    private fun checkShowCallButtons() {
         if (isAlive()) {
             if (isReadOnlyConversation() || shouldShowLobby()) {
                 disableCallButtons()
-                binding.messageInputView.visibility = View.GONE
             } else {
                 enableCallButtons()
+            }
+        }
+    }
+
+    private fun checkShowMessageInputView() {
+        if (isAlive()) {
+            if (isReadOnlyConversation()
+                || shouldShowLobby()
+                || !hasChatPermission
+            ) {
+                binding.messageInputView.visibility = View.GONE
+            } else {
                 binding.messageInputView.visibility = View.VISIBLE
             }
         }
@@ -2350,7 +2367,7 @@ class ChatController(args: Bundle) :
         super.onPrepareOptionsMenu(menu)
         conversationUser?.let {
             if (CapabilitiesUtil.hasSpreedFeatureCapability(it, "read-only-rooms")) {
-                checkReadOnlyState()
+                checkShowCallButtons()
             }
         }
     }
@@ -2513,9 +2530,7 @@ class ChatController(args: Bundle) :
     }
 
     fun deleteMessage(message: IMessage?) {
-        if (!AttendeePermissionsUtil(currentConversation!!.permissions)
-                .canPostChatShareItemsDoReaction(conversationUser!!)
-        ) {
+        if (!hasChatPermission) {
             Log.e(
                 TAG, "Deletion of message is skipped because of restrictions by permissions. " +
                     "This method should not have been called!"
@@ -2842,7 +2857,7 @@ class ChatController(args: Bundle) :
 
         if (!CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages")) return false
 
-        if (AttendeePermissionsUtil(currentConversation!!.permissions).canPostChatShareItemsDoReaction(conversationUser)) return true
+        if (!hasChatPermission) return false
 
         return true
     }

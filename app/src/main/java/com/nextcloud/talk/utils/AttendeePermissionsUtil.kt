@@ -15,7 +15,7 @@ class AttendeePermissionsUtil(flag: Int) {
     var canPublishAudio: Boolean = false
     var canPublishVideo: Boolean = false
     var canPublishScreen: Boolean = false
-    private var canPostChatShareItemsDoReaction: Boolean = false
+    private var hasChatPermission: Boolean = false
 
     init {
         isDefault = (flag and DEFAULT) == DEFAULT
@@ -26,13 +26,12 @@ class AttendeePermissionsUtil(flag: Int) {
         canPublishAudio = (flag and PUBLISH_AUDIO) == PUBLISH_AUDIO
         canPublishVideo = (flag and PUBLISH_VIDEO) == PUBLISH_VIDEO
         canPublishScreen = (flag and PUBLISH_SCREEN) == PUBLISH_SCREEN
-        canPostChatShareItemsDoReaction =
-            (flag and POST_CHAT_SHARE_ITEMS_DO_REACTIONS) == POST_CHAT_SHARE_ITEMS_DO_REACTIONS
+        hasChatPermission = (flag and CHAT) == CHAT
     }
 
-    fun canPostChatShareItemsDoReaction(user: UserEntity): Boolean {
+    fun hasChatPermission(user: UserEntity): Boolean {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "chat-permission")) {
-            return canPostChatShareItemsDoReaction
+            return hasChatPermission
         }
         // if capability is not available then the spreed version doesn't support to restrict this
         return true
@@ -48,6 +47,6 @@ class AttendeePermissionsUtil(flag: Int) {
         const val PUBLISH_AUDIO = 16
         const val PUBLISH_VIDEO = 32
         const val PUBLISH_SCREEN = 64
-        const val POST_CHAT_SHARE_ITEMS_DO_REACTIONS = 128
+        const val CHAT = 128
     }
 }
