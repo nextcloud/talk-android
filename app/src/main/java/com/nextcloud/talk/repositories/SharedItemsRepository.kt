@@ -37,12 +37,11 @@ class SharedItemsRepository {
             type.toString().lowercase(Locale.ROOT),
             lastKnownMessageId,
             BATCH_SIZE
-        ).map { map(it, type, parameters) }
+        ).map { map(it, parameters) }
     }
 
     private fun map(
         response: Response<ChatShareOverall>,
-        type: SharedItemType,
         parameters: Parameters
     ): SharedMediaItems {
 
@@ -84,7 +83,6 @@ class SharedItemsRepository {
         val moreItemsExisting = items.count() == BATCH_SIZE
 
         return SharedMediaItems(
-            type,
             sortedMutableItems,
             chatLastGiven,
             moreItemsExisting,
