@@ -87,12 +87,6 @@ public class Participant {
     @JsonField(name = "statusMessage")
     public String statusMessage;
 
-    @JsonField(name = "permissions")
-    public int permissions;
-
-    @JsonField(name = "attendeePermissions")
-    public int attendeePermissions;
-
     public String source;
 
     public boolean selected;

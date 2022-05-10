@@ -114,16 +114,6 @@ public class Conversation {
     @JsonField(name = "permissions")
     public int permissions;
 
-    @JsonField(name = "attendeePermissions")
-    public int attendeePermissions;
-
-    @JsonField(name = "callPermissions")
-    public int callPermissions;
-
-    @JsonField(name = "defaultPermissions")
-    public int defaultPermissions;
-
-
     public boolean isPublic() {
         return (ConversationType.ROOM_PUBLIC_CALL.equals(type));
     }
@@ -294,6 +284,10 @@ public class Conversation {
 
     public Integer getNotificationCalls() { return notificationCalls; }
 
+    public int getPermissions() {
+        return permissions;
+    }
+
     public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
@@ -411,6 +405,9 @@ public class Conversation {
         this.unreadMentionDirect = unreadMentionDirect;
     }
 
+    public void setPermissions(int permissions) {
+        this.permissions = permissions;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -513,6 +510,9 @@ public class Conversation {
         if (!Objects.equals(notificationCalls, that.notificationCalls)) {
             return false;
         }
+        if (permissions != that.permissions) {
+            return false;
+        }
         return Objects.equals(canDeleteConversation, that.canDeleteConversation);
     }
 
@@ -553,6 +553,7 @@ public class Conversation {
         result = 31 * result + (canLeaveConversation != null ? canLeaveConversation.hashCode() : 0);
         result = 31 * result + (canDeleteConversation != null ? canDeleteConversation.hashCode() : 0);
         result = 31 * result + (notificationCalls != null ? notificationCalls.hashCode() : 0);
+        result = 31 * result + permissions;
         return result;
     }
 
@@ -590,6 +591,7 @@ public class Conversation {
                 ", canLeaveConversation=" + canLeaveConversation +
                 ", canDeleteConversation=" + canDeleteConversation +
                 ", notificationCalls=" + notificationCalls +
+                ", permissions=" + permissions +
                 '}';
     }
 
