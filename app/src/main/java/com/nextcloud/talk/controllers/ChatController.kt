@@ -587,7 +587,7 @@ class ChatController(args: Bundle) :
             }
         }
 
-        if (context != null) {
+        if (context != null && hasChatPermission && !isReadOnlyConversation()) {
             val messageSwipeController = MessageSwipeCallback(
                 activity!!,
                 object : MessageSwipeActions {

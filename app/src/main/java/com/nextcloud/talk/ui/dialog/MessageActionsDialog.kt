@@ -74,7 +74,7 @@ class MessageActionsDialog(
 
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
-        initMenuReplyToMessage(message.replyable)
+        initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
                 hasUserId(user) &&
@@ -83,7 +83,8 @@ class MessageActionsDialog(
         )
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
-            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
+            hasChatPermission &&
+                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
         initMenuMarkAsUnread(
