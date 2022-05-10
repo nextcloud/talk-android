@@ -1177,9 +1177,9 @@ class ChatController(args: Bundle) :
 
     private fun checkShowMessageInputView() {
         if (isAlive()) {
-            if (isReadOnlyConversation()
-                || shouldShowLobby()
-                || !hasChatPermission
+            if (isReadOnlyConversation() ||
+                shouldShowLobby() ||
+                !hasChatPermission
             ) {
                 binding.messageInputView.visibility = View.GONE
             } else {
@@ -2534,7 +2534,8 @@ class ChatController(args: Bundle) :
     fun deleteMessage(message: IMessage?) {
         if (!hasChatPermission) {
             Log.e(
-                TAG, "Deletion of message is skipped because of restrictions by permissions. " +
+                TAG,
+                "Deletion of message is skipped because of restrictions by permissions. " +
                     "This method should not have been called!"
             )
             Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
