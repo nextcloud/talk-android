@@ -9,7 +9,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.viewmodels.SharedItemsViewModel
 import io.reactivex.Observable
 import retrofit2.Response
 import java.util.Locale
@@ -82,7 +81,7 @@ class SharedItemsRepository {
         }
 
         val sortedMutableItems = items.toSortedMap().values.toList().reversed().toMutableList()
-        val moreItemsExisting = items.count() == SharedItemsViewModel.BATCH_SIZE
+        val moreItemsExisting = items.count() == BATCH_SIZE
 
         return SharedMediaItems(
             type,

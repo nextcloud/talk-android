@@ -138,6 +138,5 @@ class SharedItemsViewModel(
 
     companion object {
         private val TAG = SharedItemsViewModel::class.simpleName
-        const val BATCH_SIZE: Int = 28
     }
 }
