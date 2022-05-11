@@ -294,8 +294,7 @@ public class NotificationWorker extends Worker {
 
         intent.setAction(Long.toString(System.currentTimeMillis()));
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
         String baseUrl = uri.getHost();
@@ -343,44 +342,41 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setContentIntent(pendingIntent);
 
-
-        CRC32 crc32 = new CRC32();
-
         String groupName = signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getId();
-        crc32.update(groupName.getBytes());
-        notificationBuilder.setGroup(Long.toString(crc32.getValue()));
-
-        // notificationId
-        crc32 = new CRC32();
-        String stringForCrc = String.valueOf(System.currentTimeMillis());
-        crc32.update(stringForCrc.getBytes());
+        notificationBuilder.setGroup(Long.toString(calculateCRC32(groupName)));
 
         StatusBarNotification activeStatusBarNotification =
                 NotificationUtils.INSTANCE.findNotificationForRoom(context,
                         signatureVerification.getUserEntity(), decryptedPushMessage.getId());
 
-        int notificationId;
-
+        // NOTE - systemNotificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        int systemNotificationId;
         if (activeStatusBarNotification != null) {
-            notificationId = activeStatusBarNotification.getId();
+            systemNotificationId = activeStatusBarNotification.getId();
         } else {
-            notificationId = (int) crc32.getValue();
+            systemNotificationId = (int) calculateCRC32(String.valueOf(System.currentTimeMillis()));
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
             CHAT.equals(decryptedPushMessage.getType()) &&
             decryptedPushMessage.getNotificationUser() != null) {
-            sendChatNotification(notificationBuilder, activeStatusBarNotification, notificationId);
-        } else {
-            sendNotificationWithId(notificationId, notificationBuilder.build());
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId);
         }
 
+        sendNotification(systemNotificationId, notificationBuilder.build());
+    }
+
+    private long calculateCRC32(String s) {
+        CRC32 crc32 = new CRC32();
+        crc32.update(s.getBytes());
+        return crc32.getValue();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    private void sendChatNotification(NotificationCompat.Builder notificationBuilder,
-                                      StatusBarNotification activeStatusBarNotification,
-                                      int notificationId) {
+    private void prepareChatNotification(NotificationCompat.Builder notificationBuilder,
+                                         StatusBarNotification activeStatusBarNotification,
+                                         int systemNotificationId) {
 
         final NotificationUser notificationUser = decryptedPushMessage.getNotificationUser();
         final String userType = notificationUser.getType();
@@ -397,7 +393,7 @@ public class NotificationWorker extends Worker {
                     .setBot("bot".equals(userType));
 
         notificationBuilder.setOnlyAlertOnce(true);
-        addReplyAction(notificationBuilder, notificationId);
+        addReplyAction(notificationBuilder, systemNotificationId);
 
         if ("user".equals(userType) || "guest".equals(userType)) {
             String baseUrl = signatureVerification.getUserEntity().getBaseUrl();
@@ -408,10 +404,10 @@ public class NotificationWorker extends Worker {
         }
 
         notificationBuilder.setStyle(getStyle(person.build(), style));
-        sendNotificationWithId(notificationId, notificationBuilder.build());
     }
 
-    private void addReplyAction(NotificationCompat.Builder notificationBuilder, int notificationId) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void addReplyAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
         String replyLabel = context.getResources().getString(R.string.nc_reply);
 
         RemoteInput remoteInput = new RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
@@ -421,13 +417,12 @@ public class NotificationWorker extends Worker {
         // Build a PendingIntent for the reply action
         Intent actualIntent = new Intent(context, DirectReplyReceiver.class);
 
-        // NOTE - This notificationId is an internal ID used on the device only.
+        // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
-        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_NOTIFICATION_ID(), notificationId);
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
         PendingIntent replyPendingIntent =
-            PendingIntent.getBroadcast(getApplicationContext(),
-                                       notificationId, actualIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Action replyAction =
             new NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
@@ -458,7 +453,7 @@ public class NotificationWorker extends Worker {
         return newStyle;
     }
 
-    private void sendNotificationWithId(int notificationId, Notification notification) {
+    private void sendNotification(int notificationId, Notification notification) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, notification);
 
@@ -469,8 +464,7 @@ public class NotificationWorker extends Worker {
         }
 
         if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
-            Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(getApplicationContext(),
-                                                                            appPreferences);
+            Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(context, appPreferences);
             if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     (DoNotDisturbUtils.INSTANCE.shouldPlaySound() || importantConversation)) {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType

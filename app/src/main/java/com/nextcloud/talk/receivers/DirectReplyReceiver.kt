@@ -38,8 +38,8 @@ import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -60,7 +60,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
     lateinit var context: Context
     lateinit var currentUser: UserEntity
-    private var notificationId: Int? = null
+    private var systemNotificationId: Int? = null
     private var roomToken: String? = null
     private var replyMessage: CharSequence? = null
 
@@ -72,9 +72,9 @@ class DirectReplyReceiver : BroadcastReceiver() {
         context = receiveContext
         currentUser = userUtils!!.currentUser!!
 
-        // NOTE - This notificationId is an internal ID used on the device only.
+        // NOTE - systemNotificationId is an internal ID used on the device only.
         // It is NOT the same as the notification ID used in communication with the server.
-        notificationId = intent!!.getIntExtra(KEY_NOTIFICATION_ID, 0)
+        systemNotificationId = intent!!.getIntExtra(KEY_SYSTEM_NOTIFICATION_ID, 0)
         roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)
 
         replyMessage = getMessageText(intent)
@@ -130,7 +130,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
         // https://developer.android.com/training/notify-user/build-notification#messaging-best-practices
 
         // Find the original (active) notification
-        val previousNotification = findActiveNotification(notificationId!!) ?: return
+        val previousNotification = findActiveNotification(systemNotificationId!!) ?: return
 
         // Recreate builder based on the active notification
         val previousBuilder = NotificationCompat.Builder(context, previousNotification)
@@ -152,6 +152,6 @@ class DirectReplyReceiver : BroadcastReceiver() {
         previousBuilder.setStyle(previousStyle)
 
         // Update the active notification.
-        NotificationManagerCompat.from(context).notify(notificationId!!, previousBuilder.build())
+        NotificationManagerCompat.from(context).notify(systemNotificationId!!, previousBuilder.build())
     }
 }
