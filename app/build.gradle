@@ -24,6 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import com.github.spotbugs.snom.SpotBugsTask
+import com.nextcloud.talk.gradle.DownloadWebRtcTask
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -345,39 +346,6 @@ detekt {
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-}
-
-@CacheableTask
-abstract class DownloadWebRtcTask extends DefaultTask {
-    @Input
-    abstract Property<String> getVersion()
-
-    @OutputFile
-    File getLibFile() {
-        return new File("${project.buildDir}/download/${getFileName()}")
-    }
-
-    private String getFileName() {
-        def webRtcVersion = version.get()
-        return "libwebrtc-${webRtcVersion}.aar"
-    }
-
-    private String getDownloadUrl() {
-        def webRtcVersion = version.get()
-        return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/libwebrtc-${webRtcVersion}.aar"
-    }
-
-    @TaskAction
-    def run() {
-        libFile.parentFile.mkdirs()
-        if (!libFile.exists()) {
-            new URL(getDownloadUrl()).withInputStream { downloadStream ->
-                libFile.withOutputStream { fileOut ->
-                    fileOut << downloadStream
-                }
-            }
-        }
     }
 }
 
