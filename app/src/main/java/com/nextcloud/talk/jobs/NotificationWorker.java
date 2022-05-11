@@ -292,8 +292,6 @@ public class NotificationWorker extends Worker {
                 }
         }
 
-        intent.setAction(Long.toString(System.currentTimeMillis()));
-
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
