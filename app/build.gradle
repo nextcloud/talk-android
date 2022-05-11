@@ -348,21 +348,32 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
     }
 }
 
+@CacheableTask
 abstract class DownloadWebRtcTask extends DefaultTask {
     @Input
     abstract Property<String> getVersion()
 
+    @OutputFile
+    File getLibFile() {
+        return new File("${project.buildDir}/download/${getFileName()}")
+    }
+
+    private String getFileName() {
+        def webRtcVersion = version.get()
+        return "libwebrtc-${webRtcVersion}.aar"
+    }
+
+    private String getDownloadUrl() {
+        def webRtcVersion = version.get()
+        return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/libwebrtc-${webRtcVersion}.aar"
+    }
+
     @TaskAction
     def run() {
-        def webRtcVersion = version.get()
-        def fileName = "libwebrtc-${webRtcVersion}.aar"
-        def url = "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/libwebrtc-${webRtcVersion}.aar"
-
-        File file = new File("${project.buildDir}/download/${fileName}")
-        file.parentFile.mkdirs()
-        if (!file.exists()) {
-            new URL(url).withInputStream { downloadStream ->
-                file.withOutputStream { fileOut ->
+        libFile.parentFile.mkdirs()
+        if (!libFile.exists()) {
+            new URL(getDownloadUrl()).withInputStream { downloadStream ->
+                libFile.withOutputStream { fileOut ->
                     fileOut << downloadStream
                 }
             }
