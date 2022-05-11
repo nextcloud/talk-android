@@ -48,7 +48,7 @@ abstract class DownloadWebRtcTask extends DefaultTask {
         return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/${getFileName()}"
     }
 
-    public String getOutputPath() {
+    String getOutputPath() {
         return "${project.buildDir}/download/${getFileName()}"
     }
 
@@ -56,6 +56,7 @@ abstract class DownloadWebRtcTask extends DefaultTask {
     def run() {
         libFile.parentFile.mkdirs()
         if (!libFile.exists()) {
+            logger.lifecycle("Downloading libWebRTC ${version.get()} from ${getDownloadUrl()}")
             new URL(getDownloadUrl()).withInputStream { downloadStream ->
                 libFile.withOutputStream { fileOut ->
                     fileOut << downloadStream
