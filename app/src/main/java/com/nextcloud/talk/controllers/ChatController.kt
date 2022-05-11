@@ -343,8 +343,11 @@ class ChatController(args: Bundle) :
                                 " sessionId: " + currentConversation?.sessionId
                         )
                         loadAvatarForStatusBar()
-
                         setTitle()
+
+                        hasChatPermission =
+                            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(conversationUser)
+
                         try {
                             setupMentionAutocomplete()
                             checkShowCallButtons()
