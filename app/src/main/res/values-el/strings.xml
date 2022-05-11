@@ -44,7 +44,7 @@
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
     <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
-    <string name="nc_call_reconnecting">Επανασύνδεση...</string>
+    <string name="nc_call_reconnecting">Επανασύνδεση…</string>
     <string name="nc_call_state_in_call">%1$s σε κλήση</string>
     <string name="nc_call_state_with_phone">%1$s με τηλέφωνο</string>
     <string name="nc_call_state_with_video">%1$s με βίντεο</string>
@@ -72,7 +72,7 @@
     <string name="nc_common_set">Ορισμός</string>
     <string name="nc_common_skip">Παράλειψη</string>
     <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
-    <string name="nc_connecting_call">Σύνδεση...</string>
+    <string name="nc_connecting_call">Σύνδεση…</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
     <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>

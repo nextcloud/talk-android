@@ -16,7 +16,7 @@
     <string name="edit">편집</string>
     <string name="encrypted">암호화</string>
     <string name="file_list_folder">폴더</string>
-    <string name="file_list_loading">불러오는 중...</string>
+    <string name="file_list_loading">불러오는 중…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 시간</string>
     <string name="invisible">숨겨짐</string>
@@ -42,7 +42,7 @@
     <string name="nc_call_name">대화명</string>
     <string name="nc_call_name_is_same">입력한 이름이 이미 사용 중입니다</string>
     <string name="nc_call_notifications">전화 알림</string>
-    <string name="nc_call_reconnecting">재연결 중...</string>
+    <string name="nc_call_reconnecting">재연결 중…</string>
     <string name="nc_call_timeout">45초 동안 응답이 없다면 다시 시도하기를 눌러주십시오.</string>
     <string name="nc_camera_permission_permanently_denied">영상 통화를 하려면 시스템 설정에서 \"카메라\" 권한을 허용하십시오.</string>
     <string name="nc_cancel">취소</string>
@@ -64,7 +64,7 @@
     <string name="nc_common_set">설정</string>
     <string name="nc_common_skip">건너뛰기</string>
     <string name="nc_configure_cert_auth">인증서 선택</string>
-    <string name="nc_connecting_call">연결 중...</string>
+    <string name="nc_connecting_call">연결 중…</string>
     <string name="nc_contacts_done">완료</string>
     <string name="nc_conversation_link">대화 링크</string>
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
@@ -100,7 +100,7 @@
     <string name="nc_group">그룹</string>
     <string name="nc_groups">그룹</string>
     <string name="nc_guest">손님</string>
-    <string name="nc_hint_enter_a_message">메시지 입력...</string>
+    <string name="nc_hint_enter_a_message">메시지 입력…</string>
     <string name="nc_important_conversation">중요한 대화</string>
     <string name="nc_join_via_link">링크로 참여</string>
     <string name="nc_join_via_web">웹에서 참여</string>
@@ -108,7 +108,7 @@
     <string name="nc_last_moderator_title">대화를 떠날 수 없습니다.</string>
     <string name="nc_last_modified">%1$s | 최종 수정: %2$s</string>
     <string name="nc_leave">대화 나가기</string>
-    <string name="nc_leaving_call">통화 종료 중...</string>
+    <string name="nc_leaving_call">통화 종료 중…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">라이선스</string>
     <string name="nc_limit_hit">%s 문자 제한에 도달됨</string>

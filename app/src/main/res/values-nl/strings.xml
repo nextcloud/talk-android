@@ -17,7 +17,7 @@
     <string name="encrypted">Versleuteld</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
     <string name="file_list_folder">map</string>
-    <string name="file_list_loading">Laden...</string>
+    <string name="file_list_loading">Laden…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 uur</string>
     <string name="invisible">Onzichtbaar</string>
@@ -47,7 +47,7 @@
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
     <string name="nc_call_notifications">Oproepmeldingen</string>
-    <string name="nc_call_reconnecting">Opnieuw verbinden....</string>
+    <string name="nc_call_reconnecting">Opnieuw verbinden…</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
     <string name="nc_call_state_with_phone">%1$s met telefoon</string>
@@ -76,7 +76,7 @@
     <string name="nc_common_set">Instellen</string>
     <string name="nc_common_skip">Overslaan</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
-    <string name="nc_connecting_call">Verbinden...</string>
+    <string name="nc_connecting_call">Verbinden…</string>
     <string name="nc_contacts_done">Gereed</string>
     <string name="nc_conversation_link">Gesprekslink</string>
     <string name="nc_conversation_menu_conversation_info">Gespreksinformatie</string>
@@ -109,14 +109,14 @@
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_forward_message">Doorsturen</string>
-    <string name="nc_forward_to_three_dots">Doorsturen aan ...</string>
+    <string name="nc_forward_to_three_dots">Doorsturen aan …</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
     <string name="nc_get_source_code">Download sourcecode</string>
     <string name="nc_group">Groep</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_guest">Gast</string>
-    <string name="nc_hint_enter_a_message">Voer een bericht in...</string>
+    <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
@@ -125,7 +125,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
     <string name="nc_leave">Verlaat gesprek</string>
-    <string name="nc_leaving_call">Beëindigen verbinding...</string>
+    <string name="nc_leaving_call">Beëindigen verbinding…</string>
     <string name="nc_license_summary">GNU General Public Licence, versie 3</string>
     <string name="nc_license_title">Licentie</string>
     <string name="nc_limit_hit"> match 
@@ -338,7 +338,7 @@ Kies er eentje van een provider.</string>
     <string name="secondsAgo">seconden geleden</string>
     <string name="selected_list_item">Geselecteerd</string>
     <string name="send_to">Versturen naar</string>
-    <string name="send_to_three_dots">Versturen naar ...</string>
+    <string name="send_to_three_dots">Versturen naar …</string>
     <string name="set_status">Instellen status</string>
     <string name="set_status_message">Statusbericht instellen</string>
     <string name="share">Delen</string>

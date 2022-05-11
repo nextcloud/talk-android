@@ -50,7 +50,7 @@
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_call_name_is_same">Sartu duzun izena dagoenaren berdina da</string>
     <string name="nc_call_notifications">Dei jakinarazpenak</string>
-    <string name="nc_call_reconnecting">Berriro konektatzen...</string>
+    <string name="nc_call_reconnecting">Berriro konektatzen…</string>
     <string name="nc_call_ringing">DEITZEN</string>
     <string name="nc_call_state_in_call">%1$s deian</string>
     <string name="nc_call_state_with_phone">%1$s telefonoarekin</string>
@@ -112,7 +112,7 @@
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
-    <string name="nc_forward_to_three_dots">Birbidali ...</string>
+    <string name="nc_forward_to_three_dots">Birbidali …</string>
     <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
     <string name="nc_get_source_code">Iturburu kodea eskuratu</string>
     <string name="nc_group">Taldea</string>
@@ -127,7 +127,7 @@
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
     <string name="nc_leave">Atera elkarrizketatik</string>
-    <string name="nc_leaving_call">Deia uzten...</string>
+    <string name="nc_leaving_call">Deia uzten…</string>
     <string name="nc_license_summary">GNU General Public Lizentzia, 3. bertsioa</string>
     <string name="nc_license_title">Lizentzia</string>
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
@@ -297,7 +297,7 @@
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_shared_items">Partekatutako elementuak</string>
-    <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak...</string>
+    <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak…</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
     <string name="nc_start_time">Hasiera-ordua</string>
@@ -341,7 +341,7 @@
     <string name="secondsAgo">segundu lehenago</string>
     <string name="selected_list_item">Hautatua</string>
     <string name="send_to">Bidali honi:</string>
-    <string name="send_to_three_dots">Bidali honi ...</string>
+    <string name="send_to_three_dots">Bidali honi …</string>
     <string name="set_status">Ezarri egoera</string>
     <string name="set_status_message">Ezarri egoera-mezua</string>
     <string name="share">Partekatu</string>

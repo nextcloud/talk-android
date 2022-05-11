@@ -13,7 +13,7 @@
     <string name="encrypted">Kryptert</string>
     <string name="failed_to_save">Mislykka å lagre %1$s</string>
     <string name="file_list_folder">mappe</string>
-    <string name="file_list_loading">Laster...</string>
+    <string name="file_list_loading">Laster…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="lock_symbol">Låse symbol</string>
     <string name="menu_item_sort_by_date_newest_first">Nyaste fyrst</string>
@@ -40,7 +40,7 @@
     <string name="nc_call_incoming">INN KOMMANDE </string>
     <string name="nc_call_name">Samtale namn</string>
     <string name="nc_call_name_is_same">Namnet du skreiv inn er det same som det eksisterande</string>
-    <string name="nc_call_reconnecting">Kople til på ny....</string>
+    <string name="nc_call_reconnecting">Kople til på ny…</string>
     <string name="nc_call_ringing">RINGER</string>
     <string name="nc_call_state_in_call">%1$s er i samtale</string>
     <string name="nc_call_state_with_phone">%1$s med telefon</string>
@@ -66,7 +66,7 @@
     <string name="nc_common_set">Sett</string>
     <string name="nc_common_skip">Hopp over</string>
     <string name="nc_configure_cert_auth">Vel godkjenningssertifikat</string>
-    <string name="nc_connecting_call">Koplar til...</string>
+    <string name="nc_connecting_call">Koplar til…</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_link">Samtale lenkje</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
@@ -102,7 +102,7 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gjest</string>
-    <string name="nc_hint_enter_a_message">Skriv ei melding...</string>
+    <string name="nc_hint_enter_a_message">Skriv ei melding…</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_important_conversation_desc">Varsel i denne samtalen overstyrer Ikkje Forstyrr Innstillingane</string>
     <string name="nc_join_via_link">Delta med ei lenkje</string>
@@ -111,7 +111,7 @@
     <string name="nc_last_moderator_title">Kunne ikkje forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endra: %2$s</string>
     <string name="nc_leave">Forlat samtalen</string>
-    <string name="nc_leaving_call">Forlet samtalen...</string>
+    <string name="nc_leaving_call">Forlet samtalen…</string>
     <string name="nc_license_summary">GNU General Public License, Versjon 3</string>
     <string name="nc_license_title">Lisens</string>
     <string name="nc_limit_hit">%s grensa for teikn er nådd</string>
@@ -212,7 +212,7 @@
     <string name="nc_server_not_installed">Vennleg gjer ferdig din %1$s installasjon</string>
     <string name="nc_server_testing_connection">Teste tilkopling</string>
     <string name="nc_server_unsupported">Server har ikkje støtta Samtale applikasjon installert</string>
-    <string name="nc_server_url">Server adresse https://...</string>
+    <string name="nc_server_url">Server adresse https://…</string>
     <string name="nc_server_version">%1$s virker berre saman med %2$s 13 og oppover</string>
     <string name="nc_set_password">Lag eit passord</string>
     <string name="nc_settings">Instillingar</string>

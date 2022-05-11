@@ -20,7 +20,7 @@
     <string name="encrypted">Cifrato</string>
     <string name="failed_to_save">Salvataggio di %1$s fallito</string>
     <string name="file_list_folder">cartella</string>
-    <string name="file_list_loading">Caricamento...</string>
+    <string name="file_list_loading">Caricamento…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ore</string>
     <string name="invisible">Invisibile</string>
@@ -50,7 +50,7 @@
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
     <string name="nc_call_notifications">Notifiche di chiamata</string>
-    <string name="nc_call_reconnecting">Riconnessione in corso...</string>
+    <string name="nc_call_reconnecting">Riconnessione in corso…</string>
     <string name="nc_call_ringing">STA SQUILLANDO</string>
     <string name="nc_call_state_in_call">%1$s in chiamata</string>
     <string name="nc_call_state_with_phone">%1$s con telefono</string>
@@ -127,7 +127,7 @@
     <string name="nc_last_moderator_title">Impossibile lasciare la conversazione</string>
     <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
     <string name="nc_leave">Lascia la conversazione</string>
-    <string name="nc_leaving_call">Chiusura della chiamata in corso...</string>
+    <string name="nc_leaving_call">Chiusura della chiamata in corso…</string>
     <string name="nc_license_summary">GNU General Public License, versione 3</string>
     <string name="nc_license_title">Licenza</string>
     <string name="nc_limit_hit">Il limite di %s caratteri è stato raggiunto</string>
