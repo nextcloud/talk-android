@@ -476,7 +476,7 @@ class ContactsController(args: Bundle) :
             })
     }
 
-    private fun processAutocompleteUserList(responseBody: ResponseBody) : MutableList<AbstractFlexibleItem<*>> {
+    private fun processAutocompleteUserList(responseBody: ResponseBody): MutableList<AbstractFlexibleItem<*>> {
         try {
             val autocompleteOverall: AutocompleteOverall = LoganSquare.parse<AutocompleteOverall>(
                 responseBody.string(),
