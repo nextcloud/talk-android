@@ -930,7 +930,8 @@ public class ConversationsListController extends BaseController implements Searc
                 .setNegativeButton(R.string.nc_no, new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "sharing files aborted");
+                        Log.d(TAG, "sharing files aborted, going back to share-to screen");
+                        showShareToScreen = true;
                     }
                 })
                 .show();
