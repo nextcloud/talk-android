@@ -33,20 +33,6 @@ apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 
-def urlFile = { url, fileName ->
-    File file = new File("$buildDir/download/${fileName}")
-    file.parentFile.mkdirs()
-    if (!file.exists()) {
-        new URL(url).withInputStream { downloadStream ->
-            file.withOutputStream { fileOut ->
-                fileOut << downloadStream
-            }
-        }
-    }
-    files(file.absolutePath)
-}
-
-
 android {
     compileSdkVersion 30
     buildToolsVersion '30.0.3'
@@ -147,7 +133,6 @@ android {
     }
 
     check.dependsOn 'spotbugsGplayDebug', 'lint', 'ktlintCheck', 'detekt'
-    lint.dependsOn 'preBuild'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -176,9 +161,11 @@ ext {
     powermockVersion = "2.0.9"
     retrofit2Version = "2.9.0"
     workVersion = "2.6.0"
-    markwonVersion =  "4.6.2"
+    markwonVersion = "4.6.2"
     espressoVersion = "3.4.0"
 }
+
+def webRtcVersion = "96.4664.0"
 
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
@@ -253,8 +240,7 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation urlFile('https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/96.4664.0-RC1/libwebrtc-96.4664.0.aar',
-        'libwebrtc-96.4664.0.aar')
+    implementation files("${project.buildDir}/download/libwebrtc-${webRtcVersion}.aar")
     implementation 'com.yarolegovich:lovely-dialog:1.1.1'
     implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
@@ -361,3 +347,30 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         jvmTarget = "1.8"
     }
 }
+
+abstract class DownloadWebRtcTask extends DefaultTask {
+    @Input
+    abstract Property<String> getVersion()
+
+    @TaskAction
+    def run() {
+        def webRtcVersion = version.get()
+        def fileName = "libwebrtc-${webRtcVersion}.aar"
+        def url = "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/libwebrtc-${webRtcVersion}.aar"
+
+        File file = new File("${project.buildDir}/download/${fileName}")
+        file.parentFile.mkdirs()
+        if (!file.exists()) {
+            new URL(url).withInputStream { downloadStream ->
+                file.withOutputStream { fileOut ->
+                    fileOut << downloadStream
+                }
+            }
+        }
+    }
+}
+
+tasks.register('downloadWebRtc', DownloadWebRtcTask){
+    version = webRtcVersion
+}
+preBuild.dependsOn('downloadWebRtc')
