@@ -167,6 +167,10 @@ ext {
 }
 
 def webRtcVersion = "96.4664.0"
+tasks.register('downloadWebRtc', DownloadWebRtcTask){
+    version = webRtcVersion
+}
+preBuild.dependsOn('downloadWebRtc')
 
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
@@ -241,7 +245,7 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation files("${project.buildDir}/download/libwebrtc-${webRtcVersion}.aar")
+    implementation fileTree(downloadWebRtc.getOutputPath())
     implementation 'com.yarolegovich:lovely-dialog:1.1.1'
     implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
@@ -348,8 +352,3 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         jvmTarget = "1.8"
     }
 }
-
-tasks.register('downloadWebRtc', DownloadWebRtcTask){
-    version = webRtcVersion
-}
-preBuild.dependsOn('downloadWebRtc')
