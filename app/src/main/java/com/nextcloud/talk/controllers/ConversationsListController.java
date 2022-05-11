@@ -86,6 +86,7 @@ import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.AttendeePermissionsUtil;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.ConductorRemapping;
 import com.nextcloud.talk.utils.DisplayUtils;
@@ -358,7 +359,6 @@ public class ConversationsListController extends BaseController implements Searc
         searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 
         showShareToScreen = !showShareToScreen && hasActivityActionSendIntent();
-
 
         if (showShareToScreen) {
             hideSearchBar();
@@ -867,13 +867,25 @@ public class ConversationsListController extends BaseController implements Searc
     public boolean onItemClick(View view, int position) {
         try {
             selectedConversation = ((ConversationItem) Objects.requireNonNull(adapter.getItem(position))).getModel();
+
             if (selectedConversation != null && getActivity() != null) {
+                boolean hasChatPermission =
+                    new AttendeePermissionsUtil(selectedConversation.permissions).hasChatPermission(currentUser);
+
                 if (showShareToScreen) {
-                    handleSharedData();
-                    showShareToScreen = false;
+                    if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
+                        handleSharedData();
+                        showShareToScreen = false;
+                    } else {
+                        Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
+                    }
                 } else if (forwardMessage) {
-                    openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
-                    forwardMessage = false;
+                    if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
+                        openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
+                        forwardMessage = false;
+                    } else {
+                        Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     openConversation();
                 }
@@ -883,6 +895,11 @@ public class ConversationsListController extends BaseController implements Searc
                 " just ignored.", e);
         }
         return true;
+    }
+
+    private Boolean isReadOnlyConversation(Conversation conversation) {
+        return conversation.conversationReadOnlyState ==
+            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY;
     }
 
     private void handleSharedData() {

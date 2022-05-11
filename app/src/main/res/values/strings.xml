@@ -392,6 +392,8 @@
     <string name="send_to_three_dots">Send to …</string>
     <string name="read_storage_no_permission">Sharing files from storage is not possible without permissions</string>
     <string name="open_in_files_app">Open in Files app</string>
+    <string name="send_to_forbidden">You are not allowed to share content to this chat</string>
+
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>

@@ -346,7 +346,9 @@ class ChatController(args: Bundle) :
                         setTitle()
 
                         hasChatPermission =
-                            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(conversationUser)
+                            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(
+                                conversationUser
+                            )
 
                         try {
                             setupMentionAutocomplete()
@@ -1458,6 +1460,12 @@ class ChatController(args: Bundle) :
 
     private fun uploadFiles(files: MutableList<String>, isVoiceMessage: Boolean) {
         var metaData = ""
+
+        if (!hasChatPermission) {
+            Log.e(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
+            return
+        }
+
         if (isVoiceMessage) {
             metaData = VOICE_MESSAGE_META_DATA
         }
