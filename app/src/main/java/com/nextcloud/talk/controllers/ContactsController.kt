@@ -354,14 +354,18 @@ class ContactsController(args: Bundle) :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.itemId
-        if (itemId == R.id.home) {
-            return router.popCurrentController()
-        } else if (itemId == R.id.contacts_selection_done) {
-            selectionDone()
-            return true
+        return when (item.itemId) {
+            R.id.home -> {
+                router.popCurrentController()
+            }
+            R.id.contacts_selection_done -> {
+                selectionDone()
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -689,6 +693,7 @@ class ContactsController(args: Bundle) :
         dispose(null)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onQueryTextChange(newText: String): Boolean {
         if (newText != "" && adapter?.hasNewFilter(newText) == true) {
             adapter?.setFilter(newText)
@@ -933,6 +938,7 @@ class ContactsController(args: Bundle) :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun toggleNewCallHeaderVisibility(showInitialLayout: Boolean) {
         try {
             if (showInitialLayout) {
