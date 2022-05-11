@@ -1,4 +1,4 @@
-package com.nextcloud.talk.repositories
+package com.nextcloud.talk.shareditems.model
 
 import com.nextcloud.talk.models.database.UserEntity
 

@@ -169,7 +169,7 @@
             android:windowSoftInputMode="stateHidden" />
 
         <activity
-            android:name=".activities.SharedItemsActivity"
+            android:name=".shareditems.activities.SharedItemsActivity"
             android:theme="@style/AppTheme"/>
 
         <receiver android:name=".receivers.PackageReplacedReceiver">

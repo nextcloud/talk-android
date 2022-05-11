@@ -1,13 +1,13 @@
-package com.nextcloud.talk.viewmodels
+package com.nextcloud.talk.shareditems.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.repositories.SharedItemType
-import com.nextcloud.talk.repositories.SharedItemsRepository
-import com.nextcloud.talk.repositories.SharedMediaItems
+import com.nextcloud.talk.shareditems.model.SharedItemType
+import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
+import com.nextcloud.talk.shareditems.model.SharedMediaItems
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable

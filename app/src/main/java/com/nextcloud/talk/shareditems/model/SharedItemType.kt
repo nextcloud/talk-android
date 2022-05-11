@@ -1,4 +1,4 @@
-package com.nextcloud.talk.repositories
+package com.nextcloud.talk.shareditems.model
 
 import java.util.Locale
 

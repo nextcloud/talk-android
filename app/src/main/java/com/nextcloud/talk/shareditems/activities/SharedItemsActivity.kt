@@ -1,4 +1,4 @@
-package com.nextcloud.talk.activities
+package com.nextcloud.talk.shareditems.activities
 
 import android.os.Bundle
 import android.util.Log
@@ -12,17 +12,17 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.SharedItemsGridAdapter
-import com.nextcloud.talk.adapters.SharedItemsListAdapter
+import com.nextcloud.talk.shareditems.adapters.SharedItemsGridAdapter
+import com.nextcloud.talk.shareditems.adapters.SharedItemsListAdapter
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.repositories.SharedItemType
+import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.viewmodels.SharedItemsViewModel
+import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)

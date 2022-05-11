@@ -22,7 +22,7 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.repositories.SharedItemsRepository
+import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import dagger.Module
 import dagger.Provides
 

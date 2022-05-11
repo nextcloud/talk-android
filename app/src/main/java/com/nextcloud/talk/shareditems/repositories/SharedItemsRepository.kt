@@ -1,4 +1,4 @@
-package com.nextcloud.talk.repositories
+package com.nextcloud.talk.shareditems.repositories
 
 import android.util.Log
 import com.nextcloud.talk.R
@@ -6,6 +6,9 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatShareOverall
+import com.nextcloud.talk.shareditems.model.SharedItem
+import com.nextcloud.talk.shareditems.model.SharedItemType
+import com.nextcloud.talk.shareditems.model.SharedMediaItems
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import retrofit2.Response

@@ -25,7 +25,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_default"
-    tools:context=".activities.SharedItemsActivity">
+    tools:context=".shareditems.activities.SharedItemsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/shared_items_appbar"

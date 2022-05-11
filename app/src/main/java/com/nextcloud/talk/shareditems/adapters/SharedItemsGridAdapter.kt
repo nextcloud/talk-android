@@ -1,4 +1,4 @@
-package com.nextcloud.talk.adapters
+package com.nextcloud.talk.shareditems.adapters
 
 import android.net.Uri
 import android.util.Log
@@ -16,7 +16,7 @@ import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
 import com.nextcloud.talk.databinding.SharedItemGridBinding
-import com.nextcloud.talk.repositories.SharedItem
+import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 
