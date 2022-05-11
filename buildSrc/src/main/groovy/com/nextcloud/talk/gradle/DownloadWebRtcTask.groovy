@@ -35,7 +35,7 @@ abstract class DownloadWebRtcTask extends DefaultTask {
 
     @OutputFile
     File getLibFile() {
-        return new File("${project.buildDir}/download/${getFileName()}")
+        return new File(getOutputPath())
     }
 
     private String getFileName() {
@@ -46,6 +46,10 @@ abstract class DownloadWebRtcTask extends DefaultTask {
     private String getDownloadUrl() {
         def webRtcVersion = version.get()
         return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/${getFileName()}"
+    }
+
+    public String getOutputPath() {
+        return "${project.buildDir}/download/${getFileName()}"
     }
 
     @TaskAction
