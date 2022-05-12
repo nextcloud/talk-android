@@ -162,10 +162,8 @@ class MessageActionsDialog(
     }
 
     private fun initEmojiBar(hasChatPermission: Boolean) {
-        if (hasChatPermission &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
-            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
-            currentConversation?.conversationReadOnlyState &&
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
+            isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
             checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
@@ -201,6 +199,11 @@ class MessageActionsDialog(
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
         }
+    }
+
+    private fun isPermitted(hasChatPermission: Boolean): Boolean {
+        return hasChatPermission && Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+            currentConversation?.conversationReadOnlyState
     }
 
     private fun isReactableMessageType(message: ChatMessage): Boolean {
