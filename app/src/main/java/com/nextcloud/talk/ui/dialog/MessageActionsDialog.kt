@@ -83,8 +83,7 @@ class MessageActionsDialog(
         )
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
-            hasChatPermission &&
-                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
         initMenuMarkAsUnread(
