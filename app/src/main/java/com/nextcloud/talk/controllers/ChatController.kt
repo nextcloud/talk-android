@@ -1462,7 +1462,7 @@ class ChatController(args: Bundle) :
         var metaData = ""
 
         if (!hasChatPermission) {
-            Log.e(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
+            Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
             return
         }
 
@@ -2544,7 +2544,7 @@ class ChatController(args: Bundle) :
 
     fun deleteMessage(message: IMessage?) {
         if (!hasChatPermission) {
-            Log.e(
+            Log.w(
                 TAG,
                 "Deletion of message is skipped because of restrictions by permissions. " +
                     "This method should not have been called!"
