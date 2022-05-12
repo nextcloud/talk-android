@@ -2849,31 +2849,27 @@ class ChatController(args: Bundle) :
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
-        if (message.systemMessageType != ChatMessage.SystemMessageType.DUMMY) return false
-
-        if (message.isDeleted) return false
-
-        if (message.hasFileAttachment()) return false
-
-        if (OBJECT_MESSAGE.equals(message.message)) return false
-
-        val isOlderThanSixHours = message
-            .createdAt
-            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
-        if (isOlderThanSixHours) return false
-
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
             true
         } else {
             currentConversation!!.canModerate(conversationUser)
         }
-        if (!isUserAllowedByPrivileges) return false
 
-        if (!CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages")) return false
+        val isOlderThanSixHours = message
+            .createdAt
+            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
 
-        if (!hasChatPermission) return false
-
-        return true
+        return when {
+            !isUserAllowedByPrivileges -> false
+            isOlderThanSixHours -> false
+            message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
+            message.isDeleted -> false
+            message.hasFileAttachment() -> false
+            OBJECT_MESSAGE == message.message -> false
+            !CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
+            !hasChatPermission -> false
+            else -> true
+        }
     }
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
