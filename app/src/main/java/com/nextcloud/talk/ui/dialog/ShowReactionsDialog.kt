@@ -63,6 +63,7 @@ class ShowReactionsDialog(
     private val currentConversation: Conversation?,
     private val chatMessage: ChatMessage,
     private val userEntity: UserEntity?,
+    private val hasChatPermission: Boolean,
     private val ncApi: NcApi
 ) : BottomSheetDialog(activity), ReactionItemClickListener {
 
@@ -183,7 +184,7 @@ class ShowReactionsDialog(
     }
 
     override fun onClick(reactionItem: ReactionItem) {
-        if (reactionItem.reactionVoter.actorId?.equals(userEntity?.userId) == true) {
+        if (hasChatPermission && reactionItem.reactionVoter.actorId?.equals(userEntity?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
             dismiss()
         }

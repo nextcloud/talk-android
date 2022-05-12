@@ -147,6 +147,7 @@ import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.AttendeePermissionsUtil
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.ContactUtils
@@ -273,6 +274,8 @@ class ChatController(args: Bundle) :
     lateinit var mediaPlayerHandler: Handler
     var currentlyPlayedVoiceMessage: ChatMessage? = null
 
+    var hasChatPermission: Boolean = false
+
     init {
         Log.d(TAG, "init ChatController: " + System.identityHashCode(this).toString())
 
@@ -306,6 +309,9 @@ class ChatController(args: Bundle) :
         }
 
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
+
+        hasChatPermission =
+            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(conversationUser)
     }
 
     private fun getRoomInfo() {
@@ -337,11 +343,17 @@ class ChatController(args: Bundle) :
                                 " sessionId: " + currentConversation?.sessionId
                         )
                         loadAvatarForStatusBar()
-
                         setTitle()
+
+                        hasChatPermission =
+                            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(
+                                conversationUser
+                            )
+
                         try {
                             setupMentionAutocomplete()
-                            checkReadOnlyState()
+                            checkShowCallButtons()
+                            checkShowMessageInputView()
                             checkLobbyState()
 
                             if (!inConversation) {
@@ -580,7 +592,7 @@ class ChatController(args: Bundle) :
             }
         }
 
-        if (context != null) {
+        if (context != null && hasChatPermission && !isReadOnlyConversation()) {
             val messageSwipeController = MessageSwipeCallback(
                 activity!!,
                 object : MessageSwipeActions {
@@ -1158,13 +1170,24 @@ class ChatController(args: Bundle) :
         )
     }
 
-    private fun checkReadOnlyState() {
+    private fun checkShowCallButtons() {
         if (isAlive()) {
             if (isReadOnlyConversation() || shouldShowLobby()) {
                 disableCallButtons()
-                binding.messageInputView.visibility = View.GONE
             } else {
                 enableCallButtons()
+            }
+        }
+    }
+
+    private fun checkShowMessageInputView() {
+        if (isAlive()) {
+            if (isReadOnlyConversation() ||
+                shouldShowLobby() ||
+                !hasChatPermission
+            ) {
+                binding.messageInputView.visibility = View.GONE
+            } else {
                 binding.messageInputView.visibility = View.VISIBLE
             }
         }
@@ -1437,6 +1460,12 @@ class ChatController(args: Bundle) :
 
     private fun uploadFiles(files: MutableList<String>, isVoiceMessage: Boolean) {
         var metaData = ""
+
+        if (!hasChatPermission) {
+            Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
+            return
+        }
+
         if (isVoiceMessage) {
             metaData = VOICE_MESSAGE_META_DATA
         }
@@ -2349,7 +2378,7 @@ class ChatController(args: Bundle) :
         super.onPrepareOptionsMenu(menu)
         conversationUser?.let {
             if (CapabilitiesUtil.hasSpreedFeatureCapability(it, "read-only-rooms")) {
-                checkReadOnlyState()
+                checkShowCallButtons()
             }
         }
     }
@@ -2474,6 +2503,7 @@ class ChatController(args: Bundle) :
                 currentConversation,
                 chatMessage,
                 conversationUser,
+                hasChatPermission,
                 ncApi!!
             ).show()
         }
@@ -2501,6 +2531,7 @@ class ChatController(args: Bundle) :
                     conversationUser,
                     currentConversation,
                     isShowMessageDeletionButton(message),
+                    hasChatPermission,
                     ncApi!!
                 ).show()
             }
@@ -2512,50 +2543,59 @@ class ChatController(args: Bundle) :
     }
 
     fun deleteMessage(message: IMessage?) {
-        var apiVersion = 1
-        // FIXME Fix API checking with guests?
-        if (conversationUser != null) {
-            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
-        }
-
-        ncApi?.deleteChatMessage(
-            credentials,
-            ApiUtils.getUrlForChatMessage(
-                apiVersion,
-                conversationUser?.baseUrl,
-                roomToken,
-                message?.id
+        if (!hasChatPermission) {
+            Log.w(
+                TAG,
+                "Deletion of message is skipped because of restrictions by permissions. " +
+                    "This method should not have been called!"
             )
-        )?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+            Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+        } else {
+            var apiVersion = 1
+            // FIXME Fix API checking with guests?
+            if (conversationUser != null) {
+                apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+            }
 
-                override fun onNext(t: ChatOverallSingleMessage) {
-                    if (t.ocs.meta.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
-                        Toast.makeText(
-                            context, R.string.nc_delete_message_leaked_to_matterbridge,
-                            Toast.LENGTH_LONG
-                        ).show()
+            ncApi?.deleteChatMessage(
+                credentials,
+                ApiUtils.getUrlForChatMessage(
+                    apiVersion,
+                    conversationUser?.baseUrl,
+                    roomToken,
+                    message?.id
+                )
+            )?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<ChatOverallSingleMessage> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
-                }
 
-                override fun onError(e: Throwable) {
-                    Log.e(
-                        TAG,
-                        "Something went wrong when trying to delete message with id " +
-                            message?.id,
-                        e
-                    )
-                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
-                }
+                    override fun onNext(t: ChatOverallSingleMessage) {
+                        if (t.ocs.meta.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
+                            Toast.makeText(
+                                context, R.string.nc_delete_message_leaked_to_matterbridge,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
 
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+                    override fun onError(e: Throwable) {
+                        Log.e(
+                            TAG,
+                            "Something went wrong when trying to delete message with id " +
+                                message?.id,
+                            e
+                        )
+                        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
+        }
     }
 
     fun replyPrivately(message: IMessage?) {
@@ -2809,29 +2849,27 @@ class ChatController(args: Bundle) :
     private fun isShowMessageDeletionButton(message: ChatMessage): Boolean {
         if (conversationUser == null) return false
 
-        if (message.systemMessageType != ChatMessage.SystemMessageType.DUMMY) return false
-
-        if (message.isDeleted) return false
-
-        if (message.hasFileAttachment()) return false
-
-        if (OBJECT_MESSAGE.equals(message.message)) return false
-
-        val isOlderThanSixHours = message
-            .createdAt
-            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
-        if (isOlderThanSixHours) return false
-
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser.userId) {
             true
         } else {
             currentConversation!!.canModerate(conversationUser)
         }
-        if (!isUserAllowedByPrivileges) return false
 
-        if (!CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages")) return false
+        val isOlderThanSixHours = message
+            .createdAt
+            ?.before(Date(System.currentTimeMillis() - AGE_THREHOLD_FOR_DELETE_MESSAGE)) == true
 
-        return true
+        return when {
+            !isUserAllowedByPrivileges -> false
+            isOlderThanSixHours -> false
+            message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
+            message.isDeleted -> false
+            message.hasFileAttachment() -> false
+            OBJECT_MESSAGE == message.message -> false
+            !CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
+            !hasChatPermission -> false
+            else -> true
+        }
     }
 
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
