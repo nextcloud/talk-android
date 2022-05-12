@@ -26,6 +26,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -54,6 +56,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.camera.camera2.interop.Camera2Interop;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
 import androidx.camera.core.ImageCapture;
@@ -357,9 +360,15 @@ public class TakePhotoActivity extends AppCompatActivity {
         return rotate;
     }
 
-    private Preview getPreview(Boolean crop) {
-        Preview preview = new Preview.Builder()
-            .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3).build();
+    private Preview getPreview(boolean crop) {
+        Preview.Builder previewBuilder = new Preview.Builder()
+            .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3);
+        new Camera2Interop.Extender<>(previewBuilder)
+            .setCaptureRequestOption(CaptureRequest.CONTROL_VIDEO_STABILIZATION_MODE,
+                                     CameraMetadata.CONTROL_VIDEO_STABILIZATION_MODE_OFF
+                                    );
+
+        Preview preview = previewBuilder.build();
         preview.setSurfaceProvider(binding.preview.getSurfaceProvider());
 
         return preview;
