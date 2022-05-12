@@ -408,7 +408,9 @@ public class ConversationsListController extends BaseController implements Searc
                     adapter.setHeadersShown(true);
                     adapter.updateDataSet(searchableConversationItems, false);
                     adapter.showAllHeaders();
-                    swipeRefreshLayout.setEnabled(false);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setEnabled(false);
+                    }
                     return true;
                 }
 
@@ -417,7 +419,9 @@ public class ConversationsListController extends BaseController implements Searc
                     adapter.setHeadersShown(false);
                     adapter.updateDataSet(conversationItems, false);
                     adapter.hideAllHeaders();
-                    swipeRefreshLayout.setEnabled(true);
+                    if (swipeRefreshLayout != null) {
+                        swipeRefreshLayout.setEnabled(true);
+                    }
 
                     searchView.onActionViewCollapsed();
                     MainActivity activity = (MainActivity) getActivity();
