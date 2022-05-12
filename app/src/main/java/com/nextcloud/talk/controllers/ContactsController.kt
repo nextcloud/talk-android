@@ -704,7 +704,7 @@ class ContactsController(args: Bundle) :
         }
 
         try {
-            binding.controllerGenericRv.swipeRefreshLayout.isRefreshing = !adapter!!.hasFilter()
+            binding.controllerGenericRv.swipeRefreshLayout.isEnabled = !adapter!!.hasFilter()
         } catch (npe: NullPointerException) {
             // view binding can be null
             // since this is called asynchronously and UI might have been destroyed in the meantime
