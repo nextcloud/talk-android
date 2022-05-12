@@ -19,25 +19,25 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.dagger.modules
+package com.nextcloud.talk.models.json.unifiedsearch
 
-import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
-import dagger.Module
-import dagger.Provides
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.android.parcel.Parcelize
 
-@Module
-class RepositoryModule {
-    @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi)
-    }
-
-    @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi): UnifiedSearchRepository {
-        return UnifiedSearchRepositoryImpl(ncApi)
-    }
+@Parcelize
+@JsonObject
+data class UnifiedSearchResponseData(
+    @JsonField(name = ["name"])
+    var name: String?,
+    @JsonField(name = ["isPaginated"])
+    var paginated: Boolean?,
+    @JsonField(name = ["entries"])
+    var entries: List<UnifiedSearchEntry>?,
+    @JsonField(name = ["cursor"])
+    var cursor: Int?
+) : Parcelable {
+    // empty constructor needed for JsonObject
+    constructor() : this(null, null, null, null)
 }

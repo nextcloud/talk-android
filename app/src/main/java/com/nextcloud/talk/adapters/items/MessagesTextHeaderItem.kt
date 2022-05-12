@@ -19,25 +19,18 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.dagger.modules
+package com.nextcloud.talk.adapters.items
 
-import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
-import dagger.Module
-import dagger.Provides
+import android.content.Context
+import com.nextcloud.talk.R
 
-@Module
-class RepositoryModule {
-    @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi)
+class MessagesTextHeaderItem(context: Context) : GenericTextHeaderItem(context.getString(R.string.messages)) {
+    companion object {
+        /**
+         * "Random" value, just has to be different than other view types
+         */
+        const val VIEW_TYPE = 1120391230
     }
 
-    @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi): UnifiedSearchRepository {
-        return UnifiedSearchRepositoryImpl(ncApi)
-    }
+    override fun getItemViewType(): Int = VIEW_TYPE
 }

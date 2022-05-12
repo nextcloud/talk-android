@@ -19,25 +19,16 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.dagger.modules
+package com.nextcloud.talk.utils
 
-import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
-import dagger.Module
-import dagger.Provides
+import android.os.Handler
+import android.os.Looper
 
-@Module
-class RepositoryModule {
-    @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi)
-    }
+class Debouncer(var delay: Long) {
+    private val handler = Handler(Looper.getMainLooper())
 
-    @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi): UnifiedSearchRepository {
-        return UnifiedSearchRepositoryImpl(ncApi)
+    fun debounce(runnable: Runnable) {
+        handler.removeCallbacksAndMessages(null) // clear handler
+        handler.postDelayed(runnable, delay)
     }
 }

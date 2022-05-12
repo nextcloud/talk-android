@@ -45,6 +45,7 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.models.json.statuses.StatusesOverall;
+import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
@@ -519,4 +520,13 @@ public interface NcApi {
     Observable<ReactionsOverall> getReactions(@Header("Authorization") String authorization,
                                               @Url String url,
                                               @Query("reaction") String reaction);
+
+    // TODO use path params instead of passing URL
+    @GET
+    Observable<UnifiedSearchOverall> performUnifiedSearch(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                                          @Query("term") String term,
+                                                          @Query("from") String fromUrl,
+                                                          @Query("limit") Integer limit,
+                                                          @Query("cursor") Integer cursor);
 }

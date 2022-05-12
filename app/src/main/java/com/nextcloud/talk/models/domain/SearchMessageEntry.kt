@@ -19,25 +19,13 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.dagger.modules
+package com.nextcloud.talk.models.domain
 
-import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
-import dagger.Module
-import dagger.Provides
-
-@Module
-class RepositoryModule {
-    @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi)
-    }
-
-    @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi): UnifiedSearchRepository {
-        return UnifiedSearchRepositoryImpl(ncApi)
-    }
-}
+data class SearchMessageEntry(
+    val searchTerm: String,
+    val thumbnailURL: String?,
+    val title: String,
+    val messageExcerpt: String,
+    val conversationToken: String,
+    val messageId: String?
+)
