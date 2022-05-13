@@ -60,7 +60,7 @@ class MessageActionsDialog(
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean,
     private val ncApi: NcApi
-) : BottomSheetDialog(chatController.activity!!, R.style.BottomSheetDialogThemeNoFloating) {
+) : BottomSheetDialog(chatController.activity!!) {
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
@@ -97,7 +97,7 @@ class MessageActionsDialog(
         super.onStart()
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun hasUserId(user: UserEntity?): Boolean {
