@@ -37,15 +37,6 @@ import android.util.Base64;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.facebook.common.executors.UiThreadImmediateExecutorService;
-import com.facebook.common.references.CloseableReference;
-import com.facebook.datasource.DataSource;
-import com.facebook.drawee.backends.pipeline.Fresco;
-import com.facebook.imagepipeline.core.ImagePipeline;
-import com.facebook.imagepipeline.datasource.BaseBitmapDataSubscriber;
-import com.facebook.imagepipeline.image.CloseableImage;
-import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor;
-import com.facebook.imagepipeline.request.ImageRequest;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.activities.MainActivity;
@@ -60,8 +51,8 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall;
 import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.push.DecryptedPushMessage;
 import com.nextcloud.talk.models.json.push.NotificationUser;
+import com.nextcloud.talk.receivers.DirectReplyReceiver;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DoNotDisturbUtils;
 import com.nextcloud.talk.utils.NotificationUtils;
 import com.nextcloud.talk.utils.PushUtils;
@@ -87,10 +78,12 @@ import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationCompat.MessagingStyle;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.app.Person;
-import androidx.core.graphics.drawable.IconCompat;
+import androidx.core.app.RemoteInput;
 import androidx.emoji.text.EmojiCompat;
 import androidx.work.Data;
 import androidx.work.Worker;
@@ -299,10 +292,7 @@ public class NotificationWorker extends Worker {
                 }
         }
 
-        intent.setAction(Long.toString(System.currentTimeMillis()));
-
-        PendingIntent pendingIntent = PendingIntent.getActivity(context,
-                0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
 
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
         String baseUrl = uri.getHost();
@@ -350,111 +340,118 @@ public class NotificationWorker extends Worker {
 
         notificationBuilder.setContentIntent(pendingIntent);
 
-
-        CRC32 crc32 = new CRC32();
-
         String groupName = signatureVerification.getUserEntity().getId() + "@" + decryptedPushMessage.getId();
-        crc32.update(groupName.getBytes());
-        notificationBuilder.setGroup(Long.toString(crc32.getValue()));
-
-        // notificationId
-        crc32 = new CRC32();
-        String stringForCrc = String.valueOf(System.currentTimeMillis());
-        crc32.update(stringForCrc.getBytes());
+        notificationBuilder.setGroup(Long.toString(calculateCRC32(groupName)));
 
         StatusBarNotification activeStatusBarNotification =
                 NotificationUtils.INSTANCE.findNotificationForRoom(context,
                         signatureVerification.getUserEntity(), decryptedPushMessage.getId());
 
-        int notificationId;
-
+        // NOTE - systemNotificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        int systemNotificationId;
         if (activeStatusBarNotification != null) {
-            notificationId = activeStatusBarNotification.getId();
+            systemNotificationId = activeStatusBarNotification.getId();
         } else {
-            notificationId = (int) crc32.getValue();
+            systemNotificationId = (int) calculateCRC32(String.valueOf(System.currentTimeMillis()));
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N && decryptedPushMessage.getNotificationUser() != null && decryptedPushMessage.getType().equals("chat")) {
-            NotificationCompat.MessagingStyle style = null;
-            if (activeStatusBarNotification != null) {
-                Notification activeNotification = activeStatusBarNotification.getNotification();
-                style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(activeNotification);
-            }
-
-            Person.Builder person =
-                    new Person.Builder().setKey(signatureVerification.getUserEntity().getId() +
-                            "@" + decryptedPushMessage.getNotificationUser().getId()).setName(EmojiCompat.get().process(decryptedPushMessage.getNotificationUser().getName())).setBot(decryptedPushMessage.getNotificationUser().getType().equals("bot"));
-
-            notificationBuilder.setOnlyAlertOnce(true);
-
-            if (decryptedPushMessage.getNotificationUser().getType().equals("user") || decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
-                String avatarUrl = ApiUtils.getUrlForAvatar(signatureVerification.getUserEntity().getBaseUrl(),
-                                                            decryptedPushMessage.getNotificationUser().getId(), false);
-
-                if (decryptedPushMessage.getNotificationUser().getType().equals("guest")) {
-                    avatarUrl = ApiUtils.getUrlForGuestAvatar(signatureVerification.getUserEntity().getBaseUrl(),
-                                                              decryptedPushMessage.getNotificationUser().getName(),
-                                                              false);
-                }
-
-                ImageRequest imageRequest =
-                        DisplayUtils.getImageRequestForUrl(avatarUrl, null);
-                ImagePipeline imagePipeline = Fresco.getImagePipeline();
-                DataSource<CloseableReference<CloseableImage>> dataSource = imagePipeline.fetchDecodedImage(imageRequest, context);
-
-                NotificationCompat.MessagingStyle finalStyle = style;
-                dataSource.subscribe(
-                        new BaseBitmapDataSubscriber() {
-                            @Override
-                            protected void onNewResultImpl(Bitmap bitmap) {
-                                if (bitmap != null) {
-                                    new RoundAsCirclePostprocessor(true).process(bitmap);
-                                    person.setIcon(IconCompat.createWithBitmap(bitmap));
-                                    notificationBuilder.setStyle(getStyle(person.build(),
-                                            finalStyle));
-                                    sendNotificationWithId(notificationId, notificationBuilder.build());
-
-                                }
-                            }
-
-                            @Override
-                            protected void onFailureImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
-                                notificationBuilder.setStyle(getStyle(person.build(), finalStyle));
-                                sendNotificationWithId(notificationId, notificationBuilder.build());
-                            }
-                        },
-                        UiThreadImmediateExecutorService.getInstance());
-            } else {
-                notificationBuilder.setStyle(getStyle(person.build(), style));
-                sendNotificationWithId(notificationId, notificationBuilder.build());
-            }
-        } else {
-            sendNotificationWithId(notificationId, notificationBuilder.build());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N &&
+            CHAT.equals(decryptedPushMessage.getType()) &&
+            decryptedPushMessage.getNotificationUser() != null) {
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId);
         }
 
+        sendNotification(systemNotificationId, notificationBuilder.build());
     }
 
-    private NotificationCompat.MessagingStyle getStyle(Person person, @Nullable NotificationCompat.MessagingStyle style) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationCompat.MessagingStyle newStyle =
-                    new NotificationCompat.MessagingStyle(person);
-
-            newStyle.setConversationTitle(decryptedPushMessage.getSubject());
-            newStyle.setGroupConversation(!conversationType.equals("one2one"));
-
-            if (style != null) {
-                style.getMessages().forEach(message -> newStyle.addMessage(new NotificationCompat.MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
-            }
-
-            newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
-            return newStyle;
-        }
-
-        // we'll never come here
-        return style;
+    private long calculateCRC32(String s) {
+        CRC32 crc32 = new CRC32();
+        crc32.update(s.getBytes());
+        return crc32.getValue();
     }
 
-    private void sendNotificationWithId(int notificationId, Notification notification) {
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void prepareChatNotification(NotificationCompat.Builder notificationBuilder,
+                                         StatusBarNotification activeStatusBarNotification,
+                                         int systemNotificationId) {
+
+        final NotificationUser notificationUser = decryptedPushMessage.getNotificationUser();
+        final String userType = notificationUser.getType();
+
+        MessagingStyle style = null;
+        if (activeStatusBarNotification != null) {
+            style = MessagingStyle.extractMessagingStyleFromNotification(activeStatusBarNotification.getNotification());
+        }
+
+        Person.Builder person =
+                new Person.Builder()
+                    .setKey(signatureVerification.getUserEntity().getId() + "@" + notificationUser.getId())
+                    .setName(EmojiCompat.get().process(notificationUser.getName()))
+                    .setBot("bot".equals(userType));
+
+        notificationBuilder.setOnlyAlertOnce(true);
+        addReplyAction(notificationBuilder, systemNotificationId);
+
+        if ("user".equals(userType) || "guest".equals(userType)) {
+            String baseUrl = signatureVerification.getUserEntity().getBaseUrl();
+            String avatarUrl = "user".equals(userType) ?
+                ApiUtils.getUrlForAvatar(baseUrl, notificationUser.getId(), false) :
+                ApiUtils.getUrlForGuestAvatar(baseUrl, notificationUser.getName(), false);
+            person.setIcon(NotificationUtils.INSTANCE.loadAvatarSync(avatarUrl));
+        }
+
+        notificationBuilder.setStyle(getStyle(person.build(), style));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private void addReplyAction(NotificationCompat.Builder notificationBuilder, int systemNotificationId) {
+        String replyLabel = context.getResources().getString(R.string.nc_reply);
+
+        RemoteInput remoteInput = new RemoteInput.Builder(NotificationUtils.KEY_DIRECT_REPLY)
+            .setLabel(replyLabel)
+            .build();
+
+        // Build a PendingIntent for the reply action
+        Intent actualIntent = new Intent(context, DirectReplyReceiver.class);
+
+        // NOTE - systemNotificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
+        actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+        PendingIntent replyPendingIntent =
+            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Action replyAction =
+            new NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)
+                .setSemanticAction(NotificationCompat.Action.SEMANTIC_ACTION_REPLY)
+                .setShowsUserInterface(false)
+                // Allows system to generate replies by context of conversation.
+                // https://developer.android.com/reference/androidx/core/app/NotificationCompat.Action.Builder#setAllowGeneratedReplies(boolean)
+                // Good question is - do we really want it?
+                .setAllowGeneratedReplies(true)
+                .addRemoteInput(remoteInput)
+                .build();
+
+        notificationBuilder.addAction(replyAction);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    private MessagingStyle getStyle(Person person, @Nullable MessagingStyle style) {
+        MessagingStyle newStyle = new MessagingStyle(person);
+
+        newStyle.setConversationTitle(decryptedPushMessage.getSubject());
+        newStyle.setGroupConversation(!conversationType.equals("one2one"));
+
+        if (style != null) {
+            style.getMessages().forEach(message -> newStyle.addMessage(new MessagingStyle.Message(message.getText(), message.getTimestamp(), message.getPerson())));
+        }
+
+        newStyle.addMessage(decryptedPushMessage.getText(), decryptedPushMessage.getTimestamp(), person);
+        return newStyle;
+    }
+
+    private void sendNotification(int notificationId, Notification notification) {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         notificationManager.notify(notificationId, notification);
 
@@ -465,8 +462,7 @@ public class NotificationWorker extends Worker {
         }
 
         if (!notification.category.equals(Notification.CATEGORY_CALL) || !muteCall) {
-            Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(getApplicationContext(),
-                                                                            appPreferences);
+            Uri soundUri = NotificationUtils.INSTANCE.getMessageRingtoneUri(context, appPreferences);
             if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall() &&
                     (DoNotDisturbUtils.INSTANCE.shouldPlaySound() || importantConversation)) {
                 AudioAttributes.Builder audioAttributesBuilder = new AudioAttributes.Builder().setContentType

@@ -32,7 +32,13 @@ import android.net.Uri
 import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
+import androidx.core.graphics.drawable.IconCompat
 import com.bluelinelabs.logansquare.LoganSquare
+import com.facebook.common.references.CloseableReference
+import com.facebook.datasource.DataSources
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.image.CloseableBitmap
+import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.RingtoneSettings
@@ -60,6 +66,9 @@ object NotificationUtils {
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_call"
     const val DEFAULT_MESSAGE_RINGTONE_URI =
         "android.resource://" + BuildConfig.APPLICATION_ID + "/raw/librem_by_feandesign_message"
+
+    // RemoteInput key - used for replies sent directly from notification
+    const val KEY_DIRECT_REPLY = "key_direct_reply"
 
     @TargetApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(
@@ -178,45 +187,46 @@ object NotificationUtils {
         return null
     }
 
-    fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L && context != null) {
+    private inline fun scanNotifications(
+        context: Context?,
+        conversationUser: UserEntity,
+        callback: (
+            notificationManager: NotificationManager,
+            statusBarNotification: StatusBarNotification,
+            notification: Notification
+        ) -> Unit
+    ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
+            return
+        }
 
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            val statusBarNotifications = notificationManager.activeNotifications
-            var notification: Notification?
-            for (statusBarNotification in statusBarNotifications) {
-                notification = statusBarNotification.notification
+        val statusBarNotifications = notificationManager.activeNotifications
+        var notification: Notification?
+        for (statusBarNotification in statusBarNotifications) {
+            notification = statusBarNotification.notification
 
-                if (notification != null && !notification.extras.isEmpty) {
-                    if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)) {
-                        notificationManager.cancel(statusBarNotification.id)
-                    }
-                }
+            if (
+                notification != null &&
+                !notification.extras.isEmpty &&
+                conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+            ) {
+                callback(notificationManager, statusBarNotification, notification)
             }
         }
     }
 
+    fun cancelAllNotificationsForAccount(context: Context?, conversationUser: UserEntity) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, _ ->
+            notificationManager.cancel(statusBarNotification.id)
+        }
+    }
+
     fun cancelExistingNotificationWithId(context: Context?, conversationUser: UserEntity, notificationId: Long?) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
-            context != null
-        ) {
-
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            val statusBarNotifications = notificationManager.activeNotifications
-            var notification: Notification?
-            for (statusBarNotification in statusBarNotifications) {
-                notification = statusBarNotification.notification
-
-                if (notification != null && !notification.extras.isEmpty) {
-                    if (
-                        conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                        notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)
-                    ) {
-                        notificationManager.cancel(statusBarNotification.id)
-                    }
-                }
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+            if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
+                notificationManager.cancel(statusBarNotification.id)
             }
         }
     }
@@ -226,28 +236,11 @@ object NotificationUtils {
         conversationUser: UserEntity,
         roomTokenOrId: String
     ): StatusBarNotification? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && conversationUser.id != -1L &&
-            context != null
-        ) {
-
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            val statusBarNotifications = notificationManager.activeNotifications
-            var notification: Notification?
-            for (statusBarNotification in statusBarNotifications) {
-                notification = statusBarNotification.notification
-
-                if (notification != null && !notification.extras.isEmpty) {
-                    if (
-                        conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                        roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
-                    ) {
-                        return statusBarNotification
-                    }
-                }
+        scanNotifications(context, conversationUser) { _, statusBarNotification, notification ->
+            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
+                return statusBarNotification
             }
         }
-
         return null
     }
 
@@ -256,26 +249,9 @@ object NotificationUtils {
         conversationUser: UserEntity,
         roomTokenOrId: String
     ) {
-        if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-            conversationUser.id != -1L &&
-            context != null
-        ) {
-
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-            val statusBarNotifications = notificationManager.activeNotifications
-            var notification: Notification?
-            for (statusBarNotification in statusBarNotifications) {
-                notification = statusBarNotification.notification
-
-                if (notification != null && !notification.extras.isEmpty) {
-                    if (conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID) &&
-                        roomTokenOrId == statusBarNotification.notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
-                    ) {
-                        notificationManager.cancel(statusBarNotification.id)
-                    }
-                }
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
+                notificationManager.cancel(statusBarNotification.id)
             }
         }
     }
@@ -294,15 +270,15 @@ object NotificationUtils {
             // Notification channel will not be available when starting the application for the first time.
             // Ringtone uris are required to register the notification channels -> get uri from preferences.
         }
-        if (TextUtils.isEmpty(ringtonePreferencesString)) {
-            return Uri.parse(defaultRingtoneUri)
+        return if (TextUtils.isEmpty(ringtonePreferencesString)) {
+            Uri.parse(defaultRingtoneUri)
         } else {
             try {
                 val ringtoneSettings =
                     LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
-                return ringtoneSettings.ringtoneUri
+                ringtoneSettings.ringtoneUri
             } catch (exception: IOException) {
-                return Uri.parse(defaultRingtoneUri)
+                Uri.parse(defaultRingtoneUri)
             }
         }
     }
@@ -325,6 +301,31 @@ object NotificationUtils {
             context,
             appPreferences.messageRingtoneUri, DEFAULT_MESSAGE_RINGTONE_URI, NOTIFICATION_CHANNEL_MESSAGES_V4
         )
+    }
+
+    /*
+    * Load user avatar synchronously.
+    * Inspired by:
+    * https://frescolib.org/docs/using-image-pipeline.html
+    * https://github.com/facebook/fresco/issues/830
+    * https://localcoder.org/using-facebooks-fresco-to-load-a-bitmap
+    */
+    fun loadAvatarSync(avatarUrl: String): IconCompat? {
+        // TODO - how to handle errors here?
+        var avatarIcon: IconCompat? = null
+        val imageRequest = DisplayUtils.getImageRequestForUrl(avatarUrl, null)
+        val dataSource = Fresco.getImagePipeline().fetchDecodedImage(imageRequest, null)
+        val closeableImageRef = DataSources.waitForFinalResult(dataSource) as CloseableReference<CloseableBitmap>?
+        val bitmap = closeableImageRef?.get()?.underlyingBitmap
+        if (bitmap != null) {
+            // According to Fresco documentation a copy of the bitmap should be made before closing the references.
+            // However, it seems to work without making a copy... ;-)
+            RoundAsCirclePostprocessor(true).process(bitmap)
+            avatarIcon = IconCompat.createWithBitmap(bitmap)
+        }
+        CloseableReference.closeSafely(closeableImageRef)
+        dataSource.close()
+        return avatarIcon
     }
 
     private data class Channel(
