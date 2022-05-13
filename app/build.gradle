@@ -24,6 +24,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import com.github.spotbugs.snom.SpotBugsTask
+import com.nextcloud.talk.gradle.DownloadWebRtcTask
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -32,20 +33,6 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
-
-def urlFile = { url, fileName ->
-    File file = new File("$buildDir/download/${fileName}")
-    file.parentFile.mkdirs()
-    if (!file.exists()) {
-        new URL(url).withInputStream { downloadStream ->
-            file.withOutputStream { fileOut ->
-                fileOut << downloadStream
-            }
-        }
-    }
-    files(file.absolutePath)
-}
-
 
 android {
     compileSdkVersion 30
@@ -147,7 +134,6 @@ android {
     }
 
     check.dependsOn 'spotbugsGplayDebug', 'lint', 'ktlintCheck', 'detekt'
-    lint.dependsOn 'preBuild'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -176,9 +162,15 @@ ext {
     powermockVersion = "2.0.9"
     retrofit2Version = "2.9.0"
     workVersion = "2.6.0"
-    markwonVersion =  "4.6.2"
+    markwonVersion = "4.6.2"
     espressoVersion = "3.4.0"
 }
+
+def webRtcVersion = "96.4664.0"
+tasks.register('downloadWebRtc', DownloadWebRtcTask){
+    version = webRtcVersion
+}
+preBuild.dependsOn('downloadWebRtc')
 
 configurations.all {
     exclude group: 'com.google.firebase', module: 'firebase-core'
@@ -253,8 +245,7 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation urlFile('https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/96.4664.0-RC1/libwebrtc-96.4664.0.aar',
-        'libwebrtc-96.4664.0.aar')
+    implementation fileTree(downloadWebRtc.getOutputPath())
     implementation 'com.yarolegovich:lovely-dialog:1.1.1'
     implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
