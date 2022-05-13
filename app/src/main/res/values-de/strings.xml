@@ -341,6 +341,7 @@
     <string name="secondsAgo">Gerade eben</string>
     <string name="selected_list_item">Ausgewählt</string>
     <string name="send_to">Senden an</string>
+    <string name="send_to_forbidden">Sie sind nicht berechtigt, Inhalte in diesem Chat zu teilen</string>
     <string name="send_to_three_dots">Senden an …</string>
     <string name="set_status">Status setzen</string>
     <string name="set_status_message">Statusnachricht setzen</string>

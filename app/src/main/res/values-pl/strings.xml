@@ -341,6 +341,7 @@
     <string name="secondsAgo">przed chwilą</string>
     <string name="selected_list_item">Wybrany</string>
     <string name="send_to">Wyślij do</string>
+    <string name="send_to_forbidden">Nie możesz udostępniać treści na tym czacie</string>
     <string name="send_to_three_dots">Wyślij do…</string>
     <string name="set_status">Ustaw status</string>
     <string name="set_status_message">Ustaw komunikat statusu</string>

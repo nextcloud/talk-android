@@ -341,6 +341,7 @@
     <string name="secondsAgo">sekund před</string>
     <string name="selected_list_item">Vybráno</string>
     <string name="send_to">Odeslat k</string>
+    <string name="send_to_forbidden">Nemáte oprávnění sdílet obsah do tohoto chatu</string>
     <string name="send_to_three_dots">Odeslat k…</string>
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
