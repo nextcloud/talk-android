@@ -62,14 +62,17 @@
     </LinearLayout>
 
     <include
+        android:id="@+id/conversation_privacy_toggle"
         layout="@layout/conversation_privacy_toggle"
         android:visibility="gone" />
 
     <include
+        android:id="@+id/join_conversation_via_link"
         layout="@layout/join_conversation_via_link"
         android:visibility="gone" />
 
     <include
+        android:id="@+id/controller_generic_rv"
         layout="@layout/controller_generic_rv"
         android:visibility="gone" />
 </LinearLayout>
