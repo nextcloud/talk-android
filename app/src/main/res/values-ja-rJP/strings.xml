@@ -274,6 +274,7 @@
     <string name="nc_share_text">%1$s/index.php/call/%2$s での会話に参加する</string>
     <string name="nc_share_text_pass">\nパスワード：%1$s</string>
     <string name="nc_share_this_location">この位置を共有</string>
+    <string name="nc_shared_items">共有済みアイテム</string>
     <string name="nc_sort_by">ソート: </string>
     <string name="nc_start_time">開始時刻</string>
     <string name="nc_upload_choose_local_files">ファイルを選択</string>
