@@ -25,6 +25,7 @@ import java.util.HashMap
 
 object DrawableUtils {
 
+    @Suppress("Detekt.LongMethod")
     fun getDrawableResourceIdForMimeType(mimetype: String?): Int {
         var localMimetype = mimetype
         val drawableMap = HashMap<String, Int>()

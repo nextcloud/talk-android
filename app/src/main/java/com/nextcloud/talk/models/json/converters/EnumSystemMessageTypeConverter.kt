@@ -121,53 +121,53 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_RE
 */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
     override fun getFromString(string: String): ChatMessage.SystemMessageType {
-        when (string) {
-            "conversation_created" -> return CONVERSATION_CREATED
-            "conversation_renamed" -> return CONVERSATION_RENAMED
-            "description_set" -> return DESCRIPTION_SET
-            "description_removed" -> return DESCRIPTION_REMOVED
-            "call_started" -> return CALL_STARTED
-            "call_joined" -> return CALL_JOINED
-            "call_left" -> return CALL_LEFT
-            "call_ended" -> return CALL_ENDED
-            "call_ended_everyone" -> return CALL_ENDED_EVERYONE
-            "call_missed" -> return CALL_MISSED
-            "call_tried" -> return CALL_TRIED
-            "read_only_off" -> return READ_ONLY_OFF
-            "read_only" -> return READ_ONLY
-            "listable_none" -> return LISTABLE_NONE
-            "listable_users" -> return LISTABLE_USERS
-            "listable_all" -> return LISTABLE_ALL
-            "lobby_none" -> return LOBBY_NONE
-            "lobby_non_moderators" -> return LOBBY_NON_MODERATORS
-            "lobby_timer_reached" -> return LOBBY_OPEN_TO_EVERYONE
-            "guests_allowed" -> return GUESTS_ALLOWED
-            "guests_disallowed" -> return GUESTS_DISALLOWED
-            "password_set" -> return PASSWORD_SET
-            "password_removed" -> return PASSWORD_REMOVED
-            "user_added" -> return USER_ADDED
-            "user_removed" -> return USER_REMOVED
-            "group_added" -> return GROUP_ADDED
-            "group_removed" -> return GROUP_REMOVED
-            "circle_added" -> return CIRCLE_ADDED
-            "circle_removed" -> return CIRCLE_REMOVED
-            "moderator_promoted" -> return MODERATOR_PROMOTED
-            "moderator_demoted" -> return MODERATOR_DEMOTED
-            "guest_moderator_promoted" -> return GUEST_MODERATOR_PROMOTED
-            "guest_moderator_demoted" -> return GUEST_MODERATOR_DEMOTED
-            "message_deleted" -> return MESSAGE_DELETED
-            "file_shared" -> return FILE_SHARED
-            "object_shared" -> return OBJECT_SHARED
-            "matterbridge_config_added" -> return MATTERBRIDGE_CONFIG_ADDED
-            "matterbridge_config_edited" -> return MATTERBRIDGE_CONFIG_EDITED
-            "matterbridge_config_removed" -> return MATTERBRIDGE_CONFIG_REMOVED
-            "matterbridge_config_enabled" -> return MATTERBRIDGE_CONFIG_ENABLED
-            "matterbridge_config_disabled" -> return MATTERBRIDGE_CONFIG_DISABLED
-            "history_cleared" -> return CLEARED_CHAT
-            "reaction" -> return REACTION
-            "reaction_deleted" -> return REACTION_DELETED
-            "reaction_revoked" -> return REACTION_REVOKED
-            else -> return DUMMY
+        return when (string) {
+            "conversation_created" -> CONVERSATION_CREATED
+            "conversation_renamed" -> CONVERSATION_RENAMED
+            "description_set" -> DESCRIPTION_SET
+            "description_removed" -> DESCRIPTION_REMOVED
+            "call_started" -> CALL_STARTED
+            "call_joined" -> CALL_JOINED
+            "call_left" -> CALL_LEFT
+            "call_ended" -> CALL_ENDED
+            "call_ended_everyone" -> CALL_ENDED_EVERYONE
+            "call_missed" -> CALL_MISSED
+            "call_tried" -> CALL_TRIED
+            "read_only_off" -> READ_ONLY_OFF
+            "read_only" -> READ_ONLY
+            "listable_none" -> LISTABLE_NONE
+            "listable_users" -> LISTABLE_USERS
+            "listable_all" -> LISTABLE_ALL
+            "lobby_none" -> LOBBY_NONE
+            "lobby_non_moderators" -> LOBBY_NON_MODERATORS
+            "lobby_timer_reached" -> LOBBY_OPEN_TO_EVERYONE
+            "guests_allowed" -> GUESTS_ALLOWED
+            "guests_disallowed" -> GUESTS_DISALLOWED
+            "password_set" -> PASSWORD_SET
+            "password_removed" -> PASSWORD_REMOVED
+            "user_added" -> USER_ADDED
+            "user_removed" -> USER_REMOVED
+            "group_added" -> GROUP_ADDED
+            "group_removed" -> GROUP_REMOVED
+            "circle_added" -> CIRCLE_ADDED
+            "circle_removed" -> CIRCLE_REMOVED
+            "moderator_promoted" -> MODERATOR_PROMOTED
+            "moderator_demoted" -> MODERATOR_DEMOTED
+            "guest_moderator_promoted" -> GUEST_MODERATOR_PROMOTED
+            "guest_moderator_demoted" -> GUEST_MODERATOR_DEMOTED
+            "message_deleted" -> MESSAGE_DELETED
+            "file_shared" -> FILE_SHARED
+            "object_shared" -> OBJECT_SHARED
+            "matterbridge_config_added" -> MATTERBRIDGE_CONFIG_ADDED
+            "matterbridge_config_edited" -> MATTERBRIDGE_CONFIG_EDITED
+            "matterbridge_config_removed" -> MATTERBRIDGE_CONFIG_REMOVED
+            "matterbridge_config_enabled" -> MATTERBRIDGE_CONFIG_ENABLED
+            "matterbridge_config_disabled" -> MATTERBRIDGE_CONFIG_DISABLED
+            "history_cleared" -> CLEARED_CHAT
+            "reaction" -> REACTION
+            "reaction_deleted" -> REACTION_DELETED
+            "reaction_revoked" -> REACTION_REVOKED
+            else -> DUMMY
         }
     }
 
