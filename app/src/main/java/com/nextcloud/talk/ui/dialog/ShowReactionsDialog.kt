@@ -29,10 +29,12 @@ package com.nextcloud.talk.ui.dialog
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.NonNull
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
@@ -82,6 +84,13 @@ class ShowReactionsDialog(
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)
         initEmojiReactions()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
+        val behavior = BottomSheetBehavior.from(bottomSheet as View)
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     private fun initEmojiReactions() {

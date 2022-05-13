@@ -40,7 +40,7 @@ import com.nextcloud.talk.databinding.DialogBottomContactsBinding
 class ContactsBottomDialog(
     val activity: Activity,
     val bundle: Bundle
-) : BottomSheetDialog(activity, R.style.BottomSheetDialogThemeNoFloating) {
+) : BottomSheetDialog(activity) {
 
     private var dialogRouter: Router? = null
 
@@ -73,7 +73,7 @@ class ContactsBottomDialog(
         super.onStart()
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+        behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
     companion object {
