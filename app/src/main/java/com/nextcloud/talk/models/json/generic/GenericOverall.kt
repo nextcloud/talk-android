@@ -18,16 +18,23 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.generic;
+package com.nextcloud.talk.models.json.generic
 
-import com.bluelinelabs.logansquare.annotation.JsonField;
-import com.bluelinelabs.logansquare.annotation.JsonObject;
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import kotlinx.android.parcel.Parcelize
 
-import org.parceler.Parcel;
-
-@Parcel
+@Parcelize
 @JsonObject
-public class GenericOCS {
-    @JsonField(name = "meta")
-    public GenericMeta meta;
+data class GenericOverall(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta? = null
+) : IGenericOCS, Parcelable {
+    // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
+    constructor() : this(null)
+
+    override fun getGenericMeta(): GenericMeta? {
+        return meta
+    }
 }

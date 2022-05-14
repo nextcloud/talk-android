@@ -968,7 +968,7 @@ public class SettingsController extends BaseController {
 
                     @Override
                     public void onNext(@io.reactivex.annotations.NonNull GenericOverall genericOverall) {
-                        int statusCode = genericOverall.ocs.meta.statusCode;
+                        int statusCode = Objects.requireNonNull(genericOverall.getMeta()).getStatusCode();
                         if (statusCode == 200) {
                             dialog.dismiss();
                             Toast.makeText(context, context.getResources().getString(
