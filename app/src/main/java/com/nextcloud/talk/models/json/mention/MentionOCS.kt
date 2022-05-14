@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Tim Krüger
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -24,15 +26,17 @@ package com.nextcloud.talk.models.json.mention
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericOCS
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
 data class MentionOCS(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta?,
     @JsonField(name = ["data"])
     var data: List<Mention>?
-) : GenericOCS(), Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null)
+    constructor() : this(null, null)
 }

@@ -24,16 +24,18 @@ package com.nextcloud.talk.models.json.userprofile
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericOCS
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.android.parcel.Parcelize
 import java.util.ArrayList
 
 @Parcelize
 @JsonObject
 data class UserProfileFieldsOCS(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta?,
     @JsonField(name = ["data"])
     var data: ArrayList<String>? = null
-) : GenericOCS(), Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null)
+    constructor() : this(null, null)
 }

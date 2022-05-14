@@ -25,8 +25,6 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.generic.GenericMeta
-import com.nextcloud.talk.models.json.generic.GenericOCS
-import com.nextcloud.talk.models.json.generic.IGenericOCS
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -36,11 +34,7 @@ data class NotificationOCS(
     var meta: GenericMeta?,
     @JsonField(name = ["data"])
     var notification: Notification?
-) : IGenericOCS, Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)
-
-    override fun getGenericMeta(): GenericMeta? {
-        return meta
-    }
 }
