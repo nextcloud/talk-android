@@ -25,8 +25,13 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
 
+/**
+ * Legacy class for the remaining java parceler classes
+ * that haven't yet been migrated to kotlin data classes
+ */
 @Parcel
 @JsonObject
+@Deprecated
 public class GenericOCS {
     @JsonField(name = "meta")
     public GenericMeta meta;
