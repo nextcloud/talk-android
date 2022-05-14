@@ -33,6 +33,12 @@ captures/
 .navigation/
 app/gplay/
 
+# IDEA/Android Studio project settings ignore exceptions
+!.idea/icon.svg
+!.idea/icon.png
+!.idea/icon_dark.svg
+!.idea/icon_dark.png
+
 # Keystore files
 *.jks
 
