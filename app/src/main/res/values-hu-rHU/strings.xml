@@ -341,6 +341,7 @@
     <string name="secondsAgo">pár másodperce</string>
     <string name="selected_list_item">Kiválasztott</string>
     <string name="send_to">Küldés</string>
+    <string name="send_to_forbidden">Nincs jogosultsága, hogy tartalmat osszon meg ebben a csevegésben</string>
     <string name="send_to_three_dots">Küldés…</string>
     <string name="set_status">Állapot beállítása</string>
     <string name="set_status_message">Állapotüzenet beállítása</string>

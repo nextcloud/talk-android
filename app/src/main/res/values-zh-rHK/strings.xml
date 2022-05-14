@@ -341,6 +341,7 @@
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">已選擇</string>
     <string name="send_to">傳送到</string>
+    <string name="send_to_forbidden">您不能在此聊天中分享內容</string>
     <string name="send_to_three_dots">傳送到 …</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
