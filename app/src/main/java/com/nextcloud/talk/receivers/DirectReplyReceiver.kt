@@ -128,9 +128,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
     private fun informReplyFailed() {
         val errorColor = ForegroundColorSpan(context.resources.getColor(R.color.medium_emphasis_text, context.theme))
         val errorMessageHeader = context.resources.getString(R.string.nc_message_failed_to_send)
-        val errorMessage = SpannableStringBuilder()
-            .append("$errorMessageHeader\n$replyMessage", errorColor, 0)
-            // .append("\n$replyMessage")
+        val errorMessage = SpannableStringBuilder().append("$errorMessageHeader\n$replyMessage", errorColor, 0)
         appendMessageToNotification(errorMessage)
     }
 
