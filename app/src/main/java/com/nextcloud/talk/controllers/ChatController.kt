@@ -57,6 +57,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -68,8 +69,10 @@ import android.view.animation.LinearInterpolator
 import android.widget.AbsListView
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
@@ -835,7 +838,14 @@ class ChatController(args: Bundle) :
             activity?.let { AttachmentDialog(it, this).show() }
         }
 
-        binding.messageInputView.button.setOnClickListener { v -> submitMessage() }
+        binding.messageInputView.button.setOnClickListener { submitMessage(false) }
+
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+            binding.messageInputView.button.setOnLongClickListener {
+                showSendButtonMenu()
+                true
+            }
+        }
 
         binding.messageInputView.button.contentDescription = resources?.getString(
             R.string
@@ -856,6 +866,27 @@ class ChatController(args: Bundle) :
             }
         }
         super.onViewBound(view)
+    }
+
+    private fun showSendButtonMenu() {
+        val popupMenu = PopupMenu(
+            ContextThemeWrapper(view?.context, R.style.ChatSendButtonMenu),
+            binding.messageInputView.button,
+            Gravity.END
+        )
+        popupMenu.inflate(R.menu.chat_send_menu)
+
+        popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.send_without_notification -> submitMessage(true)
+            }
+            true
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            popupMenu.setForceShowIcon(true)
+        }
+        popupMenu.show()
     }
 
     private fun startPlayback(message: ChatMessage) {
@@ -1879,7 +1910,7 @@ class ChatController(args: Bundle) :
             })
     }
 
-    private fun submitMessage() {
+    private fun submitMessage(sendWithoutNotification: Boolean) {
         if (binding.messageInputView.inputEditText != null) {
             val editable = binding.messageInputView.inputEditText!!.editableText
             val mentionSpans = editable.getSpans(
@@ -1904,13 +1935,14 @@ class ChatController(args: Bundle) :
                     view
                         ?.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
                         ?.visibility == View.VISIBLE
-                ) replyMessageId else null
+                ) replyMessageId else null,
+                sendWithoutNotification
             )
             cancelReply()
         }
     }
 
-    private fun sendMessage(message: CharSequence, replyTo: Int?) {
+    private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
 
         if (conversationUser != null) {
             val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
@@ -1920,7 +1952,8 @@ class ChatController(args: Bundle) :
                 ApiUtils.getUrlForChat(apiVersion, conversationUser.baseUrl, roomToken),
                 message,
                 conversationUser.displayName,
-                replyTo
+                replyTo,
+                sendWithoutNotification
             )
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
