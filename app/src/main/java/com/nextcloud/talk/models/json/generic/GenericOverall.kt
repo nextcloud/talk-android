@@ -30,11 +30,7 @@ import kotlinx.android.parcel.Parcelize
 data class GenericOverall(
     @JsonField(name = ["meta"])
     var meta: GenericMeta? = null
-) : IGenericOCS, Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)
-
-    override fun getGenericMeta(): GenericMeta? {
-        return meta
-    }
 }
