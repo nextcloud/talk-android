@@ -224,7 +224,7 @@ class ServerSelectionController :
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ status: Status ->
                 val productName = resources!!.getString(R.string.nc_server_product_name)
-                val versionString: String = status.getVersion().substring(0, status.getVersion().indexOf("."))
+                val versionString: String = status.version!!.substring(0, status.version!!.indexOf("."))
                 val version: Int = versionString.toInt()
                 if (isServerStatusQueryable(status) && version >= MIN_SERVER_MAJOR_VERSION) {
                     router.pushController(
@@ -237,27 +237,27 @@ class ServerSelectionController :
                             .pushChangeHandler(HorizontalChangeHandler())
                             .popChangeHandler(HorizontalChangeHandler())
                     )
-                } else if (!status.isInstalled) {
+                } else if (!status.installed) {
                     setErrorText(
                         String.format(
                             resources!!.getString(R.string.nc_server_not_installed), productName
                         )
                     )
-                } else if (status.isNeedsUpgrade) {
+                } else if (status.needsUpgrade) {
                     setErrorText(
                         String.format(
                             resources!!.getString(R.string.nc_server_db_upgrade_needed),
                             productName
                         )
                     )
-                } else if (status.isMaintenance) {
+                } else if (status.maintenance) {
                     setErrorText(
                         String.format(
                             resources!!.getString(R.string.nc_server_maintenance),
                             productName
                         )
                     )
-                } else if (!status.getVersion().startsWith("13.")) {
+                } else if (!status.version!!.startsWith("13.")) {
                     setErrorText(
                         String.format(
                             resources!!.getString(R.string.nc_server_version),
@@ -297,7 +297,7 @@ class ServerSelectionController :
     }
 
     private fun isServerStatusQueryable(status: Status): Boolean {
-        return status.isInstalled && !status.isMaintenance && !status.isNeedsUpgrade
+        return status.installed && !status.maintenance && !status.needsUpgrade
     }
 
     private fun setErrorText(text: String) {

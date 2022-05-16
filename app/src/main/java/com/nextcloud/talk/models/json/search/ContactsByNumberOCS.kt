@@ -22,18 +22,20 @@
 package com.nextcloud.talk.models.json.search
 
 import android.os.Parcelable
-import com.nextcloud.talk.models.json.generic.GenericOCS
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import java.util.HashMap
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
 data class ContactsByNumberOCS(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta?,
     @JsonField(name = ["data"])
     var map: Map<String, String> = HashMap()
-) : GenericOCS(), Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(HashMap())
+    constructor() : this(null, HashMap())
 }

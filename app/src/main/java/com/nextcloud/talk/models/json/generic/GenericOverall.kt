@@ -1,10 +1,9 @@
 /*
+ *
  *   Nextcloud Talk application
  *
- *   @author Tobias Kaminsky
- *   @author Andy Scherzinger
- *   Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
- *   Copyright (C) 2021 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
+ *   @author Mario Danic
+ *   Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -19,23 +18,23 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.userprofile
+package com.nextcloud.talk.models.json.generic
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.android.parcel.Parcelize
-import java.util.ArrayList
 
 @Parcelize
 @JsonObject
-data class UserProfileFieldsOCS(
+data class GenericOverall(
     @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
-    @JsonField(name = ["data"])
-    var data: ArrayList<String>? = null
-) : Parcelable {
+    var meta: GenericMeta? = null
+) : IGenericOCS, Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
+    constructor() : this(null)
+
+    override fun getGenericMeta(): GenericMeta? {
+        return meta
+    }
 }

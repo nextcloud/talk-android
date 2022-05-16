@@ -55,6 +55,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.net.CookieManager;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.zip.CRC32;
 
 @AutoInjector(NextcloudTalkApplication.class)
@@ -104,13 +105,13 @@ public class AccountRemovalWorker extends Worker {
                             .blockingSubscribe(new Observer<GenericOverall>() {
                                 @Override
                                 public void onSubscribe(@NotNull Disposable d) {
-
+                                    // unused atm
                                 }
 
                                 @Override
                                 public void onNext(@NotNull GenericOverall genericOverall) {
-                                    if (genericOverall.getOcs().getMeta().getStatusCode() == 200
-                                            || genericOverall.getOcs().getMeta().getStatusCode() == 202) {
+                                    if (Objects.requireNonNull(genericOverall.getMeta()).getStatusCode() == 200 ||
+                                        genericOverall.getMeta().getStatusCode() == 202) {
                                         HashMap<String, String> queryMap = new HashMap<>();
                                         queryMap.put("deviceIdentifier",
                                                      finalPushConfigurationState.getDeviceIdentifier());
@@ -128,7 +129,7 @@ public class AccountRemovalWorker extends Worker {
 
                                 @Override
                                 public void onComplete() {
-
+                                    // unused atm
                                 }
                             });
                 } else {

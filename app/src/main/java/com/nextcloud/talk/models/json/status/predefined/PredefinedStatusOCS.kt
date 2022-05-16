@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Marcel Hibbe
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Marcel Hibbe (dev@mhibbe.de)
  *
  * This program is free software: you can redistribute it and/or modify
@@ -23,15 +25,17 @@ package com.nextcloud.talk.models.json.status.predefined
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericOCS
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
 data class PredefinedStatusOCS(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta?,
     @JsonField(name = ["data"])
     var data: List<PredefinedStatus>?
-) : GenericOCS(), Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null)
+    constructor() : this(null, null)
 }

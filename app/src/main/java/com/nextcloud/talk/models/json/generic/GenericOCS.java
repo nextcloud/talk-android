@@ -25,50 +25,14 @@ import com.bluelinelabs.logansquare.annotation.JsonObject;
 
 import org.parceler.Parcel;
 
+/**
+ * Legacy class for the remaining java parceler classes
+ * that haven't yet been migrated to kotlin data classes
+ */
 @Parcel
 @JsonObject
+@Deprecated
 public class GenericOCS {
     @JsonField(name = "meta")
     public GenericMeta meta;
-
-    public GenericMeta getMeta() {
-        return this.meta;
-    }
-
-    public void setMeta(GenericMeta meta) {
-        this.meta = meta;
-    }
-
-    public boolean equals(final Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof GenericOCS)) {
-            return false;
-        }
-        final GenericOCS other = (GenericOCS) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$meta = this.getMeta();
-        final Object other$meta = other.getMeta();
-
-        return this$meta == null ? other$meta == null : this$meta.equals(other$meta);
-    }
-
-    protected boolean canEqual(final Object other) {
-        return other instanceof GenericOCS;
-    }
-
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $meta = this.getMeta();
-        result = result * PRIME + ($meta == null ? 43 : $meta.hashCode());
-        return result;
-    }
-
-    public String toString() {
-        return "GenericOCS(meta=" + this.getMeta() + ")";
-    }
 }
