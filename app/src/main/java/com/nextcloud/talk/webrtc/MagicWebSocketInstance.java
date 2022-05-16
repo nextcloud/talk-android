@@ -457,8 +457,8 @@ public class MagicWebSocketInstance extends WebSocketListener {
     public String getUserIdForSession(String session) {
         Participant participant = usersHashMap.get(session);
         if (participant != null) {
-            if (participant.getActorType() == USERS) {
-                return participant.getActorId();
+            if (participant.getCalculatedActorType() == USERS) {
+                return participant.getCalculatedActorId();
             }
         }
 

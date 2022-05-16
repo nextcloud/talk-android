@@ -156,9 +156,9 @@ class SwitchAccountController(args: Bundle? = null) :
                             userEntity.username
                         }
                         participant = Participant()
-                        participant.setActorType(Participant.ActorType.USERS)
-                        participant.setActorId(userId)
-                        participant.setDisplayName(userEntity.displayName)
+                        participant.actorType = Participant.ActorType.USERS
+                        participant.actorId = userId
+                        participant.displayName = userEntity.displayName
                         userItems.add(AdvancedUserItem(participant, userEntity, null))
                     }
                 }
@@ -171,9 +171,9 @@ class SwitchAccountController(args: Bundle? = null) :
                     account = accountObject
                     importAccount = getInformationFromAccount(account)
                     participant = Participant()
-                    participant.setActorType(Participant.ActorType.USERS)
-                    participant.setActorId(importAccount.getUsername())
-                    participant.setDisplayName(importAccount.getUsername())
+                    participant.actorType = Participant.ActorType.USERS
+                    participant.actorId = importAccount.getUsername()
+                    participant.displayName = importAccount.getUsername()
                     userEntity = UserEntity()
                     userEntity.baseUrl = importAccount.getBaseUrl()
                     userItems.add(AdvancedUserItem(participant, userEntity, account))
