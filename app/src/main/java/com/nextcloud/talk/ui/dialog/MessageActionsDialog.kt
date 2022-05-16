@@ -83,12 +83,12 @@ class MessageActionsDialog(
         )
         initMenuDeleteMessage(showMessageDeletionButton)
         initMenuForwardMessage(
-            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() &&
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 !(message.isDeletedCommentMessage || message.isDeleted)
         )
         initMenuMarkAsUnread(
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
-                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
+                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
                 BuildConfig.DEBUG
         )
     }

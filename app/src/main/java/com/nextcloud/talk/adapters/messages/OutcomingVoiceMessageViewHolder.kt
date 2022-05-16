@@ -180,7 +180,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
 
     private fun updateDownloadState(message: ChatMessage) {
         // check if download worker is already running
-        val fileId = message.getSelectedIndividualHashMap()["id"]
+        val fileId = message.selectedIndividualHashMap!!["id"]
         val workers = WorkManager.getInstance(context!!).getWorkInfosByTag(fileId!!)
 
         try {
@@ -235,13 +235,13 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) : MessageHolders
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
+            parentChatMessage!!.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
                     )
                 }
             } ?: run {

@@ -102,10 +102,10 @@ class ConversationsListBottomDialog(
     }
 
     private fun initHeaderDescription() {
-        if (!TextUtils.isEmpty(conversation.getDisplayName())) {
-            binding.conversationOperationHeader.text = conversation.getDisplayName()
-        } else if (!TextUtils.isEmpty(conversation.getName())) {
-            binding.conversationOperationHeader.text = conversation.getName()
+        if (!TextUtils.isEmpty(conversation.displayName)) {
+            binding.conversationOperationHeader.text = conversation.displayName
+        } else if (!TextUtils.isEmpty(conversation.name)) {
+            binding.conversationOperationHeader.text = conversation.name
         }
     }
 
@@ -114,10 +114,10 @@ class ConversationsListBottomDialog(
         val canModerate = conversation.canModerate(currentUser)
 
         binding.conversationOperationRemoveFavorite.visibility = setVisibleIf(
-            hasFavoritesCapability && conversation.isFavorite()
+            hasFavoritesCapability && conversation.favorite
         )
         binding.conversationOperationAddFavorite.visibility = setVisibleIf(
-            hasFavoritesCapability && !conversation.isFavorite()
+            hasFavoritesCapability && !conversation.favorite
         )
 
         binding.conversationOperationMarkAsRead.visibility = setVisibleIf(
@@ -133,15 +133,15 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationChangePassword.visibility = setVisibleIf(
-            canModerate && conversation.isHasPassword && conversation.isPublic
+            canModerate && conversation.hasPassword && conversation.isPublic
         )
 
         binding.conversationOperationClearPassword.visibility = setVisibleIf(
-            canModerate && conversation.isHasPassword && conversation.isPublic
+            canModerate && conversation.hasPassword && conversation.isPublic
         )
 
         binding.conversationOperationSetPassword.visibility = setVisibleIf(
-            canModerate && !conversation.isHasPassword && conversation.isPublic
+            canModerate && !conversation.hasPassword && conversation.isPublic
         )
 
         binding.conversationOperationDelete.visibility = setVisibleIf(
@@ -157,7 +157,7 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
-            conversation.canLeave(currentUser) &&
+            conversation.canLeave() &&
                 // leaving is by api not possible for the last user with moderator permissions.
                 // for now, hide this option for all moderators.
                 !conversation.canModerate(currentUser)
@@ -183,7 +183,7 @@ class ConversationsListBottomDialog(
 
         binding.conversationOperationLeave.setOnClickListener {
             val dataBuilder = Data.Builder()
-            dataBuilder.putString(KEY_ROOM_TOKEN, conversation.getToken())
+            dataBuilder.putString(KEY_ROOM_TOKEN, conversation.token)
             dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
             val data = dataBuilder.build()
 
@@ -197,7 +197,7 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationOperationDelete.setOnClickListener {
-            if (!TextUtils.isEmpty(conversation.getToken())) {
+            if (!TextUtils.isEmpty(conversation.token)) {
                 val bundle = Bundle()
                 bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
                 bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))

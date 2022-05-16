@@ -72,8 +72,8 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                 val mediaItems = response.body()!!.ocs!!.data
                 if (mediaItems != null) {
                     for (it in mediaItems) {
-                        if (it.value.messageParameters.containsKey("file")) {
-                            val fileParameters = it.value.messageParameters["file"]!!
+                        if (it.value.messageParameters!!.containsKey("file")) {
+                            val fileParameters = it.value.messageParameters!!["file"]!!
 
                             val previewAvailable =
                                 "yes".equals(fileParameters["preview-available"], ignoreCase = true)

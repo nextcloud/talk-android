@@ -69,7 +69,7 @@ class ShareUtilsTest {
         PowerMockito.mockStatic(TextUtils::class.java)
         Mockito.`when`(userUtils!!.currentUser).thenReturn(userEntity)
         Mockito.`when`(userEntity!!.baseUrl).thenReturn(baseUrl)
-        Mockito.`when`(conversation!!.getToken()).thenReturn(token)
+        Mockito.`when`(conversation!!.token).thenReturn(token)
         Mockito.`when`(context!!.resources).thenReturn(resources)
         Mockito.`when`(resources!!.getString(R.string.nc_share_text))
             .thenReturn("Join the conversation at %1\$s/index.php/call/%2\$s")

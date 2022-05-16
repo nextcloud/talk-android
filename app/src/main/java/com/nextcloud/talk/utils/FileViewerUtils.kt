@@ -58,14 +58,14 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
         message: ChatMessage,
         progressUi: ProgressUi
     ) {
-        val fileName = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_NAME]!!
-        val mimetype = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_MIMETYPE]!!
-        val link = message.getSelectedIndividualHashMap()["link"]!!
+        val fileName = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_NAME]!!
+        val mimetype = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_MIMETYPE]!!
+        val link = message.selectedIndividualHashMap!!["link"]!!
 
-        val fileId = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_ID]!!
-        val path = message.getSelectedIndividualHashMap()[MagicPreviewMessageViewHolder.KEY_PATH]!!
+        val fileId = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_ID]!!
+        val path = message.selectedIndividualHashMap!![MagicPreviewMessageViewHolder.KEY_PATH]!!
 
-        var size = message.getSelectedIndividualHashMap()["size"]
+        var size = message.selectedIndividualHashMap!!["size"]
         if (size == null) {
             size = "-1"
         }

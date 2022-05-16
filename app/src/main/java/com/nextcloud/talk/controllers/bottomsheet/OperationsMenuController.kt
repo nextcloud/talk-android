@@ -257,9 +257,9 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             ApiUtils.getUrlForSetChatReadMarker(
                 chatApiVersion(),
                 currentUser!!.baseUrl,
-                conversation!!.getToken()
+                conversation!!.token
             ),
-            conversation!!.lastMessage.jsonMessageId
+            conversation!!.lastMessage!!.jsonMessageId
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -273,7 +273,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             ApiUtils.getUrlForRoomPublic(
                 apiVersion(),
                 currentUser!!.baseUrl,
-                conversation!!.getToken()
+                conversation!!.token
             )
         )
             .subscribeOn(Schedulers.io())
@@ -284,15 +284,15 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 
     private fun operationChangePassword() {
         var pass: String? = ""
-        if (conversation!!.getPassword() != null) {
-            pass = conversation!!.getPassword()
+        if (conversation!!.password != null) {
+            pass = conversation!!.password
         }
         ncApi.setPassword(
             credentials,
             ApiUtils.getUrlForRoomPassword(
                 apiVersion(),
                 currentUser!!.baseUrl,
-                conversation!!.getToken()
+                conversation!!.token
             ),
             pass
         )
@@ -308,7 +308,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             ApiUtils.getUrlForRoomPublic(
                 apiVersion(),
                 currentUser!!.baseUrl,
-                conversation!!.getToken()
+                conversation!!.token
             )
         )
             .subscribeOn(Schedulers.io())
@@ -323,9 +323,9 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             ApiUtils.getUrlForRoom(
                 apiVersion(),
                 currentUser!!.baseUrl,
-                conversation!!.getToken()
+                conversation!!.token
             ),
-            conversation!!.getName()
+            conversation!!.name
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -342,7 +342,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 ApiUtils.getUrlForRoomFavorite(
                     apiVersion,
                     currentUser!!.baseUrl,
-                    conversation!!.getToken()
+                    conversation!!.token
                 )
             )
                 .subscribeOn(Schedulers.io())
@@ -355,7 +355,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 ApiUtils.getUrlForRoomFavorite(
                     apiVersion,
                     currentUser!!.baseUrl,
-                    conversation!!.getToken()
+                    conversation!!.token
                 )
             )
                 .subscribeOn(Schedulers.io())
@@ -406,7 +406,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, currentUser!!.baseUrl,
-                            conversation!!.getToken()
+                            conversation!!.token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -461,7 +461,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
 
                 override fun onNext(roomOverall: RoomOverall) {
                     conversation = roomOverall.getOcs().getData()
-                    if (conversation!!.isHasPassword && conversation!!.isGuest) {
+                    if (conversation!!.hasPassword && conversation!!.isGuest) {
                         eventBus.post(ConversationsListFetchDataEvent())
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
@@ -639,7 +639,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
             retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipant(
                 apiVersion,
                 currentUser!!.baseUrl,
-                conversation!!.getToken(),
+                conversation!!.token,
                 userId
             )
             ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
@@ -683,7 +683,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 retrofitBucket = ApiUtils.getRetrofitBucketForAddParticipantWithSource(
                     apiVersion,
                     currentUser!!.baseUrl,
-                    conversation!!.getToken(),
+                    conversation!!.token,
                     "groups",
                     groupId
                 )
@@ -718,9 +718,9 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
     private fun initiateConversation() {
         eventBus.post(ConversationsListFetchDataEvent())
         val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, conversation!!.getToken())
-        bundle.putString(KEY_ROOM_ID, conversation!!.getRoomId())
-        bundle.putString(KEY_CONVERSATION_NAME, conversation!!.getDisplayName())
+        bundle.putString(KEY_ROOM_TOKEN, conversation!!.token)
+        bundle.putString(KEY_ROOM_ID, conversation!!.roomId)
+        bundle.putString(KEY_CONVERSATION_NAME, conversation!!.displayName)
         bundle.putParcelable(KEY_USER_ENTITY, currentUser)
         bundle.putParcelable(KEY_ACTIVE_CONVERSATION, Parcels.wrap(conversation))
         bundle.putString(KEY_CONVERSATION_PASSWORD, callPassword)

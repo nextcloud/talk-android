@@ -288,7 +288,7 @@ public class CallNotificationActivity extends CallBaseActivity {
                             CapabilitiesUtil.hasSpreedFeatureCapability(userBeingCalled,
                                                                         "conversation-call-flags");
                         if (hasCallFlags) {
-                            if (isInCallWithVideo(currentConversation.callFlag)) {
+                            if (isInCallWithVideo(currentConversation.getCallFlag())) {
                                 binding.incomingCallVoiceOrVideoTextView.setText(
                                     String.format(getResources().getString(R.string.nc_call_video),
                                                   getResources().getString(R.string.nc_app_product_name)));

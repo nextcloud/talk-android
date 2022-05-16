@@ -18,9 +18,6 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- * Parts related to account import were either copied from or inspired by the great work done by David Luhmer at:
- * https://github.com/nextcloud/ownCloud-Account-Importer
  */
 package com.nextcloud.talk.models.json.participants
 

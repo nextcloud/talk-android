@@ -165,10 +165,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 ContextCompat.getColor(context,
                                        R.color.colorPrimary));
 
-            if (conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            if (conversation.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
                 holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                 holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
-            } else if (conversation.isUnreadMention()) {
+            } else if (conversation.getUnreadMention()) {
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(userEntity, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
                         holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
@@ -196,7 +196,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
             holder.binding.dialogUnreadBubble.setVisibility(View.GONE);
         }
 
-        if (conversation.isFavorite()) {
+        if (conversation.getFavorite()) {
             holder.binding.favoriteConversationImageView.setVisibility(View.VISIBLE);
         } else {
             holder.binding.favoriteConversationImageView.setVisibility(View.GONE);
@@ -227,7 +227,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 String authorDisplayName = "";
                 conversation.getLastMessage().setActiveUser(userEntity);
                 String text;
-                if (conversation.getLastMessage().getMessageType() == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
+                if (conversation.getLastMessage().getCalculateMessageType() == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
                     if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
                         text = String.format(appContext.getString(R.string.nc_formatted_message_you),
                                              conversation.getLastMessage().getLastMessageDisplayText());

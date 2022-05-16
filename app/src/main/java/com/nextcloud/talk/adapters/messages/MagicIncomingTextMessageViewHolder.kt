@@ -120,7 +120,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
         Reaction().showReactions(message, binding.reactions, binding.messageText.context, false)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
@@ -136,7 +136,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         if (!TextUtils.isEmpty(message.actorDisplayName)) {
             binding.messageAuthor.text = message.actorDisplayName
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId, itemView.context)
+                (payload as? ProfileBottomSheet)?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
@@ -169,13 +169,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
 
     private fun processParentMessage(message: ChatMessage) {
         val parentChatMessage = message.parentMessage
-        parentChatMessage.activeUser = message.activeUser
+        parentChatMessage!!.activeUser = message.activeUser
         parentChatMessage.imageUrl?.let {
             binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
             binding.messageQuote.quotedMessageImage.load(it) {
                 addHeader(
                     "Authorization",
-                    ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                    ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
                 )
             }
         } ?: run {
@@ -188,7 +188,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         binding.messageQuote.quotedMessageAuthor
             .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
-        if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
+        if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
         } else {
             binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
@@ -226,13 +226,13 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
     }
 
     private fun processMessageParameters(
-        messageParameters: HashMap<String, HashMap<String, String>>,
+        messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage,
         messageString: Spannable
     ): Spannable {
         var messageStringInternal = messageString
         for (key in messageParameters.keys) {
-            val individualHashMap = message.messageParameters[key]
+            val individualHashMap = message.messageParameters!![key]
             if (individualHashMap != null) {
                 if (
                     individualHashMap["type"] == "user" ||

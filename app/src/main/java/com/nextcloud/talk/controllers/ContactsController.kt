@@ -263,15 +263,15 @@ class ContactsController(args: Bundle) :
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
-                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
-                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
+                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().token)
+                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().roomId)
 
                     // FIXME once APIv2 or later is used only, the createRoom already returns all the data
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, currentUser!!.baseUrl,
-                            roomOverall.getOcs().getData().getToken()
+                            roomOverall.getOcs().getData().token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -287,7 +287,7 @@ class ContactsController(args: Bundle) :
                                 )
                                 ConductorRemapping.remapChatController(
                                     router, currentUser!!.id,
-                                    roomOverall.getOcs().getData().getToken(), bundle, true
+                                    roomOverall.getOcs().getData().token!!, bundle, true
                                 )
                             }
 
@@ -752,7 +752,7 @@ class ContactsController(args: Bundle) :
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
         ConductorRemapping.remapChatController(
             router, currentUser!!.id,
-            openConversationEvent.conversation!!.getToken(),
+            openConversationEvent.conversation!!.token!!,
             openConversationEvent.bundle!!, true
         )
         contactsBottomDialog?.dismiss()
@@ -827,8 +827,8 @@ class ContactsController(args: Bundle) :
                     if (activity != null) {
                         val bundle = Bundle()
                         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
-                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
-                        bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().token)
+                        bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().roomId)
                         bundle.putParcelable(
                             BundleKeys.KEY_ACTIVE_CONVERSATION,
                             Parcels.wrap(roomOverall.getOcs().getData())
@@ -836,7 +836,7 @@ class ContactsController(args: Bundle) :
                         ConductorRemapping.remapChatController(
                             router,
                             currentUser!!.id,
-                            roomOverall.getOcs().getData().getToken(),
+                            roomOverall.getOcs().getData().token!!,
                             bundle,
                             true
                         )

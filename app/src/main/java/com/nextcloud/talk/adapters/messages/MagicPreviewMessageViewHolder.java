@@ -116,8 +116,8 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
     public void onBind(ChatMessage message) {
         super.onBind(message);
         if (userAvatar != null) {
-            if (message.isGrouped || message.isOneToOneConversation) {
-                if (message.isOneToOneConversation) {
+            if (message.isGrouped() || message.isOneToOneConversation()) {
+                if (message.isOneToOneConversation()) {
                     userAvatar.setVisibility(View.GONE);
                 } else {
                     userAvatar.setVisibility(View.INVISIBLE);
@@ -126,11 +126,11 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 userAvatar.setVisibility(View.VISIBLE);
                 userAvatar.setOnClickListener(v -> {
                     if (payload instanceof ProfileBottomSheet) {
-                        ((ProfileBottomSheet) payload).showFor(message.actorId, v.getContext());
+                        ((ProfileBottomSheet) payload).showFor(message.getActorId(), v.getContext());
                     }
                 });
 
-                if (ACTOR_TYPE_BOTS.equals(message.actorType) && ACTOR_ID_CHANGELOG.equals(message.actorId)) {
+                if (ACTOR_TYPE_BOTS.equals(message.getActorType()) && ACTOR_ID_CHANGELOG.equals(message.getActorId())) {
                     if (context != null) {
                         Drawable[] layers = new Drawable[2];
                         layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background);
@@ -148,9 +148,9 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         clickView = getImage();
         getMessageText().setVisibility(View.VISIBLE);
 
-        if (message.getMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
+        if (message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
 
-            fileViewerUtils = new FileViewerUtils(context, message.activeUser);
+            fileViewerUtils = new FileViewerUtils(context, message.getActiveUser());
 
             String fileName = message.getSelectedIndividualHashMap().get(KEY_NAME);
             getMessageText().setText(fileName);
@@ -177,10 +177,13 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 Drawable drawable = ContextCompat.getDrawable(context, drawableResourceId);
                 image.getHierarchy().setPlaceholderImage(drawable);
             } else {
-                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get(KEY_PATH), message.activeUser);
+                fetchFileInformation("/" + message.getSelectedIndividualHashMap().get(KEY_PATH),
+                                     message.getActiveUser());
             }
 
-            if (message.activeUser != null && message.activeUser.getUsername() != null && message.activeUser.getBaseUrl() != null) {
+            if (message.getActiveUser() != null &&
+                message.getActiveUser().getUsername() != null &&
+                message.getActiveUser().getBaseUrl() != null) {
                 clickView.setOnClickListener(v ->
                     fileViewerUtils.openFile(
                         message,
@@ -202,10 +205,10 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_MIMETYPE),
                 new FileViewerUtils.ProgressUi(progressBar, getMessageText(), image));
 
-        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
+        } else if (message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             getMessageText().setText("GIPHY");
             DisplayUtils.setClickableString("GIPHY", "https://giphy.com", getMessageText());
-        } else if (message.getMessageType() == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {
+        } else if (message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_LINK_TENOR_MESSAGE) {
             getMessageText().setText("Tenor");
             DisplayUtils.setClickableString("Tenor", "https://tenor.com", getMessageText());
         } else {
@@ -221,7 +224,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
             getMessageText().setText("");
         }
 
-        itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
+        itemView.setTag(REPLYABLE_VIEW_TAG, message.getReplyable());
 
         reactionsBinding = getReactionsBinding();
         new Reaction().showReactions(message, reactionsBinding, getMessageText().getContext(), true);

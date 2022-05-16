@@ -103,7 +103,7 @@ class EntryMenuController(args: Bundle) :
         super.onViewBound(view)
 
         if (conversation != null && operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
-            binding.textEdit.setText(conversation!!.getName())
+            binding.textEdit.setText(conversation!!.name)
         }
 
         binding.textEdit.setOnEditorActionListener { v, actionId, event ->
@@ -127,7 +127,7 @@ class EntryMenuController(args: Bundle) :
             override fun afterTextChanged(s: Editable) {
                 if (!TextUtils.isEmpty(s)) {
                     if (operation === ConversationOperationEnum.OPS_CODE_RENAME_ROOM) {
-                        if (conversation!!.getName() == null || !conversation!!.getName().equals(s.toString())) {
+                        if (conversation!!.name == null || !conversation!!.name.equals(s.toString())) {
                             if (!binding.okButton.isEnabled) {
                                 binding.okButton.isEnabled = true
                                 binding.okButton.alpha = OPACITY_ENABLED
@@ -260,9 +260,9 @@ class EntryMenuController(args: Bundle) :
             if (operation === ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD ||
                 operation === ConversationOperationEnum.OPS_CODE_SET_PASSWORD
             ) {
-                conversation!!.setPassword(binding.textEdit.text.toString())
+                conversation!!.password = binding.textEdit.text.toString()
             } else {
-                conversation!!.setName(binding.textEdit.text.toString())
+                conversation!!.name = binding.textEdit.text.toString()
             }
             bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)

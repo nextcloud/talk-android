@@ -113,11 +113,11 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
-        val author: String = message.actorDisplayName
+        val author: String = message.actorDisplayName!!
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId, itemView.context)
+                (payload as? ProfileBottomSheet)?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
@@ -180,13 +180,13 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
-            parentChatMessage.imageUrl?.let {
+            parentChatMessage!!.activeUser = message.activeUser
+            parentChatMessage!!.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
                     )
                 }
             } ?: run {
@@ -199,7 +199,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
             binding.messageQuote.quotedMessageAuthor
                 .setTextColor(context!!.resources.getColor(R.color.textColorMaxContrast))
 
-            if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
+            if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
@@ -213,9 +213,9 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) : Mess
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     private fun setLocationDataOnMessageItem(message: ChatMessage) {
-        if (message.messageParameters != null && message.messageParameters.size > 0) {
-            for (key in message.messageParameters.keys) {
-                val individualHashMap: Map<String, String> = message.messageParameters[key]!!
+        if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+            for (key in message.messageParameters!!.keys) {
+                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
                 if (individualHashMap["type"] == "geo-location") {
                     locationLon = individualHashMap["longitude"]
                     locationLat = individualHashMap["latitude"]

@@ -281,7 +281,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                 )
                                 remapChatController(
                                     router!!, currentUser.id,
-                                    roomOverall.ocs.data.token, bundle, true
+                                    roomOverall.ocs.data.token!!, bundle, true
                                 )
                             }
 
