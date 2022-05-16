@@ -26,7 +26,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.text.Html
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -125,13 +126,11 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     private fun informReplyFailed() {
-        val errorMessage =
-            Html.fromHtml(
-                "<font color='red'><em>" +
-                    context.resources.getString(R.string.nc_message_failed_to_send) +
-                    "</em></font>",
-                Html.FROM_HTML_MODE_COMPACT
-            )
+        val errorColor = ForegroundColorSpan(context.resources.getColor(R.color.medium_emphasis_text, context.theme))
+        val errorMessageHeader = context.resources.getString(R.string.nc_message_failed_to_send)
+        val errorMessage = SpannableStringBuilder()
+            .append("$errorMessageHeader\n$replyMessage", errorColor, 0)
+            // .append("\n$replyMessage")
         appendMessageToNotification(errorMessage)
     }
 
