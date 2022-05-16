@@ -471,7 +471,7 @@ class ConversationInfoController(args: Bundle) :
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(participantsOverall: ParticipantsOverall) {
                     try {
-                        handleParticipants(participantsOverall.ocs.data)
+                        handleParticipants(participantsOverall.ocs.data!!)
                     } catch (npe: NullPointerException) {
                         // view binding can be null
                         // since this is called asynchronously and UI might have been destroyed in the meantime
