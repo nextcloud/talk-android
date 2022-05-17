@@ -26,12 +26,16 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.database.UserEntity
@@ -103,9 +107,10 @@ class DirectReplyReceiver : BroadcastReceiver() {
                     confirmReplySent()
                 }
 
+                @RequiresApi(Build.VERSION_CODES.N)
                 override fun onError(e: Throwable) {
-                    // TODO - inform the user that sending of the reply failed
-                    // unused atm
+                    Log.e(TAG, "Failed to send reply", e)
+                    informReplyFailed()
                 }
 
                 override fun onComplete() {
@@ -115,13 +120,26 @@ class DirectReplyReceiver : BroadcastReceiver() {
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
+    private fun confirmReplySent() {
+        appendMessageToNotification(replyMessage!!)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    private fun informReplyFailed() {
+        val errorColor = ForegroundColorSpan(context.resources.getColor(R.color.medium_emphasis_text, context.theme))
+        val errorMessageHeader = context.resources.getString(R.string.nc_message_failed_to_send)
+        val errorMessage = SpannableStringBuilder().append("$errorMessageHeader\n$replyMessage", errorColor, 0)
+        appendMessageToNotification(errorMessage)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun findActiveNotification(notificationId: Int): Notification? {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return notificationManager.activeNotifications.find { it.id == notificationId }?.notification
     }
 
     @RequiresApi(Build.VERSION_CODES.N)
-    private fun confirmReplySent() {
+    private fun appendMessageToNotification(reply: CharSequence) {
         // Implementation inspired by the SO question and article below:
         // https://stackoverflow.com/questions/51549456/android-o-notification-for-direct-reply-message
         // https://medium.com/@sidorovroman3/android-how-to-use-messagingstyle-for-notifications-without-caching-messages-c414ef2b816c
@@ -145,7 +163,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
             .setName(currentUser.displayName)
             .setIcon(NotificationUtils.loadAvatarSync(avatarUrl))
             .build()
-        val message = NotificationCompat.MessagingStyle.Message(replyMessage, System.currentTimeMillis(), me)
+        val message = NotificationCompat.MessagingStyle.Message(reply, System.currentTimeMillis(), me)
         previousStyle?.addMessage(message)
 
         // Set the updated style
@@ -153,5 +171,9 @@ class DirectReplyReceiver : BroadcastReceiver() {
 
         // Update the active notification.
         NotificationManagerCompat.from(context).notify(systemNotificationId!!, previousBuilder.build())
+    }
+
+    companion object {
+        const val TAG = "DirectReplyReceiver"
     }
 }
