@@ -238,8 +238,8 @@ public class CallNotificationActivity extends CallBaseActivity {
 
                     if (hasParticipantsInCall) {
                         for (Participant participant : participantList) {
-                            if (participant.getActorType() == Participant.ActorType.USERS &&
-                                participant.getActorId().equals(userBeingCalled.getUserId())) {
+                            if (participant.getCalculatedActorType() == Participant.ActorType.USERS &&
+                                participant.getCalculatedActorId().equals(userBeingCalled.getUserId())) {
                                 inCallOnDifferentDevice = true;
                                 break;
                             }

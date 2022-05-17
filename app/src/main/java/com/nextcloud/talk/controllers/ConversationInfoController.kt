@@ -413,7 +413,9 @@ class ConversationInfoController(args: Bundle) :
                 userItem.isOnline = !participant.sessionIds!!.isEmpty()
             }
 
-            if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
+            if (participant.calculatedActorType == USERS &&
+                participant.calculatedActorId == conversationUser!!.userId
+            ) {
                 ownUserItem = userItem
                 ownUserItem.model.sessionId = "-1"
                 ownUserItem.isOnline = true
@@ -471,7 +473,7 @@ class ConversationInfoController(args: Bundle) :
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(participantsOverall: ParticipantsOverall) {
                     try {
-                        handleParticipants(participantsOverall.ocs.data)
+                        handleParticipants(participantsOverall.ocs!!.data!!)
                     } catch (npe: NullPointerException) {
                         // view binding can be null
                         // since this is called asynchronously and UI might have been destroyed in the meantime
@@ -494,8 +496,8 @@ class ConversationInfoController(args: Bundle) :
         val existingParticipantsId = arrayListOf<String>()
 
         for (userItem in userItems) {
-            if (userItem.model.getActorType() == USERS) {
-                existingParticipantsId.add(userItem.model.getActorId())
+            if (userItem.model.calculatedActorType == USERS) {
+                existingParticipantsId.add(userItem.model.calculatedActorId!!)
             }
         }
 
@@ -986,7 +988,7 @@ class ConversationInfoController(args: Bundle) :
 
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.APIv4, 1))
 
-        if (participant.getActorType() == USERS && participant.getActorId() == conversationUser!!.userId) {
+        if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser!!.userId) {
             if (participant.attendeePin?.isNotEmpty() == true) {
                 val items = mutableListOf(
                     BasicListItemWithImage(
@@ -1013,7 +1015,7 @@ class ConversationInfoController(args: Bundle) :
             return true
         }
 
-        if (participant.getActorType() == GROUPS) {
+        if (participant.calculatedActorType == GROUPS) {
             val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
@@ -1033,7 +1035,7 @@ class ConversationInfoController(args: Bundle) :
             return true
         }
 
-        if (participant.getActorType() == CIRCLES) {
+        if (participant.calculatedActorType == CIRCLES) {
             val items = mutableListOf(
                 BasicListItemWithImage(
                     R.drawable.ic_delete_grey600_24dp,
@@ -1086,7 +1088,7 @@ class ConversationInfoController(args: Bundle) :
             items.removeAt(1)
         }
 
-        if (participant.attendeePin == null || participant.attendeePin.isEmpty()) {
+        if (participant.attendeePin == null || participant.attendeePin!!.isEmpty()) {
             items.removeAt(0)
         }
 
@@ -1097,7 +1099,7 @@ class ConversationInfoController(args: Bundle) :
                 title(text = participant.displayName)
                 listItemsWithImage(items = items) { dialog, index, _ ->
                     var actionToTrigger = index
-                    if (participant.attendeePin == null || participant.attendeePin.isEmpty()) {
+                    if (participant.attendeePin == null || participant.attendeePin!!.isEmpty()) {
                         actionToTrigger++
                     }
                     if (participant.type == Participant.ParticipantType.USER_FOLLOWING_LINK) {
@@ -1166,8 +1168,8 @@ class ConversationInfoController(args: Bundle) :
                 return 1
             }
 
-            return left.model.displayName.toLowerCase(Locale.ROOT).compareTo(
-                right.model.displayName.toLowerCase(Locale.ROOT)
+            return left.model.displayName!!.toLowerCase(Locale.ROOT).compareTo(
+                right.model.displayName!!.toLowerCase(Locale.ROOT)
             )
         }
     }

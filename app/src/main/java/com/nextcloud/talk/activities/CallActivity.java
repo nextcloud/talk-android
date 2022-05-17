@@ -2240,8 +2240,8 @@ public class CallActivity extends CallBaseActivity {
         String userId = "";
         if (hasMCU) {
             userId = webSocketClient.getUserIdForSession(session);
-        } else if (participantMap.get(session).getActorType() == Participant.ActorType.USERS) {
-            userId = participantMap.get(session).getActorId();
+        } else if (participantMap.get(session).getCalculatedActorType() == Participant.ActorType.USERS) {
+            userId = participantMap.get(session).getCalculatedActorId();
         }
 
         String urlForAvatar;
