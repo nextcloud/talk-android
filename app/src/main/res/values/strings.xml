@@ -519,5 +519,6 @@
     <string name="title_attachments">Attachments</string>
 
     <string name="reactions_tab_all">All</string>
+    <string name="send_without_notification">Send without notification</string>
 
 </resources>

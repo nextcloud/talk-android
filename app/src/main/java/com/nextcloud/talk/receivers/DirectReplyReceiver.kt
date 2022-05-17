@@ -90,7 +90,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
         val apiVersion = ApiUtils.getChatApiVersion(currentUser, intArrayOf(1))
         val url = ApiUtils.getUrlForChat(apiVersion, currentUser.baseUrl, roomToken)
 
-        ncApi!!.sendChatMessage(credentials, url, replyMessage, currentUser.displayName, null)
+        ncApi!!.sendChatMessage(credentials, url, replyMessage, currentUser.displayName, null, false)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {

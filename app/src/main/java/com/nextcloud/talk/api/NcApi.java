@@ -338,7 +338,8 @@ public interface NcApi {
                                                @Url String url,
                                                @Field("message") CharSequence message,
                                                @Field("actorDisplayName") String actorDisplayName,
-                                               @Field("replyTo") Integer replyTo);
+                                               @Field("replyTo") Integer replyTo,
+                                               @Field("silent") Boolean sendWithoutNotification);
 
     @GET
     Observable<Response<ChatShareOverall>> getSharedItems(@Header("Authorization") String authorization, @Url String url,

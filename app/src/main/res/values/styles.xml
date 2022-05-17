@@ -41,6 +41,7 @@
         <item name="android:seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
         <item name="seekBarStyle">@style/Nextcloud.Material.Incoming.SeekBar</item>
         <item name="bottomSheetDialogTheme">@style/ThemeOverlay.App.BottomSheetDialog</item>
+        <item name="popupMenuStyle">@style/ChatSendButtonMenu</item>
     </style>
 
     <style name="ThemeOverlay.AppTheme.PopupMenu" parent="ThemeOverlay.MaterialComponents.Dark">
@@ -49,6 +50,16 @@
         <item name="android:textColor">@color/high_emphasis_text</item>
         <item name="android:textColorSecondary">@color/fontAppbar</item>
         <item name="android:textColorHint">@color/fontSecondaryAppbar</item>
+        <item name="iconTint">@color/fontAppbar</item>
+    </style>
+
+    <style name="ChatSendButtonMenu" parent="@style/Widget.AppCompat.PopupMenu">
+        <item name="android:dropDownVerticalOffset">-90dp</item>
+        <item name="android:colorPrimary">@color/fg_inverse</item>
+        <item name="android:textColorSecondary">@color/fontAppbar</item>
+        <item name="android:itemBackground">@color/appbar</item>
+        <item name="android:background">@color/appbar</item>
+        <item name="android:textColor">@color/high_emphasis_text</item>
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 
