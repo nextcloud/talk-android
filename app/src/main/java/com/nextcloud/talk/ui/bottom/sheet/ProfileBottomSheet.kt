@@ -149,15 +149,15 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, userEntity)
-                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().token)
-                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().roomId)
+                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2+ is used only, the createRoom already returns all the data
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, userEntity.baseUrl,
-                            roomOverall.getOcs().getData().token
+                            roomOverall.ocs!!.data!!.token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -170,11 +170,11 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.getOcs().getData())
+                                    Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 ConductorRemapping.remapChatController(
                                     router, userEntity.id,
-                                    roomOverall.getOcs().getData().token!!, bundle, true
+                                    roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
 

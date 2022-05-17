@@ -618,7 +618,7 @@ class ConversationInfoController(args: Bundle) :
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(roomOverall: RoomOverall) {
                     try {
-                        conversation = roomOverall.ocs.data
+                        conversation = roomOverall.ocs!!.data
 
                         val conversationCopy = conversation
 

@@ -280,7 +280,7 @@ public class CallNotificationActivity extends CallBaseActivity {
 
                 @Override
                 public void onNext(@io.reactivex.annotations.NonNull RoomOverall roomOverall) {
-                    currentConversation = roomOverall.getOcs().data;
+                    currentConversation = roomOverall.getOcs().getData();
                     setUpAfterConversationIsKnown();
 
                     if (apiVersion >= 3) {

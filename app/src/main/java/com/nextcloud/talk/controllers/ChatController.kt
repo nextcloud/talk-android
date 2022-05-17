@@ -336,7 +336,7 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "getRoomInfo - getRoom - got response: " + startNanoTime)
-                        currentConversation = roomOverall.ocs.data
+                        currentConversation = roomOverall.ocs!!.data
                         Log.d(
                             TAG,
                             "getRoomInfo. token: " + currentConversation?.token +
@@ -401,7 +401,7 @@ class ChatController(args: Bundle) :
 
                 override fun onNext(roomsOverall: RoomsOverall) {
                     Log.d(TAG, "handleFromNotification - getRooms - got response")
-                    for (conversation in roomsOverall.ocs.data) {
+                    for (conversation in roomsOverall.ocs!!.data!!) {
                         if (roomId == conversation.roomId) {
                             roomToken = conversation.token
                             currentConversation = conversation
@@ -1792,7 +1792,7 @@ class ChatController(args: Bundle) :
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
                         inConversation = true
-                        currentConversation?.sessionId = roomOverall.ocs.data.sessionId
+                        currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
                         Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
@@ -2653,15 +2653,15 @@ class ChatController(args: Bundle) :
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
-                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.getOcs().getData().token)
-                    bundle.putString(KEY_ROOM_ID, roomOverall.getOcs().getData().roomId)
+                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2+ is used only, the createRoom already returns all the data
                     ncApi!!.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, conversationUser?.baseUrl,
-                            roomOverall.getOcs().getData().token
+                            roomOverall.ocs!!.data!!.token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -2674,11 +2674,11 @@ class ChatController(args: Bundle) :
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.getOcs().getData())
+                                    Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 remapChatController(
                                     router, conversationUser!!.id,
-                                    roomOverall.getOcs().getData().token!!, bundle, true
+                                    roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
 
@@ -2968,19 +2968,19 @@ class ChatController(args: Bundle) :
                         val conversationIntent = Intent(activity, CallActivity::class.java)
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
-                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
-                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
+                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                         if (conversationUser != null) {
                             bundle.putParcelable(
                                 KEY_ACTIVE_CONVERSATION,
-                                Parcels.wrap(roomOverall.ocs.data)
+                                Parcels.wrap(roomOverall.ocs!!.data)
                             )
                             conversationIntent.putExtras(bundle)
 
                             ConductorRemapping.remapChatController(
                                 router, conversationUser.id,
-                                roomOverall.ocs.data.token!!, bundle, false
+                                roomOverall.ocs!!.data!!.token!!, bundle, false
                             )
                         } else {
                             conversationIntent.putExtras(bundle)

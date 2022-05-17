@@ -401,7 +401,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 }
 
                 override fun onNext(roomOverall: RoomOverall) {
-                    conversation = roomOverall.getOcs().getData()
+                    conversation = roomOverall.ocs!!.data
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
@@ -419,7 +419,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                             override fun onNext(
                                 roomOverall: RoomOverall
                             ) {
-                                conversation = roomOverall.getOcs().getData()
+                                conversation = roomOverall.ocs!!.data
                                 inviteUsersToAConversation()
                             }
 
@@ -460,7 +460,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 }
 
                 override fun onNext(roomOverall: RoomOverall) {
-                    conversation = roomOverall.getOcs().getData()
+                    conversation = roomOverall.ocs!!.data
                     if (conversation!!.hasPassword && conversation!!.isGuest) {
                         eventBus.post(ConversationsListFetchDataEvent())
                         val bundle = Bundle()
@@ -504,7 +504,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                                 }
 
                                 override fun onNext(roomOverall: RoomOverall) {
-                                    conversation = roomOverall.getOcs().getData()
+                                    conversation = roomOverall.ocs!!.data
                                     initiateConversation()
                                 }
 
@@ -771,11 +771,11 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
         }
 
         override fun onNext(roomOverall: RoomOverall) {
-            conversation = roomOverall.getOcs().getData()
+            conversation = roomOverall.ocs!!.data
             if (operation !== ConversationOperationEnum.OPS_CODE_JOIN_ROOM) {
                 showResultImage(everythingOK = true, isGuestSupportError = false)
             } else {
-                conversation = roomOverall.getOcs().getData()
+                conversation = roomOverall.ocs!!.data
                 initiateConversation()
             }
         }
