@@ -21,17 +21,12 @@
  */
 package com.nextcloud.talk.models.json.participants
 
-import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
-import com.nextcloud.talk.models.json.signaling.DataChannelMessage
-import kotlinx.android.parcel.Parceler
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.parcel.WriteWith
 import java.util.ArrayList
 
 @Parcelize

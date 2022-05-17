@@ -413,7 +413,9 @@ class ConversationInfoController(args: Bundle) :
                 userItem.isOnline = !participant.sessionIds!!.isEmpty()
             }
 
-            if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser!!.userId) {
+            if (participant.calculatedActorType == USERS &&
+                participant.calculatedActorId == conversationUser!!.userId
+            ) {
                 ownUserItem = userItem
                 ownUserItem.model.sessionId = "-1"
                 ownUserItem.isOnline = true
