@@ -176,8 +176,7 @@ data class ChatMessage(
                         "file".toByteArray()
                     )
                 ) {
-
-                    // TODO: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
+                    // FIX-ME: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
                     //  it just feels wrong to fill this here inside getImageUrl()
                     selectedIndividualHashMap = individualHashMap
                     if (!isVoiceMessage) {
@@ -189,8 +188,8 @@ data class ChatMessage(
                             )
                         } else {
                             Log.e(
-                                TAG, "activeUser or activeUser.getBaseUrl() were null when trying to " +
-                                    "getImageUrl()"
+                                TAG,
+                                "activeUser or activeUser.getBaseUrl() were null when trying to getImageUrl()"
                             )
                         }
                     }
@@ -203,22 +202,21 @@ data class ChatMessage(
     }
 
     fun getCalculateMessageType(): MessageType {
-        if (!TextUtils.isEmpty(systemMessage)) {
-            return MessageType.SYSTEM_MESSAGE
-        }
-        if (isVoiceMessage) {
-            return MessageType.VOICE_MESSAGE
-        }
-        if (hasFileAttachment()) {
-            return MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
-        }
-        return if (hasGeoLocation()) {
+        return if (!TextUtils.isEmpty(systemMessage)) {
+            MessageType.SYSTEM_MESSAGE
+        } else if (isVoiceMessage) {
+            MessageType.VOICE_MESSAGE
+        } else if (hasFileAttachment()) {
+            MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+        } else if (hasGeoLocation()) {
             MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
-        } else MessageType.REGULAR_TEXT_MESSAGE
+        } else {
+            MessageType.REGULAR_TEXT_MESSAGE
+        }
     }
 
     override fun getId(): String {
-        return Integer.toString(jsonMessageId)
+        return jsonMessageId.toString()
     }
 
     override fun getText(): String {
@@ -227,29 +225,41 @@ data class ChatMessage(
 
     /*} else if (getCalculateMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
                 if (actorId.equals(activeUser.getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_link_you));
+                    return (
+                    NextcloudTalkApplication
+                    .Companion.getSharedApplication()
+                    .getString(R.string.nc_sent_a_link_you)
+                    );
                 } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_a_link),
-                            !TextUtils.isEmpty(actorDisplayName) ? actorDisplayName : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
+                    return (String.format(NextcloudTalkApplication.
+                    Companion.
+                    getSharedApplication().
+                    getResources().
+                    getString(R.string.nc_sent_a_link),
+                            !TextUtils.isEmpty(actorDisplayName) ? actorDisplayName : NextcloudTalkApplication.
+                            Companion.
+                            getSharedApplication().
+                            getString(R.string.nc_guest))
+                            );
                 }*/
     val lastMessageDisplayText: String
         get() {
             if (getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
                 getCalculateMessageType() == MessageType.SYSTEM_MESSAGE ||
-                getCalculateMessageType() == MessageType.SINGLE_LINK_MESSAGE) {
+                getCalculateMessageType() == MessageType.SINGLE_LINK_MESSAGE
+            ) {
                 return text
             } else {
                 if (MessageType.SINGLE_LINK_GIPHY_MESSAGE == getCalculateMessageType() ||
                     MessageType.SINGLE_LINK_TENOR_MESSAGE == getCalculateMessageType() ||
-                    MessageType.SINGLE_LINK_GIF_MESSAGE == getCalculateMessageType()) {
+                    MessageType.SINGLE_LINK_GIF_MESSAGE == getCalculateMessageType()
+                ) {
                     return if (actorId == activeUser!!.userId) {
                         sharedApplication!!.getString(R.string.nc_sent_a_gif_you)
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_a_gif),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                 } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == getCalculateMessageType()) {
@@ -258,9 +268,7 @@ data class ChatMessage(
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                 } else if (MessageType.SINGLE_NC_GEOLOCATION_MESSAGE == getCalculateMessageType()) {
@@ -269,9 +277,7 @@ data class ChatMessage(
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_location),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                 } else if (MessageType.VOICE_MESSAGE == getCalculateMessageType()) {
@@ -280,17 +286,29 @@ data class ChatMessage(
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_voice),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                     /*} else if (getCalculateMessageType().equals(MessageType.SINGLE_LINK_MESSAGE)) {
                 if (actorId.equals(activeUser.getUserId())) {
-                    return (NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_sent_a_link_you));
+                    return (
+                    NextcloudTalkApplication
+                    .Companion
+                    .getSharedApplication()
+                    .getString(R.string.nc_sent_a_link_you)
+                    );
                 } else {
-                    return (String.format(NextcloudTalkApplication.Companion.getSharedApplication().getResources().getString(R.string.nc_sent_a_link),
-                            !TextUtils.isEmpty(actorDisplayName) ? actorDisplayName : NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest)));
+                    return (String.format(
+                    NextcloudTalkApplication
+                    .Companion
+                    .getSharedApplication()
+                    .getResources()
+                    .getString(R.string.nc_sent_a_link),
+                            !TextUtils.isEmpty(actorDisplayName) ? actorDisplayName : NextcloudTalkApplication.
+                            Companion.
+                            getSharedApplication().
+                            getString(R.string.nc_guest))
+                            );
                 }*/
                 } else if (MessageType.SINGLE_LINK_AUDIO_MESSAGE == getCalculateMessageType()) {
                     return if (actorId == activeUser!!.userId) {
@@ -298,9 +316,7 @@ data class ChatMessage(
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_an_audio),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                 } else if (MessageType.SINGLE_LINK_VIDEO_MESSAGE == getCalculateMessageType()) {
@@ -309,9 +325,7 @@ data class ChatMessage(
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_a_video),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                 } else if (MessageType.SINGLE_LINK_IMAGE_MESSAGE == getCalculateMessageType()) {
@@ -320,15 +334,19 @@ data class ChatMessage(
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_an_image),
-                            if (!TextUtils.isEmpty(actorDisplayName)) actorDisplayName else sharedApplication!!.getString(
-                                R.string.nc_guest
-                            )
+                            getNullsafeActorDisplayName()
                         )
                     }
                 }
             }
             return ""
         }
+
+    private fun getNullsafeActorDisplayName() = if (!TextUtils.isEmpty(actorDisplayName)) {
+        actorDisplayName
+    } else {
+        sharedApplication!!.getString(R.string.nc_guest)
+    }
 
     override fun getUser(): IUser {
         return object : IUser {
@@ -369,7 +387,7 @@ data class ChatMessage(
     }
 
     override fun getCreatedAt(): Date {
-        return Date(timestamp * 1000L)
+        return Date(timestamp * MILLIES)
     }
 
     override fun getSystemMessage(): String {
@@ -450,5 +468,6 @@ data class ChatMessage(
 
     companion object {
         private const val TAG = "ChatMessage"
+        private const val MILLIES: Long = 1000L
     }
 }

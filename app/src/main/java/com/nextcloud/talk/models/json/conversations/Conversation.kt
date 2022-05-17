@@ -131,10 +131,14 @@ data class Conversation(
         get() = ConversationType.ROOM_PUBLIC_CALL == type
 
     val isGuest: Boolean
-        get() = ParticipantType.GUEST == participantType || ParticipantType.GUEST_MODERATOR == participantType || ParticipantType.USER_FOLLOWING_LINK == participantType
+        get() = ParticipantType.GUEST == participantType ||
+            ParticipantType.GUEST_MODERATOR == participantType ||
+            ParticipantType.USER_FOLLOWING_LINK == participantType
 
     val isParticipantOwnerOrModerator: Boolean
-        get() = ParticipantType.OWNER == participantType || ParticipantType.GUEST_MODERATOR == participantType || ParticipantType.MODERATOR == participantType
+        get() = ParticipantType.OWNER == participantType ||
+            ParticipantType.GUEST_MODERATOR == participantType ||
+            ParticipantType.MODERATOR == participantType
 
     private fun isLockedOneToOne(conversationUser: UserEntity): Boolean {
         return type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
@@ -150,7 +154,8 @@ data class Conversation(
     }
 
     fun isLobbyViewApplicable(conversationUser: UserEntity): Boolean {
-        return !canModerate(conversationUser) && (type == ConversationType.ROOM_GROUP_CALL || type == ConversationType.ROOM_PUBLIC_CALL)
+        return !canModerate(conversationUser) &&
+            (type == ConversationType.ROOM_GROUP_CALL || type == ConversationType.ROOM_PUBLIC_CALL)
     }
 
     fun isNameEditable(conversationUser: UserEntity): Boolean {
