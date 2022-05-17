@@ -140,7 +140,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                 override fun onSubscribe(d: Disposable) = Unit
 
                 override fun onNext(response: Response<ChatShareOverviewOverall>) {
-                    val typeMap = response.body()!!.ocs!!.data
+                    val typeMap = response.body()!!.ocs!!.data!!
                     for (it in typeMap) {
                         if (it.value.size > 0) {
                             try {

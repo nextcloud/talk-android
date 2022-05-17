@@ -2603,7 +2603,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onNext(t: ChatOverallSingleMessage) {
-                        if (t.ocs.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
+                        if (t.ocs!!.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
                             Toast.makeText(
                                 context, R.string.nc_delete_message_leaked_to_matterbridge,
                                 Toast.LENGTH_LONG

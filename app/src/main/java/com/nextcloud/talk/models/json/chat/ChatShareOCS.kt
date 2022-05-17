@@ -1,10 +1,10 @@
 /*
  * Nextcloud Talk application
  *
- * @author Marcel Hibbe
  * @author Andy Scherzinger
+ * @author Tim Krüger
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * Copyright (C) 2021 Marcel Hibbe <dev@mhibbe.de>
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,17 +24,15 @@ package com.nextcloud.talk.models.json.chat
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.generic.GenericMeta
+import java.util.HashMap
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class ChatOCSSingleMessage(
-    @JsonField(name = ["meta"])
-    var meta: GenericMeta?,
+data class ChatShareOCS(
     @JsonField(name = ["data"])
-    var data: ChatMessage? = null
+    var data: HashMap<String, ChatMessage>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
+    constructor() : this(null)
 }
