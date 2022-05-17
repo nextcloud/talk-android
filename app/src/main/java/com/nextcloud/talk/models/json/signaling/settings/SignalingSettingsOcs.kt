@@ -19,23 +19,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.models.json.generic
+package com.nextcloud.talk.models.json.signaling.settings
 
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-@JsonObject(serializeNullObjects = true)
-data class GenericMeta(
-    @JsonField(name = ["status"])
-    var status: String? = null,
-    @JsonField(name = ["statuscode"])
-    var statusCode: Int = 0,
-    @JsonField(name = ["message"])
-    var message: String? = null
+@JsonObject
+data class SignalingSettingsOcs(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta?,
+    @JsonField(name = ["data"])
+    var settings: Settings? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, 0, null)
+    constructor() : this(null, null)
 }
