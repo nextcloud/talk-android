@@ -198,7 +198,7 @@ abstract class BrowserController(args: Bundle) :
         recyclerViewItems = ArrayList()
         if (davResponse.getData() != null) {
             val objectList = davResponse.getData() as List<BrowserFile>
-            currentPath = objectList[0].getPath()
+            currentPath = objectList[0].path!!
             if (activity != null) {
                 activity!!.runOnUiThread { setTitle() }
             }
@@ -256,8 +256,8 @@ abstract class BrowserController(args: Bundle) :
 
     override fun onItemClick(view: View, position: Int): Boolean {
         val browserFile = (adapter!!.getItem(position) as BrowserFileItem).model
-        if ("inode/directory" == browserFile.getMimeType()) {
-            fetchPath(browserFile.getPath())
+        if ("inode/directory" == browserFile.mimeType) {
+            fetchPath(browserFile.path!!)
             return true
         }
         return false

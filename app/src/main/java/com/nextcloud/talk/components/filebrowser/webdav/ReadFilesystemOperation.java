@@ -94,10 +94,10 @@ public class ReadFilesystemOperation {
             Log.w("", "Error reading remote path");
         }
 
-        remoteFiles.add(BrowserFile.getModelFromResponse(rootElement[0],
+        remoteFiles.add(BrowserFile.Companion.getModelFromResponse(rootElement[0],
                 rootElement[0].getHref().toString().substring(basePath.length())));
         for (Response memberElement : memberElements) {
-            remoteFiles.add(BrowserFile.getModelFromResponse(memberElement,
+            remoteFiles.add(BrowserFile.Companion.getModelFromResponse(memberElement,
                     memberElement.getHref().toString().substring(basePath.length())));
         }
 

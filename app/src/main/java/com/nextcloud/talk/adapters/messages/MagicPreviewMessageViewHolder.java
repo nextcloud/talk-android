@@ -310,7 +310,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                             new Handler(context.getMainLooper()).post(() -> {
                                 int resourceId = DrawableUtils
                                     .INSTANCE
-                                    .getDrawableResourceIdForMimeType(browserFileList.get(0).mimeType);
+                                    .getDrawableResourceIdForMimeType(browserFileList.get(0).getMimeType());
                                 Drawable drawable = ContextCompat.getDrawable(context, resourceId);
                                 image.getHierarchy().setPlaceholderImage(drawable);
                             });

@@ -129,7 +129,7 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.Browse
         }
 
         if (selectionInterface.shouldOnlySelectOneImageFile()) {
-            if (browserFile.isFile && browserFile.mimeType.startsWith("image/")) {
+            if (browserFile.isFile() && browserFile.getMimeType().startsWith("image/")) {
                 holder.binding.selectFileCheckbox.setVisibility(View.VISIBLE);
             } else {
                 holder.binding.selectFileCheckbox.setVisibility(View.GONE);
@@ -148,7 +148,7 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.Browse
                         context, DrawableUtils.INSTANCE.getDrawableResourceIdForMimeType(browserFile.getMimeType())));
         }
 
-        if (browserFile.isHasPreview()) {
+        if (browserFile.getHasPreview()) {
             String path = ApiUtils.getUrlForFilePreviewWithRemotePath(activeUser.getBaseUrl(),
                     browserFile.getPath(),
                     context.getResources().getDimensionPixelSize(R.dimen.small_item_height));
