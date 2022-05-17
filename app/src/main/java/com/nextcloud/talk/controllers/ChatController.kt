@@ -2641,7 +2641,7 @@ class ChatController(args: Bundle) :
         )
         ncApi!!.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

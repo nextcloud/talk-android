@@ -391,7 +391,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 conversationName
             )
         }
-        ncApi.createRoom(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+        ncApi.createRoom(credentials, retrofitBucket.url, retrofitBucket.queryMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .retry(1)
@@ -642,7 +642,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                 conversation!!.token,
                 userId
             )
-            ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+            ncApi.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .retry(1)
@@ -687,7 +687,7 @@ class OperationsMenuController(args: Bundle) : NewBaseController(
                     "groups",
                     groupId
                 )
-                ncApi.addParticipant(credentials, retrofitBucket.getUrl(), retrofitBucket.getQueryMap())
+                ncApi.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .retry(1)

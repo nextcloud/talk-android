@@ -137,7 +137,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
         val credentials = ApiUtils.getCredentials(userEntity.username, userEntity.token)
         ncApi.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

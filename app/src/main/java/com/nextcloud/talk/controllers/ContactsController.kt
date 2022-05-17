@@ -252,7 +252,7 @@ class ContactsController(args: Bundle) :
         )
         ncApi.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -393,7 +393,7 @@ class ContactsController(args: Bundle) :
         val query = adapter!!.getFilter(String::class.java) as String?
         val retrofitBucket: RetrofitBucket =
             ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
-        val modifiedQueryMap: HashMap<String, Any?> = HashMap<String, Any?>(retrofitBucket.getQueryMap())
+        val modifiedQueryMap: HashMap<String, Any?> = HashMap<String, Any?>(retrofitBucket.queryMap)
         modifiedQueryMap.put("limit", CONTACTS_BATCH_SIZE)
         if (isAddingParticipantsView) {
             modifiedQueryMap.put("itemId", conversationToken)
@@ -417,7 +417,7 @@ class ContactsController(args: Bundle) :
         modifiedQueryMap.put("shareTypes[]", shareTypesList)
         ncApi.getContactsWithSearchParam(
             credentials,
-            retrofitBucket.getUrl(), shareTypesList, modifiedQueryMap
+            retrofitBucket.url, shareTypesList, modifiedQueryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -815,7 +815,7 @@ class ContactsController(args: Bundle) :
         )
         ncApi.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
