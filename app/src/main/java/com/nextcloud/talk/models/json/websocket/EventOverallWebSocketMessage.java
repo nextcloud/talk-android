@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -29,7 +31,7 @@ import java.util.HashMap;
 
 @Parcel
 @JsonObject
-public class EventOverallWebSocketMessage extends BaseWebSocketMessage {
+public class EventOverallWebSocketMessage {
     @JsonField(name = "type")
     String type;
     @JsonField(name = "event")
