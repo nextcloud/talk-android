@@ -140,7 +140,7 @@ public class AdvancedUserItem extends AbstractFlexibleItem<AdvancedUserItem.User
                     DisplayUtils.getImageRequestForUrl(
                         ApiUtils.getUrlForAvatar(
                             userEntity.getBaseUrl(),
-                            participant.getActorId(),
+                            participant.getCalculatedActorId(),
                             true),
                         null))
                 .build();

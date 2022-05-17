@@ -82,8 +82,8 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
     public boolean equals(Object o) {
         if (o instanceof ParticipantItem) {
             ParticipantItem inItem = (ParticipantItem) o;
-            return participant.getActorType() == inItem.getModel().getActorType() &&
-                participant.getActorId().equals(inItem.getModel().getActorId());
+            return participant.getCalculatedActorType() == inItem.getModel().getCalculatedActorType() &&
+                participant.getCalculatedActorId().equals(inItem.getModel().getCalculatedActorId());
         }
         return false;
     }
@@ -146,14 +146,14 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                                                 .getString(R.string.nc_guest));
         }
 
-        if (participant.getActorType() == Participant.ActorType.GROUPS ||
+        if (participant.getCalculatedActorType() == Participant.ActorType.GROUPS ||
             "groups".equals(participant.getSource()) ||
-            participant.getActorType() == Participant.ActorType.CIRCLES ||
+            participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
             "circles".equals(participant.getSource())) {
             holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
-        } else if (participant.getActorType() == Participant.ActorType.EMAILS) {
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
             holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
-        } else if (participant.getActorType() == Participant.ActorType.GUESTS ||
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
             Participant.ParticipantType.GUEST.equals(participant.getType()) ||
             Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
 
@@ -173,36 +173,36 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
 
-        } else if (participant.getActorType() == Participant.ActorType.USERS ||
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             participant.getSource().equals("users")) {
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
                     ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
-                                             participant.getActorId(), false), null))
+                                             participant.getCalculatedActorId(), false), null))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
         }
 
         Resources resources = NextcloudTalkApplication.Companion.getSharedApplication().getResources();
 
-        Long inCallFlag = participant.getInCall();
+        long inCallFlag = participant.getInCall();
         if ((inCallFlag & InCallFlags.WITH_PHONE) > 0) {
             holder.binding.videoCallIcon.setImageResource(R.drawable.ic_call_grey_600_24dp);
             holder.binding.videoCallIcon.setVisibility(View.VISIBLE);
             holder.binding.videoCallIcon.setContentDescription(
-                resources.getString(R.string.nc_call_state_with_phone, participant.displayName));
+                resources.getString(R.string.nc_call_state_with_phone, participant.getDisplayName()));
         } else if ((inCallFlag & InCallFlags.WITH_VIDEO) > 0) {
             holder.binding.videoCallIcon.setImageResource(R.drawable.ic_videocam_grey_600_24dp);
             holder.binding.videoCallIcon.setVisibility(View.VISIBLE);
             holder.binding.videoCallIcon.setContentDescription(
-                resources.getString(R.string.nc_call_state_with_video, participant.displayName));
+                resources.getString(R.string.nc_call_state_with_video, participant.getDisplayName()));
         } else if (inCallFlag > InCallFlags.DISCONNECTED) {
             holder.binding.videoCallIcon.setImageResource(R.drawable.ic_mic_grey_600_24dp);
             holder.binding.videoCallIcon.setVisibility(View.VISIBLE);
             holder.binding.videoCallIcon.setContentDescription(
-                resources.getString(R.string.nc_call_state_in_call, participant.displayName));
+                resources.getString(R.string.nc_call_state_in_call, participant.getDisplayName()));
         } else {
             holder.binding.videoCallIcon.setVisibility(View.GONE);
         }
@@ -226,13 +226,13 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                         .Companion
                         .getSharedApplication()
                         .getString(R.string.nc_user);
-                    if (participant.getActorType() == Participant.ActorType.GROUPS) {
+                    if (participant.getCalculatedActorType() == Participant.ActorType.GROUPS) {
                         userType = NextcloudTalkApplication
                             .Companion
                             .getSharedApplication()
                             .getString(R.string.nc_group);
                     }
-                    if (participant.getActorType() == Participant.ActorType.CIRCLES) {
+                    if (participant.getCalculatedActorType() == Participant.ActorType.CIRCLES) {
                         userType = NextcloudTalkApplication
                             .Companion
                             .getSharedApplication()
@@ -241,7 +241,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                     break;
                 case 4:
                     userType = NextcloudTalkApplication.Companion.getSharedApplication().getString(R.string.nc_guest);
-                    if (participant.getActorType() == Participant.ActorType.EMAILS) {
+                    if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
                         userType = NextcloudTalkApplication
                             .Companion
                             .getSharedApplication()
@@ -270,32 +270,32 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
     private void drawStatus(ParticipantItemViewHolder holder) {
         float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context);
         holder.binding.userStatusImage.setImageDrawable(new StatusDrawable(
-            participant.status,
+            participant.getStatus(),
             NO_ICON,
             size,
             context.getResources().getColor(R.color.bg_default),
             context));
 
-        if (participant.statusMessage != null) {
-            holder.binding.conversationInfoStatusMessage.setText(participant.statusMessage);
+        if (participant.getStatusMessage() != null) {
+            holder.binding.conversationInfoStatusMessage.setText(participant.getStatusMessage());
             alignUsernameVertical(holder, 0);
         } else {
             holder.binding.conversationInfoStatusMessage.setText("");
             alignUsernameVertical(holder, 10);
         }
 
-        if (participant.statusIcon != null && !participant.statusIcon.isEmpty()) {
-            holder.binding.participantStatusEmoji.setText(participant.statusIcon);
+        if (participant.getStatusIcon() != null && !participant.getStatusIcon().isEmpty()) {
+            holder.binding.participantStatusEmoji.setText(participant.getStatusIcon());
         } else {
             holder.binding.participantStatusEmoji.setVisibility(View.GONE);
         }
 
-        if (participant.status != null && participant.status.equals(StatusType.DND.getString())) {
-            if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+        if (participant.getStatus() != null && participant.getStatus().equals(StatusType.DND.getString())) {
+            if (participant.getStatusMessage() == null || participant.getStatusMessage().isEmpty()) {
                 holder.binding.conversationInfoStatusMessage.setText(R.string.dnd);
             }
-        } else if (participant.status != null && participant.status.equals(StatusType.AWAY.getString())) {
-            if (participant.statusMessage == null || participant.statusMessage.isEmpty()) {
+        } else if (participant.getStatus() != null && participant.getStatus().equals(StatusType.AWAY.getString())) {
+            if (participant.getStatusMessage() == null || participant.getStatusMessage().isEmpty()) {
                 holder.binding.conversationInfoStatusMessage.setText(R.string.away);
             }
         }
@@ -314,7 +314,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
             (Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
                 .matcher(participant.getDisplayName().trim()).find() ||
                 Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
-                    .matcher(participant.getActorId().trim()).find());
+                    .matcher(participant.getCalculatedActorId().trim()).find());
     }
 
     static class ParticipantItemViewHolder extends FlexibleViewHolder {

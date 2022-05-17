@@ -73,8 +73,8 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
     public boolean equals(Object o) {
         if (o instanceof ContactItem) {
             ContactItem inItem = (ContactItem) o;
-            return participant.getActorType() == inItem.getModel().getActorType() &&
-                participant.getActorId().equals(inItem.getModel().getActorId());
+            return participant.getCalculatedActorType() == inItem.getModel().getCalculatedActorType() &&
+                participant.getCalculatedActorId().equals(inItem.getModel().getCalculatedActorId());
         }
         return false;
     }
@@ -107,7 +107,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
     public void bindViewHolder(FlexibleAdapter adapter, ContactItemViewHolder holder, int position, List payloads) {
         holder.binding.avatarDraweeView.setController(null);
 
-        if (participant.isSelected()) {
+        if (participant.getSelected()) {
             holder.binding.checkedImageView.setVisibility(View.VISIBLE);
         } else {
             holder.binding.checkedImageView.setVisibility(View.GONE);
@@ -152,19 +152,19 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
         }
 
         if (
-            participant.getActorType() == Participant.ActorType.GROUPS ||
+            participant.getCalculatedActorType() == Participant.ActorType.GROUPS ||
                 PARTICIPANT_SOURCE_GROUPS.equals(participant.getSource()) ||
-                participant.getActorType() == Participant.ActorType.CIRCLES ||
+                participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
                 PARTICIPANT_SOURCE_CIRCLES.equals(participant.getSource())) {
 
             holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_group);
 
-        } else if (participant.getActorType() == Participant.ActorType.EMAILS) {
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.EMAILS) {
 
             holder.binding.avatarDraweeView.setImageResource(R.drawable.ic_circular_mail);
 
         } else if (
-            participant.getActorType() == Participant.ActorType.GUESTS ||
+            participant.getCalculatedActorType() == Participant.ActorType.GUESTS ||
                 Participant.ParticipantType.GUEST.equals(participant.getType()) ||
                 Participant.ParticipantType.GUEST_MODERATOR.equals(participant.getType())) {
 
@@ -186,14 +186,14 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
 
-        } else if (participant.getActorType() == Participant.ActorType.USERS ||
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
             PARTICIPANT_SOURCE_USERS.equals(participant.getSource())) {
             DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
                     ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
-                                             participant.getActorId(),
+                                             participant.getCalculatedActorId(),
                                              false),
                     null))
                 .build();
@@ -208,7 +208,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
                 .matcher(participant.getDisplayName().trim())
                 .find() ||
                 Pattern.compile(constraint, Pattern.CASE_INSENSITIVE | Pattern.LITERAL)
-                    .matcher(participant.getActorId().trim())
+                    .matcher(participant.getCalculatedActorId().trim())
                     .find());
     }
 

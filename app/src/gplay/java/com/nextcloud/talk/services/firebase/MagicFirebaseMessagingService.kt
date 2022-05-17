@@ -294,7 +294,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 }
 
                 override fun onNext(participantsOverall: ParticipantsOverall) {
-                    val participantList: List<Participant> = participantsOverall.ocs.data
+                    val participantList: List<Participant> = participantsOverall.ocs!!.data!!
                     hasParticipantsInCall = participantList.isNotEmpty()
                     if (hasParticipantsInCall) {
                         for (participant in participantList) {

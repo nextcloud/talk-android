@@ -524,14 +524,14 @@ class ContactsController(args: Bundle) :
 
     private fun getHeaderTitle(participant: Participant): String {
         return when {
-            participant.getActorType() == Participant.ActorType.GROUPS -> {
+            participant.calculatedActorType == Participant.ActorType.GROUPS -> {
                 resources!!.getString(R.string.nc_groups)
             }
-            participant.getActorType() == Participant.ActorType.CIRCLES -> {
+            participant.calculatedActorType == Participant.ActorType.CIRCLES -> {
                 resources!!.getString(R.string.nc_circles)
             }
             else -> {
-                participant.getDisplayName().substring(0, 1).toUpperCase(Locale.getDefault())
+                participant.displayName!!.substring(0, 1).toUpperCase(Locale.getDefault())
             }
         }
     }
@@ -541,10 +541,10 @@ class ContactsController(args: Bundle) :
         actorTypeConverter: EnumActorTypeConverter
     ): Participant {
         val participant = Participant()
-        participant.setActorId(autocompleteUser.id)
-        participant.setActorType(actorTypeConverter.getFromString(autocompleteUser.source))
-        participant.setDisplayName(autocompleteUser.label)
-        participant.setSource(autocompleteUser.source)
+        participant.actorId = autocompleteUser.id
+        participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+        participant.displayName = autocompleteUser.label
+        participant.source = autocompleteUser.source
 
         return participant
     }
@@ -554,18 +554,18 @@ class ContactsController(args: Bundle) :
             newUserItemList,
             { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
                 val firstName: String = if (o1 is ContactItem) {
-                    (o1 as ContactItem).model.getDisplayName()
+                    (o1 as ContactItem).model.displayName!!
                 } else {
                     (o1 as GenericTextHeaderItem).model
                 }
                 val secondName: String = if (o2 is ContactItem) {
-                    (o2 as ContactItem).model.getDisplayName()
+                    (o2 as ContactItem).model.displayName!!
                 } else {
                     (o2 as GenericTextHeaderItem).model
                 }
                 if (o1 is ContactItem && o2 is ContactItem) {
-                    val firstSource: String = (o1 as ContactItem).model.getSource()
-                    val secondSource: String = (o2 as ContactItem).model.getSource()
+                    val firstSource: String = (o1 as ContactItem).model.source!!
+                    val secondSource: String = (o2 as ContactItem).model.source!!
                     if (firstSource == secondSource) {
                         return@sort firstName.compareTo(secondName, ignoreCase = true)
                     }
@@ -602,23 +602,23 @@ class ContactsController(args: Bundle) :
             contactItems
         ) { o1: AbstractFlexibleItem<*>, o2: AbstractFlexibleItem<*> ->
             val firstName: String = if (o1 is ContactItem) {
-                (o1 as ContactItem).model.getDisplayName()
+                (o1 as ContactItem).model.displayName!!
             } else {
                 (o1 as GenericTextHeaderItem).model
             }
             val secondName: String = if (o2 is ContactItem) {
-                (o2 as ContactItem).model.getDisplayName()
+                (o2 as ContactItem).model.displayName!!
             } else {
                 (o2 as GenericTextHeaderItem).model
             }
             if (o1 is ContactItem && o2 is ContactItem) {
-                if ("groups" == (o1 as ContactItem).model.getSource() &&
-                    "groups" == (o2 as ContactItem).model.getSource()
+                if ("groups" == (o1 as ContactItem).model.source &&
+                    "groups" == (o2 as ContactItem).model.source
                 ) {
                     return@sort firstName.compareTo(secondName, ignoreCase = true)
-                } else if ("groups" == (o1 as ContactItem).model.getSource()) {
+                } else if ("groups" == (o1 as ContactItem).model.source) {
                     return@sort -1
-                } else if ("groups" == (o2 as ContactItem).model.getSource()) {
+                } else if ("groups" == (o2 as ContactItem).model.source) {
                     return@sort 1
                 }
             }
@@ -776,7 +776,7 @@ class ContactsController(args: Bundle) :
     }
 
     private fun updateSelection(contactItem: ContactItem) {
-        contactItem.model.isSelected = !contactItem.model.isSelected
+        contactItem.model.selected = !contactItem.model.selected
         updateSelectionLists(contactItem.model)
         if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity") &&
             !CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
@@ -786,12 +786,12 @@ class ContactsController(args: Bundle) :
             var internalParticipant: Participant
             for (i in currentItems.indices) {
                 internalParticipant = currentItems[i].model
-                if (internalParticipant.getActorId() == contactItem.model.getActorId() &&
-                    internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
-                    internalParticipant.isSelected
+                if (internalParticipant.calculatedActorId == contactItem.model.calculatedActorId &&
+                    internalParticipant.calculatedActorType == Participant.ActorType.GROUPS &&
+                    internalParticipant.selected
                 ) {
-                    internalParticipant.isSelected = false
-                    selectedGroupIds.remove(internalParticipant.getActorId())
+                    internalParticipant.selected = false
+                    selectedGroupIds.remove(internalParticipant.calculatedActorId!!)
                 }
             }
         }
@@ -801,7 +801,7 @@ class ContactsController(args: Bundle) :
 
     private fun createRoom(contactItem: ContactItem) {
         var roomType = "1"
-        if ("groups" == contactItem.model.getSource()) {
+        if ("groups" == contactItem.model.source) {
             roomType = "2"
         }
         val apiVersion: Int = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
@@ -810,7 +810,7 @@ class ContactsController(args: Bundle) :
             currentUser!!.baseUrl,
             roomType,
             null,
-            contactItem.model.getActorId(),
+            contactItem.model.calculatedActorId,
             null
         )
         ncApi.createRoom(
@@ -853,29 +853,29 @@ class ContactsController(args: Bundle) :
     }
 
     private fun updateSelectionLists(participant: Participant) {
-        if ("groups" == participant.getSource()) {
-            if (participant.isSelected) {
-                selectedGroupIds.add(participant.getActorId())
+        if ("groups" == participant.source) {
+            if (participant.selected) {
+                selectedGroupIds.add(participant.calculatedActorId!!)
             } else {
-                selectedGroupIds.remove(participant.getActorId())
+                selectedGroupIds.remove(participant.calculatedActorId!!)
             }
-        } else if ("emails" == participant.getSource()) {
-            if (participant.isSelected) {
-                selectedEmails.add(participant.getActorId())
+        } else if ("emails" == participant.source) {
+            if (participant.selected) {
+                selectedEmails.add(participant.calculatedActorId!!)
             } else {
-                selectedEmails.remove(participant.getActorId())
+                selectedEmails.remove(participant.calculatedActorId!!)
             }
-        } else if ("circles" == participant.getSource()) {
-            if (participant.isSelected) {
-                selectedCircleIds.add(participant.getActorId())
+        } else if ("circles" == participant.source) {
+            if (participant.selected) {
+                selectedCircleIds.add(participant.calculatedActorId!!)
             } else {
-                selectedCircleIds.remove(participant.getActorId())
+                selectedCircleIds.remove(participant.calculatedActorId!!)
             }
         } else {
-            if (participant.isSelected) {
-                selectedUserIds.add(participant.getActorId())
+            if (participant.selected) {
+                selectedUserIds.add(participant.calculatedActorId!!)
             } else {
-                selectedUserIds.remove(participant.getActorId())
+                selectedUserIds.remove(participant.calculatedActorId!!)
             }
         }
     }
@@ -885,7 +885,7 @@ class ContactsController(args: Bundle) :
         participant: Participant,
         adapter: FlexibleAdapter<*>?
     ): Boolean {
-        return "groups" == contactItem.model.getSource() && participant.isSelected && adapter?.selectedItemCount!! > 1
+        return "groups" == contactItem.model.source && participant.selected && adapter?.selectedItemCount!! > 1
     }
 
     private fun joinConversationViaLink() {
@@ -917,11 +917,11 @@ class ContactsController(args: Bundle) :
         for (i in currentItems.indices) {
             if (currentItems[i] is ContactItem) {
                 internalParticipant = (currentItems[i] as ContactItem).model
-                if (internalParticipant.getActorType() == Participant.ActorType.GROUPS &&
-                    internalParticipant.isSelected
+                if (internalParticipant.calculatedActorType == Participant.ActorType.GROUPS &&
+                    internalParticipant.selected
                 ) {
-                    internalParticipant.isSelected = false
-                    selectedGroupIds.remove(internalParticipant.getActorId())
+                    internalParticipant.selected = false
+                    selectedGroupIds.remove(internalParticipant.calculatedActorId)
                 }
             }
         }
@@ -931,7 +931,7 @@ class ContactsController(args: Bundle) :
         for (i in 0 until adapter!!.itemCount) {
             if (adapter?.getItem(i) is ContactItem) {
                 val contactItem: ContactItem = adapter?.getItem(i) as ContactItem
-                if ("groups" == contactItem.model.getSource()) {
+                if ("groups" == contactItem.model.source) {
                     contactItem.isEnabled = !isPublicCall
                 }
             }
