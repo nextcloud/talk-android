@@ -23,6 +23,7 @@ package com.nextcloud.talk.components.filebrowser.controllers
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
@@ -55,9 +56,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
+import kotlinx.android.parcel.Parcelize
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import okhttp3.OkHttpClient
-import org.parceler.Parcel
 import org.parceler.Parcels
 import java.io.File
 import java.util.ArrayList
@@ -294,8 +295,8 @@ abstract class BrowserController(args: Bundle) :
 
     abstract override fun shouldOnlySelectOneImageFile(): Boolean
 
-    @Parcel
-    enum class BrowserType {
+    @Parcelize
+    enum class BrowserType : Parcelable {
         FILE_BROWSER, DAV_BROWSER
     }
 
