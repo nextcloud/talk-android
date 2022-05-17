@@ -312,9 +312,6 @@ class ChatController(args: Bundle) :
         }
 
         this.voiceOnly = args.getBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, false)
-
-        hasChatPermission =
-            AttendeePermissionsUtil(currentConversation!!.permissions).hasChatPermission(conversationUser)
     }
 
     private fun getRoomInfo() {
