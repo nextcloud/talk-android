@@ -29,10 +29,10 @@ buildscript {
 
     repositories {
         google()
-        jcenter()
-        maven { url 'https://jitpack.io' }
         maven { url 'https://plugins.gradle.org/m2/' }
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        jcenter()
     }
 
     dependencies {
@@ -55,11 +55,11 @@ configurations.all {
 allprojects {
     repositories {
         google()
-        jcenter()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url 'https://jitpack.io' }
         maven { url 'https://maven.google.com' }
         mavenCentral()
+        maven { url 'https://jitpack.io' }
+        jcenter()
     }
 }
 
