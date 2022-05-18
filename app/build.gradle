@@ -236,7 +236,7 @@ dependencies {
     kapt "com.jakewharton:butterknife-compiler:${butterknifeVersion}"
     implementation 'eu.davidea:flexible-adapter:5.1.0'
     implementation 'eu.davidea:flexible-adapter-ui:1.0.0'
-    implementation fileTree(downloadWebRtc.getOutputPath())
+    implementation fileTree(downloadWebRtc.libFile.path)
     implementation 'com.yarolegovich:lovely-dialog:1.1.1'
     implementation 'com.yarolegovich:mp:1.1.6'
     implementation 'me.zhanghai.android.effortlesspermissions:library:1.1.0'
