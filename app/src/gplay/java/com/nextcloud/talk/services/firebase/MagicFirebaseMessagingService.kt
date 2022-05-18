@@ -191,16 +191,16 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             if (delete) {
                 cancelExistingNotificationWithId(
                     applicationContext,
-                    signatureVerification!!.userEntity,
+                    signatureVerification!!.userEntity!!,
                     notificationId
                 )
             } else if (deleteAll) {
-                cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity)
+                cancelAllNotificationsForAccount(applicationContext, signatureVerification!!.userEntity!!)
             } else if (deleteMultiple) {
                 notificationIds!!.forEach {
                     cancelExistingNotificationWithId(
                         applicationContext,
-                        signatureVerification!!.userEntity,
+                        signatureVerification!!.userEntity!!,
                         it
                     )
                 }
@@ -222,7 +222,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
                 val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
                 val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
-                val uri = Uri.parse(signatureVerification!!.userEntity.baseUrl)
+                val uri = Uri.parse(signatureVerification!!.userEntity!!.baseUrl)
                 val baseUrl = uri.host
 
                 val notification =
@@ -275,10 +275,13 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         )
 
         ncApi.getPeersForCall(
-            ApiUtils.getCredentials(signatureVerification.userEntity.username, signatureVerification.userEntity.token),
+            ApiUtils.getCredentials(
+                signatureVerification.userEntity!!.username,
+                signatureVerification.userEntity!!.token
+            ),
             ApiUtils.getUrlForCall(
                 apiVersion,
-                signatureVerification.userEntity.baseUrl,
+                signatureVerification.userEntity!!.baseUrl,
                 decryptedPushMessage.id
             )
         )
@@ -298,7 +301,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     hasParticipantsInCall = participantList.isNotEmpty()
                     if (hasParticipantsInCall) {
                         for (participant in participantList) {
-                            if (participant.actorId == signatureVerification.userEntity.userId &&
+                            if (participant.actorId == signatureVerification.userEntity!!.userId &&
                                 participant.actorType == Participant.ActorType.USERS
                             ) {
                                 inCallOnDifferentDevice = true

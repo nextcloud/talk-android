@@ -252,7 +252,7 @@ class ContactsController(args: Bundle) :
         )
         ncApi.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -263,15 +263,15 @@ class ContactsController(args: Bundle) :
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
-                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
-                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
+                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2 or later is used only, the createRoom already returns all the data
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, currentUser!!.baseUrl,
-                            roomOverall.getOcs().getData().getToken()
+                            roomOverall.ocs!!.data!!.token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -283,11 +283,11 @@ class ContactsController(args: Bundle) :
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     BundleKeys.KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.getOcs().getData())
+                                    Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 ConductorRemapping.remapChatController(
                                     router, currentUser!!.id,
-                                    roomOverall.getOcs().getData().getToken(), bundle, true
+                                    roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
 
@@ -393,7 +393,7 @@ class ContactsController(args: Bundle) :
         val query = adapter!!.getFilter(String::class.java) as String?
         val retrofitBucket: RetrofitBucket =
             ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl, query)
-        val modifiedQueryMap: HashMap<String, Any?> = HashMap<String, Any?>(retrofitBucket.getQueryMap())
+        val modifiedQueryMap: HashMap<String, Any?> = HashMap<String, Any?>(retrofitBucket.queryMap)
         modifiedQueryMap.put("limit", CONTACTS_BATCH_SIZE)
         if (isAddingParticipantsView) {
             modifiedQueryMap.put("itemId", conversationToken)
@@ -417,7 +417,7 @@ class ContactsController(args: Bundle) :
         modifiedQueryMap.put("shareTypes[]", shareTypesList)
         ncApi.getContactsWithSearchParam(
             credentials,
-            retrofitBucket.getUrl(), shareTypesList, modifiedQueryMap
+            retrofitBucket.url, shareTypesList, modifiedQueryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -752,7 +752,7 @@ class ContactsController(args: Bundle) :
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
         ConductorRemapping.remapChatController(
             router, currentUser!!.id,
-            openConversationEvent.conversation!!.getToken(),
+            openConversationEvent.conversation!!.token!!,
             openConversationEvent.bundle!!, true
         )
         contactsBottomDialog?.dismiss()
@@ -815,7 +815,7 @@ class ContactsController(args: Bundle) :
         )
         ncApi.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -827,16 +827,16 @@ class ContactsController(args: Bundle) :
                     if (activity != null) {
                         val bundle = Bundle()
                         bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, currentUser)
-                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
-                        bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                        bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
                         bundle.putParcelable(
                             BundleKeys.KEY_ACTIVE_CONVERSATION,
-                            Parcels.wrap(roomOverall.getOcs().getData())
+                            Parcels.wrap(roomOverall.ocs!!.data!!)
                         )
                         ConductorRemapping.remapChatController(
                             router,
                             currentUser!!.id,
-                            roomOverall.getOcs().getData().getToken(),
+                            roomOverall.ocs!!.data!!.token!!,
                             bundle,
                             true
                         )

@@ -72,8 +72,8 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                 val mediaItems = response.body()!!.ocs!!.data
                 if (mediaItems != null) {
                     for (it in mediaItems) {
-                        if (it.value.messageParameters.containsKey("file")) {
-                            val fileParameters = it.value.messageParameters["file"]!!
+                        if (it.value.messageParameters!!.containsKey("file")) {
+                            val fileParameters = it.value.messageParameters!!["file"]!!
 
                             val previewAvailable =
                                 "yes".equals(fileParameters["preview-available"], ignoreCase = true)
@@ -140,7 +140,7 @@ class SharedItemsViewModel(private val repository: SharedItemsRepository, privat
                 override fun onSubscribe(d: Disposable) = Unit
 
                 override fun onNext(response: Response<ChatShareOverviewOverall>) {
-                    val typeMap = response.body()!!.ocs!!.data
+                    val typeMap = response.body()!!.ocs!!.data!!
                     for (it in typeMap) {
                         if (it.value.size > 0) {
                             try {

@@ -66,7 +66,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
-        val messageParameters: HashMap<String, HashMap<String, String>>? = message.messageParameters
+        val messageParameters: HashMap<String?, HashMap<String?, String?>>? = message.messageParameters
         var messageString: Spannable = SpannableString(message.text)
         realView.isSelected = false
         binding.messageTime.setTextColor(context!!.resources.getColor(R.color.white60))
@@ -119,7 +119,7 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
-        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.isReplyable)
+        itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
         Reaction().showReactions(message, binding.reactions, context!!, true)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
@@ -133,13 +133,13 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
 
     private fun processParentMessage(message: ChatMessage) {
         val parentChatMessage = message.parentMessage
-        parentChatMessage.activeUser = message.activeUser
+        parentChatMessage!!.activeUser = message.activeUser
         parentChatMessage.imageUrl?.let {
             binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
             binding.messageQuote.quotedMessageImage.load(it) {
                 addHeader(
                     "Authorization",
-                    ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                    ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
                 )
             }
         } ?: run {
@@ -183,13 +183,13 @@ class MagicOutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessage
     }
 
     private fun processMessageParameters(
-        messageParameters: HashMap<String, HashMap<String, String>>,
+        messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage,
         messageString: Spannable
     ): Spannable {
         var messageString1 = messageString
         for (key in messageParameters.keys) {
-            val individualHashMap: HashMap<String, String>? = message.messageParameters[key]
+            val individualHashMap: HashMap<String?, String?>? = message.messageParameters!![key]
             if (individualHashMap != null) {
                 if (individualHashMap["type"] == "user" ||
                     individualHashMap["type"] == "guest" ||

@@ -171,6 +171,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
         }
     }
 
+    @Suppress("Detekt.ComplexMethod")
     override fun convertToString(`object`: ChatMessage.SystemMessageType?): String {
 
         if (`object` == null) {

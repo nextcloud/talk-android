@@ -561,8 +561,10 @@ public class ConversationsListController extends BaseController implements Searc
                 }
 
                 for (Conversation conversation : roomsOverall.getOcs().getData()) {
-                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()) && conversation.roomId.equals(bundle.getString(
-                        BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()))) {
+                    if (bundle.containsKey(BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()) &&
+                        conversation.getRoomId().equals(bundle.getString(
+                            BundleKeys.INSTANCE.getKEY_FORWARD_HIDE_SOURCE_ROOM()))
+                    ) {
                         continue;
                     }
 
@@ -581,7 +583,7 @@ public class ConversationsListController extends BaseController implements Searc
                             conversation,
                             currentUser,
                             getActivity(),
-                            userStatuses.get(conversation.name));
+                            userStatuses.get(conversation.getName()));
                         conversationItems.add(conversationItem);
 
                         ConversationItem conversationItemWithHeader = new ConversationItem(
@@ -589,7 +591,7 @@ public class ConversationsListController extends BaseController implements Searc
                             currentUser,
                             getActivity(),
                             callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.name));
+                            userStatuses.get(conversation.getName()));
                         conversationItemsWithHeader.add(conversationItemWithHeader);
                     }
                 }
@@ -628,7 +630,7 @@ public class ConversationsListController extends BaseController implements Searc
             Conversation conversation1 = ((ConversationItem) o1).getModel();
             Conversation conversation2 = ((ConversationItem) o2).getModel();
             return new CompareToBuilder()
-                .append(conversation2.isFavorite(), conversation1.isFavorite())
+                .append(conversation2.getFavorite(), conversation1.getFavorite())
                 .append(conversation2.getLastActivity(), conversation1.getLastActivity())
                 .toComparison();
         });
@@ -662,7 +664,7 @@ public class ConversationsListController extends BaseController implements Searc
                             currentUser,
                             getActivity(),
                             callHeaderItems.get(headerTitle),
-                            userStatuses.get(conversation.name));
+                            userStatuses.get(conversation.getName()));
 
                         openConversationItems.add(conversationItem);
                     }
@@ -770,9 +772,9 @@ public class ConversationsListController extends BaseController implements Searc
             for (AbstractFlexibleItem flexItem : conversationItems) {
                 Conversation conversationItem = ((ConversationItem) flexItem).getModel();
                 int position = adapter.getGlobalPositionOf(flexItem);
-                if ((conversationItem.unreadMention ||
-                    (conversationItem.unreadMessages > 0 &&
-                        conversationItem.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) &&
+                if ((conversationItem.getUnreadMention() ||
+                    (conversationItem.getUnreadMessages() > 0 &&
+                        conversationItem.getType() == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)) &&
                     position > lastVisibleItem) {
                     nextUnreadConversationScrollPosition = position;
                     if (!newMentionPopupBubble.isShown()) {
@@ -874,7 +876,7 @@ public class ConversationsListController extends BaseController implements Searc
 
             if (selectedConversation != null && getActivity() != null) {
                 boolean hasChatPermission =
-                    new AttendeePermissionsUtil(selectedConversation.permissions).hasChatPermission(currentUser);
+                    new AttendeePermissionsUtil(selectedConversation.getPermissions()).hasChatPermission(currentUser);
 
                 if (showShareToScreen) {
                     if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
@@ -902,7 +904,7 @@ public class ConversationsListController extends BaseController implements Searc
     }
 
     private Boolean isReadOnlyConversation(Conversation conversation) {
-        return conversation.conversationReadOnlyState ==
+        return conversation.getConversationReadOnlyState() ==
             Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY;
     }
 

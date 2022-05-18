@@ -119,16 +119,16 @@ class RingtoneSelectionController(args: Bundle) :
             try {
                 val ringtoneSettings: RingtoneSettings =
                     LoganSquare.parse<RingtoneSettings>(preferencesString, RingtoneSettings::class.java)
-                if (ringtoneSettings.getRingtoneUri() == null) {
+                if (ringtoneSettings.ringtoneUri == null) {
                     adapter!!.toggleSelection(0)
-                } else if (ringtoneSettings.getRingtoneUri().toString() == ringtoneString) {
+                } else if (ringtoneSettings.ringtoneUri!!.toString() == ringtoneString) {
                     adapter!!.toggleSelection(1)
                 } else {
                     var notificationSoundItem: NotificationSoundItem?
                     for (i in 2 until adapter!!.itemCount) {
                         notificationSoundItem = adapter!!.getItem(i) as NotificationSoundItem?
                         if (
-                            notificationSoundItem!!.notificationSoundUri == ringtoneSettings.getRingtoneUri().toString()
+                            notificationSoundItem!!.notificationSoundUri == ringtoneSettings.ringtoneUri!!.toString()
                         ) {
                             adapter!!.toggleSelection(i)
                             break
@@ -199,8 +199,8 @@ class RingtoneSelectionController(args: Bundle) :
         }
         if (adapter!!.selectedPositions.size == 0 || adapter!!.selectedPositions[0] != position) {
             val ringtoneSettings = RingtoneSettings()
-            ringtoneSettings.setRingtoneName(notificationSoundItem.notificationSoundName)
-            ringtoneSettings.setRingtoneUri(ringtoneUri)
+            ringtoneSettings.ringtoneName = notificationSoundItem.notificationSoundName
+            ringtoneSettings.ringtoneUri = ringtoneUri
             if (callNotificationSounds) {
                 try {
                     appPreferences!!.callRingtoneUri = LoganSquare.serialize(ringtoneSettings)

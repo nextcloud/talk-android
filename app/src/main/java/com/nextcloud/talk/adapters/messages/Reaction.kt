@@ -44,10 +44,10 @@ class Reaction {
         isOutgoingMessage: Boolean
     ) {
         binding.reactionsEmojiWrapper.removeAllViews()
-        if (message.reactions != null && message.reactions.isNotEmpty()) {
+        if (message.reactions != null && message.reactions!!.isNotEmpty()) {
 
             var remainingEmojisToDisplay = MAX_EMOJIS_TO_DISPLAY
-            val showInfoAboutMoreEmojis = message.reactions.size > MAX_EMOJIS_TO_DISPLAY
+            val showInfoAboutMoreEmojis = message.reactions!!.size > MAX_EMOJIS_TO_DISPLAY
 
             val textColor = getTextColor(context, isOutgoingMessage, binding)
             val amountParams = getAmountLayoutParams(context)
@@ -57,7 +57,7 @@ class Reaction {
             val paddingTop = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_TOP, context).toInt()
             val paddingBottom = DisplayUtils.convertDpToPixel(WRAPPER_PADDING_BOTTOM, context).toInt()
 
-            for ((emoji, amount) in message.reactions) {
+            for ((emoji, amount) in message.reactions!!) {
                 val emojiWithAmountWrapper = getEmojiWithAmountWrapperLayout(
                     context,
                     message,
@@ -99,8 +99,8 @@ class Reaction {
         emojiWithAmountWrapper.layoutParams = layoutInfo.wrapperParams
 
         if (message.reactionsSelf != null &&
-            message.reactionsSelf.isNotEmpty() &&
-            message.reactionsSelf.contains(emoji)
+            message.reactionsSelf!!.isNotEmpty() &&
+            message.reactionsSelf!!.contains(emoji)
         ) {
             emojiWithAmountWrapper.background =
                 AppCompatResources.getDrawable(context, R.drawable.reaction_self_background)

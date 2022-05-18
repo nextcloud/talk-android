@@ -208,7 +208,7 @@ class ConversationInfoController(args: Bundle) :
     private fun setupWebinaryView() {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby") &&
             webinaryRoomType(conversation!!) &&
-            conversation!!.canModerate(conversationUser)
+            conversation!!.canModerate(conversationUser!!)
         ) {
             binding.webinarInfoView.webinarSettings.visibility = View.VISIBLE
 
@@ -223,7 +223,7 @@ class ConversationInfoController(args: Bundle) :
                 MaterialDialog(activity!!, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
-                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * DateConstants.SECOND_DIVIDER
+                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER
                     }
 
                     dateTimePicker(
@@ -278,7 +278,7 @@ class ConversationInfoController(args: Bundle) :
         ) {
             binding.webinarInfoView.startTimePreferences.setSummary(
                 DateUtils.getLocalDateStringFromTimestampForLobby(
-                    conversation!!.lobbyTimer
+                    conversation!!.lobbyTimer!!
                 )
             )
         } else {
@@ -618,7 +618,7 @@ class ConversationInfoController(args: Bundle) :
                 @Suppress("Detekt.TooGenericExceptionCaught")
                 override fun onNext(roomOverall: RoomOverall) {
                     try {
-                        conversation = roomOverall.ocs.data
+                        conversation = roomOverall.ocs!!.data
 
                         val conversationCopy = conversation
 
@@ -639,7 +639,7 @@ class ConversationInfoController(args: Bundle) :
 
                             setupWebinaryView()
 
-                            if (!conversation!!.canLeave(conversationUser)) {
+                            if (!conversation!!.canLeave()) {
                                 binding.leaveConversationAction.visibility = View.GONE
                             } else {
                                 binding.leaveConversationAction.visibility = View.VISIBLE
@@ -670,7 +670,7 @@ class ConversationInfoController(args: Bundle) :
 
                             binding.displayNameText.text = conversation!!.displayName
 
-                            if (conversation!!.description != null && !conversation!!.description.isEmpty()) {
+                            if (conversation!!.description != null && !conversation!!.description!!.isEmpty()) {
                                 binding.descriptionText.text = conversation!!.description
                                 binding.conversationDescription.visibility = View.VISIBLE
                             }
@@ -979,7 +979,7 @@ class ConversationInfoController(args: Bundle) :
     }
 
     override fun onItemClick(view: View?, position: Int): Boolean {
-        if (!conversation!!.canModerate(conversationUser)) {
+        if (!conversation!!.canModerate(conversationUser!!)) {
             return true
         }
 

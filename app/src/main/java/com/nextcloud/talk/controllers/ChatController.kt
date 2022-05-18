@@ -336,10 +336,10 @@ class ChatController(args: Bundle) :
                     @Suppress("Detekt.TooGenericExceptionCaught")
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "getRoomInfo - getRoom - got response: " + startNanoTime)
-                        currentConversation = roomOverall.ocs.data
+                        currentConversation = roomOverall.ocs!!.data
                         Log.d(
                             TAG,
-                            "getRoomInfo. token: " + currentConversation?.getToken() +
+                            "getRoomInfo. token: " + currentConversation?.token +
                                 " sessionId: " + currentConversation?.sessionId
                         )
                         loadAvatarForStatusBar()
@@ -401,7 +401,7 @@ class ChatController(args: Bundle) :
 
                 override fun onNext(roomsOverall: RoomsOverall) {
                     Log.d(TAG, "handleFromNotification - getRooms - got response")
-                    for (conversation in roomsOverall.ocs.data) {
+                    for (conversation in roomsOverall.ocs!!.data!!) {
                         if (roomId == conversation.roomId) {
                             roomToken = conversation.token
                             currentConversation = conversation
@@ -548,7 +548,7 @@ class ChatController(args: Bundle) :
             if (!conversationUser?.userId.equals("?")) {
                 senderId = "users/" + conversationUser?.userId
             } else {
-                senderId = currentConversation?.getActorType() + "/" + currentConversation?.getActorId()
+                senderId = currentConversation?.actorType + "/" + currentConversation?.actorId
             }
 
             Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: " + senderId)
@@ -579,7 +579,7 @@ class ChatController(args: Bundle) :
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
         ) { view, message ->
-            val filename = message.getSelectedIndividualHashMap()["name"]
+            val filename = message.selectedIndividualHashMap!!["name"]
             val file = File(context!!.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
@@ -934,7 +934,7 @@ class ChatController(args: Bundle) :
         }
 
         if (mediaPlayer == null) {
-            val fileName = message.getSelectedIndividualHashMap()["name"]
+            val fileName = message.selectedIndividualHashMap!!["name"]
             val absolutePath = context!!.cacheDir.absolutePath + "/" + fileName
             mediaPlayer = MediaPlayer().apply {
                 setDataSource(absolutePath)
@@ -978,17 +978,17 @@ class ChatController(args: Bundle) :
         message.isDownloadingVoiceMessage = true
         adapter?.update(message)
 
-        val baseUrl = message.activeUser.baseUrl
-        val userId = message.activeUser.userId
+        val baseUrl = message.activeUser!!.baseUrl
+        val userId = message.activeUser!!.userId
         val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(message.activeUser)
-        val fileName = message.getSelectedIndividualHashMap()["name"]
-        var size = message.getSelectedIndividualHashMap()["size"]
+        val fileName = message.selectedIndividualHashMap!!["name"]
+        var size = message.selectedIndividualHashMap!!["size"]
         if (size == null) {
             size = "-1"
         }
         val fileSize = size.toLong()
-        val fileId = message.getSelectedIndividualHashMap()["id"]
-        val path = message.getSelectedIndividualHashMap()["path"]
+        val fileId = message.selectedIndividualHashMap!!["id"]
+        val path = message.selectedIndividualHashMap!!["path"]
 
         // check if download worker is already running
         val workers = WorkManager.getInstance(
@@ -1223,7 +1223,7 @@ class ChatController(args: Bundle) :
 
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
-            return currentConversation?.shouldShowLobby(conversationUser) == true
+            return currentConversation?.shouldShowLobby(conversationUser!!) == true
         }
         return false
     }
@@ -1262,7 +1262,7 @@ class ChatController(args: Bundle) :
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
-            currentConversation?.isLobbyViewApplicable(conversationUser) ?: false &&
+            currentConversation?.isLobbyViewApplicable(conversationUser!!) ?: false &&
             isAlive()
         ) {
 
@@ -1270,7 +1270,7 @@ class ChatController(args: Bundle) :
                 getRoomInfo()
             }
 
-            if (currentConversation?.shouldShowLobby(conversationUser) ?: false) {
+            if (currentConversation?.shouldShowLobby(conversationUser!!) ?: false) {
                 binding.lobby.lobbyView.visibility = View.VISIBLE
                 binding.messagesListView.visibility = View.GONE
                 binding.messageInputView.visibility = View.GONE
@@ -1792,7 +1792,7 @@ class ChatController(args: Bundle) :
                     override fun onNext(roomOverall: RoomOverall) {
                         Log.d(TAG, "joinRoomWithPassword - joinRoom - got response: " + startNanoTime)
                         inConversation = true
-                        currentConversation?.sessionId = roomOverall.ocs.data.sessionId
+                        currentConversation?.sessionId = roomOverall.ocs!!.data!!.sessionId
                         Log.d(TAG, "joinRoomWithPassword - sessionId: " + currentConversation?.sessionId)
 
                         ApplicationWideCurrentRoomHolder.getInstance().session =
@@ -2026,7 +2026,7 @@ class ChatController(args: Bundle) :
         }
         pullChatMessagesPending = true
 
-        if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser)) {
+        if (currentConversation != null && currentConversation!!.shouldShowLobby(conversationUser!!)) {
             // return
         }
 
@@ -2181,7 +2181,7 @@ class ChatController(args: Bundle) :
         if (response.code() == HTTP_CODE_OK) {
 
             val chatOverall = response.body() as ChatOverall?
-            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data)
+            val chatMessageList = handleSystemMessages(chatOverall?.ocs!!.data!!)
 
             if (chatMessageList.isNotEmpty() &&
                 ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
@@ -2455,19 +2455,19 @@ class ChatController(args: Bundle) :
 
             // setDeletionFlagsAndRemoveInfomessages
             if (isInfoMessageAboutDeletion(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
                     // if chatMessageMap doesn't contain message to delete (this happens when lookingIntoFuture),
                     // the message to delete has to be modified directly inside the adapter
                     setMessageAsDeleted(currentMessage.value.parentMessage)
                 } else {
-                    chatMessageMap[currentMessage.value.parentMessage.id]!!.isDeleted = true
+                    chatMessageMap[currentMessage.value.parentMessage!!.id]!!.isDeleted = true
                 }
                 chatMessageIterator.remove()
             }
 
             // delete reactions system messages
             else if (isReactionsMessage(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
                     updateAdapterForReaction(currentMessage.value.parentMessage)
                 }
 
@@ -2569,7 +2569,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun isSystemMessage(message: ChatMessage): Boolean {
-        return ChatMessage.MessageType.SYSTEM_MESSAGE == message.getMessageType()
+        return ChatMessage.MessageType.SYSTEM_MESSAGE == message.getCalculateMessageType()
     }
 
     fun deleteMessage(message: IMessage?) {
@@ -2603,7 +2603,7 @@ class ChatController(args: Bundle) :
                     }
 
                     override fun onNext(t: ChatOverallSingleMessage) {
-                        if (t.ocs.meta.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
+                        if (t.ocs!!.meta!!.statusCode == HttpURLConnection.HTTP_ACCEPTED) {
                             Toast.makeText(
                                 context, R.string.nc_delete_message_leaked_to_matterbridge,
                                 Toast.LENGTH_LONG
@@ -2641,7 +2641,7 @@ class ChatController(args: Bundle) :
         )
         ncApi!!.createRoom(
             credentials,
-            retrofitBucket.getUrl(), retrofitBucket.getQueryMap()
+            retrofitBucket.url, retrofitBucket.queryMap
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
@@ -2653,15 +2653,15 @@ class ChatController(args: Bundle) :
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
-                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.getOcs().getData().getToken())
-                    bundle.putString(KEY_ROOM_ID, roomOverall.getOcs().getData().getRoomId())
+                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2+ is used only, the createRoom already returns all the data
                     ncApi!!.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
                             apiVersion, conversationUser?.baseUrl,
-                            roomOverall.getOcs().getData().getToken()
+                            roomOverall.ocs!!.data!!.token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -2674,11 +2674,11 @@ class ChatController(args: Bundle) :
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.getOcs().getData())
+                                    Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 remapChatController(
                                     router, conversationUser!!.id,
-                                    roomOverall.getOcs().getData().getToken(), bundle, true
+                                    roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
 
@@ -2767,9 +2767,9 @@ class ChatController(args: Bundle) :
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
             currentConversation?.type != Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             isShowMessageDeletionButton(message) || // delete
-            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getMessageType() || // forward
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() || // forward
             message.previousMessageId > NO_PREVIOUS_MESSAGE_ID && // mark as unread
-            ChatMessage.MessageType.SYSTEM_MESSAGE != message.getMessageType() &&
+            ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
             BuildConfig.DEBUG
     }
 
@@ -2867,12 +2867,12 @@ class ChatController(args: Bundle) :
             message.reactionsSelf = ArrayList<String>()
         }
 
-        var amount = message.reactions[emoji]
+        var amount = message.reactions!![emoji]
         if (amount == null) {
             amount = 0
         }
-        message.reactions[emoji] = amount + 1
-        message.reactionsSelf.add(emoji)
+        message.reactions!![emoji] = amount + 1
+        message.reactionsSelf!!.add(emoji)
         adapter?.update(message)
     }
 
@@ -2905,7 +2905,7 @@ class ChatController(args: Bundle) :
     override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
         return when (type) {
             CONTENT_TYPE_LOCATION -> message.hasGeoLocation()
-            CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage()
+            CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             else -> false
@@ -2968,19 +2968,19 @@ class ChatController(args: Bundle) :
                         val conversationIntent = Intent(activity, CallActivity::class.java)
                         val bundle = Bundle()
                         bundle.putParcelable(KEY_USER_ENTITY, conversationUser)
-                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
-                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
+                        bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                        bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                         if (conversationUser != null) {
                             bundle.putParcelable(
                                 KEY_ACTIVE_CONVERSATION,
-                                Parcels.wrap(roomOverall.ocs.data)
+                                Parcels.wrap(roomOverall.ocs!!.data)
                             )
                             conversationIntent.putExtras(bundle)
 
                             ConductorRemapping.remapChatController(
                                 router, conversationUser.id,
-                                roomOverall.ocs.data.token, bundle, false
+                                roomOverall.ocs!!.data!!.token!!, bundle, false
                             )
                         } else {
                             conversationIntent.putExtras(bundle)

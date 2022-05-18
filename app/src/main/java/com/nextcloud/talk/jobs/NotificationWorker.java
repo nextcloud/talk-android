@@ -170,7 +170,7 @@ public class NotificationWorker extends Worker {
                             }
                         }
 
-                        muteCall = !(conversation.notificationCalls == 1);
+                        muteCall = !(conversation.getNotificationCalls() == 1);
                     }
 
                     @Override
@@ -510,7 +510,7 @@ public class NotificationWorker extends Worker {
                 signatureVerification = pushUtils.verifySignature(base64DecodedSignature,
                         base64DecodedSubject);
 
-                if (signatureVerification.isSignatureValid()) {
+                if (signatureVerification.getSignatureValid()) {
                     Cipher cipher = Cipher.getInstance("RSA/None/PKCS1Padding");
                     cipher.init(Cipher.DECRYPT_MODE, privateKey);
                     byte[] decryptedSubject = cipher.doFinal(base64DecodedSubject);

@@ -256,8 +256,8 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putParcelable(KEY_USER_ENTITY, currentUser)
-                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs.data.token)
-                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs.data.roomId)
+                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     // FIXME once APIv2 or later is used only, the createRoom already returns all the data
                     ncApi.getRoom(
@@ -265,7 +265,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                         ApiUtils.getUrlForRoom(
                             apiVersion,
                             currentUser.baseUrl,
-                            roomOverall.ocs.data.token
+                            roomOverall.ocs!!.data!!.token
                         )
                     )
                         .subscribeOn(Schedulers.io())
@@ -277,11 +277,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             override fun onNext(roomOverall: RoomOverall) {
                                 bundle.putParcelable(
                                     KEY_ACTIVE_CONVERSATION,
-                                    Parcels.wrap(roomOverall.ocs.data)
+                                    Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 remapChatController(
                                     router!!, currentUser.id,
-                                    roomOverall.ocs.data.token, bundle, true
+                                    roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
 

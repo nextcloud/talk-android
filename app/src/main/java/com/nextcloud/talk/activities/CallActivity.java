@@ -268,11 +268,6 @@ public class CallActivity extends CallBaseActivity {
 
     private AudioOutputDialog audioOutputDialog;
 
-    @Parcel
-    public enum CallStatus {
-        CONNECTING, CALLING_TIMEOUT, JOINED, IN_CONVERSATION, RECONNECTING, OFFLINE, LEAVING, PUBLISHER_FAILED
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {

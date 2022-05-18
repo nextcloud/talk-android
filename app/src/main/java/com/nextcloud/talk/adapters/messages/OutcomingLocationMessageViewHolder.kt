@@ -126,9 +126,9 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
 
     @SuppressLint("SetJavaScriptEnabled", "ClickableViewAccessibility")
     private fun setLocationDataOnMessageItem(message: ChatMessage) {
-        if (message.messageParameters != null && message.messageParameters.size > 0) {
-            for (key in message.messageParameters.keys) {
-                val individualHashMap: Map<String, String> = message.messageParameters[key]!!
+        if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+            for (key in message.messageParameters!!.keys) {
+                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
                 if (individualHashMap["type"] == "geo-location") {
                     locationLon = individualHashMap["longitude"]
                     locationLat = individualHashMap["latitude"]
@@ -185,13 +185,13 @@ class OutcomingLocationMessageViewHolder(incomingView: View) : MessageHolders
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
+            parentChatMessage!!.activeUser = message.activeUser
             parentChatMessage.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
                     )
                 }
             } ?: run {

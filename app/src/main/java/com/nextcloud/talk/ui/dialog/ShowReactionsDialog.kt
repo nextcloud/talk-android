@@ -95,9 +95,9 @@ class ShowReactionsDialog(
 
     private fun initEmojiReactions() {
         adapter?.list?.clear()
-        if (chatMessage.reactions != null && chatMessage.reactions.isNotEmpty()) {
+        if (chatMessage.reactions != null && chatMessage.reactions!!.isNotEmpty()) {
             var reactionsTotal = 0
-            for ((emoji, amount) in chatMessage.reactions) {
+            for ((emoji, amount) in chatMessage.reactions!!) {
                 reactionsTotal = reactionsTotal.plus(amount as Int)
                 val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
 

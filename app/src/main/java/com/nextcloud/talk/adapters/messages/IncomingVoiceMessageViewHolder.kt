@@ -154,7 +154,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
 
     private fun updateDownloadState(message: ChatMessage) {
         // check if download worker is already running
-        val fileId = message.getSelectedIndividualHashMap()["id"]
+        val fileId = message.selectedIndividualHashMap!!["id"]
         val workers = WorkManager.getInstance(context!!).getWorkInfosByTag(fileId!!)
 
         try {
@@ -206,11 +206,11 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
-        val author: String = message.actorDisplayName
+        val author: String = message.actorDisplayName!!
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId, itemView.context)
+                (payload as? ProfileBottomSheet)?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
@@ -281,13 +281,13 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (!message.isDeleted && message.parentMessage != null) {
             val parentChatMessage = message.parentMessage
-            parentChatMessage.activeUser = message.activeUser
-            parentChatMessage.imageUrl?.let {
+            parentChatMessage!!.activeUser = message.activeUser
+            parentChatMessage!!.imageUrl?.let {
                 binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                 binding.messageQuote.quotedMessageImage.load(it) {
                     addHeader(
                         "Authorization",
-                        ApiUtils.getCredentials(message.activeUser.username, message.activeUser.token)
+                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)
                     )
                 }
             } ?: run {
@@ -300,7 +300,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) : Message
             binding.messageQuote.quotedMessageAuthor
                 .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
-            if (parentChatMessage.actorId?.equals(message.activeUser.userId) == true) {
+            if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.colorPrimary)
             } else {
                 binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)

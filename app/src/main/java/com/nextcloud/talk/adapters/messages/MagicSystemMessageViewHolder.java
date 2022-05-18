@@ -76,9 +76,9 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         Spannable messageString = new SpannableString(message.getText());
 
-        if (message.messageParameters != null && message.messageParameters.size() > 0) {
-            for (String key : message.messageParameters.keySet()) {
-                Map<String, String> individualMap = message.messageParameters.get(key);
+        if (message.getMessageParameters() != null && message.getMessageParameters().size() > 0) {
+            for (String key : message.getMessageParameters().keySet()) {
+                Map<String, String> individualMap = message.getMessageParameters().get(key);
 
                 if (individualMap != null && individualMap.containsKey("name")) {
                     String searchText;
@@ -97,6 +97,6 @@ public class MagicSystemMessageViewHolder extends MessageHolders.IncomingTextMes
 
         text.setText(messageString);
 
-        itemView.setTag(REPLYABLE_VIEW_TAG, message.isReplyable());
+        itemView.setTag(REPLYABLE_VIEW_TAG, message.getReplyable());
     }
 }
