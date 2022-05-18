@@ -4,7 +4,7 @@ name: generic
 
 steps:
   - name: generic
-    image: nextcloudci/android:android-44
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     commands:
       - ./gradlew --console=plain assembleGeneric
 
@@ -22,7 +22,7 @@ name: gplay
 
 steps:
   - name: gplay
-    image: nextcloudci/android:android-44
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     commands:
       - ./gradlew --console=plain assembleGplay
 
@@ -40,7 +40,7 @@ name: tests
 
 steps:
   - name: all
-    image: nextcloudci/android:android-49
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     privileged: true
     commands:
       - emulator-headless -avd android-27 -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
@@ -80,7 +80,7 @@ name: analysis
 
 steps:
   - name: analysis
-    image: nextcloudci/android:android-44
+    image: ghcr.io/nextcloud/continuous-integration-android8:2
     environment:
       GIT_USERNAME:
         from_secret: GIT_USERNAME
