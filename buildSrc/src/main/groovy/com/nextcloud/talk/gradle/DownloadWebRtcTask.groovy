@@ -48,7 +48,7 @@ abstract class DownloadWebRtcTask extends DefaultTask {
         return "https://github.com/nextcloud-releases/talk-clients-webrtc/releases/download/${webRtcVersion}-RC1/${getFileName()}"
     }
 
-    String getOutputPath() {
+    private String getOutputPath() {
         return "${project.buildDir}/download/${getFileName()}"
     }
 

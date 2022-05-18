@@ -170,14 +170,11 @@ public class MagicProximitySensor implements SensorEventListener {
                 .append(", resolution: ").append(proximitySensor.getResolution())
                 .append(", max range: ").append(proximitySensor.getMaximumRange())
                 .append(", min delay: ").append(proximitySensor.getMinDelay());
-        // Added in API level 20.
         info.append(", type: ").append(proximitySensor.getStringType());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // Added in API level 21.
-            info.append(", max delay: ").append(proximitySensor.getMaxDelay())
-                    .append(", reporting mode: ").append(proximitySensor.getReportingMode())
-                    .append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
-        }
+        info.append(", max delay: ").append(proximitySensor.getMaxDelay())
+            .append(", reporting mode: ").append(proximitySensor.getReportingMode())
+            .append(", isWakeUpSensor: ").append(proximitySensor.isWakeUpSensor());
+
         Log.d(TAG, info.toString());
     }
 }

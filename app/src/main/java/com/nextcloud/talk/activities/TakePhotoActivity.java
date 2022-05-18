@@ -54,8 +54,8 @@ import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.camera.camera2.interop.Camera2Interop;
 import androidx.camera.core.AspectRatio;
 import androidx.camera.core.Camera;
@@ -360,6 +360,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         return rotate;
     }
 
+    @OptIn(markerClass = androidx.camera.camera2.interop.ExperimentalCamera2Interop.class)
     private Preview getPreview(boolean crop) {
         Preview.Builder previewBuilder = new Preview.Builder()
             .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3);
