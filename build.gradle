@@ -32,7 +32,6 @@ buildscript {
         maven { url 'https://plugins.gradle.org/m2/' }
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        jcenter()
     }
 
     dependencies {
@@ -59,7 +58,7 @@ allprojects {
         maven { url 'https://maven.google.com' }
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        jcenter()
+        gradlePluginPortal() // for jcenter mirroring, remove ASAP
     }
 }
 
