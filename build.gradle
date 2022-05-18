@@ -29,7 +29,7 @@ buildscript {
 
     repositories {
         google()
-        maven { url 'https://plugins.gradle.org/m2/' }
+        gradlePluginPortal()
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
@@ -55,7 +55,6 @@ allprojects {
     repositories {
         google()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url 'https://maven.google.com' }
         mavenCentral()
         maven { url 'https://jitpack.io' }
         gradlePluginPortal() // for jcenter mirroring, remove ASAP
