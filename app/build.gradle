@@ -85,10 +85,6 @@ android {
         testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
     }
 
-    dexOptions {
-        javaMaxHeapSize "4g"
-    }
-
     buildTypes {
         release {
             minifyEnabled false
