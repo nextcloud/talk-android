@@ -132,15 +132,15 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    lintOptions {
-        abortOnError false
-        htmlReport true
-        htmlOutput file("$project.buildDir/reports/lint/lint.html")
-        disable 'MissingTranslation'
-    }
 
     buildFeatures {
         viewBinding true
+    }
+    lint {
+        abortOnError false
+        disable 'MissingTranslation'
+        htmlOutput file("$project.buildDir/reports/lint/lint.html")
+        htmlReport true
     }
 }
 
