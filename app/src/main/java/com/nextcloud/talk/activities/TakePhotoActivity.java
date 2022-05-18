@@ -360,6 +360,7 @@ public class TakePhotoActivity extends AppCompatActivity {
         return rotate;
     }
 
+    @androidx.camera.camera2.interop.ExperimentalCamera2Interop
     private Preview getPreview(boolean crop) {
         Preview.Builder previewBuilder = new Preview.Builder()
             .setTargetAspectRatio(crop ? AspectRatio.RATIO_16_9 : AspectRatio.RATIO_4_3);
