@@ -54,7 +54,6 @@ configurations.all {
 allprojects {
     repositories {
         google()
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         mavenCentral()
         maven { url 'https://jitpack.io' }
         gradlePluginPortal() // for jcenter mirroring, remove ASAP
