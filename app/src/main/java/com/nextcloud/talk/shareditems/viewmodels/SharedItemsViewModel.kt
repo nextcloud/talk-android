@@ -66,7 +66,7 @@ class SharedItemsViewModel @Inject constructor(
         get() = _currentItemType
 
     fun loadNextItems() {
-        val currentSharedItems = sharedItems.value!!
+        val currentSharedItems = sharedItems.value ?: return
 
         if (currentSharedItems.moreItemsExisting) {
             repository.media(repositoryParameters, _currentItemType, currentSharedItems.lastSeenId)
