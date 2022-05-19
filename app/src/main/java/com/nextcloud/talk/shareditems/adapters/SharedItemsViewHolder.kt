@@ -48,6 +48,12 @@ abstract class SharedItemsViewHolder(
             image.controller = configurePreview(item)
         }
 
+        /*
+        The FileViewerUtils forces us to do things at this points which should be done separated in the activity and
+        the view model.
+
+        This should be done after a refactoring of FileViewerUtils.
+         */
         val fileViewerUtils = FileViewerUtils(image.context, userEntity)
 
         clickTarget.setOnClickListener {
