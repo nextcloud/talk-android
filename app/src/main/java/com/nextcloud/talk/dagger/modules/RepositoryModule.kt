@@ -23,6 +23,7 @@ package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
+import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import dagger.Module
 import dagger.Provides
 
@@ -30,6 +31,6 @@ import dagger.Provides
 class RepositoryModule {
     @Provides
     fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepository(ncApi)
+        return SharedItemsRepositoryImpl(ncApi)
     }
 }
