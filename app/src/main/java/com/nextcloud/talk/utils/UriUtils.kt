@@ -36,7 +36,7 @@ class UriUtils {
                 val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
                 try {
                     if (cursor != null && cursor.moveToFirst()) {
-                        filename = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+                        filename = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
                     }
                 } finally {
                     cursor?.close()

@@ -209,7 +209,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             if (cursor != null) {
                 if (cursor.moveToFirst()) {
                     // userId @ server
-                    userId = cursor.getString(cursor.getColumnIndex(ContactsContract.Data.DATA1))
+                    userId = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Data.DATA1))
                 }
 
                 cursor.close()

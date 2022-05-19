@@ -24,7 +24,7 @@ object ContactUtils {
             while (nameCursor.moveToNext()) {
                 displayName =
                     nameCursor.getString(
-                        nameCursor.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME)
+                        nameCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME)
                     )
             }
             nameCursor.close()

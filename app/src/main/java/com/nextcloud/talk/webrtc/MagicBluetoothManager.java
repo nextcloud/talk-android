@@ -42,6 +42,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
@@ -317,10 +318,9 @@ public class MagicBluetoothManager {
     @SuppressLint("HardwareIds")
     protected void logBluetoothAdapterInfo(BluetoothAdapter localAdapter) {
         Log.d(TAG, "BluetoothAdapter: "
-                + "enabled=" + localAdapter.isEnabled() + ", "
-                + "state=" + stateToString(localAdapter.getState()) + ", "
-                + "name=" + localAdapter.getName() + ", "
-                + "address=" + localAdapter.getAddress());
+            + "enabled=" + localAdapter.isEnabled() + ", "
+            + "state=" + stateToString(localAdapter.getState()) + ", "
+            + "name=" + localAdapter.getName());
         // Log the set of BluetoothDevice objects that are bonded (paired) to the local adapter.
         Set<BluetoothDevice> pairedDevices = localAdapter.getBondedDevices();
         if (!pairedDevices.isEmpty()) {
