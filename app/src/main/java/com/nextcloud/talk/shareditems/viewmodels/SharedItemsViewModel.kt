@@ -88,8 +88,7 @@ class SharedItemsViewModel @Inject constructor(
                         SharedMediaItems(
                             oldItems + newSharedItems!!.items,
                             newSharedItems!!.lastSeenId,
-                            newSharedItems!!.moreItemsExisting,
-                            newSharedItems!!.authHeader
+                            newSharedItems!!.moreItemsExisting
                         )
                 }
             }

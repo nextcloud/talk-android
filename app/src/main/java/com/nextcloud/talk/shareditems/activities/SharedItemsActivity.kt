@@ -12,17 +12,16 @@ import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.shareditems.adapters.SharedItemsGridAdapter
-import com.nextcloud.talk.shareditems.adapters.SharedItemsListAdapter
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
 import com.nextcloud.talk.shareditems.model.SharedItemType
+import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -70,24 +69,18 @@ class SharedItemsActivity : AppCompatActivity() {
         viewModel.sharedItems.observe(this) {
             Log.d(TAG, "Items received: $it")
 
-            if (viewModel.currentItemType == SharedItemType.MEDIA) {
-                val adapter = SharedItemsGridAdapter()
-                adapter.items = it.items
-                adapter.authHeader = it.authHeader
-                binding.imageRecycler.adapter = adapter
-
-                val layoutManager = GridLayoutManager(this, SPAN_COUNT)
-                binding.imageRecycler.layoutManager = layoutManager
+            val showGrid = viewModel.currentItemType == SharedItemType.MEDIA
+            val layoutManager = if (showGrid) {
+                GridLayoutManager(this, SPAN_COUNT)
             } else {
-                val adapter = SharedItemsListAdapter()
-                adapter.items = it.items
-                adapter.authHeader = it.authHeader
-                binding.imageRecycler.adapter = adapter
-
-                val layoutManager = LinearLayoutManager(this)
-                layoutManager.orientation = LinearLayoutManager.VERTICAL
-                binding.imageRecycler.layoutManager = layoutManager
+                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             }
+
+            val adapter = SharedItemsAdapter(showGrid, userEntity.username, userEntity.token).apply {
+                items = it.items
+            }
+            binding.imageRecycler.adapter = adapter
+            binding.imageRecycler.layoutManager = layoutManager
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
