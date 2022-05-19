@@ -175,9 +175,11 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             if (contactCursor.count > 0) {
                 contactCursor.moveToFirst()
                 for (i in 0 until contactCursor.count) {
-                    val id = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID))
+                    val id = contactCursor.getString(contactCursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                     val lookup =
-                        contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+                        contactCursor.getString(
+                            contactCursor.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY)
+                        )
                     deviceContactsWithNumbers[lookup] = getPhoneNumbersFromDeviceContact(id)
                     contactCursor.moveToNext()
                 }
@@ -228,13 +230,16 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             if (rawContactsCursor.count > 0) {
                 while (rawContactsCursor.moveToNext()) {
                     val lookupKey =
-                        rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Data.LOOKUP_KEY))
-                    val contactId =
-                        rawContactsCursor.getString(rawContactsCursor.getColumnIndex(ContactsContract.Data.CONTACT_ID))
-
-                    if (contactsWithAssociatedPhoneNumbers == null || !contactsWithAssociatedPhoneNumbers.containsKey(
-                            lookupKey
+                        rawContactsCursor.getString(
+                            rawContactsCursor.getColumnIndexOrThrow(ContactsContract.Data.LOOKUP_KEY)
                         )
+                    val contactId =
+                        rawContactsCursor.getString(
+                            rawContactsCursor.getColumnIndexOrThrow(ContactsContract.Data.CONTACT_ID)
+                        )
+
+                    if (contactsWithAssociatedPhoneNumbers == null ||
+                        !contactsWithAssociatedPhoneNumbers.containsKey(lookupKey)
                     ) {
                         deleteLinkedAccount(contactId)
                     }
@@ -302,7 +307,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
                 if (contactCursor.count > 0) {
                     contactCursor.moveToFirst()
 
-                    val id = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID))
+                    val id = contactCursor.getString(contactCursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                     if (hasLinkedAccount(id)) {
                         return
                     }
@@ -416,7 +421,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
             while (phonesNumbersCursor.moveToNext()) {
                 numbers.add(
                     phonesNumbersCursor.getString(
-                        phonesNumbersCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)
+                        phonesNumbersCursor.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER)
                     )
                 )
             }

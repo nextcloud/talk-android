@@ -1382,7 +1382,7 @@ class ChatController(args: Bundle) :
             val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
 
             if (cursor != null && cursor.moveToFirst()) {
-                val id = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID))
+                val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
                 val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
                 val file = File(context?.cacheDir, fileName)
                 writeContactToVcfFile(cursor, file)
@@ -1427,7 +1427,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun writeContactToVcfFile(cursor: Cursor, file: File) {
-        val lookupKey = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY))
+        val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY))
         val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
 
         val fd: AssetFileDescriptor = activity?.contentResolver!!.openAssetFileDescriptor(uri, "r")!!
