@@ -38,10 +38,12 @@
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
         android:maxSdkVersion="22" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
         android:maxSdkVersion="22" />
+    <uses-permission android:name="android.permission.LOCAL_MAC_ADDRESS" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -75,8 +77,8 @@
     <!-- This permission is deprecated in Android P  -->
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".application.NextcloudTalkApplication"
