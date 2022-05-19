@@ -145,6 +145,7 @@
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
+    <string name="nc_message_failed_to_send">Odeslání zprávy se nezdařilo:</string>
     <string name="nc_message_quote_cancel_reply">Odebrat odpověď</string>
     <string name="nc_message_read">Zpráva přečtena</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
@@ -343,6 +344,7 @@
     <string name="send_to">Odeslat k</string>
     <string name="send_to_forbidden">Nemáte oprávnění sdílet obsah do tohoto chatu</string>
     <string name="send_to_three_dots">Odeslat k…</string>
+    <string name="send_without_notification">Odeslat bez upozornění</string>
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
     <string name="share">Sdílet</string>

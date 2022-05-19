@@ -145,6 +145,7 @@
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
+    <string name="nc_message_failed_to_send">Fehler beim Senden der Nachricht:</string>
     <string name="nc_message_quote_cancel_reply">Antwort abbrechen</string>
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
@@ -343,6 +344,7 @@
     <string name="send_to">Senden an</string>
     <string name="send_to_forbidden">Sie sind nicht berechtigt, Inhalte in diesem Chat zu teilen</string>
     <string name="send_to_three_dots">Senden an …</string>
+    <string name="send_without_notification">Ohne Benachrichtigung senden</string>
     <string name="set_status">Status setzen</string>
     <string name="set_status_message">Statusnachricht setzen</string>
     <string name="share">Freigabe</string>

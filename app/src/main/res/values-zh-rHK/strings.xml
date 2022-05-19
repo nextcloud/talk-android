@@ -145,6 +145,7 @@
     <string name="nc_manual">未定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
+    <string name="nc_message_failed_to_send">傳送訊息失敗︰</string>
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
@@ -343,6 +344,7 @@
     <string name="send_to">傳送到</string>
     <string name="send_to_forbidden">您不能在此聊天中分享內容</string>
     <string name="send_to_three_dots">傳送到 …</string>
+    <string name="send_without_notification">傳送而不通知</string>
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
