@@ -43,7 +43,7 @@ steps:
     image: ghcr.io/nextcloud/continuous-integration-android8:2
     privileged: true
     commands:
-      - emulator-headless -avd android-27 -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
+      - emulator -avd android -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
       - scripts/wait_for_emulator.sh
       - ./gradlew --console=plain testGplayDebugUnitTest connectedGplayDebugAndroidTest
 
