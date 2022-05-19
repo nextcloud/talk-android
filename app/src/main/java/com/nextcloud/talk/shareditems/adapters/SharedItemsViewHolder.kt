@@ -16,6 +16,7 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
@@ -23,8 +24,7 @@ import com.nextcloud.talk.utils.FileViewerUtils
 
 abstract class SharedItemsViewHolder(
     open val binding: ViewBinding,
-    userName: String,
-    userToken: String
+    private val userEntity: UserEntity
 ) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -35,7 +35,12 @@ abstract class SharedItemsViewHolder(
     abstract val clickTarget: View
     abstract val progressBar: ProgressBar
 
-    private val authHeader = mapOf(Pair("Authorization", ApiUtils.getCredentials(userName, userToken)))
+    private val authHeader = mapOf(
+        Pair(
+            "Authorization",
+            ApiUtils.getCredentials(userEntity.username, userEntity.token)
+        )
+    )
 
     open fun onBind(item: SharedItem) {
         image.hierarchy.setPlaceholderImage(staticImage(item.mimeType, image))
@@ -43,7 +48,7 @@ abstract class SharedItemsViewHolder(
             image.controller = configurePreview(item)
         }
 
-        val fileViewerUtils = FileViewerUtils(image.context, item.userEntity)
+        val fileViewerUtils = FileViewerUtils(image.context, userEntity)
 
         clickTarget.setOnClickListener {
             fileViewerUtils.openFile(

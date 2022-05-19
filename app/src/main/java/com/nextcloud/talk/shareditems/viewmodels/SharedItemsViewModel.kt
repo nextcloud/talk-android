@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.shareditems.model.SharedItemType
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.model.SharedMediaItems
+import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -124,7 +124,6 @@ class SharedItemsViewModel @Inject constructor(
             userEntity.userId,
             userEntity.token,
             userEntity.baseUrl,
-            userEntity,
             roomToken
         )
         _currentItemType = initialType

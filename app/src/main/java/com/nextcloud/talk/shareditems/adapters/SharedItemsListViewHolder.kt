@@ -5,14 +5,14 @@ import android.view.View
 import android.widget.ProgressBar
 import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.databinding.SharedItemListBinding
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.utils.DateUtils
 
 class SharedItemsListViewHolder(
     override val binding: SharedItemListBinding,
-    userName: String,
-    userToken: String
-) : SharedItemsViewHolder(binding, userName, userToken) {
+    userEntity: UserEntity
+) : SharedItemsViewHolder(binding, userEntity) {
 
     override val image: SimpleDraweeView
         get() = binding.fileImage

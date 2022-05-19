@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.databinding.SharedItemGridBinding
 import com.nextcloud.talk.databinding.SharedItemListBinding
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.shareditems.model.SharedItem
 
 class SharedItemsAdapter(
     private val showGrid: Boolean,
-    private val userName: String,
-    private val userToken: String
+    private val userEntity: UserEntity
 ) : RecyclerView.Adapter<SharedItemsViewHolder>() {
 
     var items: List<SharedItem> = emptyList()
@@ -24,8 +24,7 @@ class SharedItemsAdapter(
                     parent,
                     false
                 ),
-                userName,
-                userToken
+                userEntity
             )
         } else {
             SharedItemsListViewHolder(
@@ -34,8 +33,7 @@ class SharedItemsAdapter(
                     parent,
                     false
                 ),
-                userName,
-                userToken
+                userEntity
             )
         }
     }

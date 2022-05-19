@@ -69,8 +69,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi) : 
                         fileParameters["link"]!!,
                         fileParameters["mimetype"]!!,
                         previewAvailable,
-                        previewLink(fileParameters["id"], parameters.baseUrl),
-                        parameters.userEntity
+                        previewLink(fileParameters["id"], parameters.baseUrl)
                     )
                 } else {
                     Log.w(TAG, "location and deckcard are not yet supported")

@@ -76,7 +76,7 @@ class SharedItemsActivity : AppCompatActivity() {
                 LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
             }
 
-            val adapter = SharedItemsAdapter(showGrid, userEntity.username, userEntity.token).apply {
+            val adapter = SharedItemsAdapter(showGrid, userEntity).apply {
                 items = it.items
             }
             binding.imageRecycler.adapter = adapter

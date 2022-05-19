@@ -1,6 +1,5 @@
 package com.nextcloud.talk.shareditems.repositories
 
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedMediaItems
 import io.reactivex.Observable
@@ -21,7 +20,6 @@ interface SharedItemsRepository {
         val userName: String,
         val userToken: String,
         val baseUrl: String,
-        val userEntity: UserEntity,
         val roomToken: String
     )
 }
