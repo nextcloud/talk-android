@@ -146,7 +146,7 @@ android {
 
 ext {
     butterknifeVersion = "10.2.3"
-    coilKtVersion = "1.4.0"
+    coilKtVersion = "2.1.0"
     daggerVersion = "2.42"
     okhttpVersion = "4.9.3"
     materialDialogsVersion = "3.3.0"
