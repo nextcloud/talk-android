@@ -56,6 +56,12 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <include
+        android:id="@+id/emptyContainer"
+        layout="@layout/empty_list"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/image_recycler"
         android:layout_width="match_parent"

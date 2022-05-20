@@ -25,6 +25,7 @@ package com.nextcloud.talk.shareditems.activities
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
@@ -84,10 +85,8 @@ class SharedItemsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
+            handleEmptyView(state)
             when (state) {
-                SharedItemsViewModel.NoSharedItemsState -> {
-                    // todo
-                }
                 is SharedItemsViewModel.LoadedState -> {
                     val sharedMediaItems = state.items
                     Log.d(TAG, "Items received: $sharedMediaItems")
@@ -106,6 +105,9 @@ class SharedItemsActivity : AppCompatActivity() {
                     binding.imageRecycler.layoutManager = layoutManager
                 }
                 is SharedItemsViewModel.TabsLoadedState -> initTabs(state.types)
+                else -> {
+                    // noop
+                }
             }
         }
 
@@ -119,6 +121,20 @@ class SharedItemsActivity : AppCompatActivity() {
         })
 
         viewModel.initialize(userEntity, roomToken, SharedItemType.MEDIA)
+    }
+
+    private fun handleEmptyView(state: SharedItemsViewModel.ViewState?) {
+        when (state) {
+            SharedItemsViewModel.NoSharedItemsState -> {
+                binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.nc_shared_items_empty)
+                binding.emptyContainer.emptyListView.visibility = View.VISIBLE
+                binding.sharedItemsTabs.visibility = View.GONE
+            }
+            else -> {
+                binding.emptyContainer.emptyListView.visibility = View.GONE
+                binding.sharedItemsTabs.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {

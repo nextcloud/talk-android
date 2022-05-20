@@ -48,21 +48,14 @@ class SharedItemsViewModel @Inject constructor(
 
     // items
     sealed interface ViewState
+    object InitialState : ViewState
     object NoSharedItemsState : ViewState
     open class TabsLoadedState(val types: Set<SharedItemType>) : ViewState
     class LoadedState(types: Set<SharedItemType>, val items: SharedMediaItems) : TabsLoadedState(types)
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(NoSharedItemsState)
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
         get() = _viewState
-
-    // private val _sharedItems: MutableLiveData<SharedMediaItems> by lazy {
-    //     MutableLiveData<SharedMediaItems>().also {
-    //         loadItems(_currentItemType)
-    //     }
-    // }
-    // val sharedItems: LiveData<SharedMediaItems>
-    //     get() = _sharedItems
 
     fun loadNextItems() {
         when (val currentState = _viewState.value) {

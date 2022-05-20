@@ -423,6 +423,7 @@
     <!-- shared items -->
     <string name="nc_shared_items">Shared items</string>
     <string name="nc_shared_items_description">Images, files, voice messages…</string>
+    <string name="nc_shared_items_empty">No shared items</string>
 
     <!-- voice messages -->
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
