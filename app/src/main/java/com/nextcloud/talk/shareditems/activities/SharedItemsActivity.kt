@@ -85,13 +85,13 @@ class SharedItemsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            handleEmptyView(state)
+            handleEmptyLoadingView(state)
             when (state) {
                 is SharedItemsViewModel.LoadedState -> {
                     val sharedMediaItems = state.items
                     Log.d(TAG, "Items received: $sharedMediaItems")
 
-                    val showGrid = viewModel.currentItemType == SharedItemType.MEDIA
+                    val showGrid = state.selectedType == SharedItemType.MEDIA
                     val layoutManager = if (showGrid) {
                         GridLayoutManager(this, SPAN_COUNT)
                     } else {
@@ -104,7 +104,9 @@ class SharedItemsActivity : AppCompatActivity() {
                     binding.imageRecycler.adapter = adapter
                     binding.imageRecycler.layoutManager = layoutManager
                 }
-                is SharedItemsViewModel.TabsLoadedState -> initTabs(state.types)
+                is SharedItemsViewModel.TypesLoadedState -> {
+                    initTabs(state.types)
+                }
                 else -> {
                     // noop
                 }
@@ -120,24 +122,27 @@ class SharedItemsActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.initialize(userEntity, roomToken, SharedItemType.MEDIA)
+        viewModel.initialize(userEntity, roomToken)
     }
 
-    private fun handleEmptyView(state: SharedItemsViewModel.ViewState?) {
-        when (state) {
-            SharedItemsViewModel.NoSharedItemsState -> {
-                binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.nc_shared_items_empty)
-                binding.emptyContainer.emptyListView.visibility = View.VISIBLE
-                binding.sharedItemsTabs.visibility = View.GONE
-            }
-            else -> {
-                binding.emptyContainer.emptyListView.visibility = View.GONE
-                binding.sharedItemsTabs.visibility = View.VISIBLE
-            }
+    private fun handleEmptyLoadingView(state: SharedItemsViewModel.ViewState?) {
+        binding.emptyContainer.emptyListViewHeadline.text = when (state) {
+            SharedItemsViewModel.NoSharedItemsState -> getString(R.string.nc_shared_items_description)
+            else -> getString(R.string.file_list_loading)
+        }
+        binding.emptyContainer.emptyListView.visibility = when (state) {
+            SharedItemsViewModel.NoSharedItemsState, is SharedItemsViewModel.LoadingItemsState -> View.VISIBLE
+            else -> View.GONE
+        }
+        binding.sharedItemsTabs.visibility = when (state) {
+            SharedItemsViewModel.NoSharedItemsState -> View.GONE
+            else -> View.VISIBLE
         }
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
+
+        binding.sharedItemsTabs.removeAllTabs()
 
         if (sharedItemTypes.contains(SharedItemType.MEDIA)) {
             val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
@@ -190,15 +195,13 @@ class SharedItemsActivity : AppCompatActivity() {
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                viewModel.loadItems(tab.tag as SharedItemType)
+                viewModel.initialLoadItems(tab.tag as SharedItemType)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) = Unit
 
             override fun onTabReselected(tab: TabLayout.Tab) = Unit
         })
-
-        viewModel.loadItems(SharedItemType.MEDIA)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
