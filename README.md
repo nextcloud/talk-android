@@ -54,14 +54,6 @@ Make sure you read [SETUP.md](/SETUP.md) and [CONTRIBUTING.md](/CONTRIBUTING.md)
 But basically: fork this repository and contribute back using pull requests to the master branch.
 Easy starting points are also reviewing [pull requests](https://github.com/nextcloud/talk-android/pulls) and working on [starter issues](https://github.com/nextcloud/talk-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22good+first+issue%22).
 
-Please be aware that currently java8 is needed to compile this project! (needs to be fixed 
-with https://github.com/nextcloud/talk-android/issues/1125)
-In Android Studio go to "File | Settings | Build, Execution, Deployment | Build Tools | Gradle"
-and set the path to your JDK8 location. You can also download JDK8 Eclipse Temurin in the dropdown list when 
-selecting "Download JDK" and then selecting version "1.8".
-
-![java8gradleJDK](/docs/java8gradleJDK.png "Branching Model")
-
 ### Testing :test_tube:
 
 So you would like to contribute by testing? Awesome, we appreciate that very much. 
