@@ -41,38 +41,41 @@ class SharedItemsViewModel @Inject constructor(
 ) :
     ViewModel() {
 
-    private val _sharedItemTypes: MutableLiveData<Set<SharedItemType>> by lazy {
-        MutableLiveData<Set<SharedItemType>>().also {
-            availableTypes()
-        }
-    }
-
-    private val _sharedItems: MutableLiveData<SharedMediaItems> by lazy {
-        MutableLiveData<SharedMediaItems>().also {
-            loadItems(_currentItemType)
-        }
-    }
-
     private lateinit var repositoryParameters: SharedItemsRepository.Parameters
     private lateinit var _currentItemType: SharedItemType
-
-    val sharedItemTypes: LiveData<Set<SharedItemType>>
-        get() = _sharedItemTypes
-
-    val sharedItems: LiveData<SharedMediaItems>
-        get() = _sharedItems
-
     val currentItemType: SharedItemType
         get() = _currentItemType
 
-    fun loadNextItems() {
-        val currentSharedItems = sharedItems.value ?: return
+    // items
+    sealed interface ViewState
+    object NoSharedItemsState : ViewState
+    open class TabsLoadedState(val types: Set<SharedItemType>) : ViewState
+    class LoadedState(types: Set<SharedItemType>, val items: SharedMediaItems) : TabsLoadedState(types)
 
-        if (currentSharedItems.moreItemsExisting) {
-            repository.media(repositoryParameters, _currentItemType, currentSharedItems.lastSeenId)
-                ?.subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(observer(_currentItemType, false))
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(NoSharedItemsState)
+    val viewState: LiveData<ViewState>
+        get() = _viewState
+
+    // private val _sharedItems: MutableLiveData<SharedMediaItems> by lazy {
+    //     MutableLiveData<SharedMediaItems>().also {
+    //         loadItems(_currentItemType)
+    //     }
+    // }
+    // val sharedItems: LiveData<SharedMediaItems>
+    //     get() = _sharedItems
+
+    fun loadNextItems() {
+        when (val currentState = _viewState.value) {
+            is LoadedState -> {
+                val currentSharedItems = currentState.items
+                if (currentSharedItems.moreItemsExisting) {
+                    repository.media(repositoryParameters, _currentItemType, currentSharedItems.lastSeenId)
+                        ?.subscribeOn(Schedulers.io())
+                        ?.observeOn(AndroidSchedulers.mainThread())
+                        ?.subscribe(observer(_currentItemType, false))
+                }
+            }
+            else -> return
         }
     }
 
@@ -101,23 +104,38 @@ class SharedItemsViewModel @Inject constructor(
             }
 
             override fun onComplete() {
+                val items = newSharedItems!!
+                // todo replace initmodel with tabsloadedstate
                 if (initModel) {
-                    this@SharedItemsViewModel._sharedItems.value =
-                        newSharedItems
+                    setCurrentState(items)
                 } else {
-                    val oldItems = this@SharedItemsViewModel._sharedItems.value!!.items
-                    this@SharedItemsViewModel._sharedItems.value =
+                    val state = this@SharedItemsViewModel._viewState.value as LoadedState
+                    val oldItems = state.items.items
+                    val newItems =
                         SharedMediaItems(
                             oldItems + newSharedItems!!.items,
                             newSharedItems!!.lastSeenId,
                             newSharedItems!!.moreItemsExisting
                         )
+                    setCurrentState(newItems)
+                }
+            }
+
+            private fun setCurrentState(items: SharedMediaItems) {
+                when (val state = this@SharedItemsViewModel._viewState.value) {
+                    is TabsLoadedState -> {
+                        this@SharedItemsViewModel._viewState.value = LoadedState(
+                            state.types,
+                            items
+                        )
+                    }
+                    else -> return
                 }
             }
         }
     }
 
-    private fun availableTypes() {
+    private fun loadAvailableTypes() {
         repository.availableTypes(repositoryParameters).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<Set<SharedItemType>> {
@@ -135,7 +153,12 @@ class SharedItemsViewModel @Inject constructor(
                 }
 
                 override fun onComplete() {
-                    this@SharedItemsViewModel._sharedItemTypes.value = this.types
+                    val newTypes = this.types
+                    if (newTypes.isNullOrEmpty()) {
+                        this@SharedItemsViewModel._viewState.value = NoSharedItemsState
+                    } else {
+                        this@SharedItemsViewModel._viewState.value = TabsLoadedState(newTypes)
+                    }
                 }
             })
     }
@@ -149,6 +172,7 @@ class SharedItemsViewModel @Inject constructor(
             roomToken
         )
         _currentItemType = initialType
+        loadAvailableTypes()
     }
 
     companion object {

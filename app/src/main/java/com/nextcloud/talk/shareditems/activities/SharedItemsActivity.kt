@@ -82,27 +82,31 @@ class SharedItemsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
-        viewModel.initialize(userEntity, roomToken, SharedItemType.MEDIA)
 
-        viewModel.sharedItemTypes.observe(this) {
-            initTabs(it)
-        }
+        viewModel.viewState.observe(this) { state ->
+            when (state) {
+                SharedItemsViewModel.NoSharedItemsState -> {
+                    // todo
+                }
+                is SharedItemsViewModel.LoadedState -> {
+                    val sharedMediaItems = state.items
+                    Log.d(TAG, "Items received: $sharedMediaItems")
 
-        viewModel.sharedItems.observe(this) {
-            Log.d(TAG, "Items received: $it")
+                    val showGrid = viewModel.currentItemType == SharedItemType.MEDIA
+                    val layoutManager = if (showGrid) {
+                        GridLayoutManager(this, SPAN_COUNT)
+                    } else {
+                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    }
 
-            val showGrid = viewModel.currentItemType == SharedItemType.MEDIA
-            val layoutManager = if (showGrid) {
-                GridLayoutManager(this, SPAN_COUNT)
-            } else {
-                LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    val adapter = SharedItemsAdapter(showGrid, userEntity).apply {
+                        items = sharedMediaItems.items
+                    }
+                    binding.imageRecycler.adapter = adapter
+                    binding.imageRecycler.layoutManager = layoutManager
+                }
+                is SharedItemsViewModel.TabsLoadedState -> initTabs(state.types)
             }
-
-            val adapter = SharedItemsAdapter(showGrid, userEntity).apply {
-                items = it.items
-            }
-            binding.imageRecycler.adapter = adapter
-            binding.imageRecycler.layoutManager = layoutManager
         }
 
         binding.imageRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -113,6 +117,8 @@ class SharedItemsActivity : AppCompatActivity() {
                 }
             }
         })
+
+        viewModel.initialize(userEntity, roomToken, SharedItemType.MEDIA)
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
@@ -175,6 +181,8 @@ class SharedItemsActivity : AppCompatActivity() {
 
             override fun onTabReselected(tab: TabLayout.Tab) = Unit
         })
+
+        viewModel.loadItems(SharedItemType.MEDIA)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
