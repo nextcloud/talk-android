@@ -41,7 +41,7 @@ import com.nextcloud.talk.databinding.ActivityFullScreenMediaBinding
 import java.io.File
 
 @AutoInjector(NextcloudTalkApplication::class)
-class FullScreenMediaActivity : AppCompatActivity(), Player.EventListener {
+class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
     lateinit var binding: ActivityFullScreenMediaBinding
 
     private lateinit var path: String
