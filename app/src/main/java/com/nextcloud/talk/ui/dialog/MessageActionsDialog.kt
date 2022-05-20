@@ -47,6 +47,8 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
+import com.vanniktech.emoji.installDisableKeyboardInput
+import com.vanniktech.emoji.installForceSingleEmoji
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -118,17 +120,18 @@ class MessageActionsDialog(
             true
         }
 
-        popup = EmojiPopup.Builder
-            .fromRootView(dialogMessageActionsBinding.root)
-            .setOnEmojiPopupShownListener {
+        popup = EmojiPopup(
+            rootView = dialogMessageActionsBinding.root,
+            editText = dialogMessageActionsBinding.emojiMore,
+            onEmojiPopupShownListener = {
                 dialogMessageActionsBinding.emojiMore.clearFocus()
                 dialogMessageActionsBinding.messageActions.visibility = View.GONE
-            }
-            .setOnEmojiClickListener { _, imageView ->
+            },
+            onEmojiClickListener = {
                 popup.dismiss()
-                sendReaction(message, imageView.unicode)
-            }
-            .setOnEmojiPopupDismissListener {
+                sendReaction(message, it.unicode)
+            },
+            onEmojiPopupDismissListener = {
                 dialogMessageActionsBinding.emojiMore.clearFocus()
                 dialogMessageActionsBinding.messageActions.visibility = View.VISIBLE
 
@@ -136,9 +139,9 @@ class MessageActionsDialog(
                     InputMethodManager
                 imm.hideSoftInputFromWindow(dialogMessageActionsBinding.emojiMore.windowToken, 0)
             }
-            .build(dialogMessageActionsBinding.emojiMore)
-        dialogMessageActionsBinding.emojiMore.disableKeyboardInput(popup)
-        dialogMessageActionsBinding.emojiMore.forceSingleEmoji()
+        )
+        dialogMessageActionsBinding.emojiMore.installDisableKeyboardInput(popup)
+        dialogMessageActionsBinding.emojiMore.installForceSingleEmoji()
     }
 
     /*

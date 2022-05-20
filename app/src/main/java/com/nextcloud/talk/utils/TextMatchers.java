@@ -3,6 +3,8 @@
  *
  * @author Mario Danic
  * @author Tim Krüger
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2021 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
@@ -25,14 +27,14 @@
 package com.nextcloud.talk.utils;
 
 import com.vanniktech.emoji.EmojiInformation;
-import com.vanniktech.emoji.EmojiUtils;
+import com.vanniktech.emoji.Emojis;
 
 import androidx.annotation.Nullable;
 
 public final class TextMatchers {
 
     public static boolean isMessageWithSingleEmoticonOnly(@Nullable final String text) {
-        final EmojiInformation emojiInformation = EmojiUtils.emojiInformation(text);
+        final EmojiInformation emojiInformation = Emojis.emojiInformation(text);
         return (emojiInformation.isOnlyEmojis && emojiInformation.emojis.size() == 1);
     }
 }

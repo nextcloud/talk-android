@@ -115,6 +115,72 @@ class EntryMenuController(args: Bundle) :
             false
         }
 
+        textEditAddChangedListener()
+
+        var labelText = ""
+        when (operation) {
+            ConversationOperationEnum.OPS_CODE_INVITE_USERS, ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> {
+                labelText = resources!!.getString(R.string.nc_call_name)
+                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT
+                binding.smileyButton.visibility = View.VISIBLE
+                emojiPopup = EmojiPopup(
+                    rootView = view,
+                    editText = binding.textEdit,
+                    onEmojiPopupShownListener = {
+                        if (resources != null) {
+                            binding.smileyButton.setColorFilter(
+                                resources!!.getColor(R.color.colorPrimary),
+                                PorterDuff.Mode.SRC_IN
+                            )
+                        }
+                    },
+                    onEmojiPopupDismissListener = {
+                        binding.smileyButton.setColorFilter(
+                            resources!!.getColor(R.color.emoji_icons),
+                            PorterDuff.Mode.SRC_IN
+                        )
+                    },
+                    onEmojiClickListener = {
+                        binding.textEdit.editableText.append(" ")
+                    }
+                )
+            }
+
+            ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD -> {
+                labelText = resources!!.getString(R.string.nc_new_password)
+                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+
+            ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
+            ConversationOperationEnum.OPS_CODE_SHARE_LINK,
+            ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
+                // 99 is joining a conversation via password
+                labelText = resources!!.getString(R.string.nc_password)
+                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            }
+
+            ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> {
+                labelText = resources!!.getString(R.string.nc_conversation_link)
+                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
+            }
+
+            else -> {
+            }
+        }
+        if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
+            binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
+        } else {
+            binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_NONE
+        }
+
+        binding.textInputLayout.hint = labelText
+        binding.textInputLayout.requestFocus()
+
+        binding.smileyButton.setOnClickListener { onSmileyClick() }
+        binding.okButton.setOnClickListener { onOkButtonClick() }
+    }
+
+    private fun textEditAddChangedListener() {
         binding.textEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
                 // unused atm
@@ -171,62 +237,6 @@ class EntryMenuController(args: Bundle) :
                 }
             }
         })
-
-        var labelText = ""
-        when (operation) {
-            ConversationOperationEnum.OPS_CODE_INVITE_USERS, ConversationOperationEnum.OPS_CODE_RENAME_ROOM -> {
-                labelText = resources!!.getString(R.string.nc_call_name)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT
-                binding.smileyButton.visibility = View.VISIBLE
-                emojiPopup = EmojiPopup.Builder.fromRootView(view)
-                    .setOnEmojiPopupShownListener {
-                        if (resources != null) {
-                            binding.smileyButton.setColorFilter(
-                                resources!!.getColor(R.color.colorPrimary),
-                                PorterDuff.Mode.SRC_IN
-                            )
-                        }
-                    }.setOnEmojiPopupDismissListener {
-                        binding.smileyButton.setColorFilter(
-                            resources!!.getColor(R.color.emoji_icons),
-                            PorterDuff.Mode.SRC_IN
-                        )
-                    }.setOnEmojiClickListener { emoji, imageView -> binding.textEdit.editableText.append(" ") }
-                    .build(binding.textEdit)
-            }
-
-            ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD -> {
-                labelText = resources!!.getString(R.string.nc_new_password)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-
-            ConversationOperationEnum.OPS_CODE_SET_PASSWORD,
-            ConversationOperationEnum.OPS_CODE_SHARE_LINK,
-            ConversationOperationEnum.OPS_CODE_JOIN_ROOM -> {
-                // 99 is joining a conversation via password
-                labelText = resources!!.getString(R.string.nc_password)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-            }
-
-            ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM -> {
-                labelText = resources!!.getString(R.string.nc_conversation_link)
-                binding.textEdit.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_URI
-            }
-
-            else -> {
-            }
-        }
-        if (PASSWORD_ENTRY_OPERATIONS.contains(operation)) {
-            binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_PASSWORD_TOGGLE
-        } else {
-            binding.textInputLayout.endIconMode = TextInputLayout.END_ICON_NONE
-        }
-
-        binding.textInputLayout.hint = labelText
-        binding.textInputLayout.requestFocus()
-
-        binding.smileyButton.setOnClickListener { onSmileyClick() }
-        binding.okButton.setOnClickListener { onOkButtonClick() }
     }
 
     private fun onSmileyClick() {
@@ -234,29 +244,13 @@ class EntryMenuController(args: Bundle) :
     }
 
     private fun onOkButtonClick() {
-        val bundle: Bundle
         if (operation === ConversationOperationEnum.OPS_CODE_JOIN_ROOM) {
-            bundle = Bundle()
-            bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
-            bundle.putString(BundleKeys.KEY_CALL_URL, callUrl)
-            bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, binding.textEdit.text.toString())
-            bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
-            if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
-                bundle.putParcelable(
-                    BundleKeys.KEY_SERVER_CAPABILITIES,
-                    originalBundle.getParcelable<Parcelable>(BundleKeys.KEY_SERVER_CAPABILITIES)
-                )
-            }
-            router.pushController(
-                RouterTransaction.with(OperationsMenuController(bundle))
-                    .pushChangeHandler(HorizontalChangeHandler())
-                    .popChangeHandler(HorizontalChangeHandler())
-            )
+            joinRoom()
         } else if (operation !== ConversationOperationEnum.OPS_CODE_SHARE_LINK &&
             operation !== ConversationOperationEnum.OPS_CODE_GET_AND_JOIN_ROOM &&
             operation !== ConversationOperationEnum.OPS_CODE_INVITE_USERS
         ) {
-            bundle = Bundle()
+            val bundle = Bundle()
             if (operation === ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD ||
                 operation === ConversationOperationEnum.OPS_CODE_SET_PASSWORD
             ) {
@@ -271,24 +265,22 @@ class EntryMenuController(args: Bundle) :
                     .pushChangeHandler(HorizontalChangeHandler())
                     .popChangeHandler(HorizontalChangeHandler())
             )
-        } else if (operation === ConversationOperationEnum.OPS_CODE_SHARE_LINK) {
-            if (activity != null) {
-                shareIntent?.putExtra(
-                    Intent.EXTRA_TEXT,
-                    ShareUtils.getStringForIntent(
-                        activity,
-                        binding.textEdit.text.toString(),
-                        userUtils,
-                        conversation
-                    )
+        } else if (operation === ConversationOperationEnum.OPS_CODE_SHARE_LINK && activity != null) {
+            shareIntent?.putExtra(
+                Intent.EXTRA_TEXT,
+                ShareUtils.getStringForIntent(
+                    activity,
+                    binding.textEdit.text.toString(),
+                    userUtils,
+                    conversation
                 )
-                val intent = Intent(shareIntent)
-                intent.component = ComponentName(packageName, name)
-                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                activity?.startActivity(intent)
-            }
+            )
+            val intent = Intent(shareIntent)
+            intent.component = ComponentName(packageName, name)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            activity?.startActivity(intent)
         } else if (operation !== ConversationOperationEnum.OPS_CODE_INVITE_USERS) {
-            bundle = Bundle()
+            val bundle = Bundle()
             bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
             bundle.putString(BundleKeys.KEY_CALL_URL, binding.textEdit.text.toString())
             router.pushController(
@@ -308,6 +300,25 @@ class EntryMenuController(args: Bundle) :
                     .popChangeHandler(HorizontalChangeHandler())
             )
         }
+    }
+
+    private fun joinRoom() {
+        val bundle = Bundle()
+        bundle.putParcelable(BundleKeys.KEY_ROOM, Parcels.wrap<Any>(conversation))
+        bundle.putString(BundleKeys.KEY_CALL_URL, callUrl)
+        bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, binding.textEdit.text.toString())
+        bundle.putSerializable(BundleKeys.KEY_OPERATION_CODE, operation)
+        if (originalBundle.containsKey(BundleKeys.KEY_SERVER_CAPABILITIES)) {
+            bundle.putParcelable(
+                BundleKeys.KEY_SERVER_CAPABILITIES,
+                originalBundle.getParcelable<Parcelable>(BundleKeys.KEY_SERVER_CAPABILITIES)
+            )
+        }
+        router.pushController(
+            RouterTransaction.with(OperationsMenuController(bundle))
+                .pushChangeHandler(HorizontalChangeHandler())
+                .popChangeHandler(HorizontalChangeHandler())
+        )
     }
 
     init {

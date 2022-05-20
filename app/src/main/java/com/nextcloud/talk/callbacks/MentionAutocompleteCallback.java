@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,7 +36,7 @@ import com.nextcloud.talk.utils.MagicCharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.vanniktech.emoji.EmojiRange;
-import com.vanniktech.emoji.EmojiUtils;
+import com.vanniktech.emoji.Emojis;
 
 public class MentionAutocompleteCallback implements AutocompleteCallback<Mention> {
     private Context context;
@@ -57,8 +59,8 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
         String replacement = item.getLabel();
 
         StringBuilder replacementStringBuilder = new StringBuilder(item.getLabel());
-        for(EmojiRange emojiRange : EmojiUtils.emojis(replacement)) {
-            replacementStringBuilder.delete(emojiRange.start, emojiRange.end);
+        for(EmojiRange emojiRange : Emojis.emojis(replacement)) {
+            replacementStringBuilder.delete(emojiRange.range.getStart(), emojiRange.range.getEndInclusive());
         }
 
         editable.replace(start, end, replacementStringBuilder.toString() + " ");
