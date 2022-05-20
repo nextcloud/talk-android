@@ -56,6 +56,8 @@ import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.vanniktech.emoji.EmojiPopup
+import com.vanniktech.emoji.installDisableKeyboardInput
+import com.vanniktech.emoji.installForceSingleEmoji
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -206,18 +208,19 @@ class SetStatusDialogFragment :
         binding.setStatus.setOnClickListener { setStatusMessage() }
         binding.emoji.setOnClickListener { openEmojiPopup() }
 
-        popup = EmojiPopup.Builder
-            .fromRootView(view)
-            .setOnEmojiClickListener { _, _ ->
+        popup = EmojiPopup(
+            rootView = view,
+            editText = binding.emoji,
+            onEmojiClickListener = {
                 popup.dismiss()
                 binding.emoji.clearFocus()
                 val imm: InputMethodManager = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as
                     InputMethodManager
                 imm.hideSoftInputFromWindow(binding.emoji.windowToken, 0)
             }
-            .build(binding.emoji)
-        binding.emoji.disableKeyboardInput(popup)
-        binding.emoji.forceSingleEmoji()
+        )
+        binding.emoji.installDisableKeyboardInput(popup)
+        binding.emoji.installForceSingleEmoji()
 
         binding.clearStatusAfterSpinner.apply {
             this.adapter = createClearTimesArrayAdapter()

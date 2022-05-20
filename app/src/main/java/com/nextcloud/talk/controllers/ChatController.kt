@@ -1637,20 +1637,25 @@ class ChatController(args: Bundle) :
         val smileyButton = binding.messageInputView.findViewById<ImageButton>(R.id.smileyButton)
 
         emojiPopup = binding.messageInputView.inputEditText?.let {
-            EmojiPopup.Builder.fromRootView(view).setOnEmojiPopupShownListener {
-                if (resources != null) {
+            EmojiPopup(
+                rootView = view,
+                editText = it,
+                onEmojiPopupShownListener = {
+                    if (resources != null) {
+                        smileyButton?.setImageDrawable(
+                            ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24)
+                        )
+                    }
+                },
+                onEmojiPopupDismissListener = {
                     smileyButton?.setImageDrawable(
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_keyboard_24)
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp)
                     )
+                },
+                onEmojiClickListener = {
+                    binding.messageInputView.inputEditText?.editableText?.append(" ")
                 }
-            }.setOnEmojiPopupDismissListener {
-                smileyButton?.setImageDrawable(
-                    ContextCompat.getDrawable(context!!, R.drawable.ic_insert_emoticon_black_24dp)
-                )
-            }.setOnEmojiClickListener { emoji,
-                imageView ->
-                binding.messageInputView.inputEditText?.editableText?.append(" ")
-            }.build(it)
+            )
         }
 
         smileyButton?.setOnClickListener {
