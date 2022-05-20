@@ -46,6 +46,7 @@ import coil.ImageLoader
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
+import coil.memory.MemoryCache
 import com.facebook.cache.disk.DiskCacheConfig
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
@@ -220,15 +221,18 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
 
     private fun buildDefaultImageLoader(): ImageLoader {
         return ImageLoader.Builder(applicationContext)
-            .availableMemoryPercentage(FIFTY_PERCENT) // Use 50% of the application's available memory.
+            .memoryCache {
+                // Use 50% of the application's available memory.
+                MemoryCache.Builder(applicationContext).maxSizePercent(FIFTY_PERCENT).build()
+            }
             .crossfade(true) // Show a short crossfade when loading images from network or disk into an ImageView.
-            .componentRegistry {
+            .components {
                 if (SDK_INT >= P) {
-                    add(ImageDecoderDecoder(applicationContext))
+                    add(ImageDecoderDecoder.Factory())
                 } else {
-                    add(GifDecoder())
+                    add(GifDecoder.Factory())
                 }
-                add(SvgDecoder(applicationContext))
+                add(SvgDecoder.Factory())
             }
             .okHttpClient(okHttpClient)
             .build()
