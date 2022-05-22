@@ -21,14 +21,15 @@
 -->
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="72dp"
     android:layout_margin="4dp"
     android:orientation="horizontal"
     app:cardBackgroundColor="@color/transparent"
-    app:cardElevation="0dp">
+    app:cardElevation="0dp"
+    app:strokeWidth="@dimen/zero">
 
     <RelativeLayout
         android:layout_width="match_parent"
