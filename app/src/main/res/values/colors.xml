@@ -99,7 +99,7 @@
 
     <color name="camera_bg_tint">#99121212</color>
 
-    <color name="list_divider_background">#eeeeee</color>
+    <color name="list_divider_background">#1F121212</color>
     <color name="grey_200">#EEEEEE</color>
 
     <!-- this is just a helper for status icon background because getting the background color of a dialog is not

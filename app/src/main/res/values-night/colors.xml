@@ -71,7 +71,7 @@
     <color name="nc_shimmer_default_color">#4B4B4B</color>
     <color name="nc_shimmer_darker_color">#282828</color>
 
-    <color name="list_divider_background">#222222</color>
+    <color name="list_divider_background">#1FFFFFFF</color>
     <color name="grey_200">#818181</color>
 
     <color name="dialog_background">#353535</color>
