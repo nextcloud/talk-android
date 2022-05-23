@@ -40,14 +40,15 @@ import kotlin.jvm.functions.Function2;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
-public class ReadFilesystemOperation {
+@Deprecated
+public class LegacyReadFilesystemOperation {
     private static final String TAG = "ReadFilesystemOperation";
     private final OkHttpClient okHttpClient;
     private final String url;
     private final int depth;
     private final String basePath;
 
-    public ReadFilesystemOperation(OkHttpClient okHttpClient, UserEntity currentUser, String path, int depth) {
+    public LegacyReadFilesystemOperation(OkHttpClient okHttpClient, UserEntity currentUser, String path, int depth) {
         OkHttpClient.Builder okHttpClientBuilder = okHttpClient.newBuilder();
         okHttpClientBuilder.followRedirects(false);
         okHttpClientBuilder.followSslRedirects(false);

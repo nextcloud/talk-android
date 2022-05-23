@@ -26,7 +26,7 @@ import android.util.Log;
 
 import com.nextcloud.talk.components.filebrowser.interfaces.ListingInterface;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
-import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
+import com.nextcloud.talk.components.filebrowser.webdav.LegacyReadFilesystemOperation;
 import com.nextcloud.talk.models.database.UserEntity;
 
 import java.util.concurrent.Callable;
@@ -50,20 +50,20 @@ public class DavListing extends ListingAbstractClass {
 
     @Override
     public void getFiles(String path, UserEntity currentUser, @Nullable OkHttpClient okHttpClient) {
-        Single.fromCallable(new Callable<ReadFilesystemOperation>() {
+        Single.fromCallable(new Callable<LegacyReadFilesystemOperation>() {
             @Override
-            public ReadFilesystemOperation call() {
-                return new ReadFilesystemOperation(okHttpClient, currentUser, path, 1);
+            public LegacyReadFilesystemOperation call() {
+                return new LegacyReadFilesystemOperation(okHttpClient, currentUser, path, 1);
             }
         }).subscribeOn(Schedulers.io())
-                .subscribe(new SingleObserver<ReadFilesystemOperation>() {
+                .subscribe(new SingleObserver<LegacyReadFilesystemOperation>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(@NonNull ReadFilesystemOperation readFilesystemOperation) {
+                    public void onSuccess(@NonNull LegacyReadFilesystemOperation readFilesystemOperation) {
                         davResponse = readFilesystemOperation.readRemotePath();
                         try {
                             listingInterface.listingResult(davResponse);

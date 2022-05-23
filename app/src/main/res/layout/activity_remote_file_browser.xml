@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk application
+  ~
+  ~ @author Mario Danic
+  ~ @author Andy Scherzinger
+  ~ Copyright (C) 2021-2022 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_default"
+    tools:context=".remotefilebrowser.activities.RemoteFileBrowserActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/remote_file_browser_items_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/remote_file_browser_items_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/appbar"
+            android:theme="?attr/actionBarPopupTheme"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIconTint="@color/fontAppbar"
+            app:popupTheme="@style/appActionBarPopupMenu"
+            app:titleTextColor="@color/fontAppbar"
+            tools:title="@string/nc_app_product_name" />
+
+        <!-- sorting/layout bar -->
+        <RelativeLayout
+            android:id="@+id/sort_list_button_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/appbar"
+            android:visibility="visible"
+            tools:visibility="visible">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/sort_button"
+                style="@style/Nextcloud.Material.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_marginStart="7dp"
+                android:contentDescription=""
+                android:text="@string/menu_item_sort_by_date_newest_first"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/fontAppbar"
+                android:textSize="14sp"
+                app:icon="@drawable/ic_keyboard_arrow_down"
+                app:iconGravity="textEnd"
+                app:iconSize="16dp"
+                app:iconTint="@color/fontAppbar" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/switch_grid_view_button"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_alignEnd="@+id/sort_button"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="1dp"
+                android:contentDescription=""
+                android:visibility="invisible"
+                app:cornerRadius="24dp"
+                app:icon="@drawable/ic_search_grey"
+                app:iconTint="@color/fontAppbar" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/path_navigation_back_button"
+                style="@style/Nextcloud.Material.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/min_size_clickable_area"
+                android:layout_below="@id/sort_button"
+                android:layout_centerInParent="true"
+                android:contentDescription=""
+                android:text="@string/nc_file_browser_back"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="@color/fontAppbar"
+                android:textSize="14sp"
+                app:icon="@drawable/ic_arrow_back_black_24dp"
+                app:iconGravity="textStart"
+                app:iconPadding="@dimen/standard_half_padding"
+                app:iconSize="16dp"
+                app:iconTint="@color/fontAppbar" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include
+        android:id="@+id/emptyContainer"
+        layout="@layout/empty_list"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:footerDividersEnabled="false">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:listitem="@layout/rv_item_browser_file" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

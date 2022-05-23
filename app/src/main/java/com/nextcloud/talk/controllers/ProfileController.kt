@@ -29,7 +29,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -48,8 +47,6 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
-import com.bluelinelabs.conductor.RouterTransaction
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getError
 import com.github.dhaval2404.imagepicker.ImagePicker.Companion.getFile
@@ -59,7 +56,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.components.filebrowser.controllers.BrowserController.BrowserType
-import com.nextcloud.talk.components.filebrowser.controllers.BrowserForAvatarController
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerProfileBinding
@@ -71,11 +67,15 @@ import com.nextcloud.talk.models.json.userprofile.Scope
 import com.nextcloud.talk.models.json.userprofile.UserProfileData
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
+import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BROWSER_TYPE
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SINGLE_SELECTION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
@@ -496,12 +496,22 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
             KEY_USER_ENTITY,
             Parcels.wrap(UserEntity::class.java, currentUser)
         )
+        bundle.putBoolean(KEY_SINGLE_SELECTION, true)
+        bundle.putString(KEY_MIME_TYPE_FILTER, "image/")
         bundle.putString(KEY_ROOM_TOKEN, "123")
+
+        val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
+        avatarIntent.putExtras(bundle)
+
+        startActivityForResult(avatarIntent, RemoteFileBrowserActivity.REQUEST_CODE_SELECT_AVATAR)
+
+        /*
         router.pushController(
             RouterTransaction.with(BrowserForAvatarController(bundle, this))
                 .pushChangeHandler(VerticalChangeHandler())
                 .popChangeHandler(VerticalChangeHandler())
         )
+        */
     }
 
     fun handleAvatar(remotePath: String?) {
@@ -526,10 +536,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
     private fun saveBitmapAndPassToImagePicker(bitmap: Bitmap) {
         var file: File? = null
         try {
-            file = File.createTempFile(
-                "avatar", "png",
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
-            )
+            file = FileUtils.getTempCacheFile(context!!, "avatar/avatar.png")
             try {
                 FileOutputStream(file).use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out) }
             } catch (e: IOException) {
@@ -555,6 +562,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
+
             uploadAvatar(getFile(data))
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(activity, getError(data), Toast.LENGTH_SHORT).show()
