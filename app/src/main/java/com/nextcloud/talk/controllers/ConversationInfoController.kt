@@ -51,7 +51,7 @@ import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.SharedItemsActivity
+import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.adapters.items.ParticipantItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication

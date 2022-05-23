@@ -55,7 +55,9 @@ import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DatabaseModule
+import com.nextcloud.talk.dagger.modules.RepositoryModule
 import com.nextcloud.talk.dagger.modules.RestModule
+import com.nextcloud.talk.dagger.modules.ViewModelModule
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.SignalingSettingsWorker
@@ -89,7 +91,9 @@ import javax.inject.Singleton
         DatabaseModule::class,
         RestModule::class,
         UserModule::class,
-        ArbitraryStorageModule::class
+        ArbitraryStorageModule::class,
+        ViewModelModule::class,
+        RepositoryModule::class
     ]
 )
 @Singleton

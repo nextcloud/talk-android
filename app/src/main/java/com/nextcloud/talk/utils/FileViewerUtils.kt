@@ -52,6 +52,12 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.io.File
 import java.util.concurrent.ExecutionException
 
+/*
+Usage of this class forces us to do things at one location which should be separated in a activity and view model.
+
+Example:
+  - SharedItemsViewHolder
+ */
 class FileViewerUtils(private val context: Context, private val userEntity: UserEntity) {
 
     fun openFile(

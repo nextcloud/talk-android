@@ -103,7 +103,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.activities.SharedItemsActivity
+import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder

@@ -1,37 +1,64 @@
-package com.nextcloud.talk.activities
+/*
+ * Nextcloud Talk application
+ *
+ * @author Tim Krüger
+ * @author Álvaro Brey
+ * Copyright (C) 2022 Álvaro Brey
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package com.nextcloud.talk.shareditems.activities
 
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import autodagger.AutoInjector
 import com.google.android.material.tabs.TabLayout
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.SharedItemsGridAdapter
-import com.nextcloud.talk.adapters.SharedItemsListAdapter
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.repositories.SharedItemType
+import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
+import com.nextcloud.talk.shareditems.model.SharedItemType
+import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.viewmodels.SharedItemsViewModel
+import javax.inject.Inject
 
+@AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var binding: ActivitySharedItemsBinding
     private lateinit var viewModel: SharedItemsViewModel
-    private lateinit var currentTab: SharedItemType
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        currentTab = SharedItemType.MEDIA
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
@@ -55,35 +82,37 @@ class SharedItemsActivity : AppCompatActivity() {
         supportActionBar?.title = conversationName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        viewModel = ViewModelProvider(
-            this,
-            SharedItemsViewModel.Factory(userEntity, roomToken, currentTab)
-        ).get(SharedItemsViewModel::class.java)
+        viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
-        viewModel.sharedItemType.observe(this) {
-            initTabs(it)
-        }
+        viewModel.viewState.observe(this) { state ->
+            clearEmptyLoading()
+            when (state) {
+                is SharedItemsViewModel.LoadingItemsState, SharedItemsViewModel.InitialState -> {
+                    showLoading()
+                }
+                is SharedItemsViewModel.NoSharedItemsState -> {
+                    showEmpty()
+                }
+                is SharedItemsViewModel.LoadedState -> {
+                    val sharedMediaItems = state.items
+                    Log.d(TAG, "Items received: $sharedMediaItems")
 
-        viewModel.sharedItems.observe(this) {
-            Log.d(TAG, "Items received: $it")
+                    val showGrid = state.selectedType == SharedItemType.MEDIA
+                    val layoutManager = if (showGrid) {
+                        GridLayoutManager(this, SPAN_COUNT)
+                    } else {
+                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    }
 
-            if (currentTab == SharedItemType.MEDIA) {
-                val adapter = SharedItemsGridAdapter()
-                adapter.items = it.items
-                adapter.authHeader = it.authHeader
-                binding.imageRecycler.adapter = adapter
-
-                val layoutManager = GridLayoutManager(this, SPAN_COUNT)
-                binding.imageRecycler.layoutManager = layoutManager
-            } else {
-                val adapter = SharedItemsListAdapter()
-                adapter.items = it.items
-                adapter.authHeader = it.authHeader
-                binding.imageRecycler.adapter = adapter
-
-                val layoutManager = LinearLayoutManager(this)
-                layoutManager.orientation = LinearLayoutManager.VERTICAL
-                binding.imageRecycler.layoutManager = layoutManager
+                    val adapter = SharedItemsAdapter(showGrid, userEntity).apply {
+                        items = sharedMediaItems.items
+                    }
+                    binding.imageRecycler.adapter = adapter
+                    binding.imageRecycler.layoutManager = layoutManager
+                }
+                is SharedItemsViewModel.TypesLoadedState -> {
+                    initTabs(state.types)
+                }
             }
         }
 
@@ -95,14 +124,29 @@ class SharedItemsActivity : AppCompatActivity() {
                 }
             }
         })
+
+        viewModel.initialize(userEntity, roomToken)
     }
 
-    fun updateItems(type: SharedItemType) {
-        currentTab = type
-        viewModel.loadItems(type)
+    private fun clearEmptyLoading() {
+        binding.sharedItemsTabs.visibility = View.VISIBLE
+        binding.emptyContainer.emptyListView.visibility = View.GONE
+    }
+
+    private fun showLoading() {
+        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.file_list_loading)
+        binding.emptyContainer.emptyListView.visibility = View.VISIBLE
+    }
+
+    private fun showEmpty() {
+        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.nc_shared_items_empty)
+        binding.emptyContainer.emptyListView.visibility = View.VISIBLE
+        binding.sharedItemsTabs.visibility = View.GONE
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
+
+        binding.sharedItemsTabs.removeAllTabs()
 
         if (sharedItemTypes.contains(SharedItemType.MEDIA)) {
             val tabMedia: TabLayout.Tab = binding.sharedItemsTabs.newTab()
@@ -155,7 +199,7 @@ class SharedItemsActivity : AppCompatActivity() {
 
         binding.sharedItemsTabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                updateItems(tab.tag as SharedItemType)
+                viewModel.initialLoadItems(tab.tag as SharedItemType)
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) = Unit
