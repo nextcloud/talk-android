@@ -85,8 +85,14 @@ class SharedItemsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this, viewModelFactory)[SharedItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
-            handleEmptyLoadingView(state)
+            clearEmptyLoading()
             when (state) {
+                is SharedItemsViewModel.LoadingItemsState, SharedItemsViewModel.InitialState -> {
+                    showLoading()
+                }
+                is SharedItemsViewModel.NoSharedItemsState -> {
+                    showEmpty()
+                }
                 is SharedItemsViewModel.LoadedState -> {
                     val sharedMediaItems = state.items
                     Log.d(TAG, "Items received: $sharedMediaItems")
@@ -107,9 +113,6 @@ class SharedItemsActivity : AppCompatActivity() {
                 is SharedItemsViewModel.TypesLoadedState -> {
                     initTabs(state.types)
                 }
-                else -> {
-                    // noop
-                }
             }
         }
 
@@ -125,19 +128,20 @@ class SharedItemsActivity : AppCompatActivity() {
         viewModel.initialize(userEntity, roomToken)
     }
 
-    private fun handleEmptyLoadingView(state: SharedItemsViewModel.ViewState?) {
-        binding.emptyContainer.emptyListViewHeadline.text = when (state) {
-            SharedItemsViewModel.NoSharedItemsState -> getString(R.string.nc_shared_items_description)
-            else -> getString(R.string.file_list_loading)
-        }
-        binding.emptyContainer.emptyListView.visibility = when (state) {
-            SharedItemsViewModel.NoSharedItemsState, is SharedItemsViewModel.LoadingItemsState -> View.VISIBLE
-            else -> View.GONE
-        }
-        binding.sharedItemsTabs.visibility = when (state) {
-            SharedItemsViewModel.NoSharedItemsState -> View.GONE
-            else -> View.VISIBLE
-        }
+    private fun clearEmptyLoading() {
+        binding.sharedItemsTabs.visibility = View.VISIBLE
+        binding.emptyContainer.emptyListView.visibility = View.GONE
+    }
+
+    private fun showLoading() {
+        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.file_list_loading)
+        binding.emptyContainer.emptyListView.visibility = View.VISIBLE
+    }
+
+    private fun showEmpty() {
+        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.nc_shared_items_empty)
+        binding.emptyContainer.emptyListView.visibility = View.VISIBLE
+        binding.sharedItemsTabs.visibility = View.GONE
     }
 
     private fun initTabs(sharedItemTypes: Set<SharedItemType>) {
