@@ -1,5 +1,5 @@
 /*
- * Nextcloud Talk application
+ *   Nextcloud Talk application
  *
  * @author Mario Danic
  * @author Marcel Hibbe
@@ -47,6 +47,7 @@ import com.nextcloud.talk.models.json.statuses.StatusesOverall;
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
+import com.nextcloud.talk.polls.repositories.model.PollOverall;
 
 import java.util.List;
 import java.util.Map;
@@ -526,4 +527,20 @@ public interface NcApi {
                                                           @Query("from") String fromUrl,
                                                           @Query("limit") Integer limit,
                                                           @Query("cursor") Integer cursor);
+
+    @GET
+    Observable<PollOverall> getPoll(@Header("Authorization") String authorization,
+                                    @Url String url);
+
+    @POST
+    Observable<PollOverall> createPoll(@Header("Authorization") String authorization,
+                                       @Url String url);
+
+    @POST
+    Observable<PollOverall> votePoll(@Header("Authorization") String authorization,
+                                     @Url String url);
+
+    @DELETE
+    Observable<PollOverall> closePoll(@Header("Authorization") String authorization,
+                                      @Url String url);
 }

@@ -309,6 +309,7 @@
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
+    <string name="nc_sent_poll" formatted="true">%1$s sent a poll.</string>
     <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
     <string name="nc_sent_voice" formatted="true">%1$s sent a voice message.</string>
     <string name="nc_sent_a_link_you">You sent a link.</string>
@@ -317,6 +318,7 @@
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_a_video_you">You sent a video.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
+    <string name="nc_sent_poll_you">You sent a poll.</string>
     <string name="nc_sent_location_you">You sent a location.</string>
     <string name="nc_sent_voice_you">You sent a voice message.</string>
     <string name="nc_formatted_message" translatable="false">%1$s: %2$s</string>
@@ -435,6 +437,10 @@
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
 
+    <!-- polls -->
+    <string name="message_poll_tap_to_vote">Tap to vote</string>
+    <string name="message_poll_tap_see_results">Tap to see results</string>
+
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_key" translatable="false">phone_book_integration</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
@@ -533,5 +539,6 @@
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
     <string name="set_avatar_from_camera">Set avatar from camera</string>
+
 
 </resources>
