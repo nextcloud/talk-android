@@ -41,6 +41,7 @@ class MessageSearchHelper(
     private var previousResults: List<SearchMessageEntry> = emptyList()
 
     fun startMessageSearch(search: String): Observable<MessageSearchResults> {
+        resetCachedData()
         return doSearch(search)
     }
 
@@ -56,7 +57,6 @@ class MessageSearchHelper(
     }
 
     private fun doSearch(search: String, cursor: Int = 0): Observable<MessageSearchResults> {
-        resetResultsIfNeeded(search)
         disposeIfPossible()
         return unifiedSearchRepository.searchMessages(user, search, cursor)
             .map { results ->
@@ -74,12 +74,6 @@ class MessageSearchHelper(
                 disposeIfPossible()
             }
             .doOnComplete(this::disposeIfPossible)
-    }
-
-    private fun resetResultsIfNeeded(search: String) {
-        if (search != previousSearch) {
-            resetCachedData()
-        }
     }
 
     private fun resetCachedData() {
