@@ -338,9 +338,3 @@ detekt {
     config = files("../detekt.yml")
     input = files("src/")
 }
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-}
