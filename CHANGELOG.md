@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [14.0.2] - 2022-05-13
+### Added
+- Handling for "event.participants.update.all" from HPB
+### Fixed
+- Multiple NPE
+- Reactions option for deleted messages and commands are shown
+- Always show reaction count (not only > 1)
+- Reactions option shown in read-only conversations
+
+For a full list, please see https: https://github.com/nextcloud/talk-android/milestone/55?closed=1
+
 ## [14.0.1] - 2022-05-03
 - fix app crashes when UI isn't available anymore
 - fix to load conversations when servers status app is disabled
