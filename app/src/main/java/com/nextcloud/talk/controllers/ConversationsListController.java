@@ -95,12 +95,12 @@ import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.AttendeePermissionsUtil;
 import com.nextcloud.talk.utils.ClosedInterfaceImpl;
 import com.nextcloud.talk.utils.ConductorRemapping;
-import com.nextcloud.talk.utils.Debouncer;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.rx.SearchViewObservable;
 import com.webianks.library.PopupBubble;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
@@ -117,6 +117,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -147,8 +148,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
-    FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
+public class ConversationsListController extends BaseController implements FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
 
     public static final String TAG = "ConvListController";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
@@ -236,9 +236,8 @@ public class ConversationsListController extends BaseController implements Searc
 
     private HashMap<String, Status> userStatuses = new HashMap<>();
 
-    private Debouncer searchDebouncer = new Debouncer(SEARCH_DEBOUNCE_INTERVAL_MS);
-
     private MessageSearchHelper searchHelper;
+    private Disposable searchViewDisposable;
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -361,7 +360,18 @@ public class ConversationsListController extends BaseController implements Searc
                 if (searchManager != null) {
                     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
                 }
-                searchView.setOnQueryTextListener(this);
+                searchViewDisposable = SearchViewObservable.observeSearchView(searchView)
+                    .debounce(query -> {
+                        if (TextUtils.isEmpty(query)) {
+                            return Observable.empty();
+                        } else {
+                            return Observable.timer(SEARCH_DEBOUNCE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+                        }
+                    })
+                    .distinctUntilChanged()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::onQueryTextChange);
             }
         }
     }
@@ -869,21 +879,17 @@ public class ConversationsListController extends BaseController implements Searc
     public void onDestroy() {
         super.onDestroy();
         dispose(null);
+        searchViewDisposable.dispose();
     }
 
-    @Override
-    public boolean onQueryTextChange(final String newText) {
+    public void onQueryTextChange(final String newText) {
         if (!TextUtils.isEmpty(searchQuery)) {
             final String filter = searchQuery;
             searchQuery = "";
             performFilterAndSearch(filter);
         } else if (adapter.hasNewFilter(newText)) {
-            new Handler();
-            searchDebouncer.debounce(() -> {
-                performFilterAndSearch(newText);
-            });
+            performFilterAndSearch(newText);
         }
-        return true;
     }
 
     private void performFilterAndSearch(String filter) {
@@ -938,11 +944,6 @@ public class ConversationsListController extends BaseController implements Searc
         }
     }
 
-
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return onQueryTextChange(query);
-    }
 
     @Override
     protected String getTitle() {
