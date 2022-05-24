@@ -317,7 +317,7 @@ dependencies {
     gplayImplementation "com.google.firebase:firebase-messaging:23.0.5"
 
     // TODO: Define variable for version
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.1"
     // implementation 'androidx.activity:activity-ktx:1.4.0'
 }
 
