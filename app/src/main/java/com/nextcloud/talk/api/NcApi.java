@@ -211,7 +211,8 @@ public interface NcApi {
     @FormUrlEncoded
     @POST
     Observable<GenericOverall> joinCall(@Nullable @Header("Authorization") String authorization, @Url String url,
-                                        @Field("flags") Integer inCall);
+                                        @Field("flags") Integer inCall,
+                                        @Field("silent") Boolean callWithoutNotification);
 
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
@@ -239,8 +240,8 @@ public interface NcApi {
     */
     @GET
     Observable<SignalingOverall> pullSignalingMessages(@Nullable @Header("Authorization") String authorization, @Url
-            String
-            url);
+        String
+        url);
 
      /*
         QueryMap items are as follows:
@@ -259,7 +260,7 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setUserData(@Header("Authorization") String authorization, @Url String url,
-                                                  @Field("key") String key, @Field("value") String value);
+                                           @Field("key") String key, @Field("value") String value);
 
 
     /*
@@ -281,14 +282,14 @@ public interface NcApi {
 
     @POST
     Observable<PushRegistrationOverall> registerDeviceForNotificationsWithNextcloud(@Header("Authorization")
-                                                                                            String authorization,
+                                                                                        String authorization,
                                                                                     @Url String url,
                                                                                     @QueryMap Map<String,
-                                                                                            String> options);
+                                                                                        String> options);
 
     @DELETE
     Observable<GenericOverall> unregisterDeviceForNotificationsWithNextcloud(@Header("Authorization")
-                                                                                     String authorization,
+                                                                                 String authorization,
                                                                              @Url String url);
 
     @FormUrlEncoded
@@ -438,10 +439,10 @@ public interface NcApi {
     @FormUrlEncoded
     @POST
     Observable<GenericOverall> sendLocation(@Header("Authorization") String authorization,
-                                                        @Url String url,
-                                                        @Field("objectType") String objectType,
-                                                        @Field("objectId") String objectId,
-                                                        @Field("metaData") String metaData);
+                                            @Url String url,
+                                            @Field("objectType") String objectType,
+                                            @Field("objectId") String objectId,
+                                            @Field("metaData") String metaData);
 
     @DELETE
     Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
@@ -484,23 +485,23 @@ public interface NcApi {
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setPredefinedStatusMessage(@Header("Authorization") String authorization,
-                                      @Url String url,
-                                      @Field("messageId") String selectedPredefinedMessageId,
-                                      @Field("clearAt") Long clearAt);
+                                                          @Url String url,
+                                                          @Field("messageId") String selectedPredefinedMessageId,
+                                                          @Field("clearAt") Long clearAt);
 
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setCustomStatusMessage(@Header("Authorization") String authorization,
-                                  @Url String url,
-                                  @Field("statusIcon") String statusIcon,
-                                  @Field("message") String message,
-                                  @Field("clearAt") Long clearAt);
+                                                      @Url String url,
+                                                      @Field("statusIcon") String statusIcon,
+                                                      @Field("message") String message,
+                                                      @Field("clearAt") Long clearAt);
 
     @FormUrlEncoded
     @PUT
     Observable<GenericOverall> setStatusType(@Header("Authorization") String authorization,
-                                                      @Url String url,
-                                                      @Field("statusType") String statusType);
+                                             @Url String url,
+                                             @Field("statusType") String statusType);
 
     @GET
     Observable<StatusesOverall> getUserStatuses(@Header("Authorization") String authorization, @Url String url);
@@ -508,7 +509,7 @@ public interface NcApi {
 
     @POST
     Observable<GenericOverall> sendReaction(@Header("Authorization") String authorization, @Url String url,
-                                 @Query("reaction") String reaction);
+                                            @Query("reaction") String reaction);
 
     @DELETE
     Observable<GenericOverall> deleteReaction(@Header("Authorization") String authorization, @Url String url,

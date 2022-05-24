@@ -103,7 +103,6 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
-import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
@@ -143,6 +142,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
+import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -884,6 +884,35 @@ class ChatController(args: Bundle) :
             popupMenu.setForceShowIcon(true)
         }
         popupMenu.show()
+    }
+
+    private fun showCallButtonMenu(isVoiceOnlyCall: Boolean) {
+        val anchor: View? = if (isVoiceOnlyCall) {
+            activity?.findViewById(R.id.conversation_voice_call)
+        } else {
+            activity?.findViewById(R.id.conversation_video_call)
+        }
+
+        if (anchor != null) {
+            val popupMenu = PopupMenu(
+                ContextThemeWrapper(view?.context, R.style.CallButtonMenu),
+                anchor,
+                Gravity.END
+            )
+            popupMenu.inflate(R.menu.chat_call_menu)
+
+            popupMenu.setOnMenuItemClickListener { item: MenuItem ->
+                when (item.itemId) {
+                    R.id.call_without_notification -> startACall(isVoiceOnlyCall, true)
+                }
+                true
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                popupMenu.setForceShowIcon(true)
+            }
+            popupMenu.show()
+        }
     }
 
     private fun startPlayback(message: ChatMessage) {
@@ -1827,7 +1856,7 @@ class ChatController(args: Bundle) :
                         }
                         if (startCallFromNotification != null && startCallFromNotification ?: false) {
                             startCallFromNotification = false
-                            startACall(voiceOnly)
+                            startACall(voiceOnly, false)
                         }
                     }
 
@@ -2403,6 +2432,22 @@ class ChatController(args: Bundle) :
         if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
+
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "silent-call")) {
+                Handler().post {
+                    activity?.findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
+                        showCallButtonMenu(true)
+                        true
+                    }
+                }
+
+                Handler().post {
+                    activity?.findViewById<View?>(R.id.conversation_video_call)?.setOnLongClickListener {
+                        showCallButtonMenu(false)
+                        true
+                    }
+                }
+            }
         } else {
             menu.removeItem(R.id.conversation_video_call)
             menu.removeItem(R.id.conversation_voice_call)
@@ -2425,11 +2470,11 @@ class ChatController(args: Bundle) :
                 return true
             }
             R.id.conversation_video_call -> {
-                startACall(false)
+                startACall(false, false)
                 return true
             }
             R.id.conversation_voice_call -> {
-                startACall(true)
+                startACall(true, false)
                 return true
             }
             R.id.conversation_info -> {
@@ -2493,19 +2538,19 @@ class ChatController(args: Bundle) :
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
     }
 
-    private fun startACall(isVoiceOnlyCall: Boolean) {
+    private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         if (currentConversation?.canStartCall == false && currentConversation?.hasCall == false) {
             Toast.makeText(context, R.string.startCallForbidden, Toast.LENGTH_LONG).show()
         } else {
             ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
-            val callIntent = getIntentForCall(isVoiceOnlyCall)
+            val callIntent = getIntentForCall(isVoiceOnlyCall, callWithoutNotification)
             if (callIntent != null) {
                 startActivity(callIntent)
             }
         }
     }
 
-    private fun getIntentForCall(isVoiceOnlyCall: Boolean): Intent? {
+    private fun getIntentForCall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean): Intent? {
         currentConversation?.let {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, roomToken)
@@ -2517,6 +2562,9 @@ class ChatController(args: Bundle) :
 
             if (isVoiceOnlyCall) {
                 bundle.putBoolean(BundleKeys.KEY_CALL_VOICE_ONLY, true)
+            }
+            if (callWithoutNotification) {
+                bundle.putBoolean(BundleKeys.KEY_CALL_WITHOUT_NOTIFICATION, true)
             }
 
             return if (activity != null) {

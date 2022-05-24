@@ -231,6 +231,7 @@ public class CallActivity extends CallBaseActivity {
     private boolean microphoneOn = false;
 
     private boolean isVoiceOnlyCall;
+    private boolean isCallWithoutNotification;
     private boolean isIncomingCallFromNotification;
     private Handler callControlHandler = new Handler();
     private Handler callInfosHandler = new Handler();
@@ -287,6 +288,7 @@ public class CallActivity extends CallBaseActivity {
         conversationPassword = extras.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_PASSWORD(), "");
         conversationName = extras.getString(BundleKeys.INSTANCE.getKEY_CONVERSATION_NAME(), "");
         isVoiceOnlyCall = extras.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_VOICE_ONLY(), false);
+        isCallWithoutNotification = extras.getBoolean(BundleKeys.INSTANCE.getKEY_CALL_WITHOUT_NOTIFICATION(), false);
 
         if (extras.containsKey(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL())) {
             isIncomingCallFromNotification = extras.getBoolean(BundleKeys.INSTANCE.getKEY_FROM_NOTIFICATION_START_CALL());
@@ -1356,7 +1358,11 @@ public class CallActivity extends CallBaseActivity {
 
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
-        ncApi.joinCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken), inCallFlag)
+        ncApi.joinCall(
+                credentials,
+                ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken),
+                inCallFlag,
+                isCallWithoutNotification)
             .subscribeOn(Schedulers.io())
             .retry(3)
             .observeOn(AndroidSchedulers.mainThread())
@@ -1825,11 +1831,11 @@ public class CallActivity extends CallBaseActivity {
         int apiVersion = ApiUtils.getCallApiVersion(conversationUser, new int[]{ApiUtils.APIv4, 1});
 
         ncApi.getPeersForCall(
-            credentials,
-            ApiUtils.getUrlForCall(
-                apiVersion,
-                baseUrl,
-                roomToken))
+                credentials,
+                ApiUtils.getUrlForCall(
+                    apiVersion,
+                    baseUrl,
+                    roomToken))
             .subscribeOn(Schedulers.io())
             .subscribe(new Observer<ParticipantsOverall>() {
                 @Override
@@ -2468,7 +2474,7 @@ public class CallActivity extends CallBaseActivity {
             mediaPlayer.setDataSource(this, ringtoneUri);
             mediaPlayer.setLooping(true);
             AudioAttributes audioAttributes = new AudioAttributes.Builder().setContentType(
-                AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    AudioAttributes.CONTENT_TYPE_SONIFICATION)
                 .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
                 .build();
             mediaPlayer.setAudioAttributes(audioAttributes);
