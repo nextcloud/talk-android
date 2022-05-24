@@ -145,6 +145,7 @@
     <string name="nc_manual">No configurado</string>
     <string name="nc_mark_as_read">Marcar como leído</string>
     <string name="nc_mark_as_unread">Marcar como no leído</string>
+    <string name="nc_message_failed_to_send">Fallo al enviar el mensa</string>
     <string name="nc_message_quote_cancel_reply">Cancelar respuesta</string>
     <string name="nc_message_read">Mensajes leídos</string>
     <string name="nc_message_sent">Mensaje enviado</string>
@@ -297,6 +298,9 @@
     <string name="nc_share_text">Únete a la conversación en %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
+    <string name="nc_shared_items">Elementos compartidos</string>
+    <string name="nc_shared_items_description">Imágenes, archivos, mensajes de voz...</string>
+    <string name="nc_shared_items_empty">No hay elementos compartidos</string>
     <string name="nc_shared_location">Ubicación compartida</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de inicio</string>
@@ -340,7 +344,9 @@
     <string name="secondsAgo">hace segundos</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_to">Enviar a</string>
+    <string name="send_to_forbidden">No tienes permiso para compartir contenido en este chat</string>
     <string name="send_to_three_dots">Enviar a …</string>
+    <string name="send_without_notification">Enviar sin notificación</string>
     <string name="set_status">Establecer estado</string>
     <string name="set_status_message">Establecer mensaje de estado</string>
     <string name="share">Compartir</string>

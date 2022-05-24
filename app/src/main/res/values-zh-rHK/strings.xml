@@ -299,6 +299,7 @@
     <string name="nc_share_this_location">分享此位置</string>
     <string name="nc_shared_items">分享項目</string>
     <string name="nc_shared_items_description">圖片、文件、語音訊息 …</string>
+    <string name="nc_shared_items_empty">沒有已分享的項目</string>
     <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_sort_by">排序方式</string>
     <string name="nc_start_time">開始時間</string>

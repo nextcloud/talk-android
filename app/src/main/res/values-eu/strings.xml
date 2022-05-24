@@ -299,6 +299,7 @@
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_shared_items">Partekatutako elementuak</string>
     <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak…</string>
+    <string name="nc_shared_items_empty">Ez dago partekatutako elementurik</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
     <string name="nc_start_time">Hasiera-ordua</string>

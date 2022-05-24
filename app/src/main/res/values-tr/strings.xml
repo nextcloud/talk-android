@@ -299,6 +299,7 @@
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
     <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>
+    <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
