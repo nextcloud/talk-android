@@ -19,7 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers.util
+package com.nextcloud.talk.messagesearch
 
 import android.util.Log
 import com.nextcloud.talk.models.database.UserEntity
@@ -28,9 +28,10 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
-class MessageSearchHelper(
+class MessageSearchHelper @JvmOverloads constructor(
     private val user: UserEntity,
     private val unifiedSearchRepository: UnifiedSearchRepository,
+    private val fromRoom: String? = null
 ) {
 
     data class MessageSearchResults(val messages: List<SearchMessageEntry>, val hasMore: Boolean)
@@ -58,7 +59,7 @@ class MessageSearchHelper(
 
     private fun doSearch(search: String, cursor: Int = 0): Observable<MessageSearchResults> {
         disposeIfPossible()
-        return unifiedSearchRepository.searchMessages(user, search, cursor)
+        return searchCall(search, cursor)
             .map { results ->
                 previousSearch = search
                 previousCursor = results.cursor
@@ -74,6 +75,29 @@ class MessageSearchHelper(
                 disposeIfPossible()
             }
             .doOnComplete(this::disposeIfPossible)
+    }
+
+    private fun searchCall(
+        search: String,
+        cursor: Int
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
+        return when {
+            fromRoom != null -> {
+                unifiedSearchRepository.searchInRoom(
+                    userEntity = user,
+                    roomToken = fromRoom,
+                    searchTerm = search,
+                    cursor = cursor
+                )
+            }
+            else -> {
+                unifiedSearchRepository.searchMessages(
+                    userEntity = user,
+                    searchTerm = search,
+                    cursor = cursor
+                )
+            }
+        }
     }
 
     private fun resetCachedData() {

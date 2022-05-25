@@ -42,7 +42,7 @@ data class MessageResultItem constructor(
     private val context: Context,
     private val currentUser: UserEntity,
     val messageEntry: SearchMessageEntry,
-    private val showHeader: Boolean
+    private val showHeader: Boolean = false
 ) :
     AbstractFlexibleItem<MessageResultItem.ViewHolder>(),
     IFilterable<String>,

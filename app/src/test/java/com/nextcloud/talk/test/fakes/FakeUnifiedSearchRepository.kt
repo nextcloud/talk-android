@@ -41,7 +41,14 @@ class FakeUnifiedSearchRepository : UnifiedSearchRepository {
         return Observable.just(response)
     }
 
-    override fun searchInRoom(text: String, roomId: String): Observable<List<SearchMessageEntry>> {
-        TODO("Not yet implemented")
+    override fun searchInRoom(
+        userEntity: UserEntity,
+        roomToken: String,
+        searchTerm: String,
+        cursor: Int,
+        limit: Int
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
+        lastRequestedCursor = cursor
+        return Observable.just(response)
     }
 }

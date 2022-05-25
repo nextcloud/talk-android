@@ -130,6 +130,7 @@ import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -1346,6 +1347,7 @@ class ChatController(args: Bundle) :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode != RESULT_OK) {
+            // TODO for message search, CANCELED is fine
             Log.e(TAG, "resultCode for received intent was != ok")
             return
         }
@@ -1452,6 +1454,8 @@ class ChatController(args: Bundle) :
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
             }
+        } else if (requestCode == REQUEST_CODE_MESSAGE_SEARCH) {
+            TODO()
         }
     }
 
@@ -2469,28 +2473,32 @@ class ChatController(args: Bundle) :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 (activity as MainActivity).resetConversationsList()
-                return true
+                true
             }
             R.id.conversation_video_call -> {
                 startACall(false, false)
-                return true
+                true
             }
             R.id.conversation_voice_call -> {
                 startACall(true, false)
-                return true
+                true
             }
             R.id.conversation_info -> {
                 showConversationInfoScreen()
-                return true
+                true
             }
             R.id.shared_items -> {
                 showSharedItems()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            R.id.conversation_search -> {
+                startMessageSearch()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -2500,6 +2508,14 @@ class ChatController(args: Bundle) :
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
         activity!!.startActivity(intent)
+    }
+
+    private fun startMessageSearch() {
+        val intent = Intent(activity, MessageSearchActivity::class.java)
+        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
+        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+        intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
+        activity!!.startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
@@ -3087,6 +3103,7 @@ class ChatController(args: Bundle) :
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
+        private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223

@@ -48,9 +48,25 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchReposit
         return apiObservable.map { mapToMessageResults(it.ocs?.data!!, searchTerm, limit) }
     }
 
-    override fun searchInRoom(text: String, roomId: String): Observable<List<SearchMessageEntry>> {
-        TODO()
+    override fun searchInRoom(
+        userEntity: UserEntity,
+        roomToken: String,
+        searchTerm: String,
+        cursor: Int,
+        limit: Int
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
+        val apiObservable = api.performUnifiedSearch(
+            ApiUtils.getCredentials(userEntity.username, userEntity.token),
+            ApiUtils.getUrlForUnifiedSearch(userEntity.baseUrl, PROVIDER_TALK_MESSAGE_CURRENT),
+            searchTerm,
+            fromUrlForRoom(roomToken),
+            limit,
+            cursor
+        )
+        return apiObservable.map { mapToMessageResults(it.ocs?.data!!, searchTerm, limit) }
     }
+
+    private fun fromUrlForRoom(roomToken: String) = "/call/$roomToken"
 
     companion object {
         private const val PROVIDER_TALK_MESSAGE = "talk-message"

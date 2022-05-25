@@ -19,7 +19,7 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.controllers.util
+package com.nextcloud.talk.messagesearch
 
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.domain.SearchMessageEntry

@@ -74,7 +74,7 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.controllers.util.MessageSearchHelper;
+import com.nextcloud.talk.messagesearch.MessageSearchHelper;
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;

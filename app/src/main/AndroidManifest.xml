@@ -172,6 +172,11 @@
             android:name=".shareditems.activities.SharedItemsActivity"
             android:theme="@style/AppTheme"/>
 
+        <activity
+            android:name=".messagesearch.MessageSearchActivity"
+            android:theme="@style/AppTheme"
+            android:exported="false" />
+
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />

@@ -273,14 +273,14 @@
     <string name="dnd">Do not disturb</string>
     <string name="away">Away</string>
     <string name="invisible">Invisible</string>
-    <string translatable="false" name="divider">—</string>
-    <string translatable="false" name="default_emoji">😃</string>
-    <string translatable="false" name="emoji_thumbsUp">👍</string>
-    <string translatable="false" name="emoji_thumbsDown">👎</string>
-    <string translatable="false" name="emoji_heart">❤️</string>
-    <string translatable="false" name="emoji_confused">😯</string>
-    <string translatable="false" name="emoji_sad">😢</string>
-    <string translatable="false" name="emoji_more">More emojis</string>
+    <string name="divider" translatable="false">—</string>
+    <string name="default_emoji" translatable="false">😃</string>
+    <string name="emoji_thumbsUp" translatable="false">👍</string>
+    <string name="emoji_thumbsDown" translatable="false">👎</string>
+    <string name="emoji_heart" translatable="false">❤️</string>
+    <string name="emoji_confused" translatable="false">😯</string>
+    <string name="emoji_sad" translatable="false">😢</string>
+    <string name="emoji_more" translatable="false">More emojis</string>
     <string name="dontClear">Don\'t clear</string>
     <string name="today">Today</string>
     <string name="thirtyMinutes">30 minutes</string>
@@ -525,5 +525,6 @@
     <string name="call_without_notification">Call without notification</string>
     <string name="messages">Messages</string>
     <string name="load_more_results">Load more results</string>
+    <string name="nc_search_hint">Search…</string>
 
 </resources>
