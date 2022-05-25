@@ -52,13 +52,13 @@
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
-    <string name="nc_call_state_in_call">%1$s kişi katılıyor</string>
+    <string name="nc_call_state_in_call">Çağrıda %1$s kişi var</string>
     <string name="nc_call_state_with_phone">%1$s kişi telefon ile</string>
     <string name="nc_call_state_with_video">%1$s kişi görüntü ile</string>
     <string name="nc_call_timeout">45 saniye içinde yanıt alınamadı, yeniden denemek için dokunun</string>
     <string name="nc_call_unknown">%s çağrı</string>
-    <string name="nc_call_video">%s görüntülü görüşme</string>
-    <string name="nc_call_voice">%s sesli görüşme</string>
+    <string name="nc_call_video">%s görüntülü çağrı</string>
+    <string name="nc_call_voice">%s sesli çağrı</string>
     <string name="nc_camera_permission_permanently_denied">Görüntülü iletişim kurabilmek için sistem ayarlarından \"Kamera\" erişme iznini verin.</string>
     <string name="nc_cancel">İptal</string>
     <string name="nc_capabilities_failed">Yeterlilikler alınamadı, vazgeçiliyor</string>
@@ -83,8 +83,8 @@
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
-    <string name="nc_conversation_menu_video_call">Görüntülü görüşme</string>
-    <string name="nc_conversation_menu_voice_call">Sesli görüşme</string>
+    <string name="nc_conversation_menu_video_call">Görüntülü çağrı</string>
+    <string name="nc_conversation_menu_voice_call">Sesli çağrı</string>
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
@@ -127,7 +127,7 @@
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
     <string name="nc_leave">Görüşmeden ayrıl</string>
-    <string name="nc_leaving_call">Arama sonlandırılıyor …</string>
+    <string name="nc_leaving_call">Çağrı sonlandırılıyor …</string>
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. sürüm</string>
     <string name="nc_license_title">Lisans</string>
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
@@ -294,7 +294,7 @@
     <string name="nc_share_link">Paylaşım bağlantısı</string>
     <string name="nc_share_location">Konumu paylaş</string>
     <string name="nc_share_subject">%1$s çağrısı</string>
-    <string name="nc_share_text">Görüşmeye şuradan katılın %1$s/index.php/call/%2$s</string>
+    <string name="nc_share_text">Çağrıya şuradan katılın %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
