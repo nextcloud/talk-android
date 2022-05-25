@@ -44,6 +44,6 @@
     <item
         android:id="@+id/shared_items"
         android:orderInCategory="1"
-        android:title="Shared Items"
+        android:title="@string/nc_shared_items"
         app:showAsAction="never" />
 </menu>
