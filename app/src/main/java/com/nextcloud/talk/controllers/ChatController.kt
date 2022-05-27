@@ -1709,14 +1709,19 @@ class ChatController(args: Bundle) :
         binding.messageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun cancelNotificationsForCurrentConversation() {
         if (conversationUser != null) {
             if (!TextUtils.isEmpty(roomToken)) {
-                NotificationUtils.cancelExistingNotificationsForRoom(
-                    applicationContext,
-                    conversationUser,
-                    roomToken!!
-                )
+                try {
+                    NotificationUtils.cancelExistingNotificationsForRoom(
+                        applicationContext,
+                        conversationUser,
+                        roomToken!!
+                    )
+                } catch (e: RuntimeException) {
+                    Log.w(TAG, "Cancel notifications for current conversation results with an error.", e)
+                }
             }
         }
     }
