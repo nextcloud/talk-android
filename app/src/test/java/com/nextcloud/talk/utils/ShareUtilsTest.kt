@@ -21,7 +21,6 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.content.res.Resources
-import android.text.TextUtils
 import at.bitfire.dav4jvm.HttpUtils.parseDate
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
@@ -32,19 +31,10 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.powermock.api.mockito.PowerMockito
-import org.powermock.core.classloader.annotations.PrepareForTest
-import org.powermock.modules.junit4.PowerMockRunner
-import java.text.ParseException
 
-@RunWith(PowerMockRunner::class)
-@PrepareForTest(TextUtils::class)
-@Ignore("Test fails on CI server. See issue https://github.com/nextcloud/talk-android/issues/1737")
 class ShareUtilsTest {
     @Mock
     private val context: Context? = null
@@ -56,29 +46,28 @@ class ShareUtilsTest {
     private val userUtils: UserUtils? = null
 
     @Mock
-    private val conversation: Conversation? = null
-
-    @Mock
     private val userEntity: UserEntity? = null
+
     private val baseUrl = "https://my.nextcloud.com"
     private val token = "2aotbrjr"
+
+    private lateinit var conversation: Conversation
 
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        PowerMockito.mockStatic(TextUtils::class.java)
         Mockito.`when`(userUtils!!.currentUser).thenReturn(userEntity)
         Mockito.`when`(userEntity!!.baseUrl).thenReturn(baseUrl)
-        Mockito.`when`(conversation!!.token).thenReturn(token)
         Mockito.`when`(context!!.resources).thenReturn(resources)
         Mockito.`when`(resources!!.getString(R.string.nc_share_text))
             .thenReturn("Join the conversation at %1\$s/index.php/call/%2\$s")
         Mockito.`when`(resources.getString(R.string.nc_share_text_pass)).thenReturn("\nPassword: %1\$s")
+
+        conversation = Conversation(token = token)
     }
 
     @Test
     fun stringForIntent_noPasswordGiven_correctStringWithoutPasswordReturned() {
-        PowerMockito.`when`(TextUtils.isEmpty(ArgumentMatchers.anyString())).thenReturn(true)
         val expectedResult = String.format(
             "Join the conversation at %s/index.php/call/%s",
             baseUrl, token
@@ -91,7 +80,6 @@ class ShareUtilsTest {
 
     @Test
     fun stringForIntent_passwordGiven_correctStringWithPasswordReturned() {
-        PowerMockito.`when`(TextUtils.isEmpty(ArgumentMatchers.anyString())).thenReturn(false)
         val password = "superSecret"
         val expectedResult = String.format(
             "Join the conversation at %s/index.php/call/%s\nPassword: %s",
@@ -104,7 +92,7 @@ class ShareUtilsTest {
     }
 
     @Test
-    @Throws(ParseException::class)
+    @Ignore("Test fails on CI server. See issue https://github.com/nextcloud/talk-android/issues/1737")
     fun date() {
         assertEquals(1207778138000, parseDate("Mon, 09 Apr 2008 23:55:38 GMT")?.time)
     }
