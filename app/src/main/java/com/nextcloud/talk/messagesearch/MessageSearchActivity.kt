@@ -22,6 +22,7 @@
 package com.nextcloud.talk.messagesearch
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.Menu
@@ -154,12 +155,27 @@ class MessageSearchActivity : BaseActivity() {
         adapter!!.addListener(object : FlexibleAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int): Boolean {
                 val item = adapter!!.getItem(position)
-                if (item?.itemViewType == LoadMoreResultsItem.VIEW_TYPE) {
-                    viewModel.loadMore()
+                when (item?.itemViewType) {
+                    LoadMoreResultsItem.VIEW_TYPE -> {
+                        viewModel.loadMore()
+                    }
+                    MessageResultItem.VIEW_TYPE -> {
+                        // TODO go through viewmodel
+                        val messageItem = item as MessageResultItem
+                        finishWithResult(messageItem.messageEntry.messageId!!)
+                    }
                 }
                 return false
             }
         })
+    }
+
+    private fun finishWithResult(messageId: String) {
+        val resultIntent = Intent().apply {
+            putExtra(RESULT_KEY_MESSAGE_ID, messageId)
+        }
+        setResult(Activity.RESULT_OK, resultIntent)
+        finish()
     }
 
     private fun showInitial() {
@@ -234,5 +250,9 @@ class MessageSearchActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         searchViewDisposable?.dispose()
+    }
+
+    companion object {
+        const val RESULT_KEY_MESSAGE_ID = "MessageSearchActivity.result.message"
     }
 }

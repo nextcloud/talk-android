@@ -1346,92 +1346,21 @@ class ChatController(args: Bundle) :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (resultCode != RESULT_OK) {
-            // TODO for message search, CANCELED is fine
+        if (resultCode != RESULT_OK && (requestCode != REQUEST_CODE_MESSAGE_SEARCH)) {
             Log.e(TAG, "resultCode for received intent was != ok")
             return
         }
 
-        if (requestCode == REQUEST_CODE_CHOOSE_FILE) {
-            try {
-                checkNotNull(intent)
-                filesToUpload.clear()
-                intent.clipData?.let {
-                    for (index in 0 until it.itemCount) {
-                        filesToUpload.add(it.getItemAt(index).uri.toString())
-                    }
-                } ?: run {
-                    checkNotNull(intent.data)
-                    intent.data.let {
-                        filesToUpload.add(intent.data.toString())
-                    }
-                }
-                require(filesToUpload.isNotEmpty())
-
-                val filenamesWithLinebreaks = StringBuilder("\n")
-
-                for (file in filesToUpload) {
-                    val filename = UriUtils.getFileName(Uri.parse(file), context)
-                    filenamesWithLinebreaks.append(filename).append("\n")
-                }
-
-                val confirmationQuestion = when (filesToUpload.size) {
-                    1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
-                        String.format(it, title)
-                    }
-                    else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
-                        String.format(it, title)
-                    }
-                }
-
-                LovelyStandardDialog(activity)
-                    .setPositiveButtonColorRes(R.color.nc_darkGreen)
-                    .setTitle(confirmationQuestion)
-                    .setMessage(filenamesWithLinebreaks.toString())
-                    .setPositiveButton(R.string.nc_yes) { v ->
-                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                            uploadFiles(filesToUpload, false)
-                        } else {
-                            UploadAndShareFilesWorker.requestStoragePermission(this)
-                        }
-                    }
-                    .setNegativeButton(R.string.nc_no) {
-                        // unused atm
-                    }
-                    .show()
-            } catch (e: IllegalStateException) {
-                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                    .show()
-                Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-            } catch (e: IllegalArgumentException) {
-                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                    .show()
-                Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-            }
-        } else if (requestCode == REQUEST_CODE_SELECT_CONTACT) {
-            val contactUri = intent?.data ?: return
-            val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
-
-            if (cursor != null && cursor.moveToFirst()) {
-                val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
-                val file = File(context?.cacheDir, fileName)
-                writeContactToVcfFile(cursor, file)
-
-                val shareUri = FileProvider.getUriForFile(
-                    activity!!,
-                    BuildConfig.APPLICATION_ID,
-                    File(file.absolutePath)
-                )
-                uploadFiles(mutableListOf(shareUri.toString()), false)
-            }
-            cursor?.close()
-        } else if (requestCode == REQUEST_CODE_PICK_CAMERA) {
-            if (resultCode == RESULT_OK) {
+        when (requestCode) {
+            REQUEST_CODE_CHOOSE_FILE -> {
                 try {
                     checkNotNull(intent)
                     filesToUpload.clear()
-                    run {
+                    intent.clipData?.let {
+                        for (index in 0 until it.itemCount) {
+                            filesToUpload.add(it.getItemAt(index).uri.toString())
+                        }
+                    } ?: run {
                         checkNotNull(intent.data)
                         intent.data.let {
                             filesToUpload.add(intent.data.toString())
@@ -1439,11 +1368,37 @@ class ChatController(args: Bundle) :
                     }
                     require(filesToUpload.isNotEmpty())
 
-                    if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                        uploadFiles(filesToUpload, false)
-                    } else {
-                        UploadAndShareFilesWorker.requestStoragePermission(this)
+                    val filenamesWithLinebreaks = StringBuilder("\n")
+
+                    for (file in filesToUpload) {
+                        val filename = UriUtils.getFileName(Uri.parse(file), context)
+                        filenamesWithLinebreaks.append(filename).append("\n")
                     }
+
+                    val confirmationQuestion = when (filesToUpload.size) {
+                        1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
+                            String.format(it, title)
+                        }
+                        else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
+                            String.format(it, title)
+                        }
+                    }
+
+                    LovelyStandardDialog(activity)
+                        .setPositiveButtonColorRes(R.color.nc_darkGreen)
+                        .setTitle(confirmationQuestion)
+                        .setMessage(filenamesWithLinebreaks.toString())
+                        .setPositiveButton(R.string.nc_yes) { v ->
+                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                                uploadFiles(filesToUpload, false)
+                            } else {
+                                UploadAndShareFilesWorker.requestStoragePermission(this)
+                            }
+                        }
+                        .setNegativeButton(R.string.nc_no) {
+                            // unused atm
+                        }
+                        .show()
                 } catch (e: IllegalStateException) {
                     Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
@@ -1454,8 +1409,79 @@ class ChatController(args: Bundle) :
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
             }
-        } else if (requestCode == REQUEST_CODE_MESSAGE_SEARCH) {
-            TODO()
+            REQUEST_CODE_SELECT_CONTACT -> {
+                val contactUri = intent?.data ?: return
+                val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
+                    val file = File(context?.cacheDir, fileName)
+                    writeContactToVcfFile(cursor, file)
+
+                    val shareUri = FileProvider.getUriForFile(
+                        activity!!,
+                        BuildConfig.APPLICATION_ID,
+                        File(file.absolutePath)
+                    )
+                    uploadFiles(mutableListOf(shareUri.toString()), false)
+                }
+                cursor?.close()
+            }
+            REQUEST_CODE_PICK_CAMERA -> {
+                if (resultCode == RESULT_OK) {
+                    try {
+                        checkNotNull(intent)
+                        filesToUpload.clear()
+                        run {
+                            checkNotNull(intent.data)
+                            intent.data.let {
+                                filesToUpload.add(intent.data.toString())
+                            }
+                        }
+                        require(filesToUpload.isNotEmpty())
+
+                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                            uploadFiles(filesToUpload, false)
+                        } else {
+                            UploadAndShareFilesWorker.requestStoragePermission(this)
+                        }
+                    } catch (e: IllegalStateException) {
+                        Toast.makeText(
+                            context,
+                            context?.resources?.getString(R.string.nc_upload_failed),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                    } catch (e: IllegalArgumentException) {
+                        Toast.makeText(
+                            context,
+                            context?.resources?.getString(R.string.nc_upload_failed),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                    }
+                }
+            }
+            REQUEST_CODE_MESSAGE_SEARCH -> {
+                val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
+                messageId?.let { id ->
+                    scrollToMessageWithId(id)
+                }
+            }
+        }
+    }
+
+    private fun scrollToMessageWithId(messageId: String) {
+        val position = adapter?.items?.indexOfFirst {
+            it.item is ChatMessage && (it.item as ChatMessage).id == messageId
+        }
+        if (position != null && position >= 0) {
+            binding.messagesListView.smoothScrollToPosition(position)
+        } else {
+            // TODO show error that we don't have that message?
         }
     }
 
@@ -2283,6 +2309,7 @@ class ChatController(args: Bundle) :
                 if (adapter != null) {
                     adapter?.addToEnd(chatMessageList, false)
                 }
+                scrollToRequestedMessageIfNeeded()
             } else {
 
                 var chatMessage: ChatMessage
@@ -2395,6 +2422,12 @@ class ChatController(args: Bundle) :
             if (!lookingIntoFuture && inConversation) {
                 pullChatMessages(1)
             }
+        }
+    }
+
+    private fun scrollToRequestedMessageIfNeeded() {
+        args.getString(BundleKeys.KEY_MESSAGE_ID)?.let {
+            scrollToMessageWithId(it)
         }
     }
 
@@ -2515,7 +2548,7 @@ class ChatController(args: Bundle) :
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
-        activity!!.startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
+        startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {

@@ -74,7 +74,6 @@ import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
-import com.nextcloud.talk.messagesearch.MessageSearchHelper;
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent;
 import com.nextcloud.talk.events.EventStatus;
 import com.nextcloud.talk.interfaces.ConversationMenuInterface;
@@ -82,6 +81,7 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
+import com.nextcloud.talk.messagesearch.MessageSearchHelper;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.domain.SearchMessageEntry;
@@ -223,6 +223,7 @@ public class ConversationsListController extends BaseController implements Flexi
     private Conversation selectedConversation;
 
     private String textToPaste = "";
+    private String selectedMessageId = null;
 
     private boolean forwardMessage;
 
@@ -921,7 +922,9 @@ public class ConversationsListController extends BaseController implements Flexi
 
     @SuppressLint("CheckResult") // handled by helper
     private void startMessageSearch(final String search) {
-        swipeRefreshLayout.setRefreshing(true);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
         searchHelper
             .startMessageSearch(search)
             .subscribeOn(Schedulers.io())
@@ -958,6 +961,7 @@ public class ConversationsListController extends BaseController implements Flexi
         } else if (item instanceof MessageResultItem) {
             MessageResultItem messageItem = (MessageResultItem) item;
             String conversationToken = messageItem.getMessageEntry().getConversationToken();
+            selectedMessageId = messageItem.getMessageEntry().getMessageId();
             showConversationByToken(conversationToken);
         } else if (item instanceof LoadMoreResultsItem) {
             loadMoreMessages();
@@ -1187,6 +1191,10 @@ public class ConversationsListController extends BaseController implements Flexi
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
+        if (selectedMessageId != null) {
+            bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId);
+            selectedMessageId = null;
+        }
 
         ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                                                         selectedConversation.getToken(), bundle, false);
@@ -1394,11 +1402,15 @@ public class ConversationsListController extends BaseController implements Flexi
                 recyclerView.scrollToPosition(0);
             }
         }
-        swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 
     public void onMessageSearchError(@NonNull Throwable throwable) {
         handleHttpExceptions(throwable);
-        swipeRefreshLayout.setRefreshing(false);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }
