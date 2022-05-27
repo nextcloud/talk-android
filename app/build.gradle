@@ -152,7 +152,6 @@ ext {
     okhttpVersion = "4.9.3"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
-    powermockVersion = "2.0.9"
     retrofit2Version = "2.9.0"
     workVersion = "2.7.1"
     markwonVersion = "4.6.2"
@@ -294,10 +293,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:3.12.4'
-    testImplementation "org.powermock:powermock-core:${powermockVersion}"
-    testImplementation "org.powermock:powermock-module-junit4:${powermockVersion}"
-    testImplementation "org.powermock:powermock-api-mockito2:${powermockVersion}"
+    testImplementation 'org.mockito:mockito-core:4.5.1'
 
     androidTestImplementation "androidx.test:core:1.4.0"
 
