@@ -21,7 +21,6 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.content.res.Resources
-import at.bitfire.dav4jvm.HttpUtils.parseDate
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -29,7 +28,6 @@ import com.nextcloud.talk.utils.database.user.UserUtils
 import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito
@@ -89,11 +87,5 @@ class ShareUtilsTest {
             "Intent string was not as expected",
             expectedResult, ShareUtils.getStringForIntent(context, password, userUtils, conversation)
         )
-    }
-
-    @Test
-    @Ignore("Test fails on CI server. See issue https://github.com/nextcloud/talk-android/issues/1737")
-    fun date() {
-        assertEquals(1207778138000, parseDate("Mon, 09 Apr 2008 23:55:38 GMT")?.time)
     }
 }
