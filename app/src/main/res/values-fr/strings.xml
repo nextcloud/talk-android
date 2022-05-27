@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Écouteurs sans fil</string>
     <string name="avatar">Avatar</string>
     <string name="away">Non présent</string>
+    <string name="call_without_notification">Appeler sans notification</string>
     <string name="choose_avatar_from_cloud">Sélectionner l\'avatar depuis le cloud</string>
     <string name="clear_status_message">Effacer le message de statut</string>
     <string name="clear_status_message_after">Effacer le message de statut après</string>
@@ -145,6 +146,7 @@
     <string name="nc_manual">Non défini</string>
     <string name="nc_mark_as_read">Marquer comme lu</string>
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
+    <string name="nc_message_failed_to_send">Échec d\'envoi du message:</string>
     <string name="nc_message_quote_cancel_reply">Annuler la réponse</string>
     <string name="nc_message_read">Message lu</string>
     <string name="nc_message_sent">Message envoyé</string>
@@ -298,6 +300,7 @@
     <string name="nc_share_this_location">Partager cette position</string>
     <string name="nc_shared_items">Éléments partagés</string>
     <string name="nc_shared_items_description">Images, fichiers, messages vocaux…</string>
+    <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_location">Position partagée</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_time">Heure de début</string>
@@ -341,7 +344,9 @@
     <string name="secondsAgo">secondes</string>
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_to">Envoyer a</string>
+    <string name="send_to_forbidden">Vous n\'êtes pas autorisé à partager du contenu dans cette conversation</string>
     <string name="send_to_three_dots">Envoyer a…</string>
+    <string name="send_without_notification">Envoyer sans notification</string>
     <string name="set_status">Définir le statut</string>
     <string name="set_status_message">Définir le message de statut</string>
     <string name="share">Partage</string>

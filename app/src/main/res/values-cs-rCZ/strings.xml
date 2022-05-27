@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Drátová náhlavní souprava</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="away">Pryč</string>
+    <string name="call_without_notification">Zavolat bez upozornění</string>
     <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
