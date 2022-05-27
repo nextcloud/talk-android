@@ -35,6 +35,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.json.generic.GenericMeta;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -110,14 +111,16 @@ public class AccountRemovalWorker extends Worker {
 
                                 @Override
                                 public void onNext(@NotNull GenericOverall genericOverall) {
-                                    if (Objects.requireNonNull(genericOverall.getMeta()).getStatusCode() == 200 ||
-                                        genericOverall.getMeta().getStatusCode() == 202) {
+                                    GenericMeta meta = Objects.requireNonNull(genericOverall.getOcs()).getMeta();
+                                    int statusCode = Objects.requireNonNull(meta).getStatusCode();
+
+                                    if (statusCode == 200 || statusCode == 202) {
                                         HashMap<String, String> queryMap = new HashMap<>();
                                         queryMap.put("deviceIdentifier",
                                                      finalPushConfigurationState.getDeviceIdentifier());
                                         queryMap.put("userPublicKey", finalPushConfigurationState.getUserPublicKey());
                                         queryMap.put("deviceIdentifierSignature",
-                                                finalPushConfigurationState.getDeviceIdentifierSignature());
+                                                     finalPushConfigurationState.getDeviceIdentifierSignature());
                                         unregisterDeviceForNotificationWithProxy(queryMap, userEntity);
                                     }
                                 }

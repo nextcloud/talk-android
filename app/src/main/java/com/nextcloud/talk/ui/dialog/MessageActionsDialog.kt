@@ -321,7 +321,7 @@ class MessageActionsDialog(
                 }
 
                 override fun onNext(@NonNull genericOverall: GenericOverall) {
-                    val statusCode = genericOverall.meta?.statusCode
+                    val statusCode = genericOverall.ocs?.meta?.statusCode
                     if (statusCode == HTTP_CREATED) {
                         chatController.updateAdapterAfterSendReaction(message, emoji)
                     }

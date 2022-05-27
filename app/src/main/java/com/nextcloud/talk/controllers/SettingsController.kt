@@ -988,7 +988,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
-                    val statusCode = genericOverall.meta?.statusCode
+                    val statusCode = genericOverall.ocs?.meta?.statusCode
                     if (statusCode == HTTP_CODE) {
                         dialog.dismiss()
                         Toast.makeText(

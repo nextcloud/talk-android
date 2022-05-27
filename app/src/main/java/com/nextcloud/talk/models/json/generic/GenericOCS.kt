@@ -28,9 +28,9 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class GenericOverall(
-    @JsonField(name = ["ocs"])
-    var ocs: GenericOCS? = null
+data class GenericOCS(
+    @JsonField(name = ["meta"])
+    var meta: GenericMeta? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)
