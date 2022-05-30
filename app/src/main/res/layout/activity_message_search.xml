@@ -41,8 +41,7 @@
             app:navigationIconTint="@color/fontAppbar"
             app:popupTheme="@style/appActionBarPopupMenu"
             app:titleTextColor="@color/fontAppbar"
-            tools:title="@string/nc_app_product_name">
-        </com.google.android.material.appbar.MaterialToolbar>
+            tools:title="@string/nc_app_product_name"></com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -52,12 +51,21 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/message_search_recycler"
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:listitem="@layout/rv_item_search_message" />
+        app:layout_behavior="com.nextcloud.talk.utils.FABAwareScrollingViewBehavior">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/message_search_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            tools:listitem="@layout/rv_item_search_message" />
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

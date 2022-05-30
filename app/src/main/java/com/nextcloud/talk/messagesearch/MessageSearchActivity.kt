@@ -84,6 +84,10 @@ class MessageSearchActivity : BaseActivity() {
         val roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         viewModel.initialize(user, roomToken)
         setupStateObserver()
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refresh(searchView.query?.toString())
+        }
     }
 
     private fun setupActionBar() {
@@ -109,8 +113,8 @@ class MessageSearchActivity : BaseActivity() {
     private fun setupStateObserver() {
         viewModel.state.observe(this) { state ->
             when (state) {
-                MessageSearchViewModel.EmptyState -> showEmpty()
                 MessageSearchViewModel.InitialState -> showInitial()
+                MessageSearchViewModel.EmptyState -> showEmpty()
                 is MessageSearchViewModel.LoadedState -> showLoaded(state)
                 MessageSearchViewModel.LoadingState -> showLoading()
                 MessageSearchViewModel.ErrorState -> showError()
@@ -119,15 +123,20 @@ class MessageSearchActivity : BaseActivity() {
     }
 
     private fun showError() {
+        displayLoading(false)
         Toast.makeText(this, "Error while searching", Toast.LENGTH_SHORT).show()
     }
 
     private fun showLoading() {
-        // TODO
-        Toast.makeText(this, "LOADING", Toast.LENGTH_LONG).show()
+        displayLoading(true)
+    }
+
+    private fun displayLoading(loading: Boolean) {
+        binding.swipeRefreshLayout.isRefreshing = loading
     }
 
     private fun showLoaded(state: MessageSearchViewModel.LoadedState) {
+        displayLoading(false)
         binding.emptyContainer.emptyListView.visibility = View.GONE
         binding.messageSearchRecycler.visibility = View.VISIBLE
         setAdapterItems(state)
@@ -179,12 +188,14 @@ class MessageSearchActivity : BaseActivity() {
     }
 
     private fun showInitial() {
+        displayLoading(false)
         binding.messageSearchRecycler.visibility = View.GONE
         binding.emptyContainer.emptyListViewHeadline.text = "Start typing to search..."
         binding.emptyContainer.emptyListView.visibility = View.VISIBLE
     }
 
     private fun showEmpty() {
+        displayLoading(false)
         binding.messageSearchRecycler.visibility = View.GONE
         binding.emptyContainer.emptyListViewHeadline.text = "No search results"
         binding.emptyContainer.emptyListView.visibility = View.VISIBLE

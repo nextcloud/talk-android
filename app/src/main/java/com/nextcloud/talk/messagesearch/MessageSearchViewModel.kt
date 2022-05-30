@@ -107,6 +107,10 @@ class MessageSearchViewModel @Inject constructor(private val unifiedSearchReposi
         _state.value = ErrorState
     }
 
+    fun refresh(query: String?) {
+        query?.let { onQueryTextChange(it) }
+    }
+
     companion object {
         private val TAG = MessageSearchViewModel::class.simpleName
         private const val MIN_CHARS_FOR_SEARCH = 2
