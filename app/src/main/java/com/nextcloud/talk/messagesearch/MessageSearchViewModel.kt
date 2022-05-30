@@ -58,6 +58,7 @@ class MessageSearchViewModel @Inject constructor(private val unifiedSearchReposi
     object EmptyState : ViewState()
     object ErrorState : ViewState()
     class LoadedState(val results: List<SearchMessageEntry>, val hasMore: Boolean) : ViewState()
+    class FinishedState(val selectedMessageId: String) : ViewState()
 
     private lateinit var messageSearchHelper: MessageSearchHelper
 
@@ -109,6 +110,10 @@ class MessageSearchViewModel @Inject constructor(private val unifiedSearchReposi
 
     fun refresh(query: String?) {
         query?.let { onQueryTextChange(it) }
+    }
+
+    fun selectMessage(messageEntry: SearchMessageEntry) {
+        _state.value = FinishedState(messageEntry.messageId!!)
     }
 
     companion object {

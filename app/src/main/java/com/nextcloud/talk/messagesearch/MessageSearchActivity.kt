@@ -118,6 +118,7 @@ class MessageSearchActivity : BaseActivity() {
                 is MessageSearchViewModel.LoadedState -> showLoaded(state)
                 MessageSearchViewModel.LoadingState -> showLoading()
                 MessageSearchViewModel.ErrorState -> showError()
+                is MessageSearchViewModel.FinishedState -> onFinish()
             }
         }
     }
@@ -169,9 +170,8 @@ class MessageSearchActivity : BaseActivity() {
                         viewModel.loadMore()
                     }
                     MessageResultItem.VIEW_TYPE -> {
-                        // TODO go through viewmodel
                         val messageItem = item as MessageResultItem
-                        finishWithResult(messageItem.messageEntry.messageId!!)
+                        viewModel.selectMessage(messageItem.messageEntry)
                     }
                 }
                 return false
@@ -179,12 +179,15 @@ class MessageSearchActivity : BaseActivity() {
         })
     }
 
-    private fun finishWithResult(messageId: String) {
-        val resultIntent = Intent().apply {
-            putExtra(RESULT_KEY_MESSAGE_ID, messageId)
+    private fun onFinish() {
+        val state = viewModel.state.value
+        if (state is MessageSearchViewModel.FinishedState) {
+            val resultIntent = Intent().apply {
+                putExtra(RESULT_KEY_MESSAGE_ID, state.selectedMessageId)
+            }
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
         }
-        setResult(Activity.RESULT_OK, resultIntent)
-        finish()
     }
 
     private fun showInitial() {
