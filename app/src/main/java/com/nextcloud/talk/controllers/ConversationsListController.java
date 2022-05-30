@@ -956,30 +956,29 @@ public class ConversationsListController extends BaseController implements Flexi
     @Override
     public boolean onItemClick(View view, int position) {
         final AbstractFlexibleItem item = adapter.getItem(position);
-        if (item instanceof ConversationItem) {
-            showConversation(((ConversationItem) Objects.requireNonNull(item)).getModel());
-        } else if (item instanceof MessageResultItem) {
-            MessageResultItem messageItem = (MessageResultItem) item;
-            String conversationToken = messageItem.getMessageEntry().getConversationToken();
-            selectedMessageId = messageItem.getMessageEntry().getMessageId();
-            showConversationByToken(conversationToken);
-        } else if (item instanceof LoadMoreResultsItem) {
-            loadMoreMessages();
+        if (item != null) {
+            final int viewType = item.getItemViewType();
+            if (viewType == MessageResultItem.VIEW_TYPE) {
+                MessageResultItem messageItem = (MessageResultItem) item;
+                String conversationToken = messageItem.getMessageEntry().getConversationToken();
+                selectedMessageId = messageItem.getMessageEntry().getMessageId();
+                showConversationByToken(conversationToken);
+            } else if (viewType == LoadMoreResultsItem.VIEW_TYPE) {
+                loadMoreMessages();
+            } else if (viewType == ConversationItem.VIEW_TYPE) {
+                showConversation(((ConversationItem) Objects.requireNonNull(item)).getModel());
+            }
         }
-
         return true;
     }
 
     private void showConversationByToken(String conversationToken) {
-        Conversation conversation = null;
         for (AbstractFlexibleItem absItem : conversationItems) {
             ConversationItem conversationItem = ((ConversationItem) absItem);
             if (conversationItem.getModel().getToken().equals(conversationToken)) {
-                conversation = conversationItem.getModel();
+                final Conversation conversation = conversationItem.getModel();
+                showConversation(conversation);
             }
-        }
-        if (conversation != null) {
-            showConversation(conversation);
         }
     }
 
@@ -1390,7 +1389,7 @@ public class ConversationsListController extends BaseController implements Flexi
             clearMessageSearchResults();
             final List<SearchMessageEntry> entries = results.getMessages();
             if (entries.size() > 0) {
-                List<AbstractFlexibleItem> adapterItems = new ArrayList<>();
+                List<AbstractFlexibleItem> adapterItems = new ArrayList<>(entries.size() + 1);
                 for (int i = 0; i < entries.size(); i++) {
                     final boolean showHeader = i == 0;
                     adapterItems.add(new MessageResultItem(context, currentUser, entries.get(i), showHeader));

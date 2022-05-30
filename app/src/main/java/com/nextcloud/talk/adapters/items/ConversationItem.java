@@ -67,6 +67,8 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 public class ConversationItem extends AbstractFlexibleItem<ConversationItem.ConversationItemViewHolder> implements
     ISectionable<ConversationItem.ConversationItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
 
+    public static final int VIEW_TYPE = R.layout.rv_item_conversation_with_last_message;
+
     private static final float STATUS_SIZE_IN_DP = 9f;
 
     private final Conversation conversation;
@@ -74,6 +76,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     private final Context context;
     private GenericTextHeaderItem header;
     private final Status status;
+
 
     public ConversationItem(Conversation conversation, UserEntity userEntity, Context activityContext, Status status) {
         this.conversation = conversation;
@@ -112,6 +115,11 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     @Override
     public int getLayoutRes() {
         return R.layout.rv_item_conversation_with_last_message;
+    }
+
+    @Override
+    public int getItemViewType() {
+        return VIEW_TYPE;
     }
 
     @Override
