@@ -24,6 +24,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_default"
+    tools:ignore="Overdraw"
     tools:context=".messagesearch.MessageSearchActivity">
 
     <com.google.android.material.appbar.AppBarLayout

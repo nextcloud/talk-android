@@ -174,8 +174,7 @@
 
         <activity
             android:name=".messagesearch.MessageSearchActivity"
-            android:theme="@style/AppTheme"
-            android:exported="false" />
+            android:theme="@style/AppTheme" />
 
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>

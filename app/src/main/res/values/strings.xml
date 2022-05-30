@@ -518,13 +518,17 @@
     <string name="shared_items_voice">Voice</string>
     <string name="shared_items_other">Other</string>
 
+    <!-- Message search -->
+    <string name="messages">Messages</string>
+    <string name="load_more_results">Load more results</string>
+    <string name="message_search_hint">Search…</string>
+    <string name="message_search_begin_typing">Start typing to search…</string>
+    <string name="message_search_begin_empty">No search results</string>
+
     <string name="title_attachments">Attachments</string>
 
     <string name="reactions_tab_all">All</string>
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
-    <string name="messages">Messages</string>
-    <string name="load_more_results">Load more results</string>
-    <string name="nc_search_hint">Search…</string>
 
 </resources>

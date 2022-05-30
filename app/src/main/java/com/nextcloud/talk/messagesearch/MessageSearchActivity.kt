@@ -193,14 +193,14 @@ class MessageSearchActivity : BaseActivity() {
     private fun showInitial() {
         displayLoading(false)
         binding.messageSearchRecycler.visibility = View.GONE
-        binding.emptyContainer.emptyListViewHeadline.text = "Start typing to search..."
+        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.message_search_begin_typing)
         binding.emptyContainer.emptyListView.visibility = View.VISIBLE
     }
 
     private fun showEmpty() {
         displayLoading(false)
         binding.messageSearchRecycler.visibility = View.GONE
-        binding.emptyContainer.emptyListViewHeadline.text = "No search results"
+        binding.emptyContainer.emptyListViewHeadline.text = getString(R.string.message_search_begin_empty)
         binding.emptyContainer.emptyListView.visibility = View.VISIBLE
     }
 
@@ -229,7 +229,7 @@ class MessageSearchActivity : BaseActivity() {
     }
 
     private fun setupSearchView() {
-        searchView.queryHint = getString(R.string.nc_search_hint)
+        searchView.queryHint = getString(R.string.message_search_hint)
         searchViewDisposable = observeSearchView(searchView)
             .debounce { query ->
                 when {
