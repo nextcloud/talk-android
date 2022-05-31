@@ -21,7 +21,6 @@
 
 package com.nextcloud.talk.messagesearch
 
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.test.fakes.FakeUnifiedSearchRepository
@@ -29,13 +28,9 @@ import io.reactivex.Observable
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 class MessageSearchHelperTest {
-
-    @Mock
-    lateinit var userEntity: UserEntity
 
     val repository = FakeUnifiedSearchRepository()
 
@@ -58,7 +53,7 @@ class MessageSearchHelperTest {
     fun emptySearch() {
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(0, false, emptyList())
 
-        val sut = MessageSearchHelper(userEntity, repository)
+        val sut = MessageSearchHelper(repository)
 
         val testObserver = sut.startMessageSearch("foo").test()
         testObserver.assertComplete()
@@ -72,7 +67,7 @@ class MessageSearchHelperTest {
         val entries = (1..5).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(5, true, entries)
 
-        val sut = MessageSearchHelper(userEntity, repository)
+        val sut = MessageSearchHelper(repository)
 
         val observable = sut.startMessageSearch("foo")
         val expected = MessageSearchHelper.MessageSearchResults(entries, true)
@@ -84,7 +79,7 @@ class MessageSearchHelperTest {
         val entries = (1..2).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(2, false, entries)
 
-        val sut = MessageSearchHelper(userEntity, repository)
+        val sut = MessageSearchHelper(repository)
 
         val observable = sut.startMessageSearch("foo")
         val expected = MessageSearchHelper.MessageSearchResults(entries, false)
@@ -96,7 +91,7 @@ class MessageSearchHelperTest {
         val entries = (1..2).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(2, false, entries)
 
-        val sut = MessageSearchHelper(userEntity, repository)
+        val sut = MessageSearchHelper(repository)
 
         repeat(5) {
             val observable = sut.startMessageSearch("foo")
@@ -107,13 +102,13 @@ class MessageSearchHelperTest {
 
     @Test
     fun loadMore_noPreviousResults() {
-        val sut = MessageSearchHelper(userEntity, repository)
+        val sut = MessageSearchHelper(repository)
         Assert.assertEquals(null, sut.loadMore())
     }
 
     @Test
     fun loadMore_previousResults_sameSearch() {
-        val sut = MessageSearchHelper(userEntity, repository)
+        val sut = MessageSearchHelper(repository)
 
         val firstPageEntries = (1..5).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(5, true, firstPageEntries)
