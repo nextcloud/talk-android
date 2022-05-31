@@ -21,7 +21,6 @@
 
 package com.nextcloud.talk.test.fakes
 
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import io.reactivex.Observable
@@ -32,7 +31,6 @@ class FakeUnifiedSearchRepository : UnifiedSearchRepository {
     var lastRequestedCursor = -1
 
     override fun searchMessages(
-        userEntity: UserEntity,
         searchTerm: String,
         cursor: Int,
         limit: Int
@@ -42,7 +40,6 @@ class FakeUnifiedSearchRepository : UnifiedSearchRepository {
     }
 
     override fun searchInRoom(
-        userEntity: UserEntity,
         roomToken: String,
         searchTerm: String,
         cursor: Int,

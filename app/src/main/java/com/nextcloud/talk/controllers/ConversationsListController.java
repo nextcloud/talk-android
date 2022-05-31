@@ -326,7 +326,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 return;
             }
 
-            searchHelper = new MessageSearchHelper(currentUser, unifiedSearchRepository);
+            searchHelper = new MessageSearchHelper(unifiedSearchRepository);
 
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             if (getActivity() != null && getActivity() instanceof MainActivity) {

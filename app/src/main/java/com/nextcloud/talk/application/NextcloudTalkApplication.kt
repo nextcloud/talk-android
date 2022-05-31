@@ -213,7 +213,6 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             .contextModule(ContextModule(applicationContext))
             .databaseModule(DatabaseModule())
             .restModule(RestModule(applicationContext))
-            .userModule(UserModule())
             .arbitraryStorageModule(ArbitraryStorageModule())
             .build()
     }

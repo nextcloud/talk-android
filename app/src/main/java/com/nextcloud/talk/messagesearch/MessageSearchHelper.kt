@@ -22,14 +22,12 @@
 package com.nextcloud.talk.messagesearch
 
 import android.util.Log
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
 class MessageSearchHelper @JvmOverloads constructor(
-    private val user: UserEntity,
     private val unifiedSearchRepository: UnifiedSearchRepository,
     private val fromRoom: String? = null
 ) {
@@ -84,7 +82,6 @@ class MessageSearchHelper @JvmOverloads constructor(
         return when {
             fromRoom != null -> {
                 unifiedSearchRepository.searchInRoom(
-                    userEntity = user,
                     roomToken = fromRoom,
                     searchTerm = search,
                     cursor = cursor
@@ -92,7 +89,6 @@ class MessageSearchHelper @JvmOverloads constructor(
             }
             else -> {
                 unifiedSearchRepository.searchMessages(
-                    userEntity = user,
                     searchTerm = search,
                     cursor = cursor
                 )

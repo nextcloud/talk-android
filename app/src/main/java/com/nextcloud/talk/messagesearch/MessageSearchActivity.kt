@@ -43,6 +43,7 @@ import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -59,6 +60,9 @@ class MessageSearchActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var userProvider: CurrentUserProvider
 
     private lateinit var binding: ActivityMessageSearchBinding
     private lateinit var searchView: SearchView
@@ -80,9 +84,9 @@ class MessageSearchActivity : BaseActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MessageSearchViewModel::class.java]
-        user = intent.getParcelableExtra(BundleKeys.KEY_USER_ENTITY)!!
+        user = userProvider.currentUser!!
         val roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
-        viewModel.initialize(user, roomToken)
+        viewModel.initialize(roomToken)
         setupStateObserver()
 
         binding.swipeRefreshLayout.setOnRefreshListener {

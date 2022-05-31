@@ -26,11 +26,9 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -66,10 +64,8 @@ class MessageSearchViewModel @Inject constructor(private val unifiedSearchReposi
     val state: LiveData<ViewState>
         get() = _state
 
-    private var searchDisposable: Disposable? = null
-
-    fun initialize(user: UserEntity, roomToken: String) {
-        messageSearchHelper = MessageSearchHelper(user, unifiedSearchRepository, roomToken)
+    fun initialize(roomToken: String) {
+        messageSearchHelper = MessageSearchHelper(unifiedSearchRepository, roomToken)
     }
 
     @SuppressLint("CheckResult") // handled by helper

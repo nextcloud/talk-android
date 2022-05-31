@@ -2547,7 +2547,6 @@ class ChatController(args: Bundle) :
         val intent = Intent(activity, MessageSearchActivity::class.java)
         intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
-        intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
         startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
     }
 

@@ -27,18 +27,25 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchResponseData
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import io.reactivex.Observable
 
-class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchRepository {
+class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvider: CurrentUserProvider) :
+    UnifiedSearchRepository {
+
+    private val userEntity: UserEntity
+        get() = userProvider.currentUser!!
+
+    private val credentials: String
+        get() = ApiUtils.getCredentials(userEntity.username, userEntity.token)
 
     override fun searchMessages(
-        userEntity: UserEntity,
         searchTerm: String,
         cursor: Int,
         limit: Int
     ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
         val apiObservable = api.performUnifiedSearch(
-            ApiUtils.getCredentials(userEntity.username, userEntity.token),
+            credentials,
             ApiUtils.getUrlForUnifiedSearch(userEntity.baseUrl, PROVIDER_TALK_MESSAGE),
             searchTerm,
             null,
@@ -49,14 +56,13 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi) : UnifiedSearchReposit
     }
 
     override fun searchInRoom(
-        userEntity: UserEntity,
         roomToken: String,
         searchTerm: String,
         cursor: Int,
         limit: Int
     ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
         val apiObservable = api.performUnifiedSearch(
-            ApiUtils.getCredentials(userEntity.username, userEntity.token),
+            credentials,
             ApiUtils.getUrlForUnifiedSearch(userEntity.baseUrl, PROVIDER_TALK_MESSAGE_CURRENT),
             searchTerm,
             fromUrlForRoom(roomToken),
