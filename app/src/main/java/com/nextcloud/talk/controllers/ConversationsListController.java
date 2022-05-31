@@ -93,6 +93,7 @@ import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
+import com.nextcloud.talk.utils.power.PowerManagerUtil;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.webianks.library.PopupBubble;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
@@ -253,6 +254,10 @@ public class ConversationsListController extends BaseController implements Searc
 
         adapter.addListener(this);
         prepareViews();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            new PowerManagerUtil().askForBatteryOptimization(getActivity());
+        }
     }
 
     private void loadUserAvatar(MaterialButton button) {
@@ -427,8 +432,8 @@ public class ConversationsListController extends BaseController implements Searc
                     MainActivity activity = (MainActivity) getActivity();
                     if (activity != null) {
                         activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                            activity.binding.appBar.getContext(),
-                            R.animator.appbar_elevation_off)
+                                                                         activity.binding.appBar.getContext(),
+                                                                         R.animator.appbar_elevation_off)
                                                                     );
                         activity.binding.toolbar.setVisibility(View.GONE);
                         activity.binding.searchToolbar.setVisibility(View.VISIBLE);
@@ -644,8 +649,8 @@ public class ConversationsListController extends BaseController implements Searc
             List<AbstractFlexibleItem> openConversationItems = new ArrayList<>();
 
             openConversationsQueryDisposable = ncApi.getOpenConversations(
-                credentials,
-                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.getBaseUrl()))
+                    credentials,
+                    ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.getBaseUrl()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(roomsOverall -> {
@@ -690,7 +695,7 @@ public class ConversationsListController extends BaseController implements Searc
                     if (getParentController() != null && getParentController().getRouter() != null) {
                         Log.d(TAG, "Starting reauth webview via getParentController()");
                         getParentController().getRouter().pushController((RouterTransaction.with
-                            (new WebViewLoginController(currentUser.getBaseUrl(), true))
+                                (new WebViewLoginController(currentUser.getBaseUrl(), true))
                             .pushChangeHandler(new VerticalChangeHandler())
                             .popChangeHandler(new VerticalChangeHandler())));
                     } else {
@@ -1178,7 +1183,7 @@ public class ConversationsListController extends BaseController implements Searc
                             onAttach(getView());
                         } else if (!otherUserExists) {
                             getRouter().setRoot(RouterTransaction.with(
-                                new ServerSelectionController())
+                                    new ServerSelectionController())
                                                     .pushChangeHandler(new VerticalChangeHandler())
                                                     .popChangeHandler(new VerticalChangeHandler()));
                         }
@@ -1188,7 +1193,7 @@ public class ConversationsListController extends BaseController implements Searc
                     @Override
                     public void onClick(View v) {
                         getRouter().pushController(RouterTransaction.with(
-                            new WebViewLoginController(currentUser.getBaseUrl(), true))
+                                new WebViewLoginController(currentUser.getBaseUrl(), true))
                                                        .pushChangeHandler(new VerticalChangeHandler())
                                                        .popChangeHandler(new VerticalChangeHandler()));
                     }
@@ -1221,7 +1226,7 @@ public class ConversationsListController extends BaseController implements Searc
                         onAttach(getView());
                     } else if (!otherUserExists) {
                         getRouter().setRoot(RouterTransaction.with(
-                            new ServerSelectionController())
+                                new ServerSelectionController())
                                                 .pushChangeHandler(new VerticalChangeHandler())
                                                 .popChangeHandler(new VerticalChangeHandler()));
                     }

@@ -52,8 +52,8 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -79,6 +79,8 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+
     <application
         android:name=".application.NextcloudTalkApplication"
         android:allowBackup="true"
@@ -87,9 +89,9 @@
         android:label="@string/nc_app_name"
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher"
-        android:requestLegacyExternalStorage="true"
         tools:ignore="UnusedAttribute"
         tools:replace="label, icon, theme, name, allowBackup">
 
@@ -127,41 +129,38 @@
 
         <activity
             android:name=".activities.CallActivity"
-            android:theme="@style/AppTheme.CallLauncher"
-            android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:launchMode="singleTask"
-            android:taskAffinity=".call"
             android:excludeFromRecents="true"
-            android:showOnLockScreen="true"/>
+            android:launchMode="singleTask"
+            android:showOnLockScreen="true"
+            android:supportsPictureInPicture="true"
+            android:taskAffinity=".call"
+            android:theme="@style/AppTheme.CallLauncher" />
 
         <activity
             android:name=".activities.CallNotificationActivity"
-            android:theme="@style/AppTheme.CallLauncher"
-            android:supportsPictureInPicture="true"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:launchMode="singleTask"
-            android:taskAffinity=".call"
             android:excludeFromRecents="true"
-            android:showOnLockScreen="true" />
+            android:launchMode="singleTask"
+            android:showOnLockScreen="true"
+            android:supportsPictureInPicture="true"
+            android:taskAffinity=".call"
+            android:theme="@style/AppTheme.CallLauncher" />
 
         <activity
             android:name=".activities.FullScreenImageActivity"
-            android:theme="@style/FullScreenImageTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullScreenImageTheme"></activity>
 
         <activity
             android:name=".activities.FullScreenMediaActivity"
-            android:theme="@style/FullScreenMediaTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullScreenMediaTheme"></activity>
 
         <activity
             android:name=".activities.FullScreenTextViewerActivity"
-            android:theme="@style/FullScreenTextTheme"
-            android:configChanges="orientation|keyboardHidden|screenSize">
-        </activity>
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullScreenTextTheme"></activity>
 
         <activity
             android:name=".activities.TakePhotoActivity"
@@ -170,7 +169,7 @@
 
         <activity
             android:name=".shareditems.activities.SharedItemsActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
 
         <receiver android:name=".receivers.PackageReplacedReceiver">
             <intent-filter>
