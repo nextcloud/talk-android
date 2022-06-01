@@ -2128,7 +2128,6 @@ class ChatController(args: Bundle) :
         messObj.timestamp = tsLong
         messObj.jsonMessageId = 0 - tsLong.toInt()
 
-
         messObj.readStatus = ReadStatus.SENDING
 
         if (conversationUser!!.userId != "?") {
@@ -3046,11 +3045,12 @@ class ChatController(args: Bundle) :
     fun replyPrivately(message: IMessage?) {
         val apiVersion =
             ApiUtils.getConversationApiVersion(
-                            conversationUser, intArrayOf(
-                                ApiUtils.APIv4,
-                                1
-                            )
-                        )
+                conversationUser,
+                intArrayOf(
+                    ApiUtils.APIv4,
+                    1
+                )
+            )
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
             conversationUser?.baseUrl,
@@ -3108,20 +3108,20 @@ class ChatController(args: Bundle) :
                                 )
                             }
 
-                                            override fun onError(e: Throwable) {
-                                                Log.e(TAG, e.message, e)
-                                            }
+                            override fun onError(e: Throwable) {
+                                Log.e(TAG, e.message, e)
+                            }
 
-                                            override fun onComplete() {// unused atm
+                            override fun onComplete() { // unused atm
                             }
                         })
                 }
 
-                                override fun onError(e: Throwable) {
-                                    Log.e(TAG, e.message, e)
-                                }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, e.message, e)
+                }
 
-                                override fun onComplete() {
+                override fun onComplete() {
                     // unused atm
                 }
             })

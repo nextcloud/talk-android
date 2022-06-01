@@ -102,23 +102,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
-        val readStatusDrawableInt = when (message.readStatus) {
-            ReadStatus.READ -> R.drawable.ic_check_all
-            ReadStatus.SENT -> R.drawable.ic_check
-            ReadStatus.SENDING -> R.drawable.ic_sending
-            ReadStatus.FAILED -> R.drawable.ic_warning_white
-            else -> null
-        }
-
-        val readStatusContentDescriptionString = when (message.readStatus) {
-            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
-            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
-            ReadStatus.SENDING -> context?.resources?.getString(R.string.nc_message_sending)
-            ReadStatus.FAILED -> context?.resources?.getString(R.string.nc_message_send_error)
-            else -> null
-        }
-
-        readStatusDrawableInt?.let { drawableInt ->
+        readStatusDrawableInt(message)?.let { drawableInt ->
             ResourcesCompat.getDrawable(context!!.resources, drawableInt, null)?.let {
                 binding.checkMark.setImageDrawable(it)
                 binding.checkMark.setColorFilter(
@@ -127,7 +111,7 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
             }
         }
 
-        binding.checkMark.setContentDescription(readStatusContentDescriptionString)
+        binding.checkMark.setContentDescription(readStatusContentDescriptionString(message))
 
         itemView.setTag(MessageSwipeCallback.REPLYABLE_VIEW_TAG, message.replyable)
 
@@ -149,6 +133,24 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
     private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
         commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
+
+    private fun readStatusContentDescriptionString(message: ChatMessage) =
+        when (message.readStatus) {
+            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
+            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            ReadStatus.SENDING -> context?.resources?.getString(R.string.nc_message_sending)
+            ReadStatus.FAILED -> context?.resources?.getString(R.string.nc_message_send_error)
+            else -> null
+        }
+
+    private fun readStatusDrawableInt(message: ChatMessage) =
+        when (message.readStatus) {
+            ReadStatus.READ -> R.drawable.ic_check_all
+            ReadStatus.SENT -> R.drawable.ic_check
+            ReadStatus.SENDING -> R.drawable.ic_sending
+            ReadStatus.FAILED -> R.drawable.ic_warning_white
+            else -> null
+        }
 
     private fun processParentMessage(message: ChatMessage) {
         val parentChatMessage = message.parentMessage
