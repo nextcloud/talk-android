@@ -2502,6 +2502,8 @@ class ChatController(args: Bundle) :
             if (CapabilitiesUtil.hasSpreedFeatureCapability(it, "read-only-rooms")) {
                 checkShowCallButtons()
             }
+            val searchItem = menu.findItem(R.id.conversation_search)
+            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(it)
         }
     }
 

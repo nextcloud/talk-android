@@ -326,7 +326,9 @@ public class ConversationsListController extends BaseController implements Flexi
                 return;
             }
 
-            searchHelper = new MessageSearchHelper(unifiedSearchRepository);
+            if (CapabilitiesUtil.isUnifiedSearchAvailable(currentUser)) {
+                searchHelper = new MessageSearchHelper(unifiedSearchRepository);
+            }
 
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             if (getActivity() != null && getActivity() instanceof MainActivity) {
@@ -898,7 +900,9 @@ public class ConversationsListController extends BaseController implements Flexi
             clearMessageSearchResults();
             adapter.setFilter(filter);
             adapter.filterItems();
-            startMessageSearch(filter);
+            if (CapabilitiesUtil.isUnifiedSearchAvailable(currentUser)) {
+                startMessageSearch(filter);
+            }
         } else {
             resetSearchResults();
         }
