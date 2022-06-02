@@ -23,6 +23,7 @@ package com.nextcloud.talk.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.messagesearch.MessageSearchViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import dagger.Binds
 import dagger.MapKey
@@ -53,4 +54,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SharedItemsViewModel::class)
     abstract fun sharedItemsViewModel(viewModel: SharedItemsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MessageSearchViewModel::class)
+    abstract fun messageSearchViewModel(viewModel: MessageSearchViewModel): ViewModel
 }

@@ -17,28 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.nextcloud.talk.utils.database.user;
+package com.nextcloud.talk.utils.database.user
 
-import autodagger.AutoInjector;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.dagger.modules.DatabaseModule;
-import dagger.Module;
-import dagger.Provides;
-import io.requery.Persistable;
-import io.requery.reactivex.ReactiveEntityStore;
+import com.nextcloud.talk.dagger.modules.DatabaseModule
+import dagger.Binds
+import dagger.Module
+import dagger.Provides
+import io.requery.Persistable
+import io.requery.reactivex.ReactiveEntityStore
 
-import javax.inject.Inject;
+@Module(includes = [DatabaseModule::class])
+abstract class UserModule {
 
-@Module(includes = DatabaseModule.class)
-@AutoInjector(NextcloudTalkApplication.class)
-public class UserModule {
+    @Binds
+    abstract fun bindCurrentUserProvider(userUtils: UserUtils): CurrentUserProvider
 
-    @Inject
-    public UserModule() {
-    }
-
-    @Provides
-    public UserUtils provideUserUtils(ReactiveEntityStore<Persistable> dataStore) {
-        return new UserUtils(dataStore);
+    companion object {
+        @Provides
+        fun provideUserUtils(dataStore: ReactiveEntityStore<Persistable?>?): UserUtils {
+            return UserUtils(dataStore)
+        }
     }
 }

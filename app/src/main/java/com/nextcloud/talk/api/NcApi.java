@@ -45,6 +45,7 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.models.json.statuses.StatusesOverall;
+import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 
@@ -65,7 +66,6 @@ import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
@@ -519,4 +519,12 @@ public interface NcApi {
     Observable<ReactionsOverall> getReactions(@Header("Authorization") String authorization,
                                               @Url String url,
                                               @Query("reaction") String reaction);
+
+    @GET
+    Observable<UnifiedSearchOverall> performUnifiedSearch(@Header("Authorization") String authorization,
+                                                          @Url String url,
+                                                          @Query("term") String term,
+                                                          @Query("from") String fromUrl,
+                                                          @Query("limit") Integer limit,
+                                                          @Query("cursor") Integer cursor);
 }

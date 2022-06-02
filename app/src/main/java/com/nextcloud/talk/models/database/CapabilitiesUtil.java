@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public abstract class CapabilitiesUtil {
@@ -38,7 +39,7 @@ public abstract class CapabilitiesUtil {
     public static boolean hasNotificationsCapability(@Nullable UserEntity user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities.getNotificationsCapability() != null &&
                     capabilities.getNotificationsCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
@@ -53,7 +54,7 @@ public abstract class CapabilitiesUtil {
     public static boolean hasExternalCapability(@Nullable UserEntity user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities.getExternalCapability() != null &&
                     capabilities.getExternalCapability().containsKey("v1")) {
                     return capabilities.getExternalCapability().get("v1").contains(capabilityName);
@@ -82,7 +83,7 @@ public abstract class CapabilitiesUtil {
     public static boolean hasSpreedFeatureCapability(@Nullable UserEntity user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null && capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
@@ -97,7 +98,7 @@ public abstract class CapabilitiesUtil {
     public static Integer getMessageMaxLength(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getConfig() != null &&
@@ -125,7 +126,7 @@ public abstract class CapabilitiesUtil {
     public static boolean isPhoneBookIntegrationAvailable(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 return capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getFeatures() != null &&
@@ -140,7 +141,7 @@ public abstract class CapabilitiesUtil {
     public static boolean isReadStatusAvailable(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getConfig() != null &&
@@ -158,7 +159,7 @@ public abstract class CapabilitiesUtil {
     public static boolean isReadStatusPrivate(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getConfig() != null &&
@@ -178,7 +179,7 @@ public abstract class CapabilitiesUtil {
     public static boolean isUserStatusAvailable(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities.getUserStatusCapability() != null &&
                     capabilities.getUserStatusCapability().getEnabled() &&
                     capabilities.getUserStatusCapability().getSupportsEmoji()) {
@@ -194,7 +195,7 @@ public abstract class CapabilitiesUtil {
     public static String getAttachmentFolder(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getConfig() != null &&
@@ -213,9 +214,8 @@ public abstract class CapabilitiesUtil {
 
     public static String getServerName(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
-            Capabilities capabilities;
             try {
-                capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null && capabilities.getThemingCapability() != null) {
                     return capabilities.getThemingCapability().getName();
                 }
@@ -229,9 +229,8 @@ public abstract class CapabilitiesUtil {
     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
     public static boolean isAvatarEndpointAvailable(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
-            Capabilities capabilities;
             try {
-                capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 return (capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getFeatures() != null &&
@@ -245,9 +244,8 @@ public abstract class CapabilitiesUtil {
 
     public static boolean canEditScopes(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
-            Capabilities capabilities;
             try {
-                capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 return (capabilities != null &&
                     capabilities.getProvisioningCapability() != null &&
                     capabilities.getProvisioningCapability().getAccountPropertyScopesVersion() != null &&
@@ -262,7 +260,7 @@ public abstract class CapabilitiesUtil {
     public static boolean isAbleToCall(@Nullable UserEntity user) {
         if (user != null && user.getCapabilities() != null) {
             try {
-                Capabilities capabilities = LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+                Capabilities capabilities = parseUserCapabilities(user);
                 if (capabilities != null &&
                     capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getConfig() != null &&
@@ -280,5 +278,13 @@ public abstract class CapabilitiesUtil {
             }
         }
         return false;
+    }
+
+    private static Capabilities parseUserCapabilities(@NonNull final UserEntity user) throws IOException {
+        return LoganSquare.parse(user.getCapabilities(), Capabilities.class);
+    }
+
+    public static boolean isUnifiedSearchAvailable(@Nullable final UserEntity user) {
+        return hasSpreedFeatureCapability(user, "unified-search");
     }
 }

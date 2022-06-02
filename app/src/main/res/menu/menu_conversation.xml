@@ -36,14 +36,21 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/conversation_search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:orderInCategory="2"
+        android:title="@string/nc_search"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/conversation_info"
-        android:orderInCategory="1"
+        android:orderInCategory="3"
         android:title="@string/nc_conversation_menu_conversation_info"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/shared_items"
-        android:orderInCategory="1"
+        android:orderInCategory="4"
         android:title="@string/nc_shared_items"
         app:showAsAction="never" />
 </menu>

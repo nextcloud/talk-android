@@ -19,26 +19,33 @@
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.dagger.modules
+package com.nextcloud.talk.test.fakes
 
-import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
-import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
-import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
-import dagger.Module
-import dagger.Provides
+import io.reactivex.Observable
 
-@Module
-class RepositoryModule {
-    @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi)
+class FakeUnifiedSearchRepository : UnifiedSearchRepository {
+
+    lateinit var response: UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>
+    var lastRequestedCursor = -1
+
+    override fun searchMessages(
+        searchTerm: String,
+        cursor: Int,
+        limit: Int
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
+        lastRequestedCursor = cursor
+        return Observable.just(response)
     }
 
-    @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi, userProvider: CurrentUserProvider): UnifiedSearchRepository {
-        return UnifiedSearchRepositoryImpl(ncApi, userProvider)
+    override fun searchInRoom(
+        roomToken: String,
+        searchTerm: String,
+        cursor: Int,
+        limit: Int
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
+        lastRequestedCursor = cursor
+        return Observable.just(response)
     }
 }

@@ -36,7 +36,7 @@ import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 
-public class UserUtils {
+public class UserUtils implements CurrentUserProvider {
     private ReactiveEntityStore<Persistable> dataStore;
 
     UserUtils(ReactiveEntityStore<Persistable> dataStore) {
@@ -83,6 +83,7 @@ public class UserUtils {
         return null;
     }
 
+    @Override
     public @Nullable UserEntity getCurrentUser() {
         Result findUserQueryResult = dataStore.select(User.class).where(UserEntity.CURRENT.eq(Boolean.TRUE)
                 .and(UserEntity.SCHEDULED_FOR_DELETION.notEqual(Boolean.TRUE)))

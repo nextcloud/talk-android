@@ -68,6 +68,9 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.MainActivity;
 import com.nextcloud.talk.adapters.items.ConversationItem;
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem;
+import com.nextcloud.talk.adapters.items.LoadMoreResultsItem;
+import com.nextcloud.talk.adapters.items.MessageResultItem;
+import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.controllers.base.BaseController;
@@ -78,11 +81,14 @@ import com.nextcloud.talk.jobs.AccountRemovalWorker;
 import com.nextcloud.talk.jobs.ContactAddressBookWorker;
 import com.nextcloud.talk.jobs.DeleteConversationWorker;
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker;
+import com.nextcloud.talk.messagesearch.MessageSearchHelper;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.models.domain.SearchMessageEntry;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.models.json.statuses.StatusesOverall;
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository;
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment;
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -94,6 +100,7 @@ import com.nextcloud.talk.utils.UriUtils;
 import com.nextcloud.talk.utils.bundle.BundleKeys;
 import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+import com.nextcloud.talk.utils.rx.SearchViewObservable;
 import com.webianks.library.PopupBubble;
 import com.yarolegovich.lovelydialog.LovelySaveStateHandler;
 import com.yarolegovich.lovelydialog.LovelyStandardDialog;
@@ -110,6 +117,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -131,6 +139,8 @@ import butterknife.BindView;
 import eu.davidea.flexibleadapter.FlexibleAdapter;
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem;
+import eu.davidea.flexibleadapter.items.IHeader;
+import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -138,13 +148,16 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class ConversationsListController extends BaseController implements SearchView.OnQueryTextListener,
-    FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
+public class ConversationsListController extends BaseController implements FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
 
     public static final String TAG = "ConvListController";
     public static final int ID_DELETE_CONVERSATION_DIALOG = 0;
     public static final int UNREAD_BUBBLE_DELAY = 2500;
     private static final String KEY_SEARCH_QUERY = "ContactsController.searchQuery";
+
+    public static final int SEARCH_DEBOUNCE_INTERVAL_MS = 300;
+    public static final int SEARCH_MIN_CHARS = 2;
+
     private final Bundle bundle;
     @Inject
     UserUtils userUtils;
@@ -160,6 +173,9 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Inject
     AppPreferences appPreferences;
+
+    @Inject
+    UnifiedSearchRepository unifiedSearchRepository;
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -207,6 +223,7 @@ public class ConversationsListController extends BaseController implements Searc
     private Conversation selectedConversation;
 
     private String textToPaste = "";
+    private String selectedMessageId = null;
 
     private boolean forwardMessage;
 
@@ -219,6 +236,9 @@ public class ConversationsListController extends BaseController implements Searc
     private ConversationsListBottomDialog conversationsListBottomDialog;
 
     private HashMap<String, Status> userStatuses = new HashMap<>();
+
+    private MessageSearchHelper searchHelper;
+    private Disposable searchViewDisposable;
 
     public ConversationsListController(Bundle bundle) {
         super();
@@ -306,6 +326,10 @@ public class ConversationsListController extends BaseController implements Searc
                 return;
             }
 
+            if (CapabilitiesUtil.isUnifiedSearchAvailable(currentUser)) {
+                searchHelper = new MessageSearchHelper(unifiedSearchRepository);
+            }
+
             credentials = ApiUtils.getCredentials(currentUser.getUsername(), currentUser.getToken());
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 loadUserAvatar(((MainActivity) getActivity()).binding.switchAccountButton);
@@ -339,7 +363,18 @@ public class ConversationsListController extends BaseController implements Searc
                 if (searchManager != null) {
                     searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
                 }
-                searchView.setOnQueryTextListener(this);
+                searchViewDisposable = SearchViewObservable.observeSearchView(searchView)
+                    .debounce(query -> {
+                        if (TextUtils.isEmpty(query)) {
+                            return Observable.empty();
+                        } else {
+                            return Observable.timer(SEARCH_DEBOUNCE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+                        }
+                    })
+                    .distinctUntilChanged()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::onQueryTextChange);
             }
         }
     }
@@ -419,6 +454,11 @@ public class ConversationsListController extends BaseController implements Searc
                     adapter.setHeadersShown(false);
                     adapter.updateDataSet(conversationItems, false);
                     adapter.hideAllHeaders();
+                    if (searchHelper != null) {
+                        // cancel any pending searches
+                        searchHelper.cancelSearch();
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
                     if (swipeRefreshLayout != null) {
                         swipeRefreshLayout.setEnabled(true);
                     }
@@ -427,8 +467,8 @@ public class ConversationsListController extends BaseController implements Searc
                     MainActivity activity = (MainActivity) getActivity();
                     if (activity != null) {
                         activity.binding.appBar.setStateListAnimator(AnimatorInflater.loadStateListAnimator(
-                            activity.binding.appBar.getContext(),
-                            R.animator.appbar_elevation_off)
+                                                                         activity.binding.appBar.getContext(),
+                                                                         R.animator.appbar_elevation_off)
                                                                     );
                         activity.binding.toolbar.setVisibility(View.GONE);
                         activity.binding.searchToolbar.setVisibility(View.VISIBLE);
@@ -842,27 +882,75 @@ public class ConversationsListController extends BaseController implements Searc
     public void onDestroy() {
         super.onDestroy();
         dispose(null);
+        searchViewDisposable.dispose();
     }
 
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        if (adapter.hasNewFilter(newText) || !TextUtils.isEmpty(searchQuery)) {
-            if (!TextUtils.isEmpty(searchQuery)) {
-                adapter.setFilter(searchQuery);
-                searchQuery = "";
-                adapter.filterItems();
-            } else {
-                adapter.setFilter(newText);
-                adapter.filterItems(300);
-            }
+    public void onQueryTextChange(final String newText) {
+        if (!TextUtils.isEmpty(searchQuery)) {
+            final String filter = searchQuery;
+            searchQuery = "";
+            performFilterAndSearch(filter);
+        } else if (adapter.hasNewFilter(newText)) {
+            performFilterAndSearch(newText);
         }
-        return true;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String query) {
-        return onQueryTextChange(query);
+    private void performFilterAndSearch(String filter) {
+        if (filter.length() >= SEARCH_MIN_CHARS) {
+            clearMessageSearchResults();
+            adapter.setFilter(filter);
+            adapter.filterItems();
+            if (CapabilitiesUtil.isUnifiedSearchAvailable(currentUser)) {
+                startMessageSearch(filter);
+            }
+        } else {
+            resetSearchResults();
+        }
     }
+
+    private void resetSearchResults() {
+        clearMessageSearchResults();
+        adapter.setFilter("");
+        adapter.filterItems();
+    }
+
+    private void clearMessageSearchResults() {
+        final IHeader firstHeader = adapter.getSectionHeader(0);
+        if (firstHeader != null && firstHeader.getItemViewType() == MessagesTextHeaderItem.VIEW_TYPE) {
+            adapter.removeSection(firstHeader);
+        } else {
+            adapter.removeItemsOfType(MessageResultItem.VIEW_TYPE);
+        }
+        adapter.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE);
+    }
+
+    @SuppressLint("CheckResult") // handled by helper
+    private void startMessageSearch(final String search) {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(true);
+        }
+        searchHelper
+            .startMessageSearch(search)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                this::onMessageSearchResult,
+                this::onMessageSearchError);
+    }
+
+    @SuppressLint("CheckResult") // handled by helper
+    private void loadMoreMessages() {
+        swipeRefreshLayout.setRefreshing(true);
+        final Observable<MessageSearchHelper.MessageSearchResults> observable = searchHelper.loadMore();
+        if (observable != null) {
+            observable
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    this::onMessageSearchResult,
+                    this::onMessageSearchError);
+        }
+    }
+
 
     @Override
     protected String getTitle() {
@@ -871,36 +959,57 @@ public class ConversationsListController extends BaseController implements Searc
 
     @Override
     public boolean onItemClick(View view, int position) {
-        try {
-            selectedConversation = ((ConversationItem) Objects.requireNonNull(adapter.getItem(position))).getModel();
-
-            if (selectedConversation != null && getActivity() != null) {
-                boolean hasChatPermission =
-                    new AttendeePermissionsUtil(selectedConversation.getPermissions()).hasChatPermission(currentUser);
-
-                if (showShareToScreen) {
-                    if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
-                        handleSharedData();
-                        showShareToScreen = false;
-                    } else {
-                        Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
-                    }
-                } else if (forwardMessage) {
-                    if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
-                        openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
-                        forwardMessage = false;
-                    } else {
-                        Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    openConversation();
-                }
+        final AbstractFlexibleItem item = adapter.getItem(position);
+        if (item != null) {
+            final int viewType = item.getItemViewType();
+            if (viewType == MessageResultItem.VIEW_TYPE) {
+                MessageResultItem messageItem = (MessageResultItem) item;
+                String conversationToken = messageItem.getMessageEntry().getConversationToken();
+                selectedMessageId = messageItem.getMessageEntry().getMessageId();
+                showConversationByToken(conversationToken);
+            } else if (viewType == LoadMoreResultsItem.VIEW_TYPE) {
+                loadMoreMessages();
+            } else if (viewType == ConversationItem.VIEW_TYPE) {
+                showConversation(((ConversationItem) Objects.requireNonNull(item)).getModel());
             }
-        } catch (ClassCastException e) {
-            Log.w(TAG, "failed to cast clicked item to ConversationItem. Most probably a heading was clicked. This is" +
-                " just ignored.", e);
         }
         return true;
+    }
+
+    private void showConversationByToken(String conversationToken) {
+        for (AbstractFlexibleItem absItem : conversationItems) {
+            ConversationItem conversationItem = ((ConversationItem) absItem);
+            if (conversationItem.getModel().getToken().equals(conversationToken)) {
+                final Conversation conversation = conversationItem.getModel();
+                showConversation(conversation);
+            }
+        }
+    }
+
+    private void showConversation(@Nullable final Conversation conversation) {
+        selectedConversation = conversation;
+        if (selectedConversation != null && getActivity() != null) {
+            boolean hasChatPermission =
+                new AttendeePermissionsUtil(selectedConversation.getPermissions()).hasChatPermission(currentUser);
+
+            if (showShareToScreen) {
+                if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
+                    handleSharedData();
+                    showShareToScreen = false;
+                } else {
+                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
+                }
+            } else if (forwardMessage) {
+                if (hasChatPermission && !isReadOnlyConversation(selectedConversation)) {
+                    openConversation(bundle.getString(BundleKeys.INSTANCE.getKEY_FORWARD_MSG_TEXT()));
+                    forwardMessage = false;
+                } else {
+                    Toast.makeText(context, R.string.send_to_forbidden, Toast.LENGTH_LONG).show();
+                }
+            } else {
+                openConversation();
+            }
+        }
     }
 
     private Boolean isReadOnlyConversation(Conversation conversation) {
@@ -1085,6 +1194,10 @@ public class ConversationsListController extends BaseController implements Searc
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), selectedConversation.getToken());
         bundle.putString(BundleKeys.INSTANCE.getKEY_ROOM_ID(), selectedConversation.getRoomId());
         bundle.putString(BundleKeys.INSTANCE.getKEY_SHARED_TEXT(), textToPaste);
+        if (selectedMessageId != null) {
+            bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId);
+            selectedMessageId = null;
+        }
 
         ConductorRemapping.INSTANCE.remapChatController(getRouter(), currentUser.getId(),
                                                         selectedConversation.getToken(), bundle, false);
@@ -1273,5 +1386,34 @@ public class ConversationsListController extends BaseController implements Searc
     @Override
     public AppBarLayoutType getAppBarLayoutType() {
         return AppBarLayoutType.SEARCH_BAR;
+    }
+
+    public void onMessageSearchResult(@NonNull MessageSearchHelper.MessageSearchResults results) {
+        if (searchView.getQuery().length() > 0) {
+            clearMessageSearchResults();
+            final List<SearchMessageEntry> entries = results.getMessages();
+            if (entries.size() > 0) {
+                List<AbstractFlexibleItem> adapterItems = new ArrayList<>(entries.size() + 1);
+                for (int i = 0; i < entries.size(); i++) {
+                    final boolean showHeader = i == 0;
+                    adapterItems.add(new MessageResultItem(context, currentUser, entries.get(i), showHeader));
+                }
+                if (results.getHasMore()) {
+                    adapterItems.add(LoadMoreResultsItem.INSTANCE);
+                }
+                adapter.addItems(0, adapterItems);
+                recyclerView.scrollToPosition(0);
+            }
+        }
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+
+    public void onMessageSearchError(@NonNull Throwable throwable) {
+        handleHttpExceptions(throwable);
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
     }
 }

@@ -130,6 +130,7 @@ import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -1345,91 +1346,21 @@ class ChatController(args: Bundle) :
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
-        if (resultCode != RESULT_OK) {
+        if (resultCode != RESULT_OK && (requestCode != REQUEST_CODE_MESSAGE_SEARCH)) {
             Log.e(TAG, "resultCode for received intent was != ok")
             return
         }
 
-        if (requestCode == REQUEST_CODE_CHOOSE_FILE) {
-            try {
-                checkNotNull(intent)
-                filesToUpload.clear()
-                intent.clipData?.let {
-                    for (index in 0 until it.itemCount) {
-                        filesToUpload.add(it.getItemAt(index).uri.toString())
-                    }
-                } ?: run {
-                    checkNotNull(intent.data)
-                    intent.data.let {
-                        filesToUpload.add(intent.data.toString())
-                    }
-                }
-                require(filesToUpload.isNotEmpty())
-
-                val filenamesWithLinebreaks = StringBuilder("\n")
-
-                for (file in filesToUpload) {
-                    val filename = UriUtils.getFileName(Uri.parse(file), context)
-                    filenamesWithLinebreaks.append(filename).append("\n")
-                }
-
-                val confirmationQuestion = when (filesToUpload.size) {
-                    1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
-                        String.format(it, title)
-                    }
-                    else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
-                        String.format(it, title)
-                    }
-                }
-
-                LovelyStandardDialog(activity)
-                    .setPositiveButtonColorRes(R.color.nc_darkGreen)
-                    .setTitle(confirmationQuestion)
-                    .setMessage(filenamesWithLinebreaks.toString())
-                    .setPositiveButton(R.string.nc_yes) { v ->
-                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                            uploadFiles(filesToUpload, false)
-                        } else {
-                            UploadAndShareFilesWorker.requestStoragePermission(this)
-                        }
-                    }
-                    .setNegativeButton(R.string.nc_no) {
-                        // unused atm
-                    }
-                    .show()
-            } catch (e: IllegalStateException) {
-                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                    .show()
-                Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-            } catch (e: IllegalArgumentException) {
-                Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
-                    .show()
-                Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
-            }
-        } else if (requestCode == REQUEST_CODE_SELECT_CONTACT) {
-            val contactUri = intent?.data ?: return
-            val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
-
-            if (cursor != null && cursor.moveToFirst()) {
-                val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
-                val file = File(context?.cacheDir, fileName)
-                writeContactToVcfFile(cursor, file)
-
-                val shareUri = FileProvider.getUriForFile(
-                    activity!!,
-                    BuildConfig.APPLICATION_ID,
-                    File(file.absolutePath)
-                )
-                uploadFiles(mutableListOf(shareUri.toString()), false)
-            }
-            cursor?.close()
-        } else if (requestCode == REQUEST_CODE_PICK_CAMERA) {
-            if (resultCode == RESULT_OK) {
+        when (requestCode) {
+            REQUEST_CODE_CHOOSE_FILE -> {
                 try {
                     checkNotNull(intent)
                     filesToUpload.clear()
-                    run {
+                    intent.clipData?.let {
+                        for (index in 0 until it.itemCount) {
+                            filesToUpload.add(it.getItemAt(index).uri.toString())
+                        }
+                    } ?: run {
                         checkNotNull(intent.data)
                         intent.data.let {
                             filesToUpload.add(intent.data.toString())
@@ -1437,11 +1368,37 @@ class ChatController(args: Bundle) :
                     }
                     require(filesToUpload.isNotEmpty())
 
-                    if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
-                        uploadFiles(filesToUpload, false)
-                    } else {
-                        UploadAndShareFilesWorker.requestStoragePermission(this)
+                    val filenamesWithLinebreaks = StringBuilder("\n")
+
+                    for (file in filesToUpload) {
+                        val filename = UriUtils.getFileName(Uri.parse(file), context)
+                        filenamesWithLinebreaks.append(filename).append("\n")
                     }
+
+                    val confirmationQuestion = when (filesToUpload.size) {
+                        1 -> context?.resources?.getString(R.string.nc_upload_confirm_send_single)?.let {
+                            String.format(it, title)
+                        }
+                        else -> context?.resources?.getString(R.string.nc_upload_confirm_send_multiple)?.let {
+                            String.format(it, title)
+                        }
+                    }
+
+                    LovelyStandardDialog(activity)
+                        .setPositiveButtonColorRes(R.color.nc_darkGreen)
+                        .setTitle(confirmationQuestion)
+                        .setMessage(filenamesWithLinebreaks.toString())
+                        .setPositiveButton(R.string.nc_yes) { v ->
+                            if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                                uploadFiles(filesToUpload, false)
+                            } else {
+                                UploadAndShareFilesWorker.requestStoragePermission(this)
+                            }
+                        }
+                        .setNegativeButton(R.string.nc_no) {
+                            // unused atm
+                        }
+                        .show()
                 } catch (e: IllegalStateException) {
                     Toast.makeText(context, context?.resources?.getString(R.string.nc_upload_failed), Toast.LENGTH_LONG)
                         .show()
@@ -1452,6 +1409,79 @@ class ChatController(args: Bundle) :
                     Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
                 }
             }
+            REQUEST_CODE_SELECT_CONTACT -> {
+                val contactUri = intent?.data ?: return
+                val cursor: Cursor? = activity?.contentResolver!!.query(contactUri, null, null, null, null)
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    val id = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
+                    val fileName = ContactUtils.getDisplayNameFromDeviceContact(context!!, id) + ".vcf"
+                    val file = File(context?.cacheDir, fileName)
+                    writeContactToVcfFile(cursor, file)
+
+                    val shareUri = FileProvider.getUriForFile(
+                        activity!!,
+                        BuildConfig.APPLICATION_ID,
+                        File(file.absolutePath)
+                    )
+                    uploadFiles(mutableListOf(shareUri.toString()), false)
+                }
+                cursor?.close()
+            }
+            REQUEST_CODE_PICK_CAMERA -> {
+                if (resultCode == RESULT_OK) {
+                    try {
+                        checkNotNull(intent)
+                        filesToUpload.clear()
+                        run {
+                            checkNotNull(intent.data)
+                            intent.data.let {
+                                filesToUpload.add(intent.data.toString())
+                            }
+                        }
+                        require(filesToUpload.isNotEmpty())
+
+                        if (UploadAndShareFilesWorker.isStoragePermissionGranted(context!!)) {
+                            uploadFiles(filesToUpload, false)
+                        } else {
+                            UploadAndShareFilesWorker.requestStoragePermission(this)
+                        }
+                    } catch (e: IllegalStateException) {
+                        Toast.makeText(
+                            context,
+                            context?.resources?.getString(R.string.nc_upload_failed),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                    } catch (e: IllegalArgumentException) {
+                        Toast.makeText(
+                            context,
+                            context?.resources?.getString(R.string.nc_upload_failed),
+                            Toast.LENGTH_LONG
+                        )
+                            .show()
+                        Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+                    }
+                }
+            }
+            REQUEST_CODE_MESSAGE_SEARCH -> {
+                val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
+                messageId?.let { id ->
+                    scrollToMessageWithId(id)
+                }
+            }
+        }
+    }
+
+    private fun scrollToMessageWithId(messageId: String) {
+        val position = adapter?.items?.indexOfFirst {
+            it.item is ChatMessage && (it.item as ChatMessage).id == messageId
+        }
+        if (position != null && position >= 0) {
+            binding.messagesListView.smoothScrollToPosition(position)
+        } else {
+            // TODO show error that we don't have that message?
         }
     }
 
@@ -2279,6 +2309,7 @@ class ChatController(args: Bundle) :
                 if (adapter != null) {
                     adapter?.addToEnd(chatMessageList, false)
                 }
+                scrollToRequestedMessageIfNeeded()
             } else {
 
                 var chatMessage: ChatMessage
@@ -2394,6 +2425,12 @@ class ChatController(args: Bundle) :
         }
     }
 
+    private fun scrollToRequestedMessageIfNeeded() {
+        args.getString(BundleKeys.KEY_MESSAGE_ID)?.let {
+            scrollToMessageWithId(it)
+        }
+    }
+
     private fun isSameDayNonSystemMessages(messageLeft: ChatMessage, messageRight: ChatMessage): Boolean {
         return TextUtils.isEmpty(messageLeft.systemMessage) &&
             TextUtils.isEmpty(messageRight.systemMessage) &&
@@ -2465,32 +2502,38 @@ class ChatController(args: Bundle) :
             if (CapabilitiesUtil.hasSpreedFeatureCapability(it, "read-only-rooms")) {
                 checkShowCallButtons()
             }
+            val searchItem = menu.findItem(R.id.conversation_search)
+            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(it)
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 (activity as MainActivity).resetConversationsList()
-                return true
+                true
             }
             R.id.conversation_video_call -> {
                 startACall(false, false)
-                return true
+                true
             }
             R.id.conversation_voice_call -> {
                 startACall(true, false)
-                return true
+                true
             }
             R.id.conversation_info -> {
                 showConversationInfoScreen()
-                return true
+                true
             }
             R.id.shared_items -> {
                 showSharedItems()
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            R.id.conversation_search -> {
+                startMessageSearch()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -2500,6 +2543,13 @@ class ChatController(args: Bundle) :
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(KEY_USER_ENTITY, conversationUser as Parcelable)
         activity!!.startActivity(intent)
+    }
+
+    private fun startMessageSearch() {
+        val intent = Intent(activity, MessageSearchActivity::class.java)
+        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
+        intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+        startActivityForResult(intent, REQUEST_CODE_MESSAGE_SEARCH)
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
@@ -3087,6 +3137,7 @@ class ChatController(args: Bundle) :
         private const val AGE_THREHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_CODE_CHOOSE_FILE: Int = 555
         private const val REQUEST_CODE_SELECT_CONTACT: Int = 666
+        private const val REQUEST_CODE_MESSAGE_SEARCH: Int = 777
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
