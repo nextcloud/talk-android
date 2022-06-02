@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Fone de ouvido</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="call_without_notification">Ligue sem notificação</string>
     <string name="choose_avatar_from_cloud">Escolha o avatar da nuvem</string>
     <string name="clear_status_message">Limpar mensagem de status</string>
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
@@ -145,6 +146,7 @@
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como Lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
+    <string name="nc_message_failed_to_send">Falha no envio da mensagem:</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Leitura de mensagem</string>
     <string name="nc_message_sent">Mensagem enviada</string>
@@ -342,7 +344,9 @@
     <string name="secondsAgo">segundos atrás</string>
     <string name="selected_list_item">Selecionado</string>
     <string name="send_to">Enviar para</string>
+    <string name="send_to_forbidden">Você não tem permissão para compartilhar conteúdo neste bate-papo</string>
     <string name="send_to_three_dots">Enviar para …</string>
+    <string name="send_without_notification">Enviar sem notificação</string>
     <string name="set_status">Definir status</string>
     <string name="set_status_message">Definir mensagem de status</string>
     <string name="share">Compartilhar </string>
