@@ -145,7 +145,7 @@ android {
 }
 
 ext {
-    androidxCameraVersion = "1.1.0-rc01"
+    androidxCameraVersion = "1.1.0-rc02"
     butterknifeVersion = "10.2.3"
     coilKtVersion = "2.1.0"
     daggerVersion = "2.42"
