@@ -34,11 +34,13 @@ import autodagger.AutoInjector
 import coil.load
 import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.polls.ui.PollVoteDialogFragment
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -98,30 +100,48 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     }
 
     private fun setPollPreview(message: ChatMessage) {
-        var pollId: String?
-        var pollName: String? = ""
+        var pollId: Int? = null
+        var pollName: String? = null
 
         if (message.messageParameters != null && message.messageParameters!!.size > 0) {
             for (key in message.messageParameters!!.keys) {
                 val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
                 if (individualHashMap["type"] == "talk-poll") {
-                    pollId = individualHashMap["id"]
-                    pollName = individualHashMap["name"]
+                    pollId = Integer.parseInt(individualHashMap["id"])
+                    pollName = individualHashMap["name"].toString()
                 }
             }
         }
 
-        binding.messagePollTitle.text = pollName
+        if (pollId != null && pollName != null) {
+            binding.messagePollTitle.text = pollName
 
-        // TODO: how to get room token here?
-        // val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
-        // ncApi!!.getPoll(
-        //     credentials,
-        //     ApiUtils.getUrlForPoll(
-        //         message.activeUser?.baseUrl,
-        //         ???????
-        //     )
-        // )
+            // TODO: how to get room token here?
+            val roomToken = "???????????????????????????"
+
+
+            binding.bubble.setOnClickListener {
+                val pollVoteDialog = PollVoteDialogFragment.newInstance(
+                    message.activeUser!!, roomToken, pollId,
+                    pollName
+                )
+                pollVoteDialog.show(
+                    (binding.messagePollIcon.context as MainActivity).supportFragmentManager,
+                    TAG
+                )
+            }
+
+            //  wait for https://github.com/nextcloud/spreed/pull/7306#issuecomment-1145819317
+
+            // val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
+            // ncApi!!.getPoll(
+            //     credentials,
+            //     ApiUtils.getUrlForPoll(
+            //         message.activeUser?.baseUrl,
+            //         ???????
+            //     )
+            // )
+        }
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
