@@ -138,7 +138,7 @@ android {
 
     lint {
         abortOnError false
-        disable 'MissingTranslation'
+        disable 'MissingTranslation','PrivateResource'
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
         htmlReport true
     }
