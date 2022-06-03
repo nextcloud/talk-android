@@ -118,7 +118,7 @@ class ContactAddressBookWorker(val context: Context, workerParameters: WorkerPar
         val deviceContactsWithNumbers = collectContactsWithPhoneNumbersFromDevice()
 
         if (deviceContactsWithNumbers.isNotEmpty()) {
-            val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0].country
+            val currentLocale = ConfigurationCompat.getLocales(context.resources.configuration)[0]!!.country
 
             val map = mutableMapOf<String, Any>()
             map["location"] = currentLocale
