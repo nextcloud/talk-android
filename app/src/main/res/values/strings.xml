@@ -202,14 +202,14 @@
     <string name="nc_call_unknown">%s call</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_ringing">RINGING</string>
-    <string name="nc_connecting_call">Connecting…</string>
+    <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_nick_guest">Guest</string>
     <string name="nc_public_call">New public conversation</string>
     <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>
-    <string name="nc_call_reconnecting">Reconnecting…</string>
+    <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
-    <string name="nc_leaving_call">Leaving call…</string>
+    <string name="nc_leaving_call">Leaving call …</string>
     <string name="nc_call_state_in_call">%1$s in call</string>
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>
@@ -295,7 +295,7 @@
     <string name="openConversations">Open conversations</string>
 
     <!-- Chat -->
-    <string name="nc_hint_enter_a_message">Enter a message…</string>
+    <string name="nc_hint_enter_a_message">Enter a message …</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
@@ -425,7 +425,7 @@
 
     <!-- shared items -->
     <string name="nc_shared_items">Shared items</string>
-    <string name="nc_shared_items_description">Images, files, voice messages…</string>
+    <string name="nc_shared_items_description">Images, files, voice messages …</string>
     <string name="nc_shared_items_empty">No shared items</string>
 
     <!-- voice messages -->
@@ -464,7 +464,7 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_displayname">Full name</string>
     <string name="file_list_folder">folder</string>
-    <string name="file_list_loading">Loading…</string>
+    <string name="file_list_loading">Loading …</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
@@ -524,8 +524,8 @@
     <!-- Message search -->
     <string name="messages">Messages</string>
     <string name="load_more_results">Load more results</string>
-    <string name="message_search_hint">Search…</string>
-    <string name="message_search_begin_typing">Start typing to search…</string>
+    <string name="message_search_hint">Search …</string>
+    <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_begin_empty">No search results</string>
 
     <string name="title_attachments">Attachments</string>
