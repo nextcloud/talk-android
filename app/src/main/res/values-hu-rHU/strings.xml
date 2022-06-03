@@ -18,6 +18,9 @@
     <string name="dnd">Ne zavarjanak</string>
     <string name="dontClear">Ne törölje</string>
     <string name="edit">Szerkesztés</string>
+    <string name="emoji_backspace">Visszatörlés</string>
+    <string name="emoji_category_recent">Legutóbbiak</string>
+    <string name="emoji_search">Emodzsi keresése</string>
     <string name="encrypted">Titkosított</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
     <string name="file_list_folder">mappa</string>
@@ -25,6 +28,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 óra </string>
     <string name="invisible">Láthatatlan</string>
+    <string name="load_more_results">További találatok betöltése</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="menu_item_sort_by_date_newest_first">Legújabb elöl</string>
     <string name="menu_item_sort_by_date_oldest_first">Régebbiek elöl</string>
@@ -32,6 +36,8 @@
     <string name="menu_item_sort_by_name_z_a">Z – A</string>
     <string name="menu_item_sort_by_size_biggest_first">Legnagyobb elöl</string>
     <string name="menu_item_sort_by_size_smallest_first">Legkisebb elöl</string>
+    <string name="message_search_begin_empty">Nincs találat</string>
+    <string name="messages">Üzenetek</string>
     <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
     <string name="nc_about">Leírás</string>
     <string name="nc_account_chooser_active_user">Aktív felhasználó</string>
@@ -51,7 +57,6 @@
     <string name="nc_call_name">Beszélgetésnév</string>
     <string name="nc_call_name_is_same">A megadott név egyezik egy már meglévővel</string>
     <string name="nc_call_notifications">Hívásértesítések</string>
-    <string name="nc_call_reconnecting">Újrakapcsolódás…</string>
     <string name="nc_call_ringing">CSENGETÉS</string>
     <string name="nc_call_state_in_call">%1$s hívásban</string>
     <string name="nc_call_state_with_phone">%1$s telefonnal</string>
@@ -80,7 +85,7 @@
     <string name="nc_common_set">Beállítás</string>
     <string name="nc_common_skip">Kihagyás</string>
     <string name="nc_configure_cert_auth">Hitelesítési tanúsítvány kiválasztása</string>
-    <string name="nc_connecting_call">Kapcsolódás…</string>
+    <string name="nc_connecting_call">Csatlakozás…</string>
     <string name="nc_contacts_done">Kész</string>
     <string name="nc_conversation_link">Beszélgetési hivatkozás</string>
     <string name="nc_conversation_menu_conversation_info">Beszélgetés információk</string>
@@ -119,7 +124,6 @@
     <string name="nc_group">Csoport</string>
     <string name="nc_groups">Csoportok</string>
     <string name="nc_guest">Vendég</string>
-    <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
     <string name="nc_join_via_link">Csatlakozás hivatkozással</string>
@@ -128,7 +132,6 @@
     <string name="nc_last_moderator_title">Nem sikerült elhagyni a beszélgetést</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
     <string name="nc_leave">Beszélgetés elhagyása</string>
-    <string name="nc_leaving_call">Hívás elhagyása…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licenc</string>
     <string name="nc_limit_hit">%s karakteres korlát elérve</string>
@@ -299,7 +302,6 @@
     <string name="nc_share_text_pass">\nJelszó: %1$s</string>
     <string name="nc_share_this_location">Ezen hely megosztása</string>
     <string name="nc_shared_items">Megosztott elemek</string>
-    <string name="nc_shared_items_description">Képek, fájlok, hangüzenetek…</string>
     <string name="nc_shared_items_empty">Nincsenek megosztott elemek</string>
     <string name="nc_shared_location">Hely megosztva</string>
     <string name="nc_sort_by">Rendezés elve</string>
@@ -383,4 +385,4 @@
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
     <string name="whats_your_status">Mi az állapota?</string>
-    </resources>
+</resources>

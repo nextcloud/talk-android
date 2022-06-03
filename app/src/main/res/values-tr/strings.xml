@@ -18,6 +18,7 @@
     <string name="dnd">Rahatsız etmeyin</string>
     <string name="dontClear">Kaldırılmasın</string>
     <string name="edit">Düzenle</string>
+    <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
     <string name="file_list_folder">klasör</string>
@@ -25,6 +26,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 saat</string>
     <string name="invisible">Görünmez</string>
+    <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="lock_symbol">Kilit simgesi</string>
     <string name="menu_item_sort_by_date_newest_first">Yeniden eskiye</string>
     <string name="menu_item_sort_by_date_oldest_first">Eskiden yeniye</string>
@@ -32,6 +34,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Büyükten küçüğe</string>
     <string name="menu_item_sort_by_size_smallest_first">Küçükten büyüğe</string>
+    <string name="message_search_begin_empty">Aramadan bir sonuç alınamadı</string>
+    <string name="messages">İletiler</string>
     <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
     <string name="nc_about">Hakkında</string>
     <string name="nc_account_chooser_active_user">Etkin kullanıcı</string>
@@ -51,7 +55,6 @@
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_name_is_same">Yazdığınız ad var olan ad ile aynı</string>
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
-    <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor …</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
     <string name="nc_call_state_in_call">Çağrıda %1$s kişi var</string>
     <string name="nc_call_state_with_phone">%1$s kişi telefon ile</string>
@@ -80,7 +83,7 @@
     <string name="nc_common_set">Ayarla</string>
     <string name="nc_common_skip">Atla</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
-    <string name="nc_connecting_call">Bağlantı kuruluyor…</string>
+    <string name="nc_connecting_call">Bağlantı kuruluyor …</string>
     <string name="nc_contacts_done">Tamam</string>
     <string name="nc_conversation_link">Görüşme bağlantısı</string>
     <string name="nc_conversation_menu_conversation_info">Görüşme bilgileri</string>
@@ -119,7 +122,6 @@
     <string name="nc_group">Grup</string>
     <string name="nc_groups">Gruplar</string>
     <string name="nc_guest">Konuk</string>
-    <string name="nc_hint_enter_a_message">Bir ileti yazın …</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
     <string name="nc_join_via_link">Bir bağlantı ile katıl</string>
@@ -128,7 +130,6 @@
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
     <string name="nc_leave">Görüşmeden ayrıl</string>
-    <string name="nc_leaving_call">Çağrı sonlandırılıyor …</string>
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. sürüm</string>
     <string name="nc_license_title">Lisans</string>
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
@@ -299,7 +300,6 @@
     <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
-    <string name="nc_shared_items_description">Görseller, dosyalar, ses iletileri…</string>
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
     <string name="nc_sort_by">Sıralama</string>
@@ -383,4 +383,4 @@
     <string name="userinfo_no_info_headline">Herhangi bir kişisel bilgi ayarlanmamış</string>
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
-    </resources>
+</resources>

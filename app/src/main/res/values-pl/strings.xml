@@ -18,6 +18,9 @@
     <string name="dnd">Nie przeszkadzać</string>
     <string name="dontClear">Nie czyść</string>
     <string name="edit">Edytuj</string>
+    <string name="emoji_backspace">Cofnij</string>
+    <string name="emoji_category_recent">Ostatnie</string>
+    <string name="emoji_search">Szukaj emoji</string>
     <string name="encrypted">Zaszyfrowane</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
     <string name="file_list_folder">katalog</string>
@@ -25,6 +28,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 godziny</string>
     <string name="invisible">Niewidoczny</string>
+    <string name="load_more_results">Wczytaj więcej wyników</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
     <string name="menu_item_sort_by_date_newest_first">Od najnowszych</string>
     <string name="menu_item_sort_by_date_oldest_first">Od najstarszych</string>
@@ -32,6 +36,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
     <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
+    <string name="message_search_begin_empty">Brak wyników wyszukiwania</string>
+    <string name="messages">Wiadomości</string>
     <string name="nc_Server_account_imported">Wybrane konto jest teraz zaimportowane i dostępne</string>
     <string name="nc_about">O aplikacji</string>
     <string name="nc_account_chooser_active_user">Aktywny użytkownik</string>
@@ -51,7 +57,6 @@
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_call_name_is_same">Wpisana nazwa jest taka sama jak dotychczasowa</string>
     <string name="nc_call_notifications">Powiadomienia połączenia</string>
-    <string name="nc_call_reconnecting">Ponowne łączenie…</string>
     <string name="nc_call_ringing">DZWONIENIE</string>
     <string name="nc_call_state_in_call">%1$s w trakcie połączenia</string>
     <string name="nc_call_state_with_phone">%1$s z telefonem</string>
@@ -113,13 +118,12 @@
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
     <string name="nc_formatted_message_you">Ty: %1$s</string>
     <string name="nc_forward_message">Przekaż dalej</string>
-    <string name="nc_forward_to_three_dots">Przekaż do …</string>
+    <string name="nc_forward_to_three_dots">Przekaż do…</string>
     <string name="nc_get_from_provider">Nie masz jeszcze serwera?\nKliknij tutaj, aby uzyskać jeden od dostawcy</string>
     <string name="nc_get_source_code">Pobierz kod źródłowy</string>
     <string name="nc_group">Grupa</string>
     <string name="nc_groups">Grupy</string>
     <string name="nc_guest">Gość</string>
-    <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>
     <string name="nc_join_via_link">Dołącz przez link</string>
@@ -128,7 +132,6 @@
     <string name="nc_last_moderator_title">Nie udało się opuścić rozmowy</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
     <string name="nc_leave">Opuść rozmowę</string>
-    <string name="nc_leaving_call">Opuszczanie połączenia…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licencja</string>
     <string name="nc_limit_hit">Osiągnięto limit %s znaków</string>
@@ -299,7 +302,6 @@
     <string name="nc_share_text_pass">\nHasło: %1$s</string>
     <string name="nc_share_this_location">Udostępnij tę lokalizację</string>
     <string name="nc_shared_items">Udostępnione elementy</string>
-    <string name="nc_shared_items_description">Obrazy, pliki, wiadomości głosowe…</string>
     <string name="nc_shared_items_empty">Brak udostępnionych elementów</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
     <string name="nc_sort_by">Sortuj według</string>
@@ -383,4 +385,4 @@
     <string name="userinfo_no_info_headline">Brak informacji osobistych</string>
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
-    </resources>
+</resources>

@@ -4,13 +4,13 @@
     <string name="avatar">Avatar</string>
     <string name="edit">Izmeni</string>
     <string name="file_list_folder">Folder</string>
-    <string name="file_list_loading">Učitavam…</string>
     <string name="menu_item_sort_by_date_newest_first">Prvo novije</string>
     <string name="menu_item_sort_by_date_oldest_first">prvo starije</string>
     <string name="menu_item_sort_by_name_a_z">A - Š</string>
     <string name="menu_item_sort_by_name_z_a">Š - A</string>
     <string name="menu_item_sort_by_size_biggest_first">prvo najveće</string>
     <string name="menu_item_sort_by_size_smallest_first">prvo najmanje</string>
+    <string name="messages">Poruke</string>
     <string name="nc_Server_account_imported">Odabrani nalog je sada uvezen i dostupan</string>
     <string name="nc_about">O programu</string>
     <string name="nc_account_chooser_active_user">Aktivni korisnik</string>
@@ -22,7 +22,6 @@
     <string name="nc_biometric_unlock">Otključaj %1$s</string>
     <string name="nc_call_name">Naziv razgovora</string>
     <string name="nc_call_name_is_same">Ime koje ste uneli je isto kao i trenutno</string>
-    <string name="nc_call_reconnecting">Ponovo se povezujem…</string>
     <string name="nc_call_timeout">Nema odgovora u 45 sekundi, pritisnite da probate ponovo</string>
     <string name="nc_camera_permission_permanently_denied">Da biste omogućili video komunikaciju, dozvolite pristup kameri u sistemskim postavkama.</string>
     <string name="nc_cancel">Otkaži</string>
@@ -38,7 +37,6 @@
     <string name="nc_common_error_sorry">Izvinjavamo se, nešto je pošlo naopako!</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Odaberi sertifikat za prijavu</string>
-    <string name="nc_connecting_call">Povezujem se…</string>
     <string name="nc_contacts_done">Gotovo</string>
     <string name="nc_conversation_link">Veza ka razgovoru</string>
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>
@@ -67,7 +65,6 @@
     <string name="nc_group">Group</string>
     <string name="nc_groups">Grupe</string>
     <string name="nc_guest">Gost</string>
-    <string name="nc_hint_enter_a_message">Unesite poruku…</string>
     <string name="nc_important_conversation">Bitan razgovor</string>
     <string name="nc_join_via_link">Pridruži se preko veze</string>
     <string name="nc_join_via_web">Pridruži se preko veba</string>
@@ -75,7 +72,6 @@
     <string name="nc_last_moderator_title">Ne mogu napustiti razgovor</string>
     <string name="nc_last_modified">%1$s | Poslednje izmenjeno: %2$s</string>
     <string name="nc_leave">Napusti razgovor</string>
-    <string name="nc_leaving_call">Napuštam razgovor…</string>
     <string name="nc_license_summary">GNU opšta javna licenca, verzija 3</string>
     <string name="nc_license_title">Licenca</string>
     <string name="nc_limit_hit">Dostignut je limit od %s karaktera</string>

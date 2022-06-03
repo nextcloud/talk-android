@@ -18,13 +18,17 @@
     <string name="dnd">請勿打擾</string>
     <string name="dontClear">不要清除</string>
     <string name="edit">編輯</string>
+    <string name="emoji_backspace">Backspace</string>
+    <string name="emoji_category_recent">最新</string>
+    <string name="emoji_search">搜尋 emoji</string>
     <string name="encrypted">已加密</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
-    <string name="file_list_loading">加載中…</string>
+    <string name="file_list_loading">加載中 ...</string>
     <string name="filename_progress">%1$s（%2$d）</string>
     <string name="fourHours">4 小時</string>
     <string name="invisible">隱藏</string>
+    <string name="load_more_results">正在載入更多結果</string>
     <string name="lock_symbol">鎖符號</string>
     <string name="menu_item_sort_by_date_newest_first">最新先</string>
     <string name="menu_item_sort_by_date_oldest_first">最舊先</string>
@@ -32,6 +36,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">最大先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小先</string>
+    <string name="message_search_begin_empty">無搜尋結果</string>
+    <string name="messages">訊息</string>
     <string name="nc_Server_account_imported">所選賬戶現已匯入並可用</string>
     <string name="nc_about">關於</string>
     <string name="nc_account_chooser_active_user">活躍用戶</string>
@@ -51,7 +57,6 @@
     <string name="nc_call_name">對話名稱</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_call_notifications">通話通告</string>
-    <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
     <string name="nc_call_state_with_phone">%1$s 電話對話中</string>
@@ -80,7 +85,7 @@
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">略過</string>
     <string name="nc_configure_cert_auth">選擇驗證證書</string>
-    <string name="nc_connecting_call">連線中</string>
+    <string name="nc_connecting_call">連線中...</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_link">對話的連結</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
@@ -119,7 +124,6 @@
     <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
-    <string name="nc_hint_enter_a_message">輸入訊息</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>
     <string name="nc_join_via_link">透過連結加入</string>
@@ -128,7 +132,6 @@
     <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>
-    <string name="nc_leaving_call">離開通話…</string>
     <string name="nc_license_summary">GNU General Public License， 第3版</string>
     <string name="nc_license_title">授權</string>
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
@@ -299,7 +302,6 @@
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享此位置</string>
     <string name="nc_shared_items">分享項目</string>
-    <string name="nc_shared_items_description">圖片、文件、語音訊息 …</string>
     <string name="nc_shared_items_empty">沒有已分享的項目</string>
     <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_sort_by">排序方式</string>
@@ -383,4 +385,4 @@
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
-    </resources>
+</resources>

@@ -14,19 +14,23 @@
     <string name="dnd">Μην ενοχλείτε</string>
     <string name="dontClear">Να μη γίνεται εκκαθάριση</string>
     <string name="edit">Επεξεργασία</string>
+    <string name="emoji_category_recent">Πρόσφατα</string>
     <string name="encrypted">Κρυπτογραφημένο</string>
     <string name="failed_to_save">Αποτυχία αποθήκευσης %1$s</string>
     <string name="file_list_folder">φάκελος</string>
-    <string name="file_list_loading">Γίνεται φόρτωση…</string>
+    <string name="file_list_loading">Φόρτωση...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ώρες</string>
     <string name="invisible">Αόρατο</string>
+    <string name="load_more_results">Φόρτωση περισσοτέρων αποτελεσμάτων</string>
     <string name="menu_item_sort_by_date_newest_first">Νεότερο πρώτα</string>
     <string name="menu_item_sort_by_date_oldest_first">Παλαιότερο πρώτα</string>
     <string name="menu_item_sort_by_name_a_z">Α - Ω</string>
     <string name="menu_item_sort_by_name_z_a">Ω - Α</string>
     <string name="menu_item_sort_by_size_biggest_first">Μεγαλύτερο πρώτα</string>
     <string name="menu_item_sort_by_size_smallest_first">Μικρότερο πρώτα</string>
+    <string name="message_search_begin_empty">Κανένα αποτέλεσμα</string>
+    <string name="messages">Μηνύματα</string>
     <string name="nc_Server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι τώρα διαθέσιμος</string>
     <string name="nc_about">Περί</string>
     <string name="nc_account_chooser_active_user">Ενεργός χρήστης</string>
@@ -44,7 +48,6 @@
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
     <string name="nc_call_name_is_same">Το όνομα που εισάγατε είναι το ίδιο με ένα υπάρχον</string>
-    <string name="nc_call_reconnecting">Επανασύνδεση…</string>
     <string name="nc_call_state_in_call">%1$s σε κλήση</string>
     <string name="nc_call_state_with_phone">%1$s με τηλέφωνο</string>
     <string name="nc_call_state_with_video">%1$s με βίντεο</string>
@@ -72,7 +75,7 @@
     <string name="nc_common_set">Ορισμός</string>
     <string name="nc_common_skip">Παράλειψη</string>
     <string name="nc_configure_cert_auth">Επιλογή πιστοποιητικού πιστοποίησης</string>
-    <string name="nc_connecting_call">Σύνδεση…</string>
+    <string name="nc_connecting_call">Σύνδεση ...</string>
     <string name="nc_contacts_done">Ολοκληρώθηκε</string>
     <string name="nc_conversation_link">Σύνδεσμος συνομιλίας</string>
     <string name="nc_conversation_menu_conversation_info">Πληροφορίες συνομιλίας</string>
@@ -111,7 +114,6 @@
     <string name="nc_group">Ομάδα</string>
     <string name="nc_groups">Ομάδες</string>
     <string name="nc_guest">Επισκέπτης</string>
-    <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα…</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
     <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>
     <string name="nc_join_via_link">Συμμετοχή με σύνδεσμο</string>
@@ -120,7 +122,6 @@
     <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
     <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
     <string name="nc_leave">Εγκατάλειψη συνομιλίας</string>
-    <string name="nc_leaving_call">Αποχώρηση από την κλήση</string>
     <string name="nc_license_summary">Γενική Άδεια Δημόσιας Χρήσης GNU, έκδοση 3</string>
     <string name="nc_license_title">Άδεια χρήσης</string>
     <string name="nc_limit_hit">Το όριο %s χαρακτήρων έχει συμπληρωθεί</string>
@@ -352,4 +353,4 @@
     <string name="userinfo_no_info_headline">Δεν ορίστηκαν προσωπικές πληροφορίες</string>
     <string name="userinfo_no_info_text">Προσθέστε όνομα, εικόνα και λεπτομέρειες επικοινωνίας στο προφίλ σας.</string>
     <string name="whats_your_status">Ποια είναι η κατάστασή σας;</string>
-    </resources>
+</resources>

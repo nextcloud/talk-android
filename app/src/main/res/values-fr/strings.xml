@@ -18,13 +18,15 @@
     <string name="dnd">Ne pas déranger</string>
     <string name="dontClear">Ne pas effacer</string>
     <string name="edit">Modifier</string>
+    <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
     <string name="failed_to_save">Echec de la sauvegarde %1$s</string>
     <string name="file_list_folder">Dossier</string>
-    <string name="file_list_loading">Chargement…</string>
+    <string name="file_list_loading">Chargement...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 heures</string>
     <string name="invisible">Invisible</string>
+    <string name="load_more_results">Charger plus de résultats</string>
     <string name="lock_symbol">Symbole de verrouillage </string>
     <string name="menu_item_sort_by_date_newest_first">Les plus récents d\'abord</string>
     <string name="menu_item_sort_by_date_oldest_first">Les plus anciens d\'abord</string>
@@ -32,6 +34,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Les plus gros d\'abord</string>
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
+    <string name="message_search_begin_empty">Aucun résultat</string>
+    <string name="messages">Messages</string>
     <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
     <string name="nc_about">À propos</string>
     <string name="nc_account_chooser_active_user">Utilisateur actif</string>
@@ -51,7 +55,6 @@
     <string name="nc_call_name">Nom de la conversation</string>
     <string name="nc_call_name_is_same">Le nom que vous avez entré est le même que celui existant</string>
     <string name="nc_call_notifications">Notifications d\'appel</string>
-    <string name="nc_call_reconnecting">Reconnexion en cours…</string>
     <string name="nc_call_ringing">APPEL EN COURS</string>
     <string name="nc_call_state_in_call">%1$s en ligne</string>
     <string name="nc_call_state_with_phone">%1$savec un téléphone</string>
@@ -80,7 +83,7 @@
     <string name="nc_common_set">Sauver</string>
     <string name="nc_common_skip">Ignorer</string>
     <string name="nc_configure_cert_auth">Sélectionner le certificat d\'authentification</string>
-    <string name="nc_connecting_call">Connexion…</string>
+    <string name="nc_connecting_call">Connexion …</string>
     <string name="nc_contacts_done">Terminé</string>
     <string name="nc_conversation_link">Lien de la conversation</string>
     <string name="nc_conversation_menu_conversation_info">Infos sur la conversation</string>
@@ -119,7 +122,6 @@
     <string name="nc_group">Groupe</string>
     <string name="nc_groups">Groupes</string>
     <string name="nc_guest">Invité</string>
-    <string name="nc_hint_enter_a_message">Saisir un message…</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres Ne Pas Déranger</string>
     <string name="nc_join_via_link">Joindre via un lien</string>
@@ -128,7 +130,6 @@
     <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
     <string name="nc_leave">Quitter la conversation</string>
-    <string name="nc_leaving_call">Fin d\'appel…</string>
     <string name="nc_license_summary">Licence Publique Générale GNU, Version 3</string>
     <string name="nc_license_title">Licence</string>
     <string name="nc_limit_hit">La limite de %s caractères a été atteinte</string>
@@ -299,7 +300,6 @@
     <string name="nc_share_text_pass">\nLe mot de passe : %1$s</string>
     <string name="nc_share_this_location">Partager cette position</string>
     <string name="nc_shared_items">Éléments partagés</string>
-    <string name="nc_shared_items_description">Images, fichiers, messages vocaux…</string>
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_location">Position partagée</string>
     <string name="nc_sort_by">Trier par</string>
@@ -383,4 +383,4 @@
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajouter le nom, la photo et les coordonnées sur votre page de profil.</string>
     <string name="whats_your_status">Quel est votre statut ?</string>
-    </resources>
+</resources>

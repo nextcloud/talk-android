@@ -18,13 +18,15 @@
     <string name="dnd">No molestar</string>
     <string name="dontClear">No borrar</string>
     <string name="edit">Editar</string>
+    <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
     <string name="file_list_folder">carpeta</string>
-    <string name="file_list_loading">Cargando…</string>
+    <string name="file_list_loading">Cargando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisible</string>
+    <string name="load_more_results">Cargar más resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="menu_item_sort_by_date_newest_first">Nuevas primero</string>
     <string name="menu_item_sort_by_date_oldest_first">Antiguas primero</string>
@@ -32,6 +34,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Grandes primero</string>
     <string name="menu_item_sort_by_size_smallest_first">Pequeñas primero</string>
+    <string name="message_search_begin_empty">No hay resultados de búsqueda</string>
+    <string name="messages">Mensajes</string>
     <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_about">Acerca de</string>
     <string name="nc_account_chooser_active_user">Activar usuario</string>
@@ -51,7 +55,6 @@
     <string name="nc_call_name">Nombre de la conversación</string>
     <string name="nc_call_name_is_same">El nombre que has introducido es el mismo que el existente</string>
     <string name="nc_call_notifications">Notificaciones de llamadas</string>
-    <string name="nc_call_reconnecting">Reconectando…</string>
     <string name="nc_call_ringing">LLAMANDO</string>
     <string name="nc_call_state_in_call">%1$s en una llamada</string>
     <string name="nc_call_state_with_phone">%1$s con teléfono</string>
@@ -80,7 +83,7 @@
     <string name="nc_common_set">Guardar</string>
     <string name="nc_common_skip">Saltar</string>
     <string name="nc_configure_cert_auth">Seleccionar certificado de autenticación</string>
-    <string name="nc_connecting_call">Conectando…</string>
+    <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contacts_done">Hecho</string>
     <string name="nc_conversation_link">Enlace a la llamada</string>
     <string name="nc_conversation_menu_conversation_info">Información de la conversación</string>
@@ -119,7 +122,6 @@
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Invitado</string>
-    <string name="nc_hint_enter_a_message">Escribe un mensaje…</string>
     <string name="nc_important_conversation">Conversación importante</string>
     <string name="nc_important_conversation_desc">Las notificaciones de esta conversación no tendrán en cuenta el ajuste de No Molestar</string>
     <string name="nc_join_via_link">Unirse con un enlace</string>
@@ -128,7 +130,6 @@
     <string name="nc_last_moderator_title">No puedes dejar la conversación</string>
     <string name="nc_last_modified">%1$s | Modificado por última vez: %2$s</string>
     <string name="nc_leave">Abandonar conversación</string>
-    <string name="nc_leaving_call">Terminando llamada…</string>
     <string name="nc_license_summary">Licencia General Pública de GNU (GPL), versión 3</string>
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Se ha alcanzado el límite de %s caracteres</string>
@@ -300,7 +301,6 @@
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
     <string name="nc_shared_items">Elementos compartidos</string>
-    <string name="nc_shared_items_description">Imágenes, archivos, mensajes de voz...</string>
     <string name="nc_shared_items_empty">No hay elementos compartidos</string>
     <string name="nc_shared_location">Ubicación compartida</string>
     <string name="nc_sort_by">Ordenar por</string>
@@ -384,4 +384,4 @@
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
     <string name="whats_your_status">¿Cuál es su estado?</string>
-    </resources>
+</resources>

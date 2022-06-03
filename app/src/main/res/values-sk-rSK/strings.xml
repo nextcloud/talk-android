@@ -17,13 +17,15 @@
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
     <string name="edit">Upraviť</string>
+    <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
     <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>
     <string name="file_list_folder">priečinok</string>
-    <string name="file_list_loading">Načítavam…</string>
+    <string name="file_list_loading">Načítavam ...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="invisible">Neviditeľný</string>
+    <string name="load_more_results">Načítať viac výsledkov</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="menu_item_sort_by_date_newest_first">Najnovšie prvé</string>
     <string name="menu_item_sort_by_date_oldest_first">Najstaršie prvé</string>
@@ -31,6 +33,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
+    <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
+    <string name="messages">Správy</string>
     <string name="nc_Server_account_imported">Vybraný účet je teraz importovaný a dostupný</string>
     <string name="nc_about">O aplikácii</string>
     <string name="nc_account_chooser_active_user">Aktívny užívateľ</string>
@@ -50,7 +54,6 @@
     <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
     <string name="nc_call_notifications">Upozornenia na hovory</string>
-    <string name="nc_call_reconnecting">Opätovné pripájanie…</string>
     <string name="nc_call_ringing">ZVONÍ</string>
     <string name="nc_call_state_in_call">%1$s v rozhovore</string>
     <string name="nc_call_state_with_phone">%1$s s telefónom</string>
@@ -79,7 +82,7 @@
     <string name="nc_common_set">Nastaviť</string>
     <string name="nc_common_skip">Preskočiť</string>
     <string name="nc_configure_cert_auth">Vybrať autentifikačný certifikát</string>
-    <string name="nc_connecting_call">Pripája sa…</string>
+    <string name="nc_connecting_call">Pripájam sa...</string>
     <string name="nc_contacts_done">Hotovo</string>
     <string name="nc_conversation_link">Odkaz rozhovoru</string>
     <string name="nc_conversation_menu_conversation_info">Informácia o rozhovore</string>
@@ -118,7 +121,6 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_guest">Hosť</string>
-    <string name="nc_hint_enter_a_message">Napíšte správu</string>
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
     <string name="nc_important_conversation_desc">Oznámenia v tomto rozhovore sa prepíšu nastavením Nerušiť</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
@@ -127,7 +129,6 @@
     <string name="nc_last_moderator_title">Nie je možné opustiť rozhovor</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Odísť z rozhovoru</string>
-    <string name="nc_leaving_call">Opúšťam hovor…</string>
     <string name="nc_license_summary">GNU Všeobecná Verejná Licencia, Verzia 3</string>
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Limit maximálneho počtu znakov %s dosiahnutý</string>
@@ -297,7 +298,6 @@
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
     <string name="nc_shared_items">Zdieľané položky</string>
-    <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy…</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>
@@ -378,4 +378,4 @@
     <string name="userinfo_no_info_headline">Osobné informácie neboli nastavené</string>
     <string name="userinfo_no_info_text">Pridaj meno, obrázok a kontakt na profilovú stránku.</string>
     <string name="whats_your_status">Aký je váš stav?</string>
-    </resources>
+</resources>

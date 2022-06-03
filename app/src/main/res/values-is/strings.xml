@@ -11,18 +11,21 @@
     <string name="conversations">Samtöl</string>
     <string name="dnd">Ónáðið ekki</string>
     <string name="edit">Breyta</string>
+    <string name="emoji_category_recent">Nýlegt</string>
     <string name="encrypted">Dulritað</string>
     <string name="file_list_folder">mappa</string>
-    <string name="file_list_loading">Hleð inn…</string>
+    <string name="file_list_loading">Hleð inn …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 klukkustundir</string>
     <string name="invisible">Ósýnilegt</string>
+    <string name="load_more_results">Hlaða inn fleiri niðurstöðum</string>
     <string name="menu_item_sort_by_date_newest_first">Nýjast fyrst</string>
     <string name="menu_item_sort_by_date_oldest_first">Elsta fyrst</string>
     <string name="menu_item_sort_by_name_a_z">A - Ö</string>
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Stærsta fyrst</string>
     <string name="menu_item_sort_by_size_smallest_first">Minnsta fyrst</string>
+    <string name="messages">Skilaboð</string>
     <string name="nc_Server_account_imported">Valinn aðgangur er núna fluttur inn og tiltækur</string>
     <string name="nc_about">Um hugbúnaðinn</string>
     <string name="nc_account_chooser_active_user">Virkur notandi</string>
@@ -53,7 +56,6 @@
     <string name="nc_common_set">Setja</string>
     <string name="nc_common_skip">Sleppa</string>
     <string name="nc_configure_cert_auth">Veldu skilríki fyrir auðkenningu</string>
-    <string name="nc_connecting_call">Tengist…</string>
     <string name="nc_contacts_done">Lokið</string>
     <string name="nc_conversation_link">Samskiptatengill</string>
     <string name="nc_conversation_menu_conversation_info">Upplýsingar um samtal</string>
@@ -87,7 +89,6 @@
     <string name="nc_group">Hópur</string>
     <string name="nc_groups">Hópar</string>
     <string name="nc_guest">Gestur</string>
-    <string name="nc_hint_enter_a_message">Settu inn skilaboð…</string>
     <string name="nc_join_via_web">Taka þátt í gegnum vef</string>
     <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
     <string name="nc_last_moderator_title">Gat ekki hætt í samtali</string>
@@ -251,4 +252,4 @@
     <string name="userinfo_no_info_headline">Engar persónulegar upplýsingar stilltar</string>
     <string name="userinfo_no_info_text">Bættu nafni, mynd og tengiliðaupplýsingum á forsíðuna þína.</string>
     <string name="whats_your_status">Hver er staðan á þér?</string>
-    </resources>
+</resources>

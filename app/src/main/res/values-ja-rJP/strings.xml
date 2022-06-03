@@ -13,6 +13,7 @@
     <string name="delete_avatar">アバターを削除</string>
     <string name="dnd">取り込み中</string>
     <string name="edit">編集</string>
+    <string name="emoji_category_recent">最近</string>
     <string name="encrypted">暗号化済み</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>
     <string name="file_list_folder">フォルダー</string>
@@ -20,6 +21,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4時間</string>
     <string name="invisible">オフライン</string>
+    <string name="load_more_results">結果をさらに読み込む</string>
     <string name="lock_symbol">鍵の記号</string>
     <string name="menu_item_sort_by_date_newest_first">新しい順</string>
     <string name="menu_item_sort_by_date_oldest_first">日付（昇順）</string>
@@ -27,6 +29,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">サイズ（降順）</string>
     <string name="menu_item_sort_by_size_smallest_first">サイズ（昇順）</string>
+    <string name="message_search_begin_empty">検索結果なし</string>
+    <string name="messages">メッセージ</string>
     <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_about">バージョン情報</string>
     <string name="nc_account_chooser_active_user">アクティブなユーザー</string>
@@ -45,7 +49,6 @@
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
-    <string name="nc_call_reconnecting">再接続中…</string>
     <string name="nc_call_ringing">呼び出し中</string>
     <string name="nc_call_state_in_call">%1$s着信</string>
     <string name="nc_call_state_with_phone">%1$sと電話</string>
@@ -73,7 +76,7 @@
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">スキップ</string>
     <string name="nc_configure_cert_auth">認証証明書を選択</string>
-    <string name="nc_connecting_call">接続中</string>
+    <string name="nc_connecting_call">接続中 …</string>
     <string name="nc_contacts_done">完了</string>
     <string name="nc_conversation_link">会話リンク</string>
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
@@ -111,7 +114,6 @@
     <string name="nc_group">グループ</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_guest">ゲスト</string>
-    <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_join_via_link">トークに参加する</string>
@@ -120,7 +122,6 @@
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
     <string name="nc_leave">会話を離れる</string>
-    <string name="nc_leaving_call">通話を終了する</string>
     <string name="nc_license_summary">GNU General Public License, version 3</string>
     <string name="nc_license_title">ライセンス</string>
     <string name="nc_limit_hit">%s文字の制限に達しました</string>
@@ -344,4 +345,4 @@
     <string name="userinfo_no_info_headline">個人情報はありません</string>
     <string name="userinfo_no_info_text">プロフィールページに名前、写真、連絡先の詳細を追加します。</string>
     <string name="whats_your_status">現在のオンラインステータスは？</string>
-    </resources>
+</resources>

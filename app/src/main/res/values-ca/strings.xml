@@ -10,18 +10,22 @@
     <string name="conversations">Converses</string>
     <string name="dnd">No molesteu</string>
     <string name="edit">Edita</string>
+    <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Xifrat</string>
     <string name="file_list_folder">carpeta</string>
-    <string name="file_list_loading">S\'està carregant…</string>
+    <string name="file_list_loading">Carregant …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hores</string>
     <string name="invisible">Invisible</string>
+    <string name="load_more_results">Carrega més resultats</string>
     <string name="menu_item_sort_by_date_newest_first">Més nou primer</string>
     <string name="menu_item_sort_by_date_oldest_first">Més antic primer</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Més gran primer</string>
     <string name="menu_item_sort_by_size_smallest_first">Més petit primer</string>
+    <string name="message_search_begin_empty">No s\'han trobat resultats</string>
+    <string name="messages">Missatges</string>
     <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_about">Quant a</string>
     <string name="nc_account_chooser_active_user">Usuari actiu</string>
@@ -36,7 +40,6 @@
     <string name="nc_biometric_unlock">Desbloca %1$s</string>
     <string name="nc_call_name">Nom de la conversa</string>
     <string name="nc_call_name_is_same">El nom que heu introduït és el mateix que l’actual</string>
-    <string name="nc_call_reconnecting">S\'està reconnectant…</string>
     <string name="nc_call_timeout">Han passat 45 segons i no hi ha hagut cap resposta, feu un toc per tornar-ho a provar</string>
     <string name="nc_camera_permission_permanently_denied">Per activar la comunicació per vídeo, si us plau doneu permís a la \"Càmera\" dins de la configuració del sistema.</string>
     <string name="nc_cancel">Cancel·la</string>
@@ -55,7 +58,6 @@
     <string name="nc_common_set">Estableix</string>
     <string name="nc_common_skip">Omet</string>
     <string name="nc_configure_cert_auth">Selecciona el certificat d’autenticació</string>
-    <string name="nc_connecting_call">S\'està connectant…</string>
     <string name="nc_contacts_done">Fet</string>
     <string name="nc_conversation_link">Enllaç de conversa</string>
     <string name="nc_conversation_menu_conversation_info">Informació de la conversa</string>
@@ -89,7 +91,6 @@
     <string name="nc_group">Grup</string>
     <string name="nc_groups">Grups</string>
     <string name="nc_guest">Convidat</string>
-    <string name="nc_hint_enter_a_message">Introduïu un missatge…</string>
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_join_via_link">Uniu-vos amb un enllaç</string>
@@ -98,7 +99,6 @@
     <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
     <string name="nc_leave">Surt de la conversa</string>
-    <string name="nc_leaving_call">S\'està abandonant la trucada…</string>
     <string name="nc_license_summary">Llicència Pública General de GNU, Versió 3</string>
     <string name="nc_license_title">Llicència</string>
     <string name="nc_limit_hit">S\'ha arribat al límit de %s caràcters </string>
@@ -273,4 +273,4 @@
     <string name="userinfo_no_info_headline">No hi ha arranjament d\'informació personal</string>
     <string name="userinfo_no_info_text">Afegiu el nom, foto i detalls de contacte a la vostra pàgina de perfil.</string>
     <string name="whats_your_status">Quin és el vostre estat?</string>
-    </resources>
+</resources>

@@ -11,18 +11,22 @@
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
     <string name="edit">Rediger</string>
+    <string name="emoji_category_recent">Nylige</string>
     <string name="failed_to_save">Kunne ikke gemme %1$s</string>
     <string name="file_list_folder">mappe</string>
-    <string name="file_list_loading">Indlæser…</string>
+    <string name="file_list_loading">Loading …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timer</string>
     <string name="invisible">Usynlig</string>
+    <string name="load_more_results">Indlæs flere resultater</string>
     <string name="menu_item_sort_by_date_newest_first">Nyeste først</string>
     <string name="menu_item_sort_by_date_oldest_first">Ældste først</string>
     <string name="menu_item_sort_by_name_a_z">A - Å</string>
     <string name="menu_item_sort_by_name_z_a">Å - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Mindste først</string>
+    <string name="message_search_begin_empty">Ingen søgeresultater</string>
+    <string name="messages">Beskeder</string>
     <string name="nc_Server_account_imported">Den valgte konto blev importeret og kan bruges nu</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv bruger</string>
@@ -36,7 +40,6 @@
     <string name="nc_biometric_unlock">Lås op %1$s</string>
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_call_name_is_same">Navnet du har indtastet er ens med det eksisterende navn</string>
-    <string name="nc_call_reconnecting">Forbinder igen…</string>
     <string name="nc_call_timeout">Intet respons i 45 sekunder, rør skærmen for at forsøge igen</string>
     <string name="nc_camera_permission_permanently_denied">For at aktivere video kommunikation accepter venligst \"Kamera\" tilladelsen i system indstillingerne</string>
     <string name="nc_cancel">Annuller</string>
@@ -55,7 +58,6 @@
     <string name="nc_common_error_sorry">Noget gik galt, undskyld!</string>
     <string name="nc_common_skip">Spring over</string>
     <string name="nc_configure_cert_auth">Vælg godkendelsescertifikat</string>
-    <string name="nc_connecting_call">Forbinder…</string>
     <string name="nc_contacts_done">Færdig</string>
     <string name="nc_conversation_link">Samtalelink</string>
     <string name="nc_conversation_menu_conversation_info">Samtaleinfo</string>
@@ -88,7 +90,6 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gæst</string>
-    <string name="nc_hint_enter_a_message">Skriv en besked…</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
     <string name="nc_important_conversation_desc">notifikationer under denne samtale vil ignorere Forstyr ikke indstillinger</string>
     <string name="nc_join_via_link">Deltag via link</string>
@@ -97,7 +98,6 @@
     <string name="nc_last_moderator_title">Kunne ikke forlade samtalen</string>
     <string name="nc_last_modified">%1$s| Sidst ændret: %2$s</string>
     <string name="nc_leave">Forlad samtale</string>
-    <string name="nc_leaving_call">Forlader opkald…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%skarakterbegrænsning nået</string>
@@ -277,4 +277,4 @@
     <string name="userinfo_no_info_headline">Personlig information ikke konfigureret</string>
     <string name="userinfo_no_info_text">Tilføj navn, billede og kontakt information på din profilside.</string>
     <string name="whats_your_status">Hvad er din status</string>
-    </resources>
+</resources>

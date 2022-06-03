@@ -12,18 +12,22 @@
     <string name="dnd">Non molestar</string>
     <string name="dontClear">Non limpar</string>
     <string name="edit">Editar</string>
+    <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Cifrado</string>
     <string name="file_list_folder">cartafol</string>
     <string name="file_list_loading">Cargando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 horas</string>
     <string name="invisible">Invisíbel</string>
+    <string name="load_more_results">Cargando máis resultados</string>
     <string name="menu_item_sort_by_date_newest_first">Primeiro o máis recente</string>
     <string name="menu_item_sort_by_date_oldest_first">Primeiro o máis antigo</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Primeiro o máis grande</string>
     <string name="menu_item_sort_by_size_smallest_first">Primeiro o máis pequeno</string>
+    <string name="message_search_begin_empty">Sen resultados de busca</string>
+    <string name="messages">Mensaxes</string>
     <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuario activo</string>
@@ -39,7 +43,6 @@
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nome da conversa</string>
     <string name="nc_call_name_is_same">O nome que introduciu é o mesmo que o existente</string>
-    <string name="nc_call_reconnecting">Volvendo conectar…</string>
     <string name="nc_call_ringing">CHAMANDO</string>
     <string name="nc_call_timeout">Se non hai resposta en 45 segundos, toque para tentalo de novo</string>
     <string name="nc_camera_permission_permanently_denied">Para permitir a comunicación por vídeo, conceda o permiso de «Cámara» na configuración do sistema.</string>
@@ -94,7 +97,6 @@
     <string name="nc_group">Grupo</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
-    <string name="nc_hint_enter_a_message">Introduza unha mensaxe…</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificacións nesta conversa serán anuladas Axustes de Non molestar</string>
     <string name="nc_join_via_link">Unirse a través dunha ligazón</string>
@@ -103,7 +105,6 @@
     <string name="nc_last_moderator_title">Non foi posíbel abandonar a conversa</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
     <string name="nc_leave">Abandonar a conversa</string>
-    <string name="nc_leaving_call">Abandonando a chamada…</string>
     <string name="nc_license_summary">Licenza Pública Xeral GNU, versión 3</string>
     <string name="nc_license_title">licenza</string>
     <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
@@ -294,4 +295,4 @@
     <string name="userinfo_no_info_headline">Non se estabeleceu a información persoal</string>
     <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
     <string name="whats_your_status">Cal é o seu estado?</string>
-    </resources>
+</resources>

@@ -13,13 +13,15 @@
     <string name="dnd">Đừng làm phiền</string>
     <string name="dontClear">Không xoá</string>
     <string name="edit">Sửa</string>
+    <string name="emoji_category_recent">Gần đây</string>
     <string name="encrypted">Đã mã hóa</string>
     <string name="failed_to_save">Lưu %1$s thất bại</string>
     <string name="file_list_folder">thư mục</string>
-    <string name="file_list_loading">Đang tải…</string>
+    <string name="file_list_loading">Đang tải...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tiếng</string>
     <string name="invisible">Vô hình</string>
+    <string name="load_more_results">Tải thêm kết quả</string>
     <string name="lock_symbol">Biểu tượng khóa</string>
     <string name="menu_item_sort_by_date_newest_first">Mới nhất trước</string>
     <string name="menu_item_sort_by_date_oldest_first">Cũ nhất trước</string>
@@ -27,6 +29,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Lớn nhất trước</string>
     <string name="menu_item_sort_by_size_smallest_first">Nhỏ nhất trước</string>
+    <string name="message_search_begin_empty">Không có kết quả tìm kiếm</string>
+    <string name="messages">Thông điệp</string>
     <string name="nc_Server_account_imported">Tài khoản được chọn bây giờ đã được nhập và đang có sẵn</string>
     <string name="nc_about">Thông tin</string>
     <string name="nc_account_chooser_active_user">Người dùng đang hoạt động</string>
@@ -45,7 +49,6 @@
     <string name="nc_call_incoming">ĐANG ĐẾN</string>
     <string name="nc_call_name">Tên cuộc Đàm thoại</string>
     <string name="nc_call_name_is_same">Tên bạn nhập trùng với tên đã tồn tại.</string>
-    <string name="nc_call_reconnecting">Đang kết nối lại…</string>
     <string name="nc_call_ringing">ĐANG ĐỔ CHUÔNG</string>
     <string name="nc_call_state_in_call">%1$s đang trong cuộc gọi</string>
     <string name="nc_call_state_with_phone">%1$s với điện thoại</string>
@@ -68,7 +71,7 @@
     <string name="nc_common_set">Đặt</string>
     <string name="nc_common_skip">Bỏ qua</string>
     <string name="nc_configure_cert_auth">Chọn chứng thực báo mật</string>
-    <string name="nc_connecting_call">Đang kết nối…</string>
+    <string name="nc_connecting_call">Đang kết nối …</string>
     <string name="nc_contacts_done">Hoàn tất</string>
     <string name="nc_conversation_link">Liên kết đàm thoại</string>
     <string name="nc_conversation_menu_video_call">Gọi Video</string>
@@ -95,11 +98,9 @@
     <string name="nc_group">Nhóm</string>
     <string name="nc_groups">Nhóm</string>
     <string name="nc_guest">Khách</string>
-    <string name="nc_hint_enter_a_message">Nhập một thông điệp…</string>
     <string name="nc_join_via_link">Tham gia bằng một liên kết</string>
     <string name="nc_join_via_web">Tham gia từ website</string>
     <string name="nc_leave">Rời khỏi cuộc đàm thoại</string>
-    <string name="nc_leaving_call">Đang rời khỏi cuộc gọi…</string>
     <string name="nc_license_summary">Giấy phép bản quyền GNU, Phiên bản 3</string>
     <string name="nc_license_title">Giấy phép</string>
     <string name="nc_locked_tap_to_unlock">Nhấn để mở khoá</string>
@@ -240,4 +241,4 @@
     <string name="userinfo_no_info_headline">Không có thông tin cá nhân nào được đặt</string>
     <string name="userinfo_no_info_text">Thêm tên, hình ảnh và chi tiết liên hệ trên trang hồ sơ của bạn.</string>
     <string name="whats_your_status">Trạng thái của bạn là gì?</string>
-    </resources>
+</resources>

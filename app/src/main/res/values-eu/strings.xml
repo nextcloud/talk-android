@@ -18,13 +18,15 @@
     <string name="dnd">Ez molestatu</string>
     <string name="dontClear">Ez garbitu</string>
     <string name="edit">Editatu</string>
+    <string name="emoji_category_recent">Azkenak</string>
     <string name="encrypted">Zifratua</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="file_list_folder">karpeta</string>
-    <string name="file_list_loading">Kargatzen…</string>
+    <string name="file_list_loading">Kargatzen ...</string>
     <string name="filename_progress">%1$s(%2$d)</string>
     <string name="fourHours">4 ordu</string>
     <string name="invisible">Ikusezina</string>
+    <string name="load_more_results">Kargatu emaitza gehiago </string>
     <string name="lock_symbol">Blokeo sinboloa</string>
     <string name="menu_item_sort_by_date_newest_first">Berrienak lehenengo </string>
     <string name="menu_item_sort_by_date_oldest_first">Zaharrenak lehenengo</string>
@@ -32,6 +34,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Handienak lehenengo</string>
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
+    <string name="message_search_begin_empty">Ez dago bilaketaren emaitzarik</string>
+    <string name="messages">Mezuak</string>
     <string name="nc_Server_account_imported">Aukeratutako kontua inportatu da eta eskuragarri dago</string>
     <string name="nc_about">Honi buruz</string>
     <string name="nc_account_chooser_active_user">Erabiltzaile aktiboa</string>
@@ -51,7 +55,6 @@
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_call_name_is_same">Sartu duzun izena dagoenaren berdina da</string>
     <string name="nc_call_notifications">Dei jakinarazpenak</string>
-    <string name="nc_call_reconnecting">Berriro konektatzen…</string>
     <string name="nc_call_ringing">DEITZEN</string>
     <string name="nc_call_state_in_call">%1$s deian</string>
     <string name="nc_call_state_with_phone">%1$s telefonoarekin</string>
@@ -80,7 +83,7 @@
     <string name="nc_common_set">Ezarri</string>
     <string name="nc_common_skip">Jauzi</string>
     <string name="nc_configure_cert_auth">Aukeratu autentifikazio ziurtagiria</string>
-    <string name="nc_connecting_call">Konektatzen…</string>
+    <string name="nc_connecting_call">Konektatzen ...</string>
     <string name="nc_contacts_done">Egina</string>
     <string name="nc_conversation_link">Elkarrizketa esteka</string>
     <string name="nc_conversation_menu_conversation_info">Elkarrizketen informazioa</string>
@@ -119,7 +122,6 @@
     <string name="nc_group">Taldea</string>
     <string name="nc_groups">Taldeak</string>
     <string name="nc_guest">Gonbidatua</string>
-    <string name="nc_hint_enter_a_message">Idatzi mezu bat…</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
     <string name="nc_join_via_link">Sartu esteka baten bidez</string>
@@ -128,7 +130,6 @@
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
     <string name="nc_leave">Atera elkarrizketatik</string>
-    <string name="nc_leaving_call">Deia uzten…</string>
     <string name="nc_license_summary">GNU General Public Lizentzia, 3. bertsioa</string>
     <string name="nc_license_title">Lizentzia</string>
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
@@ -299,7 +300,6 @@
     <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_shared_items">Partekatutako elementuak</string>
-    <string name="nc_shared_items_description">Irudiak, fitxategiak, ahots-mezuak…</string>
     <string name="nc_shared_items_empty">Ez dago partekatutako elementurik</string>
     <string name="nc_shared_location">Partekatutako kokalekua</string>
     <string name="nc_sort_by">Ordenatu honen arabera</string>
@@ -383,4 +383,4 @@
     <string name="userinfo_no_info_headline">Ez da informazio pertsonalik ezarri</string>
     <string name="userinfo_no_info_text">Gehitu izena, irudia eta kontaktuko xehetasunak zure profilaren orrian</string>
     <string name="whats_your_status">Zein da zure egoera?</string>
-    </resources>
+</resources>

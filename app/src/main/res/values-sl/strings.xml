@@ -17,6 +17,7 @@
     <string name="dnd">Ne moti</string>
     <string name="dontClear">Ne počisti</string>
     <string name="edit">Uredi</string>
+    <string name="emoji_category_recent">Nedavne</string>
     <string name="encrypted">Šifrirano</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
     <string name="file_list_folder">mapa</string>
@@ -24,6 +25,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 urah</string>
     <string name="invisible">Drugim nevidno</string>
+    <string name="load_more_results">Naloži več rezultatov</string>
     <string name="lock_symbol">Simbol zaklepa</string>
     <string name="menu_item_sort_by_date_newest_first">najprej najnovejše</string>
     <string name="menu_item_sort_by_date_oldest_first">najprej najstarejše</string>
@@ -31,6 +33,8 @@
     <string name="menu_item_sort_by_name_z_a">po abecedi padajoče Ž–A</string>
     <string name="menu_item_sort_by_size_biggest_first">najprej največje</string>
     <string name="menu_item_sort_by_size_smallest_first">najprej najmanjše</string>
+    <string name="message_search_begin_empty">Ni zadetkov iskanja</string>
+    <string name="messages">Sporočila</string>
     <string name="nc_Server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
     <string name="nc_about">O programu</string>
     <string name="nc_account_chooser_active_user">Dejavni uporabnik</string>
@@ -50,7 +54,6 @@
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
     <string name="nc_call_notifications">Obvestila klica</string>
-    <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave …</string>
     <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_call_state_in_call">%1$s v klicu</string>
     <string name="nc_call_state_with_phone">%1$s v video klicu</string>
@@ -79,7 +82,7 @@
     <string name="nc_common_set">Nastavi</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Izbor potrdila za overitev</string>
-    <string name="nc_connecting_call">Poteka vzpostavljanje povezave …</string>
+    <string name="nc_connecting_call">Poteka vzpostavljanje povezave ...</string>
     <string name="nc_contacts_done">Začni pogovor</string>
     <string name="nc_conversation_link">Povezava pogovora</string>
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
@@ -118,7 +121,6 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_guest">Gost</string>
-    <string name="nc_hint_enter_a_message">Vpis sporočila …</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
     <string name="nc_join_via_link">Pridruži se po povezavi</string>
@@ -127,7 +129,6 @@
     <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
     <string name="nc_leave">Zapusti pogovor</string>
-    <string name="nc_leaving_call">Poteka zapuščanje klica…</string>
     <string name="nc_license_summary">Splošno Javno dovoljenje GNU GPL, različice 3</string>
     <string name="nc_license_title">Dovoljenje</string>
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
@@ -376,4 +377,4 @@
     <string name="userinfo_no_info_headline">Osebni podatki še niso vpisani</string>
     <string name="userinfo_no_info_text">Dodajte ime, slike in podrobnosti na profilno stran.</string>
     <string name="whats_your_status">Kako želite nastaviti stanje?</string>
-    </resources>
+</resources>

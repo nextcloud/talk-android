@@ -12,10 +12,10 @@
     <string name="delete_avatar">Delete avatar</string>
     <string name="dnd">Do not disturb</string>
     <string name="edit">Edit</string>
+    <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
     <string name="failed_to_save">Failed to save %1$s</string>
     <string name="file_list_folder">folder</string>
-    <string name="file_list_loading">Loading…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hours</string>
     <string name="invisible">Invisible</string>
@@ -25,6 +25,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Biggest first</string>
     <string name="menu_item_sort_by_size_smallest_first">Smallest first</string>
+    <string name="messages">Messages</string>
     <string name="nc_Server_account_imported">Selected account is now imported and available</string>
     <string name="nc_about">About</string>
     <string name="nc_account_chooser_active_user">Active user</string>
@@ -51,7 +52,6 @@
     <string name="nc_common_error_sorry">Sorry, something went wrong!</string>
     <string name="nc_common_skip">Skip</string>
     <string name="nc_configure_cert_auth">Select authentication certificate</string>
-    <string name="nc_connecting_call">Connecting…</string>
     <string name="nc_contacts_done">Done</string>
     <string name="nc_conversation_link">Conversation link</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
@@ -81,7 +81,6 @@
     <string name="nc_group">Group</string>
     <string name="nc_groups">Groups</string>
     <string name="nc_guest">Guest</string>
-    <string name="nc_hint_enter_a_message">Enter a message…</string>
     <string name="nc_join_via_web">Join via web</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_license_summary">GNU General Public Licence, Version 3</string>
@@ -219,4 +218,4 @@
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
     <string name="whats_your_status">What is your status?</string>
-    </resources>
+</resources>

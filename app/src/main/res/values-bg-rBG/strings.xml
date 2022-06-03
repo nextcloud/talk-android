@@ -17,13 +17,15 @@
     <string name="dnd">Не безпокойте</string>
     <string name="dontClear">Да не се изчиства</string>
     <string name="edit">Променяне</string>
+    <string name="emoji_category_recent">Скорошни</string>
     <string name="encrypted">Криптиран</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
     <string name="file_list_folder">папка</string>
-    <string name="file_list_loading">Зареждане…</string>
+    <string name="file_list_loading">Зареждане …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 часа</string>
     <string name="invisible">Невидим</string>
+    <string name="load_more_results">Зареждане на още резултати</string>
     <string name="lock_symbol">Символ за заключване</string>
     <string name="menu_item_sort_by_date_newest_first">Първо най-новият</string>
     <string name="menu_item_sort_by_date_oldest_first">Първо най-старият</string>
@@ -31,6 +33,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Първо най-големият</string>
     <string name="menu_item_sort_by_size_smallest_first">Първо най-малкият</string>
+    <string name="message_search_begin_empty">Няма резултати от търсенето</string>
+    <string name="messages">Съобщения</string>
     <string name="nc_Server_account_imported">Избраният профил вече е импортиран и наличен</string>
     <string name="nc_about">Относно</string>
     <string name="nc_account_chooser_active_user">Активен потребител</string>
@@ -50,7 +54,6 @@
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>
     <string name="nc_call_notifications">Известия за обаждане</string>
-    <string name="nc_call_reconnecting">Повторно свързване…</string>
     <string name="nc_call_ringing">ПОЗВЪНЯВАНЕ</string>
     <string name="nc_call_state_in_call">%1$sв разговор</string>
     <string name="nc_call_state_with_phone">%1$sс телефон</string>
@@ -79,7 +82,7 @@
     <string name="nc_common_set">Настройка</string>
     <string name="nc_common_skip">Пропусни</string>
     <string name="nc_configure_cert_auth">Изберете сертификат за удостоверяване</string>
-    <string name="nc_connecting_call">Свързване…</string>
+    <string name="nc_connecting_call">Свързване ...</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_link">Връзка за разговор</string>
     <string name="nc_conversation_menu_conversation_info">Информация за разговор</string>
@@ -118,7 +121,6 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групи</string>
     <string name="nc_guest">Гост</string>
-    <string name="nc_hint_enter_a_message">Въвеждане на съобщение…</string>
     <string name="nc_important_conversation">Важен разговор</string>
     <string name="nc_important_conversation_desc">Известията в този разговор ще отменят настройките „Не безпокойте“</string>
     <string name="nc_join_via_link">Присъединяване с линк</string>
@@ -127,7 +129,6 @@
     <string name="nc_last_moderator_title">Не можете да напуснете разговора</string>
     <string name="nc_last_modified">%1$s Последна промяна: %2$s</string>
     <string name="nc_leave">Напускане на разговор</string>
-    <string name="nc_leaving_call">Напускане на обаждането…</string>
     <string name="nc_license_summary">GNU Генерален Публичен Лиценз, версия 3</string>
     <string name="nc_license_title">Лиценз</string>
     <string name="nc_limit_hit">Достигнато %s ограничение на знаците</string>
@@ -377,4 +378,4 @@
     <string name="userinfo_no_info_headline">Няма зададена лична информация</string>
     <string name="userinfo_no_info_text">Добавяне на име, снимка и подробности за контакт към страницата на вашия профил.</string>
     <string name="whats_your_status">Какъв е вашият статус?</string>
-    </resources>
+</resources>

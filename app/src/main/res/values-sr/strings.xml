@@ -6,17 +6,21 @@
     <string name="avatar">Аватар</string>
     <string name="conversations">Разговори</string>
     <string name="edit">Измени</string>
+    <string name="emoji_category_recent">Недавно</string>
     <string name="encrypted">Шифровано</string>
     <string name="file_list_folder">фасцикли</string>
-    <string name="file_list_loading">Учитавам…</string>
+    <string name="file_list_loading">Учитавање…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="invisible">Невидљива</string>
+    <string name="load_more_results">Учитај још резултата</string>
     <string name="menu_item_sort_by_date_newest_first">Прво новије</string>
     <string name="menu_item_sort_by_date_oldest_first">Прво старије</string>
     <string name="menu_item_sort_by_name_a_z">А - Ш</string>
     <string name="menu_item_sort_by_name_z_a">Ш - А</string>
     <string name="menu_item_sort_by_size_biggest_first">Прво највеће</string>
     <string name="menu_item_sort_by_size_smallest_first">Прво најмање</string>
+    <string name="message_search_begin_empty">Нема резултата претраге</string>
+    <string name="messages">Поруке</string>
     <string name="nc_Server_account_imported">Одабрани налог је сада увезен и доступан</string>
     <string name="nc_about">О програму</string>
     <string name="nc_account_chooser_active_user">Активни корисник</string>
@@ -30,7 +34,6 @@
     <string name="nc_biometric_unlock">Откључај %1$s</string>
     <string name="nc_call_name">Назив разговора</string>
     <string name="nc_call_name_is_same">Име које сте унели је исто као и тренутно</string>
-    <string name="nc_call_reconnecting">Поново се повезујем…</string>
     <string name="nc_call_timeout">Нема одговора у 45 секунди, притисните да пробате поново</string>
     <string name="nc_camera_permission_permanently_denied">Да бисте омогућили видео комуникацију, дозволите приступ камери у системским поставкама.</string>
     <string name="nc_cancel">Откажи</string>
@@ -49,7 +52,6 @@
     <string name="nc_common_set">Постави</string>
     <string name="nc_common_skip">Preskoči</string>
     <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
-    <string name="nc_connecting_call">Повезујем се…</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_link">Веза ка разговору</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
@@ -84,7 +86,6 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групе</string>
     <string name="nc_guest">Гост</string>
-    <string name="nc_hint_enter_a_message">Унесите поруку…</string>
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_join_via_link">Придружи се преко везе</string>
     <string name="nc_join_via_web">Придружи се преко веба</string>
@@ -92,7 +93,6 @@
     <string name="nc_last_moderator_title">Не можете напустити разговор</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
     <string name="nc_leave">Напусти разговор</string>
-    <string name="nc_leaving_call">Напуштам разговор…</string>
     <string name="nc_license_summary">ГНУ општа јавна лиценца, верзија 3</string>
     <string name="nc_license_title">Лиценца</string>
     <string name="nc_limit_hit">Достигнут је лимит од %s карактера</string>

@@ -11,18 +11,21 @@
     <string name="dnd">לא להפריע</string>
     <string name="dontClear">לא לפנות</string>
     <string name="edit">עריכה</string>
+    <string name="emoji_category_recent">אחרונים</string>
     <string name="encrypted">מוצפן</string>
     <string name="file_list_folder">תקיה</string>
     <string name="file_list_loading">בטעינה…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 שעות</string>
     <string name="invisible">נסתרת</string>
+    <string name="load_more_results">לטעון עוד תוצאות</string>
     <string name="menu_item_sort_by_date_newest_first">החדש ביותר ראשון</string>
     <string name="menu_item_sort_by_date_oldest_first">הישן ביותר ראשון</string>
     <string name="menu_item_sort_by_name_a_z">א - ת</string>
     <string name="menu_item_sort_by_name_z_a">ת - א</string>
     <string name="menu_item_sort_by_size_biggest_first">הגדול ביותר ראשון</string>
     <string name="menu_item_sort_by_size_smallest_first">הקטן ביותר ראשון</string>
+    <string name="messages">הודעות</string>
     <string name="nc_Server_account_imported">החשבון שנבחר עבר ייבוא והוא זמין</string>
     <string name="nc_about">על אודות</string>
     <string name="nc_account_chooser_active_user">משתמש פעיל</string>
@@ -37,7 +40,6 @@
     <string name="nc_biometric_unlock">שחרור %1$s</string>
     <string name="nc_call_name">שם הדיון</string>
     <string name="nc_call_name_is_same">השם שהקלדת זהה לקיים</string>
-    <string name="nc_call_reconnecting">התחברות מחדש…</string>
     <string name="nc_call_timeout">אין תגובה תוך 45 שניות, יש לגעת כדי לנסות שוב</string>
     <string name="nc_camera_permission_permanently_denied">כדי לאפשר תקשורת וידאו נא להעניק את ההרשאה „מצלמה” בהגדרות המערכת.</string>
     <string name="nc_cancel">ביטול</string>
@@ -56,7 +58,6 @@
     <string name="nc_common_set">הגדרה</string>
     <string name="nc_common_skip">דלג</string>
     <string name="nc_configure_cert_auth">בחירת אישור לאימות</string>
-    <string name="nc_connecting_call">מתבצעת התחברות…</string>
     <string name="nc_contacts_done">סיום</string>
     <string name="nc_conversation_link">קישור לדיון</string>
     <string name="nc_conversation_menu_conversation_info">פרטי דיון</string>
@@ -90,7 +91,6 @@
     <string name="nc_group">קבוצה</string>
     <string name="nc_groups">קבוצות</string>
     <string name="nc_guest">אורח</string>
-    <string name="nc_hint_enter_a_message">נא להקליד הודעה…</string>
     <string name="nc_important_conversation">דיון חשוב</string>
     <string name="nc_join_via_link">הצטרפות עם קישור</string>
     <string name="nc_join_via_web">הצטרפות דרך דפדפן</string>
@@ -98,7 +98,6 @@
     <string name="nc_last_moderator_title">לא ניתן לעזוב את הדיון</string>
     <string name="nc_last_modified">%1$s | שינוי אחרון: %2$s</string>
     <string name="nc_leave">יציאה מהדיון</string>
-    <string name="nc_leaving_call">עזיבת השיחה…</string>
     <string name="nc_license_summary">הרישיון הציבורי הכללי של GNU, גרסה 3</string>
     <string name="nc_license_title">רשיון</string>
     <string name="nc_limit_hit">הגעת למגבלת %s התווים</string>
@@ -274,4 +273,4 @@
     <string name="userinfo_no_info_headline">לא הוגדרו פרטים אישיים</string>
     <string name="userinfo_no_info_text">הוספת שם, תמונה ופרטי קשר לעמוד הפרופיל שלך.</string>
     <string name="whats_your_status">מה המצב שלך?</string>
-    </resources>
+</resources>

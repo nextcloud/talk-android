@@ -11,18 +11,22 @@
     <string name="dnd">Netrukdyti</string>
     <string name="dontClear">Neišvalyti</string>
     <string name="edit">Taisyti</string>
+    <string name="emoji_category_recent">Paskiausi</string>
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
     <string name="file_list_folder">aplankas</string>
     <string name="file_list_loading">Įkeliama…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 valandos</string>
     <string name="invisible">Nematoma</string>
+    <string name="load_more_results">Įkelti daugiau rezultatų</string>
     <string name="menu_item_sort_by_date_newest_first">Naujausi pirma</string>
     <string name="menu_item_sort_by_date_oldest_first">Seniausi pirma</string>
     <string name="menu_item_sort_by_name_a_z">A - Ž</string>
     <string name="menu_item_sort_by_name_z_a">Ž - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Didžiausi pirma</string>
     <string name="menu_item_sort_by_size_smallest_first">Mažiausi pirma</string>
+    <string name="message_search_begin_empty">Nėra paieškos rezultatų</string>
+    <string name="messages">Žinutės</string>
     <string name="nc_Server_account_imported">Dabar, pasirinkta paskyra yra importuota ir prieinama</string>
     <string name="nc_about">Apie</string>
     <string name="nc_account_chooser_active_user">Aktyvus naudotojas</string>
@@ -38,7 +42,6 @@
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
     <string name="nc_call_name_is_same">Jūsų įvestas vardas yra toks pats kaip ir esamas</string>
-    <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_camera_permission_permanently_denied">Norėdami įjungti bendravimą vaizdu, sistemos nustatymuose suteikite prieigą prie \"Kameros\".</string>
     <string name="nc_cancel">Atsisakyti</string>
@@ -86,14 +89,12 @@
     <string name="nc_group">Grupė</string>
     <string name="nc_groups">Grupės</string>
     <string name="nc_guest">Svečias</string>
-    <string name="nc_hint_enter_a_message">Įveskite žinutę…</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_join_via_link">Prisijungti per nuorodą</string>
     <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>
     <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
     <string name="nc_leave">Išeiti iš pokalbio</string>
-    <string name="nc_leaving_call">Išeinama iš skambučio…</string>
     <string name="nc_license_summary">GNU Bendroji Viešoji Licencija, Versija 3</string>
     <string name="nc_license_title">Licencija</string>
     <string name="nc_limit_hit">Pasiekta %s simbolių riba</string>
@@ -260,4 +261,4 @@
     <string name="userinfo_no_info_headline">Asmeninės informacijos nėra</string>
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
     <string name="whats_your_status">Kokia jūsų būsena?</string>
-    </resources>
+</resources>

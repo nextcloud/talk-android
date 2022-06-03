@@ -15,6 +15,7 @@
     <string name="dnd">請勿打擾</string>
     <string name="dontClear">不要清空</string>
     <string name="edit">編輯</string>
+    <string name="emoji_category_recent">近期</string>
     <string name="encrypted">已加密</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
@@ -22,6 +23,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小時</string>
     <string name="invisible">隱藏</string>
+    <string name="load_more_results">載入更多結果</string>
     <string name="lock_symbol">上鎖符號</string>
     <string name="menu_item_sort_by_date_newest_first">新的在前</string>
     <string name="menu_item_sort_by_date_oldest_first">舊的在前</string>
@@ -48,7 +50,6 @@
     <string name="nc_call_name">對話名稱</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_call_notifications">通話通告</string>
-    <string name="nc_call_reconnecting">正在重新連接…</string>
     <string name="nc_call_ringing">鈴響聲</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
     <string name="nc_call_state_with_phone">%1$s 通過手機</string>
@@ -77,7 +78,6 @@
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">跳過</string>
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
-    <string name="nc_connecting_call">連線中</string>
     <string name="nc_contacts_done">完成</string>
     <string name="nc_conversation_link">對話的連結</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
@@ -116,7 +116,6 @@
     <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
-    <string name="nc_hint_enter_a_message">輸入訊息</string>
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
     <string name="nc_join_via_link">已一個連結加入</string>
@@ -269,4 +268,4 @@
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、大頭照和聯絡資訊。</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
-    </resources>
+</resources>

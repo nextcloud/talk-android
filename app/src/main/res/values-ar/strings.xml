@@ -17,13 +17,15 @@
     <string name="dnd">عدم الإزعاج</string>
     <string name="dontClear">لا تمسح</string>
     <string name="edit">تعديل</string>
+    <string name="emoji_category_recent">الحديثة</string>
     <string name="encrypted">مشفّر</string>
     <string name="failed_to_save">فشل في حفظ %1$s</string>
     <string name="file_list_folder">مجلد</string>
-    <string name="file_list_loading">جاري التحميل…</string>
+    <string name="file_list_loading">جاري التحميل …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
     <string name="invisible">مخفي</string>
+    <string name="load_more_results">تحميل المزيد من النتائج</string>
     <string name="lock_symbol">رمز القفل</string>
     <string name="menu_item_sort_by_date_newest_first">الأحدث أولاً</string>
     <string name="menu_item_sort_by_date_oldest_first">الأقدم أولاً</string>
@@ -31,6 +33,8 @@
     <string name="menu_item_sort_by_name_z_a">ي - أ</string>
     <string name="menu_item_sort_by_size_biggest_first">الأعلى حجماً أولاً</string>
     <string name="menu_item_sort_by_size_smallest_first">الأقل حجماً أولاً</string>
+    <string name="message_search_begin_empty">لا توجد نتائج</string>
+    <string name="messages">الرسائل</string>
     <string name="nc_Server_account_imported">تم استيراد الحساب المحدد وهو متاح الآن </string>
     <string name="nc_about">عن</string>
     <string name="nc_account_chooser_active_user">مستخدم نشط</string>
@@ -50,7 +54,6 @@
     <string name="nc_call_name">اسم المحادثة</string>
     <string name="nc_call_name_is_same">الاسم الذي أدخلته مطابق لاسم آخر </string>
     <string name="nc_call_notifications">تنبيهات المكالمة</string>
-    <string name="nc_call_reconnecting">إعادة الاتصال…</string>
     <string name="nc_call_ringing">يرن </string>
     <string name="nc_call_state_in_call">%1$s في مكالمة</string>
     <string name="nc_call_state_with_phone">%1$s بالهاتف</string>
@@ -118,7 +121,6 @@
     <string name="nc_group">الفريق</string>
     <string name="nc_groups">الفِرَق</string>
     <string name="nc_guest">ضيف</string>
-    <string name="nc_hint_enter_a_message">ادخل رسالة</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة سيتم تجاوزها. إعدادات الرجاء عدم الإزعاج</string>
     <string name="nc_join_via_link">انضم عن طريق الرابط</string>
@@ -127,7 +129,6 @@
     <string name="nc_last_moderator_title">تعذر مغادرة المحادثة </string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
     <string name="nc_leave">غادر المحادثة</string>
-    <string name="nc_leaving_call">مغادرة المكالمة</string>
     <string name="nc_license_summary">رخصة جنو العمومية العامة ، الإصدار 3</string>
     <string name="nc_license_title">الرخصة</string>
     <string name="nc_limit_hit">%sتم الوصول إلى عدد الاحرف المسموح به</string>
@@ -365,4 +366,4 @@
     <string name="userinfo_no_info_headline">لم يتم تعيين معلومات شخصية</string>
     <string name="userinfo_no_info_text">أضف الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
-    </resources>
+</resources>

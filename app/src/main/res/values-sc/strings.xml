@@ -13,13 +13,15 @@
     <string name="delete_avatar">Cantzella s\'avatar</string>
     <string name="dnd">No istorbes</string>
     <string name="edit">Modìfica</string>
+    <string name="emoji_category_recent">Reghente</string>
     <string name="encrypted">Tzifradu</string>
     <string name="failed_to_save">No at fatu a sarvare %1$s</string>
     <string name="file_list_folder">cartella</string>
-    <string name="file_list_loading">Carrighende…</string>
+    <string name="file_list_loading">Carrigamentu...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 oras</string>
     <string name="invisible">Invisìbile</string>
+    <string name="load_more_results">Càrriga àteros resurtados</string>
     <string name="lock_symbol">Sìmbolu de blocu</string>
     <string name="menu_item_sort_by_date_newest_first">In antis is prus reghentes</string>
     <string name="menu_item_sort_by_date_oldest_first">In antis is prus betzos</string>
@@ -27,6 +29,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Prima su prus mannu</string>
     <string name="menu_item_sort_by_size_smallest_first">Prima su prus piticu</string>
+    <string name="message_search_begin_empty">Perunu resurtadu de chirca</string>
+    <string name="messages">Messàgios</string>
     <string name="nc_Server_account_imported">Su contu seletzionadu est importadu e a disponimentu</string>
     <string name="nc_about">In contu de</string>
     <string name="nc_account_chooser_active_user">Utèntzia ativa</string>
@@ -45,7 +49,6 @@
     <string name="nc_call_incoming">IN INTRADA</string>
     <string name="nc_call_name">Nùmene resonada</string>
     <string name="nc_call_name_is_same">Su nùmene chi as postu est su pròpiu de cussu chi ddoe est giai</string>
-    <string name="nc_call_reconnecting">Torrende a connètere…</string>
     <string name="nc_call_ringing">SONENDE</string>
     <string name="nc_call_state_in_call">%1$s in mutida</string>
     <string name="nc_call_state_with_phone">%1$s cun telèfonu</string>
@@ -74,7 +77,7 @@
     <string name="nc_common_set">Imposta</string>
     <string name="nc_common_skip">Brinca</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
-    <string name="nc_connecting_call">Connetende…</string>
+    <string name="nc_connecting_call">Connetende ...</string>
     <string name="nc_contacts_done">Fatu</string>
     <string name="nc_conversation_link">Ligòngiu resonada</string>
     <string name="nc_conversation_menu_conversation_info">Informatziones de resonada</string>
@@ -113,7 +116,6 @@
     <string name="nc_group">Grupu</string>
     <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Persone invitada</string>
-    <string name="nc_hint_enter_a_message">Inserta unu messàgiu…</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
     <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare is impostatziones No istorbare</string>
     <string name="nc_join_via_link">Intra cun unu ligòngiu</string>
@@ -122,7 +124,6 @@
     <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
     <string name="nc_last_modified">%1$s | Ùrtima modìfica: %2$s</string>
     <string name="nc_leave">Lassa resonada</string>
-    <string name="nc_leaving_call">Lassende sa mutida…</string>
     <string name="nc_license_summary">GNU General Public License, Versione 3</string>
     <string name="nc_license_title">Lissèntzia</string>
     <string name="nc_limit_hit">%s lìmite de caràteres lòmpidu</string>
@@ -355,4 +356,4 @@
     <string name="userinfo_no_info_headline">Peruna impostatzione de datos personales</string>
     <string name="userinfo_no_info_text">Agiunghe nùmene, fotografia e detàllios de cuntatu in su profilu tuo.</string>
     <string name="whats_your_status">Cale est s\'istadu tuo?</string>
-    </resources>
+</resources>

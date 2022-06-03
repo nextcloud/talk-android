@@ -15,18 +15,22 @@
     <string name="dnd">Älä häiritse</string>
     <string name="dontClear">Älä tyhjennä</string>
     <string name="edit">Muokkaa</string>
+    <string name="emoji_category_recent">Viimeaikaiset</string>
     <string name="encrypted">Salattu</string>
     <string name="file_list_folder">kansio</string>
     <string name="file_list_loading">Ladataan…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tuntia</string>
     <string name="invisible">Näkymätön</string>
+    <string name="load_more_results">Lataa lisää tuloksia</string>
     <string name="menu_item_sort_by_date_newest_first">Uusin ensin</string>
     <string name="menu_item_sort_by_date_oldest_first">Vanhin ensin</string>
     <string name="menu_item_sort_by_name_a_z">A - Ö</string>
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Suurin ensin</string>
     <string name="menu_item_sort_by_size_smallest_first">Pienin ensin</string>
+    <string name="message_search_begin_empty">Ei hakutuloksia</string>
+    <string name="messages">Viestit</string>
     <string name="nc_Server_account_imported">Valittu tili on nyt tuotu ja käytettävissä</string>
     <string name="nc_about">Tietoja</string>
     <string name="nc_account_chooser_active_user">Aktiivinen käyttäjä</string>
@@ -46,7 +50,6 @@
     <string name="nc_call_name">Keskustelun nimi</string>
     <string name="nc_call_name_is_same">Kirjoittamasi nimi on sama kuin olemassa oleva</string>
     <string name="nc_call_notifications">Puheluilmoitukset</string>
-    <string name="nc_call_reconnecting">Yhdistetään uudelleen…</string>
     <string name="nc_call_ringing">SOITETAAN</string>
     <string name="nc_call_timeout">Ei vastausta 45 sekunnissa, napauta yrittääksesi uudelleen</string>
     <string name="nc_cancel">Peruuta</string>
@@ -99,14 +102,12 @@
     <string name="nc_group">Ryhmä</string>
     <string name="nc_groups">Ryhmät</string>
     <string name="nc_guest">Vieras</string>
-    <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
     <string name="nc_join_via_link">Liity linkillä</string>
     <string name="nc_join_via_web">Liity verkon kautta</string>
     <string name="nc_last_moderator_title">Ei voitu poistua keskustelusta</string>
     <string name="nc_last_modified">%1$s | Viimeksi muokattu: %2$s</string>
     <string name="nc_leave">Poistu keskustelusta</string>
-    <string name="nc_leaving_call">Poistutaan puhelusta…</string>
     <string name="nc_license_summary">GNU yleinen lisenssi, versio 3</string>
     <string name="nc_license_title">Lisenssi</string>
     <string name="nc_limit_hit">%s merkin raja tuli täyteen</string>
@@ -319,4 +320,4 @@
     <string name="userinfo_no_info_headline">Henkilökohtaisia tietoja ei ole asetettu</string>
     <string name="userinfo_no_info_text">Lisää nimi, kuva ja yhteystiedot profiilisivullasi.</string>
     <string name="whats_your_status">Mikä on tilatietosi?</string>
-    </resources>
+</resources>

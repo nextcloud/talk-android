@@ -14,13 +14,15 @@
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
     <string name="edit">Bewerken</string>
+    <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Versleuteld</string>
     <string name="failed_to_save">Kon %1$s niet opslaan</string>
     <string name="file_list_folder">map</string>
-    <string name="file_list_loading">Laden…</string>
+    <string name="file_list_loading">Laden ...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 uur</string>
     <string name="invisible">Onzichtbaar</string>
+    <string name="load_more_results">Laad meer resultaten</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="menu_item_sort_by_date_newest_first">Nieuwste eerst</string>
     <string name="menu_item_sort_by_date_oldest_first">Oudste eerst</string>
@@ -28,6 +30,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Grootste eerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste eerst</string>
+    <string name="message_search_begin_empty">Geen zoekresultaten</string>
+    <string name="messages">Berichten</string>
     <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>
     <string name="nc_about">Over</string>
     <string name="nc_account_chooser_active_user">Actieve gebruiker</string>
@@ -47,7 +51,6 @@
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
     <string name="nc_call_notifications">Oproepmeldingen</string>
-    <string name="nc_call_reconnecting">Opnieuw verbinden…</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
     <string name="nc_call_state_with_phone">%1$s met telefoon</string>
@@ -76,7 +79,7 @@
     <string name="nc_common_set">Instellen</string>
     <string name="nc_common_skip">Overslaan</string>
     <string name="nc_configure_cert_auth">Selecteer authenticatiecertificaat</string>
-    <string name="nc_connecting_call">Verbinden…</string>
+    <string name="nc_connecting_call">Verbinden...</string>
     <string name="nc_contacts_done">Gereed</string>
     <string name="nc_conversation_link">Gesprekslink</string>
     <string name="nc_conversation_menu_conversation_info">Gespreksinformatie</string>
@@ -116,7 +119,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_group">Groep</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_guest">Gast</string>
-    <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
@@ -125,7 +127,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
     <string name="nc_leave">Verlaat gesprek</string>
-    <string name="nc_leaving_call">Beëindigen verbinding…</string>
     <string name="nc_license_summary">GNU General Public Licence, versie 3</string>
     <string name="nc_license_title">Licentie</string>
     <string name="nc_limit_hit"> match 
@@ -374,4 +375,4 @@ Kies er eentje van een provider.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
     <string name="whats_your_status">Wat is jouw status?</string>
-    </resources>
+</resources>

@@ -12,18 +12,22 @@
     <string name="dnd">Ikke forstyrr</string>
     <string name="dontClear">Ikke fjern</string>
     <string name="edit">Rediger</string>
+    <string name="emoji_category_recent">Nylig</string>
     <string name="encrypted">Kryptert</string>
     <string name="file_list_folder">mappe</string>
-    <string name="file_list_loading">Laster…</string>
+    <string name="file_list_loading">Laster ...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timer</string>
     <string name="invisible">Usynlig</string>
+    <string name="load_more_results">Hent flere resultat</string>
     <string name="menu_item_sort_by_date_newest_first">Nyeste først</string>
     <string name="menu_item_sort_by_date_oldest_first">Eldste først</string>
     <string name="menu_item_sort_by_name_a_z">A - Å</string>
     <string name="menu_item_sort_by_name_z_a">Å - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Minste først</string>
+    <string name="message_search_begin_empty">Ingen søkeresultater</string>
+    <string name="messages">Meldinger</string>
     <string name="nc_Server_account_imported">Valgt konto er nå importert og tilgjengelig</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv bruker</string>
@@ -37,7 +41,6 @@
     <string name="nc_biometric_unlock">Lås opp %1$s</string>
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_call_name_is_same">Navnet du valgte eksisterer allerede</string>
-    <string name="nc_call_reconnecting">Kobler til igjen…</string>
     <string name="nc_call_timeout">Ingen svar på 45 sekunder, trykk for å prøve igjen</string>
     <string name="nc_camera_permission_permanently_denied">For å skru på videokommunikasjon, innvilg \"Kamera\"-tilgang i systeminnstillingene.</string>
     <string name="nc_cancel">Avbryt</string>
@@ -57,7 +60,6 @@
     <string name="nc_common_set">Sett</string>
     <string name="nc_common_skip">Hopp over</string>
     <string name="nc_configure_cert_auth">Velg sertifikat for autentisering</string>
-    <string name="nc_connecting_call">Kobler til…</string>
     <string name="nc_contacts_done">Ferdig</string>
     <string name="nc_conversation_link">Samtale lenke</string>
     <string name="nc_conversation_menu_conversation_info">Samtale informasjon</string>
@@ -89,7 +91,6 @@
     <string name="nc_group">Gruppe</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gjest</string>
-    <string name="nc_hint_enter_a_message">Skriv en melding …</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_join_via_link">Bli med via en lenke</string>
     <string name="nc_join_via_web">Bli med via nett</string>
@@ -97,7 +98,6 @@
     <string name="nc_last_moderator_title">Kunne ikke forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
     <string name="nc_leave">Forlat samtale</string>
-    <string name="nc_leaving_call">Forlater samtalen…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Lisens</string>
     <string name="nc_limit_hit">%s grensen for maks antall tegn er nådd</string>
@@ -274,4 +274,4 @@
     <string name="userinfo_no_info_headline">Ingen personlig info satt</string>
     <string name="userinfo_no_info_text">Legg til navn, bilde og kontaktdetaljer på profilsiden.</string>
     <string name="whats_your_status">Hva er din status?</string>
-    </resources>
+</resources>

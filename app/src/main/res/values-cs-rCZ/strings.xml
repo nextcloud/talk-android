@@ -18,6 +18,9 @@
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
     <string name="edit">Upravit</string>
+    <string name="emoji_backspace">Backspace</string>
+    <string name="emoji_category_recent">Nedávné</string>
+    <string name="emoji_search">Hledat emotionu</string>
     <string name="encrypted">Šifrované</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
     <string name="file_list_folder">složka</string>
@@ -25,6 +28,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="invisible">Neviditelný</string>
+    <string name="load_more_results">Načíst další výsledky</string>
     <string name="lock_symbol">Uzamknout symbol</string>
     <string name="menu_item_sort_by_date_newest_first">Nejnovější jako první</string>
     <string name="menu_item_sort_by_date_oldest_first">Nejstarší jako první</string>
@@ -32,6 +36,10 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
+    <string name="message_search_begin_empty">Nic nenalezeno</string>
+    <string name="message_search_begin_typing">Hledejte psaním…</string>
+    <string name="message_search_hint">Hledat…</string>
+    <string name="messages">Zprávy</string>
     <string name="nc_Server_account_imported">Zvolený účet byl importován a je k dispozici</string>
     <string name="nc_about">O aplikaci</string>
     <string name="nc_account_chooser_active_user">Aktivní uživatel</string>
@@ -299,7 +307,7 @@
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Sdílet toto umístění</string>
     <string name="nc_shared_items">Sdílené položky</string>
-    <string name="nc_shared_items_description">Obrázky, soubory, hlasové zprávy</string>
+    <string name="nc_shared_items_description">Obrázky, soubory, hlasové zprávy…</string>
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_location">Sdílené umístění</string>
     <string name="nc_sort_by">Řadit podle</string>
@@ -383,4 +391,4 @@
     <string name="userinfo_no_info_headline">Osobní údaje nejsou nastaveny</string>
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="whats_your_status">Jaký je váš stav?</string>
-    </resources>
+</resources>

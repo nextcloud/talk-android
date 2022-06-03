@@ -13,13 +13,15 @@
     <string name="dnd">Stör ej</string>
     <string name="dontClear">Rensa inte</string>
     <string name="edit">Ändra</string>
+    <string name="emoji_category_recent">Senaste</string>
     <string name="encrypted">Krypterad</string>
     <string name="failed_to_save">Misslyckades att spara  %1$s</string>
     <string name="file_list_folder">mapp</string>
-    <string name="file_list_loading">Laddar…</string>
+    <string name="file_list_loading">Läser in …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timmar</string>
     <string name="invisible">Osynlig</string>
+    <string name="load_more_results">Visa fler resultat</string>
     <string name="lock_symbol">Låssymbol</string>
     <string name="menu_item_sort_by_date_newest_first">Nyast först</string>
     <string name="menu_item_sort_by_date_oldest_first">Äldst först</string>
@@ -27,6 +29,8 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
+    <string name="message_search_begin_empty">Inga sökresultat</string>
+    <string name="messages">Meddelanden</string>
     <string name="nc_Server_account_imported">Valt konto är nu importerat och tillgängligt</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv användare</string>
@@ -40,7 +44,6 @@
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_name_is_same">Namnet du angav är detsamma som det befintliga</string>
-    <string name="nc_call_reconnecting">Återansluter…</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
     <string name="nc_camera_permission_permanently_denied">För att aktivera videokommunikation vänligen bevilja \"Kamera\"-tillstånd i systeminställningar.</string>
     <string name="nc_cancel">Avbryt</string>
@@ -59,7 +62,6 @@
     <string name="nc_common_set">Sätt</string>
     <string name="nc_common_skip">Hoppa över</string>
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
-    <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
     <string name="nc_conversation_link">Konversationslänk</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
@@ -94,7 +96,6 @@
     <string name="nc_group">Grupp</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gäst</string>
-    <string name="nc_hint_enter_a_message">Skriv ett meddelande…</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
     <string name="nc_join_via_link">Gå med via länk</string>
@@ -103,7 +104,6 @@
     <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
     <string name="nc_leave">Lämna konversationen</string>
-    <string name="nc_leaving_call">Lämnar samtal…</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
@@ -289,4 +289,4 @@
     <string name="userinfo_no_info_headline">Ingen personlig info inställd</string>
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>
     <string name="whats_your_status">Vad är din status?</string>
-    </resources>
+</resources>

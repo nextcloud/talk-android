@@ -14,8 +14,9 @@
     <string name="dnd">مزاحم نشوید</string>
     <string name="dontClear">پاک نکن</string>
     <string name="edit">ویرایش</string>
+    <string name="emoji_category_recent">اخیر</string>
     <string name="file_list_folder">پوشه</string>
-    <string name="file_list_loading">درحال بارگیری…</string>
+    <string name="file_list_loading">بارگذاری …</string>
     <string name="fourHours">۴ ساعت</string>
     <string name="invisible">نامرئی</string>
     <string name="lock_symbol">نماد قفل</string>
@@ -25,6 +26,7 @@
     <string name="menu_item_sort_by_name_z_a">ی تا الف</string>
     <string name="menu_item_sort_by_size_biggest_first">بزرگترین اول</string>
     <string name="menu_item_sort_by_size_smallest_first">کوچک‌ترین اول</string>
+    <string name="messages">پیام ها</string>
     <string name="nc_Server_account_imported"> حساب  انتخاب‌شده  اکنون  وارد  شده و  در دسترس  است .</string>
     <string name="nc_about">درباره</string>
     <string name="nc_account_chooser_active_user">کاربر فعال</string>
@@ -41,7 +43,6 @@
     <string name="nc_biometric_unlock">باز کردن %1$s</string>
     <string name="nc_call_name">نام مکالمه</string>
     <string name="nc_call_name_is_same">نامی که وارد کردید با نام موجود یکسان است</string>
-    <string name="nc_call_reconnecting">اتصال مجدد…</string>
     <string name="nc_call_timeout">در  ۴۵ ثانیه پاسخی وجود نداشت ، برای آزمایش دوباره ضربه بزنید</string>
     <string name="nc_camera_permission_permanently_denied">برای فعال کردن ارتباطات تصویری ، لطفاً اجازه استفاده از \"دوربین\" را در تنظیمات سیستم قرار دهید.</string>
     <string name="nc_cancel">لغو</string>
@@ -63,7 +64,6 @@
     <string name="nc_common_set">تنظیم</string>
     <string name="nc_common_skip">پرش</string>
     <string name="nc_configure_cert_auth">گواهی تأیید اعتبار را انتخاب کنید</string>
-    <string name="nc_connecting_call">برقراری ارتباط…</string>
     <string name="nc_contacts_done">انجام شد</string>
     <string name="nc_conversation_link">پیوند مکالمه</string>
     <string name="nc_conversation_menu_conversation_info">اطلاعات مکالمه</string>
@@ -99,7 +99,6 @@
     <string name="nc_group">گروه</string>
     <string name="nc_groups">گروه ها</string>
     <string name="nc_guest">مهمان</string>
-    <string name="nc_hint_enter_a_message">پیامی را وارد کنید…</string>
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_join_via_link">با یک پیوند ملحق شوید</string>
     <string name="nc_join_via_web">از طریق وب ملحق شوید</string>
@@ -107,7 +106,6 @@
     <string name="nc_last_moderator_title">نمی توان مکالمه را ترک کرد</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
     <string name="nc_leave">ترک صحبت</string>
-    <string name="nc_leaving_call">ترک تماس…</string>
     <string name="nc_license_summary">مجوز عمومی عمومی گنو ، نسخه 3</string>
     <string name="nc_license_title">مجوز</string>
     <string name="nc_limit_hit">%sحد کاراکترها زده شده است</string>
@@ -281,4 +279,4 @@
     <string name="userinfo_no_info_headline">اطلاعات شخصی تنطیم نشده</string>
     <string name="userinfo_no_info_text">نام، تصویر و اطلاعات تماس را در صفحه نمایه خود اضافه کنید.</string>
     <string name="whats_your_status">وضعیت شما چیست؟</string>
-    </resources>
+</resources>

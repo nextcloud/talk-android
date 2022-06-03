@@ -17,10 +17,12 @@
     <string name="dnd">Не турбувати</string>
     <string name="dontClear">Не очищати</string>
     <string name="edit">Редагувати</string>
+    <string name="emoji_category_recent">Нещодавні</string>
+    <string name="emoji_search">Пошук емодзі</string>
     <string name="encrypted">Зашифровано</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
     <string name="file_list_folder">тека</string>
-    <string name="file_list_loading">Завантаження…</string>
+    <string name="file_list_loading">Завантаження...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 години</string>
     <string name="invisible">Невидимка</string>
@@ -30,6 +32,8 @@
     <string name="menu_item_sort_by_name_z_a">Я--А</string>
     <string name="menu_item_sort_by_size_biggest_first">Більші попереду</string>
     <string name="menu_item_sort_by_size_smallest_first">Менші попереду</string>
+    <string name="message_search_begin_empty">Відсутні результати</string>
+    <string name="messages">Повідомлення</string>
     <string name="nc_Server_account_imported">Обраний обліковий запис імпортовано і він доступний</string>
     <string name="nc_about">Про програму</string>
     <string name="nc_account_chooser_active_user">Активний користувач</string>
@@ -49,7 +53,6 @@
     <string name="nc_call_name">Назва розмови</string>
     <string name="nc_call_name_is_same">Ім\'я, яке Ви вказали уже існує</string>
     <string name="nc_call_notifications">Сповіщення про дзвінки</string>
-    <string name="nc_call_reconnecting">Відновлення зєднання...</string>
     <string name="nc_call_ringing">ВИКЛИК</string>
     <string name="nc_call_state_in_call">%1$s у виклику</string>
     <string name="nc_call_state_with_phone">%1$s з телефоном</string>
@@ -78,7 +81,6 @@
     <string name="nc_common_set">Встановити</string>
     <string name="nc_common_skip">Пропустити</string>
     <string name="nc_configure_cert_auth">Вибрати сертифікат авторизації</string>
-    <string name="nc_connecting_call">З\'єднання</string>
     <string name="nc_contacts_done">Готово</string>
     <string name="nc_conversation_link">Посилання на розмову</string>
     <string name="nc_conversation_menu_conversation_info">Інформація про розмову</string>
@@ -115,7 +117,6 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групи</string>
     <string name="nc_guest">Гість</string>
-    <string name="nc_hint_enter_a_message">Введіть повідомлення</string>
     <string name="nc_important_conversation">Важлива розмова</string>
     <string name="nc_important_conversation_desc">Сповіщення в цій розмові ігнорують опцію \"Не турбувати\"</string>
     <string name="nc_join_via_link">Приєднатися за посиланням</string>
@@ -124,7 +125,6 @@
     <string name="nc_last_moderator_title">Неможливо покинути розмову</string>
     <string name="nc_last_modified">%1$s | Остання зміна: %2$s</string>
     <string name="nc_leave">Вийти з групи</string>
-    <string name="nc_leaving_call">Покидаємо дзвінок</string>
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Ліцензія</string>
     <string name="nc_limit_hit">%sсимволів лишилося</string>
@@ -156,6 +156,7 @@
     <string name="nc_nick_guest">Гість</string>
     <string name="nc_no">Ні</string>
     <string name="nc_no_messages_yet">Повідомлень немає</string>
+    <string name="nc_no_proxy">Без проксі</string>
     <string name="nc_notification_channel_calls">Виклики</string>
     <string name="nc_notification_channel_calls_description">Сповіщати про вхідні дзвінки</string>
     <string name="nc_notification_channel_messages">Повідомлення</string>
@@ -232,6 +233,7 @@
     <string name="nc_server_testing_connection">Перевірка з\'єднання</string>
     <string name="nc_server_unsupported">На сервері не встановлено підтримуваний додаток Talk </string>
     <string name="nc_server_url">Адреса сервера https://…</string>
+    <string name="nc_set_password">Встановити пароль</string>
     <string name="nc_settings">Налаштування</string>
     <string name="nc_settings_advanced_title">Додатково</string>
     <string name="nc_settings_appearance">Вигляд</string>
@@ -242,17 +244,38 @@
     <string name="nc_settings_other_notifications_ringtone">Повідомлення</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неправильний номер телефону</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Номер телефону</string>
+    <string name="nc_settings_phone_book_integration_title">Інтеграція номера телефону</string>
     <string name="nc_settings_privacy">Конфіденційність</string>
+    <string name="nc_settings_proxy_host_title">Вузол проксі</string>
+    <string name="nc_settings_proxy_password_title">Пароль проксі</string>
+    <string name="nc_settings_proxy_port_title">Порт проксі</string>
+    <string name="nc_settings_proxy_type_title">Тип проксі</string>
+    <string name="nc_settings_proxy_username_title">Ім\'я користувача проксі</string>
+    <string name="nc_settings_reauthorize">Повторно авторизувати обліковий запис</string>
     <string name="nc_settings_remove">Вилучити</string>
     <string name="nc_settings_remove_account">Вилучити обліковий запис</string>
+    <string name="nc_settings_screen_lock_title">Блокування екрана</string>
+    <string name="nc_settings_screen_security_title">Безпека екрану</string>
     <string name="nc_settings_theme_dark">Темна</string>
+    <string name="nc_settings_theme_follow_system">Використовуйте системний за замовчуванням</string>
+    <string name="nc_settings_theme_key">тема</string>
     <string name="nc_settings_theme_light">Світла</string>
     <string name="nc_settings_theme_title">Тема</string>
+    <string name="nc_settings_use_credentials_title">Для проксі потрібні облікові дані</string>
     <string name="nc_settings_warning">Увага</string>
+    <string name="nc_share_contact">Поділіться контактом</string>
+    <string name="nc_share_current_location">Поділіться поточним місцезнаходженням</string>
     <string name="nc_share_link">Поширити посилання</string>
+    <string name="nc_share_location">Поділіться місцезнаходженням</string>
+    <string name="nc_share_this_location">Поділіться цим розташуванням</string>
     <string name="nc_sort_by">Сортувати по</string>
+    <string name="nc_upload_choose_local_files">Виберіть файли</string>
+    <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
     <string name="nc_upload_in_progess">Uploading</string>
+    <string name="nc_upload_local_file">завантажити локальний файл</string>
+    <string name="nc_upload_picture_from_cam">Зробити фото</string>
     <string name="nc_user">Користувач</string>
+    <string name="nc_webinar">Вебінар</string>
     <string name="nc_wrong_password">Неправильний пароль</string>
     <string name="nc_yes">Так</string>
     <string name="oneHour">1 година</string>
@@ -277,6 +300,7 @@
     <string name="starred">До улюблених</string>
     <string name="status_message">Повідомлення про статус</string>
     <string name="take_photo_send">Надіслати</string>
+    <string name="take_photo_toggle_crop">Обрізати фото</string>
     <string name="thirtyMinutes">30 хвилин</string>
     <string name="thisWeek">Цього тижня</string>
     <string name="title_attachments">Вкладення</string>
@@ -290,4 +314,5 @@
     <string name="user_status">Статус</string>
     <string name="userinfo_no_info_headline">Відсутня особиста інформація</string>
     <string name="userinfo_no_info_text">Додайте назву, зображення та деталі контакту на сторінці вашого профілю.</string>
-    </resources>
+    <string name="whats_your_status">Який твій статус?</string>
+</resources>

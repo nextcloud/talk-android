@@ -2,6 +2,7 @@
   <resources>
     <string name="account_icon">Значок учётной записи</string>
     <string name="appbar_search_in">Искать в %s</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_phone">Телефон</string>
     <string name="audio_output_speaker">Динамик</string>
     <string name="avatar">Аватар</string>
@@ -12,14 +13,18 @@
     <string name="conversations">Разговоры</string>
     <string name="delete_avatar">Удалить аватар</string>
     <string name="dnd">Не беспокоить</string>
+    <string name="dontClear">Не очищать</string>
     <string name="edit">Редактировать</string>
+    <string name="emoji_category_recent">Недавние</string>
+    <string name="emoji_search">Поиск эмодзи</string>
     <string name="encrypted">Зашифровано</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>
     <string name="file_list_folder">каталог</string>
-    <string name="file_list_loading">Загрузка…</string>
+    <string name="file_list_loading">Загрузка ...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 часа</string>
     <string name="invisible">Невидимый</string>
+    <string name="load_more_results">Показать больше результатов</string>
     <string name="lock_symbol">Символ блокировки</string>
     <string name="menu_item_sort_by_date_newest_first">Самый новый первый</string>
     <string name="menu_item_sort_by_date_oldest_first">Самый старый первый</string>
@@ -27,6 +32,8 @@
     <string name="menu_item_sort_by_name_z_a">Я - А</string>
     <string name="menu_item_sort_by_size_biggest_first">Самый большой первый</string>
     <string name="menu_item_sort_by_size_smallest_first">Самый маленький первый</string>
+    <string name="message_search_begin_empty">Ничего не найдено</string>
+    <string name="messages">Сообщения</string>
     <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_about">О программе</string>
     <string name="nc_account_chooser_active_user">Активный пользователь</string>
@@ -46,7 +53,6 @@
     <string name="nc_call_name">Наименование беседы</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_call_notifications">Уведомления о звонках</string>
-    <string name="nc_call_reconnecting">Переподключение…</string>
     <string name="nc_call_ringing">Звонок</string>
     <string name="nc_call_state_in_call">%1$s на линии</string>
     <string name="nc_call_state_with_phone">%1$s с телефоном</string>
@@ -114,7 +120,6 @@
     <string name="nc_group">Группа</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_guest">Гость</string>
-    <string name="nc_hint_enter_a_message">Напишите сообщение…</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
@@ -123,7 +128,6 @@
     <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
     <string name="nc_leave">Покинуть беседу</string>
-    <string name="nc_leaving_call">Завершение вызова…</string>
     <string name="nc_license_summary">Открытое лицензионное соглашение GNU, версия 3</string>
     <string name="nc_license_title">Лицензия</string>
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
@@ -292,6 +296,7 @@
     <string name="nc_share_text">Присоединиться к беседе в %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поделиться этим местом</string>
+    <string name="nc_shared_items">Общие элементы</string>
     <string name="nc_shared_location">Местоположением поделились</string>
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_time">Время начала</string>
@@ -336,6 +341,7 @@
     <string name="selected_list_item">Выбрано</string>
     <string name="send_to">Отправить в</string>
     <string name="send_to_three_dots">Отправить …</string>
+    <string name="send_without_notification">Отправить без уведомления</string>
     <string name="set_status">Установить статус</string>
     <string name="set_status_message">Установить статус</string>
     <string name="share">Поделиться</string>
@@ -372,4 +378,4 @@
     <string name="userinfo_no_info_headline">Личная информация не указана</string>
     <string name="userinfo_no_info_text">На странице профиля укажите своё имя, добавьте изображение и подробные сведения</string>
     <string name="whats_your_status">Какой у вас статус?</string>
-    </resources>
+</resources>
