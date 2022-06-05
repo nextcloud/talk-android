@@ -37,6 +37,8 @@
     <string name="menu_item_sort_by_size_biggest_first">最大先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小先</string>
     <string name="message_search_begin_empty">無搜尋結果</string>
+    <string name="message_search_begin_typing">輸入文字以搜尋 ...</string>
+    <string name="message_search_hint">搜尋 ...</string>
     <string name="messages">訊息</string>
     <string name="nc_Server_account_imported">所選賬戶現已匯入並可用</string>
     <string name="nc_about">關於</string>
@@ -57,6 +59,7 @@
     <string name="nc_call_name">對話名稱</string>
     <string name="nc_call_name_is_same">名稱已存在</string>
     <string name="nc_call_notifications">通話通告</string>
+    <string name="nc_call_reconnecting">正在重新連線 …</string>
     <string name="nc_call_ringing">鈴聲響</string>
     <string name="nc_call_state_in_call">%1$s 通話中</string>
     <string name="nc_call_state_with_phone">%1$s 電話對話中</string>
@@ -124,6 +127,7 @@
     <string name="nc_group">群組</string>
     <string name="nc_groups">群組</string>
     <string name="nc_guest">訪客</string>
+    <string name="nc_hint_enter_a_message">輸入訊息 ...</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>
     <string name="nc_join_via_link">透過連結加入</string>
@@ -132,6 +136,7 @@
     <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>
+    <string name="nc_leaving_call">正在離開通話 ...</string>
     <string name="nc_license_summary">GNU General Public License， 第3版</string>
     <string name="nc_license_title">授權</string>
     <string name="nc_limit_hit">已達到%s個字符的限制</string>
@@ -302,6 +307,7 @@
     <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享此位置</string>
     <string name="nc_shared_items">分享項目</string>
+    <string name="nc_shared_items_description">圖片、檔案、語音訊息 …</string>
     <string name="nc_shared_items_empty">沒有已分享的項目</string>
     <string name="nc_shared_location">分享了的位置</string>
     <string name="nc_sort_by">排序方式</string>
