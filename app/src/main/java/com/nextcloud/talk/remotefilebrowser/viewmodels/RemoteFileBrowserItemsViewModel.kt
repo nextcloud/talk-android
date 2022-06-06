@@ -36,6 +36,19 @@ import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import java.io.File
 import javax.inject.Inject
 
+/**
+ * @startuml
+ * hide empty description
+ * [*] --> InitialState
+ * InitialState --> LoadingItemsState
+ * LoadingItemsState --> NoRemoteFileItemsState
+ * NoRemoteFileItemsState --> LoadingItemsState
+ * LoadingItemsState --> LoadedState
+ * LoadedState --> LoadingItemsState
+ * LoadedState --> FinishState
+ * FinishState --> [*]
+ * @enduml
+ */
 class RemoteFileBrowserItemsViewModel @Inject constructor(
     private val repository: RemoteFileBrowserItemsRepository,
     private val appPreferences: AppPreferences
@@ -47,6 +60,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     object NoRemoteFileItemsState : ViewState
     object LoadingItemsState : ViewState
     class LoadedState(val items: List<RemoteFileBrowserItem>) : ViewState
+    class FinishState(val selectedPaths: Set<String>) : ViewState
 
     private val initialSortOrder = FileSortOrderNew.getFileSortOrder(appPreferences.sorting)
     private val sortingPrefListener: SortChangeListener = SortChangeListener()
@@ -63,6 +77,10 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     private val _currentPath: MutableLiveData<String> = MutableLiveData(ROOT_PATH)
     val currentPath: LiveData<String>
         get() = _currentPath
+
+    private val _selectedPaths: MutableLiveData<Set<String>> = MutableLiveData(emptySet())
+    val selectedPaths: LiveData<Set<String>>
+        get() = _selectedPaths
 
     init {
         appPreferences.registerSortingChangeListener(sortingPrefListener)
@@ -142,6 +160,65 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
             _currentPath.value = File(path).parent!!
             loadItems()
         }
+    }
+
+    fun onSelectionDone() {
+        val selection = selectedPaths.value
+        if (!selection.isNullOrEmpty()) {
+            _viewState.value = FinishState(selection)
+        }
+    }
+
+    fun onItemClicked(remoteFileBrowserItem: RemoteFileBrowserItem) {
+        if (remoteFileBrowserItem.mimeType == MIME_DIRECTORY) {
+            changePath(remoteFileBrowserItem.path!!)
+        } else {
+            toggleBrowserItemSelection(remoteFileBrowserItem.path!!)
+        }
+    }
+
+    private fun toggleBrowserItemSelection(path: String) {
+        val paths = selectedPaths.value!!.toMutableSet()
+        if (paths.contains(path) || shouldPathBeSelectedDueToParent(path)) {
+            checkAndRemoveAnySelectedParents(path)
+        } else {
+            // TODO if it's a folder, remove all the children we added manually
+            paths.add(path)
+            _selectedPaths.value = paths
+        }
+    }
+
+    private fun checkAndRemoveAnySelectedParents(currentPath: String) {
+        var file = File(currentPath)
+        val paths = selectedPaths.value!!.toMutableSet()
+        paths.remove(currentPath)
+        while (file.parent != null) {
+            paths.remove(file.parent!! + File.pathSeparator)
+            file = File(file.parent!!)
+        }
+        _selectedPaths.value = paths
+    }
+
+    private fun shouldPathBeSelectedDueToParent(currentPath: String): Boolean {
+        var file = File(currentPath)
+        val paths = selectedPaths.value!!
+        if (paths.isNotEmpty() && file.parent != ROOT_PATH) {
+            while (file.parent != null) {
+                var parent = file.parent!!
+                if (File(file.parent!!).parent != null) {
+                    parent += File.pathSeparator
+                }
+                if (paths.contains(parent)) {
+                    return true
+                }
+                file = File(file.parent!!)
+            }
+        }
+        return false
+    }
+
+    fun isPathSelected(path: String): Boolean {
+        return selectedPaths.value?.contains(path) == true || shouldPathBeSelectedDueToParent(path)
     }
 
     companion object {

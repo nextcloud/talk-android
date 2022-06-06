@@ -40,15 +40,11 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityRemoteFileBrowserBinding
 import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapter
-import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.database.user.UserUtils
-import java.io.File
-import java.util.Collections
-import java.util.TreeSet
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -65,8 +61,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     private lateinit var viewModel: RemoteFileBrowserItemsViewModel
 
     private var filesSelectionDoneMenuItem: MenuItem? = null
-
-    private val selectedPaths: MutableSet<String> = Collections.synchronizedSet(TreeSet())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,19 +126,19 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                         showGrid = showGrid,
                         mimeTypeSelectionFilter = mimeTypeSelectionFilter,
                         userEntity = userUtils.currentUser!!,
-                        selectionInterface = this
-                    ) { remoteFileBrowserItem ->
-                        onItemClicked(remoteFileBrowserItem)
-                    }
-                        .apply {
-                            items = remoteFileBrowserItems
-                        }
+                        selectionInterface = this,
+                        onItemClicked = viewModel::onItemClicked
+                    )
+                    adapter.items = remoteFileBrowserItems
 
                     binding.recyclerView.adapter = adapter
                     binding.recyclerView.layoutManager = layoutManager
                     binding.recyclerView.setHasFixedSize(true)
 
                     showList()
+                }
+                is RemoteFileBrowserItemsViewModel.FinishState -> {
+                    finishWithResult(state.selectedPaths)
                 }
             }
         }
@@ -160,22 +154,18 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                 supportActionBar?.title = path
             }
         }
+
+        viewModel.selectedPaths.observe(this) { selectedPaths ->
+            filesSelectionDoneMenuItem?.isVisible = !selectedPaths.isNullOrEmpty()
+            binding.recyclerView.adapter?.notifyDataSetChanged()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_share_files, menu)
         filesSelectionDoneMenuItem = menu?.findItem(R.id.files_selection_done)
-        filesSelectionDoneMenuItem?.isVisible = selectedPaths.size > 0
         return true
-    }
-
-    private fun onItemClicked(remoteFileBrowserItem: RemoteFileBrowserItem) {
-        if ("inode/directory" == remoteFileBrowserItem.mimeType) {
-            viewModel.changePath(remoteFileBrowserItem.path!!)
-        } else {
-            toggleBrowserItemSelection(remoteFileBrowserItem.path!!)
-        }
     }
 
     override fun onResume() {
@@ -199,7 +189,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                 true
             }
             R.id.files_selection_done -> {
-                onFileSelectionDone()
+                viewModel.onSelectionDone()
                 true
             }
             else -> {
@@ -208,7 +198,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         }
     }
 
-    private fun onFileSelectionDone() {
+    private fun finishWithResult(selectedPaths: Set<String>) {
         val data = Intent()
         data.putStringArrayListExtra(EXTRA_SELECTED_PATHS, ArrayList(selectedPaths))
         setResult(Activity.RESULT_OK, data)
@@ -243,35 +233,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         viewModel.loadItems()
     }
 
-    private fun shouldPathBeSelectedDueToParent(currentPath: String): Boolean {
-        var file = File(currentPath)
-        if (selectedPaths.size > 0 && file.parent != "/") {
-            while (file.parent != null) {
-                var parent = file.parent!!
-                if (File(file.parent!!).parent != null) {
-                    parent += "/"
-                }
-                if (selectedPaths.contains(parent)) {
-                    return true
-                }
-                file = File(file.parent!!)
-            }
-        }
-        return false
-    }
-
-    private fun checkAndRemoveAnySelectedParents(currentPath: String) {
-        var file = File(currentPath)
-        selectedPaths.remove(currentPath)
-        while (file.parent != null) {
-            selectedPaths.remove(file.parent!! + "/")
-            file = File(file.parent!!)
-        }
-        runOnUiThread {
-            binding.recyclerView.adapter!!.notifyDataSetChanged()
-        }
-    }
-
     companion object {
         private val TAG = RemoteFileBrowserActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
@@ -280,20 +241,15 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     }
 
     override fun toggleBrowserItemSelection(path: String) {
-        if (selectedPaths.contains(path) || shouldPathBeSelectedDueToParent(path)) {
-            checkAndRemoveAnySelectedParents(path)
-        } else {
-            // TODO if it's a folder, remove all the children we added manually
-            selectedPaths.add(path)
-        }
-        filesSelectionDoneMenuItem?.isVisible = selectedPaths.size > 0
+        // unused, viewmodel gets called directly
     }
 
     override fun isPathSelected(path: String): Boolean {
-        return selectedPaths.contains(path) || shouldPathBeSelectedDueToParent(path)
+        // TODO figure out a better way to do this. Narrower interface?
+        return viewModel.isPathSelected(path)
     }
 
     override fun shouldOnlySelectOneImageFile(): Boolean {
-        return true
+        return true // unused
     }
 }
