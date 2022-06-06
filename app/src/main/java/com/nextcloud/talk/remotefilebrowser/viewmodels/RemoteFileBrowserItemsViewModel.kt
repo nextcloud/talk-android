@@ -88,7 +88,8 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
         override fun onSubscribe(d: Disposable) = Unit
 
         override fun onNext(response: List<RemoteFileBrowserItem>) {
-            newRemoteFileBrowserItems = fileSortOrder.value!!.sortCloudFiles(response)
+            val itemsWithoutRoot = response.filterNot { it.mimeType == MIME_DIRECTORY && it.path == ROOT_PATH }
+            newRemoteFileBrowserItems = fileSortOrder.value!!.sortCloudFiles(itemsWithoutRoot)
         }
 
         override fun onError(e: Throwable) {
@@ -127,5 +128,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
 
     companion object {
         private val TAG = RemoteFileBrowserItemsViewModel::class.simpleName
+        private const val ROOT_PATH = "/"
+        private const val MIME_DIRECTORY = "inode/directory"
     }
 }

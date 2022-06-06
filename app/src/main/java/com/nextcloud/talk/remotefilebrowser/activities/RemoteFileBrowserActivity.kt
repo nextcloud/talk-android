@@ -139,11 +139,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                         onItemClicked(remoteFileBrowserItem)
                     }
                         .apply {
-                            items = if (remoteFileBrowserItems.size > 1) {
-                                remoteFileBrowserItems.subList(1, remoteFileBrowserItems.size)
-                            } else {
-                                ArrayList()
-                            }
+                            items = remoteFileBrowserItems
                         }
 
                     binding.recyclerView.adapter = adapter
