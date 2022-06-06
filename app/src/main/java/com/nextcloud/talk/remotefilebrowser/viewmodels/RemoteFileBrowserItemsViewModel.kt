@@ -33,6 +33,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
+import java.io.File
 import javax.inject.Inject
 
 class RemoteFileBrowserItemsViewModel @Inject constructor(
@@ -59,6 +60,10 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     val fileSortOrder: LiveData<FileSortOrderNew>
         get() = _fileSortOrder
 
+    private val _currentPath: MutableLiveData<String> = MutableLiveData(ROOT_PATH)
+    val currentPath: LiveData<String>
+        get() = _currentPath
+
     init {
         appPreferences.registerSortingChangeListener(sortingPrefListener)
     }
@@ -74,9 +79,9 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
         appPreferences.unregisterSortingChangeListener(sortingPrefListener)
     }
 
-    fun loadItems(path: String) {
+    fun loadItems() {
         _viewState.value = LoadingItemsState
-        repository.listFolder(path).subscribeOn(Schedulers.io())
+        repository.listFolder(currentPath.value!!).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(RemoteFileBrowserItemsObserver())
     }
@@ -123,6 +128,19 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
                 val sortedItems = newSortOrder.sortCloudFiles(currentState.items)
                 _viewState.value = LoadedState(sortedItems)
             }
+        }
+    }
+
+    fun changePath(path: String) {
+        _currentPath.value = path
+        loadItems()
+    }
+
+    fun navigateUp() {
+        val path = _currentPath.value
+        if (path!! != ROOT_PATH) {
+            _currentPath.value = File(path).parent!!
+            loadItems()
         }
     }
 

@@ -67,7 +67,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     private var filesSelectionDoneMenuItem: MenuItem? = null
 
     private val selectedPaths: MutableSet<String> = Collections.synchronizedSet(TreeSet())
-    private var currentPath: String = "/"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,7 +87,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
             ResourcesCompat.getColor(resources, R.color.bg_default, null)
         )
 
-        supportActionBar?.title = "current patch"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initViewModel()
@@ -97,10 +95,10 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         binding.swipeRefreshList.setColorSchemeResources(R.color.colorPrimary)
         binding.swipeRefreshList.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
 
-        binding.pathNavigationBackButton.setOnClickListener { goBack() }
+        binding.pathNavigationBackButton.setOnClickListener { viewModel.navigateUp() }
         binding.sortButton.setOnClickListener { changeSorting() }
 
-        viewModel.loadItems(currentPath)
+        viewModel.loadItems()
     }
 
     private fun initViewModel() {
@@ -156,6 +154,12 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                 binding.sortButton.setText(DisplayUtils.getSortOrderStringId(sortOrder))
             }
         }
+
+        viewModel.currentPath.observe(this) { path ->
+            if (path != null) {
+                supportActionBar?.title = path
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -168,8 +172,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     private fun onItemClicked(remoteFileBrowserItem: RemoteFileBrowserItem) {
         if ("inode/directory" == remoteFileBrowserItem.mimeType) {
-            currentPath = remoteFileBrowserItem.path!!
-            viewModel.loadItems(currentPath)
+            viewModel.changePath(remoteFileBrowserItem.path!!)
         } else {
             toggleBrowserItemSelection(remoteFileBrowserItem.path!!)
         }
@@ -187,13 +190,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
             supportFragmentManager,
             SortingOrderDialogFragment.SORTING_ORDER_FRAGMENT
         )
-    }
-
-    private fun goBack(): Boolean {
-        if (currentPath != "/") {
-            viewModel.loadItems(File(currentPath).parent!!)
-        }
-        return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -244,7 +240,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     }
 
     private fun refreshCurrentPath() {
-        viewModel.loadItems(currentPath)
+        viewModel.loadItems()
     }
 
     private fun shouldPathBeSelectedDueToParent(currentPath: String): Boolean {
