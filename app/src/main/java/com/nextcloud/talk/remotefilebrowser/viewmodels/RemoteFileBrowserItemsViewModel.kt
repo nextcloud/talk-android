@@ -26,14 +26,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
+import com.nextcloud.talk.utils.FileSortOrderNew
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import javax.inject.Inject
 
 class RemoteFileBrowserItemsViewModel @Inject constructor(
-    private val repository: RemoteFileBrowserItemsRepository
+    private val repository: RemoteFileBrowserItemsRepository,
+    private val appPreferences: AppPreferences
 ) :
     ViewModel() {
 
@@ -43,10 +47,32 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     object LoadingItemsState : ViewState
     class LoadedState(val items: List<RemoteFileBrowserItem>) : ViewState
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
+    private val initialSortOrder = FileSortOrderNew.getFileSortOrder(appPreferences.sorting)
+    private val sortingPrefListener: SortChangeListener = SortChangeListener()
 
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
         get() = _viewState
+
+    // TODO incorporate into view state object?
+    private val _fileSortOrder: MutableLiveData<FileSortOrderNew> = MutableLiveData(initialSortOrder)
+    val fileSortOrder: LiveData<FileSortOrderNew>
+        get() = _fileSortOrder
+
+    init {
+        appPreferences.registerSortingChangeListener(sortingPrefListener)
+    }
+
+    inner class SortChangeListener : OnPreferenceValueChangedListener<String> {
+        override fun onChanged(newValue: String) {
+            onSelectSortOrder(newValue)
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        appPreferences.unregisterSortingChangeListener(sortingPrefListener)
+    }
 
     fun loadItems(path: String) {
         _viewState.value = LoadingItemsState
@@ -62,7 +88,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
         override fun onSubscribe(d: Disposable) = Unit
 
         override fun onNext(response: List<RemoteFileBrowserItem>) {
-            newRemoteFileBrowserItems = response
+            newRemoteFileBrowserItems = fileSortOrder.value!!.sortCloudFiles(response)
         }
 
         override fun onError(e: Throwable) {
@@ -83,6 +109,18 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
                     this@RemoteFileBrowserItemsViewModel._viewState.value = LoadedState(items)
                 }
                 else -> return
+            }
+        }
+    }
+
+    private fun onSelectSortOrder(newSortOrderString: String) {
+        val newSortOrder = FileSortOrderNew.getFileSortOrder(newSortOrderString)
+        if (newSortOrder.name != fileSortOrder.value?.name) {
+            _fileSortOrder.value = newSortOrder
+            val currentState = viewState.value
+            if (currentState is LoadedState) {
+                val sortedItems = newSortOrder.sortCloudFiles(currentState.items)
+                _viewState.value = LoadedState(sortedItems)
             }
         }
     }

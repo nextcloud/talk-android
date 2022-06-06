@@ -45,10 +45,7 @@ import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsVie
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
-import com.nextcloud.talk.utils.FileSortOrderNew
 import com.nextcloud.talk.utils.database.user.UserUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
-import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import java.io.File
 import java.util.Collections
 import java.util.TreeSet
@@ -60,9 +57,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    @Inject
-    lateinit var appPreferences: AppPreferences
-
+    // TODO use CurrentUserProvider instead for narrower scope
     @Inject
     lateinit var userUtils: UserUtils
 
@@ -73,11 +68,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     private val selectedPaths: MutableSet<String> = Collections.synchronizedSet(TreeSet())
     private var currentPath: String = "/"
-
-    private var browserItems: List<RemoteFileBrowserItem> = emptyList()
-    private var adapter: RemoteFileBrowserItemsAdapter? = null
-
-    private var sortingChangeListener: OnPreferenceValueChangedListener<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,11 +97,8 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         binding.swipeRefreshList.setColorSchemeResources(R.color.colorPrimary)
         binding.swipeRefreshList.setProgressBackgroundColorSchemeResource(R.color.refresh_spinner_background)
 
-        appPreferences.registerSortingChangeListener(
-            SortingChangeListener(this).also {
-                sortingChangeListener = it
-            }
-        )
+        binding.pathNavigationBackButton.setOnClickListener { goBack() }
+        binding.sortButton.setOnClickListener { changeSorting() }
 
         viewModel.loadItems(currentPath)
     }
@@ -125,11 +112,9 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                 is RemoteFileBrowserItemsViewModel.LoadingItemsState, RemoteFileBrowserItemsViewModel.InitialState -> {
                     showLoading()
                 }
-
                 is RemoteFileBrowserItemsViewModel.NoRemoteFileItemsState -> {
                     showEmpty()
                 }
-
                 is RemoteFileBrowserItemsViewModel.LoadedState -> {
                     val remoteFileBrowserItems = state.items
                     Log.d(TAG, "Items received: $remoteFileBrowserItems")
@@ -144,6 +129,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
                     // TODO make mimeTypeSelectionFilter a bundled arg for the activity
                     val mimeTypeSelectionFilter = "image/"
+                    // TODO do not needlesly recreate adapter if it can be reused
                     val adapter = RemoteFileBrowserItemsAdapter(
                         showGrid = showGrid,
                         mimeTypeSelectionFilter = mimeTypeSelectionFilter,
@@ -158,7 +144,6 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                             } else {
                                 ArrayList()
                             }
-                            browserItems = items
                         }
 
                     binding.recyclerView.adapter = adapter
@@ -167,6 +152,12 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
                     showList()
                 }
+            }
+        }
+
+        viewModel.fileSortOrder.observe(this) { sortOrder ->
+            if (sortOrder != null) {
+                binding.sortButton.setText(DisplayUtils.getSortOrderStringId(sortOrder))
             }
         }
     }
@@ -190,20 +181,12 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     override fun onResume() {
         super.onResume()
-
-        binding.pathNavigationBackButton.setOnClickListener { goBack() }
-        binding.sortButton.setOnClickListener { changeSorting() }
-
-        binding.sortButton.setText(
-            DisplayUtils.getSortOrderStringId(FileSortOrder.getFileSortOrder(appPreferences.sorting))
-        )
-
         refreshCurrentPath()
     }
 
-    fun changeSorting() {
+    private fun changeSorting() {
         val newFragment: DialogFragment = SortingOrderDialogFragment
-            .newInstance(FileSortOrder.getFileSortOrder(appPreferences.sorting))
+            .newInstance(FileSortOrder.getFileSortOrder(viewModel.fileSortOrder.value!!.name))
         newFragment.show(
             supportFragmentManager,
             SortingOrderDialogFragment.SORTING_ORDER_FRAGMENT
@@ -320,26 +303,5 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     override fun shouldOnlySelectOneImageFile(): Boolean {
         return true
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    private class SortingChangeListener(private val activity: RemoteFileBrowserActivity) :
-        OnPreferenceValueChangedListener<String> {
-        override fun onChanged(newValue: String) {
-            try {
-                val sortOrder = FileSortOrderNew.getFileSortOrder(newValue)
-
-                activity.binding.sortButton.setText(DisplayUtils.getSortOrderStringId(sortOrder))
-                activity.browserItems = sortOrder.sortCloudFiles(activity.browserItems)
-
-                activity.runOnUiThread {
-                    activity.adapter!!.updateDataSet(activity.browserItems)
-                }
-            } catch (npe: NullPointerException) {
-                // view binding can be null
-                // since this is called asynchronously and UI might have been destroyed in the meantime
-                Log.i(TAG, "UI destroyed - view binding already gone")
-            }
-        }
     }
 }

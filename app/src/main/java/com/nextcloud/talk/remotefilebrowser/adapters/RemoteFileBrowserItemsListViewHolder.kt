@@ -21,7 +21,6 @@
 package com.nextcloud.talk.remotefilebrowser.adapters
 
 import android.text.format.Formatter
-import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import autodagger.AutoInjector
@@ -51,8 +50,8 @@ class RemoteFileBrowserItemsListViewHolder(
     override val fileIcon: SimpleDraweeView
         get() = binding.fileIcon
 
-    private var selectable : Boolean = true
-    private var clickable : Boolean = true
+    private var selectable: Boolean = true
+    private var clickable: Boolean = true
 
     init {
         itemView.setOnClickListener {
