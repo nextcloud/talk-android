@@ -40,15 +40,14 @@ import kotlin.jvm.functions.Function2;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 
-@Deprecated
-public class LegacyReadFilesystemOperation {
+public class ReadFilesystemOperation {
     private static final String TAG = "ReadFilesystemOperation";
     private final OkHttpClient okHttpClient;
     private final String url;
     private final int depth;
     private final String basePath;
 
-    public LegacyReadFilesystemOperation(OkHttpClient okHttpClient, UserEntity currentUser, String path, int depth) {
+    public ReadFilesystemOperation(OkHttpClient okHttpClient, UserEntity currentUser, String path, int depth) {
         OkHttpClient.Builder okHttpClientBuilder = okHttpClient.newBuilder();
         okHttpClientBuilder.followRedirects(false);
         okHttpClientBuilder.followSslRedirects(false);
@@ -92,7 +91,7 @@ public class LegacyReadFilesystemOperation {
                         }
                     });
         } catch (IOException | DavException e) {
-            Log.w("", "Error reading remote path");
+            Log.w(TAG, "Error reading remote path");
         }
 
         remoteFiles.add(BrowserFile.Companion.getModelFromResponse(rootElement[0],

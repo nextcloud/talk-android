@@ -45,7 +45,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
-import com.nextcloud.talk.components.filebrowser.webdav.LegacyReadFilesystemOperation;
+import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
@@ -289,20 +289,20 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
     }
 
     private void fetchFileInformation(String url, UserEntity activeUser) {
-        Single.fromCallable(new Callable<LegacyReadFilesystemOperation>() {
+        Single.fromCallable(new Callable<ReadFilesystemOperation>() {
             @Override
-            public LegacyReadFilesystemOperation call() {
-                return new LegacyReadFilesystemOperation(okHttpClient, activeUser, url, 0);
+            public ReadFilesystemOperation call() {
+                return new ReadFilesystemOperation(okHttpClient, activeUser, url, 0);
             }
         }).observeOn(Schedulers.io())
-            .subscribe(new SingleObserver<LegacyReadFilesystemOperation>() {
+            .subscribe(new SingleObserver<ReadFilesystemOperation>() {
                 @Override
                 public void onSubscribe(@NonNull Disposable d) {
                     // unused atm
                 }
 
                 @Override
-                public void onSuccess(@NonNull LegacyReadFilesystemOperation readFilesystemOperation) {
+                public void onSuccess(@NonNull ReadFilesystemOperation readFilesystemOperation) {
                     DavResponse davResponse = readFilesystemOperation.readRemotePath();
                     if (davResponse.data != null) {
                         List<BrowserFile> browserFileList = (List<BrowserFile>) davResponse.data;
