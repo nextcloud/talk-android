@@ -72,12 +72,12 @@ open class FileSortOrder(var name: String, var isAscending: Boolean) {
         }
     }
 
+    val multiplier: Int
+        get() = if (isAscending) 1 else -1
+
     open fun sortCloudFiles(files: List<RemoteFileBrowserItem>): List<RemoteFileBrowserItem> {
         return sortCloudFilesByFavourite(files)
     }
-
-    val multiplier : Int
-        get() = if (isAscending) 1 else -1
 
     /**
      * Comparator for RemoteFileBrowserItems, sorts favorite state.
