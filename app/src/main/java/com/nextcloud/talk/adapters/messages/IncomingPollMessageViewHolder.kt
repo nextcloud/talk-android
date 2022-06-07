@@ -119,7 +119,6 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
             // TODO: how to get room token here?
             val roomToken = "???????????????????????????"
 
-
             binding.bubble.setOnClickListener {
                 val pollVoteDialog = PollVoteDialogFragment.newInstance(
                     message.activeUser!!, roomToken, pollId,

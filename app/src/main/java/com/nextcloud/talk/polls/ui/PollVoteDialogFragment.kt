@@ -50,8 +50,6 @@ class PollVoteDialogFragment : DialogFragment() {
 
         binding.messagePollTitle.text = pollTitle
 
-
-
         viewModel.viewState.observe(this) { state ->
             // when (state) {
             // }
