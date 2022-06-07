@@ -18,28 +18,41 @@
 -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:background="@color/white">
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
+    <ImageView
+        android:id="@+id/message_poll_icon"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@null"
+        android:src="@drawable/ic_baseline_bar_chart_24"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/high_emphasis_menu_icon" />
 
-    </RadioGroup>
+    <androidx.emoji.widget.EmojiTextView
+        android:id="@+id/message_poll_title"
+        android:layout_width="257dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="8dp"
+        android:textAlignment="viewStart"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/message_poll_icon"
+        app:layout_constraintTop_toTopOf="@+id/message_poll_icon"
+        tools:text="This is the poll title?" />
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/setStatus"
-        android:layout_width="wrap_content"
+
+    <FrameLayout
+        android:id="@+id/message_poll_content_fragment"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/nc_common_submit"
-        android:theme="@style/Button.Primary"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@id/message_poll_title"
+        tools:layout_height="400dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

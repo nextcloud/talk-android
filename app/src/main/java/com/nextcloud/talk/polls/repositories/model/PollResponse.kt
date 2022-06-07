@@ -26,7 +26,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @JsonObject
-data class Poll(
+data class PollResponse(
     @JsonField(name = ["id"])
     var id: Int = 0,
 
@@ -66,7 +66,7 @@ data class Poll(
     @JsonField(name = ["details"])
     var details: ArrayList<PollDetails>? = null,
 
-    ) : Parcelable {
+) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(0, null, null, null, null, null, null, 0, 0, 0, null)
 }

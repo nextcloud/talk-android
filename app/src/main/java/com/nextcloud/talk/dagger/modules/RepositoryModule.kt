@@ -24,6 +24,8 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.polls.repositories.PollRepository
+import com.nextcloud.talk.polls.repositories.PollRepositoryImpl
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
@@ -50,6 +52,11 @@ class RepositoryModule {
     @Provides
     fun provideUnifiedSearchRepository(ncApi: NcApi, userProvider: CurrentUserProvider): UnifiedSearchRepository {
         return UnifiedSearchRepositoryImpl(ncApi, userProvider)
+    }
+
+    @Provides
+    fun provideDialogPollRepository(ncApi: NcApi, userProvider: CurrentUserProvider): PollRepository {
+        return PollRepositoryImpl(ncApi, userProvider)
     }
 
     @Provides

@@ -40,7 +40,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.polls.ui.PollVoteDialogFragment
+import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -100,14 +100,14 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
     }
 
     private fun setPollPreview(message: ChatMessage) {
-        var pollId: Int? = null
+        var pollId: String? = null
         var pollName: String? = null
 
         if (message.messageParameters != null && message.messageParameters!!.size > 0) {
             for (key in message.messageParameters!!.keys) {
                 val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
                 if (individualHashMap["type"] == "talk-poll") {
-                    pollId = Integer.parseInt(individualHashMap["id"])
+                    pollId = individualHashMap["id"]
                     pollName = individualHashMap["name"].toString()
                 }
             }
@@ -120,7 +120,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
             val roomToken = "???????????????????????????"
 
             binding.bubble.setOnClickListener {
-                val pollVoteDialog = PollVoteDialogFragment.newInstance(
+                val pollVoteDialog = PollMainDialogFragment.newInstance(
                     message.activeUser!!, roomToken, pollId,
                     pollName
                 )
@@ -130,6 +130,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
                 )
             }
 
+            // TODO get poll from api
             //  wait for https://github.com/nextcloud/spreed/pull/7306#issuecomment-1145819317
 
             // val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
