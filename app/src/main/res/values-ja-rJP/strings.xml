@@ -2,6 +2,8 @@
   <resources>
     <string name="account_icon">アカウントアイコン</string>
     <string name="appbar_search_in">%sを検索</string>
+    <string name="audio_output_bluetooth">Bluetooth</string>
+    <string name="audio_output_dialog_headline">音声の出力</string>
     <string name="audio_output_phone">携帯</string>
     <string name="audio_output_speaker">スピーカー</string>
     <string name="avatar">アバター</string>
@@ -14,6 +16,7 @@
     <string name="dnd">取り込み中</string>
     <string name="edit">編集</string>
     <string name="emoji_category_recent">最近</string>
+    <string name="emoji_search">絵文字を検索</string>
     <string name="encrypted">暗号化済み</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>
     <string name="file_list_folder">フォルダー</string>
@@ -30,6 +33,7 @@
     <string name="menu_item_sort_by_size_biggest_first">サイズ（降順）</string>
     <string name="menu_item_sort_by_size_smallest_first">サイズ（昇順）</string>
     <string name="message_search_begin_empty">検索結果なし</string>
+    <string name="message_search_hint">検索…</string>
     <string name="messages">メッセージ</string>
     <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_about">バージョン情報</string>
@@ -114,6 +118,7 @@
     <string name="nc_group">グループ</string>
     <string name="nc_groups">グループ</string>
     <string name="nc_guest">ゲスト</string>
+    <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_join_via_link">トークに参加する</string>
