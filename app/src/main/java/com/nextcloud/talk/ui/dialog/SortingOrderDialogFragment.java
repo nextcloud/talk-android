@@ -36,8 +36,12 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.databinding.SortingOrderFragmentBinding;
+import com.nextcloud.talk.utils.FileSortOrder;
 import com.nextcloud.talk.utils.LegacyFileSortOrder;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
@@ -67,11 +71,22 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
     private View[] taggedViews;
     private String currentSortOrderName;
 
+    @Deprecated
     public static SortingOrderDialogFragment newInstance(LegacyFileSortOrder sortOrder) {
         SortingOrderDialogFragment dialogFragment = new SortingOrderDialogFragment();
 
         Bundle args = new Bundle();
         args.putString(KEY_SORT_ORDER, sortOrder.name);
+        dialogFragment.setArguments(args);
+
+        return dialogFragment;
+    }
+
+    public static SortingOrderDialogFragment newInstance(@NotNull FileSortOrder sortOrder) {
+        SortingOrderDialogFragment dialogFragment = new SortingOrderDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putString(KEY_SORT_ORDER, sortOrder.getName());
         dialogFragment.setArguments(args);
 
         return dialogFragment;

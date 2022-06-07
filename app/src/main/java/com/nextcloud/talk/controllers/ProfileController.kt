@@ -55,7 +55,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.components.filebrowser.controllers.BrowserController.BrowserType
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerProfileBinding
@@ -72,11 +71,7 @@ import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BROWSER_TYPE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SINGLE_SELECTION
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -86,7 +81,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
-import org.parceler.Parcels
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -199,7 +193,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         currentUser = userUtils.currentUser
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         binding.avatarUpload.setOnClickListener { sendSelectLocalFileIntent() }
-        binding.avatarChoose.setOnClickListener { showBrowserScreen(BrowserType.DAV_BROWSER) }
+        binding.avatarChoose.setOnClickListener { showBrowserScreen() }
         binding.avatarDelete.setOnClickListener {
             ncApi.deleteAvatar(
                 credentials,
@@ -486,32 +480,14 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         startActivityForResult(intent, 1)
     }
 
-    private fun showBrowserScreen(browserType: BrowserType) {
+    private fun showBrowserScreen() {
         val bundle = Bundle()
-        bundle.putParcelable(
-            KEY_BROWSER_TYPE,
-            Parcels.wrap(BrowserType::class.java, browserType)
-        )
-        bundle.putParcelable(
-            KEY_USER_ENTITY,
-            Parcels.wrap(UserEntity::class.java, currentUser)
-        )
-        bundle.putBoolean(KEY_SINGLE_SELECTION, true)
         bundle.putString(KEY_MIME_TYPE_FILTER, "image/")
-        bundle.putString(KEY_ROOM_TOKEN, "123")
 
         val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)
 
         startActivityForResult(avatarIntent, RemoteFileBrowserActivity.REQUEST_CODE_SELECT_AVATAR)
-
-        /*
-        router.pushController(
-            RouterTransaction.with(BrowserForAvatarController(bundle, this))
-                .pushChangeHandler(VerticalChangeHandler())
-                .popChangeHandler(VerticalChangeHandler())
-        )
-        */
     }
 
     fun handleAvatar(remotePath: String?) {
@@ -536,7 +512,14 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
     private fun saveBitmapAndPassToImagePicker(bitmap: Bitmap) {
         var file: File? = null
         try {
-            file = FileUtils.getTempCacheFile(context!!, "avatar/avatar.png")
+            FileUtils.removeTempCacheFile(
+                this.context!!,
+                "photos/avatar.png"
+            )
+            file = FileUtils.getTempCacheFile(
+                this.context!!,
+                "photos/avatar.png"
+            )
             try {
                 FileOutputStream(file).use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out) }
             } catch (e: IOException) {
@@ -560,12 +543,18 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         startActivityForResult(intent, REQUEST_CODE_IMAGE_PICKER)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent?) {
         if (resultCode == Activity.RESULT_OK) {
-
-            uploadAvatar(getFile(data))
+            if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
+                uploadAvatar(getFile(intent))
+            } else {
+                val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
+                if (pathList?.size!! >= 1) {
+                    handleAvatar(pathList[0])
+                }
+            }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
-            Toast.makeText(activity, getError(data), Toast.LENGTH_SHORT).show()
+            Toast.makeText(activity, getError(intent), Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(activity, "Task Cancelled", Toast.LENGTH_SHORT).show()
         }

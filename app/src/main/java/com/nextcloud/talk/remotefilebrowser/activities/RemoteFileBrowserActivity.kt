@@ -45,8 +45,9 @@ import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapt
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.LegacyFileSortOrder
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.FileSortOrder
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
+import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -55,9 +56,8 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    // TODO use CurrentUserProvider instead for narrower scope
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var currentUserProvider: CurrentUserProvider
 
     private lateinit var binding: ActivityRemoteFileBrowserBinding
     private lateinit var viewModel: RemoteFileBrowserItemsViewModel
@@ -85,7 +85,10 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        initViewModel()
+        val extras = intent.extras
+        val mimeTypeSelectionFilter = extras?.getString(KEY_MIME_TYPE_FILTER, null)
+
+        initViewModel(mimeTypeSelectionFilter)
 
         binding.swipeRefreshList.setOnRefreshListener(this)
         binding.swipeRefreshList.setColorSchemeResources(R.color.colorPrimary)
@@ -97,7 +100,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         viewModel.loadItems()
     }
 
-    private fun initViewModel() {
+    private fun initViewModel(mimeTypeSelectionFilter: String?) {
         viewModel = ViewModelProvider(this, viewModelFactory)[RemoteFileBrowserItemsViewModel::class.java]
 
         viewModel.viewState.observe(this) { state ->
@@ -113,7 +116,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                     val remoteFileBrowserItems = state.items
                     Log.d(TAG, "Items received: $remoteFileBrowserItems")
 
-                    // TODO make shwoGrid based on preferences
+                    // TODO make showGrid based on preferences (when available)
                     val showGrid = false
                     val layoutManager = if (showGrid) {
                         GridLayoutManager(this, SPAN_COUNT)
@@ -121,13 +124,11 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                     }
 
-                    // TODO make mimeTypeSelectionFilter a bundled arg for the activity
-                    val mimeTypeSelectionFilter = "image/"
                     // TODO do not needlessly recreate adapter if it can be reused
                     val adapter = RemoteFileBrowserItemsAdapter(
                         showGrid = showGrid,
                         mimeTypeSelectionFilter = mimeTypeSelectionFilter,
-                        userEntity = userUtils.currentUser!!,
+                        userEntity = currentUserProvider.currentUser!!,
                         selectionInterface = this,
                         onItemClicked = viewModel::onItemClicked
                     )
@@ -177,7 +178,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     private fun changeSorting() {
         val newFragment: DialogFragment = SortingOrderDialogFragment
-            .newInstance(LegacyFileSortOrder.getFileSortOrder(viewModel.fileSortOrder.value!!.name))
+            .newInstance(FileSortOrder.getFileSortOrder(viewModel.fileSortOrder.value!!.name))
         newFragment.show(
             supportFragmentManager,
             SortingOrderDialogFragment.SORTING_ORDER_FRAGMENT
