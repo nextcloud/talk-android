@@ -2,7 +2,9 @@
  * Nextcloud Talk application
  *
  * @author Andy Scherzinger
+ * @author Álvaro Brey
  * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +40,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityRemoteFileBrowserBinding
-import com.nextcloud.talk.interfaces.SelectionInterface
+import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapter
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
@@ -121,7 +123,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
                     // TODO make mimeTypeSelectionFilter a bundled arg for the activity
                     val mimeTypeSelectionFilter = "image/"
-                    // TODO do not needlesly recreate adapter if it can be reused
+                    // TODO do not needlessly recreate adapter if it can be reused
                     val adapter = RemoteFileBrowserItemsAdapter(
                         showGrid = showGrid,
                         mimeTypeSelectionFilter = mimeTypeSelectionFilter,
@@ -240,16 +242,8 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         const val REQUEST_CODE_SELECT_AVATAR = 22
     }
 
-    override fun toggleBrowserItemSelection(path: String) {
-        // unused, viewmodel gets called directly
-    }
-
     override fun isPathSelected(path: String): Boolean {
         // TODO figure out a better way to do this. Narrower interface?
         return viewModel.isPathSelected(path)
-    }
-
-    override fun shouldOnlySelectOneImageFile(): Boolean {
-        return true // unused
     }
 }

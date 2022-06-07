@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -18,13 +20,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.interfaces
+package com.nextcloud.talk.remotefilebrowser
 
-@Deprecated("To be replaced with com.nextcloud.talk.remotefilebrowser.SelectionInterface")
 interface SelectionInterface {
-    fun toggleBrowserItemSelection(path: String)
-
     fun isPathSelected(path: String): Boolean
-
-    fun shouldOnlySelectOneImageFile(): Boolean
 }

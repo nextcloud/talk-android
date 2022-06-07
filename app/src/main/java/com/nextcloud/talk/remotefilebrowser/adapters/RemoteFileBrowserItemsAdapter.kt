@@ -25,8 +25,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
-import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 
 class RemoteFileBrowserItemsAdapter(

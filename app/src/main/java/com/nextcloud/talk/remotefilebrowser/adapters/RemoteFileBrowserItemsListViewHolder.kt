@@ -30,8 +30,8 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
-import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp

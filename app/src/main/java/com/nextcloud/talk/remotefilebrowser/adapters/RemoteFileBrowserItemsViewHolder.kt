@@ -25,8 +25,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.facebook.drawee.view.SimpleDraweeView
-import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.DrawableUtils
 
