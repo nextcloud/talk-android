@@ -49,7 +49,7 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.io.IOException
 
-class ReadFilesystemOperation(okHttpClient: OkHttpClient, currentUser: UserEntity, path: String, depth: Int) {
+class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEntity, path: String, depth: Int) {
     private val okHttpClient: OkHttpClient
     private val url: String
     private val depth: Int

@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.remotefilebrowser.repositories
 
-import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
+import com.nextcloud.talk.components.filebrowser.webdav.ReadFolderListingOperation
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
@@ -40,7 +40,7 @@ class RemoteFileBrowserItemsRepositoryImpl @Inject constructor(
         Observable<List<RemoteFileBrowserItem>> {
         return Observable.fromCallable {
             val operation =
-                ReadFilesystemOperation(
+                ReadFolderListingOperation(
                     okHttpClient,
                     userEntity,
                     path,
