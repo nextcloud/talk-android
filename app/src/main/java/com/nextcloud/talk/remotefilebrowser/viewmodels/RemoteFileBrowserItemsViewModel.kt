@@ -26,7 +26,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
-import com.nextcloud.talk.utils.FileSortOrderNew
+import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -62,7 +62,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     class LoadedState(val items: List<RemoteFileBrowserItem>) : ViewState
     class FinishState(val selectedPaths: Set<String>) : ViewState
 
-    private val initialSortOrder = FileSortOrderNew.getFileSortOrder(appPreferences.sorting)
+    private val initialSortOrder = FileSortOrder.getFileSortOrder(appPreferences.sorting)
     private val sortingPrefListener: SortChangeListener = SortChangeListener()
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
@@ -70,8 +70,8 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
         get() = _viewState
 
     // TODO incorporate into view state object?
-    private val _fileSortOrder: MutableLiveData<FileSortOrderNew> = MutableLiveData(initialSortOrder)
-    val fileSortOrder: LiveData<FileSortOrderNew>
+    private val _fileSortOrder: MutableLiveData<FileSortOrder> = MutableLiveData(initialSortOrder)
+    val fileSortOrder: LiveData<FileSortOrder>
         get() = _fileSortOrder
 
     private val _currentPath: MutableLiveData<String> = MutableLiveData(ROOT_PATH)
@@ -137,7 +137,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     }
 
     private fun onSelectSortOrder(newSortOrderString: String) {
-        val newSortOrder = FileSortOrderNew.getFileSortOrder(newSortOrderString)
+        val newSortOrder = FileSortOrder.getFileSortOrder(newSortOrderString)
         if (newSortOrder.name != fileSortOrder.value?.name) {
             _fileSortOrder.value = newSortOrder
             val currentState = viewState.value

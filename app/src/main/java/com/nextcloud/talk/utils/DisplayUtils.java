@@ -637,7 +637,7 @@ public class DisplayUtils {
     }
 
     public static @StringRes
-    int getSortOrderStringId(FileSortOrderNew sortOrder) {
+    int getSortOrderStringId(FileSortOrder sortOrder) {
         switch (sortOrder.name) {
             case sort_z_to_a_id:
                 return R.string.menu_item_sort_by_name_z_a;

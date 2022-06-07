@@ -24,7 +24,6 @@ package com.nextcloud.talk.utils;
 
 import android.text.TextUtils;
 
-import com.nextcloud.talk.components.filebrowser.adapters.items.BrowserFileItem;
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem;
 
 import java.util.Collections;
@@ -37,7 +36,7 @@ import androidx.annotation.Nullable;
 /**
  * Sort order
  */
-public class FileSortOrderNew {
+public class FileSortOrder {
     public static final String sort_a_to_z_id = "sort_a_to_z";
     public static final String sort_z_to_a_id = "sort_z_to_a";
     public static final String sort_old_to_new_id = "sort_old_to_new";
@@ -45,17 +44,17 @@ public class FileSortOrderNew {
     public static final String sort_small_to_big_id = "sort_small_to_big";
     public static final String sort_big_to_small_id = "sort_big_to_small";
 
-    public static final FileSortOrderNew sort_a_to_z = new FileSortOrderByNameNew(sort_a_to_z_id, true);
-    public static final FileSortOrderNew sort_z_to_a = new FileSortOrderByNameNew(sort_z_to_a_id, false);
-    public static final FileSortOrderNew sort_old_to_new = new FileSortOrderByDateNew(sort_old_to_new_id, true);
-    public static final FileSortOrderNew sort_new_to_old = new FileSortOrderByDateNew(sort_new_to_old_id, false);
-    public static final FileSortOrderNew sort_small_to_big = new FileSortOrderBySizeNew(sort_small_to_big_id, true);
-    public static final FileSortOrderNew sort_big_to_small = new FileSortOrderBySizeNew(sort_big_to_small_id, false);
+    public static final FileSortOrder sort_a_to_z = new FileSortOrderByName(sort_a_to_z_id, true);
+    public static final FileSortOrder sort_z_to_a = new FileSortOrderByName(sort_z_to_a_id, false);
+    public static final FileSortOrder sort_old_to_new = new FileSortOrderByDate(sort_old_to_new_id, true);
+    public static final FileSortOrder sort_new_to_old = new FileSortOrderByDate(sort_new_to_old_id, false);
+    public static final FileSortOrder sort_small_to_big = new FileSortOrderBySize(sort_small_to_big_id, true);
+    public static final FileSortOrder sort_big_to_small = new FileSortOrderBySize(sort_big_to_small_id, false);
 
-    public static final Map<String, FileSortOrderNew> sortOrders;
+    public static final Map<String, FileSortOrder> sortOrders;
 
     static {
-        HashMap<String, FileSortOrderNew> temp = new HashMap<>();
+        HashMap<String, FileSortOrder> temp = new HashMap<>();
         temp.put(sort_a_to_z.name, sort_a_to_z);
         temp.put(sort_z_to_a.name, sort_z_to_a);
         temp.put(sort_old_to_new.name, sort_old_to_new);
@@ -69,12 +68,12 @@ public class FileSortOrderNew {
     public String name;
     public boolean isAscending;
 
-    public FileSortOrderNew(String name, boolean ascending) {
+    public FileSortOrder(String name, boolean ascending) {
         this.name = name;
         isAscending = ascending;
     }
 
-    public static FileSortOrderNew getFileSortOrder(@Nullable String key) {
+    public static FileSortOrder getFileSortOrder(@Nullable String key) {
         if (TextUtils.isEmpty(key) || !sortOrders.containsKey(key)) {
             return sort_a_to_z;
         } else {

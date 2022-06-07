@@ -27,33 +27,35 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Sorts files by sizes
- */
-public class FileSortOrderBySizeNew extends FileSortOrderNew {
+import third_parties.daveKoeller.AlphanumComparator;
 
-    FileSortOrderBySizeNew(String name, boolean ascending) {
+/**
+ * Created by srkunze on 28.08.17.
+ */
+public class FileSortOrderByName extends FileSortOrder {
+
+    FileSortOrderByName(String name, boolean ascending) {
         super(name, ascending);
     }
 
     /**
-     * Sorts list by Size.
+     * Sorts list by Name.
      *
-     * @param files list of files to sort
+     * @param files files to sort
      */
+    @SuppressWarnings("Bx")
     public List<RemoteFileBrowserItem> sortCloudFiles(List<RemoteFileBrowserItem> files) {
         final int multiplier = isAscending ? 1 : -1;
 
         Collections.sort(files, (o1, o2) -> {
             if (!o1.isFile() && !o2.isFile()) {
-                return multiplier * Long.compare(o1.getSize(), o2.getSize());
+                return multiplier * new AlphanumComparator().compare(o1, o2);
             } else if (!o1.isFile()) {
                 return -1;
             } else if (!o2.isFile()) {
                 return 1;
-            } else {
-                return multiplier * Long.compare(o1.getSize(), o2.getSize());
             }
+            return multiplier * new AlphanumComparator().compare(o1, o2);
         });
 
         return super.sortCloudFiles(files);

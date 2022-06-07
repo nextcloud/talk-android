@@ -28,24 +28,33 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by srkunze on 28.08.17.
+ * Sorts files by sizes
  */
-public class FileSortOrderByDateNew extends FileSortOrderNew {
+public class FileSortOrderBySize extends FileSortOrder {
 
-    FileSortOrderByDateNew(String name, boolean ascending) {
+    FileSortOrderBySize(String name, boolean ascending) {
         super(name, ascending);
     }
 
     /**
-     * Sorts list by Date.
+     * Sorts list by Size.
      *
      * @param files list of files to sort
      */
     public List<RemoteFileBrowserItem> sortCloudFiles(List<RemoteFileBrowserItem> files) {
         final int multiplier = isAscending ? 1 : -1;
 
-        Collections.sort(files, (o1, o2) ->
-                multiplier * Long.compare(o1.getModifiedTimestamp(), o2.getModifiedTimestamp()));
+        Collections.sort(files, (o1, o2) -> {
+            if (!o1.isFile() && !o2.isFile()) {
+                return multiplier * Long.compare(o1.getSize(), o2.getSize());
+            } else if (!o1.isFile()) {
+                return -1;
+            } else if (!o2.isFile()) {
+                return 1;
+            } else {
+                return multiplier * Long.compare(o1.getSize(), o2.getSize());
+            }
+        });
 
         return super.sortCloudFiles(files);
     }

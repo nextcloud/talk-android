@@ -27,36 +27,25 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem;
 import java.util.Collections;
 import java.util.List;
 
-import third_parties.daveKoeller.AlphanumComparator;
-
 /**
  * Created by srkunze on 28.08.17.
  */
-public class FileSortOrderByNameNew extends FileSortOrderNew {
+public class FileSortOrderByDate extends FileSortOrder {
 
-    FileSortOrderByNameNew(String name, boolean ascending) {
+    FileSortOrderByDate(String name, boolean ascending) {
         super(name, ascending);
     }
 
     /**
-     * Sorts list by Name.
+     * Sorts list by Date.
      *
-     * @param files files to sort
+     * @param files list of files to sort
      */
-    @SuppressWarnings("Bx")
     public List<RemoteFileBrowserItem> sortCloudFiles(List<RemoteFileBrowserItem> files) {
         final int multiplier = isAscending ? 1 : -1;
 
-        Collections.sort(files, (o1, o2) -> {
-            if (!o1.isFile() && !o2.isFile()) {
-                return multiplier * new AlphanumComparator().compare(o1, o2);
-            } else if (!o1.isFile()) {
-                return -1;
-            } else if (!o2.isFile()) {
-                return 1;
-            }
-            return multiplier * new AlphanumComparator().compare(o1, o2);
-        });
+        Collections.sort(files, (o1, o2) ->
+                multiplier * Long.compare(o1.getModifiedTimestamp(), o2.getModifiedTimestamp()));
 
         return super.sortCloudFiles(files);
     }
