@@ -292,7 +292,10 @@ public class NotificationWorker extends Worker {
                 }
         }
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+        // Use unique request code to make sure that a new PendingIntent gets created for each notification
+        // See https://github.com/nextcloud/talk-android/issues/2111
+        int requestCode = (int) System.currentTimeMillis();
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, 0);
 
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
         String baseUrl = uri.getHost();
