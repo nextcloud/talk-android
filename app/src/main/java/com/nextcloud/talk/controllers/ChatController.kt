@@ -2314,7 +2314,7 @@ class ChatController(args: Bundle) :
 
                 var chatMessage: ChatMessage
 
-                val shouldAddNewMessagesNotice = timeout == 0 && adapter?.itemCount ?: 0 > 0 && chatMessageList.size > 0
+                val shouldAddNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
 
                 if (shouldAddNewMessagesNotice) {
                     val unreadChatMessage = ChatMessage()
