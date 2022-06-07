@@ -26,7 +26,6 @@ import android.text.TextUtils;
 
 import com.nextcloud.talk.components.filebrowser.adapters.items.BrowserFileItem;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,8 @@ import androidx.annotation.Nullable;
 /**
  * Sort order
  */
-public class FileSortOrder {
+@Deprecated
+public class LegacyFileSortOrder {
     public static final String sort_a_to_z_id = "sort_a_to_z";
     public static final String sort_z_to_a_id = "sort_z_to_a";
     public static final String sort_old_to_new_id = "sort_old_to_new";
@@ -45,17 +45,17 @@ public class FileSortOrder {
     public static final String sort_small_to_big_id = "sort_small_to_big";
     public static final String sort_big_to_small_id = "sort_big_to_small";
 
-    public static final FileSortOrder sort_a_to_z = new FileSortOrderByName(sort_a_to_z_id, true);
-    public static final FileSortOrder sort_z_to_a = new FileSortOrderByName(sort_z_to_a_id, false);
-    public static final FileSortOrder sort_old_to_new = new FileSortOrderByDate(sort_old_to_new_id, true);
-    public static final FileSortOrder sort_new_to_old = new FileSortOrderByDate(sort_new_to_old_id, false);
-    public static final FileSortOrder sort_small_to_big = new FileSortOrderBySize(sort_small_to_big_id, true);
-    public static final FileSortOrder sort_big_to_small = new FileSortOrderBySize(sort_big_to_small_id, false);
+    public static final LegacyFileSortOrder sort_a_to_z = new LegacyFileSortOrderByName(sort_a_to_z_id, true);
+    public static final LegacyFileSortOrder sort_z_to_a = new LegacyFileSortOrderByName(sort_z_to_a_id, false);
+    public static final LegacyFileSortOrder sort_old_to_new = new LegacyFileSortOrderByDate(sort_old_to_new_id, true);
+    public static final LegacyFileSortOrder sort_new_to_old = new LegacyFileSortOrderByDate(sort_new_to_old_id, false);
+    public static final LegacyFileSortOrder sort_small_to_big = new LegacyFileSortOrderBySize(sort_small_to_big_id, true);
+    public static final LegacyFileSortOrder sort_big_to_small = new LegacyFileSortOrderBySize(sort_big_to_small_id, false);
 
-    public static final Map<String, FileSortOrder> sortOrders;
+    public static final Map<String, LegacyFileSortOrder> sortOrders;
 
     static {
-        HashMap<String, FileSortOrder> temp = new HashMap<>();
+        HashMap<String, LegacyFileSortOrder> temp = new HashMap<>();
         temp.put(sort_a_to_z.name, sort_a_to_z);
         temp.put(sort_z_to_a.name, sort_z_to_a);
         temp.put(sort_old_to_new.name, sort_old_to_new);
@@ -69,12 +69,12 @@ public class FileSortOrder {
     public String name;
     public boolean isAscending;
 
-    public FileSortOrder(String name, boolean ascending) {
+    public LegacyFileSortOrder(String name, boolean ascending) {
         this.name = name;
         isAscending = ascending;
     }
 
-    public static FileSortOrder getFileSortOrder(@Nullable String key) {
+    public static LegacyFileSortOrder getFileSortOrder(@Nullable String key) {
         if (TextUtils.isEmpty(key) || !sortOrders.containsKey(key)) {
             return sort_a_to_z;
         } else {

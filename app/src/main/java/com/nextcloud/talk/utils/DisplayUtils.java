@@ -110,12 +110,12 @@ import androidx.core.graphics.ColorUtils;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.emoji.text.EmojiCompat;
 
-import static com.nextcloud.talk.utils.FileSortOrder.sort_a_to_z_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_big_to_small_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_new_to_old_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_old_to_new_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_small_to_big_id;
-import static com.nextcloud.talk.utils.FileSortOrder.sort_z_to_a_id;
+import static com.nextcloud.talk.utils.LegacyFileSortOrder.sort_a_to_z_id;
+import static com.nextcloud.talk.utils.LegacyFileSortOrder.sort_big_to_small_id;
+import static com.nextcloud.talk.utils.LegacyFileSortOrder.sort_new_to_old_id;
+import static com.nextcloud.talk.utils.LegacyFileSortOrder.sort_old_to_new_id;
+import static com.nextcloud.talk.utils.LegacyFileSortOrder.sort_small_to_big_id;
+import static com.nextcloud.talk.utils.LegacyFileSortOrder.sort_z_to_a_id;
 
 public class DisplayUtils {
 
@@ -618,7 +618,7 @@ public class DisplayUtils {
     }
 
     public static @StringRes
-    int getSortOrderStringId(FileSortOrder sortOrder) {
+    int getSortOrderStringId(LegacyFileSortOrder sortOrder) {
         switch (sortOrder.name) {
             case sort_z_to_a_id:
                 return R.string.menu_item_sort_by_name_z_a;

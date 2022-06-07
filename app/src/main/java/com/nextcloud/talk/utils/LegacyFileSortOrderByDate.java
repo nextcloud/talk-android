@@ -30,9 +30,10 @@ import java.util.List;
 /**
  * Created by srkunze on 28.08.17.
  */
-public class FileSortOrderByDate extends FileSortOrder {
+@Deprecated
+public class LegacyFileSortOrderByDate extends LegacyFileSortOrder {
 
-    FileSortOrderByDate(String name, boolean ascending) {
+    LegacyFileSortOrderByDate(String name, boolean ascending) {
         super(name, ascending);
     }
 

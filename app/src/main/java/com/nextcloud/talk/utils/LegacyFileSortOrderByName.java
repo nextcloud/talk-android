@@ -32,9 +32,10 @@ import third_parties.daveKoeller.AlphanumComparator;
 /**
  * Created by srkunze on 28.08.17.
  */
-public class FileSortOrderByName extends FileSortOrder {
+@Deprecated
+public class LegacyFileSortOrderByName extends LegacyFileSortOrder {
 
-    FileSortOrderByName(String name, boolean ascending) {
+    LegacyFileSortOrderByName(String name, boolean ascending) {
         super(name, ascending);
     }
 

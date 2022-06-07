@@ -30,9 +30,10 @@ import java.util.List;
 /**
  * Sorts files by sizes
  */
-public class FileSortOrderBySize extends FileSortOrder {
+@Deprecated
+public class LegacyFileSortOrderBySize extends LegacyFileSortOrder {
 
-    FileSortOrderBySize(String name, boolean ascending) {
+    LegacyFileSortOrderBySize(String name, boolean ascending) {
         super(name, ascending);
     }
 

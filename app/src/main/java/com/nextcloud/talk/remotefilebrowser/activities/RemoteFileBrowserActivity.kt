@@ -43,7 +43,7 @@ import com.nextcloud.talk.remotefilebrowser.adapters.RemoteFileBrowserItemsAdapt
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.FileSortOrder
+import com.nextcloud.talk.utils.LegacyFileSortOrder
 import com.nextcloud.talk.utils.database.user.UserUtils
 import javax.inject.Inject
 
@@ -175,7 +175,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
 
     private fun changeSorting() {
         val newFragment: DialogFragment = SortingOrderDialogFragment
-            .newInstance(FileSortOrder.getFileSortOrder(viewModel.fileSortOrder.value!!.name))
+            .newInstance(LegacyFileSortOrder.getFileSortOrder(viewModel.fileSortOrder.value!!.name))
         newFragment.show(
             supportFragmentManager,
             SortingOrderDialogFragment.SORTING_ORDER_FRAGMENT

@@ -50,7 +50,7 @@ import com.nextcloud.talk.interfaces.SelectionInterface
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.ui.dialog.SortingOrderDialogFragment
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.FileSortOrder
+import com.nextcloud.talk.utils.LegacyFileSortOrder
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BROWSER_TYPE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
@@ -142,7 +142,7 @@ abstract class BrowserController(args: Bundle) :
         binding.sortButton.setOnClickListener { changeSorting() }
 
         binding.sortButton.setText(
-            DisplayUtils.getSortOrderStringId(FileSortOrder.getFileSortOrder(appPreferences?.sorting))
+            DisplayUtils.getSortOrderStringId(LegacyFileSortOrder.getFileSortOrder(appPreferences?.sorting))
         )
 
         refreshCurrentPath()
@@ -154,7 +154,7 @@ abstract class BrowserController(args: Bundle) :
 
     fun changeSorting() {
         val newFragment: DialogFragment = SortingOrderDialogFragment
-            .newInstance(FileSortOrder.getFileSortOrder(appPreferences?.sorting))
+            .newInstance(LegacyFileSortOrder.getFileSortOrder(appPreferences?.sorting))
         newFragment.show(
             (activity as MainActivity?)!!.supportFragmentManager,
             SortingOrderDialogFragment.SORTING_ORDER_FRAGMENT
@@ -208,7 +208,7 @@ abstract class BrowserController(args: Bundle) :
             }
         }
 
-        FileSortOrder.getFileSortOrder(appPreferences?.sorting).sortCloudFiles(recyclerViewItems)
+        LegacyFileSortOrder.getFileSortOrder(appPreferences?.sorting).sortCloudFiles(recyclerViewItems)
 
         if (activity != null) {
             activity!!.runOnUiThread {
@@ -319,7 +319,7 @@ abstract class BrowserController(args: Bundle) :
         OnPreferenceValueChangedListener<String> {
         override fun onChanged(newValue: String) {
             try {
-                val sortOrder = FileSortOrder.getFileSortOrder(newValue)
+                val sortOrder = LegacyFileSortOrder.getFileSortOrder(newValue)
 
                 browserController.binding.sortButton.setText(DisplayUtils.getSortOrderStringId(sortOrder))
                 browserController.recyclerViewItems = sortOrder.sortCloudFiles(browserController.recyclerViewItems)
