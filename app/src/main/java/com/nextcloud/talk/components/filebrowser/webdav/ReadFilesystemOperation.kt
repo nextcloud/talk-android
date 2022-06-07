@@ -81,15 +81,6 @@ class ReadFilesystemOperation(okHttpClient: OkHttpClient, currentUser: UserEntit
         } catch (e: DavException) {
             Log.w(TAG, "Error reading remote path")
         }
-        remoteFiles.add(
-            getModelFromResponse(
-                rootElement[0]!!,
-                rootElement[0]!!
-                    .href
-                    .toString()
-                    .substring(basePath.length)
-            )
-        )
         for (memberElement in memberElements) {
             remoteFiles.add(
                 getModelFromResponse(
