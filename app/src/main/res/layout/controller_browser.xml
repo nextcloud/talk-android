@@ -93,7 +93,7 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/rv_item_browser_file" />
+            tools:listitem="@layout/rv_item_browser_file_old" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

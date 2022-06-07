@@ -34,6 +34,7 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding;
+import com.nextcloud.talk.databinding.RvItemBrowserFileOldBinding;
 import com.nextcloud.talk.interfaces.SelectionInterface;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -199,11 +200,11 @@ public class BrowserFileItem extends AbstractFlexibleItem<BrowserFileItem.Browse
 
     static class BrowserFileItemViewHolder extends FlexibleViewHolder {
 
-        RvItemBrowserFileBinding binding;
+        RvItemBrowserFileOldBinding binding;
 
         BrowserFileItemViewHolder(View view, FlexibleAdapter adapter) {
             super(view, adapter);
-            binding = RvItemBrowserFileBinding.bind(view);
+            binding = RvItemBrowserFileOldBinding.bind(view);
         }
     }
 }

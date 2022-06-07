@@ -41,7 +41,6 @@ import com.nextcloud.talk.utils.LegacyFileSortOrder;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.inject.Inject;
 
@@ -99,7 +98,8 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
         setRetainInstance(true);
 
         if (getArguments() != null) {
-            currentSortOrderName = getArguments().getString(KEY_SORT_ORDER, LegacyFileSortOrder.sort_a_to_z.name);
+            currentSortOrderName = getArguments().getString(KEY_SORT_ORDER,
+                                                            FileSortOrder.Companion.getSort_a_to_z().getName());
         }
     }
 
@@ -135,29 +135,29 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
 
         taggedViews = new View[12];
         taggedViews[0] = binding.sortByNameAscending;
-        taggedViews[0].setTag(LegacyFileSortOrder.sort_a_to_z);
+        taggedViews[0].setTag(FileSortOrder.Companion.getSort_a_to_z());
         taggedViews[1] = binding.sortByNameAZText;
-        taggedViews[1].setTag(LegacyFileSortOrder.sort_a_to_z);
+        taggedViews[1].setTag(FileSortOrder.Companion.getSort_a_to_z());
         taggedViews[2] = binding.sortByNameDescending;
-        taggedViews[2].setTag(LegacyFileSortOrder.sort_z_to_a);
+        taggedViews[2].setTag(FileSortOrder.Companion.getSort_z_to_a());
         taggedViews[3] = binding.sortByNameZAText;
-        taggedViews[3].setTag(LegacyFileSortOrder.sort_z_to_a);
+        taggedViews[3].setTag(FileSortOrder.Companion.getSort_z_to_a());
         taggedViews[4] = binding.sortByModificationDateAscending;
-        taggedViews[4].setTag(LegacyFileSortOrder.sort_old_to_new);
+        taggedViews[4].setTag(FileSortOrder.Companion.getSort_old_to_new());
         taggedViews[5] = binding.sortByModificationDateOldestFirstText;
-        taggedViews[5].setTag(LegacyFileSortOrder.sort_old_to_new);
+        taggedViews[5].setTag(FileSortOrder.Companion.getSort_old_to_new());
         taggedViews[6] = binding.sortByModificationDateDescending;
-        taggedViews[6].setTag(LegacyFileSortOrder.sort_new_to_old);
+        taggedViews[6].setTag(FileSortOrder.Companion.getSort_new_to_old());
         taggedViews[7] = binding.sortByModificationDateNewestFirstText;
-        taggedViews[7].setTag(LegacyFileSortOrder.sort_new_to_old);
+        taggedViews[7].setTag(FileSortOrder.Companion.getSort_new_to_old());
         taggedViews[8] = binding.sortBySizeAscending;
-        taggedViews[8].setTag(LegacyFileSortOrder.sort_small_to_big);
+        taggedViews[8].setTag(FileSortOrder.Companion.getSort_small_to_big());
         taggedViews[9] = binding.sortBySizeSmallestFirstText;
-        taggedViews[9].setTag(LegacyFileSortOrder.sort_small_to_big);
+        taggedViews[9].setTag(FileSortOrder.Companion.getSort_small_to_big());
         taggedViews[10] = binding.sortBySizeDescending;
-        taggedViews[10].setTag(LegacyFileSortOrder.sort_big_to_small);
+        taggedViews[10].setTag(FileSortOrder.Companion.getSort_big_to_small());
         taggedViews[11] = binding.sortBySizeBiggestFirstText;
-        taggedViews[11].setTag(LegacyFileSortOrder.sort_big_to_small);
+        taggedViews[11].setTag(FileSortOrder.Companion.getSort_big_to_small());
 
         setupActiveOrderSelection();
     }
@@ -169,8 +169,8 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
         final int color = getResources().getColor(R.color.colorPrimary);
         Log.i("SortOrder", "currentSortOrderName="+currentSortOrderName);
         for (View view : taggedViews) {
-            Log.i("SortOrder", ((LegacyFileSortOrder) view.getTag()).name);
-            if (!((LegacyFileSortOrder) view.getTag()).name.equals(currentSortOrderName)) {
+            Log.i("SortOrder", ((FileSortOrder) view.getTag()).getName());
+            if (!((FileSortOrder) view.getTag()).getName().equals(currentSortOrderName)) {
                 continue;
             }
             if (view instanceof MaterialButton) {
@@ -207,7 +207,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
 
     @Override
     public void onClick(View v) {
-        appPreferences.setSorting(((LegacyFileSortOrder) v.getTag()).name);
+        appPreferences.setSorting(((FileSortOrder) v.getTag()).getName());
         dismiss();
     }
 }
