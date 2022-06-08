@@ -236,15 +236,13 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         viewModel.loadItems()
     }
 
+    override fun isPathSelected(path: String): Boolean {
+        return viewModel.isPathSelected(path)
+    }
+
     companion object {
         private val TAG = RemoteFileBrowserActivity::class.simpleName
         const val SPAN_COUNT: Int = 4
         const val EXTRA_SELECTED_PATHS = "EXTRA_SELECTED_PATH"
-        const val REQUEST_CODE_SELECT_AVATAR = 22
-    }
-
-    override fun isPathSelected(path: String): Boolean {
-        // TODO figure out a better way to do this. Narrower interface?
-        return viewModel.isPathSelected(path)
     }
 }

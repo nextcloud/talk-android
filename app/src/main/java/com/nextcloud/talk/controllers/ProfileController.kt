@@ -487,7 +487,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)
 
-        startActivityForResult(avatarIntent, RemoteFileBrowserActivity.REQUEST_CODE_SELECT_AVATAR)
+        startActivityForResult(avatarIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
     }
 
     fun handleAvatar(remotePath: String?) {
@@ -547,11 +547,13 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_CODE_IMAGE_PICKER) {
                 uploadAvatar(getFile(intent))
-            } else {
+            } else if (requestCode == REQUEST_CODE_SELECT_REMOTE_FILES) {
                 val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
                 if (pathList?.size!! >= 1) {
                     handleAvatar(pathList[0])
                 }
+            } else {
+                Log.w(TAG, "Unknown intent request code")
             }
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(activity, getError(intent), Toast.LENGTH_SHORT).show()
@@ -806,6 +808,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     companion object {
         private const val TAG: String = "ProfileController"
+        private const val REQUEST_CODE_SELECT_REMOTE_FILES = 22
         private const val DEFAULT_CACHE_SIZE: Int = 20
         private const val DEFAULT_RETRIES: Long = 3
         private const val MAX_SIZE: Int = 1024

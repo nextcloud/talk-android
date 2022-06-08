@@ -29,7 +29,6 @@ import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
-import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
 import com.nextcloud.talk.controllers.ChatController
 import com.nextcloud.talk.databinding.DialogAttachmentBinding
 import com.nextcloud.talk.models.database.CapabilitiesUtil
@@ -76,7 +75,7 @@ class AttachmentDialog(val activity: Activity, var chatController: ChatControlle
         }
 
         dialogAttachmentBinding.menuAttachFileFromCloud.setOnClickListener {
-            chatController.showBrowserScreen(BrowserController.BrowserType.DAV_BROWSER)
+            chatController.showBrowserScreen()
             dismiss()
         }
 

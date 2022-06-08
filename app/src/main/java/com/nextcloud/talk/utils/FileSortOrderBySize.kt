@@ -24,9 +24,6 @@ package com.nextcloud.talk.utils
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import java.util.Collections
 
-/**
- * Sorts files by sizes
- */
 class FileSortOrderBySize internal constructor(name: String, ascending: Boolean) : FileSortOrder(name, ascending) {
     /**
      * Sorts list by Size.

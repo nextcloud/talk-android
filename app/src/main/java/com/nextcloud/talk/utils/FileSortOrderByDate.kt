@@ -24,9 +24,6 @@ package com.nextcloud.talk.utils
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import java.util.Collections
 
-/**
- * Created by srkunze on 28.08.17.
- */
 class FileSortOrderByDate internal constructor(name: String, ascending: Boolean) : FileSortOrder(name, ascending) {
     /**
      * Sorts list by Date.

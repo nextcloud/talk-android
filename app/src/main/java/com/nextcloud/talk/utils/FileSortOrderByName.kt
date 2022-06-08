@@ -25,9 +25,6 @@ import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import third_parties.daveKoeller.AlphanumComparator
 import java.util.Collections
 
-/**
- * Created by srkunze on 28.08.17.
- */
 class FileSortOrderByName internal constructor(name: String, ascending: Boolean) : FileSortOrder(name, ascending) {
     /**
      * Sorts list by Name.
@@ -46,13 +43,14 @@ class FileSortOrderByName internal constructor(name: String, ascending: Boolean)
 
         override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int {
             return if (!left.isFile && !right.isFile) {
-                return multiplier * AlphanumComparator<Any?>().compare(left, right)
+                return multiplier * AlphanumComparator<RemoteFileBrowserItem>()
+                    .compareRemoteFileBrowserItem(left, right)
             } else if (!left.isFile) {
                 -1
             } else if (!right.isFile) {
                 1
             } else {
-                multiplier * AlphanumComparator<Any?>().compare(left, right)
+                multiplier * AlphanumComparator<RemoteFileBrowserItem>().compareRemoteFileBrowserItem(left, right)
             }
         }
     }

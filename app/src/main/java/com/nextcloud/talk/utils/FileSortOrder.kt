@@ -25,9 +25,6 @@ import android.text.TextUtils
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import java.util.Collections
 
-/**
- * Sort order
- */
 open class FileSortOrder(var name: String, var isAscending: Boolean) {
     companion object {
         const val sort_a_to_z_id = "sort_a_to_z"
