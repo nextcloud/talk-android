@@ -47,14 +47,12 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
-import java.util.HashMap
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -136,7 +134,7 @@ class MagicIncomingTextMessageViewHolder(itemView: View, payload: Any) : Message
         if (!TextUtils.isEmpty(message.actorDisplayName)) {
             binding.messageAuthor.text = message.actorDisplayName
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId!!, itemView.context)
+                (payload as? MessagePayload)?.profileBottomSheet?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)

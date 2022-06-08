@@ -41,7 +41,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.databinding.ItemCustomIncomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
-import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -116,9 +115,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
         if (pollId != null && pollName != null) {
             binding.messagePollTitle.text = pollName
 
-            // TODO: how to get room token here?
-            // val roomToken = "???????????????????????????"
-            val roomToken = "i7ht5k9n"
+            val roomToken = (payload as? MessagePayload)!!.roomToken
 
             binding.bubble.setOnClickListener {
                 val pollVoteDialog = PollMainDialogFragment.newInstance(
@@ -151,7 +148,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) : MessageH
         if (!TextUtils.isEmpty(author)) {
             binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? ProfileBottomSheet)?.showFor(message.actorId!!, itemView.context)
+                (payload as? MessagePayload)?.profileBottomSheet?.showFor(message.actorId!!, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
