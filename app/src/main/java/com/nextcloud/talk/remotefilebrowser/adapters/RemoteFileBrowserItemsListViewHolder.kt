@@ -138,7 +138,8 @@ class RemoteFileBrowserItemsListViewHolder(
 
     private fun calculateSelectability(item: RemoteFileBrowserItem) {
         selectable = item.isFile &&
-            (mimeTypeSelectionFilter == null || item.mimeType?.startsWith(mimeTypeSelectionFilter) == true)
+            (mimeTypeSelectionFilter == null || item.mimeType?.startsWith(mimeTypeSelectionFilter) == true) &&
+            (item.isAllowedToReShare && !item.isEncrypted)
     }
 
     private fun calculateClickability(item: RemoteFileBrowserItem, selectableItem: Boolean) {
