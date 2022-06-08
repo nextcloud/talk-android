@@ -54,6 +54,7 @@
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_name_is_same">Vpisano ime je enako obstoječemu</string>
     <string name="nc_call_notifications">Obvestila klica</string>
+    <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave …</string>
     <string name="nc_call_ringing">ZVONJENJE</string>
     <string name="nc_call_state_in_call">%1$s v klicu</string>
     <string name="nc_call_state_with_phone">%1$s v video klicu</string>
@@ -121,6 +122,7 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupine</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_hint_enter_a_message">Vpis sporočila …</string>
     <string name="nc_important_conversation">Pomemben pogovor</string>
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
     <string name="nc_join_via_link">Pridruži se po povezavi</string>
@@ -129,6 +131,7 @@
     <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
     <string name="nc_leave">Zapusti pogovor</string>
+    <string name="nc_leaving_call">Poteka prekinjanje klica ...</string>
     <string name="nc_license_summary">Splošno Javno dovoljenje GNU GPL, različice 3</string>
     <string name="nc_license_title">Dovoljenje</string>
     <string name="nc_limit_hit">Dosežena je omejite %s znakov.</string>
