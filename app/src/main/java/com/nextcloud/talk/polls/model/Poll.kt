@@ -1,7 +1,5 @@
 package com.nextcloud.talk.polls.model
 
-import com.nextcloud.talk.polls.repositories.model.PollDetails
-
 data class Poll(
     val id: String,
     val question: String?,
@@ -15,6 +13,5 @@ data class Poll(
     val maxVotes: Int,
     val votedSelf: List<Int>?,
     val numVoters: Int,
-    // TODO PollDetails needs own model class
     val details: List<PollDetails>?
 )

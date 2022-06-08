@@ -22,6 +22,7 @@
 package com.nextcloud.talk.polls.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,6 +75,7 @@ class PollVoteFragment(private val parentViewModel: PollViewModel) : Fragment() 
                         .also {
                             it.setOnClickListener {
                                 // todo
+                                Log.d("bb", "click1")
                             }
                         }
                 }?.forEach {
@@ -83,6 +85,7 @@ class PollVoteFragment(private val parentViewModel: PollViewModel) : Fragment() 
         }
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
             // todo set selected in viewmodel
+            Log.d("bb", "click")
         }
         // todo observe viewmodel checked, set view checked with it
         // todo listen to button click, submit

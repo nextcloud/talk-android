@@ -5,5 +5,5 @@ import io.reactivex.Observable
 
 interface PollRepository {
 
-    fun getPoll(roomToken: String, pollId: String): Observable<Poll>
+    fun getPoll(roomToken: String, pollId: String): Observable<Poll>?
 }

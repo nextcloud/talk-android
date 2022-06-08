@@ -46,13 +46,11 @@
         app:layout_constraintTop_toTopOf="@+id/message_poll_icon"
         tools:text="This is the poll title?" />
 
-
     <FrameLayout
         android:id="@+id/message_poll_content_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/message_poll_title"
         tools:layout_height="400dp" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

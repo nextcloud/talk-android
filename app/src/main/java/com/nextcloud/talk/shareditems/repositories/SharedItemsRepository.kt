@@ -28,7 +28,10 @@ import io.reactivex.Observable
 
 interface SharedItemsRepository {
 
-    fun media(parameters: Parameters, type: SharedItemType): Observable<SharedMediaItems>?
+    fun media(
+        parameters: Parameters,
+        type: SharedItemType
+    ): Observable<SharedMediaItems>?
 
     fun media(
         parameters: Parameters,

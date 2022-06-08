@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollMainBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.polls.viewmodels.PollViewModel
 import javax.inject.Inject
 
@@ -78,7 +77,6 @@ class PollMainDialogFragment(
     companion object {
         @JvmStatic
         fun newInstance(
-            userEntity: UserEntity,
             roomTokenParam: String,
             pollId: String,
             name: String

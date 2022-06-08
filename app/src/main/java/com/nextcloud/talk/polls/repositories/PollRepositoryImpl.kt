@@ -23,30 +23,82 @@ package com.nextcloud.talk.polls.repositories
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.polls.model.Poll
+import com.nextcloud.talk.polls.model.PollDetails
+import com.nextcloud.talk.polls.repositories.model.PollDetailsResponse
+import com.nextcloud.talk.polls.repositories.model.PollResponse
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
 import io.reactivex.Observable
 
-class PollRepositoryImpl(private val api: NcApi, private val currentUserProvider: CurrentUserProvider) :
+class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvider: CurrentUserProvider) :
     PollRepository {
 
     override fun getPoll(roomToken: String, pollId: String): Observable<Poll> {
-        // TODO actual api call
-        return Observable.just(
-            Poll(
-                id = "aaa",
-                question = "what if?",
-                options = listOf("yes", "no", "maybe", "I don't know"),
-                votes = listOf(0, 0, 0, 0),
-                actorType = "",
-                actorId = "",
-                actorDisplayName = "",
-                status = 0,
-                resultMode = 0,
-                maxVotes = 1,
-                votedSelf = listOf(0, 0, 0, 0),
-                numVoters = 0,
-                details = emptyList()
-            )
+
+        val credentials = ApiUtils.getCredentials(
+            currentUserProvider.currentUser?.username,
+            currentUserProvider.currentUser?.token
         )
+
+        return ncApi.getPoll(
+            credentials,
+            ApiUtils.getUrlForPoll(
+                currentUserProvider.currentUser?.baseUrl,
+                roomToken,
+                pollId
+            ),
+        ).map { mapToPoll(it.ocs?.data!!) }
+
+        // // // TODO actual api call
+        // return Observable.just(
+        //     Poll(
+        //         id = "aaa",
+        //         question = "what if?",
+        //         options = listOf("yes", "no", "maybe", "I don't know"),
+        //         votes = listOf(0, 0, 0, 0),
+        //         actorType = "",
+        //         actorId = "",
+        //         actorDisplayName = "",
+        //         status = 0,
+        //         resultMode = 0,
+        //         maxVotes = 1,
+        //         votedSelf = listOf(0, 0, 0, 0),
+        //         numVoters = 0,
+        //         details = emptyList()
+        //     )
+        // )
+    }
+
+    companion object {
+
+        private fun mapToPoll(pollResponse: PollResponse): Poll {
+            val pollDetails = pollResponse.details?.map { it -> mapToPollDetails(it) }
+
+            val poll = Poll(
+                pollResponse.id,
+                pollResponse.question,
+                pollResponse.options,
+                pollResponse.votes,
+                pollResponse.actorType,
+                pollResponse.actorId,
+                pollResponse.actorDisplayName,
+                pollResponse.status,
+                pollResponse.resultMode,
+                pollResponse.maxVotes,
+                pollResponse.votedSelf,
+                pollResponse.numVoters,
+                pollDetails,
+            )
+            return poll
+        }
+
+        private fun mapToPollDetails(pollDetailsResponse: PollDetailsResponse): PollDetails {
+            return PollDetails(
+                pollDetailsResponse.actorType,
+                pollDetailsResponse.actorId,
+                pollDetailsResponse.actorDisplayName,
+                pollDetailsResponse.optionId,
+            )
+        }
     }
 }
