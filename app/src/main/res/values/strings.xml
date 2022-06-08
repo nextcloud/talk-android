@@ -358,7 +358,6 @@
     <!-- Browser component -->
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
-    <string name="nc_file_browser_reshare_forbidden">You are not allowed to re-share this file</string>
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_file_browser_sort_by_key" translatable="false">file_browser_sort_by</string>
     <string name="nc_file_browser_sort_by_default" translatable="false">sort_a_to_z</string>
