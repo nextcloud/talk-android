@@ -514,11 +514,11 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         try {
             FileUtils.removeTempCacheFile(
                 this.context!!,
-                "photos/avatar.png"
+                AVATAR_PATH
             )
             file = FileUtils.getTempCacheFile(
                 this.context!!,
-                "photos/avatar.png"
+                AVATAR_PATH
             )
             try {
                 FileOutputStream(file).use { out -> bitmap.compress(Bitmap.CompressFormat.PNG, FULL_QUALITY, out) }
@@ -558,7 +558,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
             Toast.makeText(activity, getError(intent), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(activity, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            Log.i(TAG, "Task Cancelled")
         }
     }
 
@@ -808,6 +808,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     companion object {
         private const val TAG: String = "ProfileController"
+        private const val AVATAR_PATH = "photos/avatar.png"
         private const val REQUEST_CODE_SELECT_REMOTE_FILES = 22
         private const val DEFAULT_CACHE_SIZE: Int = 20
         private const val DEFAULT_RETRIES: Long = 3

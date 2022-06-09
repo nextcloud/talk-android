@@ -24,8 +24,6 @@
 
 package third_parties.daveKoeller;
 
-import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.text.Collator;
@@ -84,13 +82,6 @@ public class AlphanumComparator<T> implements Comparator<T>, Serializable {
             }
         }
         return chunk.toString();
-    }
-
-    public int compareRemoteFileBrowserItem(RemoteFileBrowserItem f1, RemoteFileBrowserItem f2) {
-        String s1 = f1.getPath();
-        String s2 = f2.getPath();
-
-        return compare(s1, s2);
     }
 
     public int compare(T t1, T t2) {

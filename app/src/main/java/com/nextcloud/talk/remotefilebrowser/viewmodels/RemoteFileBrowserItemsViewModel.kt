@@ -150,7 +150,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
         }
     }
 
-    fun changePath(path: String) {
+    private fun changePath(path: String) {
         _currentPath.value = path
         loadItems()
     }

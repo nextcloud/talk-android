@@ -40,17 +40,17 @@ class FileSortOrderByName internal constructor(name: String, ascending: Boolean)
      * Comparator for RemoteFileBrowserItems, sorts by name.
      */
     class RemoteFileBrowserItemNameComparator(private val multiplier: Int) : Comparator<RemoteFileBrowserItem> {
+        private val alphanumComparator = AlphanumComparator<RemoteFileBrowserItem>()
 
         override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int {
             return if (!left.isFile && !right.isFile) {
-                return multiplier * AlphanumComparator<RemoteFileBrowserItem>()
-                    .compareRemoteFileBrowserItem(left, right)
+                return multiplier * alphanumComparator.compare(left.path, right.path)
             } else if (!left.isFile) {
                 -1
             } else if (!right.isFile) {
                 1
             } else {
-                multiplier * AlphanumComparator<RemoteFileBrowserItem>().compareRemoteFileBrowserItem(left, right)
+                multiplier * alphanumComparator.compare(left.path, right.path)
             }
         }
     }

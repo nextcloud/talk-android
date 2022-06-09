@@ -54,6 +54,26 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEn
     private val url: String
     private val depth: Int
     private val basePath: String
+
+    init {
+        val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
+        okHttpClientBuilder.followRedirects(false)
+        okHttpClientBuilder.followSslRedirects(false)
+        okHttpClientBuilder.authenticator(
+            MagicAuthenticator(
+                ApiUtils.getCredentials(
+                    currentUser.username,
+                    currentUser.token
+                ),
+                "Authorization"
+            )
+        )
+        this.okHttpClient = okHttpClientBuilder.build()
+        basePath = currentUser.baseUrl + DavUtils.DAV_PATH + currentUser.userId
+        url = basePath + path
+        this.depth = depth
+    }
+
     fun readRemotePath(): DavResponse {
         val davResponse = DavResponse()
         val memberElements: MutableList<Response> = ArrayList()
@@ -96,29 +116,6 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEn
         return davResponse
     }
 
-    companion object {
-        private const val TAG = "ReadFilesystemOperation"
-    }
-
-    init {
-        val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
-        okHttpClientBuilder.followRedirects(false)
-        okHttpClientBuilder.followSslRedirects(false)
-        okHttpClientBuilder.authenticator(
-            MagicAuthenticator(
-                ApiUtils.getCredentials(
-                    currentUser.username,
-                    currentUser.token
-                ),
-                "Authorization"
-            )
-        )
-        this.okHttpClient = okHttpClientBuilder.build()
-        basePath = currentUser.baseUrl + DavUtils.DAV_PATH + currentUser.userId
-        url = basePath + path
-        this.depth = depth
-    }
-
     private fun getModelFromResponse(response: Response, remotePath: String): RemoteFileBrowserItem {
         val remoteFileBrowserItem = RemoteFileBrowserItem()
         remoteFileBrowserItem.path = Uri.decode(remotePath)
@@ -127,7 +124,9 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEn
         for (property in properties) {
             mapPropertyToBrowserFile(property, remoteFileBrowserItem)
         }
-        if (remoteFileBrowserItem.permissions != null && remoteFileBrowserItem.permissions!!.contains("R")) {
+        if (remoteFileBrowserItem.permissions != null &&
+            remoteFileBrowserItem.permissions!!.contains(READ_PERMISSION)
+        ) {
             remoteFileBrowserItem.isAllowedToReShare = true
         }
         if (TextUtils.isEmpty(remoteFileBrowserItem.mimeType) && !remoteFileBrowserItem.isFile) {
@@ -171,5 +170,10 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEn
                 remoteFileBrowserItem.permissions = property.ncPermission
             }
         }
+    }
+
+    companion object {
+        private const val TAG = "ReadFilesystemOperation"
+        private const val READ_PERMISSION = "R"
     }
 }

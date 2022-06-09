@@ -113,32 +113,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
                     showEmpty()
                 }
                 is RemoteFileBrowserItemsViewModel.LoadedState -> {
-                    val remoteFileBrowserItems = state.items
-                    Log.d(TAG, "Items received: $remoteFileBrowserItems")
-
-                    // TODO make showGrid based on preferences (when available)
-                    val showGrid = false
-                    val layoutManager = if (showGrid) {
-                        GridLayoutManager(this, SPAN_COUNT)
-                    } else {
-                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                    }
-
-                    // TODO do not needlessly recreate adapter if it can be reused
-                    val adapter = RemoteFileBrowserItemsAdapter(
-                        showGrid = showGrid,
-                        mimeTypeSelectionFilter = mimeTypeSelectionFilter,
-                        userEntity = currentUserProvider.currentUser!!,
-                        selectionInterface = this,
-                        onItemClicked = viewModel::onItemClicked
-                    )
-                    adapter.items = remoteFileBrowserItems
-
-                    binding.recyclerView.adapter = adapter
-                    binding.recyclerView.layoutManager = layoutManager
-                    binding.recyclerView.setHasFixedSize(true)
-
-                    showList()
+                    loadList(state, mimeTypeSelectionFilter)
                 }
                 is RemoteFileBrowserItemsViewModel.FinishState -> {
                     finishWithResult(state.selectedPaths)
@@ -164,11 +139,48 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         }
     }
 
+    private fun loadList(
+        state: RemoteFileBrowserItemsViewModel.LoadedState,
+        mimeTypeSelectionFilter: String?
+    ) {
+        val remoteFileBrowserItems = state.items
+        Log.d(TAG, "Items received: $remoteFileBrowserItems")
+
+        // TODO make showGrid based on preferences (when available)
+        val showGrid = false
+        val layoutManager = if (showGrid) {
+            GridLayoutManager(this, SPAN_COUNT)
+        } else {
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        }
+
+        // TODO do not needlessly recreate adapter if it can be reused
+        val adapter = RemoteFileBrowserItemsAdapter(
+            showGrid = showGrid,
+            mimeTypeSelectionFilter = mimeTypeSelectionFilter,
+            userEntity = currentUserProvider.currentUser!!,
+            selectionInterface = this,
+            onItemClicked = viewModel::onItemClicked
+        )
+        adapter.items = remoteFileBrowserItems
+
+        binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.setHasFixedSize(true)
+
+        showList()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_share_files, menu)
         filesSelectionDoneMenuItem = menu?.findItem(R.id.files_selection_done)
         return true
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_CANCELED)
+        super.onBackPressed()
     }
 
     override fun onResume() {
