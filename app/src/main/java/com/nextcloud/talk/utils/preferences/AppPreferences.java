@@ -25,7 +25,6 @@
 package com.nextcloud.talk.utils.preferences;
 
 import com.nextcloud.talk.R;
-import com.nextcloud.talk.utils.FileSortOrder;
 
 import net.orange_box.storebox.annotations.method.ClearMethod;
 import net.orange_box.storebox.annotations.method.DefaultValue;

@@ -78,8 +78,8 @@
 
             <ImageButton
                 android:id="@+id/avatar_upload"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
                 android:background="@drawable/round_corner"
@@ -89,8 +89,8 @@
 
             <ImageButton
                 android:id="@+id/avatar_choose"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
                 android:background="@drawable/round_corner"
@@ -100,8 +100,8 @@
 
             <ImageButton
                 android:id="@+id/avatar_delete"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="@dimen/min_size_clickable_area"
+                android:layout_height="@dimen/min_size_clickable_area"
                 android:layout_marginLeft="@dimen/standard_half_margin"
                 android:layout_marginRight="@dimen/standard_half_margin"
                 android:background="@drawable/round_corner"

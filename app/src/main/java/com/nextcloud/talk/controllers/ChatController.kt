@@ -91,7 +91,6 @@ import autodagger.AutoInjector
 import coil.load
 import com.bluelinelabs.conductor.RouterTransaction
 import com.bluelinelabs.conductor.changehandler.HorizontalChangeHandler
-import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.facebook.common.executors.UiThreadImmediateExecutorService
 import com.facebook.common.references.CloseableReference
 import com.facebook.datasource.DataSource
@@ -121,14 +120,13 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
-import com.nextcloud.talk.components.filebrowser.controllers.BrowserController
-import com.nextcloud.talk.components.filebrowser.controllers.BrowserForSharingController
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
+import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.database.CapabilitiesUtil
@@ -143,6 +141,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
+import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.AttachmentDialog
@@ -164,6 +163,8 @@ import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
@@ -1352,6 +1353,24 @@ class ChatController(args: Bundle) :
         }
 
         when (requestCode) {
+            REQUEST_CODE_SELECT_REMOTE_FILES -> {
+                val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
+                if (pathList?.size!! >= 1) {
+                    pathList
+                        .chunked(10)
+                        .forEach { paths ->
+                            val data = Data.Builder()
+                                .putLong(KEY_INTERNAL_USER_ID, conversationUser!!.id)
+                                .putString(KEY_ROOM_TOKEN, roomToken)
+                                .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
+                                .build()
+                            val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
+                                .setInputData(data)
+                                .build()
+                            WorkManager.getInstance().enqueue(worker)
+                        }
+                }
+            }
             REQUEST_CODE_CHOOSE_FILE -> {
                 try {
                     checkNotNull(intent)
@@ -1606,16 +1625,9 @@ class ChatController(args: Bundle) :
         requestReadContacts()
     }
 
-    fun showBrowserScreen(browserType: BrowserController.BrowserType) {
-        val bundle = Bundle()
-        bundle.putParcelable(BundleKeys.KEY_BROWSER_TYPE, Parcels.wrap<BrowserController.BrowserType>(browserType))
-        bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, Parcels.wrap<UserEntity>(conversationUser))
-        bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        router.pushController(
-            RouterTransaction.with(BrowserForSharingController(bundle))
-                .pushChangeHandler(VerticalChangeHandler())
-                .popChangeHandler(VerticalChangeHandler())
-        )
+    fun showBrowserScreen() {
+        val sharingFileBrowserIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
+        startActivityForResult(sharingFileBrowserIntent, REQUEST_CODE_SELECT_REMOTE_FILES)
     }
 
     fun showShareLocationScreen() {
@@ -3142,6 +3154,7 @@ class ChatController(args: Bundle) :
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
         private const val REQUEST_CODE_PICK_CAMERA: Int = 333
+        private const val REQUEST_CODE_SELECT_REMOTE_FILES = 888
         private const val OBJECT_MESSAGE: String = "{object}"
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
         private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50

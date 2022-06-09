@@ -91,7 +91,7 @@ public class ReadFilesystemOperation {
                         }
                     });
         } catch (IOException | DavException e) {
-            Log.w("", "Error reading remote path");
+            Log.w(TAG, "Error reading remote path");
         }
 
         remoteFiles.add(BrowserFile.Companion.getModelFromResponse(rootElement[0],

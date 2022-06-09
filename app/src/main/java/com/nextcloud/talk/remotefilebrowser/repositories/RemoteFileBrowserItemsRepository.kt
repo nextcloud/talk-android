@@ -1,8 +1,8 @@
 /*
  * Nextcloud Talk application
  *
- * @author Mario Danic
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.components.filebrowser.interfaces;
+package com.nextcloud.talk.remotefilebrowser.repositories
 
-import com.nextcloud.talk.components.filebrowser.models.DavResponse;
+import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
+import io.reactivex.Observable
 
-public interface ListingInterface {
-    void listingResult(DavResponse davResponse);
+interface RemoteFileBrowserItemsRepository {
+
+    fun listFolder(path: String): Observable<List<RemoteFileBrowserItem>>
 }

@@ -63,11 +63,7 @@
         <item name="iconTint">@color/fontAppbar</item>
     </style>
 
-    <style name="CallButtonMenu" parent="@style/ChatSendButtonMenu"></style>
-
-    <style name="BottomNavigationView" parent="@style/Widget.MaterialComponents.BottomNavigationView">
-        <item name="elevation">1dp</item>
-    </style>
+    <style name="CallButtonMenu" parent="@style/ChatSendButtonMenu" />
 
     <style name="ThemeOverlay.App.BottomSheetDialog" parent="ThemeOverlay.MaterialComponents.DayNight.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/Talk.BottomSheetDialog</item>

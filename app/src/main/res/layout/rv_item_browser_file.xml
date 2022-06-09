@@ -34,8 +34,8 @@
         android:layout_height="48dp"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:clickable="true"
-        android:focusable="true"
+        android:clickable="false"
+        android:focusable="false"
         android:longClickable="false"
         android:visibility="visible" />
 

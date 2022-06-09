@@ -65,4 +65,21 @@ public class FileUtils {
 
         return cacheFile;
     }
+
+    /**
+     * Creates a new {@link File}
+     */
+    public static void removeTempCacheFile(@NonNull Context context, String fileName) throws IOException {
+        File cacheFile = new File(context.getApplicationContext().getFilesDir().getAbsolutePath() + "/" + fileName);
+
+        Log.v(TAG, "Full path for new cache file:" + cacheFile.getAbsolutePath());
+
+        if (cacheFile.exists()) {
+            if(cacheFile.delete()) {
+                Log.v(TAG, "Deletion successful");
+            } else {
+                throw new IOException("Directory for temporary file does not exist and could not be created.");
+            }
+        }
+    }
 }

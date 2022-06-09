@@ -170,7 +170,11 @@
 
         <activity
             android:name=".shareditems.activities.SharedItemsActivity"
-            android:theme="@style/AppTheme"/>
+            android:theme="@style/AppTheme" />
+
+        <activity
+            android:name=".remotefilebrowser.activities.RemoteFileBrowserActivity"
+            android:theme="@style/AppTheme" />
 
         <activity
             android:name=".messagesearch.MessageSearchActivity"
