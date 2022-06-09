@@ -44,6 +44,7 @@ import com.nextcloud.talk.dagger.modules.RestModule.MagicAuthenticator
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import java.io.File
@@ -130,7 +131,7 @@ class ReadFolderListingOperation(okHttpClient: OkHttpClient, currentUser: UserEn
             remoteFileBrowserItem.isAllowedToReShare = true
         }
         if (TextUtils.isEmpty(remoteFileBrowserItem.mimeType) && !remoteFileBrowserItem.isFile) {
-            remoteFileBrowserItem.mimeType = "inode/directory"
+            remoteFileBrowserItem.mimeType = FOLDER
         }
 
         return remoteFileBrowserItem

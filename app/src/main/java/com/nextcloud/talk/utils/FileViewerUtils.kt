@@ -47,6 +47,10 @@ import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
+import com.nextcloud.talk.utils.Mimetype.Companion.AUDIO_PREFIX
+import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_GIF
+import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_JPEG
+import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_PNG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.io.File
@@ -150,9 +154,9 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
                 "video/quicktime",
                 "video/ogg"
                 -> openMediaView(filename, mimetype)
-                "image/png",
-                "image/jpeg",
-                "image/gif"
+                IMAGE_PNG,
+                IMAGE_JPEG,
+                IMAGE_GIF
                 -> openImageView(filename, mimetype)
                 "text/markdown",
                 "text/plain"
@@ -249,8 +253,8 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
 
     fun isSupportedForInternalViewer(mimetype: String?): Boolean {
         return when (mimetype) {
-            "image/png", "image/jpeg",
-            "image/gif", "audio/mpeg",
+            IMAGE_PNG, IMAGE_JPEG,
+            IMAGE_GIF, "audio/mpeg",
             "audio/wav", "audio/ogg",
             "video/mp4", "video/quicktime",
             "video/ogg", "text/markdown",
@@ -260,7 +264,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     }
 
     private fun isGif(mimetype: String): Boolean {
-        return "image/gif" == mimetype
+        return IMAGE_GIF == mimetype
     }
 
     private fun isMarkdown(mimetype: String): Boolean {
@@ -268,7 +272,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     }
 
     private fun isAudioOnly(mimetype: String): Boolean {
-        return mimetype.startsWith("audio")
+        return mimetype.startsWith(AUDIO_PREFIX)
     }
 
     @SuppressLint("LongLogTag")

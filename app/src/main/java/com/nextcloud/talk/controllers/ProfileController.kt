@@ -71,6 +71,7 @@ import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
+import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_PREFIX
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
 import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
@@ -482,7 +483,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     private fun showBrowserScreen() {
         val bundle = Bundle()
-        bundle.putString(KEY_MIME_TYPE_FILTER, "image/")
+        bundle.putString(KEY_MIME_TYPE_FILTER, IMAGE_PREFIX)
 
         val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)

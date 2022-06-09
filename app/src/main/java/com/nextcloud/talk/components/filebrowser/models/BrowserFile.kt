@@ -36,6 +36,7 @@ import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
 import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
 import com.nextcloud.talk.components.filebrowser.models.properties.OCId
 import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
+import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
 import kotlinx.android.parcel.Parcelize
 import java.io.File
 
@@ -73,7 +74,7 @@ data class BrowserFile(
                 browserFile.isAllowedToReShare = true
             }
             if (TextUtils.isEmpty(browserFile.mimeType) && !browserFile.isFile) {
-                browserFile.mimeType = "inode/directory"
+                browserFile.mimeType = FOLDER
             }
 
             return browserFile

@@ -37,6 +37,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
+import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RemoteFileBrowserItemsListViewHolder(
@@ -143,7 +144,7 @@ class RemoteFileBrowserItemsListViewHolder(
     }
 
     private fun calculateClickability(item: RemoteFileBrowserItem, selectableItem: Boolean) {
-        clickable = selectableItem || "inode/directory" == item.mimeType
+        clickable = selectableItem || FOLDER == item.mimeType
     }
 
     companion object {

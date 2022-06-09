@@ -67,6 +67,8 @@ import androidx.core.content.ContextCompat;
 import androidx.exifinterface.media.ExifInterface;
 import androidx.lifecycle.ViewModelProvider;
 
+import static com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG;
+
 public class TakePhotoActivity extends AppCompatActivity {
 
     private static final String TAG = TakePhotoActivity.class.getSimpleName();
@@ -175,7 +177,7 @@ public class TakePhotoActivity extends AppCompatActivity {
                 });
                 binding.send.setOnClickListener((v) -> {
                     Uri uri = (Uri) binding.photoPreview.getTag();
-                    setResult(RESULT_OK, new Intent().setDataAndType(uri, "image/jpeg"));
+                    setResult(RESULT_OK, new Intent().setDataAndType(uri, IMAGE_JPEG));
                     binding.photoPreview.setTag(null);
                     finish();
                 });

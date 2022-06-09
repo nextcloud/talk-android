@@ -21,6 +21,11 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.R
+import com.nextcloud.talk.utils.Mimetype.Companion.AUDIO_PREFIX
+import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
+import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_PREFIX
+import com.nextcloud.talk.utils.Mimetype.Companion.TEXT_PREFIX
+import com.nextcloud.talk.utils.Mimetype.Companion.VIDEO_PREFIX
 import java.util.HashMap
 
 object DrawableUtils {
@@ -140,7 +145,7 @@ object DrawableUtils {
         drawableMap["web"] = R.drawable.ic_mimetype_text_code
         drawableMap["application/internet-shortcut"] = R.drawable.ic_mimetype_link
 
-        drawableMap["inode/directory"] = R.drawable.ic_mimetype_folder
+        drawableMap[FOLDER] = R.drawable.ic_mimetype_folder
         drawableMap["unknown"] = R.drawable.ic_mimetype_file
         drawableMap["application/pdf"] = R.drawable.ic_mimetype_application_pdf
 
@@ -149,7 +154,7 @@ object DrawableUtils {
         }
 
         if ("DIR" == localMimetype) {
-            localMimetype = "inode/directory"
+            localMimetype = FOLDER
             return drawableMap[localMimetype]!!
         }
 
@@ -157,19 +162,19 @@ object DrawableUtils {
             return drawableMap[localMimetype]!!
         }
 
-        if (localMimetype.startsWith("image/")) {
+        if (localMimetype.startsWith(IMAGE_PREFIX)) {
             return R.drawable.ic_mimetype_image
         }
 
-        if (localMimetype.startsWith("video/")) {
+        if (localMimetype.startsWith(VIDEO_PREFIX)) {
             return R.drawable.ic_mimetype_video
         }
 
-        if (localMimetype.startsWith("text/")) {
+        if (localMimetype.startsWith(TEXT_PREFIX)) {
             return R.drawable.ic_mimetype_text
         }
 
-        return if (localMimetype.startsWith("audio")) {
+        return if (localMimetype.startsWith(AUDIO_PREFIX)) {
             R.drawable.ic_mimetype_audio
         } else drawableMap["unknown"]!!
     }
