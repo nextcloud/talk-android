@@ -769,6 +769,9 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                     Scope.LOCAL -> holder.binding.scope.setImageResource(R.drawable.ic_password)
                     Scope.FEDERATED -> holder.binding.scope.setImageResource(R.drawable.ic_contacts)
                     Scope.PUBLISHED -> holder.binding.scope.setImageResource(R.drawable.ic_link)
+                    null -> {
+                        // nothing
+                    }
                 }
                 holder.binding.scope.contentDescription = controller.activity!!.resources.getString(
                     R.string.scope_toggle_description,
