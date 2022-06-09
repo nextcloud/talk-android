@@ -1356,28 +1356,19 @@ class ChatController(args: Bundle) :
             REQUEST_CODE_SELECT_REMOTE_FILES -> {
                 val pathList = intent?.getStringArrayListExtra(RemoteFileBrowserActivity.EXTRA_SELECTED_PATHS)
                 if (pathList?.size!! >= 1) {
-                    var paths: MutableList<String?> = ArrayList()
-                    var data: Data
-                    var shareWorker: OneTimeWorkRequest
-                    val iterator = pathList.iterator()
-
-                    while (iterator.hasNext()) {
-                        val path = iterator.next()
-                        paths.add(path)
-                        iterator.remove()
-                        if (paths.size == 10 || !iterator.hasNext()) {
-                            data = Data.Builder()
+                    pathList
+                        .chunked(10)
+                        .forEach { paths ->
+                            val data = Data.Builder()
                                 .putLong(KEY_INTERNAL_USER_ID, conversationUser!!.id)
                                 .putString(KEY_ROOM_TOKEN, roomToken)
                                 .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
                                 .build()
-                            shareWorker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
+                            val worker = OneTimeWorkRequest.Builder(ShareOperationWorker::class.java)
                                 .setInputData(data)
                                 .build()
-                            WorkManager.getInstance().enqueue(shareWorker)
-                            paths = java.util.ArrayList()
+                            WorkManager.getInstance().enqueue(worker)
                         }
-                    }
                 }
             }
             REQUEST_CODE_CHOOSE_FILE -> {
