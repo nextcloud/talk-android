@@ -29,7 +29,7 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.utils.FileSortOrder
-import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
+import com.nextcloud.talk.utils.Mimetype.FOLDER
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers

@@ -37,6 +37,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ActivityFullScreenImageBinding
 import com.nextcloud.talk.utils.BitmapShrinker
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import pl.droidsonroids.gif.GifDrawable
 import java.io.File
 
@@ -64,7 +65,7 @@ class FullScreenImageActivity : AppCompatActivity() {
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareUri)
-                type = "image/*"
+                type = IMAGE_PREFIX_GENERIC
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))

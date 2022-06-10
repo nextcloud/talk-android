@@ -47,20 +47,28 @@ import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
-import com.nextcloud.talk.utils.Mimetype.Companion.AUDIO_PREFIX
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_GIF
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_JPEG
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_PNG
+import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
+import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
+import com.nextcloud.talk.utils.Mimetype.AUDIO_PREFIX
+import com.nextcloud.talk.utils.Mimetype.AUDIO_WAV
+import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
+import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
+import com.nextcloud.talk.utils.Mimetype.TEXT_MARKDOWN
+import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
+import com.nextcloud.talk.utils.Mimetype.VIDEO_MP4
+import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
+import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
 import java.io.File
 import java.util.concurrent.ExecutionException
 
 /*
-Usage of this class forces us to do things at one location which should be separated in a activity and view model.
-
-Example:
-  - SharedItemsViewHolder
+ * Usage of this class forces us to do things at one location which should be separated in a activity and view model.
+ *
+ * Example:
+ *   - SharedItemsViewHolder
  */
 class FileViewerUtils(private val context: Context, private val userEntity: UserEntity) {
 
@@ -147,19 +155,19 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     private fun openFileByMimetype(filename: String, mimetype: String?) {
         if (mimetype != null) {
             when (mimetype) {
-                "audio/mpeg",
-                "audio/wav",
-                "audio/ogg",
-                "video/mp4",
-                "video/quicktime",
-                "video/ogg"
+                AUDIO_MPEG,
+                AUDIO_WAV,
+                AUDIO_OGG,
+                VIDEO_MP4,
+                VIDEO_QUICKTIME,
+                VIDEO_OGG
                 -> openMediaView(filename, mimetype)
                 IMAGE_PNG,
                 IMAGE_JPEG,
                 IMAGE_GIF
                 -> openImageView(filename, mimetype)
-                "text/markdown",
-                "text/plain"
+                TEXT_MARKDOWN,
+                TEXT_PLAIN
                 -> openTextView(filename, mimetype)
                 else
                 -> openFileByExternalApp(filename, mimetype)
@@ -253,12 +261,17 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
 
     fun isSupportedForInternalViewer(mimetype: String?): Boolean {
         return when (mimetype) {
-            IMAGE_PNG, IMAGE_JPEG,
-            IMAGE_GIF, "audio/mpeg",
-            "audio/wav", "audio/ogg",
-            "video/mp4", "video/quicktime",
-            "video/ogg", "text/markdown",
-            "text/plain" -> true
+            IMAGE_PNG,
+            IMAGE_JPEG,
+            IMAGE_GIF,
+            AUDIO_MPEG,
+            AUDIO_WAV,
+            AUDIO_OGG,
+            VIDEO_MP4,
+            VIDEO_QUICKTIME,
+            VIDEO_OGG,
+            TEXT_MARKDOWN,
+            TEXT_PLAIN -> true
             else -> false
         }
     }
@@ -268,7 +281,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     }
 
     private fun isMarkdown(mimetype: String): Boolean {
-        return "text/markdown" == mimetype
+        return TEXT_MARKDOWN == mimetype
     }
 
     private fun isAudioOnly(mimetype: String): Boolean {
@@ -420,6 +433,5 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
 
     companion object {
         private val TAG = FileViewerUtils::class.simpleName
-        const val KEY_ID = "id"
     }
 }

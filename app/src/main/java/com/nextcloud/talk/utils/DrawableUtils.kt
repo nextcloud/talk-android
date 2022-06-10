@@ -21,12 +21,11 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.R
-import com.nextcloud.talk.utils.Mimetype.Companion.AUDIO_PREFIX
-import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_PREFIX
-import com.nextcloud.talk.utils.Mimetype.Companion.TEXT_PREFIX
-import com.nextcloud.talk.utils.Mimetype.Companion.VIDEO_PREFIX
-import java.util.HashMap
+import com.nextcloud.talk.utils.Mimetype.AUDIO_PREFIX
+import com.nextcloud.talk.utils.Mimetype.FOLDER
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
+import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX
+import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
 
 object DrawableUtils {
 

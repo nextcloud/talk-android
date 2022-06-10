@@ -29,9 +29,9 @@ import android.view.inputmethod.InputConnection
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.emoji.widget.EmojiEditText
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_GIF
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_JPEG
-import com.nextcloud.talk.utils.Mimetype.Companion.IMAGE_PNG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
+import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
 
 /*
 Subclass of EmojiEditText with support for image keyboards - primarily for GIF handling. ;-)

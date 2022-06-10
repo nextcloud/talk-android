@@ -147,6 +147,8 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.HttpException;
 
+import static com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN;
+
 @AutoInjector(NextcloudTalkApplication.class)
 public class ConversationsListController extends BaseController implements FlexibleAdapter.OnItemClickListener, FlexibleAdapter.OnItemLongClickListener, ConversationMenuInterface {
 
@@ -1099,7 +1101,7 @@ public class ConversationsListController extends BaseController implements Flexi
                 || Intent.ACTION_SEND_MULTIPLE.equals(intent.getAction())) {
                 try {
                     String mimeType = intent.getType();
-                    if ("text/plain".equals(mimeType) && (intent.getStringExtra(Intent.EXTRA_TEXT) != null)) {
+                    if (TEXT_PLAIN.equals(mimeType) && (intent.getStringExtra(Intent.EXTRA_TEXT) != null)) {
                         // Share from Google Chrome sets text/plain MIME type, but also provides a content:// URI
                         // with a *screenshot* of the current page in getClipData().
                         // Here we assume that when sharing a web page the user would prefer to send the URL

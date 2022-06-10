@@ -38,6 +38,7 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityFullScreenMediaBinding
+import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX_GENERIC
 import java.io.File
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -66,7 +67,7 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, shareUri)
-                type = "video/*"
+                type = VIDEO_PREFIX_GENERIC
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             startActivity(Intent.createChooser(shareIntent, resources.getText(R.string.send_to)))

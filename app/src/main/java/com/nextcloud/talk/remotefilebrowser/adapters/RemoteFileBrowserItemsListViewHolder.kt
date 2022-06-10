@@ -37,7 +37,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils.getLocalDateTimeStringFromTimestamp
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
-import com.nextcloud.talk.utils.Mimetype.Companion.FOLDER
+import com.nextcloud.talk.utils.Mimetype.FOLDER
 
 @AutoInjector(NextcloudTalkApplication::class)
 class RemoteFileBrowserItemsListViewHolder(
