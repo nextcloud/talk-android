@@ -29,6 +29,7 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.remotefilebrowser.repositories.RemoteFileBrowserItemsRepository
 import com.nextcloud.talk.utils.FileSortOrder
+import com.nextcloud.talk.utils.Mimetype.FOLDER
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -171,7 +172,7 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     }
 
     fun onItemClicked(remoteFileBrowserItem: RemoteFileBrowserItem) {
-        if (remoteFileBrowserItem.mimeType == MIME_DIRECTORY) {
+        if (remoteFileBrowserItem.mimeType == FOLDER) {
             changePath(remoteFileBrowserItem.path!!)
         } else {
             toggleBrowserItemSelection(remoteFileBrowserItem.path!!)
@@ -225,6 +226,5 @@ class RemoteFileBrowserItemsViewModel @Inject constructor(
     companion object {
         private val TAG = RemoteFileBrowserItemsViewModel::class.simpleName
         private const val ROOT_PATH = "/"
-        private const val MIME_DIRECTORY = "inode/directory"
     }
 }

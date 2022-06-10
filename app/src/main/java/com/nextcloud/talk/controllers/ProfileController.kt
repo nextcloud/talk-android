@@ -71,6 +71,9 @@ import com.nextcloud.talk.ui.dialog.ScopeDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
+import com.nextcloud.talk.utils.Mimetype.IMAGE_JPG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX_GENERIC
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
 import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
@@ -482,7 +485,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     private fun showBrowserScreen() {
         val bundle = Bundle()
-        bundle.putString(KEY_MIME_TYPE_FILTER, "image/")
+        bundle.putString(KEY_MIME_TYPE_FILTER, IMAGE_PREFIX)
 
         val avatarIntent = Intent(activity, RemoteFileBrowserActivity::class.java)
         avatarIntent.putExtras(bundle)
@@ -565,10 +568,13 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
     private fun uploadAvatar(file: File?) {
         val builder = MultipartBody.Builder()
         builder.setType(MultipartBody.FORM)
-        builder.addFormDataPart("files[]", file!!.name, RequestBody.create("image/*".toMediaTypeOrNull(), file))
+        builder.addFormDataPart(
+            "files[]", file!!.name,
+            RequestBody.create(IMAGE_PREFIX_GENERIC.toMediaTypeOrNull(), file)
+        )
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "files[]", file.name,
-            RequestBody.create("image/jpg".toMediaTypeOrNull(), file)
+            RequestBody.create(IMAGE_JPG.toMediaTypeOrNull(), file)
         )
 
         // upload file

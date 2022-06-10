@@ -57,6 +57,7 @@ import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.database.CapabilitiesUtil
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
@@ -242,7 +243,7 @@ class ConversationsListBottomDialog(
         binding.conversationOperationShareLink.setOnClickListener {
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                type = "text/plain"
+                type = TEXT_PLAIN
                 putExtra(
                     Intent.EXTRA_SUBJECT,
                     String.format(

@@ -29,6 +29,9 @@ import android.view.inputmethod.InputConnection
 import androidx.core.view.inputmethod.EditorInfoCompat
 import androidx.core.view.inputmethod.InputConnectionCompat
 import androidx.emoji.widget.EmojiEditText
+import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
+import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
+import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
 
 /*
 Subclass of EmojiEditText with support for image keyboards - primarily for GIF handling. ;-)
@@ -48,7 +51,7 @@ class ImageEmojiEditText : EmojiEditText {
 
         val ic: InputConnection = super.onCreateInputConnection(editorInfo)
 
-        EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf("image/gif", "image/jpeg", "image/png"))
+        EditorInfoCompat.setContentMimeTypes(editorInfo, arrayOf(IMAGE_GIF, IMAGE_JPEG, IMAGE_PNG))
 
         val callback =
             InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->

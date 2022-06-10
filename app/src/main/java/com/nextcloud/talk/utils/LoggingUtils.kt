@@ -52,7 +52,7 @@ object LoggingUtils {
         // val mailto = "android@nextcloud.com"
         // emailIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(mailto))
         // emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Talk logs")
-        // emailIntent.type = "text/plain"
+        // emailIntent.type = TEXT_PLAIN
         // emailIntent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
         // val uri: Uri
         //
