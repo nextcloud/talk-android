@@ -33,6 +33,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
+apply plugin: 'kotlinx-serialization'
 
 android {
     compileSdkVersion 31
@@ -157,6 +158,7 @@ ext {
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
     retrofit2Version = "2.9.0"
+    roomVersion = "2.2.5"
     workVersion = "2.7.1"
     markwonVersion = "4.6.2"
     espressoVersion = "3.4.0"
@@ -179,6 +181,9 @@ dependencies {
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.20.0")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3"
+
     implementation 'androidx.appcompat:appcompat:1.4.2'
     implementation 'com.google.android.material:material:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
@@ -236,6 +241,11 @@ dependencies {
     implementation 'io.requery:requery-android:1.6.1'
     implementation 'net.zetetic:android-database-sqlcipher:4.5.1'
     kapt 'io.requery:requery-processor:1.6.1'
+
+    implementation "androidx.room:room-runtime:${roomVersion}"
+    kapt "androidx.room:room-compiler:${roomVersion}" // For Kotlin use kapt instead of annotationProcessor
+    implementation "androidx.room:room-ktx:${roomVersion}"
+
     implementation "org.parceler:parceler-api:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'
     implementation "com.jakewharton:butterknife:${butterknifeVersion}"
