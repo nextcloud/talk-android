@@ -8,6 +8,7 @@
     <string name="audio_output_speaker">スピーカー</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
+    <string name="call_without_notification">通知なしで通話</string>
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
     <string name="clear_status_message">ステータスメッセージを消去</string>
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>
@@ -147,6 +148,7 @@
     <string name="nc_moderator">モデレータ</string>
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_new_conversation">新しい会話</string>
+    <string name="nc_new_mention">未読の返信</string>
     <string name="nc_new_messages">未読のメッセージ</string>
     <string name="nc_new_password">新しいパスワード</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s アプリがサーバーにインストールされていません。中断します。</string>

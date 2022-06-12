@@ -51,6 +51,7 @@
     <string name="nc_call_name">Gespreksnaam</string>
     <string name="nc_call_name_is_same">De naam die je hebt ingevuld, is hetzelfde als de bestaande naam</string>
     <string name="nc_call_notifications">Oproepmeldingen</string>
+    <string name="nc_call_reconnecting">Opnieuw verbinden ...</string>
     <string name="nc_call_ringing">BELLEN</string>
     <string name="nc_call_state_in_call">%1$s in gesprek</string>
     <string name="nc_call_state_with_phone">%1$s met telefoon</string>
@@ -119,6 +120,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_group">Groep</string>
     <string name="nc_groups">Groepen</string>
     <string name="nc_guest">Gast</string>
+    <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_join_via_link">Deelnemen via een link</string>
@@ -127,6 +129,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
     <string name="nc_leave">Verlaat gesprek</string>
+    <string name="nc_leaving_call">Verlaten gesprek ...</string>
     <string name="nc_license_summary">GNU General Public Licence, versie 3</string>
     <string name="nc_license_title">Licentie</string>
     <string name="nc_limit_hit"> match 
