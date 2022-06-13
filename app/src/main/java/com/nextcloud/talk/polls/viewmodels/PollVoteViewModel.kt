@@ -21,17 +21,73 @@
 
 package com.nextcloud.talk.polls.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.polls.model.Poll
+import com.nextcloud.talk.polls.repositories.PollRepository
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollVoteViewModel @Inject constructor() : ViewModel() {
+class PollVoteViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
+
+    sealed interface ViewState
+    object InitialState : ViewState
+    open class PollVoteSuccessState(val poll: Poll) : ViewState
+    open class PollVoteFailedState() : ViewState
+
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
+    val viewState: LiveData<ViewState>
+        get() = _viewState
+
+    private var disposable: Disposable? = null
+
     private val _selectedOptions: MutableLiveData<List<String>> = MutableLiveData(emptyList())
     val selectedOptions: LiveData<List<String>>
         get() = _selectedOptions
 
     fun selectOption(option: String) {
         _selectedOptions.value = listOf(option)
+    }
+
+    fun vote(roomToken: String, pollId: String, option: Int) {
+        repository.vote(roomToken, pollId, option)
+            ?.doOnSubscribe { disposable = it }
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(PollObserver())
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        disposable?.dispose()
+    }
+
+    inner class PollObserver : Observer<Poll> {
+
+        lateinit var poll: Poll
+
+        override fun onSubscribe(d: Disposable) = Unit
+
+        override fun onNext(response: Poll) {
+            poll = response
+        }
+
+        override fun onError(e: Throwable) {
+            Log.d(TAG, "An error occurred: $e")
+            _viewState.value = PollVoteFailedState()
+        }
+
+        override fun onComplete() {
+            _viewState.value = PollVoteSuccessState(poll)
+        }
+    }
+
+    companion object {
+        private val TAG = PollVoteViewModel::class.java.simpleName
     }
 }

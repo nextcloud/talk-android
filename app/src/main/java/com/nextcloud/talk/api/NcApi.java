@@ -538,7 +538,8 @@ public interface NcApi {
 
     @POST
     Observable<PollOverall> votePoll(@Header("Authorization") String authorization,
-                                     @Url String url);
+                                     @Url String url,
+                                     @Query("optionIds[]") List<Integer> optionIds);
 
     @DELETE
     Observable<PollOverall> closePoll(@Header("Authorization") String authorization,

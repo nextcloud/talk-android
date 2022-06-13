@@ -37,7 +37,11 @@ import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollVoteFragment(private val parentViewModel: PollViewModel) : Fragment() {
+class PollVoteFragment(
+    private val parentViewModel: PollViewModel,
+    private val roomToken: String,
+    private val pollId: String
+) : Fragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -70,29 +74,43 @@ class PollVoteFragment(private val parentViewModel: PollViewModel) : Fragment() 
                 val poll = state.poll
                 binding.radioGroup.removeAllViews()
                 poll.options?.map { option ->
-                    RadioButton(context)
-                        .apply { text = option }
-                        .also {
-                            it.setOnClickListener {
-                                // todo
-                                Log.d("bb", "click1")
-                            }
-                        }
-                }?.forEach {
-                    binding.radioGroup.addView(it)
+                    RadioButton(context).apply { text = option }
+                }?.forEachIndexed { index, radioButton ->
+                    radioButton.id = index
+                    binding.radioGroup.addView(radioButton)
                 }
             }
         }
+
+        viewModel.viewState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                PollVoteViewModel.InitialState -> {}
+                is PollVoteViewModel.PollVoteFailedState -> {
+                    Log.d(TAG, "fail")
+                }
+                is PollVoteViewModel.PollVoteSuccessState -> {
+                    parentViewModel.voted()
+                }
+            }
+        }
+
         binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
-            // todo set selected in viewmodel
+            // todo set selected in viewmodel.
             Log.d("bb", "click")
         }
         // todo observe viewmodel checked, set view checked with it
-        // todo listen to button click, submit
+
+        binding.submitVote.setOnClickListener {
+            viewModel.vote(roomToken, pollId, binding.radioGroup.checkedRadioButtonId)
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        private val TAG = PollVoteFragment::class.java.simpleName
     }
 }

@@ -33,12 +33,12 @@ import io.reactivex.Observable
 class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvider: CurrentUserProvider) :
     PollRepository {
 
-    override fun getPoll(roomToken: String, pollId: String): Observable<Poll> {
+    val credentials = ApiUtils.getCredentials(
+        currentUserProvider.currentUser?.username,
+        currentUserProvider.currentUser?.token
+    )
 
-        val credentials = ApiUtils.getCredentials(
-            currentUserProvider.currentUser?.username,
-            currentUserProvider.currentUser?.token
-        )
+    override fun getPoll(roomToken: String, pollId: String): Observable<Poll> {
 
         return ncApi.getPoll(
             credentials,
@@ -67,6 +67,19 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         //         details = emptyList()
         //     )
         // )
+    }
+
+    override fun vote(roomToken: String, pollId: String, option: Int): Observable<Poll>? {
+
+        return ncApi.votePoll(
+            credentials,
+            ApiUtils.getUrlForPoll(
+                currentUserProvider.currentUser?.baseUrl,
+                roomToken,
+                pollId
+            ),
+            arrayOf(option).asList()
+        ).map { mapToPoll(it.ocs?.data!!) }
     }
 
     companion object {

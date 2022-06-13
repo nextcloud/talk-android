@@ -14,4 +14,11 @@ data class Poll(
     val votedSelf: List<Int>?,
     val numVoters: Int,
     val details: List<PollDetails>?
-)
+) {
+    companion object {
+        const val STATUS_OPEN: Int = 0
+        const val STATUS_CLOSED: Int = 1
+        const val RESULT_MODE_PUBLIC: Int = 0
+        const val RESULT_MODE_HIDDEN: Int = 1
+    }
+}

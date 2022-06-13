@@ -60,7 +60,11 @@ class PollMainDialogFragment(
                 PollViewModel.InitialState -> {}
                 is PollViewModel.PollClosedState -> TODO()
                 is PollViewModel.PollOpenState -> {
-                    val contentFragment = PollVoteFragment(viewModel)
+                    val contentFragment = PollVoteFragment(
+                        viewModel,
+                        roomToken,
+                        pollId
+                    )
                     val transaction = childFragmentManager.beginTransaction()
                     transaction.replace(binding.messagePollContentFragment.id, contentFragment)
                     transaction.commit()

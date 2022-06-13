@@ -31,6 +31,7 @@ class PollViewModel @Inject constructor(private val repository: PollRepository) 
     sealed interface ViewState
     object InitialState : ViewState
     open class PollOpenState(val poll: Poll) : ViewState
+    open class PollVotedState(val poll: Poll) : ViewState
     open class PollClosedState(val poll: Poll) : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
@@ -46,14 +47,9 @@ class PollViewModel @Inject constructor(private val repository: PollRepository) 
         loadPoll()
     }
 
-    // private fun loadPoll() {
-    //     disposable = repository.getPoll(roomToken, pollId)
-    //         ?.subscribeOn(Schedulers.io())
-    //         ?.observeOn(AndroidSchedulers.mainThread())
-    //         ?.subscribe { poll ->
-    //             _viewState.value = PollOpenState(poll)
-    //         }
-    // }
+    fun voted() {
+        loadPoll() // TODO load other view
+    }
 
     private fun loadPoll() {
         repository.getPoll(roomToken, pollId)
@@ -83,7 +79,12 @@ class PollViewModel @Inject constructor(private val repository: PollRepository) 
         }
 
         override fun onComplete() {
-            _viewState.value = PollOpenState(poll)
+            // TODO check attributes and decide if poll is open/closed/selfvoted...
+
+            when (poll.status) {
+                Poll.STATUS_OPEN -> _viewState.value = PollOpenState(poll)
+                Poll.STATUS_CLOSED -> _viewState.value = PollClosedState(poll)
+            }
         }
     }
 
