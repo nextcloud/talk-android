@@ -177,7 +177,7 @@
     <string name="nc_notification_channel_messages_description">來訊通知</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">一律通知</string>
-    <string name="nc_notify_me_mention">提及時通知</string>
+    <string name="nc_notify_me_mention">當有人提及你時通知</string>
     <string name="nc_notify_me_never">從不通知</string>
     <string name="nc_offline">當前離線，請檢查您的連接</string>
     <string name="nc_ok">確定</string>

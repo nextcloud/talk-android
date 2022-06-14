@@ -6,6 +6,7 @@
     <string name="audio_output_dialog_headline">音声の出力</string>
     <string name="audio_output_phone">携帯</string>
     <string name="audio_output_speaker">スピーカー</string>
+    <string name="audio_output_wired_headset">有線ヘッドセット</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
     <string name="call_without_notification">通知なしで通話</string>
@@ -15,7 +16,9 @@
     <string name="conversations">会話</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="dnd">取り込み中</string>
+    <string name="dontClear">消去しない</string>
     <string name="edit">編集</string>
+    <string name="emoji_backspace">バックスペース</string>
     <string name="emoji_category_recent">最近</string>
     <string name="emoji_search">絵文字を検索</string>
     <string name="encrypted">暗号化済み</string>
@@ -34,6 +37,7 @@
     <string name="menu_item_sort_by_size_biggest_first">サイズ（降順）</string>
     <string name="menu_item_sort_by_size_smallest_first">サイズ（昇順）</string>
     <string name="message_search_begin_empty">検索結果なし</string>
+    <string name="message_search_begin_typing">入力して検索を開始...</string>
     <string name="message_search_hint">検索…</string>
     <string name="messages">メッセージ</string>
     <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
@@ -54,6 +58,8 @@
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
     <string name="nc_call_name_is_same">入力した名前は既存の名前と同じです</string>
+    <string name="nc_call_notifications">通話通知</string>
+    <string name="nc_call_reconnecting">再接続中...</string>
     <string name="nc_call_ringing">呼び出し中</string>
     <string name="nc_call_state_in_call">%1$s着信</string>
     <string name="nc_call_state_with_phone">%1$sと電話</string>
@@ -74,6 +80,7 @@
     <string name="nc_circles">サークル</string>
     <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_history_success">すべてのメッセージが削除されたました。</string>
+    <string name="nc_clear_history_warning">本当にこの会話の全てのメッセージを削除してもよろしいですか？</string>
     <string name="nc_clear_password">パスワードを削除</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
@@ -114,6 +121,7 @@
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
     <string name="nc_formatted_message_you">あなた：%1$s</string>
     <string name="nc_forward_message">転送</string>
+    <string name="nc_forward_to_three_dots">次に転送...</string>
     <string name="nc_get_from_provider">まだサーバーがありませんか？\ nプロバイダーから取得するにはここをクリックしてください</string>
     <string name="nc_get_source_code">ソースコードを入手</string>
     <string name="nc_group">グループ</string>
@@ -128,12 +136,17 @@
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
     <string name="nc_leave">会話を離れる</string>
+    <string name="nc_leaving_call">通話を終了...</string>
     <string name="nc_license_summary">GNU General Public License, version 3</string>
     <string name="nc_license_title">ライセンス</string>
     <string name="nc_limit_hit">%s文字の制限に達しました</string>
     <string name="nc_lobby">ロビー</string>
+    <string name="nc_lobby_start_date">この会議は%1$sに予定されています</string>
     <string name="nc_lobby_start_soon">会議はまもなく始まります</string>
     <string name="nc_lobby_waiting">現在ロビーで待機中</string>
+    <string name="nc_location_current_position_description">あなたの現在地</string>
+    <string name="nc_location_permission_required">位置情報の許可が必要です</string>
+    <string name="nc_location_unknown">位置が不明</string>
     <string name="nc_locked">ロック</string>
     <string name="nc_locked_tap_to_unlock">タップしてロック解除</string>
     <string name="nc_make_call_private">会話を非公開にする</string>
@@ -141,6 +154,7 @@
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">既読にする</string>
     <string name="nc_mark_as_unread">未読にする</string>
+    <string name="nc_message_failed_to_send">メッセージの送信に失敗しました:</string>
     <string name="nc_message_quote_cancel_reply">返信をキャンセル</string>
     <string name="nc_message_read">メッセージ既読</string>
     <string name="nc_message_sent">メッセージ送信済</string>
@@ -158,7 +172,9 @@
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
     <string name="nc_notification_channel_calls">呼び出し</string>
+    <string name="nc_notification_channel_calls_description">着信について通知</string>
     <string name="nc_notification_channel_messages">メッセージ</string>
+    <string name="nc_notification_channel_messages_description">受信メッセージについて通知</string>
     <string name="nc_notification_settings">通知設定</string>
     <string name="nc_notify_me_always">常に通知する</string>
     <string name="nc_notify_me_mention">言及したときに通知する</string>
@@ -172,6 +188,8 @@
     <string name="nc_permissions_settings">設定を開く</string>
     <string name="nc_phone_book_integration_account_not_found">アカウントが見つかりません</string>
     <string name="nc_phone_book_integration_chat_via">%sとチャット</string>
+    <string name="nc_pip_microphone_mute">マイクをミュート</string>
+    <string name="nc_pip_microphone_unmute">マイクを有効にする</string>
     <string name="nc_plain_old_messages">メッセージ</string>
     <string name="nc_privacy">プライバシー</string>
     <string name="nc_proceed">続行する</string>
@@ -183,6 +201,7 @@
     <string name="nc_push_to_talk">プッシュトゥートーク</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>
     <string name="nc_remote_audio_off">リモート音声オフ</string>
+    <string name="nc_remove_circle_and_members">サークルとメンバーを削除</string>
     <string name="nc_remove_from_favorites">お気に入りから削除</string>
     <string name="nc_remove_group_and_members">メンバーとグループを削除</string>
     <string name="nc_remove_participant">参加者を削除</string>
@@ -212,6 +231,10 @@
     <string name="nc_sent_an_audio_you">音声ファイルを送信しました</string>
     <string name="nc_sent_an_image" formatted="true">%1$sがイメージファイルを送信しました。</string>
     <string name="nc_sent_an_image_you">イメージファイルを送信しました。</string>
+    <string name="nc_sent_location" formatted="true">%1$s さんが位置情報を送信しました。</string>
+    <string name="nc_sent_location_you">あなたが位置情報を送信しました。</string>
+    <string name="nc_sent_voice" formatted="true">%1$s さんがボイスメッセージを送信しました。</string>
+    <string name="nc_sent_voice_you">あなたがボイスメッセージを送信しました。</string>
     <string name="nc_server_connect">サーバー接続テスト</string>
     <string name="nc_server_db_upgrade_needed">%1$sデータベースをアップグレードしてください</string>
     <string name="nc_server_failed_to_import_account">選択したアカウントのインポートに失敗しました</string>
@@ -275,6 +298,7 @@
     <string name="nc_settings_warning">警告</string>
     <string name="nc_settings_wrong_account">現在のアカウントのみ再認可できます</string>
     <string name="nc_share_contact">連絡先を共有</string>
+    <string name="nc_share_contact_permission">連絡先を読み取る権限が必要です</string>
     <string name="nc_share_current_location">現在の位置を共有</string>
     <string name="nc_share_link">リンクの共有</string>
     <string name="nc_share_location">位置を共有</string>
@@ -283,6 +307,9 @@
     <string name="nc_share_text_pass">\nパスワード：%1$s</string>
     <string name="nc_share_this_location">この位置を共有</string>
     <string name="nc_shared_items">共有済みアイテム</string>
+    <string name="nc_shared_items_description">画像、ファイル、ボイスメッセージ...</string>
+    <string name="nc_shared_items_empty">共有アイテムがありません</string>
+    <string name="nc_shared_location">共有された位置情報</string>
     <string name="nc_sort_by">ソート: </string>
     <string name="nc_start_time">開始時刻</string>
     <string name="nc_upload_choose_local_files">ファイルを選択</string>
@@ -294,6 +321,10 @@
     <string name="nc_upload_local_file">ローカルファイルをアップロード</string>
     <string name="nc_upload_picture_from_cam">写真を撮る</string>
     <string name="nc_user">ユーザー</string>
+    <string name="nc_voice_message_filename">%1$s(%2$s)からの会話録音</string>
+    <string name="nc_voice_message_hold_to_record_info">長押しして録音、離して送信</string>
+    <string name="nc_voice_message_missing_audio_permission">音声の録音を許可する権限が必要です</string>
+    <string name="nc_voice_message_slide_to_cancel">« スライドしてキャンセル</string>
     <string name="nc_webinar">ウェビナー</string>
     <string name="nc_wrong_link">会話リンクが無効です</string>
     <string name="nc_wrong_password">パスワードが間違っています</string>
@@ -321,7 +352,9 @@
     <string name="secondsAgo">秒前</string>
     <string name="selected_list_item">選択済み</string>
     <string name="send_to">送信</string>
+    <string name="send_to_forbidden">このチャットにコンテンツを許可する権限がありません</string>
     <string name="send_to_three_dots">送信…</string>
+    <string name="send_without_notification">通知なしで送信</string>
     <string name="set_status">ステータスを設定</string>
     <string name="set_status_message">メッセージを設定</string>
     <string name="share">共有</string>
@@ -331,10 +364,16 @@
     <string name="shared_items_other">その他</string>
     <string name="shared_items_voice">音声番号</string>
     <string name="starred">お気に入り</string>
+    <string name="startCallForbidden">通話を開始することが許可されていません</string>
     <string name="status_message">ステータスメッセージ</string>
     <string name="take_photo">写真を撮る</string>
+    <string name="take_photo_error_deleting_picture">写真の撮影エラー</string>
+    <string name="take_photo_permission">写真の撮影は権限なしには行えません</string>
+    <string name="take_photo_retake_photo">再撮影</string>
     <string name="take_photo_send">送信</string>
     <string name="take_photo_switch_camera">カメラ切替</string>
+    <string name="take_photo_toggle_crop">写真をクロップ</string>
+    <string name="take_photo_toggle_lowres">画像サイズを削減</string>
     <string name="take_photo_toggle_torch">フラッシュを切替</string>
     <string name="thirtyMinutes">30分</string>
     <string name="thisWeek">今週</string>

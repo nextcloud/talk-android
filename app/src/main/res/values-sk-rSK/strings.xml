@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Drátové sluchátka</string>
     <string name="avatar">Avatar</string>
     <string name="away">Preč</string>
+    <string name="call_without_notification">Volať bez upozornenia</string>
     <string name="choose_avatar_from_cloud">Vyberte si avatara z cloudu</string>
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
@@ -17,7 +18,9 @@
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
     <string name="edit">Upraviť</string>
+    <string name="emoji_backspace">Spätná lomka</string>
     <string name="emoji_category_recent">Nedávne</string>
+    <string name="emoji_search">Vyhľadať emotikon</string>
     <string name="encrypted">Šifrované</string>
     <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>
     <string name="file_list_folder">priečinok</string>
@@ -34,6 +37,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
     <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
+    <string name="message_search_begin_typing">Začnite písať pre vyhľadanie ...</string>
+    <string name="message_search_hint">Hľadať ...</string>
     <string name="messages">Správy</string>
     <string name="nc_Server_account_imported">Vybraný účet je teraz importovaný a dostupný</string>
     <string name="nc_about">O aplikácii</string>
@@ -54,6 +59,7 @@
     <string name="nc_call_name">Názov rozhovoru</string>
     <string name="nc_call_name_is_same">Názov, ktorý ste zadali je zhodný s existujúcim</string>
     <string name="nc_call_notifications">Upozornenia na hovory</string>
+    <string name="nc_call_reconnecting">Znova pripájam ...</string>
     <string name="nc_call_ringing">ZVONÍ</string>
     <string name="nc_call_state_in_call">%1$s v rozhovore</string>
     <string name="nc_call_state_with_phone">%1$s s telefónom</string>
@@ -121,6 +127,7 @@
     <string name="nc_group">Skupina</string>
     <string name="nc_groups">Skupiny</string>
     <string name="nc_guest">Hosť</string>
+    <string name="nc_hint_enter_a_message">Vložte správu ...</string>
     <string name="nc_important_conversation">Dôležitý rozhovor</string>
     <string name="nc_important_conversation_desc">Oznámenia v tomto rozhovore sa prepíšu nastavením Nerušiť</string>
     <string name="nc_join_via_link">Pripojiť sa cez odkaz</string>
@@ -129,6 +136,7 @@
     <string name="nc_last_moderator_title">Nie je možné opustiť rozhovor</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Odísť z rozhovoru</string>
+    <string name="nc_leaving_call">Opúšťam hovor ...</string>
     <string name="nc_license_summary">GNU Všeobecná Verejná Licencia, Verzia 3</string>
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Limit maximálneho počtu znakov %s dosiahnutý</string>
@@ -146,6 +154,7 @@
     <string name="nc_manual">Nenastavené</string>
     <string name="nc_mark_as_read">Označiť ako prečítané</string>
     <string name="nc_mark_as_unread">Označiť ako neprečítané</string>
+    <string name="nc_message_failed_to_send">Chyba pri posielaní správy:</string>
     <string name="nc_message_quote_cancel_reply">Zrušiť odpoveď</string>
     <string name="nc_message_read">Správa bola prečítaná</string>
     <string name="nc_message_sent">Správa bola odoslaná</string>
@@ -298,6 +307,8 @@
     <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
     <string name="nc_shared_items">Zdieľané položky</string>
+    <string name="nc_shared_items_description">Obrázky, súbory, hlasové správy ...</string>
+    <string name="nc_shared_items_empty">Žiadne zdieľané položky</string>
     <string name="nc_shared_location">Zdieľaná poloha</string>
     <string name="nc_sort_by">Zoradiť podľa</string>
     <string name="nc_start_time">Čas začiatku</string>
@@ -341,7 +352,9 @@
     <string name="secondsAgo">sekúnd dozadu</string>
     <string name="selected_list_item">Vybrané</string>
     <string name="send_to">Odoslať do</string>
+    <string name="send_to_forbidden">Nemáte oprávnenie zdieľať obsah tohto rozhovoru</string>
     <string name="send_to_three_dots">Odoslať do …</string>
+    <string name="send_without_notification">Poslať bez upozornenia</string>
     <string name="set_status">Nastaviť stav</string>
     <string name="set_status_message">Nastaviť správu o stave</string>
     <string name="share">Sprístupniť</string>

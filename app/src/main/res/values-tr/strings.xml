@@ -84,7 +84,7 @@
     <string name="nc_clear_password">Parolayı temizle</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
-    <string name="nc_common_error_sorry">Maalesef bir sorun çıktı!</string>
+    <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
     <string name="nc_common_set">Ayarla</string>
     <string name="nc_common_skip">Atla</string>
     <string name="nc_configure_cert_auth">Kimlik doğrulama sertifikasını seçin</string>
@@ -115,7 +115,7 @@
     <string name="nc_email">E-posta</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
     <string name="nc_failed_signaling_settings">Hedef sunucu cep telefonları üzerinden herkese açık görüşmelere katılmayı desteklemiyor. Görüşmeye web tarayıcı kullanarak katılmayı deneyebilirsiniz.</string>
-    <string name="nc_failed_to_perform_operation">Maalesef bir şeyler ters gitti!</string>
+    <string name="nc_failed_to_perform_operation">Ne yazık ki bir şeyler ters gitti!</string>
     <string name="nc_file_browser_back">Geri</string>
     <string name="nc_file_browser_reshare_forbidden">Bu dosyayı paylaşma izniniz yok</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
