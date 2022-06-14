@@ -49,7 +49,6 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
             ),
         ).map { mapToPoll(it.ocs?.data!!) }
 
-        // // // TODO actual api call
         // return Observable.just(
         //     Poll(
         //         id = "aaa",

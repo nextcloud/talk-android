@@ -534,6 +534,9 @@
     <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_begin_empty">No search results</string>
 
+    <!-- Polls -->
+    <string name="polls_amount_voters">Poll results - %1$s votes</string>
+
     <string name="title_attachments">Attachments</string>
 
     <string name="reactions_tab_all">All</string>

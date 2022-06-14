@@ -28,11 +28,12 @@ class PollViewModel @Inject constructor(private val repository: PollRepository) 
     private lateinit var roomToken: String
     private lateinit var pollId: String
 
+    private var editPoll: Boolean = false
+
     sealed interface ViewState
     object InitialState : ViewState
-    open class PollOpenState(val poll: Poll) : ViewState
+    open class PollUnvotedState(val poll: Poll) : ViewState
     open class PollVotedState(val poll: Poll) : ViewState
-    open class PollClosedState(val poll: Poll) : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
@@ -49,6 +50,11 @@ class PollViewModel @Inject constructor(private val repository: PollRepository) 
 
     fun voted() {
         loadPoll() // TODO load other view
+    }
+
+    fun edit() {
+        editPoll = true
+        loadPoll()
     }
 
     private fun loadPoll() {
@@ -79,11 +85,13 @@ class PollViewModel @Inject constructor(private val repository: PollRepository) 
         }
 
         override fun onComplete() {
-            // TODO check attributes and decide if poll is open/closed/selfvoted...
-
-            when (poll.status) {
-                Poll.STATUS_OPEN -> _viewState.value = PollOpenState(poll)
-                Poll.STATUS_CLOSED -> _viewState.value = PollClosedState(poll)
+            if (editPoll) {
+                _viewState.value = PollUnvotedState(poll)
+                editPoll = false
+            } else if (poll.votedSelf.isNullOrEmpty()) {
+                _viewState.value = PollUnvotedState(poll)
+            } else {
+                _viewState.value = PollVotedState(poll)
             }
         }
     }

@@ -37,7 +37,7 @@ data class PollResponse(
     var options: ArrayList<String>? = null,
 
     @JsonField(name = ["votes"])
-    var votes: ArrayList<Int>? = null,
+    var votes: Map<String, Int>? = null,
 
     @JsonField(name = ["actorType"])
     var actorType: String? = null,

@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollMainBinding
+import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollViewModel
 import javax.inject.Inject
 
@@ -58,21 +59,48 @@ class PollMainDialogFragment(
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 PollViewModel.InitialState -> {}
-                is PollViewModel.PollClosedState -> TODO()
-                is PollViewModel.PollOpenState -> {
-                    val contentFragment = PollVoteFragment(
-                        viewModel,
-                        roomToken,
-                        pollId
-                    )
-                    val transaction = childFragmentManager.beginTransaction()
-                    transaction.replace(binding.messagePollContentFragment.id, contentFragment)
-                    transaction.commit()
+
+                is PollViewModel.PollVotedState -> {
+                    if (state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
+                        showVoteFragment()
+                    } else {
+                        showResultsFragment()
+                    }
+                }
+
+                is PollViewModel.PollUnvotedState -> {
+                    if (state.poll.status == Poll.STATUS_CLOSED) {
+                        showResultsFragment()
+                    } else {
+                        showVoteFragment()
+                    }
                 }
             }
         }
 
         viewModel.initialize(roomToken, pollId)
+    }
+
+    private fun showVoteFragment() {
+        val contentFragment = PollVoteFragment(
+            viewModel,
+            roomToken,
+            pollId
+        )
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(binding.messagePollContentFragment.id, contentFragment)
+        transaction.commit()
+    }
+
+    private fun showResultsFragment() {
+        val contentFragment = PollResultsFragment(
+            viewModel,
+            roomToken,
+            pollId
+        )
+        val transaction = childFragmentManager.beginTransaction()
+        transaction.replace(binding.messagePollContentFragment.id, contentFragment)
+        transaction.commit()
     }
 
     /**
