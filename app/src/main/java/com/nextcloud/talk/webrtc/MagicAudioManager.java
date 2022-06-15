@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -52,15 +54,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * MagicAudioManager manages all audio related parts of the AppRTC demo.
- */
 public class MagicAudioManager {
-    private static final String TAG = "MagicAudioManager";
+    private static final String TAG = MagicAudioManager.class.getCanonicalName();
     private final Context magicContext;
     private final MagicBluetoothManager bluetoothManager;
-    private boolean useProximitySensor;
-    private AudioManager audioManager;
+    private final boolean useProximitySensor;
+    private final AudioManager audioManager;
     private AudioManagerListener audioManagerListener;
     private AudioManagerState amState;
     private int savedAudioMode = AudioManager.MODE_INVALID;
@@ -75,10 +74,10 @@ public class MagicAudioManager {
 
     private Set<AudioDevice> audioDevices = new HashSet<>();
 
-    private BroadcastReceiver wiredHeadsetReceiver;
+    private final BroadcastReceiver wiredHeadsetReceiver;
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
 
-    private PowerManagerUtils powerManagerUtils;
+    private final PowerManagerUtils powerManagerUtils;
 
     private MagicAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
@@ -112,7 +111,13 @@ public class MagicAudioManager {
      * Construction.
      */
     public static MagicAudioManager create(Context context, boolean useProximitySensor) {
-        return new MagicAudioManager(context, useProximitySensor);
+       return new MagicAudioManager(context, useProximitySensor);
+    }
+
+    public void startBluetoothManager() {
+        // Initialize and start Bluetooth if a BT device is available or initiate
+        // detection of new (enabled) BT devices.
+        bluetoothManager.start();
     }
 
     /**
@@ -228,9 +233,7 @@ public class MagicAudioManager {
         currentAudioDevice = AudioDevice.NONE;
         audioDevices.clear();
 
-        // Initialize and start Bluetooth if a BT device is available or initiate
-        // detection of new (enabled) BT devices.
-        bluetoothManager.start();
+        startBluetoothManager();
 
         // Do initial selection of audio device. This setting can later be changed
         // either by adding/removing a BT or wired headset or by covering/uncovering
@@ -256,7 +259,9 @@ public class MagicAudioManager {
 
         unregisterReceiver(wiredHeadsetReceiver);
 
-        bluetoothManager.stop();
+        if(bluetoothManager.started()) {
+            bluetoothManager.stop();
+        }
 
         // Restore previously stored audio states.
         setSpeakerphoneOn(savedIsSpeakerPhoneOn);

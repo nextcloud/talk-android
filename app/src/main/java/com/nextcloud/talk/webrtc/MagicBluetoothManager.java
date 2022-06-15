@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -57,7 +59,7 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 
 public class MagicBluetoothManager {
-    private static final String TAG = "MagicBluetoothManager";
+    private static final String TAG = MagicBluetoothManager.class.getCanonicalName();
 
     // Timeout interval for starting or stopping audio to a Bluetooth SCO device.
     private static final int BLUETOOTH_SCO_TIMEOUT_MS = 4000;
@@ -78,6 +80,7 @@ public class MagicBluetoothManager {
     // startScoAudio() or stopScoAudio() because we're not guaranteed to get a
     // callback after those calls.
     private final Runnable bluetoothTimeoutRunnable = this::bluetoothTimeout;
+    private boolean started = false;
 
     protected MagicBluetoothManager(Context context, MagicAudioManager audioManager) {
         Log.d(TAG, "ctor");
@@ -165,6 +168,7 @@ public class MagicBluetoothManager {
                 + stateToString(bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET)));
         Log.d(TAG, "Bluetooth proxy for headset profile has started");
         bluetoothState = State.HEADSET_UNAVAILABLE;
+        started = true;
         Log.d(TAG, "start done: BT state=" + bluetoothState);
     }
 
@@ -452,6 +456,10 @@ public class MagicBluetoothManager {
             default:
                 return "INVALID";
         }
+    }
+
+    public boolean started() {
+        return started;
     }
 
     // Bluetooth connection state.
