@@ -543,13 +543,13 @@ public class ConversationsListController extends BaseController implements Flexi
                 @Override
                 public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                     Log.e(TAG, "failed to fetch user statuses", e);
+                    fetchRooms();
                 }
 
                 @Override
                 public void onComplete() {
                 }
             });
-
     }
 
     private void fetchRooms() {

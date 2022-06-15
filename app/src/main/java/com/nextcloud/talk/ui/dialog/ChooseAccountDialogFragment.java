@@ -233,6 +233,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                     @Override
                     public void onError(@NonNull Throwable e) {
                         Log.e(TAG, "Can't receive user status from server. ", e);
+                        binding.statusView.setVisibility(View.GONE);
                     }
 
                     @Override
