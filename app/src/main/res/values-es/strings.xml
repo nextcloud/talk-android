@@ -18,6 +18,7 @@
     <string name="dnd">No molestar</string>
     <string name="dontClear">No borrar</string>
     <string name="edit">Editar</string>
+    <string name="emoji_backspace">Tecla de retroceso</string>
     <string name="emoji_category_recent">Reciente</string>
     <string name="emoji_search">Buscar emoji</string>
     <string name="encrypted">Cifrado</string>
