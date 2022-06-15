@@ -115,7 +115,7 @@ class PollResultsFragment(
             val oneVoteInPercent = 100 / votersAmount
 
             poll.options?.forEachIndexed { index, option ->
-                val votersForThisOption = poll.votes?.filter { it.value == index }?.size!!
+                val votersForThisOption = poll.votes?.filter { it.key.toInt() == index }?.size!!
                 val optionsPercent = oneVoteInPercent * votersForThisOption
 
                 val pollResultItem = PollResultItem(option, optionsPercent)

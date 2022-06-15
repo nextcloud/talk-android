@@ -536,10 +536,11 @@ public interface NcApi {
     Observable<PollOverall> createPoll(@Header("Authorization") String authorization,
                                        @Url String url);
 
+    @FormUrlEncoded
     @POST
     Observable<PollOverall> votePoll(@Header("Authorization") String authorization,
                                      @Url String url,
-                                     @Query("optionIds[]") List<Integer> optionIds);
+                                     @Field("optionIds[]") List<Integer> optionIds);
 
     @DELETE
     Observable<PollOverall> closePoll(@Header("Authorization") String authorization,

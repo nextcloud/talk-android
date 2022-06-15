@@ -30,7 +30,7 @@
         android:layout_width="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_height="400dp"
-        tools:layout_width="match_parent"></RadioGroup>
+        tools:layout_width="match_parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/submitVote"
