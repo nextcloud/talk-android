@@ -142,6 +142,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.mention.Mention
+import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
@@ -3136,6 +3137,16 @@ class ChatController(args: Bundle) :
         } else {
             startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
         }
+    }
+
+    fun createPoll() {
+        val pollVoteDialog = PollCreateDialogFragment.newInstance(
+            roomToken!!
+        )
+        pollVoteDialog.show(
+            (activity as MainActivity?)!!.supportFragmentManager,
+            TAG
+        )
     }
 
     companion object {

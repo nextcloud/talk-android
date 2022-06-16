@@ -25,8 +25,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.messagesearch.MessageSearchViewModel
+import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
+import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
-import com.nextcloud.talk.polls.viewmodels.PollViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import dagger.Binds
@@ -66,8 +67,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(PollViewModel::class)
-    abstract fun pollViewModel(viewModel: PollViewModel): ViewModel
+    @ViewModelKey(PollMainViewModel::class)
+    abstract fun pollViewModel(viewModel: PollMainViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -78,6 +79,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PollResultsViewModel::class)
     abstract fun pollResultsViewModel(viewModel: PollResultsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PollCreateViewModel::class)
+    abstract fun pollCreateViewModel(viewModel: PollCreateViewModel): ViewModel
 
     @Binds
     @IntoMap

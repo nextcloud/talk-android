@@ -532,9 +532,14 @@ public interface NcApi {
     Observable<PollOverall> getPoll(@Header("Authorization") String authorization,
                                     @Url String url);
 
+    @FormUrlEncoded
     @POST
     Observable<PollOverall> createPoll(@Header("Authorization") String authorization,
-                                       @Url String url);
+                                       @Url String url,
+                                       @Query("question") String question,
+                                       @Field("options[]") List<String> options,
+                                       @Query("resultMode") Integer resultMode,
+                                       @Query("maxVotes") Integer maxVotes);
 
     @FormUrlEncoded
     @POST

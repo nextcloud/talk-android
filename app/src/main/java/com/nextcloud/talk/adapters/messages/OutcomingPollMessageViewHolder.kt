@@ -24,27 +24,35 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PorterDuff
-import android.os.Handler
+import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
+import com.nextcloud.talk.polls.repositories.model.PollOverall
+import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutcomingPollMessageViewHolder(outcomingView: View) : MessageHolders
-.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView) {
+class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : MessageHolders
+.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView, payload) {
 
     private val binding: ItemCustomOutcomingPollMessageBinding =
         ItemCustomOutcomingPollMessageBinding.bind(itemView)
@@ -57,9 +65,11 @@ class OutcomingPollMessageViewHolder(outcomingView: View) : MessageHolders
     @Inject
     var appPreferences: AppPreferences? = null
 
-    lateinit var message: ChatMessage
+    @Inject
+    @JvmField
+    var ncApi: NcApi? = null
 
-    lateinit var handler: Handler
+    lateinit var message: ChatMessage
 
     lateinit var reactionsInterface: ReactionsInterface
 
@@ -98,6 +108,8 @@ class OutcomingPollMessageViewHolder(outcomingView: View) : MessageHolders
 
         binding.checkMark.setContentDescription(readStatusContentDescriptionString)
 
+        setPollPreview(message)
+
         Reaction().showReactions(message, binding.reactions, binding.messageTime.context, true)
         binding.reactions.reactionsEmojiWrapper.setOnClickListener {
             reactionsInterface.onClickReactions(message)
@@ -105,6 +117,73 @@ class OutcomingPollMessageViewHolder(outcomingView: View) : MessageHolders
         binding.reactions.reactionsEmojiWrapper.setOnLongClickListener { l: View? ->
             reactionsInterface.onLongClickReactions(message)
             true
+        }
+    }
+
+    private fun setPollPreview(message: ChatMessage) {
+        var pollId: String? = null
+        var pollName: String? = null
+
+        if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+            for (key in message.messageParameters!!.keys) {
+                val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                if (individualHashMap["type"] == "talk-poll") {
+                    pollId = individualHashMap["id"]
+                    pollName = individualHashMap["name"].toString()
+                }
+            }
+        }
+
+        if (pollId != null && pollName != null) {
+            binding.messagePollTitle.text = pollName
+
+            val roomToken = (payload as? MessagePayload)!!.roomToken
+
+            binding.bubble.setOnClickListener {
+                val pollVoteDialog = PollMainDialogFragment.newInstance(
+                    roomToken,
+                    pollId,
+                    pollName
+                )
+                pollVoteDialog.show(
+                    (binding.messagePollIcon.context as MainActivity).supportFragmentManager,
+                    TAG
+                )
+            }
+
+            val credentials = ApiUtils.getCredentials(message.activeUser?.username, message.activeUser?.token)
+            ncApi!!.getPoll(
+                credentials,
+                ApiUtils.getUrlForPoll(
+                    message.activeUser?.baseUrl,
+                    roomToken,
+                    pollId
+                )
+            ).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<PollOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(pollOverall: PollOverall) {
+                        if (pollOverall.ocs!!.data!!.status == 0) {
+                            binding.messagePollSubtitle.text =
+                                context?.resources?.getString(R.string.message_poll_tap_to_vote)
+                        } else {
+                            binding.messagePollSubtitle.text =
+                                context?.resources?.getString(R.string.message_poll_tap_see_results)
+                        }
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error while fetching poll", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         }
     }
 

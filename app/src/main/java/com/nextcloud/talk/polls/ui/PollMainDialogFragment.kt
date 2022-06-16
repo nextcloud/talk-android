@@ -13,7 +13,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollMainBinding
 import com.nextcloud.talk.polls.model.Poll
-import com.nextcloud.talk.polls.viewmodels.PollViewModel
+import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -27,13 +27,13 @@ class PollMainDialogFragment(
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var binding: DialogPollMainBinding
-    private lateinit var viewModel: PollViewModel
+    private lateinit var viewModel: PollMainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[PollViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[PollMainViewModel::class.java]
     }
 
     @SuppressLint("InflateParams")
@@ -58,9 +58,9 @@ class PollMainDialogFragment(
 
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                PollViewModel.InitialState -> {}
+                PollMainViewModel.InitialState -> {}
 
-                is PollViewModel.PollVotedState -> {
+                is PollMainViewModel.PollVotedState -> {
                     if (state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
                         showVoteFragment()
                     } else {
@@ -68,7 +68,7 @@ class PollMainDialogFragment(
                     }
                 }
 
-                is PollViewModel.PollUnvotedState -> {
+                is PollMainViewModel.PollUnvotedState -> {
                     if (state.poll.status == Poll.STATUS_CLOSED) {
                         showResultsFragment()
                     } else {

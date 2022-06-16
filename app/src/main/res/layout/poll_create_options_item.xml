@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:background="@color/white">
+
+    <com.nextcloud.talk.utils.EmojiTextInputEditText
+        android:id="@+id/poll_option_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:singleLine="true" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/poll_option_delete"
+        style="@style/Widget.AppTheme.Button.IconButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:contentDescription="@string/nc_action_open_main_menu"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:icon="@drawable/ic_baseline_close_24"
+        app:iconTint="@color/fontAppbar" />
+
+</LinearLayout>

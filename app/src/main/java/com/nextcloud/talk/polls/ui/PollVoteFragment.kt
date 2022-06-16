@@ -33,13 +33,13 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollVoteBinding
 import com.nextcloud.talk.polls.model.Poll
-import com.nextcloud.talk.polls.viewmodels.PollViewModel
+import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PollVoteFragment(
-    private val parentViewModel: PollViewModel,
+    private val parentViewModel: PollMainViewModel,
     private val roomToken: String,
     private val pollId: String
 ) : Fragment() {
@@ -71,7 +71,7 @@ class PollVoteFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
-            if (state is PollViewModel.PollUnvotedState) {
+            if (state is PollMainViewModel.PollUnvotedState) {
                 val poll = state.poll
                 binding.radioGroup.removeAllViews()
                 poll.options?.map { option ->
@@ -80,7 +80,7 @@ class PollVoteFragment(
                     radioButton.id = index
                     binding.radioGroup.addView(radioButton)
                 }
-            } else if (state is PollViewModel.PollVotedState && state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
+            } else if (state is PollMainViewModel.PollVotedState && state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
                 Log.d(TAG, "show vote screen also for resultMode hidden poll when already voted")
                 // TODO: other text for submit button
             }

@@ -37,13 +37,13 @@ import com.nextcloud.talk.polls.adapters.PollResultItem
 import com.nextcloud.talk.polls.adapters.PollResultItemClickListener
 import com.nextcloud.talk.polls.adapters.PollResultsAdapter
 import com.nextcloud.talk.polls.model.Poll
+import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
-import com.nextcloud.talk.polls.viewmodels.PollViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PollResultsFragment(
-    private val parentViewModel: PollViewModel,
+    private val parentViewModel: PollMainViewModel,
     private val roomToken: String,
     private val pollId: String
 ) : Fragment(), PollResultItemClickListener {
@@ -82,14 +82,14 @@ class PollResultsFragment(
         _binding?.pollResultsList?.layoutManager = LinearLayoutManager(context)
 
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
-            if (state is PollViewModel.PollVotedState &&
+            if (state is PollMainViewModel.PollVotedState &&
                 state.poll.resultMode == Poll.RESULT_MODE_PUBLIC
             ) {
 
                 initPollResults(state.poll)
                 initAmountVotersInfo(state)
                 initEditButton(state)
-            } else if (state is PollViewModel.PollUnvotedState &&
+            } else if (state is PollMainViewModel.PollUnvotedState &&
                 state.poll.status == Poll.STATUS_CLOSED
             ) {
                 Log.d(TAG, "show results also if self never voted")
@@ -129,14 +129,14 @@ class PollResultsFragment(
         }
     }
 
-    private fun initAmountVotersInfo(state: PollViewModel.PollVotedState) {
+    private fun initAmountVotersInfo(state: PollMainViewModel.PollVotedState) {
         _binding?.pollAmountVoters?.text = String.format(
             resources.getString(R.string.polls_amount_voters),
             state.poll.numVoters
         )
     }
 
-    private fun initEditButton(state: PollViewModel.PollVotedState) {
+    private fun initEditButton(state: PollMainViewModel.PollVotedState) {
         if (state.poll.status == Poll.STATUS_OPEN && state.poll.resultMode == Poll.RESULT_MODE_PUBLIC) {
             _binding?.editVoteButton?.visibility = View.VISIBLE
             _binding?.editVoteButton?.setOnClickListener {
@@ -147,6 +147,10 @@ class PollResultsFragment(
         }
     }
 
+    override fun onClick(pollResultItem: PollResultItem) {
+        Log.d(TAG, "click..")
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -154,9 +158,5 @@ class PollResultsFragment(
 
     companion object {
         private val TAG = PollResultsFragment::class.java.simpleName
-    }
-
-    override fun onClick(pollResultItem: PollResultItem) {
-        Log.d(TAG, "click..")
     }
 }

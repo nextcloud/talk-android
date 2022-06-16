@@ -47,10 +47,35 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/message_poll_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_baseline_bar_chart_24"
+                app:tint="@color/nc_outcoming_text_default" />
+
+            <androidx.emoji.widget.EmojiTextView
+                android:id="@+id/message_poll_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="viewStart"
+                android:textStyle="bold"
+                android:textColor="@color/nc_outcoming_text_default"
+                tools:text="This is the poll title?" />
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/message_poll_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/double_margin_between_elements"
+            android:text="@string/message_poll_tap_to_vote"
+            android:textColor="@color/nc_outcoming_text_default" />
 
         <TextView
             android:id="@id/messageTime"
@@ -59,6 +84,7 @@
             android:layout_below="@id/messageText"
             android:layout_marginStart="8dp"
             app:layout_alignSelf="center"
+            android:textColor="@color/nc_outcoming_text_default"
             tools:text="10:35" />
 
         <ImageView
@@ -67,6 +93,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
+            android:textColor="@color/nc_outcoming_text_default"
             app:layout_alignSelf="center"
             android:contentDescription="@null" />
 
