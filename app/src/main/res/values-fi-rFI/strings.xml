@@ -9,6 +9,7 @@
     <string name="audio_output_wired_headset">Langallinen kuulokemikrofoni</string>
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
+    <string name="call_without_notification">Puhelu ilman ilmoitusta</string>
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
     <string name="clear_status_message_after">Tyhjennä tilaviesti, kun on kulunut</string>
     <string name="conversations">Keskustelut</string>
