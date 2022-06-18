@@ -133,11 +133,11 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
     //region private methods
     private fun initializeWebRtc() {
         try {
-            if (MagicWebRTCUtils.HARDWARE_AEC_BLACKLIST.contains(Build.MODEL)) {
+            if (MagicWebRTCUtils.HARDWARE_AEC_EXCLUDE_SET.contains(Build.MODEL)) {
                 WebRtcAudioUtils.setWebRtcBasedAcousticEchoCanceler(true)
             }
 
-            if (!MagicWebRTCUtils.OPEN_SL_ES_WHITELIST.contains(Build.MODEL)) {
+            if (!MagicWebRTCUtils.OPEN_SL_ES_INCLUDE_SET.contains(Build.MODEL)) {
                 WebRtcAudioManager.setBlacklistDeviceForOpenSLESUsage(true)
             }
 

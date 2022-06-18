@@ -44,7 +44,7 @@ public class MagicWebRTCUtils {
     /* AEC blacklist and SL_ES_WHITELIST are borrowed from Signal
        https://github.com/WhisperSystems/Signal-Android/blob/551470123d006b76a68d705d131bb12513a5e683/src/org/thoughtcrime/securesms/ApplicationContext.java
     */
-    public static Set<String> HARDWARE_AEC_BLACKLIST = new HashSet<String>() {{
+    public static Set<String> HARDWARE_AEC_EXCLUDE_SET = new HashSet<String>() {{
         add("D6503"); // Sony Xperia Z2 D6503
         add("ONE A2005"); // OnePlus 2
         add("MotoG3"); // Moto G (3rd Generation)
@@ -69,12 +69,12 @@ public class MagicWebRTCUtils {
         add("E5823"); // Sony Z5 Compact
     }};
 
-    public static Set<String> OPEN_SL_ES_WHITELIST = new HashSet<String>() {{
+    public static Set<String> OPEN_SL_ES_INCLUDE_SET = new HashSet<String>() {{
         add("Pixel");
         add("Pixel XL");
     }};
 
-    private static Set<String> HARDWARE_ACCELERATION_DEVICE_BLACKLIST = new HashSet<String>() {{
+    private static final Set<String> HARDWARE_ACCELERATION_DEVICE_EXCLUDE_SET = new HashSet<String>() {{
         add("GT-I9100"); // Samsung Galaxy S2
         add("GT-N8013"); // Samsung Galaxy Note 10.1
         add("SM-G930F"); // Samsung Galaxy S7
@@ -86,14 +86,14 @@ public class MagicWebRTCUtils {
         add("XT1097"); // Motorola Moto X (2nd Gen)
     }};
 
-    private static Set<String> HARDWARE_ACCELERATION_VENDOR_BLACKLIST = new HashSet<String>() {{
+    private static final Set<String> HARDWARE_ACCELERATION_VENDOR_EXCLUDE_SET = new HashSet<String>() {{
         add("samsung");
     }};
 
 
     public static boolean shouldEnableVideoHardwareAcceleration() {
-        return (!HARDWARE_ACCELERATION_VENDOR_BLACKLIST.contains(Build.MANUFACTURER.toLowerCase(Locale.ROOT))
-                && !HARDWARE_ACCELERATION_DEVICE_BLACKLIST.contains(Build.MODEL.toUpperCase(Locale.ROOT)));
+        return (!HARDWARE_ACCELERATION_VENDOR_EXCLUDE_SET.contains(Build.MANUFACTURER.toLowerCase(Locale.ROOT))
+                && !HARDWARE_ACCELERATION_DEVICE_EXCLUDE_SET.contains(Build.MODEL.toUpperCase(Locale.ROOT)));
     }
 
     public static String preferCodec(String sdpDescription, String codec, boolean isAudio) {
@@ -105,7 +105,7 @@ public class MagicWebRTCUtils {
         }
         // A list with all the payload types with name |codec|. The payload types are integers in the
         // range 96-127, but they are stored as strings here.
-        final List<String> codecPayloadTypes = new ArrayList<String>();
+        final List<String> codecPayloadTypes = new ArrayList<>();
         // a=rtpmap:<payload type> <encoding name>/<clock rate> [/<encoding parameters>]
         final Pattern codecPattern = Pattern.compile("^a=rtpmap:(\\d+) " + codec + "(/\\d+)+[\r]?$");
         for (int i = 0; i < lines.length; ++i) {
@@ -150,11 +150,11 @@ public class MagicWebRTCUtils {
         }
         final List<String> header = origLineParts.subList(0, 3);
         final List<String> unpreferredPayloadTypes =
-                new ArrayList<String>(origLineParts.subList(3, origLineParts.size()));
+                new ArrayList<>(origLineParts.subList(3, origLineParts.size()));
         unpreferredPayloadTypes.removeAll(preferredPayloadTypes);
         // Reconstruct the line with |preferredPayloadTypes| moved to the beginning of the payload
         // types.
-        final List<String> newLineParts = new ArrayList<String>();
+        final List<String> newLineParts = new ArrayList<>();
         newLineParts.addAll(header);
         newLineParts.addAll(preferredPayloadTypes);
         newLineParts.addAll(unpreferredPayloadTypes);
@@ -162,7 +162,9 @@ public class MagicWebRTCUtils {
     }
 
     private static String joinString(
-            Iterable<? extends CharSequence> s, String delimiter, boolean delimiterAtEnd) {
+            Iterable<? extends CharSequence> s,
+            String delimiter,
+            boolean delimiterAtEnd) {
         Iterator<? extends CharSequence> iter = s.iterator();
         if (!iter.hasNext()) {
             return "";
@@ -176,5 +178,4 @@ public class MagicWebRTCUtils {
         }
         return buffer.toString();
     }
-
 }
