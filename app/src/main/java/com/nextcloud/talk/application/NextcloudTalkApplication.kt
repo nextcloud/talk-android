@@ -265,12 +265,16 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
             val database = object : SqlCipherDatabaseSource(
                 this,
                 Models.DEFAULT,
-                this.resources.getString(R.string.nc_app_product_name).lowercase(Locale.getDefault())
-                    .replace(" ", "_").trim { it <= ' ' } + ".sqlite",
+                this
+                    .resources
+                    .getString(R.string.nc_app_product_name)
+                    .lowercase(Locale.getDefault())
+                    .replace(" ", "_")
+                    .trim { it <= ' ' } +
+                    ".sqlite",
                 this.getString(R.string.nc_talk_database_encryption_key),
                 DatabaseModule.DB_VERSION
             ) {
-
                 override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
                     checkAndUpdateCipherMigrationStatus(newVersion, appPreferences)
                     super.onUpgrade(db, oldVersion, newVersion)

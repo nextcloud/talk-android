@@ -1,22 +1,23 @@
 /*
+ * Nextcloud Talk application
  *
- *   Nextcloud Talk application
+ * @author Andy Scherzinger
+ * @author Mario Danic
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
- *   @author Mario Danic
- *   Copyright (C) 2017 Mario Danic (mario@lovelyhq.com)
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
  *
- *   This program is free software: you can redistribute it and/or modify
- *   it under the terms of the GNU General Public License as published by
- *   the Free Software Foundation, either version 3 of the License, or
- *   at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *   This program is distributed in the hope that it will be useful,
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *   GNU General Public License for more details.
- *
- *   You should have received a copy of the GNU General Public License
- *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.nextcloud.talk.dagger.modules;
 
@@ -44,24 +45,33 @@ public class DatabaseModule {
     @Provides
     @Singleton
     public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(@NonNull final Context context) {
-        return new SqlCipherDatabaseSource(context, Models.DEFAULT,
-                context.getResources().getString(R.string.nc_app_product_name).toLowerCase()
-                        .replace(" ", "_").trim() + ".sqlite",
-                context.getString(R.string.nc_talk_database_encryption_key), DB_VERSION);
+        return new SqlCipherDatabaseSource(
+            context,
+            Models.DEFAULT,
+            context
+                .getResources()
+                .getString(R.string.nc_app_product_name)
+                .toLowerCase()
+                .replace(" ", "_")
+                .trim()
+                + ".sqlite",
+            context.getString(R.string.nc_talk_database_encryption_key),
+            DB_VERSION);
     }
 
     @Provides
     @Singleton
-    public ReactiveEntityStore<Persistable> provideDataStore(@NonNull final SqlCipherDatabaseSource sqlCipherDatabaseSource) {
+    public ReactiveEntityStore<Persistable> provideDataStore(
+        @NonNull final SqlCipherDatabaseSource sqlCipherDatabaseSource) {
         final Configuration configuration = sqlCipherDatabaseSource.getConfiguration();
-        return ReactiveSupport.toReactiveStore(new EntityDataStore<Persistable>(configuration));
+        return ReactiveSupport.toReactiveStore(new EntityDataStore<>(configuration));
     }
 
     @Provides
     @Singleton
     public AppPreferences providePreferences(@NonNull final Context poContext) {
-        AppPreferences p =  StoreBox.create(poContext, AppPreferences.class);
-        p.removeLinkPreviews();
-        return p;
+        AppPreferences preferences =  StoreBox.create(poContext, AppPreferences.class);
+        preferences.removeLinkPreviews();
+        return preferences;
     }
 }
