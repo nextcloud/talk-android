@@ -34,6 +34,7 @@ import autodagger.AutoInjector
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -100,15 +101,17 @@ class FullScreenMediaActivity : AppCompatActivity(), Player.Listener {
             binding.playerView.controllerShowTimeoutMs = 0
         }
 
-        binding.playerView.setControllerVisibilityListener { v ->
-            if (v != 0) {
-                hideSystemUI()
-                supportActionBar?.hide()
-            } else {
-                showSystemUI()
-                supportActionBar?.show()
+        binding.playerView.setControllerVisibilityListener(
+            StyledPlayerView.ControllerVisibilityListener { v ->
+                if (v != 0) {
+                    hideSystemUI()
+                    supportActionBar?.hide()
+                } else {
+                    showSystemUI()
+                    supportActionBar?.show()
+                }
             }
-        }
+        )
     }
 
     override fun onStart() {
