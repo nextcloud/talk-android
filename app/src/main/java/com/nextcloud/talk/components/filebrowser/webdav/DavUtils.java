@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -19,6 +21,8 @@
  */
 
 package com.nextcloud.talk.components.filebrowser.webdav;
+
+import android.util.Log;
 
 import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
 import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission;
@@ -45,6 +49,8 @@ import at.bitfire.dav4jvm.property.GetLastModified;
 import at.bitfire.dav4jvm.property.ResourceType;
 
 public class DavUtils {
+    private static final String TAG = "DavUtils";
+
     public static final String OC_NAMESPACE = "http://owncloud.org/ns";
     public static final String NC_NAMESPACE = "http://nextcloud.org/ns";
     public static final String DAV_PATH = "/remote.php/dav/files/";
@@ -112,12 +118,8 @@ public class DavUtils {
             reflectionMap.put(NCPermission.NAME, new NCPermission.Factory());
 
             factories.set(propertyRegistry, reflectionMap);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Log.w(TAG, "Error registering custom factories", e);
         }
-
     }
-
 }
