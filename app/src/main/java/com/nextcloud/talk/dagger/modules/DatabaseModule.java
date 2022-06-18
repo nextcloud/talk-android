@@ -39,6 +39,7 @@ import javax.inject.Singleton;
 
 @Module
 public class DatabaseModule {
+    public static final int DB_VERSION = 7;
 
     @Provides
     @Singleton
@@ -46,7 +47,7 @@ public class DatabaseModule {
         return new SqlCipherDatabaseSource(context, Models.DEFAULT,
                 context.getResources().getString(R.string.nc_app_product_name).toLowerCase()
                         .replace(" ", "_").trim() + ".sqlite",
-                context.getString(R.string.nc_talk_database_encryption_key), 6);
+                context.getString(R.string.nc_talk_database_encryption_key), DB_VERSION);
     }
 
     @Provides

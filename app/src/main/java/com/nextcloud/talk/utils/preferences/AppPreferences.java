@@ -281,6 +281,13 @@ public interface AppPreferences {
     @KeyByResource(R.string.nc_settings_theme_key)
     @UnregisterChangeListenerMethod
     void unregisterThemeChangeListener(OnPreferenceValueChangedListener<String> listener);
+
+    @KeyByResource(R.string.nc_settings_db_cypher_v4_upgrade_key)
+    @DefaultValue(R.bool.value_true)
+    boolean getIsDbCypherToUpgrade();
+
+    @KeyByResource(R.string.nc_settings_db_cypher_v4_upgrade_key)
+    void setIsDbCypherToUpgrade(boolean value);
     
     @KeyByResource(R.string.nc_settings_phone_book_integration_key)
     @RegisterChangeListenerMethod
