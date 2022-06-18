@@ -533,6 +533,4 @@
     <string name="send_without_notification">Send without notification</string>
     <string name="call_without_notification">Call without notification</string>
 
-    <string name="nc_settings_db_cypher_v4_upgrade_key" translatable="false">db_cypher_v4_upgrade</string>
-
 </resources>
