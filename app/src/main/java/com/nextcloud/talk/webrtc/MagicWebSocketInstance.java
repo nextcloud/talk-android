@@ -252,11 +252,11 @@ public class MagicWebSocketInstance extends WebSocketListener {
                                             }
                                         }
                                     } else if (eventOverallWebSocketMessage.getEventMap().get("type").equals("join")) {
-                                        List<HashMap<String, Object>> joinEventMap = (List<HashMap<String, Object>>) eventOverallWebSocketMessage.getEventMap().get("join");
+                                        List<HashMap<String, Object>> joinEventList = (List<HashMap<String, Object>>) eventOverallWebSocketMessage.getEventMap().get("join");
                                         HashMap<String, Object> internalHashMap;
                                         Participant participant;
-                                        for (int i = 0; i < joinEventMap.size(); i++) {
-                                            internalHashMap = joinEventMap.get(i);
+                                        for (int i = 0; i < joinEventList.size(); i++) {
+                                            internalHashMap = joinEventList.get(i);
                                             HashMap<String, Object> userMap = (HashMap<String, Object>) internalHashMap.get("user");
                                             participant = new Participant();
                                             String userId = (String) internalHashMap.get("userid");
