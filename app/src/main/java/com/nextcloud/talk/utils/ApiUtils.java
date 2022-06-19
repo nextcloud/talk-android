@@ -28,6 +28,7 @@ import android.util.Log;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.UserNgEntity;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -123,6 +124,38 @@ public class ApiUtils {
         return getConversationApiVersion(capabilities, versions);
     }
 
+    public static int getConversationApiVersion(UserNgEntity user, int[] versions) throws NoSupportedApiException {
+        boolean hasApiV4 = false;
+        for (int version : versions) {
+            hasApiV4 |= version == APIv4;
+        }
+
+        if (!hasApiV4) {
+            Exception e = new Exception("Api call did not try conversation-v4 api");
+            Log.d(TAG, e.getMessage(), e);
+        }
+
+        for (int version : versions) {
+            if (user.hasSpreedFeatureCapability("conversation-v" + version)) {
+                return version;
+            }
+
+            // Fallback for old API versions
+            if ((version == APIv1 || version == APIv2)) {
+                if (user.hasSpreedFeatureCapability("conversation-v2")) {
+                    return version;
+                }
+                if (version == APIv1  &&
+                    user.hasSpreedFeatureCapability("mention-flag") &&
+                    !user.hasSpreedFeatureCapability("conversation-v4")) {
+                    return version;
+                }
+            }
+        }
+        throw new NoSupportedApiException();
+    }
+
+    @Deprecated
     public static int getConversationApiVersion(UserEntity user, int[] versions) throws NoSupportedApiException {
         boolean hasApiV4 = false;
         for (int version : versions) {

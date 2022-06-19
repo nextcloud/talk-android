@@ -69,6 +69,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppT
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
+import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.data.user.model.UserNgEntity
 import com.nextcloud.talk.databinding.ControllerSettingsBinding
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
@@ -115,8 +118,11 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     @Inject
     lateinit var userUtils: UserUtils
 
+    @Inject
+    lateinit var userRepository: UsersRepository
+
     private var saveStateHandler: LovelySaveStateHandler? = null
-    private var currentUser: UserEntity? = null
+    private var currentUser: UserNgEntity? = null
     private var credentials: String? = null
     private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
     private var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
@@ -134,7 +140,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
             resources!!.getString(R.string.nc_settings)
 
     private fun getCurrentUser() {
-        currentUser = userUtils.currentUser
+        currentUser = userRepository.getActiveUser()
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -184,7 +190,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun setupPhoneBookIntegration() {
-        if (CapabilitiesUtil.isPhoneBookIntegrationAvailable(userUtils.currentUser)) {
+        if (CapabilitiesUtil.isPhoneBookIntegrationAvailable(userRepository.getActiveUser())) {
             binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
         } else {
             binding.settingsPhoneBookIntegration.visibility = View.GONE

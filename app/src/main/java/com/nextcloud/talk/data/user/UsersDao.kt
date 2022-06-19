@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -34,19 +36,19 @@ import java.lang.Boolean.TRUE
 @Dao
 abstract class UsersDao {
     // get active user
-    @Query("SELECT * FROM users where current = 1")
+    @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUser(): UserNgEntity?
 
-    @Query("SELECT * FROM users WHERE current = 1")
+    @Query("SELECT * FROM User WHERE current = 1")
     abstract fun getActiveUserLiveData(): LiveData<UserNgEntity?>
 
-    @Query("SELECT * from users ORDER BY current DESC")
+    @Query("SELECT * FROM User ORDER BY current DESC")
     abstract fun getUsersLiveData(): LiveData<List<UserNgEntity>>
 
-    @Query("SELECT * from users WHERE current != 1 ORDER BY current DESC")
+    @Query("SELECT * FROM User WHERE current != 1 ORDER BY current DESC")
     abstract fun getUsersLiveDataWithoutActive(): LiveData<List<UserNgEntity>>
 
-    @Query("DELETE FROM users WHERE id = :id")
+    @Query("DELETE FROM User WHERE id = :id")
     abstract suspend fun deleteUserWithId(id: Long)
 
     @Update
@@ -59,16 +61,31 @@ abstract class UsersDao {
     abstract suspend fun saveUsers(vararg users: UserNgEntity): List<Long>
 
     // get all users not scheduled for deletion
-    @Query("SELECT * FROM users where current != 0")
+    @Query("SELECT * FROM User where current != 0")
     abstract fun getUsers(): List<UserNgEntity>
 
-    @Query("SELECT * FROM users where id = :id")
-    abstract fun getUserWithId(id: Long): UserNgEntity
+    @Query("SELECT * FROM User where id = :id")
+    abstract fun getUserWithId(id: Long): UserNgEntity?
 
-    @Query("SELECT * FROM users where current = 0")
+    @Query("SELECT * FROM User where id = :id")
+    abstract fun getUserWithIdLiveData(id: Long): LiveData<UserNgEntity?>
+
+    @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
+    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): UserNgEntity?
+
+    @Query("SELECT * FROM User where userId = :userId")
+    abstract fun getUserWithUserId(userId: String): UserNgEntity?
+
+    @Query("SELECT * FROM User where userId != :userId")
+    abstract fun getUsersWithoutUserId(userId: Long): List<UserNgEntity>
+
+    @Query("SELECT * FROM User where current = 0")
     abstract fun getUsersScheduledForDeletion(): List<UserNgEntity>
 
-    @Query("SELECT * FROM users WHERE username = :username AND base_url = :server")
+    @Query("SELECT * FROM User where scheduledForDeletion = 0")
+    abstract fun getUsersNotScheduledForDeletion(): List<UserNgEntity>
+
+    @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
     abstract suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
 
     @Transaction

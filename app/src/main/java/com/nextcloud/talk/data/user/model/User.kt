@@ -20,28 +20,30 @@
 package com.nextcloud.talk.data.user.model
 
 import android.os.Parcelable
+import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
+import java.lang.Boolean.FALSE
 
 @Parcelize
 @Serializable
 data class User(
     var id: Long? = null,
-    var userId: String,
-    var username: String,
-    var baseUrl: String,
+    var userId: String? = null,
+    var username: String? = null,
+    var baseUrl: String? = null,
     var token: String? = null,
     var displayName: String? = null,
-    var pushConfiguration: PushConfigurationState? = null,
+    var pushConfigurationState: PushConfigurationState? = null,
     var capabilities: Capabilities? = null,
     var clientCertificate: String? = null,
-    var signalingSettings: SignalingSettings? = null,
-    var current: Boolean = java.lang.Boolean.FALSE,
-    var scheduledForDeletion: Boolean = java.lang.Boolean.FALSE
+    var externalSignalingServer: ExternalSignalingServer? = null,
+    var current: Boolean = FALSE,
+    var scheduledForDeletion: Boolean = FALSE,
 ) : Parcelable
 
 fun User.getMaxMessageLength(): Int {
@@ -76,10 +78,10 @@ fun User.toUserEntity(): UserNgEntity {
 
     userNgEntity!!.token = this.token
     userNgEntity!!.displayName = this.displayName
-    userNgEntity!!.pushConfiguration = this.pushConfiguration
+    userNgEntity!!.pushConfigurationState = this.pushConfigurationState
     userNgEntity!!.capabilities = this.capabilities
     userNgEntity!!.clientCertificate = this.clientCertificate
-    userNgEntity!!.externalSignalingServer = this.signalingSettings
+    userNgEntity!!.externalSignalingServer = this.externalSignalingServer
     userNgEntity!!.current = this.current
     userNgEntity!!.scheduledForDeletion = this.scheduledForDeletion
 

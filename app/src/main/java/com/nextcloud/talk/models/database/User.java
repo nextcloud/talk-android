@@ -29,6 +29,7 @@ import io.requery.Entity;
 import io.requery.Generated;
 import io.requery.Key;
 import io.requery.Persistable;
+import io.requery.Table;
 
 @Entity
 public interface User extends Parcelable, Persistable, Serializable {

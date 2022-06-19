@@ -1,7 +1,9 @@
 /*
  * Nextcloud Talk application
  *
+ * @author Andy Scherzinger
  * @author Mario Danic
+ * Copyright (C) 2022 Andy Scherzinger <infoi@andy-scherzinger.de>
  * Copyright (C) 2017-2020 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,9 +26,9 @@ import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
 import kotlinx.serialization.Serializable
@@ -34,25 +36,24 @@ import java.lang.Boolean.FALSE
 
 @Parcelize
 @Serializable
-@Entity(tableName = "users")
+@Entity(tableName = "User")
 data class UserNgEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
-    @ColumnInfo(name = "user_id") var userId: String,
-    @ColumnInfo(name = "username") var username: String,
-    @ColumnInfo(name = "base_url") var baseUrl: String,
+    @ColumnInfo(name = "userId") var userId: String? = null,
+    @ColumnInfo(name = "username") var username: String? = null,
+    @ColumnInfo(name = "baseUrl") var baseUrl: String? = null,
     @ColumnInfo(name = "token") var token: String? = null,
-    @ColumnInfo(name = "display_name") var displayName: String? = null,
-    @ColumnInfo(name = "push_configuration_state") var pushConfiguration: PushConfigurationState? = null,
+    @ColumnInfo(name = "displayName") var displayName: String? = null,
+    @ColumnInfo(name = "pushConfigurationState") var pushConfigurationState: PushConfigurationState? = null,
     @ColumnInfo(name = "capabilities") var capabilities: Capabilities? = null,
-    @ColumnInfo(name = "client_certificate") var clientCertificate: String? = null,
-    @ColumnInfo(name = "external_signaling_server") var externalSignalingServer: SignalingSettings? = null,
+    @ColumnInfo(name = "clientCertificate") var clientCertificate: String? = null,
+    @ColumnInfo(name = "externalSignalingServer") var externalSignalingServer: ExternalSignalingServer? = null,
     @ColumnInfo(name = "current") var current: Boolean = FALSE,
-    @ColumnInfo(name = "scheduled_for_deletion") var scheduledForDeletion: Boolean = FALSE,
+    @ColumnInfo(name = "scheduledForDeletion") var scheduledForDeletion: Boolean = FALSE,
 ) : Parcelable {
 
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
         return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
-
     }
 }
 
@@ -65,9 +66,11 @@ fun UserNgEntity.canUserCreateGroupConversations(): Boolean {
 }
 
 fun UserNgEntity.toUser(): User {
-    return User(this.id, this.userId, this.username, this.baseUrl, this.token, this.displayName, this
-        .pushConfiguration, this.capabilities, this.clientCertificate, this.externalSignalingServer, this.current,
-        this.scheduledForDeletion)
+    return User(
+        this.id, this.userId, this.username, this.baseUrl, this.token, this.displayName, this.pushConfigurationState,
+        this.capabilities, this.clientCertificate, this.externalSignalingServer, this.current,
+        this.scheduledForDeletion
+    )
 }
 
 fun UserNgEntity.getCredentials(): String = ApiUtils.getCredentials(username, token)

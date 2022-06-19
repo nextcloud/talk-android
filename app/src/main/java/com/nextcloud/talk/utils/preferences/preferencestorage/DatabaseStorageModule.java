@@ -26,7 +26,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import autodagger.AutoInjector;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.database.ArbitraryStorageEntity;
@@ -35,20 +34,19 @@ import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.database.arbitrarystorage.ArbitraryStorageUtils;
-import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.yarolegovich.mp.io.StorageModule;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Set;
+
+import javax.inject.Inject;
+
+import autodagger.AutoInjector;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import javax.inject.Inject;
-
-import java.util.Collections;
-import java.util.Set;
 
 @AutoInjector(NextcloudTalkApplication.class)
 public class DatabaseStorageModule implements StorageModule {

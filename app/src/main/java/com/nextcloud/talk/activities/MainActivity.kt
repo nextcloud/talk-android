@@ -46,6 +46,7 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
+import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -73,9 +74,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var binding: ActivityMainBinding
 
     @Inject
-    lateinit var userUtils: UserUtils
-
-    @Inject
     lateinit var dataStore: ReactiveEntityStore<Persistable>
 
     @Inject
@@ -83,6 +81,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var usersRepository: UsersRepository
 
     private var router: Router? = null
 
@@ -114,7 +115,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
-                if (userUtils.anyUserExists()) {
+                if (usersRepository.getUsers().isNotEmpty()) {
                     setDefaultRootController()
                 } else {
                     launchLoginScreen()
@@ -178,7 +179,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     fun resetConversationsList() {
-        if (userUtils.anyUserExists()) {
+        if (usersRepository.getUsers().isNotEmpty()) {
             setDefaultRootController()
         }
     }
@@ -218,7 +219,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
-                    if (userUtils.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                    if (usersRepository.getActiveUser()?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
@@ -234,7 +235,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     private fun startConversation(userId: String) {
         val roomType = "1"
-        val currentUser = userUtils.currentUser ?: return
+        val currentUser = usersRepository.getActiveUser() ?: return
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)

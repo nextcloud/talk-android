@@ -154,6 +154,7 @@ ext {
     butterknifeVersion = "10.2.3"
     coilKtVersion = "2.1.0"
     daggerVersion = "2.42"
+    lifecycleVersion = '2.2.0'
     okhttpVersion = "4.10.0"
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
@@ -245,6 +246,8 @@ dependencies {
     implementation "androidx.room:room-runtime:${roomVersion}"
     kapt "androidx.room:room-compiler:${roomVersion}" // For Kotlin use kapt instead of annotationProcessor
     implementation "androidx.room:room-ktx:${roomVersion}"
+
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycleVersion}"
 
     implementation "org.parceler:parceler-api:$parcelerVersion"
     implementation 'net.orange-box.storebox:storebox-lib:1.4.0'

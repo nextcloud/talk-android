@@ -24,6 +24,7 @@ package com.nextcloud.talk.dagger.modules;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.data.source.local.TalkDatabase;
 import com.nextcloud.talk.models.database.Models;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import dagger.Module;
@@ -54,7 +55,7 @@ public class DatabaseModule {
                 .toLowerCase()
                 .replace(" ", "_")
                 .trim()
-                + ".sqlite",
+                + ".sqlite_off",
             context.getString(R.string.nc_talk_database_encryption_key),
             DB_VERSION);
     }
@@ -73,5 +74,11 @@ public class DatabaseModule {
         AppPreferences preferences =  StoreBox.create(poContext, AppPreferences.class);
         preferences.removeLinkPreviews();
         return preferences;
+    }
+
+    @Provides
+    @Singleton
+    public TalkDatabase provideTalkDatabase(@NonNull final Context context) {
+        return TalkDatabase.Companion.getInstance(context);
     }
 }

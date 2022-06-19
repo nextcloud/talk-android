@@ -26,31 +26,38 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.nextcloud.talk.R
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
+import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
 import com.nextcloud.talk.data.source.local.converters.HashMapHashMapConverter
 import com.nextcloud.talk.data.source.local.converters.PushConfigurationConverter
 import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverter
+import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
+import com.nextcloud.talk.data.storage.model.ArbitraryStorageNgEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserNgEntity
+import net.sqlcipher.database.SQLiteDatabase
+import net.sqlcipher.database.SupportFactory
+import java.util.Locale
 
 @Database(
-    entities = [UserNgEntity::class],
-    version = 1,
+    entities = [UserNgEntity::class, ArbitraryStorageNgEntity::class],
+    version = 8,
     exportSchema = true
 )
 @TypeConverters(
     PushConfigurationConverter::class,
     CapabilitiesConverter::class,
+    ExternalSignalingServerConverter::class,
     SignalingSettingsConverter::class,
     HashMapHashMapConverter::class
 )
-
 abstract class TalkDatabase : RoomDatabase() {
 
     abstract fun usersDao(): UsersDao
+    abstract fun arbitraryStoragesDao(): ArbitraryStoragesDao
 
     companion object {
-        private const val DB_NAME = "talk.db"
 
         @Volatile
         private var INSTANCE: TalkDatabase? = null
@@ -60,15 +67,32 @@ abstract class TalkDatabase : RoomDatabase() {
                 INSTANCE ?: build(context).also { INSTANCE = it }
             }
 
-        private fun build(context: Context) =
-            Room.databaseBuilder(context.applicationContext, TalkDatabase::class.java, DB_NAME)
-                .fallbackToDestructiveMigration()
-                .addCallback(object : RoomDatabase.Callback() {
-                    override fun onOpen(db: SupportSQLiteDatabase) {
-                        super.onOpen(db)
-                        db.execSQL("PRAGMA defer_foreign_keys = 1")
-                    }
-                })
+        private fun build(context: Context): TalkDatabase {
+            val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
+            val passphrase: ByteArray = SQLiteDatabase.getBytes(passCharArray)
+            val factory = SupportFactory(passphrase)
+
+            val dbName = context
+                .resources
+                .getString(R.string.nc_app_product_name)
+                .lowercase(Locale.getDefault())
+                .replace(" ", "_")
+                .trim { it <= ' ' } +
+                ".sqlite"
+
+            return Room
+                .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
+                .openHelperFactory(factory)
+                .addMigrations(Migrations.MIGRATION_7_8)
+                .allowMainThreadQueries()
+                .addCallback(
+                    object : RoomDatabase.Callback() {
+                        override fun onOpen(db: SupportSQLiteDatabase) {
+                            super.onOpen(db)
+                            db.execSQL("PRAGMA defer_foreign_keys = 1")
+                        }
+                    })
                 .build()
+        }
     }
 }

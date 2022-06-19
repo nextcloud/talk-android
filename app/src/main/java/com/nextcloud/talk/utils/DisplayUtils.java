@@ -79,6 +79,7 @@ import com.facebook.widget.text.span.BetterImageSpan;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.UserNgEntity;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
@@ -565,7 +566,36 @@ public class DisplayUtils {
         }
     }
 
+    @Deprecated
     public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
+        String avatarId;
+        if (!TextUtils.isEmpty(user.getUserId())) {
+            avatarId = user.getUserId();
+        } else {
+            avatarId = user.getUsername();
+        }
+
+        String avatarString = ApiUtils.getUrlForAvatar(user.getBaseUrl(), avatarId, true);
+
+        // clear cache
+        if (deleteCache) {
+            Uri avatarUri = Uri.parse(avatarString);
+
+            ImagePipeline imagePipeline = Fresco.getImagePipeline();
+            imagePipeline.evictFromMemoryCache(avatarUri);
+            imagePipeline.evictFromDiskCache(avatarUri);
+            imagePipeline.evictFromCache(avatarUri);
+        }
+
+        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
+            .setOldController(avatarImageView.getController())
+            .setAutoPlayAnimations(true)
+            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString, null))
+            .build();
+        avatarImageView.setController(draweeController);
+    }
+
+    public static void loadAvatarImage(UserNgEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
         String avatarId;
         if (!TextUtils.isEmpty(user.getUserId())) {
             avatarId = user.getUserId();
