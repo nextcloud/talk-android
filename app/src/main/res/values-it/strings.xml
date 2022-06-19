@@ -18,6 +18,7 @@
     <string name="dontClear">Non cancellare</string>
     <string name="edit">Modifica</string>
     <string name="emoji_category_recent">Recenti</string>
+    <string name="emoji_search">Cerca emoji</string>
     <string name="encrypted">Cifrato</string>
     <string name="failed_to_save">Salvataggio di %1$s fallito</string>
     <string name="file_list_folder">cartella</string>
@@ -34,6 +35,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Prima i più grandi</string>
     <string name="menu_item_sort_by_size_smallest_first">Prima i più piccoli</string>
     <string name="message_search_begin_empty">Nessun risultato di ricerca</string>
+    <string name="message_search_begin_typing">Inizia a digitare per cercare …</string>
+    <string name="message_search_hint">Cerca …</string>
     <string name="messages">Messaggi</string>
     <string name="nc_Server_account_imported">L\'account selezionato è ora importato e disponibile</string>
     <string name="nc_about">Informazioni</string>
@@ -54,6 +57,7 @@
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_call_name_is_same">Il nome che hai digitato è uguale a quello esistente</string>
     <string name="nc_call_notifications">Notifiche di chiamata</string>
+    <string name="nc_call_reconnecting">Riconnessione in corso …</string>
     <string name="nc_call_ringing">STA SQUILLANDO</string>
     <string name="nc_call_state_in_call">%1$s in chiamata</string>
     <string name="nc_call_state_with_phone">%1$s con telefono</string>
@@ -121,6 +125,7 @@
     <string name="nc_group">Gruppo</string>
     <string name="nc_groups">Gruppi</string>
     <string name="nc_guest">Ospite</string>
+    <string name="nc_hint_enter_a_message">Digita un messaggio …</string>
     <string name="nc_important_conversation">Conversazione importante</string>
     <string name="nc_important_conversation_desc">Le notifiche in questa conversazione ignoreranno l\'impostazione Non disturbare</string>
     <string name="nc_join_via_link">Unisciti tramite un collegamento</string>
@@ -129,6 +134,7 @@
     <string name="nc_last_moderator_title">Impossibile lasciare la conversazione</string>
     <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
     <string name="nc_leave">Lascia la conversazione</string>
+    <string name="nc_leaving_call">Chiusura della chiamata in corso …</string>
     <string name="nc_license_summary">GNU General Public License, versione 3</string>
     <string name="nc_license_title">Licenza</string>
     <string name="nc_limit_hit">Il limite di %s caratteri è stato raggiunto</string>
@@ -146,6 +152,7 @@
     <string name="nc_manual">Non impostato</string>
     <string name="nc_mark_as_read">Segna come letto</string>
     <string name="nc_mark_as_unread">Segna come non letto</string>
+    <string name="nc_message_failed_to_send">Invio del messaggio non riuscito:</string>
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
     <string name="nc_message_read">Messaggio letto</string>
     <string name="nc_message_sent">Messaggio inviato</string>

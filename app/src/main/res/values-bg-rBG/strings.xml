@@ -34,6 +34,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Първо най-големият</string>
     <string name="menu_item_sort_by_size_smallest_first">Първо най-малкият</string>
     <string name="message_search_begin_empty">Няма резултати от търсенето</string>
+    <string name="message_search_begin_typing">Започнете да пишете, за търсене …</string>
+    <string name="message_search_hint">Търсене …</string>
     <string name="messages">Съобщения</string>
     <string name="nc_Server_account_imported">Избраният профил вече е импортиран и наличен</string>
     <string name="nc_about">Относно</string>
@@ -54,6 +56,7 @@
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_name_is_same">Името, което сте въвели, е същото като съществуващото</string>
     <string name="nc_call_notifications">Известия за обаждане</string>
+    <string name="nc_call_reconnecting">Повторно свързване …</string>
     <string name="nc_call_ringing">ПОЗВЪНЯВАНЕ</string>
     <string name="nc_call_state_in_call">%1$sв разговор</string>
     <string name="nc_call_state_with_phone">%1$sс телефон</string>
@@ -121,6 +124,7 @@
     <string name="nc_group">Група</string>
     <string name="nc_groups">Групи</string>
     <string name="nc_guest">Гост</string>
+    <string name="nc_hint_enter_a_message">Въвеждане на съобщение …</string>
     <string name="nc_important_conversation">Важен разговор</string>
     <string name="nc_important_conversation_desc">Известията в този разговор ще отменят настройките „Не безпокойте“</string>
     <string name="nc_join_via_link">Присъединяване с линк</string>
@@ -129,6 +133,7 @@
     <string name="nc_last_moderator_title">Не можете да напуснете разговора</string>
     <string name="nc_last_modified">%1$s Последна промяна: %2$s</string>
     <string name="nc_leave">Напускане на разговор</string>
+    <string name="nc_leaving_call">Напускане на обаждането …</string>
     <string name="nc_license_summary">GNU Генерален Публичен Лиценз, версия 3</string>
     <string name="nc_license_title">Лиценз</string>
     <string name="nc_limit_hit">Достигнато %s ограничение на знаците</string>
@@ -146,6 +151,7 @@
     <string name="nc_manual">Не е зададено</string>
     <string name="nc_mark_as_read">Маркирай като прочетено</string>
     <string name="nc_mark_as_unread">Маркирай като непрочетена</string>
+    <string name="nc_message_failed_to_send">Неуспешно изпращане на съобщение:</string>
     <string name="nc_message_quote_cancel_reply">Отказ на отговор</string>
     <string name="nc_message_read">Съобщението е прочетено</string>
     <string name="nc_message_sent">Съобщението е изпратено</string>

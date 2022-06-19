@@ -34,6 +34,8 @@
     <string name="menu_item_sort_by_size_biggest_first">الأعلى حجماً أولاً</string>
     <string name="menu_item_sort_by_size_smallest_first">الأقل حجماً أولاً</string>
     <string name="message_search_begin_empty">لا توجد نتائج</string>
+    <string name="message_search_begin_typing">اكتب هنا للبحث …</string>
+    <string name="message_search_hint">البحث …</string>
     <string name="messages">الرسائل</string>
     <string name="nc_Server_account_imported">تم استيراد الحساب المحدد وهو متاح الآن </string>
     <string name="nc_about">عن</string>
@@ -54,6 +56,7 @@
     <string name="nc_call_name">اسم المحادثة</string>
     <string name="nc_call_name_is_same">الاسم الذي أدخلته مطابق لاسم آخر </string>
     <string name="nc_call_notifications">تنبيهات المكالمة</string>
+    <string name="nc_call_reconnecting">إعادة الاتصال …</string>
     <string name="nc_call_ringing">يرن </string>
     <string name="nc_call_state_in_call">%1$s في مكالمة</string>
     <string name="nc_call_state_with_phone">%1$s بالهاتف</string>
@@ -121,6 +124,7 @@
     <string name="nc_group">الفريق</string>
     <string name="nc_groups">الفِرَق</string>
     <string name="nc_guest">ضيف</string>
+    <string name="nc_hint_enter_a_message">ادخل رسالة …</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة سيتم تجاوزها. إعدادات الرجاء عدم الإزعاج</string>
     <string name="nc_join_via_link">انضم عن طريق الرابط</string>
@@ -129,6 +133,7 @@
     <string name="nc_last_moderator_title">تعذر مغادرة المحادثة </string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
     <string name="nc_leave">غادر المحادثة</string>
+    <string name="nc_leaving_call">مغادرة المكالمة …</string>
     <string name="nc_license_summary">رخصة جنو العمومية العامة ، الإصدار 3</string>
     <string name="nc_license_title">الرخصة</string>
     <string name="nc_limit_hit">%sتم الوصول إلى عدد الاحرف المسموح به</string>
@@ -145,6 +150,7 @@
     <string name="nc_manual">غير معيّن</string>
     <string name="nc_mark_as_read">تمييز كمقروء</string>
     <string name="nc_mark_as_unread">تمييز كغير مقروء</string>
+    <string name="nc_message_failed_to_send">فشل في إرسال الرسالة:</string>
     <string name="nc_message_quote_cancel_reply">الغاء الرد</string>
     <string name="nc_message_read">تمت قراءة الرسالة</string>
     <string name="nc_message_sent">تم إرسال الرسالة </string>

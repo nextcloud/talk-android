@@ -34,6 +34,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Самый большой первый</string>
     <string name="menu_item_sort_by_size_smallest_first">Самый маленький первый</string>
     <string name="message_search_begin_empty">Ничего не найдено</string>
+    <string name="message_search_begin_typing">Начните печатать для поиска …</string>
+    <string name="message_search_hint">Поиск …</string>
     <string name="messages">Сообщения</string>
     <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_about">О программе</string>
@@ -54,6 +56,7 @@
     <string name="nc_call_name">Наименование беседы</string>
     <string name="nc_call_name_is_same">Введённое имя не отличается от существующего</string>
     <string name="nc_call_notifications">Уведомления о звонках</string>
+    <string name="nc_call_reconnecting">Переподключение …</string>
     <string name="nc_call_ringing">Звонок</string>
     <string name="nc_call_state_in_call">%1$s на линии</string>
     <string name="nc_call_state_with_phone">%1$s с телефоном</string>
@@ -121,6 +124,7 @@
     <string name="nc_group">Группа</string>
     <string name="nc_groups">Группы</string>
     <string name="nc_guest">Гость</string>
+    <string name="nc_hint_enter_a_message">Напишите сообщение …</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_join_via_link">Присоединиться по ссылке</string>
@@ -129,6 +133,7 @@
     <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
     <string name="nc_leave">Покинуть беседу</string>
+    <string name="nc_leaving_call">Завершение вызова …</string>
     <string name="nc_license_summary">Открытое лицензионное соглашение GNU, версия 3</string>
     <string name="nc_license_title">Лицензия</string>
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
@@ -146,6 +151,7 @@
     <string name="nc_manual">Не задано</string>
     <string name="nc_mark_as_read">Отметить прочитанным</string>
     <string name="nc_mark_as_unread">Отметить не прочитанным</string>
+    <string name="nc_message_failed_to_send">Не удалось отправить сообщение:</string>
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
     <string name="nc_message_sent">Сообщение отправлено</string>

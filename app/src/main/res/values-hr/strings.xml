@@ -15,6 +15,7 @@
     <string name="dontClear">Ne briši</string>
     <string name="edit">Uredi</string>
     <string name="emoji_category_recent">Nedavni</string>
+    <string name="emoji_search">Pretraži emoji</string>
     <string name="encrypted">Šifrirano</string>
     <string name="failed_to_save">Spremanje %1$s nije uspjelo</string>
     <string name="file_list_folder">mapa</string>
@@ -31,6 +32,8 @@
     <string name="menu_item_sort_by_size_biggest_first">Najveći prvi</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmanji prvi</string>
     <string name="message_search_begin_empty">Nema rezultata pretraživanja</string>
+    <string name="message_search_begin_typing">Počnite unositi tekst za pretraživanje …</string>
+    <string name="message_search_hint">Traži …</string>
     <string name="messages">Poruke</string>
     <string name="nc_Server_account_imported">Odabrani račun sad je uvezen i dostupan</string>
     <string name="nc_about">Informacije</string>
@@ -50,6 +53,7 @@
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
     <string name="nc_call_name_is_same">Uneseno ime jednako je postojećem</string>
+    <string name="nc_call_reconnecting">Ponovno povezivanje …</string>
     <string name="nc_call_ringing">ZVONI</string>
     <string name="nc_call_state_in_call">%1$s u pozivu</string>
     <string name="nc_call_state_with_phone">%1$s putem telefona</string>
@@ -117,6 +121,7 @@
     <string name="nc_group">Grupa</string>
     <string name="nc_groups">Grupe</string>
     <string name="nc_guest">Gost</string>
+    <string name="nc_hint_enter_a_message">Unesi poruku …</string>
     <string name="nc_important_conversation">Važan razgovor</string>
     <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>
     <string name="nc_join_via_link">Pridružite se putem poveznice</string>
@@ -125,6 +130,7 @@
     <string name="nc_last_moderator_title">Nije moguće napustiti razgovor</string>
     <string name="nc_last_modified">%1$s | Posljednja izmjena: %2$s</string>
     <string name="nc_leave">Napusti razgovor</string>
+    <string name="nc_leaving_call">Napuštanje poziva …</string>
     <string name="nc_license_summary">Opća javna licenca za GNU, verzija 3.</string>
     <string name="nc_license_title">Licenca</string>
     <string name="nc_limit_hit">Dostignuto je ograničenje od %s znakova</string>
@@ -142,6 +148,7 @@
     <string name="nc_manual">Nije postavljeno</string>
     <string name="nc_mark_as_read">Označi kao pročitano</string>
     <string name="nc_mark_as_unread">Označi kao nepročitano</string>
+    <string name="nc_message_failed_to_send">Slanje poruke nije uspjelo:</string>
     <string name="nc_message_quote_cancel_reply">Prekini odgovor</string>
     <string name="nc_message_read">Poruka pročitana</string>
     <string name="nc_message_sent">Poruka poslana</string>

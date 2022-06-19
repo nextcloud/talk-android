@@ -18,6 +18,7 @@
     <string name="dontClear">Ne počisti</string>
     <string name="edit">Uredi</string>
     <string name="emoji_category_recent">Nedavne</string>
+    <string name="emoji_search">Preišči emoji</string>
     <string name="encrypted">Šifrirano</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
     <string name="file_list_folder">mapa</string>
@@ -34,6 +35,8 @@
     <string name="menu_item_sort_by_size_biggest_first">najprej največje</string>
     <string name="menu_item_sort_by_size_smallest_first">najprej najmanjše</string>
     <string name="message_search_begin_empty">Ni zadetkov iskanja</string>
+    <string name="message_search_begin_typing">Začnite tipkati za iskanje …</string>
+    <string name="message_search_hint">Poišči …</string>
     <string name="messages">Sporočila</string>
     <string name="nc_Server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
     <string name="nc_about">O programu</string>
@@ -149,6 +152,7 @@
     <string name="nc_manual">Ni nastavljeno</string>
     <string name="nc_mark_as_read">Označi kot prebrano</string>
     <string name="nc_mark_as_unread">Označi kot neprebrano</string>
+    <string name="nc_message_failed_to_send">Pošiljanje sporočila je spodletelo:</string>
     <string name="nc_message_quote_cancel_reply">Prekliči odgovor</string>
     <string name="nc_message_read">Sporočilo je prebrano</string>
     <string name="nc_message_sent">Sporočilo je poslano</string>
