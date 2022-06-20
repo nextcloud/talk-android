@@ -30,6 +30,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
@@ -138,12 +139,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
@@ -185,8 +189,8 @@ public class CallActivity extends CallBaseActivity {
     public MagicAudioManager audioManager;
 
     private static final String[] PERMISSIONS_CALL = {
-        android.Manifest.permission.CAMERA,
-        android.Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
     };
 
     private static final String[] PERMISSIONS_CAMERA = {
@@ -268,6 +272,13 @@ public class CallActivity extends CallBaseActivity {
 
     private AudioOutputDialog audioOutputDialog;
 
+    private final ActivityResultLauncher<String> requestBluetoothPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                enableBluetoothManager();
+            }
+        });
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -317,6 +328,9 @@ public class CallActivity extends CallBaseActivity {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestBluetoothPermission();
+        }
         basicInitialization();
         participantDisplayItems = new HashMap<>();
         initViews();
@@ -324,6 +338,22 @@ public class CallActivity extends CallBaseActivity {
             initiateCall();
         }
         updateSelfVideoViewPosition();
+    }
+
+    @SuppressLint("InlinedApi")
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void requestBluetoothPermission() {
+        if (ContextCompat.checkSelfPermission(
+            getContext(), Manifest.permission.BLUETOOTH_CONNECT) ==
+            PackageManager.PERMISSION_DENIED) {
+            requestBluetoothPermissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+    }
+
+    private void enableBluetoothManager() {
+        if (audioManager != null) {
+            audioManager.startBluetoothManager();
+        }
     }
 
     @Override
