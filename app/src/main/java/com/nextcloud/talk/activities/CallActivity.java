@@ -94,7 +94,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.webrtc.MagicAudioManager;
+import com.nextcloud.talk.webrtc.WebRtcAudioManger;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
@@ -186,7 +186,7 @@ public class CallActivity extends CallBaseActivity {
 
     public static final String TAG = "CallActivity";
 
-    public MagicAudioManager audioManager;
+    public WebRtcAudioManger audioManager;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -449,16 +449,16 @@ public class CallActivity extends CallBaseActivity {
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
-        audioManager = MagicAudioManager.create(getApplicationContext(), isVoiceOnlyCall);
+        audioManager = WebRtcAudioManger.create(getApplicationContext(), isVoiceOnlyCall);
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...");
         audioManager.start(this::onAudioManagerDevicesChanged);
 
         if (isVoiceOnlyCall) {
-            setAudioOutputChannel(MagicAudioManager.AudioDevice.EARPIECE);
+            setAudioOutputChannel(WebRtcAudioManger.AudioDevice.EARPIECE);
         } else {
-            setAudioOutputChannel(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+            setAudioOutputChannel(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE);
         }
 
         iceServers = new ArrayList<>();
@@ -492,14 +492,14 @@ public class CallActivity extends CallBaseActivity {
         microphoneInitialization();
     }
 
-    public void setAudioOutputChannel(MagicAudioManager.AudioDevice selectedAudioDevice) {
+    public void setAudioOutputChannel(WebRtcAudioManger.AudioDevice selectedAudioDevice) {
         if (audioManager != null) {
             audioManager.selectAudioDevice(selectedAudioDevice);
             updateAudioOutputButton(audioManager.getCurrentAudioDevice());
         }
     }
 
-    private void updateAudioOutputButton(MagicAudioManager.AudioDevice activeAudioDevice) {
+    private void updateAudioOutputButton(WebRtcAudioManger.AudioDevice activeAudioDevice) {
         switch (activeAudioDevice) {
             case BLUETOOTH:
                 binding.audioOutputButton.getHierarchy().setPlaceholderImage(
@@ -793,14 +793,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-        final MagicAudioManager.AudioDevice currentDevice,
-        final Set<MagicAudioManager.AudioDevice> availableDevices) {
+        final WebRtcAudioManger.AudioDevice currentDevice,
+        final Set<WebRtcAudioManger.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
             + "currentDevice: " + currentDevice);
 
-        final boolean shouldDisableProximityLock = (currentDevice.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
-            || currentDevice.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
-            || currentDevice.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
+        final boolean shouldDisableProximityLock = (currentDevice.equals(WebRtcAudioManger.AudioDevice.WIRED_HEADSET)
+            || currentDevice.equals(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE)
+            || currentDevice.equals(WebRtcAudioManger.AudioDevice.BLUETOOTH));
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);

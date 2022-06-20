@@ -54,10 +54,10 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MagicAudioManager {
-    private static final String TAG = MagicAudioManager.class.getCanonicalName();
+public class WebRtcAudioManger {
+    private static final String TAG = WebRtcAudioManger.class.getCanonicalName();
     private final Context magicContext;
-    private final MagicBluetoothManager bluetoothManager;
+    private final WebRtcBluetoothManager bluetoothManager;
     private final boolean useProximitySensor;
     private final AudioManager audioManager;
     private AudioManagerListener audioManagerListener;
@@ -79,12 +79,12 @@ public class MagicAudioManager {
 
     private final PowerManagerUtils powerManagerUtils;
 
-    private MagicAudioManager(Context context, boolean useProximitySensor) {
+    private WebRtcAudioManger(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
         magicContext = context;
         audioManager = ((AudioManager) context.getSystemService(Context.AUDIO_SERVICE));
-        bluetoothManager = MagicBluetoothManager.create(context, this);
+        bluetoothManager = WebRtcBluetoothManager.create(context, this);
         wiredHeadsetReceiver = new WiredHeadsetReceiver();
         amState = AudioManagerState.UNINITIALIZED;
 
@@ -110,8 +110,8 @@ public class MagicAudioManager {
     /**
      * Construction.
      */
-    public static MagicAudioManager create(Context context, boolean useProximitySensor) {
-       return new MagicAudioManager(context, useProximitySensor);
+    public static WebRtcAudioManger create(Context context, boolean useProximitySensor) {
+       return new WebRtcAudioManger(context, useProximitySensor);
     }
 
     public void startBluetoothManager() {
@@ -141,7 +141,7 @@ public class MagicAudioManager {
                                                                        .SENSOR_NEAR, null, null, null, null));
 
             } else {
-                setAudioDeviceInternal(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+                setAudioDeviceInternal(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE);
                 Log.d(TAG, "switched to SPEAKER_PHONE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=far");
 
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
@@ -416,17 +416,17 @@ public class MagicAudioManager {
             + "current=" + currentAudioDevice + ", "
             + "user selected=" + userSelectedAudioDevice);
 
-        if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE
-            || bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE
-            || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_DISCONNECTING) {
+        if (bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_DISCONNECTING) {
             bluetoothManager.updateDevice();
         }
 
         Set<AudioDevice> newAudioDevices = new HashSet<>();
 
-        if (bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED
-            || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTING
-            || bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE) {
+        if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE) {
             newAudioDevices.add(AudioDevice.BLUETOOTH);
         }
 
@@ -446,7 +446,7 @@ public class MagicAudioManager {
 
         // Correct user selected audio devices if needed.
         if (userSelectedAudioDevice == AudioDevice.BLUETOOTH
-            && bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_UNAVAILABLE) {
+            && bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_UNAVAILABLE) {
             userSelectedAudioDevice = AudioDevice.SPEAKER_PHONE;
         }
         if (userSelectedAudioDevice == AudioDevice.SPEAKER_PHONE && hasWiredHeadset) {
@@ -460,21 +460,21 @@ public class MagicAudioManager {
         // Need to start Bluetooth if it is available and user either selected it explicitly or
         // user did not select any output device.
         boolean needBluetoothAudioStart =
-            bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE
+            bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
                 && (userSelectedAudioDevice == AudioDevice.NONE
                 || userSelectedAudioDevice == AudioDevice.BLUETOOTH);
 
         // Need to stop Bluetooth audio if user selected different device and
         // Bluetooth SCO connection is established or in the process.
         boolean needBluetoothAudioStop =
-            (bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED
-                || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTING)
+            (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
+                || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING)
                 && (userSelectedAudioDevice != AudioDevice.NONE
                 && userSelectedAudioDevice != AudioDevice.BLUETOOTH);
 
-        if (bluetoothManager.getState() == MagicBluetoothManager.State.HEADSET_AVAILABLE
-            || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTING
-            || bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED) {
+        if (bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
+            || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
             Log.d(TAG, "Need BT audio: start=" + needBluetoothAudioStart + ", "
                 + "stop=" + needBluetoothAudioStop + ", "
                 + "BT state=" + bluetoothManager.getState());
@@ -499,7 +499,7 @@ public class MagicAudioManager {
         // Update selected audio device.
         AudioDevice newCurrentAudioDevice;
 
-        if (bluetoothManager.getState() == MagicBluetoothManager.State.SCO_CONNECTED) {
+        if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
             // If a Bluetooth is connected, then it should be used as output audio
             // device. Note that it is not sufficient that a headset is available;
             // an active SCO channel must also be up and running.

@@ -58,15 +58,15 @@ import java.util.Set;
 
 import androidx.core.app.ActivityCompat;
 
-public class MagicBluetoothManager {
-    private static final String TAG = MagicBluetoothManager.class.getCanonicalName();
+public class WebRtcBluetoothManager {
+    private static final String TAG = WebRtcBluetoothManager.class.getCanonicalName();
 
     // Timeout interval for starting or stopping audio to a Bluetooth SCO device.
     private static final int BLUETOOTH_SCO_TIMEOUT_MS = 4000;
     // Maximum number of SCO connection attempts.
     private static final int MAX_SCO_CONNECTION_ATTEMPTS = 2;
     private final Context apprtcContext;
-    private final MagicAudioManager apprtcAudioManager;
+    private final WebRtcAudioManger webRtcAudioManager;
     private final AudioManager audioManager;
     private final Handler handler;
     private final BluetoothProfile.ServiceListener bluetoothServiceListener;
@@ -82,11 +82,11 @@ public class MagicBluetoothManager {
     private final Runnable bluetoothTimeoutRunnable = this::bluetoothTimeout;
     private boolean started = false;
 
-    protected MagicBluetoothManager(Context context, MagicAudioManager audioManager) {
+    protected WebRtcBluetoothManager(Context context, WebRtcAudioManger audioManager) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
         apprtcContext = context;
-        apprtcAudioManager = audioManager;
+        webRtcAudioManager = audioManager;
         this.audioManager = getAudioManager(context);
         bluetoothState = State.UNINITIALIZED;
         bluetoothServiceListener = new BluetoothServiceListener();
@@ -97,8 +97,8 @@ public class MagicBluetoothManager {
     /**
      * Construction.
      */
-    static MagicBluetoothManager create(Context context, MagicAudioManager audioManager) {
-        return new MagicBluetoothManager(context, audioManager);
+    static WebRtcBluetoothManager create(Context context, WebRtcAudioManger audioManager) {
+        return new WebRtcBluetoothManager(context, audioManager);
     }
 
     /**
@@ -356,7 +356,7 @@ public class MagicBluetoothManager {
     private void updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread();
         Log.d(TAG, "updateAudioDeviceState");
-        apprtcAudioManager.updateAudioDeviceState();
+        webRtcAudioManager.updateAudioDeviceState();
     }
 
     /**
