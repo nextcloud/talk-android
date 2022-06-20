@@ -36,16 +36,23 @@ import io.requery.reactivex.ReactiveSupport;
 import io.requery.sql.Configuration;
 import io.requery.sql.EntityDataStore;
 import net.orange_box.storebox.StoreBox;
+import net.sqlcipher.database.SQLiteDatabase;
 
 import javax.inject.Singleton;
 
 @Module
 public class DatabaseModule {
-    public static final int DB_VERSION = 8;
+    public static final int DB_VERSION = 7;
 
     @Provides
     @Singleton
-    public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(@NonNull final Context context) {
+    public SqlCipherDatabaseSource provideSqlCipherDatabaseSource(
+        @NonNull final Context context,
+        final AppPreferences appPreferences) {
+        int version = DB_VERSION;
+        if (appPreferences.getIsDbRoomMigrated()) {
+            version++;
+        }
         return new SqlCipherDatabaseSource(
             context,
             Models.DEFAULT,
@@ -57,7 +64,14 @@ public class DatabaseModule {
                 .trim()
                 + ".sqlite",
             context.getString(R.string.nc_talk_database_encryption_key),
-            DB_VERSION);
+            version) {
+            @Override
+            public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+                if (newVersion < 7) {
+                    super.onDowngrade(db, oldVersion, newVersion);
+                }
+            }
+        };
     }
 
     @Provides
@@ -71,7 +85,7 @@ public class DatabaseModule {
     @Provides
     @Singleton
     public AppPreferences providePreferences(@NonNull final Context poContext) {
-        AppPreferences preferences =  StoreBox.create(poContext, AppPreferences.class);
+        AppPreferences preferences = StoreBox.create(poContext, AppPreferences.class);
         preferences.removeLinkPreviews();
         return preferences;
     }

@@ -116,6 +116,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
+                if (!appPreferences.isDbRoomMigrated) {
+                    appPreferences.isDbRoomMigrated = true
+                }
                 GlobalScope.launch {
                     usersRepository.getUsers().collect {
                         if (it.isNotEmpty()) {

@@ -288,6 +288,13 @@ public interface AppPreferences {
 
     @KeyByString("db_cypher_v4_upgrade")
     void setIsDbCypherToUpgrade(boolean value);
+
+    @KeyByString("db_room_migrated")
+    @DefaultValue(R.bool.value_false)
+    boolean getIsDbRoomMigrated();
+
+    @KeyByString("db_room_migrated")
+    void setIsDbRoomMigrated(boolean value);
     
     @KeyByResource(R.string.nc_settings_phone_book_integration_key)
     @RegisterChangeListenerMethod
