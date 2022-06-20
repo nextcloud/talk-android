@@ -58,7 +58,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACTIVE_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -66,6 +65,9 @@ import io.reactivex.schedulers.Schedulers
 import io.requery.Persistable
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import io.requery.reactivex.ReactiveEntityStore
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.parceler.Parcels
 import javax.inject.Inject
 
@@ -115,10 +117,16 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             onNewIntent(intent)
         } else if (!router!!.hasRootController()) {
             if (hasDb) {
-                if (usersRepository.getUsers().isNotEmpty()) {
-                    setDefaultRootController()
-                } else {
-                    launchLoginScreen()
+                GlobalScope.launch {
+                    if (usersRepository.getUsers().isNotEmpty()) {
+                        runOnUiThread {
+                            setDefaultRootController()
+                        }
+                    } else {
+                        runOnUiThread {
+                            launchLoginScreen()
+                        }
+                    }
                 }
             } else {
                 launchLoginScreen()
