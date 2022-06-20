@@ -17,7 +17,7 @@ class PollCreateOptionViewHolder(
     @SuppressLint("SetTextI18n")
     fun bind(
         pollCreateOptionItem: PollCreateOptionItem,
-        clickListener: PollCreateOptionsItemClickListener,
+        itemsListener: PollCreateOptionsItemListener,
         position: Int
     ) {
 
@@ -28,7 +28,7 @@ class PollCreateOptionViewHolder(
         binding.pollOptionText.setText(pollCreateOptionItem.pollOption)
 
         binding.pollOptionDelete.setOnClickListener {
-            clickListener.onRemoveOptionsItemClick(pollCreateOptionItem, position)
+            itemsListener.onRemoveOptionsItemClick(pollCreateOptionItem, position)
         }
 
         textListener = getTextWatcher(pollCreateOptionItem)

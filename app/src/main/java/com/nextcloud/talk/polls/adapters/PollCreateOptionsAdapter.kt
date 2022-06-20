@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.databinding.PollCreateOptionsItemBinding
 
 class PollCreateOptionsAdapter(
-    private val clickListener: PollCreateOptionsItemClickListener
+    private val clickListener: PollCreateOptionsItemListener
 ) : RecyclerView.Adapter<PollCreateOptionViewHolder>() {
 
     internal var list: ArrayList<PollCreateOptionItem> = ArrayList<PollCreateOptionItem>()

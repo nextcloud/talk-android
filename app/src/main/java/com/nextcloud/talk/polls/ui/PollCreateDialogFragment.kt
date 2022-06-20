@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
@@ -18,14 +17,14 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollCreateBinding
 import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
 import com.nextcloud.talk.polls.adapters.PollCreateOptionsAdapter
-import com.nextcloud.talk.polls.adapters.PollCreateOptionsItemClickListener
+import com.nextcloud.talk.polls.adapters.PollCreateOptionsItemListener
 import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PollCreateDialogFragment(
     private val roomToken: String
-) : DialogFragment(), PollCreateOptionsItemClickListener {
+) : DialogFragment(), PollCreateOptionsItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -40,7 +39,6 @@ class PollCreateDialogFragment(
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
-        viewModel.options.observe(this, optionsObserver)
     }
 
     @SuppressLint("InflateParams")
@@ -61,6 +59,11 @@ class PollCreateDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.options.observe(viewLifecycleOwner) { options -> adapter?.updateOptionsList(options) }
+        viewModel.question.observe(viewLifecycleOwner) { binding.pollCreateQuestion.setText(it) }
+        viewModel.privatePoll.observe(viewLifecycleOwner) { binding.pollPrivatePollCheckbox.isChecked = it }
+        viewModel.multipleAnswer.observe(viewLifecycleOwner) { binding.pollMultipleAnswersCheckbox.isChecked = it }
+
         binding.pollCreateOptionsList.layoutManager = LinearLayoutManager(context)
 
         adapter = PollCreateOptionsAdapter(this)
@@ -68,20 +71,18 @@ class PollCreateDialogFragment(
 
         viewModel.initialize(roomToken)
 
+        setupListeners()
+        setupStateObserver()
+    }
+
+    private fun setupListeners() {
         binding.pollAddOptionsItem.setOnClickListener {
             viewModel.addOption()
-            // viewModel.options?.value?.let { it1 -> adapter?.notifyItemInserted(it1.size) }
-
-            // viewModel.options?.value?.let { it1 -> adapter?.notifyItemChanged(it1.size) }
-            // viewModel.options?.value?.let { it1 -> adapter?.notifyItemRangeInserted(it1.size, 1) }
         }
 
         binding.pollDismiss.setOnClickListener {
             dismiss()
         }
-
-
-
 
         binding.pollCreateQuestion.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
@@ -93,52 +94,63 @@ class PollCreateDialogFragment(
             }
 
             override fun onTextChanged(question: CharSequence, start: Int, before: Int, count: Int) {
-                // TODO make question a livedata
-                // if(question != viewmodel.question.value) viewModel.setQuestion(question)
-                viewModel.question = question.toString()
+                if (question.toString() != viewModel.question.value) {
+                    viewModel.setQuestion(question.toString())
+                    binding.pollCreateQuestion.setSelection(binding.pollCreateQuestion.length())
+                }
             }
         })
 
-        // viewModel.question.observe { it ->  binding.pollCreateQuestion.text = it }
-
         binding.pollPrivatePollCheckbox.setOnClickListener {
-            // FIXME
-            viewModel.multipleAnswer = binding.pollMultipleAnswersCheckbox.isChecked
+            viewModel.setPrivatePoll(binding.pollPrivatePollCheckbox.isChecked)
         }
 
         binding.pollMultipleAnswersCheckbox.setOnClickListener {
-            viewModel.multipleAnswer = binding.pollMultipleAnswersCheckbox.isChecked
+            viewModel.setMultipleAnswer(binding.pollMultipleAnswersCheckbox.isChecked)
         }
 
         binding.pollCreateButton.setOnClickListener {
             viewModel.createPoll()
         }
+    }
 
+    private fun setupStateObserver() {
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                PollCreateViewModel.InitialState -> {}
-
-                is PollCreateViewModel.PollCreatedState -> {
-                    dismiss()
-                }
+                // PollCreateViewModel.InitialState -> showInitial()
+                is PollCreateViewModel.PollCreatedState -> dismiss()
+                is PollCreateViewModel.PollCreationFailedState -> dismiss()
+                is PollCreateViewModel.PollCreatingState -> updateDialog(state)
             }
         }
+        // viewModel.state.observe(this) { state ->
+        //     when (state) {
+        //         MessageSearchViewModel.InitialState -> showInitial()
+        //         MessageSearchViewModel.EmptyState -> showEmpty()
+        //         is MessageSearchViewModel.LoadedState -> showLoaded(state)
+        //         MessageSearchViewModel.LoadingState -> showLoading()
+        //         MessageSearchViewModel.ErrorState -> showError()
+        //         is MessageSearchViewModel.FinishedState -> onFinish()
+        //     }
+        // }
+    }
+
+    private fun updateDialog(state: PollCreateViewModel.PollCreatingState) {
+        // binding.pollCreateQuestion.setText(state.question)
+        //
+        // adapter!!.updateOptionsList(state.options)
+        //
+        // binding.pollPrivatePollCheckbox.isChecked = state.privatePoll
+        // binding.pollMultipleAnswersCheckbox.isChecked = state.multipleAnswer
+    }
+
+    private fun showInitial() {
+        binding.pollCreateButton.isEnabled = false
     }
 
     override fun onRemoveOptionsItemClick(pollCreateOptionItem: PollCreateOptionItem, position: Int) {
         viewModel.removeOption(pollCreateOptionItem)
-        // adapter?.notifyItemRemoved(position)
-
-        // adapter?.notifyItemChanged(position)
-        // adapter?.notifyItemRangeRemoved(position, 1)
     }
-
-    var optionsObserver: Observer<ArrayList<PollCreateOptionItem>> =
-        object : Observer<ArrayList<PollCreateOptionItem>> {
-            override fun onChanged(options: ArrayList<PollCreateOptionItem>) {
-                adapter?.updateOptionsList(options)
-            }
-        }
 
     /**
      * Fragment creator

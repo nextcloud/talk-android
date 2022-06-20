@@ -16,24 +16,27 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
 
     private lateinit var roomToken: String
 
-    // TODO remove testing items
-    var defaultOptions: MutableList<PollCreateOptionItem> = mutableListOf<PollCreateOptionItem>().apply {
-        for (i in 1..3) {
-            val item = PollCreateOptionItem("item " + i)
-            this.add(item)
-        }
-    }
+    // private var _options: MutableLiveData<ArrayList<PollCreateOptionItem>> =
+    //     MutableLiveData<ArrayList<PollCreateOptionItem>>()
+    // val options: LiveData<ArrayList<PollCreateOptionItem>>
+    //     get() = _options
 
     private var _options: MutableLiveData<ArrayList<PollCreateOptionItem>> =
-        MutableLiveData<ArrayList<PollCreateOptionItem>>(defaultOptions)
+        MutableLiveData<ArrayList<PollCreateOptionItem>>()
     val options: LiveData<ArrayList<PollCreateOptionItem>>
         get() = _options
 
-    var question: String = ""
+    private var _question: MutableLiveData<String> = MutableLiveData<String>()
+    val question: LiveData<String>
+        get() = _question
 
-    // lateinit var options: List<String>
-    var privatePoll: Boolean = false
-    var multipleAnswer: Boolean = false
+    private var _privatePoll: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+    var privatePoll: LiveData<Boolean> = _privatePoll
+        get() = _privatePoll
+
+    private var _multipleAnswer: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
+    var multipleAnswer: LiveData<Boolean> = _multipleAnswer
+        get() = _multipleAnswer
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -56,10 +59,6 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         disposable?.dispose()
     }
 
-    private fun <T> MutableLiveData<T>.notifyObserver() {
-        this.value = this.value
-    }
-
     fun addOption() {
         val item = PollCreateOptionItem("")
         val currentOptions: ArrayList<PollCreateOptionItem> = _options.value ?: ArrayList()
@@ -75,33 +74,37 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
 
     fun createPoll() {
         var maxVotes = 1
-        if (multipleAnswer) {
+        if (multipleAnswer.value == true) {
             maxVotes = 0
         }
 
         var resultMode = 0
-        if (privatePoll) {
+        if (privatePoll.value == true) {
             resultMode = 1
         }
 
-        val items = _options.value!!
-        repository.createPoll(roomToken, question, items.map { it.pollOption }, resultMode, maxVotes)
-            ?.doOnSubscribe { disposable = it }
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(PollObserver())
+        if (question.value?.isNotEmpty() == true && _options.value?.isNotEmpty() == true) {
+            repository.createPoll(
+                roomToken, question.value!!, _options.value!!.map { it.pollOption }, resultMode,
+                maxVotes
+            )
+                ?.doOnSubscribe { disposable = it }
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(PollObserver())
+        }
     }
 
-    private fun map(
-        list: ArrayList<PollCreateOptionItem>,
-    ): List<String> {
-        val resultList: ArrayList<String>? = ArrayList()
+    fun setQuestion(question: String) {
+        _question.value = question
+    }
 
-        list.forEach {
-            resultList?.add(it.pollOption)
-        }
+    fun setPrivatePoll(checked: Boolean) {
+        _privatePoll.value = checked
+    }
 
-        return resultList?.toList()!!
+    fun setMultipleAnswer(checked: Boolean) {
+        _multipleAnswer.value = checked
     }
 
     inner class PollObserver : Observer<Poll> {

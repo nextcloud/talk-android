@@ -1,5 +1,6 @@
 package com.nextcloud.talk.polls.adapters
 
-interface PollCreateOptionsItemClickListener {
+interface PollCreateOptionsItemListener {
+
     fun onRemoveOptionsItemClick(pollCreateOptionItem: PollCreateOptionItem, position: Int)
 }
