@@ -41,7 +41,7 @@ import javax.inject.Singleton;
 
 @Module
 public class DatabaseModule {
-    public static final int DB_VERSION = 7;
+    public static final int DB_VERSION = 8;
 
     @Provides
     @Singleton
@@ -55,7 +55,7 @@ public class DatabaseModule {
                 .toLowerCase()
                 .replace(" ", "_")
                 .trim()
-                + ".sqlite_off",
+                + ".sqlite",
             context.getString(R.string.nc_talk_database_encryption_key),
             DB_VERSION);
     }
