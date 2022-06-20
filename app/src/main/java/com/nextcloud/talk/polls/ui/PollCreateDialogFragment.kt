@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
@@ -39,6 +40,7 @@ class PollCreateDialogFragment(
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[PollCreateViewModel::class.java]
+        viewModel.options.observe(this, optionsObserver)
     }
 
     @SuppressLint("InflateParams")
@@ -59,21 +61,19 @@ class PollCreateDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.pollCreateOptionsList.layoutManager = LinearLayoutManager(context)
+
         adapter = PollCreateOptionsAdapter(this)
-        binding?.pollCreateOptionsList?.adapter = adapter
-        binding?.pollCreateOptionsList?.layoutManager = LinearLayoutManager(context)
+        binding.pollCreateOptionsList.adapter = adapter
 
         viewModel.initialize(roomToken)
 
-        for (i in 1..3) {
-            val item = PollCreateOptionItem("a")
-            adapter?.list?.add(item)
-        }
+        binding.pollAddOptionsItem.setOnClickListener {
+            viewModel.addOption()
+            // viewModel.options?.value?.let { it1 -> adapter?.notifyItemInserted(it1.size) }
 
-        binding.pollAddOption.setOnClickListener {
-            val item = PollCreateOptionItem("a")
-            adapter?.list?.add(item)
-            adapter?.notifyDataSetChanged()
+            // viewModel.options?.value?.let { it1 -> adapter?.notifyItemChanged(it1.size) }
+            // viewModel.options?.value?.let { it1 -> adapter?.notifyItemRangeInserted(it1.size, 1) }
         }
 
         binding.pollDismiss.setOnClickListener {
@@ -93,25 +93,16 @@ class PollCreateDialogFragment(
             }
 
             override fun onTextChanged(question: CharSequence, start: Int, before: Int, count: Int) {
+                // TODO make question a livedata
+                // if(question != viewmodel.question.value) viewModel.setQuestion(question)
                 viewModel.question = question.toString()
             }
         })
 
-        // binding.option1.addTextChangedListener(object : TextWatcher {
-        //     override fun afterTextChanged(s: Editable) {
-        //         // unused atm
-        //     }
-        //
-        //     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-        //         // unused atm
-        //     }
-        //
-        //     override fun onTextChanged(option: CharSequence, start: Int, before: Int, count: Int) {
-        //         viewModel.options = listOf(option.toString())
-        //     }
-        // })
+        // viewModel.question.observe { it ->  binding.pollCreateQuestion.text = it }
 
         binding.pollPrivatePollCheckbox.setOnClickListener {
+            // FIXME
             viewModel.multipleAnswer = binding.pollMultipleAnswersCheckbox.isChecked
         }
 
@@ -132,14 +123,22 @@ class PollCreateDialogFragment(
                 }
             }
         }
-
-        viewModel.initialize(roomToken)
     }
 
-    override fun onDeleteClick(pollCreateOptionItem: PollCreateOptionItem, position: Int) {
-        adapter?.list?.remove(pollCreateOptionItem)
-        adapter?.notifyItemRemoved(position)
+    override fun onRemoveOptionsItemClick(pollCreateOptionItem: PollCreateOptionItem, position: Int) {
+        viewModel.removeOption(pollCreateOptionItem)
+        // adapter?.notifyItemRemoved(position)
+
+        // adapter?.notifyItemChanged(position)
+        // adapter?.notifyItemRangeRemoved(position, 1)
     }
+
+    var optionsObserver: Observer<ArrayList<PollCreateOptionItem>> =
+        object : Observer<ArrayList<PollCreateOptionItem>> {
+            override fun onChanged(options: ArrayList<PollCreateOptionItem>) {
+                adapter?.updateOptionsList(options)
+            }
+        }
 
     /**
      * Fragment creator

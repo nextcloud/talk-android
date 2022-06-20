@@ -9,7 +9,7 @@ class PollCreateOptionsAdapter(
     private val clickListener: PollCreateOptionsItemClickListener
 ) : RecyclerView.Adapter<PollCreateOptionViewHolder>() {
 
-    internal var list: MutableList<PollCreateOptionItem> = ArrayList<PollCreateOptionItem>()
+    internal var list: ArrayList<PollCreateOptionItem> = ArrayList<PollCreateOptionItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PollCreateOptionViewHolder {
         val itemBinding = PollCreateOptionsItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -18,10 +18,16 @@ class PollCreateOptionsAdapter(
     }
 
     override fun onBindViewHolder(holder: PollCreateOptionViewHolder, position: Int) {
-        holder.bind(list[position], clickListener, position)
+        val currentItem = list[position]
+        holder.bind(currentItem, clickListener, position)
     }
 
     override fun getItemCount(): Int {
         return list.size
+    }
+
+    fun updateOptionsList(optionsList: ArrayList<PollCreateOptionItem>) {
+        list = optionsList
+        notifyDataSetChanged()
     }
 }

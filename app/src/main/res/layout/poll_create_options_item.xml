@@ -6,7 +6,7 @@
     android:orientation="horizontal"
     tools:background="@color/white">
 
-    <com.nextcloud.talk.utils.EmojiTextInputEditText
+    <EditText
         android:id="@+id/poll_option_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

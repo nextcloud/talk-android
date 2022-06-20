@@ -68,7 +68,7 @@
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/poll_add_option"
+        android:id="@+id/poll_add_options_item"
         style="@style/OutlinedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
