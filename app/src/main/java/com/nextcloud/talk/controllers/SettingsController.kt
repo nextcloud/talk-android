@@ -53,7 +53,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -64,7 +63,6 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
@@ -150,10 +148,12 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
             resources!!.getString(R.string.nc_settings)
 
     private fun getCurrentUser() {
-        (activity as MainActivity).lifecycleScope.launchWhenCreated {
+        scope.launch {
             currentUserProvider.currentUser.collect {
-                currentUser = it
-                credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+                Log.e(TAG, "User: $it")
+                this@SettingsController.currentUser = it
+                this@SettingsController.credentials =
+                    ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
             }
         }
     }
@@ -325,7 +325,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         var port = -1
         val uri: URI
         try {
-            uri = URI(currentUser!!.baseUrl)
+            uri = URI(this@SettingsController.currentUser!!.baseUrl)
             host = uri.host
             port = uri.port
         } catch (e: URISyntaxException) {
