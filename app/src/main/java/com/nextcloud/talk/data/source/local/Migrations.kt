@@ -20,6 +20,7 @@
 
 package com.nextcloud.talk.data.source.local
 
+import android.util.Log
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
@@ -27,12 +28,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 object Migrations {
     val MIGRATION_6_8 = object : Migration(6, 8) {
         override fun migrate(database: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 6 to 8")
             migrateToRoom(database)
         }
     }
 
     val MIGRATION_7_8 = object : Migration(7, 8) {
         override fun migrate(database: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 7 to 8")
             migrateToRoom(database)
         }
     }
