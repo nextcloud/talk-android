@@ -53,6 +53,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import autodagger.AutoInjector
@@ -63,6 +64,7 @@ import com.bluelinelabs.conductor.changehandler.VerticalChangeHandler
 import com.google.android.material.textfield.TextInputLayout
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
@@ -89,6 +91,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ARE_CALL_SOUNDS
 import com.nextcloud.talk.utils.database.user.CapabilitiesNgUtil
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
@@ -98,6 +101,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -120,6 +126,9 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     @Inject
     lateinit var userRepository: UsersRepository
 
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
+
     private var saveStateHandler: LovelySaveStateHandler? = null
     private var currentUser: UserNgEntity? = null
     private var credentials: String? = null
@@ -134,13 +143,19 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
 
+    val scope = MainScope()
+
     override val title: String
         get() =
             resources!!.getString(R.string.nc_settings)
 
     private fun getCurrentUser() {
-        currentUser = userRepository.getActiveUser()
-        credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+        (activity as MainActivity).lifecycleScope.launchWhenCreated {
+            currentUserProvider.currentUser.collect {
+                currentUser = it
+                credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+            }
+        }
     }
 
     override fun onViewBound(view: View) {
@@ -189,10 +204,18 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun setupPhoneBookIntegration() {
-        if (CapabilitiesNgUtil.isPhoneBookIntegrationAvailable(userRepository.getActiveUser())) {
-            binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
-        } else {
-            binding.settingsPhoneBookIntegration.visibility = View.GONE
+        scope.launch {
+            userRepository.getActiveUser().collect {
+                if (CapabilitiesNgUtil.isPhoneBookIntegrationAvailable(it)) {
+                    activity!!.runOnUiThread {
+                        binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
+                    }
+                } else {
+                    activity!!.runOnUiThread {
+                        binding.settingsPhoneBookIntegration.visibility = View.GONE
+                    }
+                }
+            }
         }
     }
 
@@ -729,6 +752,8 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         appPreferences?.unregisterThemeChangeListener(themeChangeListener)
         appPreferences?.unregisterReadPrivacyChangeListener(readPrivacyChangeListener)
         appPreferences?.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener)
+
+        scope.cancel()
 
         super.onDestroy()
     }

@@ -22,7 +22,6 @@
 package com.nextcloud.talk.users
 
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.UserNgEntity
@@ -30,35 +29,54 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import java.lang.Boolean.FALSE
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {
-    fun anyUserExists(): Boolean {
-        return userRepository.getUsers().isNotEmpty()
+    suspend fun anyUserExists(): Boolean {
+        var result = FALSE
+        userRepository.getUsers().collect {
+            result = it.isNotEmpty()
+        }
+
+        return result
     }
 
-    fun hasMultipleUsers(): Boolean {
-        return userRepository.getUsers().size > 1
+    suspend fun hasMultipleUsers(): Flow<Boolean> {
+        var result = FALSE
+        userRepository.getUsers().collect {
+            result = it.size > 1
+        }
+
+        return flowOf(result)
     }
 
-    val users: List<UserNgEntity>
+    val users: Flow<List<UserNgEntity>>
         get() = userRepository.getUsers()
 
-    val usersScheduledForDeletion: List<UserNgEntity>
+    val usersScheduledForDeletion: Flow<List<UserNgEntity>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    suspend fun setAnyUserAndSetAsActive(): UserNgEntity? {
+    private suspend fun setAnyUserAndSetAsActive(): Flow<UserNgEntity?> {
         val results = userRepository.getUsersNotScheduledForDeletion()
-        if (results.isNotEmpty()) {
-            val user = results[0]
-            user.current = true
-            userRepository.updateUser(user)
-            return user
+
+        var result: UserNgEntity? = null
+
+        results.collect {
+            if (it.isNotEmpty()) {
+                val user = it[0]
+                user.current = true
+                userRepository.updateUser(user)
+                result = user
+            }
         }
-        return null
+
+        return flowOf(result)
     }
 
-    override val currentUser: UserNgEntity?
+    override val currentUser: Flow<UserNgEntity?>
         get() {
             return userRepository.getActiveUser()
         }
@@ -71,59 +89,84 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         userRepository.deleteUserWithId(internalId)
     }
 
-    fun getUserById(userId: String): UserNgEntity? {
+    fun getUserById(userId: String): Flow<UserNgEntity?> {
         return userRepository.getUserWithUserId(userId)
     }
 
-    fun getUserWithId(id: Long): UserNgEntity? {
+    fun getUserWithId(id: Long): Flow<UserNgEntity?> {
         return userRepository.getUserWithId(id)
     }
 
     suspend fun disableAllUsersWithoutId(userId: Long) {
         val results = userRepository.getUsersWithoutUserId(userId)
-        if (results.isNotEmpty()) {
-            for (entity in results) {
-                entity.current = false
-                userRepository.updateUser(entity)
+
+        results.collect {
+            if (it.isNotEmpty()) {
+                for (entity in it) {
+                    entity.current = false
+                    userRepository.updateUser(entity)
+                }
             }
         }
     }
 
-    suspend fun checkIfUserIsScheduledForDeletion(username: String, server: String): Boolean {
+    suspend fun checkIfUserIsScheduledForDeletion(username: String, server: String): Flow<Boolean> {
         val results = userRepository.getUserWithUsernameAndServer(username, server)
-        return results?.scheduledForDeletion ?: false
+        var result = FALSE
+        results.collect {
+            result = it?.scheduledForDeletion ?: FALSE
+        }
+
+        return flowOf(result)
     }
 
-    fun getUserWithInternalId(id: Long): UserNgEntity? {
+    fun getUserWithInternalId(id: Long): Flow<UserNgEntity?> {
         return userRepository.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    suspend fun getIfUserWithUsernameAndServer(username: String, server: String): Boolean {
-        return userRepository.getUserWithUsernameAndServer(username, server) != null
-    }
-
-    suspend fun scheduleUserForDeletionWithId(id: Long): Boolean {
-        val result = userRepository.getUserWithId(id)
-
-        if (result != null) {
-            result.scheduledForDeletion = true
-            result.current = false
-            userRepository.updateUser(result)
+    suspend fun getIfUserWithUsernameAndServer(username: String, server: String): Flow<Boolean> {
+        val results = userRepository.getUserWithUsernameAndServer(username, server)
+        var result = FALSE
+        results.collect {
+            result = it != null
         }
 
-        return setAnyUserAndSetAsActive() != null
+        return flowOf(result)
+    }
+
+    suspend fun scheduleUserForDeletionWithId(id: Long): Flow<Boolean> {
+        val results = userRepository.getUserWithId(id)
+        var result = FALSE
+
+        results.collect {
+            if (it != null) {
+                it.scheduledForDeletion = true
+                it.current = false
+                userRepository.updateUser(it)
+            }
+        }
+
+        setAnyUserAndSetAsActive().collect {
+            result = it != null
+        }
+
+        return flowOf(result)
     }
 
     suspend fun createOrUpdateUser(
         username: String?,
         userAttributes: UserAttributes,
-    ): LiveData<UserNgEntity?> {
-        var user = if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
-            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
+    ): Flow<UserNgEntity?> {
+        var user: UserNgEntity? = null
+
+        if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
+            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl).collect {
+                user = it
+            }
         } else if (userAttributes.id != null) {
-            userRepository.getUserWithId(userAttributes.id)
-        } else {
-            null
+            userRepository.getUserWithId(userAttributes.id).collect {
+                user = it
+            }
         }
 
         if (user == null) {
@@ -133,12 +176,13 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             )
         } else {
             updateUserData(
-                user,
+                user!!,
                 userAttributes
             )
         }
-        userRepository.insertUser(user)
-        return userRepository.getUserWithIdLiveData(user.id)
+
+        userRepository.insertUser(user!!)
+        return userRepository.getUserWithIdLiveData(user!!.id)
     }
 
     private fun updateUserData(user: UserNgEntity, userAttributes: UserAttributes) {

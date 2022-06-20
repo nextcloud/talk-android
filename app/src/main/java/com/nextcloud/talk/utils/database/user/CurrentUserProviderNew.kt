@@ -21,7 +21,8 @@
 package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.data.user.model.UserNgEntity
+import kotlinx.coroutines.flow.Flow
 
 interface CurrentUserProviderNew {
-    val currentUser: UserNgEntity?
+    val currentUser: Flow<UserNgEntity?>
 }

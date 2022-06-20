@@ -22,29 +22,28 @@
 
 package com.nextcloud.talk.data.user
 
-import androidx.lifecycle.LiveData
 import com.nextcloud.talk.data.user.model.UserNgEntity
-import com.nextcloud.talk.data.user.model.User
+import kotlinx.coroutines.flow.Flow
 
 @Suppress("TooManyFunctions")
 interface UsersRepository {
-    fun getActiveUserLiveData(): LiveData<UserNgEntity?>
-    fun getActiveUser(): UserNgEntity?
-    fun getUsers(): List<UserNgEntity>
-    fun getUserWithId(id: Long): UserNgEntity?
-    fun getUserWithIdLiveData(id: Long): LiveData<UserNgEntity?>
-    fun getUserWithIdNotScheduledForDeletion(id: Long): UserNgEntity?
-    fun getUserWithUserId(userId: String): UserNgEntity?
-    fun getUsersWithoutUserId(userId: Long): List<UserNgEntity>
-    fun getUsersLiveData(): LiveData<List<User>>
-    fun getUsersLiveDataWithoutActive(): LiveData<List<User>>
-    fun getUsersScheduledForDeletion(): List<UserNgEntity>
-    fun getUsersNotScheduledForDeletion(): List<UserNgEntity>
-    suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
+    fun getActiveUserLiveData(): Flow<UserNgEntity?>
+    fun getActiveUser(): Flow<UserNgEntity?>
+    fun getUsers(): Flow<List<UserNgEntity>>
+    fun getUserWithId(id: Long): Flow<UserNgEntity?>
+    fun getUserWithIdLiveData(id: Long): Flow<UserNgEntity?>
+    fun getUserWithIdNotScheduledForDeletion(id: Long): Flow<UserNgEntity?>
+    fun getUserWithUserId(userId: String): Flow<UserNgEntity?>
+    fun getUsersWithoutUserId(userId: Long): Flow<List<UserNgEntity>>
+    fun getUsersLiveData(): Flow<List<UserNgEntity>>
+    fun getUsersLiveDataWithoutActive(): Flow<List<UserNgEntity>>
+    fun getUsersScheduledForDeletion(): Flow<List<UserNgEntity>>
+    fun getUsersNotScheduledForDeletion(): Flow<List<UserNgEntity>>
+    fun getUserWithUsernameAndServer(username: String, server: String): Flow<UserNgEntity?>
     suspend fun updateUser(user: UserNgEntity): Int
     suspend fun insertUser(user: UserNgEntity): Long
-    suspend fun setUserAsActiveWithId(id: Long): Boolean
+    suspend fun setUserAsActiveWithId(id: Long): Flow<Boolean>
     suspend fun deleteUserWithId(id: Long)
-    suspend fun setAnyUserAsActive(): Boolean
-    suspend fun markUserForDeletion(id: Long): Boolean
+    suspend fun setAnyUserAsActive(): Flow<Boolean>
+    suspend fun markUserForDeletion(id: Long): Flow<Boolean>
 }
