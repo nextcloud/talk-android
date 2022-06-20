@@ -83,7 +83,7 @@ abstract class TalkDatabase : RoomDatabase() {
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 .openHelperFactory(factory)
-                .addMigrations(Migrations.MIGRATION_7_8)
+                .addMigrations(Migrations.MIGRATION_6_8, Migrations.MIGRATION_7_8)
                 .allowMainThreadQueries()
                 .addCallback(
                     object : RoomDatabase.Callback() {

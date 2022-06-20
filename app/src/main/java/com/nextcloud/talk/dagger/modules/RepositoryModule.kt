@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Álvaro Brey
+ * @author Andy Scherzinger
+ * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * Copyright (C) 2022 Álvaro Brey
  * Copyright (C) 2022 Nextcloud GmbH
  *
@@ -57,12 +59,12 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideUsersRepository(database : TalkDatabase): UsersRepository {
+    fun provideUsersRepository(database: TalkDatabase): UsersRepository {
         return UsersRepositoryImpl(database.usersDao())
     }
 
     @Provides
-    fun provideArbitraryStoragesRepository(database : TalkDatabase): ArbitraryStoragesRepository {
+    fun provideArbitraryStoragesRepository(database: TalkDatabase): ArbitraryStoragesRepository {
         return ArbitraryStoragesRepositoryImpl(database.arbitraryStoragesDao())
     }
 }

@@ -22,7 +22,6 @@ package com.nextcloud.talk.data.source.local.converters
 
 import androidx.room.TypeConverter
 import com.nextcloud.talk.models.ExternalSignalingServer
-import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 
 class ExternalSignalingServerConverter {
     val json = JsonConfiguration.customJsonConfiguration

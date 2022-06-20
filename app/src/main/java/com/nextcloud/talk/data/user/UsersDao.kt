@@ -89,7 +89,7 @@ abstract class UsersDao {
     abstract suspend fun getUserWithUsernameAndServer(username: String, server: String): UserNgEntity?
 
     @Transaction
-    open suspend fun setUserAsActiveWithId(id: Long) : Boolean {
+    open suspend fun setUserAsActiveWithId(id: Long): Boolean {
         val users = getUsers()
         for (user in users) {
             // removed from clause: && UserStatus.ACTIVE == user.status
@@ -120,7 +120,7 @@ abstract class UsersDao {
 
         return setAnyUserAsActive()
     }
-    
+
     @Transaction
     open suspend fun setAnyUserAsActive(): Boolean {
         val users = getUsers()

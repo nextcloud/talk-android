@@ -114,7 +114,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     }
 
     suspend fun createOrUpdateUser(
-        username: String?, token: String?,
+        username: String?,
+        token: String?,
         serverUrl: String?,
         displayName: String?,
         pushConfigurationState: String?,
@@ -166,8 +167,12 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             if (token != null && token != user.token) {
                 user.token = token
             }
-            if (displayName != null && user.displayName == null || displayName != null && (user.displayName
-                    != null) && displayName != user.displayName
+            if (
+                displayName != null &&
+                user.displayName == null ||
+                displayName != null &&
+                (user.displayName != null) &&
+                displayName != user.displayName
             ) {
                 user.displayName = displayName
             }

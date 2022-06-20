@@ -65,7 +65,6 @@ import io.reactivex.schedulers.Schedulers
 import io.requery.Persistable
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import io.requery.reactivex.ReactiveEntityStore
-import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.parceler.Parcels

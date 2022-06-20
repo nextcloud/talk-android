@@ -27,7 +27,7 @@ import kotlinx.serialization.json.Json
 sealed class JsonConfiguration {
     companion object {
         val customJsonConfiguration = Json {
-            prettyPrint = true;
+            prettyPrint = true
             useArrayPolymorphism = true
         }
     }
