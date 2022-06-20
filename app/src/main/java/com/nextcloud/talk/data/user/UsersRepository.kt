@@ -26,6 +26,7 @@ import androidx.lifecycle.LiveData
 import com.nextcloud.talk.data.user.model.UserNgEntity
 import com.nextcloud.talk.data.user.model.User
 
+@Suppress("TooManyFunctions")
 interface UsersRepository {
     fun getActiveUserLiveData(): LiveData<UserNgEntity?>
     fun getActiveUser(): UserNgEntity?

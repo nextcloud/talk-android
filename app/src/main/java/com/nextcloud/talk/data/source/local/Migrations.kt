@@ -23,6 +23,7 @@ package com.nextcloud.talk.data.source.local
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+@Suppress("MagicNumber")
 object Migrations {
     val MIGRATION_6_8 = object : Migration(6, 8) {
         override fun migrate(database: SupportSQLiteDatabase) {

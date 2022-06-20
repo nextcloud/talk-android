@@ -29,6 +29,7 @@ import com.nextcloud.talk.data.user.model.UserNgEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.toUser
 
+@Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
     override fun getActiveUserLiveData(): LiveData<UserNgEntity?> {
         return usersDao.getActiveUserLiveData().distinctUntilChanged()

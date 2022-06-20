@@ -31,6 +31,7 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 
+@Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {
     fun anyUserExists(): Boolean {
         return userRepository.getUsers().isNotEmpty()
@@ -49,10 +50,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     suspend fun setAnyUserAndSetAsActive(): UserNgEntity? {
         val results = userRepository.getUsersNotScheduledForDeletion()
         if (results.isNotEmpty()) {
-            val UserNgEntity = results[0]
-            UserNgEntity.current = true
-            userRepository.updateUser(UserNgEntity)
-            return UserNgEntity
+            val user = results[0]
+            user.current = true
+            userRepository.updateUser(user)
+            return user
         }
         return null
     }
@@ -115,95 +116,148 @@ class UserManager internal constructor(private val userRepository: UsersReposito
 
     suspend fun createOrUpdateUser(
         username: String?,
-        token: String?,
-        serverUrl: String?,
-        displayName: String?,
-        pushConfigurationState: String?,
-        currentUser: Boolean?,
-        userId: String?,
-        internalId: Long?,
-        capabilities: String?,
-        certificateAlias: String?,
-        externalSignalingServer: String?
+        userAttributes: UserAttributes,
     ): LiveData<UserNgEntity?> {
-        var user = if (internalId == null && username != null && serverUrl != null) {
-            userRepository.getUserWithUsernameAndServer(username, serverUrl)
-        } else if (internalId != null) {
-            userRepository.getUserWithId(internalId)
+        var user = if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
+            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
+        } else if (userAttributes.id != null) {
+            userRepository.getUserWithId(userAttributes.id)
         } else {
             null
         }
 
         if (user == null) {
-            user = UserNgEntity()
-            user.baseUrl = serverUrl
-            user.username = username
-            user.token = token
-            if (!TextUtils.isEmpty(displayName)) {
-                user.displayName = displayName
-            }
-            if (pushConfigurationState != null) {
-                user.pushConfigurationState = LoganSquare
-                    .parse(pushConfigurationState, PushConfigurationState::class.java)
-            }
-            if (!TextUtils.isEmpty(userId)) {
-                user.userId = userId
-            }
-            if (!TextUtils.isEmpty(capabilities)) {
-                user.capabilities = LoganSquare.parse(capabilities, Capabilities::class.java)
-            }
-            if (!TextUtils.isEmpty(certificateAlias)) {
-                user.clientCertificate = certificateAlias
-            }
-            if (!TextUtils.isEmpty(externalSignalingServer)) {
-                user.externalSignalingServer = LoganSquare
-                    .parse(externalSignalingServer, ExternalSignalingServer::class.java)
-            }
-            user.current = true
+            user = createUser(
+                username,
+                userAttributes
+            )
         } else {
-            if (userId != null && (user.userId == null || user.userId != userId)) {
-                user.userId = userId
-            }
-            if (token != null && token != user.token) {
-                user.token = token
-            }
-            if (
-                displayName != null &&
-                user.displayName == null ||
-                displayName != null &&
-                (user.displayName != null) &&
-                displayName != user.displayName
-            ) {
-                user.displayName = displayName
-            }
-            if (pushConfigurationState != null) {
-                val newPushConfigurationState = LoganSquare
-                    .parse(pushConfigurationState, PushConfigurationState::class.java)
-                if (newPushConfigurationState != user.pushConfigurationState) {
-                    user.pushConfigurationState = newPushConfigurationState
-                }
-            }
-            if (capabilities != null) {
-                val newCapabilities = LoganSquare.parse(capabilities, Capabilities::class.java)
-                if (newCapabilities != user.capabilities) {
-                    user.capabilities = newCapabilities
-                }
-            }
-            if (certificateAlias != null && certificateAlias != user.clientCertificate) {
-                user.clientCertificate = certificateAlias
-            }
-            if (externalSignalingServer != null) {
-                val newExternalSignalingServer = LoganSquare
-                    .parse(externalSignalingServer, ExternalSignalingServer::class.java)
-                if (newExternalSignalingServer != user.externalSignalingServer) {
-                    user.externalSignalingServer = newExternalSignalingServer
-                }
-            }
-            if (currentUser != null) {
-                user.current = currentUser
-            }
+            updateUserData(
+                user,
+                userAttributes
+            )
         }
         userRepository.insertUser(user)
         return userRepository.getUserWithIdLiveData(user.id)
     }
+
+    private fun updateUserData(user: UserNgEntity, userAttributes: UserAttributes) {
+        updateUserIdIfNeeded(userAttributes, user)
+        updateTokenIfNeeded(userAttributes, user)
+        updateDisplayNameIfNeeded(userAttributes, user)
+        updatePushConfigurationStateIfNeeded(userAttributes, user)
+        updateCapabilitiesIfNeeded(userAttributes, user)
+        updateCertificateAliasIfNeeded(userAttributes, user)
+        updateExternalSignalingServerIfNeeded(userAttributes, user)
+        updateCurrentUserStatusIfNeeded(userAttributes, user)
+    }
+
+    private fun updateCurrentUserStatusIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.currentUser != null) {
+            user.current = userAttributes.currentUser
+        }
+    }
+
+    private fun updateExternalSignalingServerIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.externalSignalingServer != null) {
+            val newExternalSignalingServer = LoganSquare
+                .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
+            if (newExternalSignalingServer != user.externalSignalingServer) {
+                user.externalSignalingServer = newExternalSignalingServer
+            }
+        }
+    }
+
+    private fun updateCertificateAliasIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.certificateAlias != null && userAttributes.certificateAlias != user.clientCertificate) {
+            user.clientCertificate = userAttributes.certificateAlias
+        }
+    }
+
+    private fun updateCapabilitiesIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.capabilities != null) {
+            val newCapabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
+            if (newCapabilities != user.capabilities) {
+                user.capabilities = newCapabilities
+            }
+        }
+    }
+
+    private fun updatePushConfigurationStateIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.pushConfigurationState != null) {
+            val newPushConfigurationState = LoganSquare
+                .parse(userAttributes.pushConfigurationState, PushConfigurationState::class.java)
+            if (newPushConfigurationState != user.pushConfigurationState) {
+                user.pushConfigurationState = newPushConfigurationState
+            }
+        }
+    }
+
+    private fun updateDisplayNameIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (validDisplayName(userAttributes.displayName, user)) {
+            user.displayName = userAttributes.displayName
+        }
+    }
+
+    private fun updateTokenIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.token != null && userAttributes.token != user.token) {
+            user.token = userAttributes.token
+        }
+    }
+
+    private fun updateUserIdIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
+        if (userAttributes.userId != null && (user.userId == null || user.userId != userAttributes.userId)) {
+            user.userId = userAttributes.userId
+        }
+    }
+
+    private fun createUser(username: String?, userAttributes: UserAttributes): UserNgEntity {
+        val user = UserNgEntity()
+        user.baseUrl = userAttributes.serverUrl
+        user.username = username
+        user.token = userAttributes.token
+        if (!TextUtils.isEmpty(userAttributes.displayName)) {
+            user.displayName = userAttributes.displayName
+        }
+        if (userAttributes.pushConfigurationState != null) {
+            user.pushConfigurationState = LoganSquare
+                .parse(userAttributes.pushConfigurationState, PushConfigurationState::class.java)
+        }
+        if (!TextUtils.isEmpty(userAttributes.userId)) {
+            user.userId = userAttributes.userId
+        }
+        if (!TextUtils.isEmpty(userAttributes.capabilities)) {
+            user.capabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
+        }
+        if (!TextUtils.isEmpty(userAttributes.certificateAlias)) {
+            user.clientCertificate = userAttributes.certificateAlias
+        }
+        if (!TextUtils.isEmpty(userAttributes.externalSignalingServer)) {
+            user.externalSignalingServer = LoganSquare
+                .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
+        }
+        user.current = true
+        return user
+    }
+
+    private fun validDisplayName(displayName: String?, user: UserNgEntity): Boolean {
+        return if (displayName == null) {
+            false
+        } else {
+            user.displayName == null || user.displayName != null && displayName != user.displayName
+        }
+    }
+
+    data class UserAttributes(
+        val id: Long?,
+        val serverUrl: String?,
+        val currentUser: Boolean?,
+        val userId: String?,
+        val token: String?,
+        val displayName: String?,
+        val pushConfigurationState: String?,
+        val capabilities: String?,
+        val certificateAlias: String?,
+        val externalSignalingServer: String?
+    )
 }

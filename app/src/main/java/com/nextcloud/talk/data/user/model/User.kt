@@ -20,6 +20,7 @@
 package com.nextcloud.talk.data.user.model
 
 import android.os.Parcelable
+import com.nextcloud.talk.data.user.model.User.Companion.DEFAULT_CHAT_MESSAGE_LENGTH
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
@@ -43,10 +44,15 @@ data class User(
     var externalSignalingServer: ExternalSignalingServer? = null,
     var current: Boolean = FALSE,
     var scheduledForDeletion: Boolean = FALSE,
-) : Parcelable
+) : Parcelable {
+    companion object {
+        const val DEFAULT_CHAT_MESSAGE_LENGTH: Int = 1000
+    }
+}
 
 fun User.getMaxMessageLength(): Int {
-    return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt() ?: 1000
+    return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt()
+        ?: DEFAULT_CHAT_MESSAGE_LENGTH
 }
 
 fun User.getAttachmentsConfig(key: String): Any? {

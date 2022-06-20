@@ -34,6 +34,7 @@ import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
 
 @Dao
+@Suppress("TooManyFunctions")
 abstract class UsersDao {
     // get active user
     @Query("SELECT * FROM User where current = 1")
