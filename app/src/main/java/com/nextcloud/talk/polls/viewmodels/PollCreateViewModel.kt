@@ -16,10 +16,14 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
 
     private lateinit var roomToken: String
 
-    // private var _options: MutableLiveData<ArrayList<PollCreateOptionItem>> =
-    //     MutableLiveData<ArrayList<PollCreateOptionItem>>()
-    // val options: LiveData<ArrayList<PollCreateOptionItem>>
-    //     get() = _options
+    sealed interface ViewState
+    open class PollCreationState(val enableAddOptionButton: Boolean, val enableCreatePollButton: Boolean) : ViewState
+    object PollCreatedState : ViewState
+    object PollCreationFailedState : ViewState
+
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(PollCreationState(true, false))
+    val viewState: LiveData<ViewState>
+        get() = _viewState
 
     private var _options: MutableLiveData<ArrayList<PollCreateOptionItem>> =
         MutableLiveData<ArrayList<PollCreateOptionItem>>()
@@ -31,27 +35,18 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         get() = _question
 
     private var _privatePoll: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-    var privatePoll: LiveData<Boolean> = _privatePoll
+    val privatePoll: LiveData<Boolean>
         get() = _privatePoll
 
     private var _multipleAnswer: MutableLiveData<Boolean> = MutableLiveData<Boolean>()
-    var multipleAnswer: LiveData<Boolean> = _multipleAnswer
+    val multipleAnswer: LiveData<Boolean>
         get() = _multipleAnswer
-
-    sealed interface ViewState
-    object InitialState : ViewState
-    open class PollCreatingState() : ViewState
-    open class PollCreatedState() : ViewState
-    open class PollCreationFailedState() : ViewState
-
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
-    val viewState: LiveData<ViewState>
-        get() = _viewState
 
     private var disposable: Disposable? = null
 
     fun initialize(roomToken: String) {
         this.roomToken = roomToken
+        updateCreationState()
     }
 
     override fun onCleared() {
@@ -64,12 +59,14 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         val currentOptions: ArrayList<PollCreateOptionItem> = _options.value ?: ArrayList()
         currentOptions.add(item)
         _options.value = currentOptions
+        updateCreationState()
     }
 
     fun removeOption(item: PollCreateOptionItem) {
         val currentOptions: ArrayList<PollCreateOptionItem> = _options.value ?: ArrayList()
         currentOptions.remove(item)
         _options.value = currentOptions
+        updateCreationState()
     }
 
     fun createPoll() {
@@ -83,9 +80,9 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
             resultMode = 1
         }
 
-        if (question.value?.isNotEmpty() == true && _options.value?.isNotEmpty() == true) {
+        if (_question.value?.isNotEmpty() == true && _options.value?.isNotEmpty() == true) {
             repository.createPoll(
-                roomToken, question.value!!, _options.value!!.map { it.pollOption }, resultMode,
+                roomToken, _question.value!!, _options.value!!.map { it.pollOption }, resultMode,
                 maxVotes
             )
                 ?.doOnSubscribe { disposable = it }
@@ -97,6 +94,7 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
 
     fun setQuestion(question: String) {
         _question.value = question
+        updateCreationState()
     }
 
     fun setPrivatePoll(checked: Boolean) {
@@ -105,6 +103,44 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
 
     fun setMultipleAnswer(checked: Boolean) {
         _multipleAnswer.value = checked
+    }
+
+    fun optionsItemTextChanged() {
+        updateCreationState()
+    }
+
+    private fun updateCreationState() {
+        _viewState.value = PollCreationState(enableAddOptionButton(), enableCreatePollButton())
+    }
+
+    private fun enableCreatePollButton(): Boolean {
+        return _question.value?.isNotEmpty() == true && atLeastTwoOptionsAreFilled()
+    }
+
+    private fun atLeastTwoOptionsAreFilled(): Boolean {
+        if (_options.value != null) {
+            var filledOptions = 0
+            _options.value?.forEach {
+                if (it.pollOption.isNotEmpty()) {
+                    filledOptions++
+                }
+                if (filledOptions >= 2) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    private fun enableAddOptionButton(): Boolean {
+        if (_options.value != null && _options.value?.size != 0) {
+            _options.value?.forEach {
+                if (it.pollOption.isBlank()) {
+                    return false
+                }
+            }
+        }
+        return true
     }
 
     inner class PollObserver : Observer<Poll> {
@@ -118,11 +154,11 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         }
 
         override fun onError(e: Throwable) {
-            _viewState.value = PollCreationFailedState()
+            _viewState.value = PollCreationFailedState
         }
 
         override fun onComplete() {
-            _viewState.value = PollCreatedState()
+            _viewState.value = PollCreatedState
         }
     }
 

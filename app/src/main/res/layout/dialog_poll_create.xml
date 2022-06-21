@@ -31,7 +31,6 @@
     <!--        android:text="@string/nc_create_poll"-->
     <!--        android:textStyle="bold"-->
     <!--        android:layout_marginBottom="@dimen/standard_half_margin"/>-->
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

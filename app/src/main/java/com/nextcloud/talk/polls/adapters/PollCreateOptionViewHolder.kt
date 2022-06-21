@@ -31,11 +31,14 @@ class PollCreateOptionViewHolder(
             itemsListener.onRemoveOptionsItemClick(pollCreateOptionItem, position)
         }
 
-        textListener = getTextWatcher(pollCreateOptionItem)
+        textListener = getTextWatcher(pollCreateOptionItem, itemsListener)
         binding.pollOptionText.addTextChangedListener(textListener)
     }
 
-    private fun getTextWatcher(pollCreateOptionItem: PollCreateOptionItem) =
+    private fun getTextWatcher(
+        pollCreateOptionItem: PollCreateOptionItem,
+        itemsListener: PollCreateOptionsItemListener
+    ) =
         object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 // unused atm
@@ -47,6 +50,8 @@ class PollCreateOptionViewHolder(
 
             override fun onTextChanged(option: CharSequence, start: Int, before: Int, count: Int) {
                 pollCreateOptionItem.pollOption = option.toString()
+
+                itemsListener.onOptionsItemTextChanged(pollCreateOptionItem)
             }
         }
 }

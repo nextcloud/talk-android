@@ -5,14 +5,17 @@ import android.app.Dialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollCreateBinding
 import com.nextcloud.talk.polls.adapters.PollCreateOptionItem
@@ -78,6 +81,7 @@ class PollCreateDialogFragment(
     private fun setupListeners() {
         binding.pollAddOptionsItem.setOnClickListener {
             viewModel.addOption()
+            adapter?.itemCount?.minus(1)?.let { it -> binding.pollCreateOptionsList.scrollToPosition(it) }
         }
 
         binding.pollDismiss.setOnClickListener {
@@ -117,39 +121,30 @@ class PollCreateDialogFragment(
     private fun setupStateObserver() {
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                // PollCreateViewModel.InitialState -> showInitial()
                 is PollCreateViewModel.PollCreatedState -> dismiss()
-                is PollCreateViewModel.PollCreationFailedState -> dismiss()
-                is PollCreateViewModel.PollCreatingState -> updateDialog(state)
+                is PollCreateViewModel.PollCreationFailedState -> showError()
+                is PollCreateViewModel.PollCreationState -> updateButtons(state)
             }
         }
-        // viewModel.state.observe(this) { state ->
-        //     when (state) {
-        //         MessageSearchViewModel.InitialState -> showInitial()
-        //         MessageSearchViewModel.EmptyState -> showEmpty()
-        //         is MessageSearchViewModel.LoadedState -> showLoaded(state)
-        //         MessageSearchViewModel.LoadingState -> showLoading()
-        //         MessageSearchViewModel.ErrorState -> showError()
-        //         is MessageSearchViewModel.FinishedState -> onFinish()
-        //     }
-        // }
     }
 
-    private fun updateDialog(state: PollCreateViewModel.PollCreatingState) {
-        // binding.pollCreateQuestion.setText(state.question)
-        //
-        // adapter!!.updateOptionsList(state.options)
-        //
-        // binding.pollPrivatePollCheckbox.isChecked = state.privatePoll
-        // binding.pollMultipleAnswersCheckbox.isChecked = state.multipleAnswer
+    private fun updateButtons(state: PollCreateViewModel.PollCreationState) {
+        binding.pollAddOptionsItem.isEnabled = state.enableAddOptionButton
+        binding.pollCreateButton.isEnabled = state.enableCreatePollButton
     }
 
-    private fun showInitial() {
-        binding.pollCreateButton.isEnabled = false
+    private fun showError() {
+        dismiss()
+        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
+        Log.e(TAG, "Failed to create poll")
     }
 
     override fun onRemoveOptionsItemClick(pollCreateOptionItem: PollCreateOptionItem, position: Int) {
         viewModel.removeOption(pollCreateOptionItem)
+    }
+
+    override fun onOptionsItemTextChanged(pollCreateOptionItem: PollCreateOptionItem) {
+        viewModel.optionsItemTextChanged()
     }
 
     /**
