@@ -94,14 +94,13 @@ class PollResultsFragment(
             ) {
                 Log.d(TAG, "show results also if self never voted")
             }
-
         }
     }
 
     private fun initPollResults(poll: Poll) {
         if (poll.details != null) {
             val votersAmount = poll.details.size
-            val oneVoteInPercent = 100 / votersAmount  // TODO: poll.numVoters   when fixed on api
+            val oneVoteInPercent = 100 / votersAmount // TODO: poll.numVoters   when fixed on api
 
             poll.options?.forEachIndexed { index, option ->
                 val votersForThisOption = poll.details.filter { it.optionId == index }.size

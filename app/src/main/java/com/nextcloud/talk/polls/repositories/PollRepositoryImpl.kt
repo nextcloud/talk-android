@@ -39,10 +39,13 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
     )
 
     override fun createPoll(
-        roomToken: String, question: String, options: List<String>, resultMode: Int, maxVotes:
+        roomToken: String,
+        question: String,
+        options: List<String>,
+        resultMode: Int,
+        maxVotes:
         Int
-    ):
-        Observable<Poll>? {
+    ): Observable<Poll>? {
         return ncApi.createPoll(
             credentials,
             ApiUtils.getUrlForPoll(
