@@ -21,7 +21,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:padding="@dimen/standard_padding"
     tools:background="@color/white">
 
     <LinearLayout
@@ -37,16 +36,6 @@
             android:layout_height="wrap_content"
             tools:listitem="@layout/poll_result_item" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/poll_amount_voters"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:textColor="@color/low_emphasis_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/poll_results_list_wrapper"
-        tools:text="Poll results - 93 votes" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/poll_results_close_poll_button"

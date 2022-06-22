@@ -73,10 +73,10 @@ class PollVoteFragment(
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
             if (state is PollMainViewModel.PollVoteState) {
                 initPollOptions(state.poll)
-                binding.pollVoteHiddenHint.visibility = View.GONE
+                // binding.pollVoteHiddenHint.visibility = View.GONE
             } else if (state is PollMainViewModel.PollVoteHiddenState) {
                 initPollOptions(state.poll)
-                binding.pollVoteHiddenHint.visibility = View.VISIBLE
+                // binding.pollVoteHiddenHint.visibility = View.VISIBLE
             }
         }
 

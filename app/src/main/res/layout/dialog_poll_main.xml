@@ -21,14 +21,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="@dimen/standard_padding"
     tools:background="@color/white">
 
     <ImageView
         android:id="@+id/message_poll_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+
         android:contentDescription="@null"
         android:src="@drawable/ic_baseline_bar_chart_24"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,7 +37,7 @@
 
     <androidx.emoji.widget.EmojiTextView
         android:id="@+id/message_poll_title"
-        android:layout_width="257dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:textStyle="bold"
@@ -45,12 +45,22 @@
         app:layout_constraintTop_toTopOf="@+id/message_poll_icon"
         tools:text="This is the poll title?" />
 
+    <TextView
+        android:id="@+id/poll_details_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/low_emphasis_text"
+        app:layout_constraintStart_toStartOf="@id/message_poll_icon"
+        app:layout_constraintTop_toBottomOf="@+id/message_poll_title"
+        tools:text="Poll results - 93 votes" />
+
     <FrameLayout
         android:id="@+id/message_poll_content_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/message_poll_title"
+        app:layout_constraintTop_toBottomOf="@id/poll_details_text"
         tools:layout_height="400dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

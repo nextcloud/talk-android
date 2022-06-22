@@ -40,7 +40,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     open class PollVoteHiddenState(val poll: Poll) : ViewState
     open class PollResultState(
         val poll: Poll,
-        val showDetails: Boolean,
+        val showParticipants: Boolean,
         val showEditButton: Boolean,
         val showCloseButton: Boolean
     ) : ViewState
@@ -59,7 +59,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     fun voted() {
-        loadPoll() // TODO load other view
+        loadPoll()
     }
 
     fun edit() {
@@ -118,7 +118,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         }
     }
 
-    fun setPollResultState(poll: Poll) {
+    private fun setPollResultState(poll: Poll) {
         val showDetails = poll.status == Poll.STATUS_CLOSED && poll.resultMode == Poll.RESULT_MODE_PUBLIC
         val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
         val showCloseButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
@@ -126,13 +126,13 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         _viewState.value = PollResultState(poll, showDetails, showEditButton, showCloseButton)
     }
 
-    fun votedForOpenHiddenPoll(poll: Poll): Boolean {
+    private fun votedForOpenHiddenPoll(poll: Poll): Boolean {
         return poll.status == Poll.STATUS_OPEN &&
             poll.resultMode == Poll.RESULT_MODE_HIDDEN &&
             poll.votedSelf?.isNotEmpty() == true
     }
 
-    fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
+    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
         return userUtils.currentUser?.userId == poll.actorId
     }
 

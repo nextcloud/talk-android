@@ -30,7 +30,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
-import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollResultsBinding
 import com.nextcloud.talk.polls.adapters.PollResultItem
@@ -79,9 +78,8 @@ class PollResultsFragment(
 
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
             if (state is PollMainViewModel.PollResultState) {
-                initAdapter(state.showDetails)
+                initAdapter(state.showParticipants)
                 initPollResults(state.poll)
-                initAmountVotersInfo(state)
                 initEditButton(state.showEditButton)
                 initCloseButton(state.showCloseButton)
             }
@@ -124,24 +122,6 @@ class PollResultsFragment(
             Log.e(TAG, "failed to get data to show poll results")
         }
     }
-
-    private fun initAmountVotersInfo(state: PollMainViewModel.PollResultState) {
-        _binding?.pollAmountVoters?.text = String.format(
-            resources.getString(R.string.polls_amount_voters),
-            state.poll.numVoters
-        )
-    }
-
-    // private fun initEditButton(state: PollMainViewModel.PollResultState) {
-    //     if (state.poll.status == Poll.STATUS_OPEN && state.poll.resultMode == Poll.RESULT_MODE_PUBLIC) {
-    //         _binding?.editVoteButton?.visibility = View.VISIBLE
-    //         _binding?.editVoteButton?.setOnClickListener {
-    //             parentViewModel.edit()
-    //         }
-    //     } else {
-    //         _binding?.editVoteButton?.visibility = View.GONE
-    //     }
-    // }
 
     private fun initEditButton(showEditButton: Boolean) {
         if (showEditButton) {

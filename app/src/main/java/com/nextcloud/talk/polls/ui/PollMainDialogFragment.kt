@@ -10,8 +10,10 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollMainBinding
+import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
@@ -58,16 +60,23 @@ class PollMainDialogFragment(
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 PollMainViewModel.InitialState -> {}
-                is PollMainViewModel.PollVoteHiddenState -> showVoteFragment()
-                is PollMainViewModel.PollVoteState -> showVoteFragment()
-                is PollMainViewModel.PollResultState -> showResultsFragment()
+                is PollMainViewModel.PollVoteHiddenState -> {
+                    binding.pollDetailsText.visibility = View.VISIBLE
+                    binding.pollDetailsText.text = "You already voted for this private poll"
+                    showVoteScreen()
+                }
+                is PollMainViewModel.PollVoteState -> {
+                    binding.pollDetailsText.visibility = View.GONE
+                    showVoteScreen()
+                }
+                is PollMainViewModel.PollResultState -> showResultsScreen(state.poll)
             }
         }
 
         viewModel.initialize(roomToken, pollId)
     }
 
-    private fun showVoteFragment() {
+    private fun showVoteScreen() {
         val contentFragment = PollVoteFragment(
             viewModel,
             roomToken,
@@ -78,7 +87,9 @@ class PollMainDialogFragment(
         transaction.commit()
     }
 
-    private fun showResultsFragment() {
+    private fun showResultsScreen(poll: Poll) {
+        initVotersAmount(poll.numVoters)
+
         val contentFragment = PollResultsFragment(
             viewModel,
             roomToken,
@@ -87,6 +98,14 @@ class PollMainDialogFragment(
         val transaction = childFragmentManager.beginTransaction()
         transaction.replace(binding.messagePollContentFragment.id, contentFragment)
         transaction.commit()
+    }
+
+    private fun initVotersAmount(numVoters: Int) {
+        binding.pollDetailsText.visibility = View.VISIBLE
+        binding.pollDetailsText.text = String.format(
+            resources.getString(R.string.polls_amount_voters),
+            numVoters
+        )
     }
 
     /**
