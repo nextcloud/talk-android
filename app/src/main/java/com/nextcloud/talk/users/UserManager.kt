@@ -303,6 +303,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return userRepository.getUserWithIdLiveData(user!!.id)
     }
 
+    fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?> {
+        return userRepository.getUserWithUsernameAndServer(username, server)
+    }
+
     private fun updateUserData(user: UserNgEntity, userAttributes: UserAttributes) {
         updateUserIdIfNeeded(userAttributes, user)
         updateTokenIfNeeded(userAttributes, user)

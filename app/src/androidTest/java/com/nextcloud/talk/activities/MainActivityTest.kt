@@ -2,7 +2,10 @@ package com.nextcloud.talk.activities
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.nextcloud.talk.data.user.model.UserNgEntity
-import org.junit.Assert.assertTrue
+import com.nextcloud.talk.users.UserManager
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import org.junit.Assert.fail
 import org.junit.Rule
 import org.junit.Test
 
@@ -15,39 +18,41 @@ class MainActivityTest {
     )
 
     @Test
-    suspend fun login() {
+    fun login() {
         val sut = activityRule.launchActivity(null)
 
-        sut.usersRepository.insertUser(
-            UserNgEntity(
-                0,
-                "test",
-                "test",
-                "http://server/nc",
-                "test",
-                null,
-                null,
-                null,
-                null,
-                null,
-                false,
-                scheduledForDeletion = false
+        sut.userManager.createOrUpdateUser(
+            "test",
+            UserManager.UserAttributes(
+                id = 0,
+                serverUrl = "http://server/nc",
+                currentUser = false,
+                userId = "test",
+                token = "test",
+                displayName = null,
+                pushConfigurationState = null,
+                capabilities = null,
+                certificateAlias = null,
+                externalSignalingServer = null
             )
-        )
+        ).subscribe(object : Observer<UserNgEntity?> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
 
-        try {
-            Thread.sleep(2000)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
+            override fun onNext(user: UserNgEntity) {
+                sut.runOnUiThread { sut.resetConversationsList() }
 
-        sut.runOnUiThread { sut.resetConversationsList() }
+                println("User: " + user.id + " / " + user.userId + " / " + user.baseUrl)
+            }
 
-        assertTrue(sut.usersRepository.getUserWithUsernameAndServer("test", "http://server/nc") != null)
+            override fun onError(e: Throwable) {
+                fail("No user created")
+            }
 
-        try {
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
+            override fun onComplete() {
+                // unused atm
+            }
+        })
     }
 }
