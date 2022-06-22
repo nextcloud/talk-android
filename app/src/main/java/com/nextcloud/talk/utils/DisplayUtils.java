@@ -490,9 +490,13 @@ public class DisplayUtils {
      * @param color the color
      * @return true if primaryColor is lighter than MAX_LIGHTNESS
      */
+    @SuppressWarnings("correctness")
     public static boolean lightTheme(int color) {
         float[] hsl = colorToHSL(color);
 
+        // spotbugs dislikes fixed index access
+        // which is enforced by having such an
+        // array from Android-API itself
         return hsl[INDEX_LUMINATION] >= MAX_LIGHTNESS;
     }
 
