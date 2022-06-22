@@ -72,17 +72,11 @@ class PollVoteFragment(
         super.onViewCreated(view, savedInstanceState)
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
             if (state is PollMainViewModel.PollVoteState) {
-                val poll = state.poll
-                binding.radioGroup.removeAllViews()
-                poll.options?.map { option ->
-                    RadioButton(context).apply { text = option }
-                }?.forEachIndexed { index, radioButton ->
-                    radioButton.id = index
-                    binding.radioGroup.addView(radioButton)
-                }
-            } else if (state is PollMainViewModel.PollResultState && state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
-                Log.d(TAG, "show vote screen also for resultMode hidden poll when already voted")
-                // TODO: other text for submit button
+                initPollOptions(state.poll)
+                binding.pollVoteHiddenHint.visibility = View.GONE
+            } else if (state is PollMainViewModel.PollVoteHiddenState) {
+                initPollOptions(state.poll)
+                binding.pollVoteHiddenHint.visibility = View.VISIBLE
             }
         }
 
@@ -106,6 +100,16 @@ class PollVoteFragment(
 
         binding.submitVote.setOnClickListener {
             viewModel.vote(roomToken, pollId, binding.radioGroup.checkedRadioButtonId)
+        }
+    }
+
+    private fun initPollOptions(poll: Poll) {
+        binding.radioGroup.removeAllViews()
+        poll.options?.map { option ->
+            RadioButton(context).apply { text = option }
+        }?.forEachIndexed { index, radioButton ->
+            radioButton.id = index
+            binding.radioGroup.addView(radioButton)
         }
     }
 

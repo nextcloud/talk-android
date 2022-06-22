@@ -21,25 +21,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/standard_padding"
     tools:background="@color/white">
 
     <RadioGroup
         android:id="@+id/radioGroup"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
         android:layout_width="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         tools:layout_height="400dp"
-        tools:layout_width="match_parent" />
+        tools:layout_width="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/submitVote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:cornerRadius="@dimen/button_corner_radius"
-        app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/nc_common_submit"
         android:theme="@style/Button.Primary"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+    <TextView
+        android:id="@+id/poll_vote_hidden_hint"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:text="You already voted for this private poll."
+        android:layout_marginTop="24dp"
+        android:textColor="@color/low_emphasis_text"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,6 +37,7 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     sealed interface ViewState
     object InitialState : ViewState
     open class PollVoteState(val poll: Poll) : ViewState
+    open class PollVoteHiddenState(val poll: Poll) : ViewState
     open class PollResultState(
         val poll: Poll,
         val showDetails: Boolean,
@@ -102,19 +103,33 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         }
 
         override fun onComplete() {
-            if (editPoll) {
+            if (votedForOpenHiddenPoll(poll)) {
+                _viewState.value = PollVoteHiddenState(poll)
+            } else if (editPoll && poll.status == Poll.STATUS_OPEN) {
                 _viewState.value = PollVoteState(poll)
                 editPoll = false
+            } else if (poll.status == Poll.STATUS_CLOSED || poll.votedSelf?.isNotEmpty() == true) {
+                setPollResultState(poll)
             } else if (poll.votedSelf.isNullOrEmpty()) {
                 _viewState.value = PollVoteState(poll)
             } else {
-                val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
-                val showDetails = poll.status == Poll.STATUS_CLOSED && poll.resultMode == Poll.RESULT_MODE_PUBLIC
-                val showCloseButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
-
-                _viewState.value = PollResultState(poll, showDetails, showEditButton, showCloseButton)
+                Log.w(TAG, "unknown poll state")
             }
         }
+    }
+
+    fun setPollResultState(poll: Poll) {
+        val showDetails = poll.status == Poll.STATUS_CLOSED && poll.resultMode == Poll.RESULT_MODE_PUBLIC
+        val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
+        val showCloseButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
+
+        _viewState.value = PollResultState(poll, showDetails, showEditButton, showCloseButton)
+    }
+
+    fun votedForOpenHiddenPoll(poll: Poll): Boolean {
+        return poll.status == Poll.STATUS_OPEN &&
+            poll.resultMode == Poll.RESULT_MODE_HIDDEN &&
+            poll.votedSelf?.isNotEmpty() == true
     }
 
     fun isPollCreatedByCurrentUser(poll: Poll): Boolean {

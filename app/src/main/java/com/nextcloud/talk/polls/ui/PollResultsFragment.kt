@@ -156,12 +156,12 @@ class PollResultsFragment(
 
     private fun initCloseButton(showCloseButton: Boolean) {
         if (showCloseButton) {
-            _binding?.closeVoteButton?.visibility = View.VISIBLE
-            _binding?.closeVoteButton?.setOnClickListener {
+            _binding?.pollResultsClosePollButton?.visibility = View.VISIBLE
+            _binding?.pollResultsClosePollButton?.setOnClickListener {
                 parentViewModel.closePoll()
             }
         } else {
-            _binding?.closeVoteButton?.visibility = View.GONE
+            _binding?.pollResultsClosePollButton?.visibility = View.GONE
         }
     }
 

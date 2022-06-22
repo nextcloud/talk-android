@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollMainBinding
-import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
@@ -59,22 +58,9 @@ class PollMainDialogFragment(
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 PollMainViewModel.InitialState -> {}
-
-                is PollMainViewModel.PollResultState -> {
-                    if (state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
-                        showVoteFragment()
-                    } else {
-                        showResultsFragment()
-                    }
-                }
-
-                is PollMainViewModel.PollVoteState -> {
-                    if (state.poll.status == Poll.STATUS_CLOSED) {
-                        showResultsFragment()
-                    } else {
-                        showVoteFragment()
-                    }
-                }
+                is PollMainViewModel.PollVoteHiddenState -> showVoteFragment()
+                is PollMainViewModel.PollVoteState -> showVoteFragment()
+                is PollMainViewModel.PollResultState -> showResultsFragment()
             }
         }
 
