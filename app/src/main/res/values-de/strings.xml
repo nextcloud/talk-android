@@ -317,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
     <string name="nc_upload_failed">Hochladen leider fehlgeschlagen</string>
     <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
+    <string name="nc_upload_from_device">Von Gerät hochladen</string>
     <string name="nc_upload_in_progess">Lade hoch</string>
     <string name="nc_upload_local_file">Lokale Datei hochladen</string>
     <string name="nc_upload_picture_from_cam">Foto aufnehmen</string>
