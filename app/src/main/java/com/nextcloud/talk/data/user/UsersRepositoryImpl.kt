@@ -23,84 +23,87 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.UserNgEntity
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
+import io.reactivex.Observable
 
 @Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
-    override fun getActiveUserLiveData(): Flow<UserNgEntity?> {
-        return usersDao.getActiveUserLiveData().distinctUntilChanged()
+    override fun getActiveUserLiveData(): Observable<UserNgEntity?> {
+        return usersDao.getActiveUserLiveData()
     }
 
-    override fun getActiveUser(): Flow<UserNgEntity?> {
+    override fun getActiveUser(): Observable<UserNgEntity?> {
         return usersDao.getActiveUser()
     }
 
-    override fun getUsers(): Flow<List<UserNgEntity>> {
+    override fun getActiveUserSynchronously(): UserNgEntity? {
+        return usersDao.getActiveUserSynchronously()
+    }
+
+    override fun getUsers(): Observable<List<UserNgEntity>> {
         return usersDao.getUsers()
     }
 
-    override fun getUserWithId(id: Long): Flow<UserNgEntity?> {
+    override fun getUserWithId(id: Long): Observable<UserNgEntity?> {
         return usersDao.getUserWithId(id)
     }
 
-    override fun getUserWithIdLiveData(id: Long): Flow<UserNgEntity?> {
+    override fun getUserWithIdLiveData(id: Long): Observable<UserNgEntity?> {
         return usersDao.getUserWithIdLiveData(id).distinctUntilChanged()
     }
 
-    override fun getUserWithIdNotScheduledForDeletion(id: Long): Flow<UserNgEntity?> {
+    override fun getUserWithIdNotScheduledForDeletion(id: Long): Observable<UserNgEntity?> {
         return usersDao.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    override fun getUserWithUserId(userId: String): Flow<UserNgEntity?> {
+    override fun getUserWithUserId(userId: String): Observable<UserNgEntity?> {
         return usersDao.getUserWithUserId(userId)
     }
 
-    override fun getUsersWithoutUserId(userId: Long): Flow<List<UserNgEntity>> {
+    override fun getUsersWithoutUserId(userId: Long): Observable<List<UserNgEntity>> {
         return usersDao.getUsersWithoutUserId(userId)
     }
 
-    override fun getUsersLiveData(): Flow<List<UserNgEntity>> {
+    override fun getUsersLiveData(): Observable<List<UserNgEntity>> {
         return usersDao.getUsersLiveData().distinctUntilChanged()
     }
 
-    override fun getUsersLiveDataWithoutActive(): Flow<List<UserNgEntity>> {
+    override fun getUsersLiveDataWithoutActive(): Observable<List<UserNgEntity>> {
         return usersDao.getUsersLiveDataWithoutActive().distinctUntilChanged()
     }
 
-    override fun getUsersScheduledForDeletion(): Flow<List<UserNgEntity>> {
+    override fun getUsersScheduledForDeletion(): Observable<List<UserNgEntity>> {
         return usersDao.getUsersScheduledForDeletion()
     }
 
-    override fun getUsersNotScheduledForDeletion(): Flow<List<UserNgEntity>> {
+    override fun getUsersNotScheduledForDeletion(): Observable<List<UserNgEntity>> {
         return usersDao.getUsersNotScheduledForDeletion()
     }
 
-    override fun getUserWithUsernameAndServer(username: String, server: String): Flow<UserNgEntity?> {
+    override fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?> {
         return usersDao.getUserWithUsernameAndServer(username, server)
     }
 
-    override suspend fun updateUser(user: UserNgEntity): Int {
+    override fun updateUser(user: UserNgEntity): Int {
         return usersDao.updateUser(user)
     }
 
-    override suspend fun insertUser(user: UserNgEntity): Long {
+    override fun insertUser(user: UserNgEntity): Long {
         return usersDao.saveUser(user)
     }
 
-    override suspend fun setUserAsActiveWithId(id: Long): Flow<Boolean> {
+    override suspend fun setUserAsActiveWithId(id: Long): Boolean {
         return usersDao.setUserAsActiveWithId(id)
     }
 
-    override suspend fun deleteUserWithId(id: Long) {
+    override fun deleteUserWithId(id: Long) {
         usersDao.deleteUserWithId(id)
     }
 
-    override suspend fun setAnyUserAsActive(): Flow<Boolean> {
+    override suspend fun setAnyUserAsActive(): Boolean {
         return usersDao.setAnyUserAsActive()
     }
 
-    override suspend fun markUserForDeletion(id: Long): Flow<Boolean> {
+    override suspend fun markUserForDeletion(id: Long): Boolean {
         return usersDao.markUserForDeletion(id)
     }
 }

@@ -29,144 +29,262 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import java.lang.Boolean.FALSE
+import java.lang.Boolean.TRUE
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {
-    suspend fun anyUserExists(): Boolean {
-        var result = FALSE
-        userRepository.getUsers().collect {
-            result = it.isNotEmpty()
-        }
-
-        return result
-    }
-
-    suspend fun hasMultipleUsers(): Flow<Boolean> {
-        var result = FALSE
-        userRepository.getUsers().collect {
-            result = it.size > 1
-        }
-
-        return flowOf(result)
-    }
-
-    val users: Flow<List<UserNgEntity>>
+    val users: Observable<List<UserNgEntity>>
         get() = userRepository.getUsers()
 
-    val usersScheduledForDeletion: Flow<List<UserNgEntity>>
+    val usersScheduledForDeletion: Observable<List<UserNgEntity>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    private suspend fun setAnyUserAndSetAsActive(): Flow<UserNgEntity?> {
+    private fun setAnyUserAndSetAsActive(): Observable<UserNgEntity?> {
         val results = userRepository.getUsersNotScheduledForDeletion()
 
         var result: UserNgEntity? = null
 
-        results.collect {
-            if (it.isNotEmpty()) {
-                val user = it[0]
-                user.current = true
-                userRepository.updateUser(user)
-                result = user
+        results.subscribe(object : Observer<List<UserNgEntity>> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
             }
-        }
 
-        return flowOf(result)
+            override fun onNext(users: List<UserNgEntity>) {
+                if (users.isNotEmpty()) {
+                    val user = users[0]
+                    user.current = true
+                    userRepository.updateUser(user)
+                    result = user
+                }
+            }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
+
+        return Observable.just(result)
     }
 
-    override val currentUser: Flow<UserNgEntity?>
+    override val currentUser: UserNgEntity?
         get() {
-            return userRepository.getActiveUser()
+            return userRepository.getActiveUserSynchronously()
         }
 
-    suspend fun deleteUser(internalId: Long) {
+    fun deleteUser(internalId: Long) {
         userRepository.deleteUserWithId(internalId)
     }
 
-    suspend fun deleteUserWithId(internalId: Long) {
+    fun deleteUserWithId(internalId: Long) {
         userRepository.deleteUserWithId(internalId)
     }
 
-    fun getUserById(userId: String): Flow<UserNgEntity?> {
+    fun getUserById(userId: String): Observable<UserNgEntity?> {
         return userRepository.getUserWithUserId(userId)
     }
 
-    fun getUserWithId(id: Long): Flow<UserNgEntity?> {
+    fun getUserWithId(id: Long): Observable<UserNgEntity?> {
         return userRepository.getUserWithId(id)
     }
 
-    suspend fun disableAllUsersWithoutId(userId: Long) {
+    fun disableAllUsersWithoutId(userId: Long) {
         val results = userRepository.getUsersWithoutUserId(userId)
 
-        results.collect {
-            if (it.isNotEmpty()) {
-                for (entity in it) {
-                    entity.current = false
-                    userRepository.updateUser(entity)
+        results.subscribe(object : Observer<List<UserNgEntity>> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onNext(users: List<UserNgEntity>) {
+                if (users.isNotEmpty()) {
+                    for (entity in users) {
+                        entity.current = false
+                        userRepository.updateUser(entity)
+                    }
                 }
             }
-        }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
     }
 
-    suspend fun checkIfUserIsScheduledForDeletion(username: String, server: String): Flow<Boolean> {
+    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Observable<Boolean> {
         val results = userRepository.getUserWithUsernameAndServer(username, server)
         var result = FALSE
-        results.collect {
-            result = it?.scheduledForDeletion ?: FALSE
-        }
 
-        return flowOf(result)
+        results.subscribe(object : Observer<UserNgEntity?> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onNext(user: UserNgEntity) {
+                result = user.scheduledForDeletion
+            }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
+
+        return Observable.just(result)
     }
 
-    fun getUserWithInternalId(id: Long): Flow<UserNgEntity?> {
+    fun getUserWithInternalId(id: Long): Observable<UserNgEntity?> {
         return userRepository.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    suspend fun getIfUserWithUsernameAndServer(username: String, server: String): Flow<Boolean> {
+    fun getIfUserWithUsernameAndServer(username: String, server: String): Observable<Boolean> {
         val results = userRepository.getUserWithUsernameAndServer(username, server)
         var result = FALSE
-        results.collect {
-            result = it != null
-        }
 
-        return flowOf(result)
+        results.subscribe(object : Observer<UserNgEntity?> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onNext(users: UserNgEntity) {
+                result = TRUE
+            }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
+
+        return Observable.just(result)
     }
 
-    suspend fun scheduleUserForDeletionWithId(id: Long): Flow<Boolean> {
+    suspend fun scheduleUserForDeletionWithId(id: Long): Observable<Boolean> {
         val results = userRepository.getUserWithId(id)
         var result = FALSE
 
-        results.collect {
-            if (it != null) {
-                it.scheduledForDeletion = true
-                it.current = false
-                userRepository.updateUser(it)
+        results.subscribe(object : Observer<UserNgEntity?> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
             }
-        }
 
-        setAnyUserAndSetAsActive().collect {
-            result = it != null
-        }
+            override fun onNext(user: UserNgEntity) {
+                user.scheduledForDeletion = true
+                user.current = false
+                userRepository.updateUser(user)
+            }
 
-        return flowOf(result)
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
+
+        results.subscribe(object : Observer<UserNgEntity?> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onNext(user: UserNgEntity) {
+                user.scheduledForDeletion = true
+                user.current = false
+                userRepository.updateUser(user)
+            }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
+
+        setAnyUserAndSetAsActive().subscribe(object : Observer<UserNgEntity?> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onNext(user: UserNgEntity) {
+                result = TRUE
+            }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
+
+        return Observable.just(result)
     }
 
-    suspend fun createOrUpdateUser(
+    fun createOrUpdateUser(
         username: String?,
         userAttributes: UserAttributes,
-    ): Flow<UserNgEntity?> {
+    ): Observable<UserNgEntity?> {
         var user: UserNgEntity? = null
 
         if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
-            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl).collect {
-                user = it
-            }
+            userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
+                .subscribe(object : Observer<UserNgEntity?> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(userEntity: UserNgEntity) {
+                        user = userEntity
+                    }
+
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         } else if (userAttributes.id != null) {
-            userRepository.getUserWithId(userAttributes.id).collect {
-                user = it
-            }
+            userRepository.getUserWithId(userAttributes.id)
+                .subscribe(object : Observer<UserNgEntity?> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(userEntity: UserNgEntity) {
+                        user = userEntity
+                    }
+
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         }
 
         if (user == null) {
@@ -290,6 +408,10 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         } else {
             user.displayName == null || user.displayName != null && displayName != user.displayName
         }
+    }
+
+    companion object {
+        const val TAG = "UserManager"
     }
 
     data class UserAttributes(

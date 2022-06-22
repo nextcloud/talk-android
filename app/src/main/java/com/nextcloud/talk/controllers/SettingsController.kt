@@ -69,7 +69,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppT
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.UserNgEntity
 import com.nextcloud.talk.databinding.ControllerSettingsBinding
 import com.nextcloud.talk.jobs.AccountRemovalWorker
@@ -99,10 +98,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -124,9 +119,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     lateinit var userUtils: UserUtils
 
     @Inject
-    lateinit var userRepository: UsersRepository
-
-    @Inject
     lateinit var currentUserProvider: CurrentUserProviderNew
 
     private var saveStateHandler: LovelySaveStateHandler? = null
@@ -143,18 +135,13 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
 
-    val scope = MainScope()
-
     override val title: String
         get() =
             resources!!.getString(R.string.nc_settings)
 
-    private suspend fun getCurrentUser() {
-        val user = currentUserProvider.currentUser.first()
-        Log.e(TAG, "User: $user")
-        currentUser = user
-        credentials =
-            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+    private fun getCurrentUser() {
+        currentUser = currentUserProvider.currentUser
+        credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
     override fun onViewBound(view: View) {
@@ -203,20 +190,18 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
             setupClientCertView()
         }
+
+        Log.i(TAG, "Current user: " + currentUser?.displayName)
     }
 
     private fun setupPhoneBookIntegration() {
-        scope.launch {
-            userRepository.getActiveUser().collect {
-                if (CapabilitiesNgUtil.isPhoneBookIntegrationAvailable(it)) {
-                    activity!!.runOnUiThread {
-                        binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
-                    }
-                } else {
-                    activity!!.runOnUiThread {
-                        binding.settingsPhoneBookIntegration.visibility = View.GONE
-                    }
-                }
+        if (CapabilitiesNgUtil.isPhoneBookIntegrationAvailable(currentUser)) {
+            activity!!.runOnUiThread {
+                binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
+            }
+        } else {
+            activity!!.runOnUiThread {
+                binding.settingsPhoneBookIntegration.visibility = View.GONE
             }
         }
     }
@@ -327,7 +312,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         var port = -1
         val uri: URI
         try {
-            uri = URI(this@SettingsController.currentUser!!.baseUrl)
+            uri = URI(currentUser!!.baseUrl)
             host = uri.host
             port = uri.port
         } catch (e: URISyntaxException) {
@@ -758,8 +743,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         appPreferences?.unregisterThemeChangeListener(themeChangeListener)
         appPreferences?.unregisterReadPrivacyChangeListener(readPrivacyChangeListener)
         appPreferences?.unregisterPhoneBookIntegrationChangeListener(phoneBookIntegrationChangeListener)
-
-        scope.cancel()
 
         super.onDestroy()
     }

@@ -23,27 +23,28 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.UserNgEntity
-import kotlinx.coroutines.flow.Flow
+import io.reactivex.Observable
 
 @Suppress("TooManyFunctions")
 interface UsersRepository {
-    fun getActiveUserLiveData(): Flow<UserNgEntity?>
-    fun getActiveUser(): Flow<UserNgEntity?>
-    fun getUsers(): Flow<List<UserNgEntity>>
-    fun getUserWithId(id: Long): Flow<UserNgEntity?>
-    fun getUserWithIdLiveData(id: Long): Flow<UserNgEntity?>
-    fun getUserWithIdNotScheduledForDeletion(id: Long): Flow<UserNgEntity?>
-    fun getUserWithUserId(userId: String): Flow<UserNgEntity?>
-    fun getUsersWithoutUserId(userId: Long): Flow<List<UserNgEntity>>
-    fun getUsersLiveData(): Flow<List<UserNgEntity>>
-    fun getUsersLiveDataWithoutActive(): Flow<List<UserNgEntity>>
-    fun getUsersScheduledForDeletion(): Flow<List<UserNgEntity>>
-    fun getUsersNotScheduledForDeletion(): Flow<List<UserNgEntity>>
-    fun getUserWithUsernameAndServer(username: String, server: String): Flow<UserNgEntity?>
-    suspend fun updateUser(user: UserNgEntity): Int
-    suspend fun insertUser(user: UserNgEntity): Long
-    suspend fun setUserAsActiveWithId(id: Long): Flow<Boolean>
-    suspend fun deleteUserWithId(id: Long)
-    suspend fun setAnyUserAsActive(): Flow<Boolean>
-    suspend fun markUserForDeletion(id: Long): Flow<Boolean>
+    fun getActiveUserLiveData(): Observable<UserNgEntity?>
+    fun getActiveUser(): Observable<UserNgEntity?>
+    fun getActiveUserSynchronously(): UserNgEntity?
+    fun getUsers(): Observable<List<UserNgEntity>>
+    fun getUserWithId(id: Long): Observable<UserNgEntity?>
+    fun getUserWithIdLiveData(id: Long): Observable<UserNgEntity?>
+    fun getUserWithIdNotScheduledForDeletion(id: Long): Observable<UserNgEntity?>
+    fun getUserWithUserId(userId: String): Observable<UserNgEntity?>
+    fun getUsersWithoutUserId(userId: Long): Observable<List<UserNgEntity>>
+    fun getUsersLiveData(): Observable<List<UserNgEntity>>
+    fun getUsersLiveDataWithoutActive(): Observable<List<UserNgEntity>>
+    fun getUsersScheduledForDeletion(): Observable<List<UserNgEntity>>
+    fun getUsersNotScheduledForDeletion(): Observable<List<UserNgEntity>>
+    fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?>
+    fun updateUser(user: UserNgEntity): Int
+    fun insertUser(user: UserNgEntity): Long
+    suspend fun setUserAsActiveWithId(id: Long): Boolean
+    fun deleteUserWithId(id: Long)
+    suspend fun setAnyUserAsActive(): Boolean
+    suspend fun markUserForDeletion(id: Long): Boolean
 }

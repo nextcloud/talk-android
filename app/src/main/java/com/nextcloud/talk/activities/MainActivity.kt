@@ -46,10 +46,11 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
-import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.data.user.model.UserNgEntity
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping.remapChatController
 import com.nextcloud.talk.utils.SecurityUtils
@@ -65,8 +66,6 @@ import io.reactivex.schedulers.Schedulers
 import io.requery.Persistable
 import io.requery.android.sqlcipher.SqlCipherDatabaseSource
 import io.requery.reactivex.ReactiveEntityStore
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.parceler.Parcels
 import javax.inject.Inject
 
@@ -84,7 +83,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     lateinit var ncApi: NcApi
 
     @Inject
-    lateinit var usersRepository: UsersRepository
+    lateinit var userManager: UserManager
 
     private var router: Router? = null
 
@@ -119,9 +118,14 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 if (!appPreferences.isDbRoomMigrated) {
                     appPreferences.isDbRoomMigrated = true
                 }
-                GlobalScope.launch {
-                    usersRepository.getUsers().collect {
-                        if (it.isNotEmpty()) {
+
+                userManager.users.subscribe(object : Observer<List<UserNgEntity>> {
+                    override fun onSubscribe(d: Disposable) {
+                        // unused atm
+                    }
+
+                    override fun onNext(users: List<UserNgEntity>) {
+                        if (users.isNotEmpty()) {
                             runOnUiThread {
                                 setDefaultRootController()
                             }
@@ -131,7 +135,15 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             }
                         }
                     }
-                }
+
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
             } else {
                 launchLoginScreen()
             }
@@ -191,15 +203,27 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     fun resetConversationsList() {
-        GlobalScope.launch {
-            usersRepository.getUsers().collect {
-                if (it.isNotEmpty()) {
+        userManager.users.subscribe(object : Observer<List<UserNgEntity>> {
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
+            override fun onNext(users: List<UserNgEntity>) {
+                if (users.isNotEmpty()) {
                     runOnUiThread {
                         setDefaultRootController()
                     }
                 }
             }
-        }
+
+            override fun onError(e: Throwable) {
+                // unused atm
+            }
+
+            override fun onComplete() {
+                // unused atm
+            }
+        })
     }
 
     fun openSettings() {
@@ -237,22 +261,15 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 "vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" -> {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
-                    GlobalScope.launch {
-                        usersRepository.getActiveUser().collect {
-                            if (it?.baseUrl?.endsWith(baseUrl) == true) {
-                                runOnUiThread {
-                                    startConversation(user)
-                                }
-                            } else {
-                                runOnUiThread {
-                                    Snackbar.make(
-                                        binding.controllerContainer,
-                                        R.string.nc_phone_book_integration_account_not_found,
-                                        Snackbar.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        }
+
+                    if (userManager.currentUser?.baseUrl?.endsWith(baseUrl) == true) {
+                        startConversation(user)
+                    } else {
+                        Snackbar.make(
+                            binding.controllerContainer,
+                            R.string.nc_phone_book_integration_account_not_found,
+                            Snackbar.LENGTH_LONG
+                        ).show()
                     }
                 }
             }
@@ -262,18 +279,40 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     private fun startConversation(userId: String) {
         val roomType = "1"
 
-        GlobalScope.launch {
-            usersRepository.getActiveUser().collect { currentUser ->
-                if (currentUser != null) {
-                    val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
-                    val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
-                    val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                        apiVersion, currentUser.baseUrl, roomType,
-                        null, userId, null
-                    )
-                    ncApi.createRoom(
+        val currentUser = userManager.currentUser
+
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
+        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+            apiVersion, currentUser?.baseUrl, roomType,
+            null, userId, null
+        )
+
+        ncApi.createRoom(
+            credentials,
+            retrofitBucket.url, retrofitBucket.queryMap
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<RoomOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(roomOverall: RoomOverall) {
+                    val bundle = Bundle()
+                    bundle.putParcelable(KEY_USER_ENTITY, currentUser)
+                    bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
+                    bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+
+                    // FIXME once APIv2 or later is used only, the createRoom already returns all the data
+                    ncApi.getRoom(
                         credentials,
-                        retrofitBucket.url, retrofitBucket.queryMap
+                        ApiUtils.getUrlForRoom(
+                            apiVersion,
+                            currentUser?.baseUrl,
+                            roomOverall.ocs!!.data!!.token
+                        )
                     )
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -283,46 +322,14 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             }
 
                             override fun onNext(roomOverall: RoomOverall) {
-                                val bundle = Bundle()
-                                bundle.putParcelable(KEY_USER_ENTITY, currentUser)
-                                bundle.putString(KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                                bundle.putString(KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
-
-                                // FIXME once APIv2 or later is used only, the createRoom already returns all the data
-                                ncApi.getRoom(
-                                    credentials,
-                                    ApiUtils.getUrlForRoom(
-                                        apiVersion,
-                                        currentUser.baseUrl,
-                                        roomOverall.ocs!!.data!!.token
-                                    )
+                                bundle.putParcelable(
+                                    KEY_ACTIVE_CONVERSATION,
+                                    Parcels.wrap(roomOverall.ocs!!.data)
                                 )
-                                    .subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribe(object : Observer<RoomOverall> {
-                                        override fun onSubscribe(d: Disposable) {
-                                            // unused atm
-                                        }
-
-                                        override fun onNext(roomOverall: RoomOverall) {
-                                            bundle.putParcelable(
-                                                KEY_ACTIVE_CONVERSATION,
-                                                Parcels.wrap(roomOverall.ocs!!.data)
-                                            )
-                                            remapChatController(
-                                                router!!, currentUser.id,
-                                                roomOverall.ocs!!.data!!.token!!, bundle, true
-                                            )
-                                        }
-
-                                        override fun onError(e: Throwable) {
-                                            // unused atm
-                                        }
-
-                                        override fun onComplete() {
-                                            // unused atm
-                                        }
-                                    })
+                                remapChatController(
+                                    router!!, currentUser!!.id,
+                                    roomOverall.ocs!!.data!!.token!!, bundle, true
+                                )
                             }
 
                             override fun onError(e: Throwable) {
@@ -334,8 +341,15 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                             }
                         })
                 }
-            }
-        }
+
+                override fun onError(e: Throwable) {
+                    // unused atm
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
