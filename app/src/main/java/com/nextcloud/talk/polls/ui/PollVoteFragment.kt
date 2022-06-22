@@ -71,7 +71,7 @@ class PollVoteFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
-            if (state is PollMainViewModel.PollUnvotedState) {
+            if (state is PollMainViewModel.PollVoteState) {
                 val poll = state.poll
                 binding.radioGroup.removeAllViews()
                 poll.options?.map { option ->
@@ -80,7 +80,7 @@ class PollVoteFragment(
                     radioButton.id = index
                     binding.radioGroup.addView(radioButton)
                 }
-            } else if (state is PollMainViewModel.PollVotedState && state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
+            } else if (state is PollMainViewModel.PollResultState && state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
                 Log.d(TAG, "show vote screen also for resultMode hidden poll when already voted")
                 // TODO: other text for submit button
             }

@@ -102,6 +102,18 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         ).map { mapToPoll(it.ocs?.data!!) }
     }
 
+    override fun closePoll(roomToken: String, pollId: String): Observable<Poll> {
+
+        return ncApi.closePoll(
+            credentials,
+            ApiUtils.getUrlForPoll(
+                currentUserProvider.currentUser?.baseUrl,
+                roomToken,
+                pollId
+            ),
+        ).map { mapToPoll(it.ocs?.data!!) }
+    }
+
     companion object {
 
         private fun mapToPoll(pollResponse: PollResponse): Poll {

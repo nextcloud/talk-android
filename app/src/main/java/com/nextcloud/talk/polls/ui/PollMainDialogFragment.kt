@@ -60,7 +60,7 @@ class PollMainDialogFragment(
             when (state) {
                 PollMainViewModel.InitialState -> {}
 
-                is PollMainViewModel.PollVotedState -> {
+                is PollMainViewModel.PollResultState -> {
                     if (state.poll.resultMode == Poll.RESULT_MODE_HIDDEN) {
                         showVoteFragment()
                     } else {
@@ -68,7 +68,7 @@ class PollMainDialogFragment(
                     }
                 }
 
-                is PollMainViewModel.PollUnvotedState -> {
+                is PollMainViewModel.PollVoteState -> {
                     if (state.poll.status == Poll.STATUS_CLOSED) {
                         showResultsFragment()
                     } else {

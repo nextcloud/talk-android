@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
+import com.nextcloud.talk.utils.database.user.UserUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -25,6 +26,9 @@ import javax.inject.Inject
  */
 class PollMainViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
 
+    @Inject
+    lateinit var userUtils: UserUtils
+
     private lateinit var roomToken: String
     private lateinit var pollId: String
 
@@ -32,8 +36,13 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     sealed interface ViewState
     object InitialState : ViewState
-    open class PollUnvotedState(val poll: Poll) : ViewState
-    open class PollVotedState(val poll: Poll) : ViewState
+    open class PollVoteState(val poll: Poll) : ViewState
+    open class PollResultState(
+        val poll: Poll,
+        val showDetails: Boolean,
+        val showEditButton: Boolean,
+        val showCloseButton: Boolean
+    ) : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
@@ -65,6 +74,14 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
             ?.subscribe(PollObserver())
     }
 
+    fun closePoll() {
+        repository.closePoll(roomToken, pollId)
+            ?.doOnSubscribe { disposable = it }
+            ?.subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(PollObserver())
+    }
+
     override fun onCleared() {
         super.onCleared()
         disposable?.dispose()
@@ -86,14 +103,22 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
         override fun onComplete() {
             if (editPoll) {
-                _viewState.value = PollUnvotedState(poll)
+                _viewState.value = PollVoteState(poll)
                 editPoll = false
             } else if (poll.votedSelf.isNullOrEmpty()) {
-                _viewState.value = PollUnvotedState(poll)
+                _viewState.value = PollVoteState(poll)
             } else {
-                _viewState.value = PollVotedState(poll)
+                val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
+                val showDetails = poll.status == Poll.STATUS_CLOSED && poll.resultMode == Poll.RESULT_MODE_PUBLIC
+                val showCloseButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
+
+                _viewState.value = PollResultState(poll, showDetails, showEditButton, showCloseButton)
             }
         }
+    }
+
+    fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
+        return userUtils.currentUser?.userId == poll.actorId
     }
 
     companion object {

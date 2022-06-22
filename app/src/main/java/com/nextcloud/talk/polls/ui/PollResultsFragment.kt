@@ -77,24 +77,21 @@ class PollResultsFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        adapter = PollResultsAdapter(this)
-        _binding?.pollResultsList?.adapter = adapter
-        _binding?.pollResultsList?.layoutManager = LinearLayoutManager(context)
-
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
-            if (state is PollMainViewModel.PollVotedState &&
-                state.poll.resultMode == Poll.RESULT_MODE_PUBLIC
-            ) {
-
+            if (state is PollMainViewModel.PollResultState) {
+                initAdapter(state.showDetails)
                 initPollResults(state.poll)
                 initAmountVotersInfo(state)
-                initEditButton(state)
-            } else if (state is PollMainViewModel.PollUnvotedState &&
-                state.poll.status == Poll.STATUS_CLOSED
-            ) {
-                Log.d(TAG, "show results also if self never voted")
+                initEditButton(state.showEditButton)
+                initCloseButton(state.showCloseButton)
             }
         }
+    }
+
+    private fun initAdapter(showDetails: Boolean) {
+        adapter = PollResultsAdapter(this, showDetails)
+        _binding?.pollResultsList?.adapter = adapter
+        _binding?.pollResultsList?.layoutManager = LinearLayoutManager(context)
     }
 
     private fun initPollResults(poll: Poll) {
@@ -128,21 +125,43 @@ class PollResultsFragment(
         }
     }
 
-    private fun initAmountVotersInfo(state: PollMainViewModel.PollVotedState) {
+    private fun initAmountVotersInfo(state: PollMainViewModel.PollResultState) {
         _binding?.pollAmountVoters?.text = String.format(
             resources.getString(R.string.polls_amount_voters),
             state.poll.numVoters
         )
     }
 
-    private fun initEditButton(state: PollMainViewModel.PollVotedState) {
-        if (state.poll.status == Poll.STATUS_OPEN && state.poll.resultMode == Poll.RESULT_MODE_PUBLIC) {
+    // private fun initEditButton(state: PollMainViewModel.PollResultState) {
+    //     if (state.poll.status == Poll.STATUS_OPEN && state.poll.resultMode == Poll.RESULT_MODE_PUBLIC) {
+    //         _binding?.editVoteButton?.visibility = View.VISIBLE
+    //         _binding?.editVoteButton?.setOnClickListener {
+    //             parentViewModel.edit()
+    //         }
+    //     } else {
+    //         _binding?.editVoteButton?.visibility = View.GONE
+    //     }
+    // }
+
+    private fun initEditButton(showEditButton: Boolean) {
+        if (showEditButton) {
             _binding?.editVoteButton?.visibility = View.VISIBLE
             _binding?.editVoteButton?.setOnClickListener {
                 parentViewModel.edit()
             }
         } else {
             _binding?.editVoteButton?.visibility = View.GONE
+        }
+    }
+
+    private fun initCloseButton(showCloseButton: Boolean) {
+        if (showCloseButton) {
+            _binding?.closeVoteButton?.visibility = View.VISIBLE
+            _binding?.closeVoteButton?.setOnClickListener {
+                parentViewModel.closePoll()
+            }
+        } else {
+            _binding?.closeVoteButton?.visibility = View.GONE
         }
     }
 

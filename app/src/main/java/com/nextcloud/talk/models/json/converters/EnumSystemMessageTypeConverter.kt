@@ -65,6 +65,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.MODERAT
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.OBJECT_SHARED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_REMOVED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.PASSWORD_SET
+import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.POLL_CLOSED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.POLL_VOTED
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.REACTION_DELETED
@@ -169,6 +170,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "reaction_deleted" -> REACTION_DELETED
             "reaction_revoked" -> REACTION_REVOKED
             "poll_voted" -> POLL_VOTED
+            "poll_closed" -> POLL_CLOSED
             else -> DUMMY
         }
     }
@@ -227,6 +229,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             REACTION_DELETED -> return "reaction_deleted"
             REACTION_REVOKED -> return "reaction_revoked"
             POLL_VOTED -> return "poll_voted"
+            POLL_CLOSED -> return "poll_closed"
             else -> return ""
         }
     }

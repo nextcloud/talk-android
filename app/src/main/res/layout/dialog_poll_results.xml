@@ -49,6 +49,18 @@
         tools:text="Poll results - 93 votes" />
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/close_vote_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Close"
+        android:theme="@style/Button.Primary"
+        app:cornerRadius="@dimen/button_corner_radius"
+        app:layout_constraintEnd_toStartOf="@+id/edit_vote_button"
+        app:layout_constraintTop_toBottomOf="@+id/poll_results_list_wrapper" />
+
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/edit_vote_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
