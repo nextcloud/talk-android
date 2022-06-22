@@ -37,8 +37,11 @@
     <uses-permission
         android:name="android.permission.AUTHENTICATE_ACCOUNTS"
         android:maxSdkVersion="22" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission
+        android:name="android.permission.BLUETOOTH"
+        android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission
         android:name="android.permission.GET_ACCOUNTS"
@@ -100,6 +103,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/nc_app_name"
+            android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -122,6 +126,8 @@
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="vnd.android.cursor.item/vnd.com.nextcloud.talk2.chat" />
+                <data android:scheme="content" />
+                <data android:scheme="file" />
             </intent-filter>
         </activity>
 
@@ -176,7 +182,8 @@
             android:name=".messagesearch.MessageSearchActivity"
             android:theme="@style/AppTheme" />
 
-        <receiver android:name=".receivers.PackageReplacedReceiver">
+        <receiver android:name=".receivers.PackageReplacedReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
@@ -199,7 +206,8 @@
                 android:resource="@xml/contacts" />
         </service>
 
-        <service android:name=".utils.AuthenticatorService">
+        <service android:name=".utils.AuthenticatorService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>

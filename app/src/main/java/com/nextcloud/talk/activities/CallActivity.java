@@ -161,6 +161,7 @@ import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -2610,7 +2611,7 @@ public class CallActivity extends CallBaseActivity {
                     this,
                     requestCode,
                     new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
-                    0);
+                    FLAG_MUTABLE);
 
             actions.add(new RemoteAction(icon, title, title, intent));
 
