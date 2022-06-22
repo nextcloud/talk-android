@@ -400,7 +400,6 @@
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
-    <string name="nc_upload_local_file">Upload local file</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
@@ -408,6 +407,7 @@
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
     <string name="nc_upload_in_progess">Uploading</string>
+    <string name="nc_upload_from_device">Upload from device</string>
 
     <!-- location sharing -->
     <string name="nc_share_location">Share location</string>

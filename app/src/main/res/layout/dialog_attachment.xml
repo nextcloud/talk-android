@@ -164,7 +164,7 @@
             android:layout_gravity="start|center_vertical"
             android:paddingStart="@dimen/standard_double_padding"
             android:paddingEnd="@dimen/zero"
-            android:text="@string/nc_upload_local_file"
+            android:text="@string/nc_upload_from_device"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
