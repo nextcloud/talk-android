@@ -38,8 +38,8 @@ class PushConfigurationConverter {
     }
 
     @TypeConverter
-    fun fromStringToPushConfiguration(value: String): PushConfigurationState? {
-        if (value.isBlank()) {
+    fun fromStringToPushConfiguration(value: String?): PushConfigurationState? {
+        if (value.isNullOrBlank()) {
             return null
         }
 
