@@ -400,7 +400,6 @@
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
-    <string name="nc_upload_local_file">Upload local file</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>
     <string name="nc_upload_from_cloud">Share from %1$s</string>
     <string name="nc_upload_failed">Sorry, upload failed</string>
