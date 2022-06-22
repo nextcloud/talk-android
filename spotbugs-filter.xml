@@ -36,7 +36,7 @@
         <Class name="~.*\$\$Parcelable.*" />
     </Match>
 	<Match>
-        <Class name="~.*\$\$TalkDatabase_.*" />
+        <Class name="~.*\.TalkDatabase_Impl.*" />
     </Match>
     <!-- JSON/Data classes with generated accessor methods -->
     <Match>
