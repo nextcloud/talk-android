@@ -73,10 +73,10 @@ class PollVoteFragment(
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
             if (state is PollMainViewModel.PollVoteState) {
                 initPollOptions(state.poll)
-                // binding.pollVoteHiddenHint.visibility = View.GONE
+                initCloseButton(state.showCloseButton)
             } else if (state is PollMainViewModel.PollVoteHiddenState) {
                 initPollOptions(state.poll)
-                // binding.pollVoteHiddenHint.visibility = View.VISIBLE
+                initCloseButton(state.showCloseButton)
             }
         }
 
@@ -98,7 +98,7 @@ class PollVoteFragment(
         }
         // todo observe viewmodel checked, set view checked with it
 
-        binding.submitVote.setOnClickListener {
+        binding.pollVoteSubmitButton.setOnClickListener {
             viewModel.vote(roomToken, pollId, binding.radioGroup.checkedRadioButtonId)
         }
     }
@@ -110,6 +110,17 @@ class PollVoteFragment(
         }?.forEachIndexed { index, radioButton ->
             radioButton.id = index
             binding.radioGroup.addView(radioButton)
+        }
+    }
+
+    private fun initCloseButton(showCloseButton: Boolean) {
+        if (showCloseButton) {
+            _binding?.pollVoteClosePollButton?.visibility = View.VISIBLE
+            _binding?.pollVoteClosePollButton?.setOnClickListener {
+                parentViewModel.closePoll()
+            }
+        } else {
+            _binding?.pollVoteClosePollButton?.visibility = View.GONE
         }
     }
 

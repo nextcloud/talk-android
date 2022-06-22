@@ -539,6 +539,7 @@
     <!-- Polls -->
     <string name="polls_amount_voters">Poll results - %1$s votes</string>
     <string name="polls_add_option">Add Option</string>
+    <string name="polls_close_poll">Close Poll</string>
 
     <string name="title_attachments">Attachments</string>
 

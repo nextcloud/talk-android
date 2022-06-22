@@ -36,8 +36,16 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     sealed interface ViewState
     object InitialState : ViewState
-    open class PollVoteState(val poll: Poll) : ViewState
-    open class PollVoteHiddenState(val poll: Poll) : ViewState
+    open class PollVoteState(
+        val poll: Poll,
+        val showCloseButton: Boolean
+    ) : ViewState
+
+    open class PollVoteHiddenState(
+        val poll: Poll,
+        val showCloseButton: Boolean
+    ) : ViewState
+
     open class PollResultState(
         val poll: Poll,
         val showParticipants: Boolean,
@@ -103,15 +111,17 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         }
 
         override fun onComplete() {
+            val showCloseButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
+
             if (votedForOpenHiddenPoll(poll)) {
-                _viewState.value = PollVoteHiddenState(poll)
+                _viewState.value = PollVoteHiddenState(poll, showCloseButton)
             } else if (editPoll && poll.status == Poll.STATUS_OPEN) {
-                _viewState.value = PollVoteState(poll)
+                _viewState.value = PollVoteState(poll, showCloseButton)
                 editPoll = false
             } else if (poll.status == Poll.STATUS_CLOSED || poll.votedSelf?.isNotEmpty() == true) {
                 setPollResultState(poll)
             } else if (poll.votedSelf.isNullOrEmpty()) {
-                _viewState.value = PollVoteState(poll)
+                _viewState.value = PollVoteState(poll, showCloseButton)
             } else {
                 Log.w(TAG, "unknown poll state")
             }
