@@ -30,6 +30,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Icon;
@@ -93,7 +94,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.webrtc.MagicAudioManager;
+import com.nextcloud.talk.webrtc.WebRtcAudioManger;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
@@ -138,12 +139,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
 import autodagger.AutoInjector;
 import io.reactivex.Observable;
@@ -157,6 +161,7 @@ import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
+import static android.app.PendingIntent.FLAG_MUTABLE;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -182,11 +187,11 @@ public class CallActivity extends CallBaseActivity {
 
     public static final String TAG = "CallActivity";
 
-    public MagicAudioManager audioManager;
+    public WebRtcAudioManger audioManager;
 
     private static final String[] PERMISSIONS_CALL = {
-        android.Manifest.permission.CAMERA,
-        android.Manifest.permission.RECORD_AUDIO,
+        Manifest.permission.CAMERA,
+        Manifest.permission.RECORD_AUDIO
     };
 
     private static final String[] PERMISSIONS_CAMERA = {
@@ -268,6 +273,13 @@ public class CallActivity extends CallBaseActivity {
 
     private AudioOutputDialog audioOutputDialog;
 
+    private final ActivityResultLauncher<String> requestBluetoothPermissionLauncher =
+        registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+            if (isGranted) {
+                enableBluetoothManager();
+            }
+        });
+
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -317,6 +329,9 @@ public class CallActivity extends CallBaseActivity {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            requestBluetoothPermission();
+        }
         basicInitialization();
         participantDisplayItems = new HashMap<>();
         initViews();
@@ -324,6 +339,22 @@ public class CallActivity extends CallBaseActivity {
             initiateCall();
         }
         updateSelfVideoViewPosition();
+    }
+
+    @SuppressLint("InlinedApi")
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    private void requestBluetoothPermission() {
+        if (ContextCompat.checkSelfPermission(
+            getContext(), Manifest.permission.BLUETOOTH_CONNECT) ==
+            PackageManager.PERMISSION_DENIED) {
+            requestBluetoothPermissionLauncher.launch(Manifest.permission.BLUETOOTH_CONNECT);
+        }
+    }
+
+    private void enableBluetoothManager() {
+        if (audioManager != null) {
+            audioManager.startBluetoothManager();
+        }
     }
 
     @Override
@@ -419,16 +450,16 @@ public class CallActivity extends CallBaseActivity {
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
-        audioManager = MagicAudioManager.create(getApplicationContext(), isVoiceOnlyCall);
+        audioManager = WebRtcAudioManger.create(getApplicationContext(), isVoiceOnlyCall);
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...");
         audioManager.start(this::onAudioManagerDevicesChanged);
 
         if (isVoiceOnlyCall) {
-            setAudioOutputChannel(MagicAudioManager.AudioDevice.EARPIECE);
+            setAudioOutputChannel(WebRtcAudioManger.AudioDevice.EARPIECE);
         } else {
-            setAudioOutputChannel(MagicAudioManager.AudioDevice.SPEAKER_PHONE);
+            setAudioOutputChannel(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE);
         }
 
         iceServers = new ArrayList<>();
@@ -462,14 +493,14 @@ public class CallActivity extends CallBaseActivity {
         microphoneInitialization();
     }
 
-    public void setAudioOutputChannel(MagicAudioManager.AudioDevice selectedAudioDevice) {
+    public void setAudioOutputChannel(WebRtcAudioManger.AudioDevice selectedAudioDevice) {
         if (audioManager != null) {
             audioManager.selectAudioDevice(selectedAudioDevice);
             updateAudioOutputButton(audioManager.getCurrentAudioDevice());
         }
     }
 
-    private void updateAudioOutputButton(MagicAudioManager.AudioDevice activeAudioDevice) {
+    private void updateAudioOutputButton(WebRtcAudioManger.AudioDevice activeAudioDevice) {
         switch (activeAudioDevice) {
             case BLUETOOTH:
                 binding.audioOutputButton.getHierarchy().setPlaceholderImage(
@@ -763,14 +794,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-        final MagicAudioManager.AudioDevice currentDevice,
-        final Set<MagicAudioManager.AudioDevice> availableDevices) {
+        final WebRtcAudioManger.AudioDevice currentDevice,
+        final Set<WebRtcAudioManger.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
             + "currentDevice: " + currentDevice);
 
-        final boolean shouldDisableProximityLock = (currentDevice.equals(MagicAudioManager.AudioDevice.WIRED_HEADSET)
-            || currentDevice.equals(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
-            || currentDevice.equals(MagicAudioManager.AudioDevice.BLUETOOTH));
+        final boolean shouldDisableProximityLock = (currentDevice.equals(WebRtcAudioManger.AudioDevice.WIRED_HEADSET)
+            || currentDevice.equals(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE)
+            || currentDevice.equals(WebRtcAudioManger.AudioDevice.BLUETOOTH));
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
@@ -2580,7 +2611,7 @@ public class CallActivity extends CallBaseActivity {
                     this,
                     requestCode,
                     new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
-                    0);
+                    FLAG_MUTABLE);
 
             actions.add(new RemoteAction(icon, title, title, intent));
 

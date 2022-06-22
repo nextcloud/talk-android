@@ -30,7 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.databinding.DialogAudioOutputBinding
-import com.nextcloud.talk.webrtc.MagicAudioManager
+import com.nextcloud.talk.webrtc.WebRtcAudioManger
 
 class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(callActivity) {
 
@@ -47,26 +47,26 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
     }
 
     fun updateOutputDeviceList() {
-        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.BLUETOOTH) == false) {
+        if (callActivity.audioManager?.audioDevices?.contains(WebRtcAudioManger.AudioDevice.BLUETOOTH) == false) {
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputBluetooth.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.EARPIECE) == false) {
+        if (callActivity.audioManager?.audioDevices?.contains(WebRtcAudioManger.AudioDevice.EARPIECE) == false) {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.VISIBLE
         }
 
-        if (callActivity.audioManager?.audioDevices?.contains(MagicAudioManager.AudioDevice.SPEAKER_PHONE) == false) {
+        if (callActivity.audioManager?.audioDevices?.contains(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE) == false) {
             dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.GONE
         } else {
             dialogAudioOutputBinding.audioOutputSpeaker.visibility = View.VISIBLE
         }
 
         if (callActivity.audioManager?.currentAudioDevice?.equals(
-                MagicAudioManager.AudioDevice.WIRED_HEADSET
+                WebRtcAudioManger.AudioDevice.WIRED_HEADSET
             ) == true
         ) {
             dialogAudioOutputBinding.audioOutputEarspeaker.visibility = View.GONE
@@ -81,7 +81,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
     private fun highlightActiveOutputChannel() {
         when (callActivity.audioManager?.currentAudioDevice) {
-            MagicAudioManager.AudioDevice.BLUETOOTH -> {
+            WebRtcAudioManger.AudioDevice.BLUETOOTH -> {
                 dialogAudioOutputBinding.audioOutputBluetoothIcon.setColorFilter(
                     ContextCompat.getColor(
                         context,
@@ -94,7 +94,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                 )
             }
 
-            MagicAudioManager.AudioDevice.SPEAKER_PHONE -> {
+            WebRtcAudioManger.AudioDevice.SPEAKER_PHONE -> {
                 dialogAudioOutputBinding.audioOutputSpeakerIcon.setColorFilter(
                     ContextCompat.getColor(
                         context,
@@ -107,7 +107,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                 )
             }
 
-            MagicAudioManager.AudioDevice.EARPIECE -> {
+            WebRtcAudioManger.AudioDevice.EARPIECE -> {
                 dialogAudioOutputBinding.audioOutputEarspeakerIcon.setColorFilter(
                     ContextCompat.getColor(
                         context,
@@ -120,7 +120,7 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
                 )
             }
 
-            MagicAudioManager.AudioDevice.WIRED_HEADSET -> {
+            WebRtcAudioManger.AudioDevice.WIRED_HEADSET -> {
                 dialogAudioOutputBinding.audioOutputWiredHeadsetIcon.setColorFilter(
                     ContextCompat.getColor(
                         context,
@@ -139,17 +139,17 @@ class AudioOutputDialog(val callActivity: CallActivity) : BottomSheetDialog(call
 
     private fun initClickListeners() {
         dialogAudioOutputBinding.audioOutputBluetooth.setOnClickListener {
-            callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.BLUETOOTH)
+            callActivity.setAudioOutputChannel(WebRtcAudioManger.AudioDevice.BLUETOOTH)
             dismiss()
         }
 
         dialogAudioOutputBinding.audioOutputSpeaker.setOnClickListener {
-            callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.SPEAKER_PHONE)
+            callActivity.setAudioOutputChannel(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE)
             dismiss()
         }
 
         dialogAudioOutputBinding.audioOutputEarspeaker.setOnClickListener {
-            callActivity.setAudioOutputChannel(MagicAudioManager.AudioDevice.EARPIECE)
+            callActivity.setAudioOutputChannel(WebRtcAudioManger.AudioDevice.EARPIECE)
             dismiss()
         }
     }
