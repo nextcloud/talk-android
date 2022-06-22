@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -31,6 +33,7 @@
 
 package com.nextcloud.talk.webrtc;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -47,20 +50,23 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Process;
 import android.util.Log;
+
 import org.webrtc.ThreadUtils;
 
 import java.util.List;
 import java.util.Set;
 
-public class MagicBluetoothManager {
-    private static final String TAG = "MagicBluetoothManager";
+import androidx.core.app.ActivityCompat;
+
+public class WebRtcBluetoothManager {
+    private static final String TAG = WebRtcBluetoothManager.class.getCanonicalName();
 
     // Timeout interval for starting or stopping audio to a Bluetooth SCO device.
     private static final int BLUETOOTH_SCO_TIMEOUT_MS = 4000;
     // Maximum number of SCO connection attempts.
     private static final int MAX_SCO_CONNECTION_ATTEMPTS = 2;
     private final Context apprtcContext;
-    private final MagicAudioManager apprtcAudioManager;
+    private final WebRtcAudioManger webRtcAudioManager;
     private final AudioManager audioManager;
     private final Handler handler;
     private final BluetoothProfile.ServiceListener bluetoothServiceListener;
@@ -73,18 +79,14 @@ public class MagicBluetoothManager {
     // Runs when the Bluetooth timeout expires. We use that timeout after calling
     // startScoAudio() or stopScoAudio() because we're not guaranteed to get a
     // callback after those calls.
-    private final Runnable bluetoothTimeoutRunnable = new Runnable() {
-        @Override
-        public void run() {
-            bluetoothTimeout();
-        }
-    };
+    private final Runnable bluetoothTimeoutRunnable = this::bluetoothTimeout;
+    private boolean started = false;
 
-    protected MagicBluetoothManager(Context context, MagicAudioManager audioManager) {
+    protected WebRtcBluetoothManager(Context context, WebRtcAudioManger audioManager) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
         apprtcContext = context;
-        apprtcAudioManager = audioManager;
+        webRtcAudioManager = audioManager;
         this.audioManager = getAudioManager(context);
         bluetoothState = State.UNINITIALIZED;
         bluetoothServiceListener = new BluetoothServiceListener();
@@ -95,8 +97,8 @@ public class MagicBluetoothManager {
     /**
      * Construction.
      */
-    static MagicBluetoothManager create(Context context, MagicAudioManager audioManager) {
-        return new MagicBluetoothManager(context, audioManager);
+    static WebRtcBluetoothManager create(Context context, WebRtcAudioManger audioManager) {
+        return new WebRtcBluetoothManager(context, audioManager);
     }
 
     /**
@@ -122,11 +124,11 @@ public class MagicBluetoothManager {
      * Note that the MagicAudioManager is also involved in driving this state
      * change.
      */
+    @SuppressLint("MissingPermission")
     public void start() {
         ThreadUtils.checkIsOnMainThread();
         Log.d(TAG, "start");
-        if (!hasPermission(apprtcContext, android.Manifest.permission.BLUETOOTH)) {
-            Log.w(TAG, "Process (pid=" + Process.myPid() + ") lacks BLUETOOTH permission");
+        if(hasNoBluetoothPermission()){
             return;
         }
         if (bluetoothState != State.UNINITIALIZED) {
@@ -166,6 +168,7 @@ public class MagicBluetoothManager {
                 + stateToString(bluetoothAdapter.getProfileConnectionState(BluetoothProfile.HEADSET)));
         Log.d(TAG, "Bluetooth proxy for headset profile has started");
         bluetoothState = State.HEADSET_UNAVAILABLE;
+        started = true;
         Log.d(TAG, "start done: BT state=" + bluetoothState);
     }
 
@@ -262,8 +265,12 @@ public class MagicBluetoothManager {
      * HEADSET_AVAILABLE and |bluetoothDevice| will be mapped to the connected
      * device if available.
      */
+    @SuppressLint("MissingPermission")
     public void updateDevice() {
-        if (bluetoothState == State.UNINITIALIZED || bluetoothHeadset == null) {
+        boolean hasNoBluetoothPermissions = hasNoBluetoothPermission();
+        if (hasNoBluetoothPermissions ||
+            bluetoothState == State.UNINITIALIZED ||
+            bluetoothHeadset == null) {
             return;
         }
         Log.d(TAG, "updateDevice");
@@ -307,16 +314,28 @@ public class MagicBluetoothManager {
         return bluetoothAdapter.getProfileProxy(context, listener, profile);
     }
 
-    protected boolean hasPermission(Context context, String permission) {
-        return apprtcContext.checkPermission(permission, Process.myPid(), Process.myUid())
-                == PackageManager.PERMISSION_GRANTED;
+    private boolean hasNoBluetoothPermission() {
+        String permission;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            permission = Manifest.permission.BLUETOOTH_CONNECT;
+        } else {
+            permission = Manifest.permission.BLUETOOTH;
+        }
+
+        boolean hasPermission =
+            ActivityCompat.checkSelfPermission(apprtcContext, permission) == PackageManager.PERMISSION_GRANTED;
+        if(!hasPermission) {
+            Log.w(TAG, "Process (pid=" + Process.myPid() + ") lacks \"" + permission + "\" permission");
+        }
+        return !hasPermission;
     }
 
     /**
      * Logs the state of the local Bluetooth adapter.
      */
-    @SuppressLint("HardwareIds")
-    protected void logBluetoothAdapterInfo(BluetoothAdapter localAdapter) {
+    @SuppressLint({"HardwareIds", "MissingPermission"})
+    private void logBluetoothAdapterInfo(BluetoothAdapter localAdapter) {
         Log.d(TAG, "BluetoothAdapter: "
             + "enabled=" + localAdapter.isEnabled() + ", "
             + "state=" + stateToString(localAdapter.getState()) + ", "
@@ -337,7 +356,7 @@ public class MagicBluetoothManager {
     private void updateAudioDeviceState() {
         ThreadUtils.checkIsOnMainThread();
         Log.d(TAG, "updateAudioDeviceState");
-        apprtcAudioManager.updateAudioDeviceState();
+        webRtcAudioManager.updateAudioDeviceState();
     }
 
     /**
@@ -362,9 +381,13 @@ public class MagicBluetoothManager {
      * Called when start of the BT SCO channel takes too long time. Usually
      * happens when the BT device has been turned on during an ongoing call.
      */
+    @SuppressLint("MissingPermission")
     private void bluetoothTimeout() {
         ThreadUtils.checkIsOnMainThread();
-        if (bluetoothState == State.UNINITIALIZED || bluetoothHeadset == null) {
+        boolean hasNoBluetoothPermissions = hasNoBluetoothPermission();
+        if (hasNoBluetoothPermissions ||
+            bluetoothState == State.UNINITIALIZED ||
+            bluetoothHeadset == null) {
             return;
         }
         Log.d(TAG, "bluetoothTimeout: BT state=" + bluetoothState + ", "
@@ -433,6 +456,10 @@ public class MagicBluetoothManager {
             default:
                 return "INVALID";
         }
+    }
+
+    public boolean started() {
+        return started;
     }
 
     // Bluetooth connection state.
