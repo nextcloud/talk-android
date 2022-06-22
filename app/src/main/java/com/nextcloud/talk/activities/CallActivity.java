@@ -2606,12 +2606,22 @@ public class CallActivity extends CallBaseActivity {
             final ArrayList<RemoteAction> actions = new ArrayList<>();
 
             final Icon icon = Icon.createWithResource(this, iconId);
-            final PendingIntent intent =
-                PendingIntent.getBroadcast(
-                    this,
-                    requestCode,
-                    new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
-                    FLAG_MUTABLE);
+            PendingIntent intent;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                intent =
+                    PendingIntent.getBroadcast(
+                        this,
+                        requestCode,
+                        new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
+                        FLAG_MUTABLE);
+            } else {
+                intent =
+                    PendingIntent.getBroadcast(
+                        this,
+                        requestCode,
+                        new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
+                        0);
+            }
 
             actions.add(new RemoteAction(icon, title, title, intent));
 
