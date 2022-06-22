@@ -162,6 +162,7 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import static android.app.PendingIntent.FLAG_MUTABLE;
+import static android.app.PendingIntent.FLAG_MUTABLE;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -2606,22 +2607,19 @@ public class CallActivity extends CallBaseActivity {
             final ArrayList<RemoteAction> actions = new ArrayList<>();
 
             final Icon icon = Icon.createWithResource(this, iconId);
-            PendingIntent intent;
+
+            int intentFlag;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                intent =
-                    PendingIntent.getBroadcast(
-                        this,
-                        requestCode,
-                        new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
-                        FLAG_MUTABLE);
+                intentFlag = FLAG_MUTABLE;
             } else {
-                intent =
-                    PendingIntent.getBroadcast(
-                        this,
-                        requestCode,
-                        new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
-                        0);
+                intentFlag = 0;
             }
+            final PendingIntent intent =
+                PendingIntent.getBroadcast(
+                    this,
+                    requestCode,
+                    new Intent(MICROPHONE_PIP_INTENT_NAME).putExtra(MICROPHONE_PIP_INTENT_EXTRA_ACTION, requestCode),
+                    intentFlag);
 
             actions.add(new RemoteAction(icon, title, title, intent));
 
