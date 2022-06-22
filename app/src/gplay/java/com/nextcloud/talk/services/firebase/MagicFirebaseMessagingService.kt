@@ -24,6 +24,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Base64
@@ -168,7 +169,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 Log.d(NotificationWorker.TAG, "Invalid private key " + e1.localizedMessage)
             }
         } catch (exception: Exception) {
-            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage)
+            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage, exception)
         }
     }
 
@@ -217,7 +218,11 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     this@MagicFirebaseMessagingService,
                     0,
                     fullScreenIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    } else {
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    }
                 )
 
                 val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
@@ -319,6 +324,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 override fun onError(e: Throwable) {
                     // unused atm
                 }
+
                 override fun onComplete() {
                     stopForeground(true)
                     handler.removeCallbacksAndMessages(null)
