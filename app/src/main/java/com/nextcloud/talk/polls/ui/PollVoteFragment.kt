@@ -26,6 +26,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -92,24 +93,47 @@ class PollVoteFragment(
             }
         }
 
-        binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.pollVoteRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             // todo set selected in viewmodel.
             Log.d("bb", "click")
         }
         // todo observe viewmodel checked, set view checked with it
 
         binding.pollVoteSubmitButton.setOnClickListener {
-            viewModel.vote(roomToken, pollId, binding.radioGroup.checkedRadioButtonId)
+            // viewModel.vote(roomToken, pollId, binding.pollVoteRadioGroup.checkedRadioButtonId)
+            viewModel.vote(roomToken, pollId)
         }
     }
 
     private fun initPollOptions(poll: Poll) {
-        binding.radioGroup.removeAllViews()
-        poll.options?.map { option ->
-            RadioButton(context).apply { text = option }
-        }?.forEachIndexed { index, radioButton ->
-            radioButton.id = index
-            binding.radioGroup.addView(radioButton)
+        poll.votedSelf?.let { viewModel.initSelectedOptions(it as ArrayList<Int>) }
+
+
+        if (poll.maxVotes == 1) {
+            binding.pollVoteRadioGroup.removeAllViews()
+            poll.options?.map { option ->
+                RadioButton(context).apply { text = option }
+            }?.forEachIndexed { index, radioButton ->
+                radioButton.id = index
+                binding.pollVoteRadioGroup.addView(radioButton)
+            }
+        } else {
+            binding.voteOptionsCheckboxesWrapper.removeAllViews()
+            poll.options?.map { option ->
+                CheckBox(context).apply { text = option }
+            }?.forEachIndexed { index, checkBox ->
+                checkBox.id = index
+                binding.voteOptionsCheckboxesWrapper.addView(checkBox)
+
+                checkBox.isChecked = viewModel.selectedOptions.value?.contains(index) == true
+                checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                    if (isChecked) {
+                        viewModel.selectOption(index)
+                    } else {
+                        viewModel.deSelectOption(index)
+                    }
+                }
+            }
         }
     }
 

@@ -15,7 +15,7 @@ interface PollRepository {
 
     fun getPoll(roomToken: String, pollId: String): Observable<Poll>?
 
-    fun vote(roomToken: String, pollId: String, option: Int): Observable<Poll>?
+    fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll>?
 
     fun closePoll(roomToken: String, pollId: String): Observable<Poll>?
 }

@@ -89,7 +89,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         // )
     }
 
-    override fun vote(roomToken: String, pollId: String, option: Int): Observable<Poll>? {
+    override fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll>? {
 
         return ncApi.votePoll(
             credentials,
@@ -98,7 +98,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 roomToken,
                 pollId
             ),
-            arrayOf(option).asList()
+            options
         ).map { mapToPoll(it.ocs?.data!!) }
     }
 

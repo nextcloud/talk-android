@@ -46,20 +46,30 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
 
     private var disposable: Disposable? = null
 
-    private val _selectedOptions: MutableLiveData<List<String>> = MutableLiveData(emptyList())
-    val selectedOptions: LiveData<List<String>>
+    private val _selectedOptions: MutableLiveData<List<Int>> = MutableLiveData(emptyList())
+    val selectedOptions: LiveData<List<Int>>
         get() = _selectedOptions
 
-    fun selectOption(option: String) {
-        _selectedOptions.value = listOf(option)
+    fun initSelectedOptions(selectedOptions: List<Int>) {
+        _selectedOptions.value = selectedOptions
     }
 
-    fun vote(roomToken: String, pollId: String, option: Int) {
-        repository.vote(roomToken, pollId, option)
-            ?.doOnSubscribe { disposable = it }
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(PollObserver())
+    fun selectOption(option: Int) {
+        _selectedOptions.value = _selectedOptions.value?.plus(option)
+    }
+
+    fun deSelectOption(option: Int) {
+        _selectedOptions.value = _selectedOptions.value?.minus(option)
+    }
+
+    fun vote(roomToken: String, pollId: String) {
+        if (!_selectedOptions.value.isNullOrEmpty()) {
+            repository.vote(roomToken, pollId, _selectedOptions.value!!)
+                ?.doOnSubscribe { disposable = it }
+                ?.subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(PollObserver())
+        }
     }
 
     override fun onCleared() {

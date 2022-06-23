@@ -23,14 +23,32 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:background="@color/white">
 
-    <RadioGroup
-        android:id="@+id/radioGroup"
+    <LinearLayout
+        android:id="@+id/vote_options_wrapper"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        tools:layout_height="400dp"
-        tools:layout_width="match_parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/vote_options_checkboxes_wrapper"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+
+        <RadioGroup
+            android:id="@+id/poll_vote_radio_group"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            tools:layout_height="400dp"
+            tools:layout_width="match_parent" />
+
+    </LinearLayout>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/poll_vote_close_poll_button"
@@ -41,7 +59,7 @@
         android:layout_marginEnd="@dimen/standard_margin"
         app:cornerRadius="@dimen/button_corner_radius"
         app:layout_constraintEnd_toStartOf="@+id/poll_vote_submit_button"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/vote_options_wrapper" />
 
 
     <com.google.android.material.button.MaterialButton
@@ -52,6 +70,6 @@
         android:text="@string/nc_common_submit"
         android:theme="@style/Button.Primary"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+        app:layout_constraintTop_toBottomOf="@+id/vote_options_wrapper" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
