@@ -884,7 +884,9 @@ public class ConversationsListController extends BaseController implements Flexi
     public void onDestroy() {
         super.onDestroy();
         dispose(null);
-        searchViewDisposable.dispose();
+        if (searchViewDisposable != null && !searchViewDisposable.isDisposed()) {
+            searchViewDisposable.dispose();
+        }
     }
 
     public void onQueryTextChange(final String newText) {
