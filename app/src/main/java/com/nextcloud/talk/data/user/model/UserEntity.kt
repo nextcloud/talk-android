@@ -31,11 +31,9 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.Serializable
 import java.lang.Boolean.FALSE
 
 @Parcelize
-@Serializable
 @Entity(tableName = "User")
 data class UserEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,

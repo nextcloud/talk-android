@@ -25,10 +25,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.Serializable
 
 @Parcelize
-@Serializable
 @Entity(tableName = "ArbitraryStorage")
 data class ArbitraryStorageNgEntity(
     @PrimaryKey @ColumnInfo(name = "accountIdentifier") var accountIdentifier: Long = 0,
