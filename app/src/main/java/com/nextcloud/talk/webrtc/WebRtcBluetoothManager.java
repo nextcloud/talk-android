@@ -59,7 +59,7 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 
 public class WebRtcBluetoothManager {
-    private static final String TAG = WebRtcBluetoothManager.class.getCanonicalName();
+    private static final String TAG = WebRtcBluetoothManager.class.getSimpleName();
 
     // Timeout interval for starting or stopping audio to a Bluetooth SCO device.
     private static final int BLUETOOTH_SCO_TIMEOUT_MS = 4000;
