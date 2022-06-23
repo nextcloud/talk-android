@@ -54,8 +54,12 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
         _selectedOptions = selectedOptions
     }
 
-    fun selectOption(option: Int) {
-        _selectedOptions = _selectedOptions.plus(option)
+    fun selectOption(option: Int, isRadioBox: Boolean) {
+        if (isRadioBox) {
+            _selectedOptions = listOf(option)
+        } else {
+            _selectedOptions = _selectedOptions.plus(option)
+        }
     }
 
     fun deSelectOption(option: Int) {

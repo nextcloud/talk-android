@@ -94,13 +94,10 @@ class PollVoteFragment(
         }
 
         binding.pollVoteRadioGroup.setOnCheckedChangeListener { group, checkedId ->
-            // todo set selected in viewmodel.
-            Log.d("bb", "click")
+            viewModel.selectOption(checkedId, true)
         }
-        // todo observe viewmodel checked, set view checked with it
 
         binding.pollVoteSubmitButton.setOnClickListener {
-            // viewModel.vote(roomToken, pollId, binding.pollVoteRadioGroup.checkedRadioButtonId)
             viewModel.vote(roomToken, pollId)
         }
     }
@@ -116,6 +113,8 @@ class PollVoteFragment(
             }?.forEachIndexed { index, radioButton ->
                 radioButton.id = index
                 binding.pollVoteRadioGroup.addView(radioButton)
+
+                radioButton.isChecked = viewModel.selectedOptions.contains(index) == true
             }
         } else {
             binding.voteOptionsCheckboxesWrapper.removeAllViews()
@@ -128,7 +127,7 @@ class PollVoteFragment(
                 checkBox.isChecked = viewModel.selectedOptions.contains(index) == true
                 checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
-                        viewModel.selectOption(index)
+                        viewModel.selectOption(index, false)
                     } else {
                         viewModel.deSelectOption(index)
                     }
