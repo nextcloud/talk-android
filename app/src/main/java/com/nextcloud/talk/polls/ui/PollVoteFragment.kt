@@ -28,6 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -127,7 +128,12 @@ class PollVoteFragment(
                 checkBox.isChecked = viewModel.selectedOptions.contains(index) == true
                 checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
-                        viewModel.selectOption(index, false)
+                        if (poll.maxVotes == UNLIMITED_VOTES || viewModel.selectedOptions.size < poll.maxVotes) {
+                            viewModel.selectOption(index, false)
+                        } else {
+                            checkBox.isChecked = false
+                            Toast.makeText(context, "max votes reached", Toast.LENGTH_LONG).show()
+                        }
                     } else {
                         viewModel.deSelectOption(index)
                     }
@@ -154,5 +160,6 @@ class PollVoteFragment(
 
     companion object {
         private val TAG = PollVoteFragment::class.java.simpleName
+        private const val UNLIMITED_VOTES = 0
     }
 }
