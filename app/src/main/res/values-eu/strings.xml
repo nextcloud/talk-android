@@ -317,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
     <string name="nc_upload_failed">Sentitzen dugu, kargatzeak huts egin du.</string>
     <string name="nc_upload_from_cloud">Partekatu %1$s(e)tik</string>
+    <string name="nc_upload_from_device">Kargatu gailutik</string>
     <string name="nc_upload_in_progess">Kargatzen</string>
     <string name="nc_upload_local_file">Kargatu fitxategi lokala</string>
     <string name="nc_upload_picture_from_cam">Atera argazkia</string>
