@@ -95,10 +95,10 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.webrtc.WebRtcAudioManager;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
+import com.nextcloud.talk.webrtc.WebRtcAudioManager;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 import com.wooplr.spotlight.SpotlightView;
 
@@ -162,7 +162,7 @@ import me.zhanghai.android.effortlesspermissions.OpenAppDetailsDialogFragment;
 import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
-import static android.app.PendingIntent.FLAG_MUTABLE;
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -2612,7 +2612,7 @@ public class CallActivity extends CallBaseActivity {
 
             int intentFlag;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                intentFlag = FLAG_MUTABLE;
+                intentFlag = FLAG_IMMUTABLE;
             } else {
                 intentFlag = 0;
             }
