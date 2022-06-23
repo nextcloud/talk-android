@@ -55,22 +55,14 @@ data class UserNgEntity(
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
         return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
     }
-}
 
-fun UserNgEntity.canUserCreateGroupConversations(): Boolean {
-    val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
-    canCreateValue?.let {
-        return it.toBoolean()
+    fun canUserCreateGroupConversations(): Boolean {
+        val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
+        canCreateValue?.let {
+            return it.toBoolean()
+        }
+        return true
     }
-    return true
-}
 
-fun UserNgEntity.toUser(): User {
-    return User(
-        this.id, this.userId, this.username, this.baseUrl, this.token, this.displayName, this.pushConfigurationState,
-        this.capabilities, this.clientCertificate, this.externalSignalingServer, this.current,
-        this.scheduledForDeletion
-    )
+    fun getCredentials(): String = ApiUtils.getCredentials(username, token)
 }
-
-fun UserNgEntity.getCredentials(): String = ApiUtils.getCredentials(username, token)
