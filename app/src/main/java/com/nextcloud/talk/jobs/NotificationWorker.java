@@ -295,7 +295,13 @@ public class NotificationWorker extends Worker {
         // Use unique request code to make sure that a new PendingIntent gets created for each notification
         // See https://github.com/nextcloud/talk-android/issues/2111
         int requestCode = (int) System.currentTimeMillis();
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, 0);
+        int intentFlag;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intentFlag = PendingIntent.FLAG_MUTABLE;
+        } else {
+            intentFlag = 0;
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag);
 
         Uri uri = Uri.parse(signatureVerification.getUserEntity().getBaseUrl());
         String baseUrl = uri.getHost();
@@ -422,8 +428,15 @@ public class NotificationWorker extends Worker {
         // It is NOT the same as the notification ID used in communication with the server.
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_SYSTEM_NOTIFICATION_ID(), systemNotificationId);
         actualIntent.putExtra(BundleKeys.INSTANCE.getKEY_ROOM_TOKEN(), decryptedPushMessage.getId());
+
+        int intentFlag;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            intentFlag = PendingIntent.FLAG_MUTABLE|PendingIntent.FLAG_UPDATE_CURRENT;
+        } else {
+            intentFlag = PendingIntent.FLAG_UPDATE_CURRENT;
+        }
         PendingIntent replyPendingIntent =
-            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent.getBroadcast(context, systemNotificationId, actualIntent, intentFlag);
 
         NotificationCompat.Action replyAction =
             new NotificationCompat.Action.Builder(R.drawable.ic_reply, replyLabel, replyPendingIntent)

@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,6 +26,7 @@ import android.app.Notification
 import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Base64
@@ -80,32 +83,29 @@ import javax.inject.Inject
 
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
-class MagicFirebaseMessagingService : FirebaseMessagingService() {
-    @JvmField
-    @Inject
-    var appPreferences: AppPreferences? = null
+class ChatAndCallMessagingService : FirebaseMessagingService() {
 
-    var isServiceInForeground: Boolean = false
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
+    private var isServiceInForeground: Boolean = false
     private var decryptedPushMessage: DecryptedPushMessage? = null
     private var signatureVerification: SignatureVerification? = null
     private var handler: Handler = Handler()
 
-    @JvmField
     @Inject
-    var retrofit: Retrofit? = null
+    lateinit var retrofit: Retrofit
 
-    @JvmField
     @Inject
-    var okHttpClient: OkHttpClient? = null
+    lateinit var okHttpClient: OkHttpClient
 
-    @JvmField
     @Inject
-    var eventBus: EventBus? = null
+    lateinit var eventBus: EventBus
 
     override fun onCreate() {
         super.onCreate()
         sharedApplication!!.componentApplication.inject(this)
-        eventBus?.register(this)
+        eventBus.register(this)
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -118,7 +118,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         isServiceInForeground = false
-        eventBus?.unregister(this)
+        eventBus.unregister(this)
         stopForeground(true)
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
@@ -127,7 +127,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         sharedApplication!!.componentApplication.inject(this)
-        appPreferences!!.pushToken = token
+        appPreferences.pushToken = token
         Log.d(TAG, "onNewToken. token = $token")
 
         val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "onNewToken").build()
@@ -168,7 +168,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                 Log.d(NotificationWorker.TAG, "Invalid private key " + e1.localizedMessage)
             }
         } catch (exception: Exception) {
-            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage)
+            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage, exception)
         }
     }
 
@@ -214,19 +214,23 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
 
                 fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
                 val fullScreenPendingIntent = PendingIntent.getActivity(
-                    this@MagicFirebaseMessagingService,
+                    this@ChatAndCallMessagingService,
                     0,
                     fullScreenIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                    } else {
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                    }
                 )
 
-                val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
+                val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences)
                 val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
                 val uri = Uri.parse(signatureVerification!!.userEntity!!.baseUrl)
                 val baseUrl = uri.host
 
                 val notification =
-                    NotificationCompat.Builder(this@MagicFirebaseMessagingService, notificationChannelId)
+                    NotificationCompat.Builder(this@ChatAndCallMessagingService, notificationChannelId)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setCategory(NotificationCompat.CATEGORY_CALL)
                         .setSmallIcon(R.drawable.ic_call_black_24dp)
@@ -263,8 +267,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
         decryptedPushMessage: DecryptedPushMessage
     ) {
         Log.d(TAG, "checkIfCallIsActive")
-        val ncApi = retrofit!!.newBuilder()
-            .client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build()
+        val ncApi = retrofit.newBuilder()
+            .client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build()
             .create(NcApi::class.java)
         var hasParticipantsInCall = true
         var inCallOnDifferentDevice = false
@@ -292,9 +296,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
             }
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<ParticipantsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+                override fun onSubscribe(d: Disposable) = Unit
 
                 override fun onNext(participantsOverall: ParticipantsOverall) {
                     val participantList: List<Participant> = participantsOverall.ocs!!.data!!
@@ -316,9 +318,8 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
                     }
                 }
 
-                override fun onError(e: Throwable) {
-                    // unused atm
-                }
+                override fun onError(e: Throwable) = Unit
+
                 override fun onComplete() {
                     stopForeground(true)
                     handler.removeCallbacksAndMessages(null)
@@ -327,7 +328,7 @@ class MagicFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     companion object {
-        const val TAG = "MagicFirebaseMessagingService"
+        private val TAG = ChatAndCallMessagingService::class.simpleName
         private const val OBSERVABLE_COUNT = 12
         private const val OBSERVABLE_DELAY: Long = 5
     }
