@@ -28,6 +28,7 @@ import android.util.Log;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.data.user.model.UserNgEntity;
 import com.nextcloud.talk.models.RetrofitBucket;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
@@ -124,7 +125,7 @@ public class ApiUtils {
         return getConversationApiVersion(capabilities, versions);
     }
 
-    public static int getConversationApiVersion(UserNgEntity user, int[] versions) throws NoSupportedApiException {
+    public static int getConversationApiVersion(User user, int[] versions) throws NoSupportedApiException {
         boolean hasApiV4 = false;
         for (int version : versions) {
             hasApiV4 |= version == APIv4;

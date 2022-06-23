@@ -24,57 +24,39 @@ package com.nextcloud.talk.users
 import android.text.TextUtils
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserNgEntity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
-import java.lang.Boolean.FALSE
+import io.reactivex.Single
 import java.lang.Boolean.TRUE
 
 @Suppress("TooManyFunctions")
 class UserManager internal constructor(private val userRepository: UsersRepository) : CurrentUserProviderNew {
-    val users: Observable<List<UserNgEntity>>
+    val users: Single<List<User>>
         get() = userRepository.getUsers()
 
-    val usersScheduledForDeletion: Observable<List<UserNgEntity>>
+    val usersScheduledForDeletion: Single<List<User>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    private fun setAnyUserAndSetAsActive(): Observable<UserNgEntity?> {
+    private fun setAnyUserAndSetAsActive(): Single<User?> {
         val results = userRepository.getUsersNotScheduledForDeletion()
 
-        var result: UserNgEntity? = null
-
-        results.subscribe(object : Observer<List<UserNgEntity>> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
+        return results.map { users ->
+            var result: User? = null
+            if (users.isNotEmpty()) {
+                val user = users[0]
+                user.current = true
+                userRepository.updateUser(user)
+                result = user
             }
-
-            override fun onNext(users: List<UserNgEntity>) {
-                if (users.isNotEmpty()) {
-                    val user = users[0]
-                    user.current = true
-                    userRepository.updateUser(user)
-                    result = user
-                }
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
-
-        return Observable.just(result)
+            result
+        }
     }
 
-    override val currentUser: Observable<UserNgEntity?>
+    override val currentUser: Single<User?>
         get() {
             return userRepository.getActiveUser()
         }
@@ -87,176 +69,68 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         userRepository.deleteUserWithId(internalId)
     }
 
-    fun getUserById(userId: String): Observable<UserNgEntity?> {
+    fun getUserById(userId: String): Single<User?> {
         return userRepository.getUserWithUserId(userId)
     }
 
-    fun getUserWithId(id: Long): Observable<UserNgEntity?> {
+    fun getUserWithId(id: Long): Single<User?> {
         return userRepository.getUserWithId(id)
     }
 
-    fun disableAllUsersWithoutId(userId: Long) {
+    fun disableAllUsersWithoutId(userId: Long): Single<Int> {
         val results = userRepository.getUsersWithoutUserId(userId)
 
-        results.subscribe(object : Observer<List<UserNgEntity>> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(users: List<UserNgEntity>) {
-                if (users.isNotEmpty()) {
-                    for (entity in users) {
-                        entity.current = false
-                        userRepository.updateUser(entity)
-                    }
+        return results.map { users ->
+            var count = 0
+            if (users.isNotEmpty()) {
+                for (entity in users) {
+                    entity.current = false
+                    userRepository.updateUser(entity)
+                    count++
                 }
             }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
+            count
+        }
     }
 
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Observable<Boolean> {
-        val results = userRepository.getUserWithUsernameAndServer(username, server)
-        var result = FALSE
-
-        results.subscribe(object : Observer<UserNgEntity?> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(user: UserNgEntity) {
-                result = user.scheduledForDeletion
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
-
-        return Observable.just(result)
+    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
+        return userRepository.getUserWithUsernameAndServer(username, server).map { it.scheduledForDeletion }
     }
 
-    fun getUserWithInternalId(id: Long): Observable<UserNgEntity?> {
+    fun getUserWithInternalId(id: Long): Single<User?> {
         return userRepository.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    fun getIfUserWithUsernameAndServer(username: String, server: String): Observable<Boolean> {
-        val results = userRepository.getUserWithUsernameAndServer(username, server)
-        var result = FALSE
-
-        results.subscribe(object : Observer<UserNgEntity?> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(users: UserNgEntity) {
-                result = TRUE
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
-
-        return Observable.just(result)
+    fun getIfUserWithUsernameAndServer(username: String, server: String): Single<Boolean> {
+        return userRepository.getUserWithUsernameAndServer(username, server).map { TRUE }
     }
 
-    suspend fun scheduleUserForDeletionWithId(id: Long): Observable<Boolean> {
-        val results = userRepository.getUserWithId(id)
-        var result = FALSE
-
-        results.subscribe(object : Observer<UserNgEntity?> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(user: UserNgEntity) {
-                user.scheduledForDeletion = true
-                user.current = false
-                userRepository.updateUser(user)
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
-
-        results.subscribe(object : Observer<UserNgEntity?> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(user: UserNgEntity) {
-                user.scheduledForDeletion = true
-                user.current = false
-                userRepository.updateUser(user)
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
-
-        setAnyUserAndSetAsActive().subscribe(object : Observer<UserNgEntity?> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(user: UserNgEntity) {
-                result = TRUE
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
-
-        return Observable.just(result)
+    fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> {
+        return userRepository.getUserWithId(id).map { user ->
+            user.scheduledForDeletion = true
+            user.current = false
+            userRepository.updateUser(user)
+        }.flatMap {
+            setAnyUserAndSetAsActive()
+        }.map { TRUE }
     }
 
     fun createOrUpdateUser(
         username: String?,
         userAttributes: UserAttributes,
-    ): Observable<UserNgEntity?> {
+    ): Single<User?> {
 
-        val userObservable = if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
+        val userObservable: Single<User?> = if (userAttributes.id == null &&
+            username != null && userAttributes.serverUrl != null
+        ) {
             userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
-        } else if (userAttributes.id != null) {
-            userRepository.getUserWithId(userAttributes.id)
         } else {
-            Observable.just(null)
+            userRepository.getUserWithId(userAttributes.id!!)
         }
 
         return userObservable
-            .map { user: UserNgEntity? ->
-                val userEntity = when (user) {
+            .map { user: User? ->
+                val userModel = when (user) {
                     null -> createUser(
                         username,
                         userAttributes
@@ -269,88 +143,31 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                         user
                     }
                 }
-                userRepository.insertUser(userEntity)
+                userRepository.insertUser(userModel)
             }.flatMap { id ->
-                userRepository.getUserWithIdLiveData(id)
+                userRepository.getUserWithId(id)
             }
     }
 
-    fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?> {
+    fun getUserWithUsernameAndServer(username: String, server: String): Single<User?> {
         return userRepository.getUserWithUsernameAndServer(username, server)
     }
 
-    private fun updateUserData(user: UserNgEntity, userAttributes: UserAttributes) {
-        updateUserIdIfNeeded(userAttributes, user)
-        updateTokenIfNeeded(userAttributes, user)
-        updateDisplayNameIfNeeded(userAttributes, user)
-        updatePushConfigurationStateIfNeeded(userAttributes, user)
-        updateCapabilitiesIfNeeded(userAttributes, user)
-        updateCertificateAliasIfNeeded(userAttributes, user)
-        updateExternalSignalingServerIfNeeded(userAttributes, user)
-        updateCurrentUserStatusIfNeeded(userAttributes, user)
+    private fun updateUserData(user: User, userAttributes: UserAttributes) {
+        user.userId = userAttributes.userId
+        user.token = userAttributes.token
+        user.displayName = userAttributes.displayName
+        user.pushConfigurationState = LoganSquare
+            .parse(userAttributes.pushConfigurationState, PushConfigurationState::class.java)
+        user.capabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
+        user.clientCertificate = userAttributes.certificateAlias
+        user.externalSignalingServer = LoganSquare
+            .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
+        user.current = userAttributes.currentUser == true
     }
 
-    private fun updateCurrentUserStatusIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.currentUser != null) {
-            user.current = userAttributes.currentUser
-        }
-    }
-
-    private fun updateExternalSignalingServerIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.externalSignalingServer != null) {
-            val newExternalSignalingServer = LoganSquare
-                .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
-            if (newExternalSignalingServer != user.externalSignalingServer) {
-                user.externalSignalingServer = newExternalSignalingServer
-            }
-        }
-    }
-
-    private fun updateCertificateAliasIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.certificateAlias != null && userAttributes.certificateAlias != user.clientCertificate) {
-            user.clientCertificate = userAttributes.certificateAlias
-        }
-    }
-
-    private fun updateCapabilitiesIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.capabilities != null) {
-            val newCapabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
-            if (newCapabilities != user.capabilities) {
-                user.capabilities = newCapabilities
-            }
-        }
-    }
-
-    private fun updatePushConfigurationStateIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.pushConfigurationState != null) {
-            val newPushConfigurationState = LoganSquare
-                .parse(userAttributes.pushConfigurationState, PushConfigurationState::class.java)
-            if (newPushConfigurationState != user.pushConfigurationState) {
-                user.pushConfigurationState = newPushConfigurationState
-            }
-        }
-    }
-
-    private fun updateDisplayNameIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (validDisplayName(userAttributes.displayName, user)) {
-            user.displayName = userAttributes.displayName
-        }
-    }
-
-    private fun updateTokenIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.token != null && userAttributes.token != user.token) {
-            user.token = userAttributes.token
-        }
-    }
-
-    private fun updateUserIdIfNeeded(userAttributes: UserAttributes, user: UserNgEntity) {
-        if (userAttributes.userId != null && (user.userId == null || user.userId != userAttributes.userId)) {
-            user.userId = userAttributes.userId
-        }
-    }
-
-    private fun createUser(username: String?, userAttributes: UserAttributes): UserNgEntity {
-        val user = UserNgEntity()
+    private fun createUser(username: String?, userAttributes: UserAttributes): User {
+        val user = User()
         user.baseUrl = userAttributes.serverUrl
         user.username = username
         user.token = userAttributes.token

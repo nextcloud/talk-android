@@ -30,8 +30,8 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserNgEntity
-import io.reactivex.Observable
-import io.reactivex.Observer
+import io.reactivex.Single
+import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import java.lang.Boolean.FALSE
 import java.lang.Boolean.TRUE
@@ -41,19 +41,13 @@ import java.lang.Boolean.TRUE
 abstract class UsersDao {
     // get active user
     @Query("SELECT * FROM User where current = 1")
-    abstract fun getActiveUser(): Observable<UserNgEntity?>
+    abstract fun getActiveUser(): Single<UserNgEntity?>
 
     @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUserSynchronously(): UserNgEntity?
 
     @Query("SELECT * FROM User WHERE current = 1")
-    abstract fun getActiveUserLiveData(): Observable<UserNgEntity?>
-
-    @Query("SELECT * FROM User ORDER BY current DESC")
-    abstract fun getUsersLiveData(): Observable<List<UserNgEntity>>
-
-    @Query("SELECT * FROM User WHERE current != 1 ORDER BY current DESC")
-    abstract fun getUsersLiveDataWithoutActive(): Observable<List<UserNgEntity>>
+    abstract fun getActiveUserLiveData(): Single<UserNgEntity?>
 
     @Query("DELETE FROM User WHERE id = :id")
     abstract fun deleteUserWithId(id: Long)
@@ -69,44 +63,36 @@ abstract class UsersDao {
 
     // get all users not scheduled for deletion
     @Query("SELECT * FROM User where current != 0")
-    abstract fun getUsers(): Observable<List<UserNgEntity>>
+    abstract fun getUsers(): Single<List<UserNgEntity>>
 
     @Query("SELECT * FROM User where id = :id")
-    abstract fun getUserWithId(id: Long): Observable<UserNgEntity?>
-
-    // TODO remove this one, duplicated
-    @Query("SELECT * FROM User where id = :id")
-    abstract fun getUserWithIdLiveData(id: Long): Observable<UserNgEntity?>
+    abstract fun getUserWithId(id: Long): Single<UserNgEntity?>
 
     @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
-    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Observable<UserNgEntity?>
+    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Single<UserNgEntity?>
 
     @Query("SELECT * FROM User where userId = :userId")
-    abstract fun getUserWithUserId(userId: String): Observable<UserNgEntity?>
+    abstract fun getUserWithUserId(userId: String): Single<UserNgEntity?>
 
     @Query("SELECT * FROM User where userId != :userId")
-    abstract fun getUsersWithoutUserId(userId: Long): Observable<List<UserNgEntity>>
+    abstract fun getUsersWithoutUserId(userId: Long): Single<List<UserNgEntity>>
 
     @Query("SELECT * FROM User where current = 0")
-    abstract fun getUsersScheduledForDeletion(): Observable<List<UserNgEntity>>
+    abstract fun getUsersScheduledForDeletion(): Single<List<UserNgEntity>>
 
     @Query("SELECT * FROM User where scheduledForDeletion = 0")
-    abstract fun getUsersNotScheduledForDeletion(): Observable<List<UserNgEntity>>
+    abstract fun getUsersNotScheduledForDeletion(): Single<List<UserNgEntity>>
 
     @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
-    abstract fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?>
+    abstract fun getUserWithUsernameAndServer(username: String, server: String): Single<UserNgEntity?>
 
     @Transaction
     open suspend fun setUserAsActiveWithId(id: Long): Boolean {
         val users = getUsers()
         var result = TRUE
 
-        users.subscribe(object : Observer<List<UserNgEntity>> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(users: List<UserNgEntity>) {
+        users.subscribe(object : SingleObserver<List<UserNgEntity>> {
+            override fun onSuccess(users: List<UserNgEntity>) {
                 for (user in users) {
                     // removed from clause: && UserStatus.ACTIVE == user.status
                     if (user.id != id) {
@@ -120,13 +106,13 @@ abstract class UsersDao {
                 }
             }
 
+            override fun onSubscribe(d: Disposable) {
+                // unused atm
+            }
+
             override fun onError(e: Throwable) {
                 Log.e(TAG, "Error setting user active", e)
                 result = FALSE
-            }
-
-            override fun onComplete() {
-                // unused atm
             }
         })
 
@@ -135,63 +121,29 @@ abstract class UsersDao {
 
     @Transaction
     open suspend fun markUserForDeletion(id: Long): Boolean {
-        val users = getUsers()
+        val users = getUsers().blockingGet()
 
-        users.subscribe(object : Observer<List<UserNgEntity>> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
+        for (user in users) {
+            if (user.id == id) {
+                user.current = FALSE
+                updateUser(user)
             }
-
-            override fun onNext(users: List<UserNgEntity>) {
-                for (user in users) {
-                    if (user.id == id) {
-                        // TODO currently we only have a boolean, no intermediate states
-                        user.current = FALSE
-                        updateUser(user)
-                        break
-                    }
-                }
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
+        }
 
         return setAnyUserAsActive()
     }
 
     @Transaction
     open suspend fun setAnyUserAsActive(): Boolean {
-        val users = getUsers()
+        val users = getUsers().blockingGet()
         var result = FALSE
 
-        users.subscribe(object : Observer<List<UserNgEntity>> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
-
-            override fun onNext(users: List<UserNgEntity>) {
-                for (user in users) {
-                    user.current = TRUE
-                    updateUser(user)
-                    result = TRUE
-                    break
-                }
-            }
-
-            override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
-            }
-        })
+        for (user in users) {
+            user.current = TRUE
+            updateUser(user)
+            result = TRUE
+            break
+        }
 
         return result
     }

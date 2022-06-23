@@ -21,7 +21,7 @@
  */
 package com.nextcloud.talk.utils.database.user;
 
-import com.nextcloud.talk.data.user.model.UserNgEntity;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.capabilities.Capabilities;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import androidx.annotation.Nullable;
 public abstract class CapabilitiesNgUtil {
     private static final String TAG = CapabilitiesNgUtil.class.getSimpleName();
 
-    public static boolean hasNotificationsCapability(@Nullable UserNgEntity user, String capabilityName) {
+    public static boolean hasNotificationsCapability(@Nullable User user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities.getNotificationsCapability() != null &&
@@ -43,7 +43,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean hasExternalCapability(@Nullable UserNgEntity user, String capabilityName) {
+    public static boolean hasExternalCapability(@Nullable User user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities.getExternalCapability() != null &&
@@ -54,21 +54,21 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean isServerEOL(@Nullable UserNgEntity user) {
+    public static boolean isServerEOL(@Nullable User user) {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
         return !hasSpreedFeatureCapability(user, "no-ping");
     }
 
-    public static boolean isServerAlmostEOL(@Nullable UserNgEntity user) {
+    public static boolean isServerAlmostEOL(@Nullable User user) {
         // Capability is available since Talk 8 => Nextcloud 18 => January 2020
         return !hasSpreedFeatureCapability(user, "chat-replies");
     }
 
-    public static boolean canSetChatReadMarker(@Nullable UserNgEntity user) {
+    public static boolean canSetChatReadMarker(@Nullable User user) {
         return hasSpreedFeatureCapability(user, "chat-read-marker");
     }
 
-    public static boolean hasSpreedFeatureCapability(@Nullable UserNgEntity user, String capabilityName) {
+    public static boolean hasSpreedFeatureCapability(@Nullable User user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null && capabilities.getSpreedCapability() != null &&
@@ -79,7 +79,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static Integer getMessageMaxLength(@Nullable UserNgEntity user) {
+    public static Integer getMessageMaxLength(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null &&
@@ -103,7 +103,7 @@ public abstract class CapabilitiesNgUtil {
         return 1000;
     }
 
-    public static boolean isPhoneBookIntegrationAvailable(@Nullable UserNgEntity user) {
+    public static boolean isPhoneBookIntegrationAvailable(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             return capabilities != null &&
@@ -114,7 +114,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean isReadStatusAvailable(@Nullable UserNgEntity user) {
+    public static boolean isReadStatusAvailable(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null &&
@@ -128,7 +128,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean isReadStatusPrivate(@Nullable UserNgEntity user) {
+    public static boolean isReadStatusPrivate(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null &&
@@ -144,7 +144,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean isUserStatusAvailable(@Nullable UserNgEntity user) {
+    public static boolean isUserStatusAvailable(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities.getUserStatusCapability() != null &&
@@ -156,7 +156,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static String getAttachmentFolder(@Nullable UserNgEntity user) {
+    public static String getAttachmentFolder(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null &&
@@ -172,7 +172,7 @@ public abstract class CapabilitiesNgUtil {
         return "/Talk";
     }
 
-    public static String getServerName(@Nullable UserNgEntity user) {
+    public static String getServerName(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null && capabilities.getThemingCapability() != null) {
@@ -183,7 +183,7 @@ public abstract class CapabilitiesNgUtil {
     }
 
     // TODO later avatar can also be checked via user fields, for now it is in Talk capability
-    public static boolean isAvatarEndpointAvailable(@Nullable UserNgEntity user) {
+    public static boolean isAvatarEndpointAvailable(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             return (capabilities != null &&
@@ -194,7 +194,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean canEditScopes(@Nullable UserNgEntity user) {
+    public static boolean canEditScopes(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             return (capabilities != null &&
@@ -205,7 +205,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean isAbleToCall(@Nullable UserNgEntity user) {
+    public static boolean isAbleToCall(@Nullable User user) {
         if (user != null && user.getCapabilities() != null) {
             Capabilities capabilities = user.getCapabilities();
             if (capabilities != null &&
@@ -224,7 +224,7 @@ public abstract class CapabilitiesNgUtil {
         return false;
     }
 
-    public static boolean isUnifiedSearchAvailable(@Nullable final UserNgEntity user) {
+    public static boolean isUnifiedSearchAvailable(@Nullable final User user) {
         return hasSpreedFeatureCapability(user, "unified-search");
     }
 }

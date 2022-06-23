@@ -69,7 +69,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppT
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerSettingsBinding
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
@@ -121,7 +121,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     lateinit var currentUserProvider: CurrentUserProviderNew
 
     private var saveStateHandler: LovelySaveStateHandler? = null
-    private var currentUser: UserNgEntity? = null
+    private var currentUser: User? = null
     private var credentials: String? = null
     private var proxyTypeChangeListener: OnPreferenceValueChangedListener<String>? = null
     private var proxyCredentialsChangeListener: OnPreferenceValueChangedListener<Boolean>? = null
@@ -139,7 +139,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
             resources!!.getString(R.string.nc_settings)
 
     private fun getCurrentUser() {
-        currentUser = currentUserProvider.currentUser.firstOrError().blockingGet()
+        currentUser = currentUserProvider.currentUser.blockingGet()
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -187,8 +187,6 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         setupPhoneBookIntegration()
 
         setupClientCertView()
-
-        Log.i(TAG, "Current user: " + currentUser?.displayName)
     }
 
     private fun setupPhoneBookIntegration() {
@@ -436,7 +434,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun removeCurrentAccount() {
-        val otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser!!.id)
+        val otherUserExists = userUtils.scheduleUserForDeletionWithId(currentUser!!.id!!)
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         WorkManager.getInstance().enqueue(accountRemovalWork)
         if (otherUserExists && view != null) {

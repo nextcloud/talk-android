@@ -46,7 +46,7 @@ import com.nextcloud.talk.controllers.ServerSelectionController
 import com.nextcloud.talk.controllers.SettingsController
 import com.nextcloud.talk.controllers.WebViewLoginController
 import com.nextcloud.talk.controllers.base.providers.ActionBarProvider
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -60,6 +60,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import io.reactivex.Observer
+import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -119,12 +120,12 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     appPreferences.isDbRoomMigrated = true
                 }
 
-                userManager.users.subscribe(object : Observer<List<UserNgEntity>> {
+                userManager.users.subscribe(object : SingleObserver<List<User>> {
                     override fun onSubscribe(d: Disposable) {
                         // unused atm
                     }
 
-                    override fun onNext(users: List<UserNgEntity>) {
+                    override fun onSuccess(users: List<User>) {
                         if (users.isNotEmpty()) {
                             runOnUiThread {
                                 setDefaultRootController()
@@ -137,11 +138,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     }
 
                     override fun onError(e: Throwable) {
-                        // unused atm
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
+                        Log.e(TAG, "Error loading existing users", e)
                     }
                 })
             } else {
@@ -203,12 +200,12 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     fun resetConversationsList() {
-        userManager.users.subscribe(object : Observer<List<UserNgEntity>> {
+        userManager.users.subscribe(object : SingleObserver<List<User>> {
             override fun onSubscribe(d: Disposable) {
-                // unused atm
+                TODO("Not yet implemented")
             }
 
-            override fun onNext(users: List<UserNgEntity>) {
+            override fun onSuccess(users: List<User>) {
                 if (users.isNotEmpty()) {
                     runOnUiThread {
                         setDefaultRootController()
@@ -217,11 +214,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
             }
 
             override fun onError(e: Throwable) {
-                // unused atm
-            }
-
-            override fun onComplete() {
-                // unused atm
+                Log.e(TAG, "Error loading existing users", e)
             }
         })
     }
@@ -262,7 +255,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                     val user = userId.substringBeforeLast("@")
                     val baseUrl = userId.substringAfterLast("@")
 
-                    if (userManager.currentUser.blockingFirst()?.baseUrl?.endsWith(baseUrl) == true) {
+                    if (userManager.currentUser.blockingGet()?.baseUrl?.endsWith(baseUrl) == true) {
                         startConversation(user)
                     } else {
                         Snackbar.make(
@@ -279,7 +272,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     private fun startConversation(userId: String) {
         val roomType = "1"
 
-        val currentUser = userManager.currentUser.blockingFirst()
+        val currentUser = userManager.currentUser.blockingGet()
 
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.APIv4, 1))
         val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
@@ -327,7 +320,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 remapChatController(
-                                    router!!, currentUser!!.id,
+                                    router!!, currentUser!!.id!!,
                                     roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }

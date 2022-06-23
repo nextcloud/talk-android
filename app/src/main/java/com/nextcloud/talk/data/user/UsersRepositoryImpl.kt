@@ -22,73 +22,65 @@
 
 package com.nextcloud.talk.data.user
 
-import com.nextcloud.talk.data.user.model.UserNgEntity
-import io.reactivex.Observable
+import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
-    override fun getActiveUserLiveData(): Observable<UserNgEntity?> {
-        return usersDao.getActiveUserLiveData()
+    override fun getActiveUserLiveData(): Single<User?> {
+        return usersDao.getActiveUser().map { UserMapper.toModel(it) }
     }
 
-    override fun getActiveUser(): Observable<UserNgEntity?> {
-        return usersDao.getActiveUser()
+    override fun getActiveUser(): Single<User?> {
+        return usersDao.getActiveUser().map { UserMapper.toModel(it) }
     }
 
-    override fun getActiveUserSynchronously(): UserNgEntity? {
-        return usersDao.getActiveUserSynchronously()
+    override fun getActiveUserSynchronously(): User? {
+        return UserMapper.toModel(usersDao.getActiveUserSynchronously())
     }
 
-    override fun getUsers(): Observable<List<UserNgEntity>> {
-        return usersDao.getUsers()
+    override fun getUsers(): Single<List<User>> {
+        return usersDao.getUsers().map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithId(id: Long): Observable<UserNgEntity?> {
-        return usersDao.getUserWithId(id)
+    override fun getUserWithId(id: Long): Single<User?> {
+        return usersDao.getUserWithId(id).map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithIdLiveData(id: Long): Observable<UserNgEntity?> {
-        return usersDao.getUserWithIdLiveData(id).distinctUntilChanged()
+    override fun getUserWithIdLiveData(id: Long): Single<User?> {
+        return usersDao.getUserWithId(id).map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithIdNotScheduledForDeletion(id: Long): Observable<UserNgEntity?> {
-        return usersDao.getUserWithIdNotScheduledForDeletion(id)
+    override fun getUserWithIdNotScheduledForDeletion(id: Long): Single<User?> {
+        return usersDao.getUserWithIdNotScheduledForDeletion(id).map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithUserId(userId: String): Observable<UserNgEntity?> {
-        return usersDao.getUserWithUserId(userId)
+    override fun getUserWithUserId(userId: String): Single<User?> {
+        return usersDao.getUserWithUserId(userId).map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersWithoutUserId(userId: Long): Observable<List<UserNgEntity>> {
-        return usersDao.getUsersWithoutUserId(userId)
+    override fun getUsersWithoutUserId(userId: Long): Single<List<User>> {
+        return usersDao.getUsersWithoutUserId(userId).map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersLiveData(): Observable<List<UserNgEntity>> {
-        return usersDao.getUsersLiveData().distinctUntilChanged()
+    override fun getUsersScheduledForDeletion(): Single<List<User>> {
+        return usersDao.getUsersScheduledForDeletion().map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersLiveDataWithoutActive(): Observable<List<UserNgEntity>> {
-        return usersDao.getUsersLiveDataWithoutActive().distinctUntilChanged()
+    override fun getUsersNotScheduledForDeletion(): Single<List<User>> {
+        return usersDao.getUsersNotScheduledForDeletion().map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersScheduledForDeletion(): Observable<List<UserNgEntity>> {
-        return usersDao.getUsersScheduledForDeletion()
+    override fun getUserWithUsernameAndServer(username: String, server: String): Single<User?> {
+        return usersDao.getUserWithUsernameAndServer(username, server).map { UserMapper.toModel(it) }
     }
 
-    override fun getUsersNotScheduledForDeletion(): Observable<List<UserNgEntity>> {
-        return usersDao.getUsersNotScheduledForDeletion()
+    override fun updateUser(user: User): Int {
+        return usersDao.updateUser(UserMapper.toEntity(user))
     }
 
-    override fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?> {
-        return usersDao.getUserWithUsernameAndServer(username, server)
-    }
-
-    override fun updateUser(user: UserNgEntity): Int {
-        return usersDao.updateUser(user)
-    }
-
-    override fun insertUser(user: UserNgEntity): Long {
-        return usersDao.saveUser(user)
+    override fun insertUser(user: User): Long {
+        return usersDao.saveUser(UserMapper.toEntity(user))
     }
 
     override suspend fun setUserAsActiveWithId(id: Long): Boolean {

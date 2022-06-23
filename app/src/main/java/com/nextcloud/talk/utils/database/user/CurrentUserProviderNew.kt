@@ -20,9 +20,9 @@
  */
 package com.nextcloud.talk.utils.database.user
 
-import com.nextcloud.talk.data.user.model.UserNgEntity
-import io.reactivex.Observable
+import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Single
 
 interface CurrentUserProviderNew {
-    val currentUser: Observable<UserNgEntity?>
+    val currentUser: Single<User?>
 }

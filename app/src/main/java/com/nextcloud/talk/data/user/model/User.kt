@@ -45,50 +45,31 @@ data class User(
     var current: Boolean = FALSE,
     var scheduledForDeletion: Boolean = FALSE,
 ) : Parcelable {
+
+    fun getMaxMessageLength(): Int {
+        return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt()
+            ?: DEFAULT_CHAT_MESSAGE_LENGTH
+    }
+
+    fun getAttachmentsConfig(key: String): Any? {
+        return capabilities?.spreedCapability?.config?.get("attachments")?.get(key)
+    }
+
+    fun canUserCreateGroupConversations(): Boolean {
+        val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
+        canCreateValue?.let {
+            return it.toBoolean()
+        }
+        return true
+    }
+
+    fun getCredentials(): String = ApiUtils.getCredentials(username, token)
+
+    fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
+        return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
+    }
+
     companion object {
         const val DEFAULT_CHAT_MESSAGE_LENGTH: Int = 1000
     }
-}
-
-fun User.getMaxMessageLength(): Int {
-    return capabilities?.spreedCapability?.config?.get("chat")?.get("max-length")?.toInt()
-        ?: DEFAULT_CHAT_MESSAGE_LENGTH
-}
-
-fun User.getAttachmentsConfig(key: String): Any? {
-    return capabilities?.spreedCapability?.config?.get("attachments")?.get(key)
-}
-
-fun User.canUserCreateGroupConversations(): Boolean {
-    val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
-    canCreateValue?.let {
-        return it.toBoolean()
-    }
-    return true
-}
-
-fun User.getCredentials(): String = ApiUtils.getCredentials(username, token)
-
-fun User.hasSpreedFeatureCapability(capabilityName: String): Boolean {
-    return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
-}
-
-fun User.toUserEntity(): UserNgEntity {
-    var userNgEntity: UserNgEntity? = null
-    this.id?.let {
-        userNgEntity = UserNgEntity(it, userId, username, baseUrl)
-    } ?: run {
-        userNgEntity = UserNgEntity(userId = this.userId, username = this.username, baseUrl = this.baseUrl)
-    }
-
-    userNgEntity!!.token = this.token
-    userNgEntity!!.displayName = this.displayName
-    userNgEntity!!.pushConfigurationState = this.pushConfigurationState
-    userNgEntity!!.capabilities = this.capabilities
-    userNgEntity!!.clientCertificate = this.clientCertificate
-    userNgEntity!!.externalSignalingServer = this.externalSignalingServer
-    userNgEntity!!.current = this.current
-    userNgEntity!!.scheduledForDeletion = this.scheduledForDeletion
-
-    return userNgEntity!!
 }

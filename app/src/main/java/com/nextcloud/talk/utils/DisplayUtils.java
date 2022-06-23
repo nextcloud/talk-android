@@ -79,6 +79,7 @@ import com.facebook.widget.text.span.BetterImageSpan;
 import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.data.user.model.UserNgEntity;
 import com.nextcloud.talk.events.UserMentionClickEvent;
 import com.nextcloud.talk.models.database.UserEntity;
@@ -599,7 +600,7 @@ public class DisplayUtils {
         avatarImageView.setController(draweeController);
     }
 
-    public static void loadAvatarImage(UserNgEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
+    public static void loadAvatarImage(User user, SimpleDraweeView avatarImageView, boolean deleteCache) {
         String avatarId;
         if (!TextUtils.isEmpty(user.getUserId())) {
             avatarId = user.getUserId();

@@ -22,27 +22,25 @@
 
 package com.nextcloud.talk.data.user
 
-import com.nextcloud.talk.data.user.model.UserNgEntity
-import io.reactivex.Observable
+import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
 interface UsersRepository {
-    fun getActiveUserLiveData(): Observable<UserNgEntity?>
-    fun getActiveUser(): Observable<UserNgEntity?>
-    fun getActiveUserSynchronously(): UserNgEntity?
-    fun getUsers(): Observable<List<UserNgEntity>>
-    fun getUserWithId(id: Long): Observable<UserNgEntity?>
-    fun getUserWithIdLiveData(id: Long): Observable<UserNgEntity?>
-    fun getUserWithIdNotScheduledForDeletion(id: Long): Observable<UserNgEntity?>
-    fun getUserWithUserId(userId: String): Observable<UserNgEntity?>
-    fun getUsersWithoutUserId(userId: Long): Observable<List<UserNgEntity>>
-    fun getUsersLiveData(): Observable<List<UserNgEntity>>
-    fun getUsersLiveDataWithoutActive(): Observable<List<UserNgEntity>>
-    fun getUsersScheduledForDeletion(): Observable<List<UserNgEntity>>
-    fun getUsersNotScheduledForDeletion(): Observable<List<UserNgEntity>>
-    fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?>
-    fun updateUser(user: UserNgEntity): Int
-    fun insertUser(user: UserNgEntity): Long
+    fun getActiveUserLiveData(): Single<User?>
+    fun getActiveUser(): Single<User?>
+    fun getActiveUserSynchronously(): User?
+    fun getUsers(): Single<List<User>>
+    fun getUserWithId(id: Long): Single<User?>
+    fun getUserWithIdLiveData(id: Long): Single<User?>
+    fun getUserWithIdNotScheduledForDeletion(id: Long): Single<User?>
+    fun getUserWithUserId(userId: String): Single<User?>
+    fun getUsersWithoutUserId(userId: Long): Single<List<User>>
+    fun getUsersScheduledForDeletion(): Single<List<User>>
+    fun getUsersNotScheduledForDeletion(): Single<List<User>>
+    fun getUserWithUsernameAndServer(username: String, server: String): Single<User?>
+    fun updateUser(user: User): Int
+    fun insertUser(user: User): Long
     suspend fun setUserAsActiveWithId(id: Long): Boolean
     fun deleteUserWithId(id: Long)
     suspend fun setAnyUserAsActive(): Boolean
