@@ -284,10 +284,10 @@ public interface AppPreferences {
 
     @KeyByString("db_cypher_v4_upgrade")
     @DefaultValue(R.bool.value_true)
-    boolean getIsDbCypherToUpgrade();
+    boolean isDbCypherToUpgrade();
 
     @KeyByString("db_cypher_v4_upgrade")
-    void setIsDbCypherToUpgrade(boolean value);
+    void setDbCypherToUpgrade(boolean value);
 
     @KeyByString("db_room_migrated")
     @DefaultValue(R.bool.value_false)
