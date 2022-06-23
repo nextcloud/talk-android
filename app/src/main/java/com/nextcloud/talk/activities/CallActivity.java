@@ -52,6 +52,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bluelinelabs.logansquare.LoganSquare;
+import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.adapters.ParticipantDisplayItem;
 import com.nextcloud.talk.adapters.ParticipantsAdapter;
@@ -2555,7 +2556,10 @@ public class CallActivity extends CallBaseActivity {
                         }
                     }
                 };
-            registerReceiver(mReceiver, new IntentFilter(MICROPHONE_PIP_INTENT_NAME));
+            registerReceiver(mReceiver,
+                             new IntentFilter(MICROPHONE_PIP_INTENT_NAME),
+                             BuildConfig.PERMISSION_LOCAL_BROADCAST,
+                             null);
 
             updateUiForPipMode();
         } else {
