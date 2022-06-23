@@ -125,7 +125,7 @@ class PollVoteFragment(
                 checkBox.id = index
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)
 
-                checkBox.isChecked = viewModel.selectedOptions.value?.contains(index) == true
+                checkBox.isChecked = viewModel.selectedOptions.contains(index) == true
                 checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
                         viewModel.selectOption(index)
