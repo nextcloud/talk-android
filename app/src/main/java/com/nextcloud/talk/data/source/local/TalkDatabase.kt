@@ -35,13 +35,13 @@ import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverte
 import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageNgEntity
 import com.nextcloud.talk.data.user.UsersDao
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.UserEntity
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SupportFactory
 import java.util.Locale
 
 @Database(
-    entities = [UserNgEntity::class, ArbitraryStorageNgEntity::class],
+    entities = [UserEntity::class, ArbitraryStorageNgEntity::class],
     version = 8,
     exportSchema = true
 )

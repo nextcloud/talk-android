@@ -29,7 +29,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.UserEntity
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -41,58 +41,58 @@ import java.lang.Boolean.TRUE
 abstract class UsersDao {
     // get active user
     @Query("SELECT * FROM User where current = 1")
-    abstract fun getActiveUser(): Single<UserNgEntity?>
+    abstract fun getActiveUser(): Single<UserEntity?>
 
     @Query("SELECT * FROM User where current = 1")
-    abstract fun getActiveUserSynchronously(): UserNgEntity?
+    abstract fun getActiveUserSynchronously(): UserEntity?
 
     @Query("SELECT * FROM User WHERE current = 1")
-    abstract fun getActiveUserLiveData(): Single<UserNgEntity?>
+    abstract fun getActiveUserLiveData(): Single<UserEntity?>
 
     @Query("DELETE FROM User WHERE id = :id")
     abstract fun deleteUserWithId(id: Long)
 
     @Update
-    abstract fun updateUser(user: UserNgEntity): Int
+    abstract fun updateUser(user: UserEntity): Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun saveUser(user: UserNgEntity): Long
+    abstract fun saveUser(user: UserEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun saveUsers(vararg users: UserNgEntity): List<Long>
+    abstract fun saveUsers(vararg users: UserEntity): List<Long>
 
     // get all users not scheduled for deletion
     @Query("SELECT * FROM User where current != 0")
-    abstract fun getUsers(): Single<List<UserNgEntity>>
+    abstract fun getUsers(): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User where id = :id")
-    abstract fun getUserWithId(id: Long): Single<UserNgEntity?>
+    abstract fun getUserWithId(id: Long): Single<UserEntity?>
 
     @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
-    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Single<UserNgEntity?>
+    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Single<UserEntity?>
 
     @Query("SELECT * FROM User where userId = :userId")
-    abstract fun getUserWithUserId(userId: String): Single<UserNgEntity?>
+    abstract fun getUserWithUserId(userId: String): Single<UserEntity?>
 
     @Query("SELECT * FROM User where userId != :userId")
-    abstract fun getUsersWithoutUserId(userId: Long): Single<List<UserNgEntity>>
+    abstract fun getUsersWithoutUserId(userId: Long): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User where current = 0")
-    abstract fun getUsersScheduledForDeletion(): Single<List<UserNgEntity>>
+    abstract fun getUsersScheduledForDeletion(): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User where scheduledForDeletion = 0")
-    abstract fun getUsersNotScheduledForDeletion(): Single<List<UserNgEntity>>
+    abstract fun getUsersNotScheduledForDeletion(): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
-    abstract fun getUserWithUsernameAndServer(username: String, server: String): Single<UserNgEntity?>
+    abstract fun getUserWithUsernameAndServer(username: String, server: String): Single<UserEntity?>
 
     @Transaction
     open suspend fun setUserAsActiveWithId(id: Long): Boolean {
         val users = getUsers()
         var result = TRUE
 
-        users.subscribe(object : SingleObserver<List<UserNgEntity>> {
-            override fun onSuccess(users: List<UserNgEntity>) {
+        users.subscribe(object : SingleObserver<List<UserEntity>> {
+            override fun onSuccess(users: List<UserEntity>) {
                 for (user in users) {
                     // removed from clause: && UserStatus.ACTIVE == user.status
                     if (user.id != id) {

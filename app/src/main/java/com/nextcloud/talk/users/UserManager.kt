@@ -25,7 +25,7 @@ import android.text.TextUtils
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
@@ -195,7 +195,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return user
     }
 
-    private fun validDisplayName(displayName: String?, user: UserNgEntity): Boolean {
+    private fun validDisplayName(displayName: String?, user: UserEntity): Boolean {
         return if (displayName == null) {
             false
         } else {

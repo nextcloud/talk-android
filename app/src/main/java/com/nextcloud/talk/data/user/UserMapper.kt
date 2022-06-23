@@ -21,10 +21,10 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.UserEntity
 
 object UserMapper {
-    fun toModel(entities: List<UserNgEntity?>?): List<User> {
+    fun toModel(entities: List<UserEntity?>?): List<User> {
         return if (entities == null) {
             ArrayList()
         } else {
@@ -36,7 +36,7 @@ object UserMapper {
         }
     }
 
-    fun toModel(entity: UserNgEntity?): User? {
+    fun toModel(entity: UserEntity?): User? {
         return if (entity == null) {
             null
         } else {
@@ -57,23 +57,23 @@ object UserMapper {
         }
     }
 
-    fun toEntity(model: User): UserNgEntity {
-        var userNgEntity: UserNgEntity? = null
+    fun toEntity(model: User): UserEntity {
+        var UserEntity: UserEntity? = null
         model.id?.let {
-            userNgEntity = UserNgEntity(it, model.userId, model.username, model.baseUrl)
+            UserEntity = UserEntity(it, model.userId, model.username, model.baseUrl)
         } ?: run {
-            userNgEntity = UserNgEntity(userId = model.userId, username = model.username, baseUrl = model.baseUrl)
+            UserEntity = UserEntity(userId = model.userId, username = model.username, baseUrl = model.baseUrl)
         }
 
-        userNgEntity!!.token = model.token
-        userNgEntity!!.displayName = model.displayName
-        userNgEntity!!.pushConfigurationState = model.pushConfigurationState
-        userNgEntity!!.capabilities = model.capabilities
-        userNgEntity!!.clientCertificate = model.clientCertificate
-        userNgEntity!!.externalSignalingServer = model.externalSignalingServer
-        userNgEntity!!.current = model.current
-        userNgEntity!!.scheduledForDeletion = model.scheduledForDeletion
+        UserEntity!!.token = model.token
+        UserEntity!!.displayName = model.displayName
+        UserEntity!!.pushConfigurationState = model.pushConfigurationState
+        UserEntity!!.capabilities = model.capabilities
+        UserEntity!!.clientCertificate = model.clientCertificate
+        UserEntity!!.externalSignalingServer = model.externalSignalingServer
+        UserEntity!!.current = model.current
+        UserEntity!!.scheduledForDeletion = model.scheduledForDeletion
 
-        return userNgEntity!!
+        return UserEntity!!
     }
 }

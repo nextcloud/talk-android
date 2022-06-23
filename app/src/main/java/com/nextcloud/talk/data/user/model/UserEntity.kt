@@ -37,7 +37,7 @@ import java.lang.Boolean.FALSE
 @Parcelize
 @Serializable
 @Entity(tableName = "User")
-data class UserNgEntity(
+data class UserEntity(
     @PrimaryKey(autoGenerate = true) @ColumnInfo(name = "id") var id: Long = 0,
     @ColumnInfo(name = "userId") var userId: String? = null,
     @ColumnInfo(name = "username") var username: String? = null,
