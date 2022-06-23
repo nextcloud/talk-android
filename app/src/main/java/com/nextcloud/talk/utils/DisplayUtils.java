@@ -80,9 +80,8 @@ import com.google.android.material.chip.ChipDrawable;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.data.user.model.UserNgEntity;
+import com.nextcloud.talk.data.user.model.UserEntity;
 import com.nextcloud.talk.events.UserMentionClickEvent;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.utils.text.Spans;
 
 import org.greenrobot.eventbus.EventBus;
