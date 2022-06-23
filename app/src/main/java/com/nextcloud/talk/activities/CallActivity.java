@@ -342,7 +342,6 @@ public class CallActivity extends CallBaseActivity {
         updateSelfVideoViewPosition();
     }
 
-    @SuppressLint("InlinedApi")
     @RequiresApi(api = Build.VERSION_CODES.S)
     private void requestBluetoothPermission() {
         if (ContextCompat.checkSelfPermission(
