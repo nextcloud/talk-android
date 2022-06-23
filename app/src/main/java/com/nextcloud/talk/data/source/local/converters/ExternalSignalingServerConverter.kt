@@ -21,26 +21,26 @@
 package com.nextcloud.talk.data.source.local.converters
 
 import androidx.room.TypeConverter
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.ExternalSignalingServer
 
 class ExternalSignalingServerConverter {
-    val json = JsonConfiguration.customJsonConfiguration
 
     @TypeConverter
     fun fromExternalSignalingServerToString(externalSignalingServer: ExternalSignalingServer?): String {
         return if (externalSignalingServer == null) {
             ""
         } else {
-            json.encodeToString(ExternalSignalingServer.serializer(), externalSignalingServer)
+            LoganSquare.serialize(externalSignalingServer)
         }
     }
 
     @TypeConverter
     fun fromStringToExternalSignalingServer(value: String): ExternalSignalingServer? {
-        if (value.isBlank()) {
-            return null
+        return if (value.isBlank()) {
+            null
+        } else {
+            return LoganSquare.parse(value, ExternalSignalingServer::class.java)
         }
-
-        return json.decodeFromString(ExternalSignalingServer.serializer(), value)
     }
 }

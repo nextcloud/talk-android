@@ -23,26 +23,26 @@
 package com.nextcloud.talk.data.source.local.converters
 
 import androidx.room.TypeConverter
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 
 class SignalingSettingsConverter {
-    val json = JsonConfiguration.customJsonConfiguration
 
     @TypeConverter
     fun fromSignalingSettingsToString(signalingSettings: SignalingSettings?): String {
         return if (signalingSettings == null) {
             ""
         } else {
-            json.encodeToString(SignalingSettings.serializer(), signalingSettings)
+            LoganSquare.serialize(signalingSettings)
         }
     }
 
     @TypeConverter
     fun fromStringToSignalingSettings(value: String): SignalingSettings? {
-        if (value.isBlank()) {
-            return null
+        return if (value.isBlank()) {
+            null
+        } else {
+            return LoganSquare.parse(value, SignalingSettings::class.java)
         }
-
-        return json.decodeFromString(SignalingSettings.serializer(), value)
     }
 }

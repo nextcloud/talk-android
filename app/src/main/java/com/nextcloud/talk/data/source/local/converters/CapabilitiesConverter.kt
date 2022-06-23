@@ -36,10 +36,10 @@ class CapabilitiesConverter {
 
     @TypeConverter
     fun fromStringToCapabilities(value: String): Capabilities? {
-        if (value.isBlank()) {
-            return null
+        return if (value.isBlank()) {
+            null
+        } else {
+            return LoganSquare.parse(value, Capabilities::class.java)
         }
-
-        return LoganSquare.parse(value, Capabilities::class.java)
     }
 }
