@@ -2,6 +2,8 @@
  * Nextcloud Talk application
  *
  * @author Mario Danic
+ * @author Tim Krüger
+ * Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
  * Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -82,31 +84,28 @@ import javax.inject.Inject
 @SuppressLint("LongLogTag")
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatAndCallMessagingService : FirebaseMessagingService() {
-    @JvmField
-    @Inject
-    var appPreferences: AppPreferences? = null
 
-    var isServiceInForeground: Boolean = false
+    @Inject
+    lateinit var appPreferences: AppPreferences
+
+    private var isServiceInForeground: Boolean = false
     private var decryptedPushMessage: DecryptedPushMessage? = null
     private var signatureVerification: SignatureVerification? = null
     private var handler: Handler = Handler()
 
-    @JvmField
     @Inject
-    var retrofit: Retrofit? = null
+    lateinit var retrofit: Retrofit
 
-    @JvmField
     @Inject
-    var okHttpClient: OkHttpClient? = null
+    lateinit var okHttpClient: OkHttpClient
 
-    @JvmField
     @Inject
-    var eventBus: EventBus? = null
+    lateinit var eventBus: EventBus
 
     override fun onCreate() {
         super.onCreate()
         sharedApplication!!.componentApplication.inject(this)
-        eventBus?.register(this)
+        eventBus.register(this)
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
@@ -119,7 +118,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
         isServiceInForeground = false
-        eventBus?.unregister(this)
+        eventBus.unregister(this)
         stopForeground(true)
         handler.removeCallbacksAndMessages(null)
         super.onDestroy()
@@ -128,7 +127,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         sharedApplication!!.componentApplication.inject(this)
-        appPreferences!!.pushToken = token
+        appPreferences.pushToken = token
         Log.d(TAG, "onNewToken. token = $token")
 
         val data: Data = Data.Builder().putString(PushRegistrationWorker.ORIGIN, "onNewToken").build()
@@ -225,7 +224,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                     }
                 )
 
-                val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences!!)
+                val soundUri = getCallRingtoneUri(applicationContext!!, appPreferences)
                 val notificationChannelId = NotificationUtils.NOTIFICATION_CHANNEL_CALLS_V4
                 val uri = Uri.parse(signatureVerification!!.userEntity!!.baseUrl)
                 val baseUrl = uri.host
@@ -268,8 +267,8 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
         decryptedPushMessage: DecryptedPushMessage
     ) {
         Log.d(TAG, "checkIfCallIsActive")
-        val ncApi = retrofit!!.newBuilder()
-            .client(okHttpClient!!.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build()
+        val ncApi = retrofit.newBuilder()
+            .client(okHttpClient.newBuilder().cookieJar(JavaNetCookieJar(CookieManager())).build()).build()
             .create(NcApi::class.java)
         var hasParticipantsInCall = true
         var inCallOnDifferentDevice = false
@@ -297,9 +296,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
             }
             .subscribeOn(Schedulers.io())
             .subscribe(object : Observer<ParticipantsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+                override fun onSubscribe(d: Disposable) = Unit
 
                 override fun onNext(participantsOverall: ParticipantsOverall) {
                     val participantList: List<Participant> = participantsOverall.ocs!!.data!!
@@ -321,9 +318,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                     }
                 }
 
-                override fun onError(e: Throwable) {
-                    // unused atm
-                }
+                override fun onError(e: Throwable) = Unit
 
                 override fun onComplete() {
                     stopForeground(true)
