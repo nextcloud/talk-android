@@ -21,12 +21,14 @@
 
 package com.nextcloud.talk.polls.ui
 
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.CompoundButton
 import android.widget.RadioButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -113,6 +115,10 @@ class PollVoteFragment(
                 RadioButton(context).apply { text = option }
             }?.forEachIndexed { index, radioButton ->
                 radioButton.id = index
+                // if (poll.votedSelf?.contains(index) == true) {
+                //     radioButton.setTypeface(null, Typeface.BOLD)
+                // }
+                makeOptionBoldIfSelfVoted(radioButton, poll, index)
                 binding.pollVoteRadioGroup.addView(radioButton)
 
                 radioButton.isChecked = viewModel.selectedOptions.contains(index) == true
@@ -123,6 +129,10 @@ class PollVoteFragment(
                 CheckBox(context).apply { text = option }
             }?.forEachIndexed { index, checkBox ->
                 checkBox.id = index
+                // if (poll.votedSelf?.contains(index) == true) {
+                //     checkBox.setTypeface(null, Typeface.BOLD)
+                // }
+                makeOptionBoldIfSelfVoted(checkBox, poll, index)
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)
 
                 checkBox.isChecked = viewModel.selectedOptions.contains(index) == true
@@ -139,6 +149,12 @@ class PollVoteFragment(
                     }
                 }
             }
+        }
+    }
+
+    private fun makeOptionBoldIfSelfVoted(button: CompoundButton, poll: Poll, index: Int) {
+        if (poll.votedSelf?.contains(index) == true) {
+            button.setTypeface(null, Typeface.BOLD)
         }
     }
 
