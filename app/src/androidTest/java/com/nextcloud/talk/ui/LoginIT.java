@@ -143,7 +143,7 @@ public class LoginIT {
         onView(withId(R.id.user_name)).check(matches(withText("User One")));
 
         activityScenario.onActivity(activity -> {
-            assertEquals(loginName, Objects.requireNonNull(activity.userManager.getCurrentUser()).getUserId());
+            assertEquals(loginName, Objects.requireNonNull(activity.userManager.getCurrentUser().blockingFirst()).getUserId());
         });
     }
 }

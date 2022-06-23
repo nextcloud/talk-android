@@ -74,9 +74,9 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return Observable.just(result)
     }
 
-    override val currentUser: UserNgEntity?
+    override val currentUser: Observable<UserNgEntity?>
         get() {
-            return userRepository.getActiveUserSynchronously()
+            return userRepository.getActiveUser()
         }
 
     fun deleteUser(internalId: Long) {
@@ -245,62 +245,34 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         username: String?,
         userAttributes: UserAttributes,
     ): Observable<UserNgEntity?> {
-        var user: UserNgEntity? = null
 
-        if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
+        val userObservable = if (userAttributes.id == null && username != null && userAttributes.serverUrl != null) {
             userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
-                .subscribe(object : Observer<UserNgEntity?> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(userEntity: UserNgEntity) {
-                        user = userEntity
-                    }
-
-                    override fun onError(e: Throwable) {
-                        // unused atm
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
         } else if (userAttributes.id != null) {
             userRepository.getUserWithId(userAttributes.id)
-                .subscribe(object : Observer<UserNgEntity?> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(userEntity: UserNgEntity) {
-                        user = userEntity
-                    }
-
-                    override fun onError(e: Throwable) {
-                        // unused atm
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
-        }
-
-        if (user == null) {
-            user = createUser(
-                username,
-                userAttributes
-            )
         } else {
-            updateUserData(
-                user!!,
-                userAttributes
-            )
+            Observable.just(null)
         }
 
-        userRepository.insertUser(user!!)
-        return userRepository.getUserWithIdLiveData(user!!.id)
+        return userObservable
+            .map { user: UserNgEntity? ->
+                val userEntity = when (user) {
+                    null -> createUser(
+                        username,
+                        userAttributes
+                    )
+                    else -> {
+                        updateUserData(
+                            user,
+                            userAttributes
+                        )
+                        user
+                    }
+                }
+                userRepository.insertUser(userEntity)
+            }.flatMap { id ->
+                userRepository.getUserWithIdLiveData(id)
+            }
     }
 
     fun getUserWithUsernameAndServer(username: String, server: String): Observable<UserNgEntity?> {

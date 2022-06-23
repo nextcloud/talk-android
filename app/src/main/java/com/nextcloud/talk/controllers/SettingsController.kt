@@ -98,7 +98,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.runBlocking
 import net.orange_box.storebox.listeners.OnPreferenceValueChangedListener
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -140,7 +139,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
             resources!!.getString(R.string.nc_settings)
 
     private fun getCurrentUser() {
-        currentUser = currentUserProvider.currentUser
+        currentUser = currentUserProvider.currentUser.firstOrError().blockingGet()
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
@@ -151,45 +150,43 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
         ViewCompat.setTransitionName((binding.avatarImage), "userAvatar.transitionTag")
 
-        runBlocking {
-            getCurrentUser()
+        getCurrentUser()
 
-            if (saveStateHandler == null) {
-                saveStateHandler = LovelySaveStateHandler()
-            }
-
-            registerChangeListeners()
-
-            setupSettingsScreen()
-            setupLicenceSetting()
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                binding.settingsIncognitoKeyboard.visibility = View.GONE
-            }
-
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                binding.settingsScreenLock.visibility = View.GONE
-                binding.settingsScreenLockTimeout.visibility = View.GONE
-            } else {
-                binding.settingsScreenLock.setSummary(
-                    String.format(
-                        Locale.getDefault(),
-                        resources!!.getString(R.string.nc_settings_screen_lock_desc),
-                        resources!!.getString(R.string.nc_app_product_name)
-                    )
-                )
-            }
-
-            setupPrivacyUrl()
-            setupSourceCodeUrl()
-            binding.settingsVersion.setSummary("v" + BuildConfig.VERSION_NAME)
-
-            setupSoundSettings()
-
-            setupPhoneBookIntegration()
-
-            setupClientCertView()
+        if (saveStateHandler == null) {
+            saveStateHandler = LovelySaveStateHandler()
         }
+
+        registerChangeListeners()
+
+        setupSettingsScreen()
+        setupLicenceSetting()
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            binding.settingsIncognitoKeyboard.visibility = View.GONE
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            binding.settingsScreenLock.visibility = View.GONE
+            binding.settingsScreenLockTimeout.visibility = View.GONE
+        } else {
+            binding.settingsScreenLock.setSummary(
+                String.format(
+                    Locale.getDefault(),
+                    resources!!.getString(R.string.nc_settings_screen_lock_desc),
+                    resources!!.getString(R.string.nc_app_product_name)
+                )
+            )
+        }
+
+        setupPrivacyUrl()
+        setupSourceCodeUrl()
+        binding.settingsVersion.setSummary("v" + BuildConfig.VERSION_NAME)
+
+        setupSoundSettings()
+
+        setupPhoneBookIntegration()
+
+        setupClientCertView()
 
         Log.i(TAG, "Current user: " + currentUser?.displayName)
     }
@@ -472,71 +469,66 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
         actionBar?.show()
         dispose(null)
 
-        runBlocking {
+        binding.settingsVersion.setOnClickListener {
+            sendLogs()
+        }
 
-            getCurrentUser()
+        if (!TextUtils.isEmpty(currentUser!!.clientCertificate)) {
+            binding.settingsClientCert.setTitle(R.string.nc_client_cert_change)
+        } else {
+            binding.settingsClientCert.setTitle(R.string.nc_client_cert_setup)
+        }
 
-            binding.settingsVersion.setOnClickListener {
-                sendLogs()
-            }
+        setupCheckables()
+        setupScreenLockSetting()
 
-            if (!TextUtils.isEmpty(currentUser!!.clientCertificate)) {
-                binding.settingsClientCert.setTitle(R.string.nc_client_cert_change)
-            } else {
-                binding.settingsClientCert.setTitle(R.string.nc_client_cert_setup)
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.settingsNotificationsCategory.setTitle(
+                resources!!.getString(R.string.nc_settings_notification_sounds_post_oreo)
+            )
+        }
 
-            setupCheckables()
-            setupScreenLockSetting()
+        val callRingtoneUri = getCallRingtoneUri(view.context, (appPreferences)!!)
+        binding.settingsCallSound.setSummary(getRingtoneName(view.context, callRingtoneUri))
+        val messageRingtoneUri = getMessageRingtoneUri(view.context, (appPreferences)!!)
+        binding.settingsMessageSound.setSummary(getRingtoneName(view.context, messageRingtoneUri))
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                binding.settingsNotificationsCategory.setTitle(
-                    resources!!.getString(R.string.nc_settings_notification_sounds_post_oreo)
+        setupProxyTypeSettings()
+        setupProxyCredentialSettings()
+
+        if (currentUser != null) {
+            binding.baseUrlText.text = Uri.parse(currentUser!!.baseUrl).host
+            setupServerAgeWarning()
+
+            binding.settingsReauthorize.addPreferenceClickListener {
+                router.pushController(
+                    RouterTransaction.with(WebViewLoginController(currentUser!!.baseUrl, true))
+                        .pushChangeHandler(VerticalChangeHandler())
+                        .popChangeHandler(VerticalChangeHandler())
                 )
             }
 
-            val callRingtoneUri = getCallRingtoneUri(view.context, (appPreferences)!!)
-            binding.settingsCallSound.setSummary(getRingtoneName(view.context, callRingtoneUri))
-            val messageRingtoneUri = getMessageRingtoneUri(view.context, (appPreferences)!!)
-            binding.settingsMessageSound.setSummary(getRingtoneName(view.context, messageRingtoneUri))
-
-            setupProxyTypeSettings()
-            setupProxyCredentialSettings()
-
-            if (currentUser != null) {
-                binding.baseUrlText.text = Uri.parse(currentUser!!.baseUrl).host
-                setupServerAgeWarning()
-
-                binding.settingsReauthorize.addPreferenceClickListener {
-                    router.pushController(
-                        RouterTransaction.with(WebViewLoginController(currentUser!!.baseUrl, true))
-                            .pushChangeHandler(VerticalChangeHandler())
-                            .popChangeHandler(VerticalChangeHandler())
-                    )
-                }
-
-                if (currentUser!!.displayName != null) {
-                    binding.displayNameText.text = currentUser!!.displayName
-                }
-                DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
-
-                setupProfileQueryDisposable()
-
-                binding.settingsRemoveAccount.addPreferenceClickListener {
-                    showLovelyDialog(ID_REMOVE_ACCOUNT_WARNING_DIALOG, null)
-                }
+            if (currentUser!!.displayName != null) {
+                binding.displayNameText.text = currentUser!!.displayName
             }
-            setupMessageView()
+            DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
 
-            binding.avatarContainer.setOnClickListener {
-                router
-                    .pushController(
-                        RouterTransaction.with(ProfileController())
-                            .pushChangeHandler(HorizontalChangeHandler())
-                            .popChangeHandler(HorizontalChangeHandler())
+            setupProfileQueryDisposable()
 
-                    )
+            binding.settingsRemoveAccount.addPreferenceClickListener {
+                showLovelyDialog(ID_REMOVE_ACCOUNT_WARNING_DIALOG, null)
             }
+        }
+        setupMessageView()
+
+        binding.avatarContainer.setOnClickListener {
+            router
+                .pushController(
+                    RouterTransaction.with(ProfileController())
+                        .pushChangeHandler(HorizontalChangeHandler())
+                        .popChangeHandler(HorizontalChangeHandler())
+
+                )
         }
     }
 

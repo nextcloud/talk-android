@@ -74,6 +74,7 @@ abstract class UsersDao {
     @Query("SELECT * FROM User where id = :id")
     abstract fun getUserWithId(id: Long): Observable<UserNgEntity?>
 
+    // TODO remove this one, duplicated
     @Query("SELECT * FROM User where id = :id")
     abstract fun getUserWithIdLiveData(id: Long): Observable<UserNgEntity?>
 
