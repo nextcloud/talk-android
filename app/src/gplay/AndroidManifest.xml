@@ -2,6 +2,8 @@
   ~ Nextcloud Talk application
   ~
   ~ @author Mario Danic
+  ~ @author Tim Krüger
+  ~ Copyright (C) 2022 Tim Krüger <t@timkrueger.me>
   ~ Copyright (C) 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
@@ -38,7 +40,7 @@
         <meta-data android:name="google_analytics_adid_collection_enabled" android:value="false" />
 
         <service
-            android:name=".services.firebase.MagicFirebaseMessagingService"
+            android:name=".services.firebase.ChatAndCallMessagingService"
             android:exported="false"
             android:foregroundServiceType="phoneCall">
             <intent-filter>
