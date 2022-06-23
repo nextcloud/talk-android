@@ -93,6 +93,6 @@ public class DatabaseModule {
     @Provides
     @Singleton
     public TalkDatabase provideTalkDatabase(@NonNull final Context context) {
-        return TalkDatabase.Companion.getInstance(context);
+        return TalkDatabase.getInstance(context);
     }
 }

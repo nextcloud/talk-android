@@ -62,6 +62,7 @@ abstract class TalkDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: TalkDatabase? = null
 
+        @JvmStatic
         fun getInstance(context: Context): TalkDatabase =
             INSTANCE ?: synchronized(this) {
                 INSTANCE ?: build(context).also { INSTANCE = it }
