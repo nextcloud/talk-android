@@ -95,7 +95,7 @@ import com.nextcloud.talk.utils.database.user.UserUtils;
 import com.nextcloud.talk.utils.power.PowerManagerUtils;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder;
-import com.nextcloud.talk.webrtc.WebRtcAudioManger;
+import com.nextcloud.talk.webrtc.WebRtcAudioManager;
 import com.nextcloud.talk.webrtc.MagicWebRTCUtils;
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
@@ -163,7 +163,6 @@ import okhttp3.Cache;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 
 import static android.app.PendingIntent.FLAG_MUTABLE;
-import static android.app.PendingIntent.FLAG_MUTABLE;
 import static com.nextcloud.talk.webrtc.Globals.JOB_ID;
 import static com.nextcloud.talk.webrtc.Globals.PARTICIPANTS_UPDATE;
 import static com.nextcloud.talk.webrtc.Globals.ROOM_TOKEN;
@@ -189,7 +188,7 @@ public class CallActivity extends CallBaseActivity {
 
     public static final String TAG = "CallActivity";
 
-    public WebRtcAudioManger audioManager;
+    public WebRtcAudioManager audioManager;
 
     private static final String[] PERMISSIONS_CALL = {
         Manifest.permission.CAMERA,
@@ -452,16 +451,16 @@ public class CallActivity extends CallBaseActivity {
 
         // Create and audio manager that will take care of audio routing,
         // audio modes, audio device enumeration etc.
-        audioManager = WebRtcAudioManger.create(getApplicationContext(), isVoiceOnlyCall);
+        audioManager = WebRtcAudioManager.create(getApplicationContext(), isVoiceOnlyCall);
         // Store existing audio settings and change audio mode to
         // MODE_IN_COMMUNICATION for best possible VoIP performance.
         Log.d(TAG, "Starting the audio manager...");
         audioManager.start(this::onAudioManagerDevicesChanged);
 
         if (isVoiceOnlyCall) {
-            setAudioOutputChannel(WebRtcAudioManger.AudioDevice.EARPIECE);
+            setAudioOutputChannel(WebRtcAudioManager.AudioDevice.EARPIECE);
         } else {
-            setAudioOutputChannel(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE);
+            setAudioOutputChannel(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE);
         }
 
         iceServers = new ArrayList<>();
@@ -495,14 +494,14 @@ public class CallActivity extends CallBaseActivity {
         microphoneInitialization();
     }
 
-    public void setAudioOutputChannel(WebRtcAudioManger.AudioDevice selectedAudioDevice) {
+    public void setAudioOutputChannel(WebRtcAudioManager.AudioDevice selectedAudioDevice) {
         if (audioManager != null) {
             audioManager.selectAudioDevice(selectedAudioDevice);
             updateAudioOutputButton(audioManager.getCurrentAudioDevice());
         }
     }
 
-    private void updateAudioOutputButton(WebRtcAudioManger.AudioDevice activeAudioDevice) {
+    private void updateAudioOutputButton(WebRtcAudioManager.AudioDevice activeAudioDevice) {
         switch (activeAudioDevice) {
             case BLUETOOTH:
                 binding.audioOutputButton.getHierarchy().setPlaceholderImage(
@@ -796,14 +795,14 @@ public class CallActivity extends CallBaseActivity {
     }
 
     private void onAudioManagerDevicesChanged(
-        final WebRtcAudioManger.AudioDevice currentDevice,
-        final Set<WebRtcAudioManger.AudioDevice> availableDevices) {
+        final WebRtcAudioManager.AudioDevice currentDevice,
+        final Set<WebRtcAudioManager.AudioDevice> availableDevices) {
         Log.d(TAG, "onAudioManagerDevicesChanged: " + availableDevices + ", "
             + "currentDevice: " + currentDevice);
 
-        final boolean shouldDisableProximityLock = (currentDevice.equals(WebRtcAudioManger.AudioDevice.WIRED_HEADSET)
-            || currentDevice.equals(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE)
-            || currentDevice.equals(WebRtcAudioManger.AudioDevice.BLUETOOTH));
+        final boolean shouldDisableProximityLock = (currentDevice.equals(WebRtcAudioManager.AudioDevice.WIRED_HEADSET)
+            || currentDevice.equals(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE)
+            || currentDevice.equals(WebRtcAudioManager.AudioDevice.BLUETOOTH));
 
         if (shouldDisableProximityLock) {
             powerManagerUtils.updatePhoneState(PowerManagerUtils.PhoneState.WITHOUT_PROXIMITY_SENSOR_LOCK);
