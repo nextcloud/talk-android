@@ -13,12 +13,14 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollMainBinding
+import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class PollMainDialogFragment(
+    private val user: UserEntity,
     private val pollId: String,
     private val roomToken: String,
     private val pollTitle: String
@@ -91,6 +93,7 @@ class PollMainDialogFragment(
         initVotersAmount(poll.numVoters)
 
         val contentFragment = PollResultsFragment(
+            user,
             viewModel,
             roomToken,
             pollId
@@ -114,9 +117,10 @@ class PollMainDialogFragment(
     companion object {
         @JvmStatic
         fun newInstance(
+            user: UserEntity,
             roomTokenParam: String,
             pollId: String,
             name: String
-        ): PollMainDialogFragment = PollMainDialogFragment(pollId, roomTokenParam, name)
+        ): PollMainDialogFragment = PollMainDialogFragment(user, pollId, roomTokenParam, name)
     }
 }

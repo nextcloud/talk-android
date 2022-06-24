@@ -48,7 +48,6 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
 
     open class PollResultState(
         val poll: Poll,
-        val showParticipants: Boolean,
         val showEditButton: Boolean,
         val showCloseButton: Boolean
     ) : ViewState
@@ -129,11 +128,10 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
     }
 
     private fun setPollResultState(poll: Poll) {
-        val showDetails = poll.status == Poll.STATUS_CLOSED && poll.resultMode == Poll.RESULT_MODE_PUBLIC
         val showEditButton = poll.status == Poll.STATUS_OPEN && poll.resultMode == Poll.RESULT_MODE_PUBLIC
         val showCloseButton = poll.status == Poll.STATUS_OPEN && isPollCreatedByCurrentUser(poll)
 
-        _viewState.value = PollResultState(poll, showDetails, showEditButton, showCloseButton)
+        _viewState.value = PollResultState(poll, showEditButton, showCloseButton)
     }
 
     private fun votedForOpenHiddenPoll(poll: Poll): Boolean {

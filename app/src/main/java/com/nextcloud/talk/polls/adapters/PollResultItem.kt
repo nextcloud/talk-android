@@ -1,9 +1,10 @@
 package com.nextcloud.talk.polls.adapters
 
-class PollResultItem(
-    val pollOption: String,
-    val pollPercent: Int,
-    val selfVoted: Boolean
+import com.nextcloud.talk.polls.model.PollDetails
 
-    // val voters....
+class PollResultItem(
+    val name: String,
+    val percent: Int,
+    val selfVoted: Boolean,
+    val voters: List<PollDetails>?
 )

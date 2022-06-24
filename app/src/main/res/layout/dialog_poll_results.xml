@@ -26,7 +26,7 @@
     <LinearLayout
         android:id="@+id/poll_results_list_wrapper"
         android:layout_width="match_parent"
-        android:layout_height="288dp"
+        android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 

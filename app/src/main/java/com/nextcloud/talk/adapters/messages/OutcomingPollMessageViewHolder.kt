@@ -141,6 +141,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) : Messag
 
             binding.bubble.setOnClickListener {
                 val pollVoteDialog = PollMainDialogFragment.newInstance(
+                    message.activeUser!!,
                     roomToken,
                     pollId,
                     pollName

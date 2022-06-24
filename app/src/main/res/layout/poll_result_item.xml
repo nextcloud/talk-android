@@ -38,11 +38,6 @@
         app:layout_constraintStart_toStartOf="@+id/poll_option_text"
         app:layout_constraintTop_toBottomOf="@+id/poll_option_bar">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="here the details..." />
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
