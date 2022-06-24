@@ -34,7 +34,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
- * Deprecated, please use CapabilitiesNgUtil
+ * Deprecated, please migrate to {@link com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew}.
  */
 @Deprecated
 public abstract class CapabilitiesUtil {

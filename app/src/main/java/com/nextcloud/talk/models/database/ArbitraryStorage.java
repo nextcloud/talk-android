@@ -27,6 +27,10 @@ import io.requery.Persistable;
 
 import java.io.Serializable;
 
+/**
+ * Legacy arbitrary storage entity, please migrate to {@link com.nextcloud.talk.data.storage.model.ArbitraryStorage}.
+ */
+@Deprecated
 @Entity
 public interface ArbitraryStorage extends Parcelable, Persistable, Serializable {
     @Key
