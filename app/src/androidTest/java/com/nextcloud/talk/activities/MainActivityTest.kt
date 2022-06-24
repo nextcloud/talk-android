@@ -1,9 +1,9 @@
 package com.nextcloud.talk.activities
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.nextcloud.talk.data.user.model.UserNgEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
-import io.reactivex.Observer
+import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import org.junit.Assert.fail
 import org.junit.Rule
@@ -35,12 +35,12 @@ class MainActivityTest {
                 certificateAlias = null,
                 externalSignalingServer = null
             )
-        ).subscribe(object : Observer<UserNgEntity?> {
+        ).subscribe(object : SingleObserver<User?> {
             override fun onSubscribe(d: Disposable) {
                 // unused atm
             }
 
-            override fun onNext(user: UserNgEntity) {
+            override fun onSuccess(user: User) {
                 sut.runOnUiThread { sut.resetConversationsList() }
 
                 println("User: " + user.id + " / " + user.userId + " / " + user.baseUrl)
@@ -48,10 +48,6 @@ class MainActivityTest {
 
             override fun onError(e: Throwable) {
                 fail("No user created")
-            }
-
-            override fun onComplete() {
-                // unused atm
             }
         })
     }
