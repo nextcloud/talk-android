@@ -351,7 +351,6 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     }
 
     static class ConversationItemViewHolder extends FlexibleViewHolder {
-        ImageView userStatusImage;
 
         RvItemConversationWithLastMessageBinding binding;
 
