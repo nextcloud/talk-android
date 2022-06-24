@@ -11,6 +11,7 @@ steps:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - pull_request
     - push
@@ -29,6 +30,7 @@ steps:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
@@ -69,6 +71,7 @@ services:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
@@ -124,6 +127,7 @@ steps:
 trigger:
   branch:
     - master
+    - stable-*
   event:
     - push
     - pull_request
