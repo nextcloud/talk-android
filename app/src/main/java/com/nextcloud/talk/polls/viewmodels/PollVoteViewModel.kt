@@ -46,11 +46,16 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
 
     private var disposable: Disposable? = null
 
+    private var _votedOptions: List<Int> = emptyList()
+    val votedOptions: List<Int>
+        get() = _votedOptions
+
     private var _selectedOptions: List<Int> = emptyList()
     val selectedOptions: List<Int>
         get() = _selectedOptions
 
-    fun initSelectedOptions(selectedOptions: List<Int>) {
+    fun initVotedOptions(selectedOptions: List<Int>) {
+        _votedOptions = selectedOptions
         _selectedOptions = selectedOptions
     }
 

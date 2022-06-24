@@ -78,9 +78,11 @@ class PollVoteFragment(
             if (state is PollMainViewModel.PollVoteState) {
                 initPollOptions(state.poll)
                 initCloseButton(state.showCloseButton)
+                updateSubmitButton()
             } else if (state is PollMainViewModel.PollVoteHiddenState) {
                 initPollOptions(state.poll)
                 initCloseButton(state.showCloseButton)
+                updateSubmitButton()
             }
         }
 
@@ -98,6 +100,7 @@ class PollVoteFragment(
 
         binding.pollVoteRadioGroup.setOnCheckedChangeListener { group, checkedId ->
             viewModel.selectOption(checkedId, true)
+            updateSubmitButton()
         }
 
         binding.pollVoteSubmitButton.setOnClickListener {
@@ -106,8 +109,7 @@ class PollVoteFragment(
     }
 
     private fun initPollOptions(poll: Poll) {
-        poll.votedSelf?.let { viewModel.initSelectedOptions(it as ArrayList<Int>) }
-
+        poll.votedSelf?.let { viewModel.initVotedOptions(it as ArrayList<Int>) }
 
         if (poll.maxVotes == 1) {
             binding.pollVoteRadioGroup.removeAllViews()
@@ -115,9 +117,6 @@ class PollVoteFragment(
                 RadioButton(context).apply { text = option }
             }?.forEachIndexed { index, radioButton ->
                 radioButton.id = index
-                // if (poll.votedSelf?.contains(index) == true) {
-                //     radioButton.setTypeface(null, Typeface.BOLD)
-                // }
                 makeOptionBoldIfSelfVoted(radioButton, poll, index)
                 binding.pollVoteRadioGroup.addView(radioButton)
 
@@ -129,9 +128,6 @@ class PollVoteFragment(
                 CheckBox(context).apply { text = option }
             }?.forEachIndexed { index, checkBox ->
                 checkBox.id = index
-                // if (poll.votedSelf?.contains(index) == true) {
-                //     checkBox.setTypeface(null, Typeface.BOLD)
-                // }
                 makeOptionBoldIfSelfVoted(checkBox, poll, index)
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)
 
@@ -147,9 +143,20 @@ class PollVoteFragment(
                     } else {
                         viewModel.deSelectOption(index)
                     }
+                    updateSubmitButton()
                 }
             }
         }
+    }
+
+    private fun updateSubmitButton() {
+        binding.pollVoteSubmitButton.isEnabled =
+            areSelectedOptionsDifferentToVotedOptions() && viewModel.selectedOptions.isNotEmpty()
+    }
+
+    private fun areSelectedOptionsDifferentToVotedOptions(): Boolean {
+        return !(viewModel.votedOptions.containsAll(viewModel.selectedOptions) &&
+            viewModel.selectedOptions.containsAll(viewModel.votedOptions))
     }
 
     private fun makeOptionBoldIfSelfVoted(button: CompoundButton, poll: Poll, index: Int) {
