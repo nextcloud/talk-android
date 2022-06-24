@@ -318,6 +318,7 @@
     <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
     <string name="nc_upload_failed">Lo siento, error en la subida</string>
     <string name="nc_upload_from_cloud">Compartido por %1$s</string>
+    <string name="nc_upload_from_device">Subir desde dispositivo</string>
     <string name="nc_upload_in_progess">Subiendo</string>
     <string name="nc_upload_local_file">Subir archivo local</string>
     <string name="nc_upload_picture_from_cam">Hacer foto</string>

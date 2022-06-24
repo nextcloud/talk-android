@@ -317,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
     <string name="nc_upload_failed">Desculpe, falha no envio</string>
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
+    <string name="nc_upload_from_device">Enviar do dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_upload_local_file">Enviar arquivo local</string>
     <string name="nc_upload_picture_from_cam">Tirar fotos</string>

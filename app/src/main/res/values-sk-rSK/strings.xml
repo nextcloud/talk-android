@@ -317,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>
     <string name="nc_upload_failed">Prepáčte, nahrávanie zlyhalo</string>
     <string name="nc_upload_from_cloud">Zdieľať z %1$s</string>
+    <string name="nc_upload_from_device">Nahrať zo zariadenia</string>
     <string name="nc_upload_in_progess">Nahrávanie</string>
     <string name="nc_upload_local_file">Nahrať miestny súbor</string>
     <string name="nc_upload_picture_from_cam">Urobiť fotografiu</string>
