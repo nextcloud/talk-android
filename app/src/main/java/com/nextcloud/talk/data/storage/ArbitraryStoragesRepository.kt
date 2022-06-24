@@ -20,10 +20,10 @@
 
 package com.nextcloud.talk.data.storage
 
-import com.nextcloud.talk.data.storage.model.ArbitraryStorageNgEntity
+import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 
 interface ArbitraryStoragesRepository {
-    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): ArbitraryStorageNgEntity
+    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): ArbitraryStorageEntity
     suspend fun deleteArbitraryStorage(accountIdentifier: Long)
-    fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorageNgEntity): Long
+    fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorageEntity): Long
 }

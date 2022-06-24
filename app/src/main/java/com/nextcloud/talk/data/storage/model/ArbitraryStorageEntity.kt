@@ -28,7 +28,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity(tableName = "ArbitraryStorage")
-data class ArbitraryStorageNgEntity(
+data class ArbitraryStorageEntity(
     @PrimaryKey @ColumnInfo(name = "accountIdentifier") var accountIdentifier: Long = 0,
     @ColumnInfo(name = "key") var key: String? = null,
     @ColumnInfo(name = "object") var storageObject: String? = null,

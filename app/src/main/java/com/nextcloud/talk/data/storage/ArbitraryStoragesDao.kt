@@ -24,7 +24,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.nextcloud.talk.data.storage.model.ArbitraryStorageNgEntity
+import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 
 @Dao
 abstract class ArbitraryStoragesDao {
@@ -34,11 +34,11 @@ abstract class ArbitraryStoragesDao {
             "\"key\" = :key AND " +
             "object = :objectString"
     )
-    abstract fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): ArbitraryStorageNgEntity
+    abstract fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): ArbitraryStorageEntity
 
     @Query("DELETE FROM ArbitraryStorage WHERE accountIdentifier = :accountIdentifier")
     abstract suspend fun deleteArbitraryStorage(accountIdentifier: Long)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorageNgEntity): Long
+    abstract fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorageEntity): Long
 }
