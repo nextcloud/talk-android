@@ -33,6 +33,10 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+/**
+ * Deprecated, please use CapabilitiesNgUtil
+ */
+@Deprecated
 public abstract class CapabilitiesUtil {
     private static final String TAG = CapabilitiesUtil.class.getSimpleName();
 
@@ -66,13 +70,11 @@ public abstract class CapabilitiesUtil {
         return false;
     }
 
-    @Deprecated
     public static boolean isServerEOL(@Nullable UserEntity user) {
         // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
         return !hasSpreedFeatureCapability(user, "no-ping");
     }
 
-    @Deprecated
     public static boolean isServerAlmostEOL(@Nullable UserEntity user) {
         // Capability is available since Talk 8 => Nextcloud 18 => January 2020
         return !hasSpreedFeatureCapability(user, "chat-replies");
@@ -82,7 +84,6 @@ public abstract class CapabilitiesUtil {
         return hasSpreedFeatureCapability(user, "chat-read-marker");
     }
 
-    @Deprecated
     public static boolean hasSpreedFeatureCapability(@Nullable UserEntity user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             try {

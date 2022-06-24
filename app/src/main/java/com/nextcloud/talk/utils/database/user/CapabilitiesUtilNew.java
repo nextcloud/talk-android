@@ -29,8 +29,7 @@ import java.util.Map;
 
 import androidx.annotation.Nullable;
 
-public abstract class CapabilitiesNgUtil {
-    private static final String TAG = CapabilitiesNgUtil.class.getSimpleName();
+public abstract class CapabilitiesUtilNew {
 
     public static boolean hasNotificationsCapability(@Nullable User user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {

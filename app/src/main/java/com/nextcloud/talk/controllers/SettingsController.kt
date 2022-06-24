@@ -87,7 +87,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ARE_CALL_SOUNDS
-import com.nextcloud.talk.utils.database.user.CapabilitiesNgUtil
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.preferences.MagicUserInputModule
@@ -190,7 +190,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun setupPhoneBookIntegration() {
-        if (CapabilitiesNgUtil.isPhoneBookIntegrationAvailable(currentUser)) {
+        if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser)) {
             activity!!.runOnUiThread {
                 binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
             }
@@ -648,7 +648,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     private fun setupServerAgeWarning() {
         when {
-            CapabilitiesNgUtil.isServerEOL(currentUser) -> {
+            CapabilitiesUtilNew.isServerEOL(currentUser) -> {
                 binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context)!!, R.color.nc_darkRed))
                 binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
                 binding.serverAgeWarningIcon.setColorFilter(
@@ -656,7 +656,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     PorterDuff.Mode.SRC_IN
                 )
             }
-            CapabilitiesNgUtil.isServerAlmostEOL(currentUser) -> {
+            CapabilitiesUtilNew.isServerAlmostEOL(currentUser) -> {
                 binding.serverAgeWarningText.setTextColor(
                     ContextCompat.getColor((context)!!, R.color.nc_darkYellow)
                 )
@@ -688,7 +688,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
         if (CapabilitiesUtil.isReadStatusAvailable(userUtils.currentUser)) {
             (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                !CapabilitiesNgUtil.isReadStatusPrivate(currentUser)
+                !CapabilitiesUtilNew.isReadStatusPrivate(currentUser)
         } else {
             binding.settingsReadPrivacy.visibility = View.GONE
         }
