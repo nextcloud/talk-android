@@ -2,7 +2,7 @@
  * Nextcloud Talk application
  *
  * @author Andy Scherzinger
- * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * Copyright (C) 2022 Andy Scherzinger <infoi@andy-scherzinger.de>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,12 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.data.storage
+package com.nextcloud.talk.data.storage.model
 
-import com.nextcloud.talk.data.storage.model.ArbitraryStorage
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-interface ArbitraryStoragesRepository {
-    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): ArbitraryStorage
-    suspend fun deleteArbitraryStorage(accountIdentifier: Long)
-    fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long
-}
+@Parcelize
+data class ArbitraryStorage(
+    var accountIdentifier: Long = 0,
+    var key: String? = null,
+    var storageObject: String? = null,
+    var value: String? = null
+) : Parcelable

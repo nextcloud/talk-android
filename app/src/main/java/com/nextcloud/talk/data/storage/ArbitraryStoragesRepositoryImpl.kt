@@ -20,7 +20,7 @@
 
 package com.nextcloud.talk.data.storage
 
-import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
+import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 
 class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: ArbitraryStoragesDao) :
     ArbitraryStoragesRepository {
@@ -28,15 +28,17 @@ class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: Arbitrar
         accountIdentifier: Long,
         key: String,
         objectString: String
-    ): ArbitraryStorageEntity {
-        return arbitraryStoragesDao.getStorageSetting(accountIdentifier, key, objectString)
+    ): ArbitraryStorage {
+        return ArbitraryStorageMapper.toModel(
+            arbitraryStoragesDao.getStorageSetting(accountIdentifier, key, objectString)
+        )!!
     }
 
     override suspend fun deleteArbitraryStorage(accountIdentifier: Long) {
         arbitraryStoragesDao.deleteArbitraryStorage(accountIdentifier)
     }
 
-    override fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorageEntity): Long {
-        return arbitraryStoragesDao.saveArbitraryStorage(arbitraryStorage)
+    override fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long {
+        return arbitraryStoragesDao.saveArbitraryStorage(ArbitraryStorageMapper.toEntity(arbitraryStorage))
     }
 }
