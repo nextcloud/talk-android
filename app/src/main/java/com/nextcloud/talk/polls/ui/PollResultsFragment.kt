@@ -86,8 +86,8 @@ class PollResultsFragment(
         }
     }
 
-    private fun initAdapter(showDetails: Boolean) {
-        adapter = PollResultsAdapter(this, showDetails)
+    private fun initAdapter(showParticipants: Boolean) {
+        adapter = PollResultsAdapter(this, showParticipants)
         _binding?.pollResultsList?.adapter = adapter
         _binding?.pollResultsList?.layoutManager = LinearLayoutManager(context)
     }
@@ -101,7 +101,12 @@ class PollResultsFragment(
                 val votersForThisOption = poll.details.filter { it.optionId == index }.size
                 val optionsPercent = oneVoteInPercent * votersForThisOption
 
-                val pollResultItem = PollResultItem(option, optionsPercent) // TODO add participants to PollResultItem
+                val pollResultItem = PollResultItem(
+                    option,
+                    optionsPercent,
+                    isOptionSelfVoted(poll, index)
+                )
+                // TODO add participants to PollResultItem
                 adapter?.list?.add(pollResultItem)
             }
         } else if (poll.votes != null) {
@@ -115,12 +120,20 @@ class PollResultsFragment(
                 }
                 val optionsPercent = oneVoteInPercent * votersForThisOption
 
-                val pollResultItem = PollResultItem(option, optionsPercent)
+                val pollResultItem = PollResultItem(
+                    option,
+                    optionsPercent,
+                    isOptionSelfVoted(poll, index)
+                )
                 adapter?.list?.add(pollResultItem)
             }
         } else {
             Log.e(TAG, "failed to get data to show poll results")
         }
+    }
+
+    private fun isOptionSelfVoted(poll: Poll, index: Int): Boolean {
+        return poll.votedSelf?.contains(index) == true
     }
 
     private fun initEditButton(showEditButton: Boolean) {

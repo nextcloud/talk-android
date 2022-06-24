@@ -1,20 +1,29 @@
 package com.nextcloud.talk.polls.adapters
 
 import android.annotation.SuppressLint
+import android.graphics.Typeface
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.databinding.PollResultItemBinding
 
 class PollResultViewHolder(
     private val binding: PollResultItemBinding,
-    private val showDetails: Boolean
-) : RecyclerView.ViewHolder(binding.root) {
+    private val showDetails: Boolean,
+
+    ) : RecyclerView.ViewHolder(binding.root) {
 
     @SuppressLint("SetTextI18n")
     fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         binding.root.setOnClickListener { clickListener.onClick(pollResultItem) }
+
         binding.pollOptionText.text = pollResultItem.pollOption
         binding.pollOptionPercentText.text = pollResultItem.pollPercent.toString() + "%"
+
+        if (pollResultItem.selfVoted) {
+            binding.pollOptionText.setTypeface(null, Typeface.BOLD)
+            binding.pollOptionPercentText.setTypeface(null, Typeface.BOLD)
+        }
+
         binding.pollOptionBar.progress = pollResultItem.pollPercent
 
         if (showDetails) {
