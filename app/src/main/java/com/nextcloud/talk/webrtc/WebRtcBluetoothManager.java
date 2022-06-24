@@ -59,14 +59,14 @@ import java.util.Set;
 import androidx.core.app.ActivityCompat;
 
 public class WebRtcBluetoothManager {
-    private static final String TAG = WebRtcBluetoothManager.class.getCanonicalName();
+    private static final String TAG = WebRtcBluetoothManager.class.getSimpleName();
 
     // Timeout interval for starting or stopping audio to a Bluetooth SCO device.
     private static final int BLUETOOTH_SCO_TIMEOUT_MS = 4000;
     // Maximum number of SCO connection attempts.
     private static final int MAX_SCO_CONNECTION_ATTEMPTS = 2;
     private final Context apprtcContext;
-    private final WebRtcAudioManger webRtcAudioManager;
+    private final WebRtcAudioManager webRtcAudioManager;
     private final AudioManager audioManager;
     private final Handler handler;
     private final BluetoothProfile.ServiceListener bluetoothServiceListener;
@@ -82,7 +82,7 @@ public class WebRtcBluetoothManager {
     private final Runnable bluetoothTimeoutRunnable = this::bluetoothTimeout;
     private boolean started = false;
 
-    protected WebRtcBluetoothManager(Context context, WebRtcAudioManger audioManager) {
+    protected WebRtcBluetoothManager(Context context, WebRtcAudioManager audioManager) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
         apprtcContext = context;
@@ -97,7 +97,7 @@ public class WebRtcBluetoothManager {
     /**
      * Construction.
      */
-    static WebRtcBluetoothManager create(Context context, WebRtcAudioManger audioManager) {
+    static WebRtcBluetoothManager create(Context context, WebRtcAudioManager audioManager) {
         return new WebRtcBluetoothManager(context, audioManager);
     }
 

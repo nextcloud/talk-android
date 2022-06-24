@@ -54,8 +54,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class WebRtcAudioManger {
-    private static final String TAG = WebRtcAudioManger.class.getCanonicalName();
+public class WebRtcAudioManager {
+    private static final String TAG = WebRtcAudioManager.class.getSimpleName();
     private final Context magicContext;
     private final WebRtcBluetoothManager bluetoothManager;
     private final boolean useProximitySensor;
@@ -79,7 +79,7 @@ public class WebRtcAudioManger {
 
     private final PowerManagerUtils powerManagerUtils;
 
-    private WebRtcAudioManger(Context context, boolean useProximitySensor) {
+    private WebRtcAudioManager(Context context, boolean useProximitySensor) {
         Log.d(TAG, "ctor");
         ThreadUtils.checkIsOnMainThread();
         magicContext = context;
@@ -110,8 +110,8 @@ public class WebRtcAudioManger {
     /**
      * Construction.
      */
-    public static WebRtcAudioManger create(Context context, boolean useProximitySensor) {
-       return new WebRtcAudioManger(context, useProximitySensor);
+    public static WebRtcAudioManager create(Context context, boolean useProximitySensor) {
+       return new WebRtcAudioManager(context, useProximitySensor);
     }
 
     public void startBluetoothManager() {
@@ -141,7 +141,7 @@ public class WebRtcAudioManger {
                                                                        .SENSOR_NEAR, null, null, null, null));
 
             } else {
-                setAudioDeviceInternal(WebRtcAudioManger.AudioDevice.SPEAKER_PHONE);
+                setAudioDeviceInternal(WebRtcAudioManager.AudioDevice.SPEAKER_PHONE);
                 Log.d(TAG, "switched to SPEAKER_PHONE because userSelectedAudioDevice was SPEAKER_PHONE and proximity=far");
 
                 EventBus.getDefault().post(new PeerConnectionEvent(PeerConnectionEvent.PeerConnectionEventType
