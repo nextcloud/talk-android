@@ -72,7 +72,7 @@
     <string name="nc_circles">Kringen</string>
     <string name="nc_clear_history">Alle berichten verwijderen</string>
     <string name="nc_clear_history_success">Alle berichten zijn verwijderd</string>
-    <string name="nc_clear_history_warning">Wil je dit alle berichten in dit gesprek echt verwijderen?</string>
+    <string name="nc_clear_history_warning">Wil je echt dit alle andere berichten in dit gesprek echt verwijderen?</string>
     <string name="nc_clear_password">Wachtwoord legen</string>
     <string name="nc_client_cert_change">Wijzig clientcertificaat</string>
     <string name="nc_client_cert_setup">Instellen clientcertificaat</string>
