@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [14.1.0] - 2022-??-??
+### Added
+- Search within messages
+- Quick reply via notification (@starypatyk)
+### Changed
+- Scroll to oldest unread message when opening a conversation
+### Fixed
+- No conversations loaded when user status app is limited to groups (server setting)
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/52?closed=1
+
 ## [14.0.2] - 2022-05-13
 ### Added
 - Handling for "event.participants.update.all" from HPB
@@ -14,11 +25,12 @@ Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 - Always show reaction count (not only > 1)
 - Reactions option shown in read-only conversations
 
-For a full list, please see https: https://github.com/nextcloud/talk-android/milestone/55?closed=1
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/55?closed=1
 
 ## [14.0.1] - 2022-05-03
-- fix app crashes when UI isn't available anymore
-- fix to load conversations when servers status app is disabled
+### Fixed
+- App crashes when UI isn't available anymore
+- Conversation list not loading when servers status app is disabled
 
 For a full list, please see https://github.com/nextcloud/talk-android/milestone/54?closed=1
 
@@ -30,13 +42,13 @@ For a full list, please see https://github.com/nextcloud/talk-android/milestone/
 - search for open conversations
 - mark conversation as read
 - select audio output for calls
-- choose notification sounds by android settings (starypatyk)
+- choose notification sounds by android settings (@starypatyk)
 - share contact from attachment dialog
 
 ### Fixed
 - call connection from android to web sometimes fail on HPB 
 - top bar partially hidden when typing message
-- can't open chat view from notification (starypatyk)
+- can't open chat view from notification (@starypatyk)
 - minor fixes
 
 For a full list, please see https://github.com/nextcloud/talk-android/milestone/50?closed=1
