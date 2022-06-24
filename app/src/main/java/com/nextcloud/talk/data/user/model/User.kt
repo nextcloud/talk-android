@@ -20,17 +20,14 @@
 package com.nextcloud.talk.data.user.model
 
 import android.os.Parcelable
-import com.nextcloud.talk.data.user.model.User.Companion.DEFAULT_CHAT_MESSAGE_LENGTH
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.Serializable
 import java.lang.Boolean.FALSE
 
 @Parcelize
-@Serializable
 data class User(
     var id: Long? = null,
     var userId: String? = null,
