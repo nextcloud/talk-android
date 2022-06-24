@@ -45,14 +45,13 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         val results = userRepository.getUsersNotScheduledForDeletion()
 
         return results.map { users ->
-            var result: User? = null
-            if (users.isNotEmpty()) {
-                val user = users[0]
-                user.current = true
-                userRepository.updateUser(user)
-                result = user
-            }
-            result
+            users
+                .firstOrNull()
+                ?.apply {
+                    current = true
+                }?.also { user ->
+                    userRepository.updateUser(user)
+                }
         }
     }
 
