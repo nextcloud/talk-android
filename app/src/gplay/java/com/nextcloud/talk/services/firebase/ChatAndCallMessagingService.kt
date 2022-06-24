@@ -161,14 +161,14 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                     decryptMessage(privateKey, base64DecodedSubject, subject, signature)
                 }
             } catch (e1: NoSuchAlgorithmException) {
-                Log.d(NotificationWorker.TAG, "No proper algorithm to decrypt the message " + e1.localizedMessage)
+                Log.e(NotificationWorker.TAG, "No proper algorithm to decrypt the message.", e1)
             } catch (e1: NoSuchPaddingException) {
-                Log.d(NotificationWorker.TAG, "No proper padding to decrypt the message " + e1.localizedMessage)
+                Log.e(NotificationWorker.TAG, "No proper padding to decrypt the message.", e1)
             } catch (e1: InvalidKeyException) {
-                Log.d(NotificationWorker.TAG, "Invalid private key " + e1.localizedMessage)
+                Log.e(NotificationWorker.TAG, "Invalid private key.", e1)
             }
         } catch (exception: Exception) {
-            Log.d(NotificationWorker.TAG, "Something went very wrong " + exception.localizedMessage, exception)
+            Log.e(NotificationWorker.TAG, "Something went very wrong!", exception)
         }
     }
 
@@ -218,7 +218,7 @@ class ChatAndCallMessagingService : FirebaseMessagingService() {
                     0,
                     fullScreenIntent,
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                        PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
                     } else {
                         PendingIntent.FLAG_UPDATE_CURRENT
                     }
