@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/standard_padding"
     tools:background="@color/white">
 
     <TextView
         android:id="@+id/poll_option_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Option Number One" />
@@ -19,25 +19,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="25 %" />
+        app:layout_constraintTop_toTopOf="@+id/poll_option_text"
+        tools:text="50%" />
 
-    <ProgressBar
+    <com.google.android.material.progressindicator.LinearProgressIndicator
         android:id="@+id/poll_option_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:indeterminate="false"
+        app:indicatorColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="@+id/poll_option_text"
         app:layout_constraintTop_toBottomOf="@+id/poll_option_text"
-        style="?android:attr/progressBarStyleHorizontal" />
+        app:trackColor="@color/dialog_background"
+        app:trackCornerRadius="5dp"
+        app:trackThickness="10dp"
+        tools:progress="50" />
 
     <LinearLayout
         android:id="@+id/poll_option_detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/poll_option_text"
-        app:layout_constraintTop_toBottomOf="@+id/poll_option_bar">
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/poll_option_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
