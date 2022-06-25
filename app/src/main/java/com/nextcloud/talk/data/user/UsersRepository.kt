@@ -23,22 +23,20 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
 interface UsersRepository {
-    fun getActiveUserLiveData(): Single<User?>
-    fun getActiveUser(): Single<User?>
-    fun getActiveUserSynchronously(): User?
+    fun getActiveUser(): Maybe<User>
     fun getUsers(): Single<List<User>>
-    fun getUserWithId(id: Long): Single<User?>
-    fun getUserWithIdLiveData(id: Long): Single<User?>
-    fun getUserWithIdNotScheduledForDeletion(id: Long): Single<User?>
-    fun getUserWithUserId(userId: String): Single<User?>
+    fun getUserWithId(id: Long): Maybe<User>
+    fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User>
+    fun getUserWithUserId(userId: String): Maybe<User>
     fun getUsersWithoutUserId(userId: Long): Single<List<User>>
     fun getUsersScheduledForDeletion(): Single<List<User>>
     fun getUsersNotScheduledForDeletion(): Single<List<User>>
-    fun getUserWithUsernameAndServer(username: String, server: String): Single<User?>
+    fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User>
     fun updateUser(user: User): Int
     fun insertUser(user: User): Long
     suspend fun setUserAsActiveWithId(id: Long): Boolean

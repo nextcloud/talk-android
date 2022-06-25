@@ -29,6 +29,7 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import io.reactivex.Maybe
 import io.reactivex.Single
 import java.lang.Boolean.TRUE
 
@@ -40,7 +41,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     val usersScheduledForDeletion: Single<List<User>>
         get() = userRepository.getUsersScheduledForDeletion()
 
-    private fun setAnyUserAndSetAsActive(): Single<User?> {
+    private fun setAnyUserAndSetAsActive(): Single<User> {
         val results = userRepository.getUsersNotScheduledForDeletion()
 
         return results.map { users ->
@@ -48,13 +49,13 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                 .firstOrNull()
                 ?.apply {
                     current = true
-                }?.also { user ->
-                    userRepository.updateUser(user)
+                }.also { user ->
+                    userRepository.updateUser(user!!)
                 }
         }
     }
 
-    override val currentUser: Single<User?>
+    override val currentUser: Maybe<User>
         get() {
             return userRepository.getActiveUser()
         }
@@ -67,11 +68,11 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         userRepository.deleteUserWithId(internalId)
     }
 
-    fun getUserById(userId: String): Single<User?> {
+    fun getUserById(userId: String): Maybe<User> {
         return userRepository.getUserWithUserId(userId)
     }
 
-    fun getUserWithId(id: Long): Single<User?> {
+    fun getUserWithId(id: Long): Maybe<User> {
         return userRepository.getUserWithId(id)
     }
 
@@ -91,15 +92,15 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         }
     }
 
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
+    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Maybe<Boolean> {
         return userRepository.getUserWithUsernameAndServer(username, server).map { it.scheduledForDeletion }
     }
 
-    fun getUserWithInternalId(id: Long): Single<User?> {
+    fun getUserWithInternalId(id: Long): Maybe<User> {
         return userRepository.getUserWithIdNotScheduledForDeletion(id)
     }
 
-    fun getIfUserWithUsernameAndServer(username: String, server: String): Single<Boolean> {
+    fun getIfUserWithUsernameAndServer(username: String, server: String): Maybe<Boolean> {
         return userRepository.getUserWithUsernameAndServer(username, server).map { TRUE }
     }
 
@@ -108,22 +109,24 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             user.scheduledForDeletion = true
             user.current = false
             userRepository.updateUser(user)
-        }.flatMap {
-            setAnyUserAndSetAsActive()
-        }.map { TRUE }
+        }
+            .toSingle()
+            .flatMap {
+                setAnyUserAndSetAsActive()
+            }.map { TRUE }
     }
 
     fun createOrUpdateUser(
         username: String?,
         userAttributes: UserAttributes,
-    ): Single<User?> {
+    ): Maybe<User?> {
 
-        val userObservable: Single<User?> = if (userAttributes.id == null &&
-            username != null && userAttributes.serverUrl != null
-        ) {
+        val userObservable: Maybe<User> = if (userAttributes.id != null) {
+            userRepository.getUserWithId(userAttributes.id)
+        } else if (username != null && userAttributes.serverUrl != null) {
             userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
         } else {
-            userRepository.getUserWithId(userAttributes.id!!)
+            Maybe.empty()
         }
 
         return userObservable
@@ -141,13 +144,14 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                         user
                     }
                 }
-                userRepository.insertUser(userModel)
+                val id = userRepository.insertUser(userModel)
+                id
             }.flatMap { id ->
                 userRepository.getUserWithId(id)
             }
     }
 
-    fun getUserWithUsernameAndServer(username: String, server: String): Single<User?> {
+    fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User> {
         return userRepository.getUserWithUsernameAndServer(username, server)
     }
 
@@ -155,12 +159,19 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         user.userId = userAttributes.userId
         user.token = userAttributes.token
         user.displayName = userAttributes.displayName
-        user.pushConfigurationState = LoganSquare
-            .parse(userAttributes.pushConfigurationState, PushConfigurationState::class.java)
-        user.capabilities = LoganSquare.parse(userAttributes.capabilities, Capabilities::class.java)
+        if (userAttributes.pushConfigurationState != null) {
+            user.pushConfigurationState = LoganSquare
+                .parse(userAttributes.pushConfigurationState, PushConfigurationState::class.java)
+        }
+        if (userAttributes.capabilities != null) {
+            user.capabilities = LoganSquare
+                .parse(userAttributes.capabilities, Capabilities::class.java)
+        }
         user.clientCertificate = userAttributes.certificateAlias
-        user.externalSignalingServer = LoganSquare
-            .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
+        if (userAttributes.externalSignalingServer != null) {
+            user.externalSignalingServer = LoganSquare
+                .parse(userAttributes.externalSignalingServer, ExternalSignalingServer::class.java)
+        }
         user.current = userAttributes.currentUser == true
     }
 

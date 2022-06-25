@@ -21,8 +21,8 @@
 package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.data.user.model.User
-import io.reactivex.Single
+import io.reactivex.Maybe
 
 interface CurrentUserProviderNew {
-    val currentUser: Single<User?>
+    val currentUser: Maybe<User>
 }

@@ -30,6 +30,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.nextcloud.talk.data.user.model.UserEntity
+import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
@@ -41,7 +42,7 @@ import java.lang.Boolean.TRUE
 abstract class UsersDao {
     // get active user
     @Query("SELECT * FROM User where current = 1")
-    abstract fun getActiveUser(): Single<UserEntity?>
+    abstract fun getActiveUser(): Maybe<UserEntity>
 
     @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUserSynchronously(): UserEntity?
@@ -66,13 +67,13 @@ abstract class UsersDao {
     abstract fun getUsers(): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User where id = :id")
-    abstract fun getUserWithId(id: Long): Single<UserEntity?>
+    abstract fun getUserWithId(id: Long): Maybe<UserEntity>
 
     @Query("SELECT * FROM User where id = :id AND scheduledForDeletion != 1")
-    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Single<UserEntity?>
+    abstract fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<UserEntity>
 
     @Query("SELECT * FROM User where userId = :userId")
-    abstract fun getUserWithUserId(userId: String): Single<UserEntity?>
+    abstract fun getUserWithUserId(userId: String): Maybe<UserEntity>
 
     @Query("SELECT * FROM User where userId != :userId")
     abstract fun getUsersWithoutUserId(userId: Long): Single<List<UserEntity>>
@@ -84,7 +85,7 @@ abstract class UsersDao {
     abstract fun getUsersNotScheduledForDeletion(): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User WHERE username = :username AND baseUrl = :server")
-    abstract fun getUserWithUsernameAndServer(username: String, server: String): Single<UserEntity?>
+    abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
 
     @Transaction
     open suspend fun setUserAsActiveWithId(id: Long): Boolean {

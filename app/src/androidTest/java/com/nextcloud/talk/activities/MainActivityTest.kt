@@ -21,12 +21,12 @@ class MainActivityTest {
         val user = sut.userManager.createOrUpdateUser(
             "test",
             UserManager.UserAttributes(
-                id = 0,
+                null,
                 serverUrl = "http://server/nc",
-                currentUser = false,
+                currentUser = true,
                 userId = "test",
                 token = "test",
-                displayName = null,
+                displayName = "Test Name",
                 pushConfigurationState = null,
                 capabilities = null,
                 certificateAlias = null,

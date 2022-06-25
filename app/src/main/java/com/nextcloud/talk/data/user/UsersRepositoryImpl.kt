@@ -23,39 +23,29 @@
 package com.nextcloud.talk.data.user
 
 import com.nextcloud.talk.data.user.model.User
+import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Suppress("TooManyFunctions")
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
-    override fun getActiveUserLiveData(): Single<User?> {
-        return usersDao.getActiveUser().map { UserMapper.toModel(it) }
-    }
 
-    override fun getActiveUser(): Single<User?> {
+    override fun getActiveUser(): Maybe<User> {
         return usersDao.getActiveUser().map { UserMapper.toModel(it) }
-    }
-
-    override fun getActiveUserSynchronously(): User? {
-        return UserMapper.toModel(usersDao.getActiveUserSynchronously())
     }
 
     override fun getUsers(): Single<List<User>> {
         return usersDao.getUsers().map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithId(id: Long): Single<User?> {
+    override fun getUserWithId(id: Long): Maybe<User> {
         return usersDao.getUserWithId(id).map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithIdLiveData(id: Long): Single<User?> {
-        return usersDao.getUserWithId(id).map { UserMapper.toModel(it) }
-    }
-
-    override fun getUserWithIdNotScheduledForDeletion(id: Long): Single<User?> {
+    override fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<User> {
         return usersDao.getUserWithIdNotScheduledForDeletion(id).map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithUserId(userId: String): Single<User?> {
+    override fun getUserWithUserId(userId: String): Maybe<User> {
         return usersDao.getUserWithUserId(userId).map { UserMapper.toModel(it) }
     }
 
@@ -71,7 +61,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
         return usersDao.getUsersNotScheduledForDeletion().map { UserMapper.toModel(it) }
     }
 
-    override fun getUserWithUsernameAndServer(username: String, server: String): Single<User?> {
+    override fun getUserWithUsernameAndServer(username: String, server: String): Maybe<User> {
         return usersDao.getUserWithUsernameAndServer(username, server).map { UserMapper.toModel(it) }
     }
 
