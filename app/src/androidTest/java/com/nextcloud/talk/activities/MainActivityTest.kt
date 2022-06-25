@@ -1,11 +1,8 @@
 package com.nextcloud.talk.activities
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
-import io.reactivex.SingleObserver
-import io.reactivex.disposables.Disposable
-import org.junit.Assert.fail
+import org.junit.Assert.assertNotNull
 import org.junit.Rule
 import org.junit.Test
 
@@ -21,7 +18,7 @@ class MainActivityTest {
     fun login() {
         val sut = activityRule.launchActivity(null)
 
-        sut.userManager.createOrUpdateUser(
+        val user = sut.userManager.createOrUpdateUser(
             "test",
             UserManager.UserAttributes(
                 id = 0,
@@ -35,20 +32,11 @@ class MainActivityTest {
                 certificateAlias = null,
                 externalSignalingServer = null
             )
-        ).subscribe(object : SingleObserver<User?> {
-            override fun onSubscribe(d: Disposable) {
-                // unused atm
-            }
+        ).blockingGet()
 
-            override fun onSuccess(user: User) {
-                sut.runOnUiThread { sut.resetConversationsList() }
+        assertNotNull("Error creating user", user)
 
-                println("User: " + user.id + " / " + user.userId + " / " + user.baseUrl)
-            }
-
-            override fun onError(e: Throwable) {
-                fail("No user created")
-            }
-        })
+        sut.runOnUiThread { sut.resetConversationsList() }
+        println("User: " + user!!.id + " / " + user.userId + " / " + user.baseUrl)
     }
 }
