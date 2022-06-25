@@ -202,7 +202,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     fun resetConversationsList() {
         userManager.users.subscribe(object : SingleObserver<List<User>> {
             override fun onSubscribe(d: Disposable) {
-                TODO("Not yet implemented")
+                // unused atm
             }
 
             override fun onSuccess(users: List<User>) {
