@@ -317,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_failed">Yüklenemedi</string>
     <string name="nc_upload_from_cloud">%1$s üzerinden paylaş</string>
+    <string name="nc_upload_from_device">Aygıttan yükle</string>
     <string name="nc_upload_in_progess">Yükleniyor</string>
     <string name="nc_upload_local_file">Yerel dosya yükle</string>
     <string name="nc_upload_picture_from_cam">Fotoğraf çek</string>
