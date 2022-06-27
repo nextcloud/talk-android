@@ -28,7 +28,6 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,50 +39,6 @@ import androidx.annotation.Nullable;
 public abstract class CapabilitiesUtil {
     private static final String TAG = CapabilitiesUtil.class.getSimpleName();
 
-    public static boolean hasNotificationsCapability(@Nullable UserEntity user, String capabilityName) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                if (capabilities.getNotificationsCapability() != null &&
-                    capabilities.getNotificationsCapability().getFeatures() != null) {
-                    return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
-        }
-        return false;
-    }
-
-    public static boolean hasExternalCapability(@Nullable UserEntity user, String capabilityName) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                if (capabilities.getExternalCapability() != null &&
-                    capabilities.getExternalCapability().containsKey("v1")) {
-                    return capabilities.getExternalCapability().get("v1").contains(capabilityName);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
-        }
-        return false;
-    }
-
-    public static boolean isServerEOL(@Nullable UserEntity user) {
-        // Capability is available since Talk 4 => Nextcloud 14 => Autmn 2018
-        return !hasSpreedFeatureCapability(user, "no-ping");
-    }
-
-    public static boolean isServerAlmostEOL(@Nullable UserEntity user) {
-        // Capability is available since Talk 8 => Nextcloud 18 => January 2020
-        return !hasSpreedFeatureCapability(user, "chat-replies");
-    }
-
-    public static boolean canSetChatReadMarker(@Nullable UserEntity user) {
-        return hasSpreedFeatureCapability(user, "chat-read-marker");
-    }
-
     public static boolean hasSpreedFeatureCapability(@Nullable UserEntity user, String capabilityName) {
         if (user != null && user.getCapabilities() != null) {
             try {
@@ -91,89 +46,6 @@ public abstract class CapabilitiesUtil {
                 if (capabilities != null && capabilities.getSpreedCapability() != null &&
                     capabilities.getSpreedCapability().getFeatures() != null) {
                     return capabilities.getSpreedCapability().getFeatures().contains(capabilityName);
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
-        }
-        return false;
-    }
-
-    public static Integer getMessageMaxLength(@Nullable UserEntity user) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                if (capabilities != null &&
-                    capabilities.getSpreedCapability() != null &&
-                    capabilities.getSpreedCapability().getConfig() != null &&
-                    capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
-                    HashMap<String, String> chatConfigHashMap = capabilities
-                        .getSpreedCapability()
-                        .getConfig()
-                        .get("chat");
-                    if (chatConfigHashMap != null && chatConfigHashMap.containsKey("max-length")) {
-                        int chatSize = Integer.parseInt(chatConfigHashMap.get("max-length"));
-                        if (chatSize > 0) {
-                            return chatSize;
-                        } else {
-                            return 1000;
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
-        }
-        return 1000;
-    }
-
-    @Deprecated
-    public static boolean isPhoneBookIntegrationAvailable(@Nullable UserEntity user) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                return capabilities != null &&
-                    capabilities.getSpreedCapability() != null &&
-                    capabilities.getSpreedCapability().getFeatures() != null &&
-                    capabilities.getSpreedCapability().getFeatures().contains("phonebook-search");
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
-        }
-        return false;
-    }
-
-    public static boolean isReadStatusAvailable(@Nullable UserEntity user) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                if (capabilities != null &&
-                    capabilities.getSpreedCapability() != null &&
-                    capabilities.getSpreedCapability().getConfig() != null &&
-                    capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
-                    Map<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
-                    return map != null && map.containsKey("read-privacy");
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user");
-            }
-        }
-        return false;
-    }
-
-    @Deprecated
-    public static boolean isReadStatusPrivate(@Nullable UserEntity user) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                if (capabilities != null &&
-                    capabilities.getSpreedCapability() != null &&
-                    capabilities.getSpreedCapability().getConfig() != null &&
-                    capabilities.getSpreedCapability().getConfig().containsKey("chat")) {
-                    HashMap<String, String> map = capabilities.getSpreedCapability().getConfig().get("chat");
-                    if (map != null && map.containsKey("read-privacy")) {
-                        return Integer.parseInt(map.get("read-privacy")) == 1;
-                    }
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Failed to get capabilities for the user");
@@ -263,35 +135,7 @@ public abstract class CapabilitiesUtil {
         return false;
     }
 
-    public static boolean isAbleToCall(@Nullable UserEntity user) {
-        if (user != null && user.getCapabilities() != null) {
-            try {
-                Capabilities capabilities = parseUserCapabilities(user);
-                if (capabilities != null &&
-                    capabilities.getSpreedCapability() != null &&
-                    capabilities.getSpreedCapability().getConfig() != null &&
-                    capabilities.getSpreedCapability().getConfig().containsKey("call") &&
-                    capabilities.getSpreedCapability().getConfig().get("call") != null &&
-                    capabilities.getSpreedCapability().getConfig().get("call").containsKey("enabled")) {
-                    return Boolean.parseBoolean(
-                        capabilities.getSpreedCapability().getConfig().get("call").get("enabled"));
-                } else {
-                    // older nextcloud versions without the capability can't disable the calls
-                    return true;
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to get capabilities for the user", e);
-            }
-        }
-        return false;
-    }
-
-    @Deprecated
     private static Capabilities parseUserCapabilities(@NonNull final UserEntity user) throws IOException {
         return LoganSquare.parse(user.getCapabilities(), Capabilities.class);
-    }
-
-    public static boolean isUnifiedSearchAvailable(@Nullable final UserEntity user) {
-        return hasSpreedFeatureCapability(user, "unified-search");
     }
 }
