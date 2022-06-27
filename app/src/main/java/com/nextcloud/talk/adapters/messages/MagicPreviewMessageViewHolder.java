@@ -46,6 +46,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
 import com.nextcloud.talk.components.filebrowser.models.DavResponse;
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
@@ -53,6 +54,7 @@ import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet;
 import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.DrawableUtils;
 import com.nextcloud.talk.utils.FileViewerUtils;
+import com.nextcloud.talk.utils.FileViewerUtilsNew;
 import com.stfalcon.chatkit.messages.MessageHolders;
 
 import java.io.ByteArrayInputStream;
@@ -99,7 +101,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
     ReactionsInsideMessageBinding reactionsBinding;
 
-    FileViewerUtils fileViewerUtils;
+    FileViewerUtilsNew fileViewerUtils;
 
     View clickView;
 
@@ -150,7 +152,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
 
         if (message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
 
-            fileViewerUtils = new FileViewerUtils(context, message.getActiveUser());
+            fileViewerUtils = new FileViewerUtilsNew(context, message.getActiveUser());
 
             String fileName = message.getSelectedIndividualHashMap().get(KEY_NAME);
             getMessageText().setText(fileName);
@@ -187,7 +189,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 clickView.setOnClickListener(v ->
                     fileViewerUtils.openFile(
                         message,
-                        new FileViewerUtils.ProgressUi(progressBar, getMessageText(), image)
+                        new FileViewerUtilsNew.ProgressUi(progressBar, getMessageText(), image)
                     )
                 );
 
@@ -203,7 +205,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_NAME)),
                 Objects.requireNonNull(message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_ID)),
                 message.getSelectedIndividualHashMap().get(MagicPreviewMessageViewHolder.KEY_MIMETYPE),
-                new FileViewerUtils.ProgressUi(progressBar, getMessageText(), image));
+                new FileViewerUtilsNew.ProgressUi(progressBar, getMessageText(), image));
 
         } else if (message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_LINK_GIPHY_MESSAGE) {
             getMessageText().setText("GIPHY");
@@ -288,7 +290,7 @@ public abstract class MagicPreviewMessageViewHolder extends MessageHolders.Incom
         popupMenu.show();
     }
 
-    private void fetchFileInformation(String url, UserEntity activeUser) {
+    private void fetchFileInformation(String url, User activeUser) {
         Single.fromCallable(new Callable<ReadFilesystemOperation>() {
             @Override
             public ReadFilesystemOperation call() {

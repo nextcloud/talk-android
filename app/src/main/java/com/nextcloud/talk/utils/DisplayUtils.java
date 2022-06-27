@@ -193,12 +193,29 @@ public class DisplayUtils {
         return bitmap;
     }
 
+    @Deprecated
     public static ImageRequest getImageRequestForUrl(String url, @Nullable UserEntity userEntity) {
         Map<String, String> headers = new HashMap<>();
         if (userEntity != null &&
             url.startsWith(userEntity.getBaseUrl()) &&
             (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
             headers.put("Authorization", ApiUtils.getCredentials(userEntity.getUsername(), userEntity.getToken()));
+        }
+
+        return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+            .setProgressiveRenderingEnabled(true)
+            .setRotationOptions(RotationOptions.autoRotate())
+            .disableDiskCache()
+            .setHeaders(headers)
+            .build();
+    }
+
+    public static ImageRequest getImageRequestForUrlNew(String url, @Nullable User user) {
+        Map<String, String> headers = new HashMap<>();
+        if (user != null &&
+            url.startsWith(Objects.requireNonNull(user.getBaseUrl())) &&
+            (url.contains("index.php/core/preview?fileId=") || url.contains("/avatar/"))) {
+            headers.put("Authorization", ApiUtils.getCredentials(user.getUsername(), user.getToken()));
         }
 
         return ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
@@ -290,7 +307,7 @@ public class DisplayUtils {
     }
 
     public static Drawable getDrawableForMentionChipSpan(Context context, String id, CharSequence label,
-                                                         UserEntity conversationUser, String type,
+                                                         User conversationUser, String type,
                                                          @XmlRes int chipResource,
                                                          @Nullable EditText emojiEditText) {
         ChipDrawable chip = ChipDrawable.createFromResource(context, chipResource);
@@ -361,7 +378,7 @@ public class DisplayUtils {
 
     public static Spannable searchAndReplaceWithMentionSpan(Context context, Spannable text,
                                                             String id, String label, String type,
-                                                            UserEntity conversationUser,
+                                                            User conversationUser,
                                                             @XmlRes int chipXmlRes) {
 
         Spannable spannableString = new SpannableString(text);

@@ -35,21 +35,21 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding;
 import com.nextcloud.talk.models.database.CapabilitiesUtil;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.chat.ChatMessage;
 import com.nextcloud.talk.models.json.conversations.Conversation;
 import com.nextcloud.talk.models.json.status.Status;
 import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -72,23 +72,23 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
     private static final float STATUS_SIZE_IN_DP = 9f;
 
     private final Conversation conversation;
-    private final UserEntity userEntity;
+    private final User user;
     private final Context context;
     private GenericTextHeaderItem header;
     private final Status status;
 
 
-    public ConversationItem(Conversation conversation, UserEntity userEntity, Context activityContext, Status status) {
+    public ConversationItem(Conversation conversation, User user, Context activityContext, Status status) {
         this.conversation = conversation;
-        this.userEntity = userEntity;
+        this.user = user;
         this.context = activityContext;
         this.status = status;
     }
 
-    public ConversationItem(Conversation conversation, UserEntity userEntity,
+    public ConversationItem(Conversation conversation, User user,
                             Context activityContext, GenericTextHeaderItem genericTextHeaderItem, Status status) {
         this.conversation = conversation;
-        this.userEntity = userEntity;
+        this.user = user;
         this.context = activityContext;
         this.header = genericTextHeaderItem;
         this.status = status;
@@ -177,7 +177,7 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                 holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
             } else if (conversation.getUnreadMention()) {
-                if (CapabilitiesUtil.hasSpreedFeatureCapability(userEntity, "direct-mention-flag")) {
+                if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "direct-mention-flag")) {
                     if (conversation.getUnreadMentionDirect()) {
                         holder.binding.dialogUnreadBubble.setChipBackgroundColorResource(R.color.colorPrimary);
                         holder.binding.dialogUnreadBubble.setTextColor(Color.WHITE);
@@ -233,10 +233,10 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                 holder.binding.dialogLastMessage.setText(conversation.getLastMessage().getText());
             } else {
                 String authorDisplayName = "";
-                conversation.getLastMessage().setActiveUser(userEntity);
+                conversation.getLastMessage().setActiveUser(user);
                 String text;
                 if (conversation.getLastMessage().getCalculateMessageType() == ChatMessage.MessageType.REGULAR_TEXT_MESSAGE) {
-                    if (conversation.getLastMessage().getActorId().equals(userEntity.getUserId())) {
+                    if (conversation.getLastMessage().getActorId().equals(user.getUserId())) {
                         text = String.format(appContext.getString(R.string.nc_formatted_message_you),
                                              conversation.getLastMessage().getLastMessageDisplayText());
                     } else {
@@ -304,11 +304,11 @@ public class ConversationItem extends AbstractFlexibleItem<ConversationItem.Conv
                         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
                             .setOldController(holder.binding.dialogAvatar.getController())
                             .setAutoPlayAnimations(true)
-                            .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                                ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
+                            .setImageRequest(DisplayUtils.getImageRequestForUrlNew(
+                                ApiUtils.getUrlForAvatar(user.getBaseUrl(),
                                                          conversation.getName(),
                                                          false),
-                                userEntity))
+                                user))
                             .build();
                         holder.binding.dialogAvatar.setController(draweeController);
                     } else {

@@ -38,15 +38,15 @@ import com.facebook.drawee.view.SimpleDraweeView
 import com.facebook.imagepipeline.common.RotationOptions
 import com.facebook.imagepipeline.image.ImageInfo
 import com.facebook.imagepipeline.request.ImageRequestBuilder
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DrawableUtils
-import com.nextcloud.talk.utils.FileViewerUtils
+import com.nextcloud.talk.utils.FileViewerUtilsNew
 
 abstract class SharedItemsViewHolder(
     open val binding: ViewBinding,
-    private val userEntity: UserEntity
+    private val user: User
 ) : RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -60,7 +60,7 @@ abstract class SharedItemsViewHolder(
     private val authHeader = mapOf(
         Pair(
             "Authorization",
-            ApiUtils.getCredentials(userEntity.username, userEntity.token)
+            ApiUtils.getCredentials(user.username, user.token)
         )
     )
 
@@ -76,15 +76,15 @@ abstract class SharedItemsViewHolder(
 
         This should be done after a refactoring of FileViewerUtils.
          */
-        val fileViewerUtils = FileViewerUtils(image.context, userEntity)
+        val fileViewerUtils = FileViewerUtilsNew(image.context, user)
 
         clickTarget.setOnClickListener {
             fileViewerUtils.openFile(
-                FileViewerUtils.FileInfo(item.id, item.name, item.fileSize),
+                FileViewerUtilsNew.FileInfo(item.id, item.name, item.fileSize),
                 item.path,
                 item.link,
                 item.mimeType,
-                FileViewerUtils.ProgressUi(
+                FileViewerUtilsNew.ProgressUi(
                     progressBar,
                     null,
                     image
@@ -96,7 +96,7 @@ abstract class SharedItemsViewHolder(
             item.name,
             item.id,
             item.mimeType,
-            FileViewerUtils.ProgressUi(progressBar, null, image)
+            FileViewerUtilsNew.ProgressUi(progressBar, null, image)
         )
     }
 

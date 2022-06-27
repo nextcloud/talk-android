@@ -34,8 +34,8 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding;
-import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags;
@@ -63,15 +63,15 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
 
     private final Context context;
     private final Participant participant;
-    private final UserEntity userEntity;
+    private final User user;
     public boolean isOnline = true;
 
     public ParticipantItem(Context activityContext,
                            Participant participant,
-                           UserEntity userEntity) {
+                           User user) {
         this.context = activityContext;
         this.participant = participant;
-        this.userEntity = userEntity;
+        this.user = user;
     }
 
     public Participant getModel() {
@@ -168,7 +168,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForGuestAvatar(userEntity.getBaseUrl(),
+                    ApiUtils.getUrlForGuestAvatar(user.getBaseUrl(),
                                                   displayName, false), null))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);
@@ -179,7 +179,7 @@ public class ParticipantItem extends AbstractFlexibleItem<ParticipantItem.Partic
                 .setOldController(holder.binding.avatarDraweeView.getController())
                 .setAutoPlayAnimations(true)
                 .setImageRequest(DisplayUtils.getImageRequestForUrl(
-                    ApiUtils.getUrlForAvatar(userEntity.getBaseUrl(),
+                    ApiUtils.getUrlForAvatar(user.getBaseUrl(),
                                              participant.getCalculatedActorId(), false), null))
                 .build();
             holder.binding.avatarDraweeView.setController(draweeController);

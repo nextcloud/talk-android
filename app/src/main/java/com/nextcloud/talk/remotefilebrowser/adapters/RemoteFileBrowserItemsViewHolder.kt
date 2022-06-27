@@ -25,7 +25,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewbinding.ViewBinding
 import com.facebook.drawee.view.SimpleDraweeView
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.DrawableUtils
@@ -33,7 +33,7 @@ import com.nextcloud.talk.utils.DrawableUtils
 abstract class RemoteFileBrowserItemsViewHolder(
     open val binding: ViewBinding,
     val mimeTypeSelectionFilter: String? = null,
-    val currentUser: UserEntity,
+    val currentUser: User,
     val selectionInterface: SelectionInterface,
 ) : RecyclerView.ViewHolder(binding.root) {
 

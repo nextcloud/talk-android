@@ -39,11 +39,11 @@ import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
 import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -62,12 +62,12 @@ class MessageSearchActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var userProvider: CurrentUserProvider
+    lateinit var userProvider: CurrentUserProviderNew
 
     private lateinit var binding: ActivityMessageSearchBinding
     private lateinit var searchView: SearchView
 
-    private lateinit var user: UserEntity
+    private lateinit var user: User
 
     private lateinit var viewModel: MessageSearchViewModel
 
@@ -84,7 +84,7 @@ class MessageSearchActivity : BaseActivity() {
         setContentView(binding.root)
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MessageSearchViewModel::class.java]
-        user = userProvider.currentUser!!
+        user = userProvider.currentUser.blockingGet()
         val roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         viewModel.initialize(roomToken)
         setupStateObserver()

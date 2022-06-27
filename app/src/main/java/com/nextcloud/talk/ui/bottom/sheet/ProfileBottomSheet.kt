@@ -33,7 +33,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.controllers.bottomsheet.items.listItemsWithImage
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
@@ -51,15 +51,15 @@ import org.parceler.Parcels
 
 private const val TAG = "ProfileBottomSheet"
 
-class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val router: Router) {
+class ProfileBottomSheet(val ncApi: NcApi, val user: User, val router: Router) {
 
     private val allowedAppIds = listOf(SPREED.stringValue, PROFILE.stringValue, EMAIL.stringValue)
 
     fun showFor(user: String, context: Context) {
 
         ncApi.hoverCard(
-            ApiUtils.getCredentials(userEntity.username, userEntity.token),
-            ApiUtils.getUrlForHoverCard(userEntity.baseUrl, user)
+            ApiUtils.getCredentials(this.user.username, this.user.token),
+            ApiUtils.getUrlForHoverCard(this.user.baseUrl, user)
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<HoverCardOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -124,16 +124,16 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
     private fun talkTo(userId: String) {
 
         val apiVersion =
-            ApiUtils.getConversationApiVersion(userEntity, intArrayOf(ApiUtils.APIv4, 1))
+            ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.APIv4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
-            userEntity.baseUrl,
+            user.baseUrl,
             "1",
             null,
             userId,
             null
         )
-        val credentials = ApiUtils.getCredentials(userEntity.username, userEntity.token)
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
         ncApi.createRoom(
             credentials,
             retrofitBucket.url, retrofitBucket.queryMap
@@ -147,7 +147,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
 
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
-                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, userEntity)
+                    bundle.putParcelable(BundleKeys.KEY_USER_ENTITY, user)
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
                     bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
@@ -155,7 +155,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                     ncApi.getRoom(
                         credentials,
                         ApiUtils.getUrlForRoom(
-                            apiVersion, userEntity.baseUrl,
+                            apiVersion, user.baseUrl,
                             roomOverall.ocs!!.data!!.token
                         )
                     )
@@ -172,7 +172,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userEntity: UserEntity, val route
                                     Parcels.wrap(roomOverall.ocs!!.data)
                                 )
                                 ConductorRemapping.remapChatController(
-                                    router, userEntity.id,
+                                    router, user.id!!,
                                     roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }

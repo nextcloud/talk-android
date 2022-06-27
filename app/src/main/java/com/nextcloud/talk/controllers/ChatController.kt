@@ -122,6 +122,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
@@ -129,8 +130,6 @@ import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
@@ -149,6 +148,7 @@ import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AttendeePermissionsUtil
 import com.nextcloud.talk.utils.ConductorRemapping
@@ -168,7 +168,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -227,7 +227,7 @@ class ChatController(args: Bundle) :
 
     @Inject
     @JvmField
-    var userUtils: UserUtils? = null
+    var userManager: UserManager? = null
 
     @Inject
     @JvmField
@@ -239,7 +239,7 @@ class ChatController(args: Bundle) :
     val disposables = DisposableSet()
 
     var roomToken: String? = null
-    val conversationUser: UserEntity?
+    val conversationUser: User?
     val roomPassword: String
     var credentials: String? = null
     var currentConversation: Conversation? = null
@@ -322,7 +322,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun getRoomInfo() {
-        val shouldRepeat = CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
+        val shouldRepeat = CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "webinary-lobby")
         if (shouldRepeat) {
             checkingLobbyStatus = true
         }
@@ -432,7 +432,7 @@ class ChatController(args: Bundle) :
     private fun loadAvatarForStatusBar() {
         if (inOneToOneCall() && activity != null) {
 
-            val imageRequest = DisplayUtils.getImageRequestForUrl(
+            val imageRequest = DisplayUtils.getImageRequestForUrlNew(
                 ApiUtils.getUrlForAvatar(
                     conversationUser?.baseUrl,
                     currentConversation?.name, true
@@ -565,7 +565,7 @@ class ChatController(args: Bundle) :
                 messageHolders,
                 ImageLoader { imageView, url, payload ->
                     val draweeController = Fresco.newDraweeControllerBuilder()
-                        .setImageRequest(DisplayUtils.getImageRequestForUrl(url, conversationUser))
+                        .setImageRequest(DisplayUtils.getImageRequestForUrlNew(url, conversationUser))
                         .setControllerListener(DisplayUtils.getImageControllerListener(imageView))
                         .setOldController(imageView.controller)
                         .setAutoPlayAnimations(true)
@@ -656,7 +656,7 @@ class ChatController(args: Bundle) :
         })
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(conversationUser) ?: MESSAGE_MAX_LENGTH
+        val lengthFilter = CapabilitiesUtilNew.getMessageMaxLength(conversationUser) ?: MESSAGE_MAX_LENGTH
 
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
@@ -844,7 +844,7 @@ class ChatController(args: Bundle) :
 
         binding.messageInputView.button.setOnClickListener { submitMessage(false) }
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-send")) {
             binding.messageInputView.button.setOnLongClickListener {
                 showSendButtonMenu()
                 true
@@ -1016,7 +1016,7 @@ class ChatController(args: Bundle) :
 
         val baseUrl = message.activeUser!!.baseUrl
         val userId = message.activeUser!!.userId
-        val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(message.activeUser)
+        val attachmentFolder = CapabilitiesUtilNew.getAttachmentFolder(message.activeUser)
         val fileName = message.selectedIndividualHashMap!!["name"]
         var size = message.selectedIndividualHashMap!!["size"]
         if (size == null) {
@@ -1254,7 +1254,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun disableCallButtons() {
-        if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
+        if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
             if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
                 conversationVoiceCallMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
                 conversationVideoMenuItem?.icon?.alpha = SEMI_TRANSPARENT_INT
@@ -1267,7 +1267,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun enableCallButtons() {
-        if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
+        if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
             if (conversationVoiceCallMenuItem != null && conversationVideoMenuItem != null) {
                 conversationVoiceCallMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
                 conversationVideoMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
@@ -1354,7 +1354,7 @@ class ChatController(args: Bundle) :
                         .chunked(10)
                         .forEach { paths ->
                             val data = Data.Builder()
-                                .putLong(KEY_INTERNAL_USER_ID, conversationUser!!.id)
+                                .putLong(KEY_INTERNAL_USER_ID, conversationUser!!.id!!)
                                 .putString(KEY_ROOM_TOKEN, roomToken)
                                 .putStringArray(KEY_FILE_PATHS, paths.toTypedArray())
                                 .build()
@@ -1576,7 +1576,7 @@ class ChatController(args: Bundle) :
                 .putStringArray(UploadAndShareFilesWorker.DEVICE_SOURCEFILES, files.toTypedArray())
                 .putString(
                     UploadAndShareFilesWorker.NC_TARGETPATH,
-                    CapabilitiesUtil.getAttachmentFolder(conversationUser)
+                    CapabilitiesUtilNew.getAttachmentFolder(conversationUser)
                 )
                 .putString(UploadAndShareFilesWorker.ROOM_TOKEN, roomToken)
                 .putString(UploadAndShareFilesWorker.META_DATA, metaData)
@@ -1690,7 +1690,7 @@ class ChatController(args: Bundle) :
         eventBus?.register(this)
 
         if (conversationUser?.userId != "?" &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
+            CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "mention-flag") ?: false &&
             activity != null
         ) {
             activity?.findViewById<View>(R.id.toolbar)?.setOnClickListener { v -> showConversationInfoScreen() }
@@ -1757,7 +1757,7 @@ class ChatController(args: Bundle) :
         if (conversationUser != null) {
             if (!TextUtils.isEmpty(roomToken)) {
                 try {
-                    NotificationUtils.cancelExistingNotificationsForRoom(
+                    NotificationUtils.cancelExistingNotificationsForRoomNew(
                         applicationContext,
                         conversationUser,
                         roomToken!!
@@ -2017,7 +2017,7 @@ class ChatController(args: Bundle) :
     private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
 
         if (conversationUser != null) {
-            val apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+            val apiVersion = ApiUtils.getChatApiVersionNew(conversationUser, intArrayOf(1))
 
             ncApi!!.sendChatMessage(
                 credentials,
@@ -2076,9 +2076,9 @@ class ChatController(args: Bundle) :
 
     private fun setupWebsocket() {
         if (conversationUser != null) {
-            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id) != null) {
+            if (WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!) != null) {
                 magicWebSocketInstance =
-                    WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id)
+                    WebSocketConnectionHelper.getMagicWebSocketInstanceForUserId(conversationUser.id!!)
             } else {
                 Log.d(TAG, "magicWebSocketInstance became null")
                 magicWebSocketInstance = null
@@ -2145,7 +2145,7 @@ class ChatController(args: Bundle) :
         var apiVersion = 1
         // FIXME this is a best guess, guests would need to get the capabilities themselves
         if (conversationUser != null) {
-            apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+            apiVersion = ApiUtils.getChatApiVersionNew(conversationUser, intArrayOf(1))
         }
 
         if (lookIntoFuture > 0) {
@@ -2468,7 +2468,7 @@ class ChatController(args: Bundle) :
         } else {
             conversationInfoMenuItem = menu.findItem(R.id.conversation_info)
 
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "rich-object-list-media")) {
                 conversationSharedItemsItem = menu.findItem(R.id.shared_items)
             } else {
                 menu.removeItem(R.id.shared_items)
@@ -2477,11 +2477,11 @@ class ChatController(args: Bundle) :
             loadAvatarForStatusBar()
         }
 
-        if (CapabilitiesUtil.isAbleToCall(conversationUser)) {
+        if (CapabilitiesUtilNew.isAbleToCall(conversationUser)) {
             conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
             conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "silent-call")) {
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "silent-call")) {
                 Handler().post {
                     activity?.findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
                         showCallButtonMenu(true)
@@ -2505,11 +2505,11 @@ class ChatController(args: Bundle) :
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
         conversationUser?.let {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(it, "read-only-rooms")) {
+            if (CapabilitiesUtilNew.hasSpreedFeatureCapability(it, "read-only-rooms")) {
                 checkShowCallButtons()
             }
             val searchItem = menu.findItem(R.id.conversation_search)
-            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(it)
+            searchItem.isVisible = CapabilitiesUtilNew.isUnifiedSearchAvailable(it)
         }
     }
 
@@ -2698,7 +2698,7 @@ class ChatController(args: Bundle) :
             var apiVersion = 1
             // FIXME Fix API checking with guests?
             if (conversationUser != null) {
-                apiVersion = ApiUtils.getChatApiVersion(conversationUser, intArrayOf(1))
+                apiVersion = ApiUtils.getChatApiVersionNew(conversationUser, intArrayOf(1))
             }
 
             ncApi?.deleteChatMessage(
@@ -2791,7 +2791,7 @@ class ChatController(args: Bundle) :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 remapChatController(
-                                    router, conversationUser!!.id,
+                                    router, conversationUser!!.id!!,
                                     roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
@@ -2834,7 +2834,7 @@ class ChatController(args: Bundle) :
             ncApi!!.setChatReadMarker(
                 credentials,
                 ApiUtils.getUrlForSetChatReadMarker(
-                    ApiUtils.getChatApiVersion(conversationUser, intArrayOf(ApiUtils.APIv1)),
+                    ApiUtils.getChatApiVersionNew(conversationUser, intArrayOf(ApiUtils.APIv1)),
                     conversationUser?.baseUrl,
                     roomToken
                 ),
@@ -2942,7 +2942,7 @@ class ChatController(args: Bundle) :
     }
 
     private fun showMicrophoneButton(show: Boolean) {
-        if (show && CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
+        if (show && CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "voice-message-sharing")) {
             binding.messageInputView.messageSendButton.visibility = View.GONE
             binding.messageInputView.recordAudioButton.visibility = View.VISIBLE
         } else {
@@ -3010,7 +3010,7 @@ class ChatController(args: Bundle) :
             message.isDeleted -> false
             message.hasFileAttachment() -> false
             OBJECT_MESSAGE == message.message -> false
-            !CapabilitiesUtil.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
+            !CapabilitiesUtilNew.hasSpreedFeatureCapability(conversationUser, "delete-messages") -> false
             !hasChatPermission -> false
             else -> true
         }
@@ -3093,7 +3093,7 @@ class ChatController(args: Bundle) :
                             conversationIntent.putExtras(bundle)
 
                             ConductorRemapping.remapChatController(
-                                router, conversationUser.id,
+                                router, conversationUser.id!!,
                                 roomOverall.ocs!!.data!!.token!!, bundle, false
                             )
                         } else {

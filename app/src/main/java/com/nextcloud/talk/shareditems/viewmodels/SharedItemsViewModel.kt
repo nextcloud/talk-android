@@ -26,7 +26,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.model.SharedMediaItems
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
@@ -57,11 +57,11 @@ class SharedItemsViewModel @Inject constructor(
     val viewState: LiveData<ViewState>
         get() = _viewState
 
-    fun initialize(userEntity: UserEntity, roomToken: String) {
+    fun initialize(user: User, roomToken: String) {
         repositoryParameters = SharedItemsRepository.Parameters(
-            userEntity.userId,
-            userEntity.token,
-            userEntity.baseUrl,
+            user.userId!!,
+            user.token!!,
+            user.baseUrl!!,
             roomToken
         )
         loadAvailableTypes()

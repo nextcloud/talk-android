@@ -44,9 +44,9 @@ import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.databinding.ItemReactionsTabBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -57,14 +57,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.Collections
-import java.util.Comparator
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
     activity: Activity,
     private val currentConversation: Conversation?,
     private val chatMessage: ChatMessage,
-    private val userEntity: UserEntity?,
+    private val userEntity: User?,
     private val hasChatPermission: Boolean,
     private val ncApi: NcApi
 ) : BottomSheetDialog(activity), ReactionItemClickListener {

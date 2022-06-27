@@ -38,13 +38,13 @@ import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.controllers.ChatController
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
@@ -57,7 +57,7 @@ import io.reactivex.schedulers.Schedulers
 class MessageActionsDialog(
     private val chatController: ChatController,
     private val message: ChatMessage,
-    private val user: UserEntity?,
+    private val user: User?,
     private val currentConversation: Conversation?,
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean,
@@ -102,8 +102,8 @@ class MessageActionsDialog(
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun hasUserId(user: UserEntity?): Boolean {
-        return user?.userId?.isNotEmpty() == true && user?.userId != "?"
+    private fun hasUserId(user: User?): Boolean {
+        return user?.userId?.isNotEmpty() == true && user.userId != "?"
     }
 
     private fun hasUserActorId(message: ChatMessage): Boolean {
@@ -165,7 +165,7 @@ class MessageActionsDialog(
     }
 
     private fun initEmojiBar(hasChatPermission: Boolean) {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(user, "reactions") &&
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(user, "reactions") &&
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {

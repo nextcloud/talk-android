@@ -42,20 +42,19 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.controllers.ConversationsListController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_ADD_FAVORITE
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CHANGE_PASSWORD
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SET_PASSWORD
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_CLEAR_PASSWORD
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PRIVATE
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MAKE_PUBLIC
-import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_MARK_AS_READ
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_REMOVE_FAVORITE
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_RENAME_ROOM
+import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum.OPS_CODE_SET_PASSWORD
 import com.nextcloud.talk.controllers.bottomsheet.EntryMenuController
 import com.nextcloud.talk.controllers.bottomsheet.OperationsMenuController
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.ShareUtils
@@ -63,6 +62,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import com.nextcloud.talk.utils.database.user.UserUtils
 import org.parceler.Parcels
 import javax.inject.Inject
@@ -71,7 +71,7 @@ import javax.inject.Inject
 class ConversationsListBottomDialog(
     val activity: Activity,
     val controller: ConversationsListController,
-    val currentUser: UserEntity,
+    val currentUser: User,
     val conversation: Conversation
 ) : BottomSheetDialog(activity) {
 
@@ -111,7 +111,7 @@ class ConversationsListBottomDialog(
     }
 
     private fun initItemsVisibility() {
-        val hasFavoritesCapability = CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "favorites")
+        val hasFavoritesCapability = CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "favorites")
         val canModerate = conversation.canModerate(currentUser)
 
         binding.conversationOperationRemoveFavorite.visibility = setVisibleIf(
@@ -122,7 +122,7 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationMarkAsRead.visibility = setVisibleIf(
-            conversation.unreadMessages > 0 && CapabilitiesUtil.canSetChatReadMarker(currentUser)
+            conversation.unreadMessages > 0 && CapabilitiesUtilNew.canSetChatReadMarker(currentUser)
         )
 
         binding.conversationOperationRename.visibility = setVisibleIf(
@@ -185,7 +185,7 @@ class ConversationsListBottomDialog(
         binding.conversationOperationLeave.setOnClickListener {
             val dataBuilder = Data.Builder()
             dataBuilder.putString(KEY_ROOM_TOKEN, conversation.token)
-            dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
+            dataBuilder.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
             val data = dataBuilder.build()
 
             val leaveConversationWorker =
@@ -200,7 +200,7 @@ class ConversationsListBottomDialog(
         binding.conversationOperationDelete.setOnClickListener {
             if (!TextUtils.isEmpty(conversation.token)) {
                 val bundle = Bundle()
-                bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id)
+                bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
                 bundle.putParcelable(KEY_ROOM, Parcels.wrap(conversation))
 
                 controller.openLovelyDialogWithIdAndBundle(

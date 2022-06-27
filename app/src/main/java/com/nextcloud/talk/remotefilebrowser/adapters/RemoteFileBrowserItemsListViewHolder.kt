@@ -29,8 +29,8 @@ import com.facebook.drawee.interfaces.DraweeController
 import com.facebook.drawee.view.SimpleDraweeView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemBrowserFileBinding
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.remotefilebrowser.SelectionInterface
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.ApiUtils
@@ -43,7 +43,7 @@ import com.nextcloud.talk.utils.Mimetype.FOLDER
 class RemoteFileBrowserItemsListViewHolder(
     override val binding: RvItemBrowserFileBinding,
     mimeTypeSelectionFilter: String?,
-    currentUser: UserEntity,
+    currentUser: User,
     selectionInterface: SelectionInterface,
     onItemClicked: (Int) -> Unit
 ) : RemoteFileBrowserItemsViewHolder(binding, mimeTypeSelectionFilter, currentUser, selectionInterface) {
@@ -113,7 +113,7 @@ class RemoteFileBrowserItemsListViewHolder(
             if (path.isNotEmpty()) {
                 val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
                     .setAutoPlayAnimations(true)
-                    .setImageRequest(DisplayUtils.getImageRequestForUrl(path, null))
+                    .setImageRequest(DisplayUtils.getImageRequestForUrlNew(path, null))
                     .build()
                 binding.fileIcon.controller = draweeController
             }

@@ -24,6 +24,7 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.nextcloud.talk.application.NextcloudTalkApplication;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.database.UserEntity;
 import com.nextcloud.talk.models.json.signaling.NCMessageWrapper;
 import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessage;
@@ -70,7 +71,7 @@ public class WebSocketConnectionHelper {
         return null;
     }
 
-    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, UserEntity userEntity, String webSocketTicket, boolean isGuest) {
+    public static synchronized MagicWebSocketInstance getExternalSignalingInstanceForServer(String url, User userEntity, String webSocketTicket, boolean isGuest) {
         String generatedURL = url.replace("https://", "wss://").replace("http://", "ws://");
 
         if (generatedURL.endsWith("/")) {
@@ -105,19 +106,40 @@ public class WebSocketConnectionHelper {
         }
     }
 
-    HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity userEntity, String ticket) {
-        int apiVersion = ApiUtils.getSignalingApiVersion(userEntity, new int[] {ApiUtils.APIv3, 2, 1});
+    HelloOverallWebSocketMessage getAssembledHelloModel(User user, String ticket) {
+        int apiVersion = ApiUtils.getSignalingApiVersionNew(user, new int[] {ApiUtils.APIv3, 2, 1});
 
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
         HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
         helloWebSocketMessage.setVersion("1.0");
         AuthWebSocketMessage authWebSocketMessage = new AuthWebSocketMessage();
-        authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, userEntity.getBaseUrl()));
+        authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, user.getBaseUrl()));
         AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
         authParametersWebSocketMessage.setTicket(ticket);
-        if (!userEntity.getUserId().equals("?")) {
-            authParametersWebSocketMessage.setUserid(userEntity.getUserId());
+        if (!user.getUserId().equals("?")) {
+            authParametersWebSocketMessage.setUserid(user.getUserId());
+        }
+        authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
+        helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
+        helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
+        return helloOverallWebSocketMessage;
+    }
+
+    @Deprecated
+    HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity user, String ticket) {
+        int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[] {ApiUtils.APIv3, 2, 1});
+
+        HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
+        helloOverallWebSocketMessage.setType("hello");
+        HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
+        helloWebSocketMessage.setVersion("1.0");
+        AuthWebSocketMessage authWebSocketMessage = new AuthWebSocketMessage();
+        authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, user.getBaseUrl()));
+        AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
+        authParametersWebSocketMessage.setTicket(ticket);
+        if (!user.getUserId().equals("?")) {
+            authParametersWebSocketMessage.setUserid(user.getUserId());
         }
         authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
         helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);

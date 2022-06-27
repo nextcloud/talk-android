@@ -41,6 +41,7 @@ import com.facebook.imagepipeline.image.CloseableBitmap
 import com.facebook.imagepipeline.postprocessors.RoundAsCirclePostprocessor
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -187,9 +188,40 @@ object NotificationUtils {
         return null
     }
 
+    @Deprecated("Legacy method for requery-entity calls")
     private inline fun scanNotifications(
         context: Context?,
         conversationUser: UserEntity,
+        callback: (
+            notificationManager: NotificationManager,
+            statusBarNotification: StatusBarNotification,
+            notification: Notification
+        ) -> Unit
+    ) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || conversationUser.id == -1L || context == null) {
+            return
+        }
+
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        val statusBarNotifications = notificationManager.activeNotifications
+        var notification: Notification?
+        for (statusBarNotification in statusBarNotifications) {
+            notification = statusBarNotification.notification
+
+            if (
+                notification != null &&
+                !notification.extras.isEmpty &&
+                conversationUser.id == notification.extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+            ) {
+                callback(notificationManager, statusBarNotification, notification)
+            }
+        }
+    }
+
+    private inline fun scanNotifications(
+        context: Context?,
+        conversationUser: User,
         callback: (
             notificationManager: NotificationManager,
             statusBarNotification: StatusBarNotification,
@@ -244,9 +276,22 @@ object NotificationUtils {
         return null
     }
 
+    @Deprecated("Legacy method for requery-entity calls")
     fun cancelExistingNotificationsForRoom(
         context: Context?,
         conversationUser: UserEntity,
+        roomTokenOrId: String
+    ) {
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+            if (roomTokenOrId == notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)) {
+                notificationManager.cancel(statusBarNotification.id)
+            }
+        }
+    }
+
+    fun cancelExistingNotificationsForRoomNew(
+        context: Context?,
+        conversationUser: User,
         roomTokenOrId: String
     ) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->

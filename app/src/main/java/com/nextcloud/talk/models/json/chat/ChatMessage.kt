@@ -33,7 +33,7 @@ import com.bluelinelabs.logansquare.annotation.JsonIgnore
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.utils.ApiUtils
@@ -41,11 +41,8 @@ import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import kotlinx.android.parcel.Parcelize
 import java.security.MessageDigest
-import java.util.ArrayList
 import java.util.Arrays
 import java.util.Date
-import java.util.HashMap
-import java.util.LinkedHashMap
 
 @Parcelize
 @JsonObject
@@ -57,7 +54,7 @@ data class ChatMessage(
     var isOneToOneConversation: Boolean = false,
 
     @JsonIgnore
-    var activeUser: UserEntity? = null,
+    var activeUser: User? = null,
 
     @JsonIgnore
     var selectedIndividualHashMap: Map<String?, String?>? = null,

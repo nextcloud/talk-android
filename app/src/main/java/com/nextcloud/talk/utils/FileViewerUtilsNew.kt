@@ -42,9 +42,8 @@ import com.nextcloud.talk.activities.FullScreenImageActivity
 import com.nextcloud.talk.activities.FullScreenMediaActivity
 import com.nextcloud.talk.activities.FullScreenTextViewerActivity
 import com.nextcloud.talk.adapters.messages.MagicPreviewMessageViewHolder
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
@@ -61,6 +60,7 @@ import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_ID
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
 import java.io.File
 import java.util.concurrent.ExecutionException
 
@@ -70,9 +70,7 @@ import java.util.concurrent.ExecutionException
  * Example:
  *   - SharedItemsViewHolder
  */
-@Suppress("TooManyFunctions")
-@Deprecated("Use FileViewerUtilsNew instead")
-class FileViewerUtils(private val context: Context, private val userEntity: UserEntity) {
+class FileViewerUtilsNew(private val context: Context, private val userEntity: User) {
 
     fun openFile(
         message: ChatMessage,
@@ -212,8 +210,8 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     fun openFileInFilesApp(link: String, keyID: String) {
         val accountString = userEntity.username + "@" +
             userEntity.baseUrl
-                .replace("https://", "")
-                .replace("http://", "")
+                ?.replace("https://", "")
+                ?.replace("http://", "")
 
         if (canWeOpenFilesApp(context, accountString)) {
             val filesAppIntent = Intent(Intent.ACTION_VIEW, null)
@@ -324,7 +322,7 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
             .putString(DownloadFileToCacheWorker.KEY_USER_ID, userEntity.userId)
             .putString(
                 DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER,
-                CapabilitiesUtil.getAttachmentFolder(userEntity)
+                CapabilitiesUtilNew.getAttachmentFolder(userEntity)
             )
             .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileInfo.fileName)
             .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
@@ -434,6 +432,6 @@ class FileViewerUtils(private val context: Context, private val userEntity: User
     )
 
     companion object {
-        private val TAG = FileViewerUtils::class.simpleName
+        private val TAG = FileViewerUtilsNew::class.simpleName
     }
 }
