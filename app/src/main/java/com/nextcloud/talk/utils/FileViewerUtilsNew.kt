@@ -70,6 +70,7 @@ import java.util.concurrent.ExecutionException
  * Example:
  *   - SharedItemsViewHolder
  */
+@Suppress("TooManyFunctions")
 class FileViewerUtilsNew(private val context: Context, private val userEntity: User) {
 
     fun openFile(
