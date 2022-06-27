@@ -119,9 +119,9 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     fun createOrUpdateUser(
         username: String?,
         userAttributes: UserAttributes,
-    ): Maybe<User?> {
+    ): Maybe<User> {
 
-        val userObservable: Maybe<User> = if (userAttributes.id != null) {
+        val userMaybe: Maybe<User> = if (userAttributes.id != null) {
             userRepository.getUserWithId(userAttributes.id)
         } else if (username != null && userAttributes.serverUrl != null) {
             userRepository.getUserWithUsernameAndServer(username, userAttributes.serverUrl)
@@ -129,9 +129,9 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             Maybe.empty()
         }
 
-        return userObservable
+        return userMaybe
             .map { user: User? ->
-                val userModel = when (user) {
+                when (user) {
                     null -> createUser(
                         username,
                         userAttributes
@@ -144,9 +144,12 @@ class UserManager internal constructor(private val userRepository: UsersReposito
                         user
                     }
                 }
-                val id = userRepository.insertUser(userModel)
-                id
-            }.flatMap { id ->
+            }
+            .switchIfEmpty(Maybe.just(createUser(username, userAttributes)))
+            .map { user ->
+                userRepository.insertUser(user)
+            }
+            .flatMap { id ->
                 userRepository.getUserWithId(id)
             }
     }
