@@ -63,14 +63,13 @@ public class WebsocketConnectionsWorker extends Worker {
         WebSocketConnectionHelper webSocketConnectionHelper = new WebSocketConnectionHelper();
         for (int i = 0; i < userEntityList.size(); i++) {
             userEntity = userEntityList.get(i);
-            if (userEntity.getExternalSignalingServer() != null) {
-                if (!TextUtils.isEmpty(userEntity.getExternalSignalingServer().getExternalSignalingServer()) &&
-                    !TextUtils.isEmpty(userEntity.getExternalSignalingServer().getExternalSignalingTicket())) {
-                    webSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                        userEntity.getExternalSignalingServer().getExternalSignalingServer(),
-                        userEntity, userEntity.getExternalSignalingServer().getExternalSignalingTicket(),
-                        false);
-                }
+            if (userEntity.getExternalSignalingServer() != null &&
+                !TextUtils.isEmpty(userEntity.getExternalSignalingServer().getExternalSignalingServer()) &&
+                !TextUtils.isEmpty(userEntity.getExternalSignalingServer().getExternalSignalingTicket())) {
+                webSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                    userEntity.getExternalSignalingServer().getExternalSignalingServer(),
+                    userEntity, userEntity.getExternalSignalingServer().getExternalSignalingTicket(),
+                    false);
             }
         }
 
