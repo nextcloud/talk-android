@@ -63,7 +63,7 @@ abstract class UsersDao {
     abstract fun saveUsers(vararg users: UserEntity): List<Long>
 
     // get all users not scheduled for deletion
-    @Query("SELECT * FROM User where current != 0")
+    @Query("SELECT * FROM User where scheduledForDeletion != 1")
     abstract fun getUsers(): Single<List<UserEntity>>
 
     @Query("SELECT * FROM User where id = :id")
