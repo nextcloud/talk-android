@@ -317,6 +317,7 @@
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
     <string name="nc_upload_failed">Désolé, l\'envoi a échoué</string>
     <string name="nc_upload_from_cloud">Partagé de %1$s</string>
+    <string name="nc_upload_from_device">Téléverser depuis l\'appareil</string>
     <string name="nc_upload_in_progess">Téléversement</string>
     <string name="nc_upload_local_file">Envoyer un fichier local</string>
     <string name="nc_upload_picture_from_cam">Prendre une photo</string>
