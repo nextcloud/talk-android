@@ -22,6 +22,7 @@ package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.models.database.UserEntity
 
+@Deprecated("Migrate to CurrentUserProviderNew")
 interface CurrentUserProvider {
     val currentUser: UserEntity?
 }
