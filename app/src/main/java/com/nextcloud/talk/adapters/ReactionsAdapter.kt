@@ -28,13 +28,13 @@ import com.nextcloud.talk.databinding.ReactionItemBinding
 
 class ReactionsAdapter(
     private val clickListener: ReactionItemClickListener,
-    private val userEntity: User?
+    private val user: User?
 ) : RecyclerView.Adapter<ReactionsViewHolder>() {
     internal var list: MutableList<ReactionItem> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReactionsViewHolder {
         val itemBinding = ReactionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ReactionsViewHolder(itemBinding, userEntity?.baseUrl)
+        return ReactionsViewHolder(itemBinding, user?.baseUrl)
     }
 
     override fun onBindViewHolder(holder: ReactionsViewHolder, position: Int) {

@@ -63,7 +63,7 @@ class ShowReactionsDialog(
     activity: Activity,
     private val currentConversation: Conversation?,
     private val chatMessage: ChatMessage,
-    private val userEntity: User?,
+    private val user: User?,
     private val hasChatPermission: Boolean,
     private val ncApi: NcApi
 ) : BottomSheetDialog(activity), ReactionItemClickListener {
@@ -79,7 +79,7 @@ class ShowReactionsDialog(
         binding = DialogMessageReactionsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-        adapter = ReactionsAdapter(this, userEntity)
+        adapter = ReactionsAdapter(this, user)
         binding.reactionsList.adapter = adapter
         binding.reactionsList.layoutManager = LinearLayoutManager(context)
         initEmojiReactions()
@@ -144,12 +144,12 @@ class ShowReactionsDialog(
     private fun updateParticipantsForEmoji(chatMessage: ChatMessage, emoji: String?) {
         adapter?.list?.clear()
 
-        val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
         ncApi.getReactions(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                userEntity?.baseUrl,
+                user?.baseUrl,
                 currentConversation!!.token,
                 chatMessage.id
             ),
@@ -172,7 +172,7 @@ class ShowReactionsDialog(
                             }
                         }
 
-                        Collections.sort(reactionVoters, ReactionComparator(userEntity?.userId))
+                        Collections.sort(reactionVoters, ReactionComparator(user?.userId))
 
                         adapter?.list?.addAll(reactionVoters)
                         adapter?.notifyDataSetChanged()
@@ -192,19 +192,19 @@ class ShowReactionsDialog(
     }
 
     override fun onClick(reactionItem: ReactionItem) {
-        if (hasChatPermission && reactionItem.reactionVoter.actorId?.equals(userEntity?.userId) == true) {
+        if (hasChatPermission && reactionItem.reactionVoter.actorId?.equals(user?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
             dismiss()
         }
     }
 
     private fun deleteReaction(message: ChatMessage, emoji: String) {
-        val credentials = ApiUtils.getCredentials(userEntity?.username, userEntity?.token)
+        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
 
         ncApi.deleteReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
-                userEntity?.baseUrl,
+                user?.baseUrl,
                 currentConversation!!.token,
                 message.id
             ),
