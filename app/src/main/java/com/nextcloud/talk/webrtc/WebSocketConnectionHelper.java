@@ -126,27 +126,6 @@ public class WebSocketConnectionHelper {
         return helloOverallWebSocketMessage;
     }
 
-    @Deprecated
-    HelloOverallWebSocketMessage getAssembledHelloModel(UserEntity user, String ticket) {
-        int apiVersion = ApiUtils.getSignalingApiVersion(user, new int[] {ApiUtils.APIv3, 2, 1});
-
-        HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
-        helloOverallWebSocketMessage.setType("hello");
-        HelloWebSocketMessage helloWebSocketMessage = new HelloWebSocketMessage();
-        helloWebSocketMessage.setVersion("1.0");
-        AuthWebSocketMessage authWebSocketMessage = new AuthWebSocketMessage();
-        authWebSocketMessage.setUrl(ApiUtils.getUrlForSignalingBackend(apiVersion, user.getBaseUrl()));
-        AuthParametersWebSocketMessage authParametersWebSocketMessage = new AuthParametersWebSocketMessage();
-        authParametersWebSocketMessage.setTicket(ticket);
-        if (!user.getUserId().equals("?")) {
-            authParametersWebSocketMessage.setUserid(user.getUserId());
-        }
-        authWebSocketMessage.setAuthParametersWebSocketMessage(authParametersWebSocketMessage);
-        helloWebSocketMessage.setAuthWebSocketMessage(authWebSocketMessage);
-        helloOverallWebSocketMessage.setHelloWebSocketMessage(helloWebSocketMessage);
-        return helloOverallWebSocketMessage;
-    }
-
     HelloOverallWebSocketMessage getAssembledHelloModelForResume(String resumeId) {
         HelloOverallWebSocketMessage helloOverallWebSocketMessage = new HelloOverallWebSocketMessage();
         helloOverallWebSocketMessage.setType("hello");
