@@ -56,6 +56,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -63,7 +64,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPERATION_CODE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
-import com.nextcloud.talk.utils.database.user.UserUtils
 import org.parceler.Parcels
 import javax.inject.Inject
 
@@ -80,12 +80,10 @@ class ConversationsListBottomDialog(
     private lateinit var binding: DialogConversationOperationsBinding
 
     @Inject
-    @JvmField
-    var ncApi: NcApi? = null
+    lateinit var ncApi: NcApi
 
     @Inject
-    @JvmField
-    var userUtils: UserUtils? = null
+    lateinit var userManager: UserManager
 
     init {
         NextcloudTalkApplication.sharedApplication?.componentApplication?.inject(this)
@@ -254,7 +252,7 @@ class ConversationsListBottomDialog(
                 // password should not be shared!!
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    ShareUtils.getStringForIntent(activity, null, userUtils, conversation)
+                    ShareUtils.getStringForIntent(activity, null, userManager, conversation)
                 )
             }
 

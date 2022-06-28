@@ -22,16 +22,16 @@ package com.nextcloud.talk.utils
 import android.content.Context
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.users.UserManager
 
 object ShareUtils {
     fun getStringForIntent(
         context: Context?,
         password: String?,
-        userUtils: UserUtils?,
+        userUtils: UserManager,
         conversation: Conversation?
     ): String {
-        val userEntity = userUtils?.currentUser
+        val userEntity = userUtils.currentUser.blockingGet()
         var shareString = ""
         if (userEntity != null && context != null) {
             shareString = String.format(

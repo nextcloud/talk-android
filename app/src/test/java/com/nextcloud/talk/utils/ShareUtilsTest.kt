@@ -22,11 +22,10 @@ package com.nextcloud.talk.utils
 import android.content.Context
 import android.content.res.Resources
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.users.UserManager
 import org.junit.Assert
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
@@ -41,10 +40,10 @@ class ShareUtilsTest {
     private val resources: Resources? = null
 
     @Mock
-    private val userUtils: UserUtils? = null
+    private val userManager: UserManager? = null
 
     @Mock
-    private val userEntity: UserEntity? = null
+    private val user: User? = null
 
     private val baseUrl = "https://my.nextcloud.com"
     private val token = "2aotbrjr"
@@ -54,8 +53,8 @@ class ShareUtilsTest {
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
-        Mockito.`when`(userUtils!!.currentUser).thenReturn(userEntity)
-        Mockito.`when`(userEntity!!.baseUrl).thenReturn(baseUrl)
+        Mockito.`when`(userManager!!.currentUser.blockingGet()).thenReturn(user)
+        Mockito.`when`(user!!.baseUrl).thenReturn(baseUrl)
         Mockito.`when`(context!!.resources).thenReturn(resources)
         Mockito.`when`(resources!!.getString(R.string.nc_share_text))
             .thenReturn("Join the conversation at %1\$s/index.php/call/%2\$s")
@@ -72,7 +71,7 @@ class ShareUtilsTest {
         )
         Assert.assertEquals(
             "Intent string was not as expected",
-            expectedResult, ShareUtils.getStringForIntent(context, "", userUtils, conversation)
+            expectedResult, ShareUtils.getStringForIntent(context, "", userManager!!, conversation)
         )
     }
 
@@ -85,7 +84,7 @@ class ShareUtilsTest {
         )
         Assert.assertEquals(
             "Intent string was not as expected",
-            expectedResult, ShareUtils.getStringForIntent(context, password, userUtils, conversation)
+            expectedResult, ShareUtils.getStringForIntent(context, password, userManager!!, conversation)
         )
     }
 }
