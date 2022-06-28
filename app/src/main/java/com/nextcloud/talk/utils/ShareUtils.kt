@@ -31,12 +31,12 @@ object ShareUtils {
         userUtils: UserManager,
         conversation: Conversation?
     ): String {
-        val userEntity = userUtils.currentUser.blockingGet()
+        val user = userUtils.currentUser.blockingGet()
         var shareString = ""
-        if (userEntity != null && context != null) {
+        if (user != null && context != null) {
             shareString = String.format(
                 context.resources.getString(R.string.nc_share_text),
-                userEntity.baseUrl, conversation?.token
+                user.baseUrl, conversation?.token
             )
             if (!password.isNullOrEmpty()) {
                 shareString += String.format(context.resources.getString(R.string.nc_share_text_pass), password)
