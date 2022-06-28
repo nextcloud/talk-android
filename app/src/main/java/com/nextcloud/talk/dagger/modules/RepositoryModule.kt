@@ -36,6 +36,7 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -48,12 +49,12 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi, userProvider: CurrentUserProvider): UnifiedSearchRepository {
+    fun provideUnifiedSearchRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): UnifiedSearchRepository {
         return UnifiedSearchRepositoryImpl(ncApi, userProvider)
     }
 
     @Provides
-    fun provideRemoteFileBrowserItemsRepository(okHttpClient: OkHttpClient, userProvider: CurrentUserProvider):
+    fun provideRemoteFileBrowserItemsRepository(okHttpClient: OkHttpClient, userProvider: CurrentUserProviderNew):
         RemoteFileBrowserItemsRepository {
         return RemoteFileBrowserItemsRepositoryImpl(okHttpClient, userProvider)
     }

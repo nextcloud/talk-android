@@ -22,22 +22,22 @@
 package com.nextcloud.talk.repositories.unifiedsearch
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchEntry
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchResponseData
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProvider
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvider: CurrentUserProvider) :
+class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvider: CurrentUserProviderNew) :
     UnifiedSearchRepository {
 
-    private val userEntity: UserEntity
-        get() = userProvider.currentUser!!
+    private val user: User
+        get() = userProvider.currentUser.blockingGet()
 
     private val credentials: String
-        get() = ApiUtils.getCredentials(userEntity.username, userEntity.token)
+        get() = ApiUtils.getCredentials(user.username, user.token)
 
     override fun searchMessages(
         searchTerm: String,
@@ -46,7 +46,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
     ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
         val apiObservable = api.performUnifiedSearch(
             credentials,
-            ApiUtils.getUrlForUnifiedSearch(userEntity.baseUrl, PROVIDER_TALK_MESSAGE),
+            ApiUtils.getUrlForUnifiedSearch(user.baseUrl!!, PROVIDER_TALK_MESSAGE),
             searchTerm,
             null,
             limit,
@@ -63,7 +63,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
     ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
         val apiObservable = api.performUnifiedSearch(
             credentials,
-            ApiUtils.getUrlForUnifiedSearch(userEntity.baseUrl, PROVIDER_TALK_MESSAGE_CURRENT),
+            ApiUtils.getUrlForUnifiedSearch(user.baseUrl!!, PROVIDER_TALK_MESSAGE_CURRENT),
             searchTerm,
             fromUrlForRoom(roomToken),
             limit,
