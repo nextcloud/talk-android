@@ -240,6 +240,7 @@
     <string name="nc_settings_proxy_port_title">Välityspalvelimen portti</string>
     <string name="nc_settings_proxy_type_title">Välityspalvelimen tyyppi</string>
     <string name="nc_settings_proxy_username_title">Välityspalvelimen käyttäjä</string>
+    <string name="nc_settings_read_privacy_desc">Jaa lukukuittaukseni ja näytä muiden lukukuittaukset</string>
     <string name="nc_settings_read_privacy_title">Lue tila</string>
     <string name="nc_settings_reauthorize">Valtuuta tili uudelleen</string>
     <string name="nc_settings_remove">Poista</string>
