@@ -52,12 +52,11 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.controllers.base.NewBaseController
 import com.nextcloud.talk.controllers.bottomsheet.ConversationOperationEnum
 import com.nextcloud.talk.controllers.util.viewBinding
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ControllerContactsRvBinding
 import com.nextcloud.talk.events.OpenConversationEvent
 import com.nextcloud.talk.jobs.AddParticipantsToConversation
 import com.nextcloud.talk.models.RetrofitBucket
-import com.nextcloud.talk.models.database.CapabilitiesUtil
-import com.nextcloud.talk.models.database.UserEntity
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -68,7 +67,8 @@ import com.nextcloud.talk.ui.dialog.ContactsBottomDialog
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConductorRemapping
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.database.user.CapabilitiesUtilNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.SelectableAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -95,7 +95,7 @@ class ContactsController(args: Bundle) :
     private val binding: ControllerContactsRvBinding by viewBinding(ControllerContactsRvBinding::bind)
 
     @Inject
-    lateinit var userUtils: UserUtils
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var eventBus: EventBus
@@ -104,7 +104,7 @@ class ContactsController(args: Bundle) :
     lateinit var ncApi: NcApi
 
     private var credentials: String? = null
-    private var currentUser: UserEntity? = null
+    private var currentUser: User? = null
     private var contactsQueryDisposable: Disposable? = null
     private var cacheQueryDisposable: Disposable? = null
     private var adapter: FlexibleAdapter<*>? = null
@@ -168,7 +168,7 @@ class ContactsController(args: Bundle) :
 
     override fun onViewBound(view: View) {
         super.onViewBound(view)
-        currentUser = userUtils.currentUser
+        currentUser = currentUserProvider.currentUser.blockingGet()
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         }
@@ -285,7 +285,7 @@ class ContactsController(args: Bundle) :
                                     Parcels.wrap(roomOverall.ocs!!.data!!)
                                 )
                                 ConductorRemapping.remapChatController(
-                                    router, currentUser!!.id,
+                                    router, currentUser!!.id!!,
                                     roomOverall.ocs!!.data!!.token!!, bundle, true
                                 )
                             }
@@ -316,7 +316,7 @@ class ContactsController(args: Bundle) :
         val emailsArray: Array<String> = selectedEmails.toTypedArray<String>()
         val circleIdsArray: Array<String> = selectedCircleIds.toTypedArray<String>()
         val data = Data.Builder()
-        data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id)
+        data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, currentUser!!.id!!)
         data.putString(BundleKeys.KEY_TOKEN, conversationToken)
         data.putStringArray(BundleKeys.KEY_SELECTED_USERS, userIdsArray)
         data.putStringArray(BundleKeys.KEY_SELECTED_GROUPS, groupIdsArray)
@@ -402,13 +402,13 @@ class ContactsController(args: Bundle) :
         if (!isAddingParticipantsView) {
             // groups
             shareTypesList.add("1")
-        } else if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")) {
+        } else if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails")) {
             // groups
             shareTypesList.add("1")
             // emails
             shareTypesList.add("4")
         }
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "circles-support")) {
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "circles-support")) {
             // circles
             shareTypesList.add("7")
         }
@@ -732,7 +732,7 @@ class ContactsController(args: Bundle) :
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(openConversationEvent: OpenConversationEvent) {
         ConductorRemapping.remapChatController(
-            router, currentUser!!.id,
+            router, currentUser!!.id!!,
             openConversationEvent.conversation!!.token!!,
             openConversationEvent.bundle!!, true
         )
@@ -759,8 +759,8 @@ class ContactsController(args: Bundle) :
     private fun updateSelection(contactItem: ContactItem) {
         contactItem.model.selected = !contactItem.model.selected
         updateSelectionLists(contactItem.model)
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "last-room-activity") &&
-            !CapabilitiesUtil.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
+        if (CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "last-room-activity") &&
+            !CapabilitiesUtilNew.hasSpreedFeatureCapability(currentUser, "invite-groups-and-mails") &&
             isValidGroupSelection(contactItem, contactItem.model, adapter)
         ) {
             val currentItems: List<ContactItem> = adapter?.currentItems as List<ContactItem>
@@ -817,7 +817,7 @@ class ContactsController(args: Bundle) :
                         )
                         ConductorRemapping.remapChatController(
                             router,
-                            currentUser!!.id,
+                            currentUser!!.id!!,
                             roomOverall.ocs!!.data!!.token!!,
                             bundle,
                             true
