@@ -19,7 +19,7 @@ jobs:
           days-before-stale: 28
           days-before-close: 14
           days-before-pr-close: -1
-          only-labels: 'bug,needs info/discussion'
+          only-labels: 'bug,needs info'
           exempt-issue-labels: 'no-stale'
           stale-issue-message: >-
             This bug report did not receive an update in the last 4 weeks.
