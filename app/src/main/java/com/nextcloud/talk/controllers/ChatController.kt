@@ -169,6 +169,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
+import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance
@@ -230,6 +231,9 @@ class ChatController(args: Bundle) :
     @Inject
     @JvmField
     var eventBus: EventBus? = null
+
+    @Inject
+    lateinit var permissionUtil: PlatformPermissionUtil
 
     val disposableList = ArrayList<Disposable>()
 
@@ -1105,17 +1109,6 @@ class ChatController(args: Bundle) :
             return PermissionChecker.checkSelfPermission(
                 context!!,
                 Manifest.permission.RECORD_AUDIO
-            ) == PermissionChecker.PERMISSION_GRANTED
-        } else {
-            true
-        }
-    }
-
-    private fun isCameraPermissionGranted(): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PermissionChecker.checkSelfPermission(
-                context!!,
-                Manifest.permission.CAMERA
             ) == PermissionChecker.PERMISSION_GRANTED
         } else {
             true
@@ -3128,7 +3121,7 @@ class ChatController(args: Bundle) :
     }
 
     fun sendPictureFromCamIntent() {
-        if (!isCameraPermissionGranted()) {
+        if (!permissionUtil.isCameraPermissionGranted()) {
             requestCameraPermissions()
         } else {
             startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_PICK_CAMERA)
