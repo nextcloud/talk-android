@@ -68,12 +68,10 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     }
 
     @Inject
-    @JvmField
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
 
     @Inject
-    @JvmField
-    var context: Context? = null
+    lateinit var context: Context
 
     protected open val title: String?
         get() = null
@@ -93,6 +91,8 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
         }
 
     init {
+        @Suppress("LeakingThis")
+        sharedApplication!!.componentApplication.inject(this)
         addLifecycleListener(object : LifecycleListener() {
             override fun postCreateView(controller: Controller, view: View) {
                 onViewBound(view)
@@ -271,7 +271,6 @@ abstract class NewBaseController(@LayoutRes var layoutRes: Int, args: Bundle? = 
     }
 
     private fun cleanTempCertPreference() {
-        sharedApplication!!.componentApplication.inject(this)
         val temporaryClassNames: MutableList<String> = ArrayList()
         temporaryClassNames.add(ServerSelectionController::class.java.name)
         temporaryClassNames.add(AccountVerificationController::class.java.name)
