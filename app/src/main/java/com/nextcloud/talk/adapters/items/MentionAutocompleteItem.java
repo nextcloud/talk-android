@@ -32,7 +32,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.models.database.UserEntity;
+import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.models.json.status.StatusType;
 import com.nextcloud.talk.ui.StatusDrawable;
@@ -65,12 +65,12 @@ public class MentionAutocompleteItem extends AbstractFlexibleItem<ParticipantIte
     private final String status;
     private final String statusIcon;
     private final String statusMessage;
-    private final UserEntity currentUser;
+    private final User currentUser;
     private final Context context;
 
     public MentionAutocompleteItem(
         Mention mention,
-        UserEntity currentUser,
+        User currentUser,
         Context activityContext) {
         this.objectId = mention.getId();
         this.displayName = mention.getLabel();
