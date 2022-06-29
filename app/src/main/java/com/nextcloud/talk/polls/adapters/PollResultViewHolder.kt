@@ -27,7 +27,7 @@ class PollResultViewHolder(
     fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         binding.root.setOnClickListener { clickListener.onClick(pollResultItem) }
 
-        // binding.root.setOnClickListener { clickListener.onClick(pollResultItem) }
+        binding.root.setOnClickListener { clickListener.onClick(pollResultItem) }
 
         binding.pollOptionText.text = pollResultItem.name
         binding.pollOptionPercentText.text = "${pollResultItem.percent}%"
@@ -43,8 +43,8 @@ class PollResultViewHolder(
             binding.pollOptionDetail.visibility = View.VISIBLE
 
             val lp = LinearLayout.LayoutParams(
-                90,
-                70
+                60,
+                50
             )
 
             pollResultItem.voters.forEach {

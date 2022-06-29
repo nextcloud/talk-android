@@ -28,12 +28,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:indeterminate="false"
-        app:indicatorColor="@color/colorPrimary"
+        app:indicatorColor="@color/poll_bar_color"
         app:layout_constraintStart_toStartOf="@+id/poll_option_text"
         app:layout_constraintTop_toBottomOf="@+id/poll_option_text"
         app:trackColor="@color/dialog_background"
         app:trackCornerRadius="5dp"
-        app:trackThickness="10dp"
+        app:trackThickness="5dp"
         tools:progress="50" />
 
     <LinearLayout
