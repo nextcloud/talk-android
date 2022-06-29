@@ -18,13 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.data.storage
+package com.nextcloud.talk.arbitrarystorage
 
+import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 import io.reactivex.Maybe
 
-interface ArbitraryStoragesRepository {
-    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): Maybe<ArbitraryStorage>
-    suspend fun deleteArbitraryStorage(accountIdentifier: Long)
-    fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long
+class ArbitraryStorageManager(private val arbitraryStoragesRepository: ArbitraryStoragesRepository) {
+    fun storeStorageSetting(accountIdentifier: Long, key: String?, value: String?, objectString: String?) {
+        arbitraryStoragesRepository.saveArbitraryStorage(ArbitraryStorage(accountIdentifier, key, objectString, value))
+    }
+
+    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): Maybe<ArbitraryStorage> {
+        return arbitraryStoragesRepository.getStorageSetting(accountIdentifier, key, objectString)
+    }
+
+    suspend fun deleteAllEntriesForAccountIdentifier(accountIdentifier: Long) {
+        return arbitraryStoragesRepository.deleteArbitraryStorage(accountIdentifier)
+    }
 }

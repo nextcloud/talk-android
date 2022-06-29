@@ -29,6 +29,7 @@ import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 import io.requery.reactivex.ReactiveScalar;
 
+@Deprecated
 public class ArbitraryStorageUtils {
     private ReactiveEntityStore<Persistable> dataStore;
 
