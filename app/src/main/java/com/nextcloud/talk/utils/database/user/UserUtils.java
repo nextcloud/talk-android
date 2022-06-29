@@ -35,6 +35,7 @@ import io.requery.Persistable;
 import io.requery.query.Result;
 import io.requery.reactivex.ReactiveEntityStore;
 
+@Deprecated
 public class UserUtils implements CurrentUserProvider {
     private ReactiveEntityStore<Persistable> dataStore;
 
