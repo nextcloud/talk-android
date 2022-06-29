@@ -3,6 +3,7 @@
     <string name="account_icon">帳號圖示</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
     <string name="audio_output_bluetooth">藍牙</string>
+    <string name="audio_output_dialog_headline">音訊輸入</string>
     <string name="audio_output_phone">電話</string>
     <string name="audio_output_speaker">揚聲器</string>
     <string name="avatar">頭像</string>
