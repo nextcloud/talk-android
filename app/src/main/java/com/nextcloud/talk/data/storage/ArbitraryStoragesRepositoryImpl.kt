@@ -35,7 +35,7 @@ class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: Arbitrar
             .map { ArbitraryStorageMapper.toModel(it) }
     }
 
-    override suspend fun deleteArbitraryStorage(accountIdentifier: Long) {
+    override fun deleteArbitraryStorage(accountIdentifier: Long) {
         arbitraryStoragesDao.deleteArbitraryStorage(accountIdentifier)
     }
 

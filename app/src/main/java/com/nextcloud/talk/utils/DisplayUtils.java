@@ -93,6 +93,7 @@ import java.text.DateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -572,31 +573,7 @@ public class DisplayUtils {
 
     @Deprecated
     public static void loadAvatarImage(UserEntity user, SimpleDraweeView avatarImageView, boolean deleteCache) {
-        String avatarId;
-        if (!TextUtils.isEmpty(user.getUserId())) {
-            avatarId = user.getUserId();
-        } else {
-            avatarId = user.getUsername();
-        }
-
-        String avatarString = ApiUtils.getUrlForAvatar(user.getBaseUrl(), avatarId, true);
-
-        // clear cache
-        if (deleteCache) {
-            Uri avatarUri = Uri.parse(avatarString);
-
-            ImagePipeline imagePipeline = Fresco.getImagePipeline();
-            imagePipeline.evictFromMemoryCache(avatarUri);
-            imagePipeline.evictFromDiskCache(avatarUri);
-            imagePipeline.evictFromCache(avatarUri);
-        }
-
-        DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-            .setOldController(avatarImageView.getController())
-            .setAutoPlayAnimations(true)
-            .setImageRequest(DisplayUtils.getImageRequestForUrl(avatarString, null))
-            .build();
-        avatarImageView.setController(draweeController);
+        loadAvatarImage(Objects.requireNonNull(LegacyUserEntityMapper.toModel(user)), avatarImageView, deleteCache);
     }
 
     public static void loadAvatarImage(User user, SimpleDraweeView avatarImageView, boolean deleteCache) {

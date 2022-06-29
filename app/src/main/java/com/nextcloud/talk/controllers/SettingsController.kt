@@ -190,14 +190,10 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
     }
 
     private fun setupPhoneBookIntegration() {
-        if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser)) {
-            activity!!.runOnUiThread {
-                binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
-            }
+        if (CapabilitiesUtilNew.isPhoneBookIntegrationAvailable(currentUser!!)) {
+            binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
         } else {
-            activity!!.runOnUiThread {
-                binding.settingsPhoneBookIntegration.visibility = View.GONE
-            }
+            binding.settingsPhoneBookIntegration.visibility = View.GONE
         }
     }
 
@@ -648,7 +644,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
     private fun setupServerAgeWarning() {
         when {
-            CapabilitiesUtilNew.isServerEOL(currentUser) -> {
+            CapabilitiesUtilNew.isServerEOL(currentUser!!) -> {
                 binding.serverAgeWarningText.setTextColor(ContextCompat.getColor((context)!!, R.color.nc_darkRed))
                 binding.serverAgeWarningText.setText(R.string.nc_settings_server_eol)
                 binding.serverAgeWarningIcon.setColorFilter(
@@ -656,7 +652,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
                     PorterDuff.Mode.SRC_IN
                 )
             }
-            CapabilitiesUtilNew.isServerAlmostEOL(currentUser) -> {
+            CapabilitiesUtilNew.isServerAlmostEOL(currentUser!!) -> {
                 binding.serverAgeWarningText.setTextColor(
                     ContextCompat.getColor((context)!!, R.color.nc_darkYellow)
                 )
@@ -688,7 +684,7 @@ class SettingsController : NewBaseController(R.layout.controller_settings) {
 
         if (CapabilitiesUtil.isReadStatusAvailable(userUtils.currentUser)) {
             (binding.settingsReadPrivacy.findViewById<View>(R.id.mp_checkable) as Checkable).isChecked =
-                !CapabilitiesUtilNew.isReadStatusPrivate(currentUser)
+                !CapabilitiesUtilNew.isReadStatusPrivate(currentUser!!)
         } else {
             binding.settingsReadPrivacy.visibility = View.GONE
         }

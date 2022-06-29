@@ -29,7 +29,6 @@ import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.push.PushConfigurationState
-import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.android.parcel.Parcelize
 import java.lang.Boolean.FALSE
 
@@ -48,19 +47,4 @@ data class UserEntity(
     @ColumnInfo(name = "externalSignalingServer") var externalSignalingServer: ExternalSignalingServer? = null,
     @ColumnInfo(name = "current") var current: Boolean = FALSE,
     @ColumnInfo(name = "scheduledForDeletion") var scheduledForDeletion: Boolean = FALSE,
-) : Parcelable {
-
-    fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
-        return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
-    }
-
-    fun canUserCreateGroupConversations(): Boolean {
-        val canCreateValue = capabilities?.spreedCapability?.config?.get("conversations")?.get("can-create")
-        canCreateValue?.let {
-            return it.toBoolean()
-        }
-        return true
-    }
-
-    fun getCredentials(): String = ApiUtils.getCredentials(username, token)
-}
+) : Parcelable

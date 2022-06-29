@@ -25,11 +25,9 @@ import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.android.parcel.Parcelize
-import kotlinx.serialization.Serializable
 
 @Parcelize
 @JsonObject
-@Serializable
 data class ExternalSignalingServer(
     @JsonField(name = ["externalSignalingServer"])
     var externalSignalingServer: String? = null,

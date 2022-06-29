@@ -25,14 +25,12 @@ import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 
 object ArbitraryStorageMapper {
     fun toModel(entity: ArbitraryStorageEntity?): ArbitraryStorage? {
-        return if (entity == null) {
-            null
-        } else {
+        return entity?.let {
             ArbitraryStorage(
-                entity.accountIdentifier,
-                entity.key,
-                entity.storageObject,
-                entity.value
+                it.accountIdentifier,
+                it.key,
+                it.storageObject,
+                it.value
             )
         }
     }

@@ -37,6 +37,5 @@ class MainActivityTest {
         assertNotNull("Error creating user", user)
 
         sut.runOnUiThread { sut.resetConversationsList() }
-        println("User: " + user!!.id + " / " + user.userId + " / " + user.baseUrl)
     }
 }

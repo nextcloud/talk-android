@@ -18,18 +18,23 @@
  * along with model program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.nextcloud.talk.data.user
+package com.nextcloud.talk.utils
 
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.database.UserEntity
+import com.nextcloud.talk.models.json.capabilities.Capabilities
+import com.nextcloud.talk.models.json.push.PushConfigurationState
 
-object UserMapper {
+object LegacyUserEntityMapper {
     fun toModel(entities: List<UserEntity?>?): List<User> {
         return entities?.map { user: UserEntity? ->
             toModel(user)!!
         } ?: emptyList()
     }
 
+    @JvmStatic
     fun toModel(entity: UserEntity?): User? {
         return entity?.let {
             User(
@@ -39,31 +44,13 @@ object UserMapper {
                 entity.baseUrl,
                 entity.token,
                 entity.displayName,
-                entity.pushConfigurationState,
-                entity.capabilities,
+                LoganSquare.parse(entity.pushConfigurationState, PushConfigurationState::class.java),
+                LoganSquare.parse(entity.capabilities, Capabilities::class.java),
                 entity.clientCertificate,
-                entity.externalSignalingServer,
+                LoganSquare.parse(entity.externalSignalingServer, ExternalSignalingServer::class.java),
                 entity.current,
                 entity.scheduledForDeletion
             )
         }
-    }
-
-    fun toEntity(model: User): UserEntity {
-        val userEntity = when (val id = model.id) {
-            null -> UserEntity(userId = model.userId, username = model.username, baseUrl = model.baseUrl)
-            else -> UserEntity(id, model.userId, model.username, model.baseUrl)
-        }
-        userEntity.apply {
-            token = model.token
-            displayName = model.displayName
-            pushConfigurationState = model.pushConfigurationState
-            capabilities = model.capabilities
-            clientCertificate = model.clientCertificate
-            externalSignalingServer = model.externalSignalingServer
-            current = model.current
-            scheduledForDeletion = model.scheduledForDeletion
-        }
-        return userEntity
     }
 }

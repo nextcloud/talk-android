@@ -47,9 +47,6 @@ abstract class UsersDao {
     @Query("SELECT * FROM User where current = 1")
     abstract fun getActiveUserSynchronously(): UserEntity?
 
-    @Query("SELECT * FROM User WHERE current = 1")
-    abstract fun getActiveUserLiveData(): Single<UserEntity?>
-
     @Query("DELETE FROM User WHERE id = :id")
     abstract fun deleteUserWithId(id: Long)
 
@@ -122,13 +119,9 @@ abstract class UsersDao {
 
     @Transaction
     open suspend fun markUserForDeletion(id: Long): Boolean {
-        val users = getUsers().blockingGet()
-
-        for (user in users) {
-            if (user.id == id) {
-                user.current = FALSE
-                updateUser(user)
-            }
+        getUserWithId(id).blockingGet()?.let { user ->
+            user.current = FALSE
+            updateUser(user)
         }
 
         return setAnyUserAsActive()
@@ -137,14 +130,12 @@ abstract class UsersDao {
     @Transaction
     open suspend fun setAnyUserAsActive(): Boolean {
         val users = getUsers().blockingGet()
-        var result = FALSE
 
-        for (user in users) {
+        val result = users.firstOrNull()?.let { user ->
             user.current = TRUE
             updateUser(user)
-            result = TRUE
-            break
-        }
+            TRUE
+        } ?: FALSE
 
         return result
     }

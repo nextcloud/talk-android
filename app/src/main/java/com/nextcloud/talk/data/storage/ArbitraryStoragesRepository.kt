@@ -25,6 +25,6 @@ import io.reactivex.Maybe
 
 interface ArbitraryStoragesRepository {
     fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): Maybe<ArbitraryStorage>
-    suspend fun deleteArbitraryStorage(accountIdentifier: Long)
+    fun deleteArbitraryStorage(accountIdentifier: Long)
     fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long
 }
