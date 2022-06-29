@@ -34,7 +34,7 @@
             android:id="@+id/poll_results_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:listitem="@layout/poll_result_item" />
+            tools:listitem="@layout/poll_result_header_item" />
     </LinearLayout>
 
     <com.google.android.material.button.MaterialButton

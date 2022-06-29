@@ -1,10 +1,7 @@
 package com.nextcloud.talk.polls.adapters
 
-import com.nextcloud.talk.polls.model.PollDetails
+interface PollResultItem {
 
-class PollResultItem(
-    val name: String,
-    val percent: Int,
-    val selfVoted: Boolean,
-    val voters: List<PollDetails>?
-)
+    fun getViewType(): Int
+    // fun getView(inflater: LayoutInflater?, convertView: View?): View?
+}

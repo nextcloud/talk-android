@@ -24,6 +24,10 @@ package com.nextcloud.talk.polls.viewmodels
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
+import com.nextcloud.talk.polls.adapters.PollResultItem
+import com.nextcloud.talk.polls.adapters.PollResultVoterItem
+import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
@@ -33,15 +37,101 @@ class PollResultsViewModel @Inject constructor(private val repository: PollRepos
     sealed interface ViewState
     object InitialState : ViewState
 
+    private var _poll: Poll? = null
+    val poll: Poll?
+        get() = _poll
+
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
         get() = _viewState
+
+    private var _unfilteredItems: ArrayList<PollResultItem> = ArrayList()
+
+    private var _items: MutableLiveData<ArrayList<PollResultItem>> = MutableLiveData<ArrayList<PollResultItem>>()
+    val items: LiveData<ArrayList<PollResultItem>>
+        get() = _items
 
     private var disposable: Disposable? = null
 
     override fun onCleared() {
         super.onCleared()
         disposable?.dispose()
+    }
+
+    fun setPoll(poll: Poll) {
+        _poll = poll
+        initPollResults(_poll!!)
+    }
+
+    private fun initPollResults(poll: Poll) {
+        _items.value = ArrayList()
+
+        val votersAmount = getVotersAmount(poll)
+        val oneVoteInPercent = 100 / votersAmount
+
+        poll.options?.forEachIndexed { index, option ->
+            val votersAmountForThisOption = getVotersAmountForOption(poll, index)
+            val optionsPercent = oneVoteInPercent * votersAmountForThisOption
+
+            val pollResultHeaderItem = PollResultHeaderItem(
+                option,
+                optionsPercent,
+                isOptionSelfVoted(poll, index)
+            )
+            addToItems(pollResultHeaderItem)
+
+            val voters = poll.details?.filter { it.optionId == index }
+            if (!voters.isNullOrEmpty()) {
+                voters.forEach {
+                    addToItems(PollResultVoterItem(it))
+                }
+            }
+        }
+
+        _unfilteredItems = _items.value?.let { ArrayList(it) }!!
+    }
+
+    private fun addToItems(pollResultItem: PollResultItem) {
+        val tempList = _items.value
+        tempList!!.add(pollResultItem)
+        _items.value = tempList
+    }
+
+    private fun getVotersAmount(poll: Poll): Int {
+        if (poll.details != null) {
+            return poll.details.size
+        } else if (poll.votes != null) {
+            return poll.numVoters
+        }
+        return 0
+    }
+
+    private fun getVotersAmountForOption(poll: Poll, index: Int): Int {
+        var votersAmountForThisOption: Int? = 0
+        if (poll.details != null) {
+            votersAmountForThisOption = poll.details.filter { it.optionId == index }.size
+        } else if (poll.votes != null) {
+            votersAmountForThisOption = poll.votes.filter { it.key.toInt() == index }[index.toString()]
+            if (votersAmountForThisOption == null) {
+                votersAmountForThisOption = 0
+            }
+        }
+        return votersAmountForThisOption!!
+    }
+
+    private fun isOptionSelfVoted(poll: Poll, index: Int): Boolean {
+        return poll.votedSelf?.contains(index) == true
+    }
+
+    fun filterItems() {
+        if (_items.value?.containsAll(_unfilteredItems) == true) {
+            val filteredList = _items.value?.filter { it.getViewType() == PollResultHeaderItem.VIEW_TYPE } as
+                MutableList<PollResultItem>
+
+            _items.value = ArrayList(filteredList)
+        } else {
+            _items.value = _unfilteredItems
+        }
     }
 
     companion object {

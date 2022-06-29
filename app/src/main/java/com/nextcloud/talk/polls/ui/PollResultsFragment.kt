@@ -22,7 +22,6 @@
 package com.nextcloud.talk.polls.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,10 +32,9 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogPollResultsBinding
 import com.nextcloud.talk.models.database.UserEntity
-import com.nextcloud.talk.polls.adapters.PollResultItem
+import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
 import com.nextcloud.talk.polls.adapters.PollResultItemClickListener
 import com.nextcloud.talk.polls.adapters.PollResultsAdapter
-import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
 import javax.inject.Inject
@@ -81,10 +79,17 @@ class PollResultsFragment(
         parentViewModel.viewState.observe(viewLifecycleOwner) { state ->
             if (state is PollMainViewModel.PollResultState) {
                 initAdapter()
-                initPollResults(state.poll)
+                viewModel.setPoll(state.poll)
                 initEditButton(state.showEditButton)
                 initCloseButton(state.showCloseButton)
             }
+        }
+
+        viewModel.items.observe(viewLifecycleOwner) {
+            val adapter = PollResultsAdapter(user, this).apply {
+                list = it
+            }
+            binding.pollResultsList.adapter = adapter
         }
     }
 
@@ -92,51 +97,6 @@ class PollResultsFragment(
         adapter = PollResultsAdapter(user, this)
         _binding?.pollResultsList?.adapter = adapter
         _binding?.pollResultsList?.layoutManager = LinearLayoutManager(context)
-    }
-
-    private fun initPollResults(poll: Poll) {
-        if (poll.details != null) {
-            val votersAmount = poll.details.size
-            val oneVoteInPercent = 100 / votersAmount // TODO: poll.numVoters   when fixed on api
-
-            poll.options?.forEachIndexed { index, option ->
-                val votersForThisOption = poll.details.filter { it.optionId == index }
-                val optionsPercent = oneVoteInPercent * votersForThisOption.size
-
-                val pollResultItem = PollResultItem(
-                    option,
-                    optionsPercent,
-                    isOptionSelfVoted(poll, index),
-                    votersForThisOption
-                )
-                adapter?.list?.add(pollResultItem)
-            }
-        } else if (poll.votes != null) {
-            val votersAmount = poll.numVoters
-            val oneVoteInPercent = 100 / votersAmount
-
-            poll.options?.forEachIndexed { index, option ->
-                var votersAmountForThisOption = poll.votes.filter { it.key.toInt() == index }[index.toString()]
-                if (votersAmountForThisOption == null) {
-                    votersAmountForThisOption = 0
-                }
-                val optionsPercent = oneVoteInPercent * votersAmountForThisOption
-
-                val pollResultItem = PollResultItem(
-                    option,
-                    optionsPercent,
-                    isOptionSelfVoted(poll, index),
-                    null
-                )
-                adapter?.list?.add(pollResultItem)
-            }
-        } else {
-            Log.e(TAG, "failed to get data to show poll results")
-        }
-    }
-
-    private fun isOptionSelfVoted(poll: Poll, index: Int): Boolean {
-        return poll.votedSelf?.contains(index) == true
     }
 
     private fun initEditButton(showEditButton: Boolean) {
@@ -161,8 +121,8 @@ class PollResultsFragment(
         }
     }
 
-    override fun onClick(pollResultItem: PollResultItem) {
-        Log.d(TAG, "click..")
+    override fun onClick(pollResultHeaderItem: PollResultHeaderItem) {
+        viewModel.filterItems()
     }
 
     override fun onDestroyView() {
