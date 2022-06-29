@@ -22,7 +22,6 @@
 package com.nextcloud.talk.controllers
 
 import android.app.Activity
-import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -86,7 +85,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
@@ -95,7 +94,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.LinkedList
-import java.util.Locale
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -511,11 +509,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
     }
 
     private fun takePictureForAvatar() {
-        try {
-            startActivityForResult(TakePhotoActivity.createIntent(context!!), REQUEST_CODE_TAKE_PICTURE)
-        } catch (e: ActivityNotFoundException) {
-            // TODO
-        }
+        startActivityForResult(TakePhotoActivity.createIntent(context), REQUEST_CODE_TAKE_PICTURE)
     }
 
     private fun handleAvatar(remotePath: String?) {
@@ -543,7 +537,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                 takePictureForAvatar()
             } else {
                 Toast
-                    .makeText(context, context?.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
+                    .makeText(context, context.getString(R.string.take_photo_permission), Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -574,11 +568,11 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
     private fun createTempFileForAvatar(): File? {
         FileUtils.removeTempCacheFile(
-            this.context!!,
+            this.context,
             AVATAR_PATH
         )
         return FileUtils.getTempCacheFile(
-            context!!,
+            context,
             AVATAR_PATH
         )
     }
@@ -623,11 +617,11 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
         builder.setType(MultipartBody.FORM)
         builder.addFormDataPart(
             "files[]", file!!.name,
-            RequestBody.create(IMAGE_PREFIX_GENERIC.toMediaTypeOrNull(), file)
+            file.asRequestBody(IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
         )
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
             "files[]", file.name,
-            RequestBody.create(IMAGE_JPG.toMediaTypeOrNull(), file)
+            file.asRequestBody(IMAGE_JPG.toMediaTypeOrNull())
         )
 
         // upload file
@@ -649,7 +643,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
 
                 override fun onError(e: Throwable) {
                     Toast.makeText(
-                        applicationContext, context!!.getString(R.string.default_error_msg),
+                        applicationContext, context.getString(R.string.default_error_msg),
                         Toast
                             .LENGTH_LONG
                     ).show()
@@ -763,7 +757,7 @@ class ProfileController : NewBaseController(R.layout.controller_profile) {
                     )
                 }
                 if (controller.edit &&
-                    controller.editableFields.contains(item.field.toString().toLowerCase(Locale.ROOT))
+                    controller.editableFields.contains(item.field.toString().lowercase())
                 ) {
                     holder.binding.userInfoEditText.isEnabled = true
                     holder.binding.userInfoEditText.isFocusableInTouchMode = true
