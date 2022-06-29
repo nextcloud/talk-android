@@ -170,6 +170,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USER_ENTITY
 import com.nextcloud.talk.utils.database.user.UserUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
+import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import com.nextcloud.talk.utils.text.Spans
 import com.nextcloud.talk.webrtc.MagicWebSocketInstance
@@ -235,7 +236,7 @@ class ChatController(args: Bundle) :
     @Inject
     lateinit var permissionUtil: PlatformPermissionUtil
 
-    val disposableList = ArrayList<Disposable>()
+    val disposables = DisposableSet()
 
     var roomToken: String? = null
     val conversationUser: UserEntity?
@@ -336,7 +337,7 @@ class ChatController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<RoomOverall> {
                     override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
+                        disposables.add(d)
                     }
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -402,7 +403,7 @@ class ChatController(args: Bundle) :
             ?.subscribeOn(Schedulers.io())?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<RoomsOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    disposableList.add(d)
+                    disposables.add(d)
                 }
 
                 override fun onNext(roomsOverall: RoomsOverall) {
@@ -1823,14 +1824,7 @@ class ChatController(args: Bundle) :
 
         adapter = null
         inConversation = false
-    }
-
-    private fun dispose() {
-        for (disposable in disposableList) {
-            if (!disposable.isDisposed()) {
-                disposable.dispose()
-            }
-        }
+        disposables.dispose()
     }
 
     private fun joinRoomWithPassword() {
@@ -1859,7 +1853,7 @@ class ChatController(args: Bundle) :
                 ?.retry(RETRIES)
                 ?.subscribe(object : Observer<RoomOverall> {
                     override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
+                        disposables.add(d)
                     }
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -1947,7 +1941,7 @@ class ChatController(args: Bundle) :
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    disposableList.add(d)
+                    disposables.add(d)
                 }
 
                 override fun onNext(genericOverall: GenericOverall) {
@@ -1976,7 +1970,7 @@ class ChatController(args: Bundle) :
 
                 override fun onComplete() {
                     Log.d(TAG, "leaveRoom - leaveRoom - completed: " + startNanoTime)
-                    dispose()
+                    disposables.dispose()
                 }
             })
     }
@@ -2158,7 +2152,7 @@ class ChatController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<Response<*>> {
                     override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
+                        disposables.add(d)
                     }
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -2200,7 +2194,7 @@ class ChatController(args: Bundle) :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<Response<*>> {
                     override fun onSubscribe(d: Disposable) {
-                        disposableList.add(d)
+                        disposables.add(d)
                     }
 
                     @Suppress("Detekt.TooGenericExceptionCaught")
