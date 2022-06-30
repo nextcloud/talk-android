@@ -19,7 +19,7 @@ import com.nextcloud.talk.polls.viewmodels.PollMainViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollMainDialogFragment() : DialogFragment() {
+class PollMainDialogFragment : DialogFragment() {
 
     lateinit var user: UserEntity
     lateinit var roomToken: String
@@ -63,7 +63,6 @@ class PollMainDialogFragment() : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         viewModel.viewState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 PollMainViewModel.InitialState -> {}
@@ -84,8 +83,8 @@ class PollMainDialogFragment() : DialogFragment() {
     }
 
     private fun showVoteScreen() {
-        val contentFragment = PollVoteFragment(
-            viewModel,
+
+        val contentFragment = PollVoteFragment.newInstance(
             roomToken,
             pollId
         )
@@ -98,10 +97,10 @@ class PollMainDialogFragment() : DialogFragment() {
     private fun showResultsScreen(poll: Poll) {
         initVotersAmount(poll.numVoters)
 
-        val contentFragment = PollResultsFragment(
-            user,
-            viewModel
+        val contentFragment = PollResultsFragment.newInstance(
+            user
         )
+
         val transaction = childFragmentManager.beginTransaction()
         transaction.replace(binding.messagePollContentFragment.id, contentFragment)
         transaction.commit()

@@ -42,15 +42,15 @@ import com.nextcloud.talk.polls.viewmodels.PollResultsViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollResultsFragment(
-    private val user: UserEntity,
-    private val parentViewModel: PollMainViewModel
-) : Fragment(), PollResultItemClickListener {
+class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollResultsViewModel
+
+    lateinit var user: UserEntity
 
     lateinit var binding: DialogPollResultsBinding
 
@@ -60,6 +60,10 @@ class PollResultsFragment(
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollResultsViewModel::class.java]
+        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class
+            .java]
+
+        user = arguments?.getParcelable(KEY_USER_ENTITY)!!
     }
 
     override fun onCreateView(
@@ -128,5 +132,20 @@ class PollResultsFragment(
 
     override fun onClick(pollResultHeaderItem: PollResultHeaderItem) {
         viewModel.filterItems()
+    }
+
+    companion object {
+        private const val KEY_USER_ENTITY = "keyUserEntity"
+
+        @JvmStatic
+        fun newInstance(
+            user: UserEntity
+        ): PollResultsFragment {
+            val args = Bundle()
+            args.putParcelable(KEY_USER_ENTITY, user)
+            val fragment = PollResultsFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }

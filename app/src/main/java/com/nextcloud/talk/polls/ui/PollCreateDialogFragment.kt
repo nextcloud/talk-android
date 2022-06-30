@@ -25,7 +25,7 @@ import com.nextcloud.talk.polls.viewmodels.PollCreateViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollCreateDialogFragment() : DialogFragment(), PollCreateOptionsItemListener {
+class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener {
 
     lateinit var roomToken: String
 

@@ -44,15 +44,16 @@ import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollVoteFragment(
-    private val parentViewModel: PollMainViewModel,
-    private val roomToken: String,
-    private val pollId: String
-) : Fragment() {
+class PollVoteFragment : Fragment() {
+
+    lateinit var roomToken: String
+
+    lateinit var pollId: String
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
+    private lateinit var parentViewModel: PollMainViewModel
     lateinit var viewModel: PollVoteViewModel
 
     private lateinit var binding: DialogPollVoteBinding
@@ -61,6 +62,12 @@ class PollVoteFragment(
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         viewModel = ViewModelProvider(this, viewModelFactory)[PollVoteViewModel::class.java]
+
+        parentViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory)[PollMainViewModel::class
+            .java]
+
+        roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
+        pollId = arguments?.getString(KEY_POLL_ID)!!
     }
 
     override fun onCreateView(
@@ -187,5 +194,21 @@ class PollVoteFragment(
     companion object {
         private val TAG = PollVoteFragment::class.java.simpleName
         private const val UNLIMITED_VOTES = 0
+
+        private const val KEY_ROOM_TOKEN = "keyRoomToken"
+        private const val KEY_POLL_ID = "keyPollId"
+
+        @JvmStatic
+        fun newInstance(
+            roomTokenParam: String,
+            pollId: String
+        ): PollVoteFragment {
+            val args = Bundle()
+            args.putString(KEY_ROOM_TOKEN, roomTokenParam)
+            args.putString(KEY_POLL_ID, pollId)
+            val fragment = PollVoteFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
