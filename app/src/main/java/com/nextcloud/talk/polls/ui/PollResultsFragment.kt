@@ -21,7 +21,6 @@
 
 package com.nextcloud.talk.polls.ui
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,9 +44,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class PollResultsFragment(
     private val user: UserEntity,
-    private val parentViewModel: PollMainViewModel,
-    private val roomToken: String,
-    private val pollId: String
+    private val parentViewModel: PollMainViewModel
 ) : Fragment(), PollResultItemClickListener {
 
     @Inject
@@ -55,9 +52,7 @@ class PollResultsFragment(
 
     lateinit var viewModel: PollResultsViewModel
 
-    var _binding: DialogPollResultsBinding? = null
-    val binding: DialogPollResultsBinding
-        get() = _binding!!
+    lateinit var binding: DialogPollResultsBinding
 
     private var adapter: PollResultsAdapter? = null
 
@@ -72,7 +67,7 @@ class PollResultsFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogPollResultsBinding.inflate(inflater, container, false)
+        binding = DialogPollResultsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -98,49 +93,40 @@ class PollResultsFragment(
 
     private fun initAdapter() {
         adapter = PollResultsAdapter(user, this)
-        _binding?.pollResultsList?.adapter = adapter
-        _binding?.pollResultsList?.layoutManager = LinearLayoutManager(context)
+        binding.pollResultsList.adapter = adapter
+        binding.pollResultsList.layoutManager = LinearLayoutManager(context)
     }
 
     private fun initEditButton(showEditButton: Boolean) {
         if (showEditButton) {
-            _binding?.editVoteButton?.visibility = View.VISIBLE
-            _binding?.editVoteButton?.setOnClickListener {
+            binding.editVoteButton.visibility = View.VISIBLE
+            binding.editVoteButton.setOnClickListener {
                 parentViewModel.edit()
             }
         } else {
-            _binding?.editVoteButton?.visibility = View.GONE
+            binding.editVoteButton.visibility = View.GONE
         }
     }
 
     private fun initEndPollButton(showEndPollButton: Boolean) {
         if (showEndPollButton) {
-            _binding?.pollResultsEndPollButton?.visibility = View.VISIBLE
-            _binding?.pollResultsEndPollButton?.setOnClickListener {
+            binding.pollResultsEndPollButton.visibility = View.VISIBLE
+            binding.pollResultsEndPollButton.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.polls_end_poll)
                     .setMessage(R.string.polls_end_poll_confirm)
-                    .setPositiveButton(R.string.polls_end_poll, DialogInterface.OnClickListener { _, _ ->
+                    .setPositiveButton(R.string.polls_end_poll) { _, _ ->
                         parentViewModel.closePoll()
-                    })
+                    }
                     .setNegativeButton(R.string.nc_cancel, null)
                     .show()
             }
         } else {
-            _binding?.pollResultsEndPollButton?.visibility = View.GONE
+            binding.pollResultsEndPollButton.visibility = View.GONE
         }
     }
 
     override fun onClick(pollResultHeaderItem: PollResultHeaderItem) {
         viewModel.filterItems()
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
-    companion object {
-        private val TAG = PollResultsFragment::class.java.simpleName
     }
 }

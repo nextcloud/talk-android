@@ -21,7 +21,6 @@
 
 package com.nextcloud.talk.polls.ui
 
-import android.content.DialogInterface
 import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
@@ -56,9 +55,7 @@ class PollVoteFragment(
 
     lateinit var viewModel: PollVoteViewModel
 
-    var _binding: DialogPollVoteBinding? = null
-    val binding: DialogPollVoteBinding
-        get() = _binding!!
+    private lateinit var binding: DialogPollVoteBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +68,7 @@ class PollVoteFragment(
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = DialogPollVoteBinding.inflate(inflater, container, false)
+        binding = DialogPollVoteBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -93,7 +90,8 @@ class PollVoteFragment(
             when (state) {
                 PollVoteViewModel.InitialState -> {}
                 is PollVoteViewModel.PollVoteFailedState -> {
-                    Log.d(TAG, "fail")
+                    Log.e(TAG, "Failed to vote on poll.")
+                    Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
                 }
                 is PollVoteViewModel.PollVoteSuccessState -> {
                     parentViewModel.voted()
@@ -101,7 +99,7 @@ class PollVoteFragment(
             }
         }
 
-        binding.pollVoteRadioGroup.setOnCheckedChangeListener { group, checkedId ->
+        binding.pollVoteRadioGroup.setOnCheckedChangeListener { _, checkedId ->
             viewModel.selectOption(checkedId, true)
             updateSubmitButton()
         }
@@ -135,13 +133,13 @@ class PollVoteFragment(
                 binding.voteOptionsCheckboxesWrapper.addView(checkBox)
 
                 checkBox.isChecked = viewModel.selectedOptions.contains(index) == true
-                checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+                checkBox.setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
                         if (poll.maxVotes == UNLIMITED_VOTES || viewModel.selectedOptions.size < poll.maxVotes) {
                             viewModel.selectOption(index, false)
                         } else {
                             checkBox.isChecked = false
-                            Toast.makeText(context, "max votes reached", Toast.LENGTH_LONG).show()
+                            Toast.makeText(context, R.string.polls_max_votes_reached, Toast.LENGTH_LONG).show()
                         }
                     } else {
                         viewModel.deSelectOption(index)
@@ -170,25 +168,20 @@ class PollVoteFragment(
 
     private fun initEndPollButton(showEndPollButton: Boolean) {
         if (showEndPollButton) {
-            _binding?.pollVoteEndPollButton?.visibility = View.VISIBLE
-            _binding?.pollVoteEndPollButton?.setOnClickListener {
+            binding.pollVoteEndPollButton.visibility = View.VISIBLE
+            binding.pollVoteEndPollButton.setOnClickListener {
                 AlertDialog.Builder(requireContext())
                     .setTitle(R.string.polls_end_poll)
                     .setMessage(R.string.polls_end_poll_confirm)
-                    .setPositiveButton(R.string.polls_end_poll, DialogInterface.OnClickListener { _, _ ->
+                    .setPositiveButton(R.string.polls_end_poll) { _, _ ->
                         parentViewModel.closePoll()
-                    })
+                    }
                     .setNegativeButton(R.string.nc_cancel, null)
                     .show()
             }
         } else {
-            _binding?.pollVoteEndPollButton?.visibility = View.GONE
+            binding.pollVoteEndPollButton.visibility = View.GONE
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
     companion object {

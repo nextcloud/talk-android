@@ -38,7 +38,7 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
     sealed interface ViewState
     object InitialState : ViewState
     open class PollVoteSuccessState(val poll: Poll) : ViewState
-    open class PollVoteFailedState() : ViewState
+    open class PollVoteFailedState : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(InitialState)
     val viewState: LiveData<ViewState>
@@ -60,10 +60,10 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
     }
 
     fun selectOption(option: Int, isRadioBox: Boolean) {
-        if (isRadioBox) {
-            _selectedOptions = listOf(option)
+        _selectedOptions = if (isRadioBox) {
+            listOf(option)
         } else {
-            _selectedOptions = _selectedOptions.plus(option)
+            _selectedOptions.plus(option)
         }
     }
 
@@ -97,7 +97,7 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
         }
 
         override fun onError(e: Throwable) {
-            Log.d(TAG, "An error occurred: $e")
+            Log.e(TAG, "An error occurred: $e")
             _viewState.value = PollVoteFailedState()
         }
 

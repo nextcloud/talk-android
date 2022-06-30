@@ -539,8 +539,10 @@
     <!-- Polls -->
     <string name="polls_amount_voters">Poll results - %1$s votes</string>
     <string name="polls_add_option">Add Option</string>
+    <string name="polls_private_voted">You successfully voted for this private poll.</string>
     <string name="polls_end_poll">End Poll</string>
     <string name="polls_end_poll_confirm">Do you really want to end this poll? This can\'t be undone.</string>
+    <string name="polls_max_votes_reached">You can\'t vote with more options for this poll.</string>
 
     <string name="title_attachments">Attachments</string>
 

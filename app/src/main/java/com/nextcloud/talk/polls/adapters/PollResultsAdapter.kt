@@ -20,7 +20,7 @@ class PollResultsAdapter(
                     LayoutInflater.from(parent.context), parent,
                     false
                 )
-                return PollResultHeaderViewHolder(user, itemBinding)
+                return PollResultHeaderViewHolder(itemBinding)
             }
             PollResultVoterItem.VIEW_TYPE -> {
                 val itemBinding = PollResultVoterItemBinding.inflate(
@@ -32,7 +32,7 @@ class PollResultsAdapter(
         }
 
         val itemBinding = PollResultHeaderItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return PollResultHeaderViewHolder(user, itemBinding)
+        return PollResultHeaderViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(holder: PollResultViewHolder, position: Int) {

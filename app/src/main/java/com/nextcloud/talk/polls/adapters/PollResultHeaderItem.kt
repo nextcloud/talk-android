@@ -14,6 +14,6 @@ data class PollResultHeaderItem(
 
     companion object {
         // layout is used as view type for uniqueness
-        public val VIEW_TYPE: Int = R.layout.poll_result_header_item
+        const val VIEW_TYPE: Int = R.layout.poll_result_header_item
     }
 }

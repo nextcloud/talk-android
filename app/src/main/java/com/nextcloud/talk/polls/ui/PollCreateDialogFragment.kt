@@ -48,14 +48,12 @@ class PollCreateDialogFragment(
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         binding = DialogPollCreateBinding.inflate(LayoutInflater.from(context))
 
-        val dialog = AlertDialog.Builder(requireContext())
+        return AlertDialog.Builder(requireContext())
             .setView(binding.root)
             .create()
-
-        return dialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
     }
 
@@ -81,7 +79,7 @@ class PollCreateDialogFragment(
     private fun setupListeners() {
         binding.pollAddOptionsItem.setOnClickListener {
             viewModel.addOption()
-            adapter?.itemCount?.minus(1)?.let { it -> binding.pollCreateOptionsList.scrollToPosition(it) }
+            adapter?.itemCount?.minus(1)?.let { binding.pollCreateOptionsList.scrollToPosition(it) }
         }
 
         binding.pollDismiss.setOnClickListener {
@@ -135,8 +133,8 @@ class PollCreateDialogFragment(
 
     private fun showError() {
         dismiss()
-        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
         Log.e(TAG, "Failed to create poll")
+        Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_LONG).show()
     }
 
     override fun onRemoveOptionsItemClick(pollCreateOptionItem: PollCreateOptionItem, position: Int) {

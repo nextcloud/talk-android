@@ -52,7 +52,7 @@ class PollMainDialogFragment(
         return dialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return binding.root
     }
 
@@ -64,7 +64,7 @@ class PollMainDialogFragment(
                 PollMainViewModel.InitialState -> {}
                 is PollMainViewModel.PollVoteHiddenState -> {
                     binding.pollDetailsText.visibility = View.VISIBLE
-                    binding.pollDetailsText.text = "You already voted for this private poll"
+                    binding.pollDetailsText.text = context?.resources?.getString(R.string.polls_private_voted)
                     showVoteScreen()
                 }
                 is PollMainViewModel.PollVoteState -> {
@@ -94,9 +94,7 @@ class PollMainDialogFragment(
 
         val contentFragment = PollResultsFragment(
             user,
-            viewModel,
-            roomToken,
-            pollId
+            viewModel
         )
         val transaction = childFragmentManager.beginTransaction()
         transaction.replace(binding.messagePollContentFragment.id, contentFragment)

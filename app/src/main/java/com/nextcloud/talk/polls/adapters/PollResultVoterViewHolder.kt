@@ -20,24 +20,7 @@ class PollResultVoterViewHolder(
     @SuppressLint("SetTextI18n")
     override fun bind(pollResultItem: PollResultItem, clickListener: PollResultItemClickListener) {
         val item = pollResultItem as PollResultVoterItem
-
-        // binding.root.setOnClickListener { clickListener.onClick(pollResultVoterItem) }
-
-        // binding.pollVoterAvatar = pollResultHeaderItem.name
         binding.pollVoterName.text = item.details.actorDisplayName
-
-        // val lp = LinearLayout.LayoutParams(
-        //     60,
-        //     50
-        // )
-        //
-        // val avatar = SimpleDraweeView(binding.root.context)
-        // avatar.layoutParams = lp
-
-        // val roundingParams = RoundingParams.fromCornersRadius(5f)
-        // roundingParams.roundAsCircle = true
-        //
-        // binding.pollVoterAvatar.hierarchy.roundingParams = roundingParams
         binding.pollVoterAvatar.controller = getAvatarDraweeController(item.details)
     }
 
@@ -47,8 +30,7 @@ class PollResultVoterViewHolder(
             if (!TextUtils.isEmpty(pollDetail.actorDisplayName)) {
                 displayName = pollDetail.actorDisplayName!!
             }
-            val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                // .setOldController(binding.avatar.controller)
+            return Fresco.newDraweeControllerBuilder()
                 .setAutoPlayAnimations(true)
                 .setImageRequest(
                     DisplayUtils.getImageRequestForUrl(
@@ -61,10 +43,8 @@ class PollResultVoterViewHolder(
                     )
                 )
                 .build()
-            return draweeController
         } else if (pollDetail.actorType == "users") {
-            val draweeController: DraweeController = Fresco.newDraweeControllerBuilder()
-                // .setOldController(binding.avatar.controller)
+            return Fresco.newDraweeControllerBuilder()
                 .setAutoPlayAnimations(true)
                 .setImageRequest(
                     DisplayUtils.getImageRequestForUrl(
@@ -77,7 +57,6 @@ class PollResultVoterViewHolder(
                     )
                 )
                 .build()
-            return draweeController
         }
         return null
     }

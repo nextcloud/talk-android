@@ -13,6 +13,6 @@ data class PollResultVoterItem(
 
     companion object {
         // layout is used as view type for uniqueness
-        public val VIEW_TYPE: Int = R.layout.poll_result_voter_item
+        const val VIEW_TYPE: Int = R.layout.poll_result_voter_item
     }
 }

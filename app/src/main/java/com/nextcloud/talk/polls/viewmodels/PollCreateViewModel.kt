@@ -1,5 +1,6 @@
 package com.nextcloud.talk.polls.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,7 +22,12 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
     object PollCreatedState : ViewState
     object PollCreationFailedState : ViewState
 
-    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(PollCreationState(true, false))
+    private val _viewState: MutableLiveData<ViewState> = MutableLiveData(
+        PollCreationState(
+            enableAddOptionButton = true,
+            enableCreatePollButton = false
+        )
+    )
     val viewState: LiveData<ViewState>
         get() = _viewState
 
@@ -154,6 +160,7 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         }
 
         override fun onError(e: Throwable) {
+            Log.e(TAG, "Failed to create poll", e)
             _viewState.value = PollCreationFailedState
         }
 

@@ -12,7 +12,7 @@ class PollCreateOptionViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     lateinit var optionText: EmojiTextInputEditText
-    var textListener: TextWatcher? = null
+    private var textListener: TextWatcher? = null
 
     @SuppressLint("SetTextI18n")
     fun bind(

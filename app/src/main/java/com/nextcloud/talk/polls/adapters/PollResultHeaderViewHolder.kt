@@ -3,10 +3,8 @@ package com.nextcloud.talk.polls.adapters
 import android.annotation.SuppressLint
 import android.graphics.Typeface
 import com.nextcloud.talk.databinding.PollResultHeaderItemBinding
-import com.nextcloud.talk.models.database.UserEntity
 
 class PollResultHeaderViewHolder(
-    private val user: UserEntity,
     override val binding: PollResultHeaderItemBinding
 ) : PollResultViewHolder(binding) {
 

@@ -21,6 +21,7 @@
 
 package com.nextcloud.talk.polls.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,11 +29,10 @@ import com.nextcloud.talk.polls.adapters.PollResultHeaderItem
 import com.nextcloud.talk.polls.adapters.PollResultItem
 import com.nextcloud.talk.polls.adapters.PollResultVoterItem
 import com.nextcloud.talk.polls.model.Poll
-import com.nextcloud.talk.polls.repositories.PollRepository
 import io.reactivex.disposables.Disposable
 import javax.inject.Inject
 
-class PollResultsViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
+class PollResultsViewModel @Inject constructor() : ViewModel() {
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -103,6 +103,7 @@ class PollResultsViewModel @Inject constructor(private val repository: PollRepos
         } else if (poll.votes != null) {
             return poll.numVoters
         }
+        Log.e(TAG, "something went wrong while getting amount of voters.")
         return 0
     }
 

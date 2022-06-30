@@ -119,7 +119,7 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         private fun mapToPoll(pollResponse: PollResponse): Poll {
             val pollDetails = pollResponse.details?.map { it -> mapToPollDetails(it) }
 
-            val poll = Poll(
+            return Poll(
                 pollResponse.id,
                 pollResponse.question,
                 pollResponse.options,
@@ -134,7 +134,6 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollResponse.numVoters,
                 pollDetails,
             )
-            return poll
         }
 
         private fun convertVotes(votes: Map<String, Int>?): Map<String, Int> {
