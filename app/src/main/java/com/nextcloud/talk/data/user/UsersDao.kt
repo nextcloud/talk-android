@@ -83,19 +83,18 @@ abstract class UsersDao {
     abstract fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity>
 
     @Transaction
-    open fun setUserAsActiveWithId(id: Long): Single<Boolean> {
-        return getUsers()
-            .map { users ->
-                users.forEach { user ->
-                    user.current = user.id == id
-                    updateUser(user)
-                }
-                true
+    @Suppress("Detekt.TooGenericExceptionCaught") // blockingGet() only throws RuntimeExceptions per rx docs
+    open fun setUserAsActiveWithId(id: Long): Boolean {
+        return try {
+            getUsers().blockingGet().forEach { user ->
+                user.current = user.id == id
+                updateUser(user)
             }
-            .onErrorReturn { e ->
-                Log.e(TAG, "Error setting user active", e)
-                false
-            }
+            true
+        } catch (e: RuntimeException) {
+            Log.e(TAG, "Error setting user active", e)
+            false
+        }
     }
 
     @Transaction
